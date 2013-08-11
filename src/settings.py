@@ -26,6 +26,7 @@ INSTALLED_APPS = (
     'djangotoolbox',
     'autoload',
     'dbindexer',
+    'registration',
 
     # djangoappengine should come last, so it can override a few manage.py commands
     'djangoappengine',
@@ -68,3 +69,6 @@ mimetypes.add_type("application/x-font-ttf", ".ttc")
 mimetypes.add_type("application/x-font-ttf", ".ttf")
 mimetypes.add_type("font/opentype", ".otf")
 mimetypes.add_type("application/x-font-woff", ".woff")
+
+LOGIN_REDIRECT_URL = '/'
+ACCOUNT_ACTIVATION_DAYS = 5

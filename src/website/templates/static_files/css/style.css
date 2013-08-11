@@ -737,6 +737,16 @@ ul.breadcrumb li a:hover {
 11. Forms
 ============================= */
 
+input.error, span.errors {
+	color: red;
+	border-color: red;
+}
+
+span.all-errors {
+	display: inline-block;
+	margin: 0px 0px 10px 0px;
+}
+
 /* --- contact form  ---- */
 form#contactform input[type="text"] {
   width: 100%;
