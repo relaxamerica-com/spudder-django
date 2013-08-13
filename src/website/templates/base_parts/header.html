@@ -1,106 +1,88 @@
 <div class="container">
 	<div class="row nomargin">
 		<div class="span12">
-			<div class="headnav">
-				<ul>
-					{% if request.user.is_authenticated %}
-						<li><a href="/profile" data-toggle="modal"><i class="icon-user"></i>{{ request.user }}</a></li>
-						<li><a href="/accounts/logout/" data-toggle="modal">Sign out</a></li>
-					{% else %}
-						<li><a href="#mySignup" data-toggle="modal"><i class="icon-user"></i> Sign up</a></li>
-						<li><a href="#mySignin" data-toggle="modal">Sign in</a></li>
-					{% endif %}
-				</ul>
-			</div>
-			<div class="hidden-top">
-				<div class="hidden-top-inner container">
-					<div class="row">
-						<div class="span12">
-							<ul>
-								<li><strong>We are Spudder this will be info about Spudder</strong></li>
-								<li>220 Davidon Ave</li>
-								<li>Call us <i class="icon-phone"></i>(908) 864-7890 - (123) 864-7891</li>
-							</ul>
-						</div>
+			<div class="row">
+				<div class="headnav span4">
+					<ul>
+						{% if request.user.is_authenticated %}
+							<li><a href="/profile" data-toggle="modal"><i class="icon-user"></i>{{ request.user }}</a></li>
+							<li><a href="/accounts/logout/" data-toggle="modal">Sign out</a></li>
+						{% else %}
+							<li><a href="#mySignup" data-toggle="modal"><i class="icon-user"></i> Sign up</a></li>
+							<li><a href="#mySignin" data-toggle="modal">Sign in</a></li>
+						{% endif %}
+					</ul>
+				</div>
+				<div class="hidden-top span8">
+					<div class="row-fluid" id="download-buttons">
+						<a href="" class="span3 btn btn-primary btn-large">App Store</a>
+						<a href="" class="span3 btn btn-primary btn-large">Google Play</a>
+						<a href="" class="span3 btn btn-primary btn-large">Amazon Apps</a>
+						<a href="" class="span3 btn btn-primary btn-large">Direct Download</a>
 					</div>
 				</div>
-			</div>
-			<div id="header-hidden-link">
-				<a href="#" class="toggle-link" title="Click me you'll get a surprise" data-target=".hidden-top"><i></i>Open</a>
-			</div>
-		</div>
-	</div>
-	<div class="row">
-		<div class="span4">
-			<div class="logo">
-				<a href="/"><img src="/media/img/spudder_logo.jpg" alt="" class="logo" /></a>
-				<h1><strong>Sports Updates Made Simple</strong></h1>
+				<div id="header-hidden-link">
+					<a href="#" class="toggle-link" title="Click me you'll get a surprise" data-target=".hidden-top"><i></i>Open</a>
+				</div>
 			</div>
 		</div>
-		<div class="span8">
-			<div class="navbar navbar-static-top">
-				<div class="navigation">
-					<nav>
-					<ul class="nav topnav">
-						<li class="dropdown active">
-						<a href="index.html">Home <i class="icon-angle-down"></i></a>
-						<ul class="dropdown-menu">
-							<li><a href="index-alt2.html">Homepage 2</a></li>
-							<li><a href="index-alt3.html">Homepage 3</a></li>
-						</ul>
-						</li>
-						<li class="dropdown">
-						<a href="#">Features <i class="icon-angle-down"></i></a>
-						<ul class="dropdown-menu">
-							<li><a href="typography.html">Typography</a></li>
-							<li><a href="table.html">Table</a></li>
-							<li><a href="components.html">Components</a></li>
-							<li><a href="animations.html">56 Animations</a></li>
-							<li><a href="icons.html">Icons</a></li>
-							<li><a href="icon-variations.html">Icon variations</a></li>
-							<li class="dropdown"><a href="#">3 Sliders <i class="icon-angle-right"></i></a>
-							<ul class="dropdown-menu sub-menu-level1">
-								<li><a href="index.html">Nivo slider</a></li>
-								<li><a href="index-alt2.html">Slit slider</a></li>
-								<li><a href="index-alt3.html">Parallax slider</a></li>
+		<div class="row">
+			<div class="span4">
+				<div class="logo">
+					<a href="/"><img src="/media/img/spudder_logo.jpg" alt="" class="logo" /></a>
+				</div>
+			</div>
+			<div class="span8">
+				<div class="navbar navbar-static-top">
+					<div class="navigation">
+						<nav>
+						<ul class="nav topnav">
+							<li class="active"><a href="/">Home</a></li>
+							<li class="dropdown">
+							<a href="#">Features <i class="icon-angle-down"></i></a>
+							<ul class="dropdown-menu">
+								<li><a href="">League/Tournament</a></li>
+								<li><a href="">Team Management</a></li>
+								<li><a href="">Sponsorships</a></li>
+								<li><a href="">Spudmart &reg;</a></li>
+								
 							</ul>
 							</li>
+							<li class="dropdown">
+							<a href="#">Sports <i class="icon-angle-down"></i></a>
+							<ul class="dropdown-menu">
+								<li><a href="">Sport 1</a></li>
+								<li><a href="">Sport 2</a></li>
+								<li><a href="">Sport 3</a></li>
+								<li><a href="">Sport 4</a></li>
+							</ul>
+							</li>
+							<li class="dropdown">
+							<a href="#">Press <i class="icon-angle-down"></i></a>
+							<ul class="dropdown-menu">
+								<li><a href="portfolio-2cols.html">Press 1</a></li>
+								<li><a href="portfolio-3cols.html">Press 2</a></li>
+								<li><a href="portfolio-4cols.html">Press 3</a></li>
+								<li><a href="portfolio-detail.html">Press 4</a></li>
+							</ul>
+							</li>
+							<li class="dropdown">
+							<a href="#">Blog <i class="icon-angle-down"></i></a>
+							<ul class="dropdown-menu">
+								<li><a href="blog-left-sidebar.html">Post 1</a></li>
+								<li><a href="blog-right-sidebar.html">Post 2</a></li>
+								<li><a href="post-left-sidebar.html">Post 3</a></li>
+								<li><a href="post-right-sidebar.html">Post 4</a></li>
+							</ul>
+							</li>
+							<li>
+							<a href="contact.html">Search</a>
+							</li>
 						</ul>
-						</li>
-						<li class="dropdown">
-						<a href="#">Pages <i class="icon-angle-down"></i></a>
-						<ul class="dropdown-menu">
-							<li><a href="about.html">About us</a></li>
-							<li><a href="pricingbox.html">Pricing boxes</a></li>
-							<li><a href="testimonials.html">Testimonials</a></li>
-							<li><a href="404.html">404</a></li>
-						</ul>
-						</li>
-						<li class="dropdown">
-						<a href="#">Portfolio <i class="icon-angle-down"></i></a>
-						<ul class="dropdown-menu">
-							<li><a href="portfolio-2cols.html">Portfolio 2 columns</a></li>
-							<li><a href="portfolio-3cols.html">Portfolio 3 columns</a></li>
-							<li><a href="portfolio-4cols.html">Portfolio 4 columns</a></li>
-							<li><a href="portfolio-detail.html">Portfolio detail</a></li>
-						</ul>
-						</li>
-						<li class="dropdown">
-						<a href="#">Blog <i class="icon-angle-down"></i></a>
-						<ul class="dropdown-menu">
-							<li><a href="blog-left-sidebar.html">Blog left sidebar</a></li>
-							<li><a href="blog-right-sidebar.html">Blog right sidebar</a></li>
-							<li><a href="post-left-sidebar.html">Post left sidebar</a></li>
-							<li><a href="post-right-sidebar.html">Post right sidebar</a></li>
-						</ul>
-						</li>
-						<li>
-						<a href="contact.html">Contact </a>
-						</li>
-					</ul>
-					</nav>
+						</nav>
+					</div>
+					<!-- end navigation -->
 				</div>
-				<!-- end navigation -->
 			</div>
 		</div>
 	</div>

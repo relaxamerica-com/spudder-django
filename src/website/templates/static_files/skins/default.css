@@ -70,8 +70,10 @@ input:focus {
 
 /* === Header === */
 /* --- toggle top area --- */
- .hidden-top {	
-	background:#F03C02;
+
+ .hidden-top {
+ 	margin-top: -5px;
+	background: #a89b94;
 }
 #header-hidden-link a.toggle-link,
 #header-hidden-link a.top-link {

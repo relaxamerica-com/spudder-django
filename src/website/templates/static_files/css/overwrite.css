@@ -656,10 +656,11 @@ font-size: 10px;
 
 .btn-primary {
 	outline:0;
-  background: #1C0113;
+	background: #ff6b00;
+	color: #ffffff;
 }
 .btn-primary:hover {
-  background: #170110;
+  background: #111111;
 }
 
 .btn-info {
