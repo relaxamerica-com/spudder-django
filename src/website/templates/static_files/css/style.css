@@ -44,7 +44,11 @@ body {
 	font-size:14px;
 	font-weight:300;
 	line-height:1.6em;
-	color:#656565;
+	color:#353535;
+}
+
+.primary {
+	background-color: #A89B94;
 }
 
 a:active {
@@ -145,7 +149,7 @@ img.img-polaroid {
 	margin:0 20px 0 0;
 }
  .hidden-top.toggle-link-open {
-  padding: 10px 0;
+  padding: 15px;
 }
 .hidden-top a {
   color: #ffffff;
@@ -223,7 +227,7 @@ header {
 }
 
 header .logo {
-	margin: -10px 0 0 0;
+	margin: -10px 0 0 15px;
 	float:left;
 }
 
@@ -2705,3 +2709,39 @@ article img.pull-right, article .align-right{
 
 
 /* Theme Styler :: End */
+
+#league-or-tournament .header-parts div[class*="span"] {
+	margin-top: 20px;
+}
+
+#league-or-tournament .path a:link,
+#league-or-tournament .path a:visited {
+	color: #ffffff;
+}
+
+#league-or-tournament .path a:hover,
+#league-or-tournament .path.breadcrumb > .active {
+	color: #111111;
+}
+
+#league-or-tournament .path.breadcrumb {
+	text-align: right;
+	width: 100%;
+	margin-top: -5px;
+}
+
+#league-or-tournament .path.breadcrumb .divider {
+	color: #ff6b00;
+}
+
+#page-header .wrapper {
+	padding: 0px 20px;
+}
+
+#page-header h3 {
+	margin: -10px 0px 0px 0px;
+}
+
+#league-or-tournament #sponsor-us-btn {
+	margin-bottom: 25px;
+}

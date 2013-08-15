@@ -30,7 +30,8 @@ INSTALLED_APPS = (
 
     # djangoappengine should come last, so it can override a few manage.py commands
     'djangoappengine',
-    'website.home'
+    'website.home',
+    'website.league_or_tournament'
 )
 
 MIDDLEWARE_CLASSES = (

@@ -9,4 +9,5 @@ urlpatterns = patterns('',
     ('^_ah/warmup$', 'djangoappengine.views.warmup'),
     (r'^$', include('website.home.urls')),
     (r'^accounts/', include('registration.urls')),
+    (r'^league_or_tournament/', include('website.league_or_tournament.urls'))
 )
