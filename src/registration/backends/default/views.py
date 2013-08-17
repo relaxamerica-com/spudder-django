@@ -6,10 +6,10 @@ from registration import signals
 from registration.models import RegistrationProfile
 from registration.views import ActivationView as BaseActivationView
 from registration.views import RegistrationView as BaseRegistrationView
-import logging
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth import authenticate
 from django.contrib.auth import login as auth_login, logout as auth_logout
+from website.profile.models import Profile
 
 class CustomLoginView():
     def login(self, request):
@@ -97,6 +97,8 @@ class RegistrationView(BaseRegistrationView):
         signals.user_registered.send(sender=self.__class__,
                                      user=new_user,
                                      request=request)
+        profile = Profile(user = new_user)
+        profile.save()
         return new_user
 
     def registration_allowed(self, request):
