@@ -344,23 +344,15 @@
 			<div class="main-content">
 				<div class="breadcrumbs" id="breadcrumbs">
 					<ul class="breadcrumb">
-						<li>
+						<li class="active">
 							<i class="icon-home home-icon"></i>
-							<a href="#">Home</a>
+							<a href="#">SPUDS</a>
 
-							<span class="divider">
+							<!-- <span class="divider">
 								<i class="icon-angle-right arrow-icon"></i>
-							</span>
+							</span> -->
 						</li>
 
-						<li>
-							<a href="#">Other Pages</a>
-
-							<span class="divider">
-								<i class="icon-angle-right arrow-icon"></i>
-							</span>
-						</li>
-						<li class="active">Blank Page</li>
 					</ul><!--.breadcrumb-->
 
 					<div class="nav-search" id="nav-search">
@@ -374,13 +366,9 @@
 				</div>
 
 				<div class="page-content">
-					<div class="row-fluid">
-						<div class="span12">
-							<!--PAGE CONTENT BEGINS-->
-
-							<!--PAGE CONTENT ENDS-->
-						</div><!--/.span-->
-					</div><!--/.row-fluid-->
+					{% block content %}
+					
+					{% endblock %}
 				</div><!--/.page-content-->
 
 				<div class="ace-settings-container" id="ace-settings-container">

@@ -10,5 +10,5 @@ from django.http import HttpResponseRedirect
 def index(request):
     profile = request.user.get_profile()
     if profile.type == ProfileType.FAN:
-        return HttpResponseRedirect('/fan')
+        return HttpResponseRedirect('/fan/spuds')
     return render(request, 'profile/index.html')

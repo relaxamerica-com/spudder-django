@@ -1,0 +1,77 @@
+{% extends 'profile_base.html' %}
+
+{% block left_side_nav %}
+	{% include 'fan/parts/left_side_nav.html' %}
+{% endblock %}
+
+{% block content %}
+<div id="spuds" class="">
+	<div class="row-fluid">
+		<div class="span12">
+			<div class="tabbable">
+				<ul id="myTab" class="nav nav-tabs">
+					<li class="active">
+						<a href="#welcome" data-toggle="tab">
+							Welcome
+						</a>
+					</li>
+	
+					<li>
+						<a href="#favorites" data-toggle="tab">
+							Favorites
+						</a>
+					</li>
+	
+					<li>
+						<a href="#spuds" data-toggle="tab">
+							SPUDS
+						</a>
+					</li>
+					
+					<li>
+						<a href="#basic_info" data-toggle="tab">
+							Basic Info
+						</a>
+					</li>
+					
+					<li>
+						<a href="#settings" data-toggle="tab">
+							Settings
+						</a>
+					</li>
+					<li>
+						<a href="#password" data-toggle="tab">
+							Password
+						</a>
+					</li>
+				</ul>
+	
+				<div class="tab-content">
+					<div class="tab-pane in active" id="welcome">
+						<p>Raw denim you probably haven't heard of them jean shorts Austin.</p>
+					</div>
+	
+					<div class="tab-pane" id="favorites">
+						<p>Food truck fixie locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid.</p>
+					</div>
+	
+					<div class="tab-pane" id="spuds">
+						<p>Etsy mixtape wayfarers, ethical wes anderson tofu before they sold out mcsweeney's organic lomo retro fanny pack lo-fi farm-to-table readymade.</p>
+					</div>
+	
+					<div class="tab-pane" id="basic_info">
+						{% include 'fan/parts/basic_info.html' %}
+					</div>
+					
+					<div class="tab-pane" id="settings">
+						{% include 'fan/parts/settings.html' %}
+					</div>
+					<div class="tab-pane" id="password">
+						{% include 'fan/parts/edit_password.html' %}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}
