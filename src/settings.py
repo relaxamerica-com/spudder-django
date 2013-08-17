@@ -18,6 +18,8 @@ DEBUG=True
 
 APP_NAME = 'spuds.com'
 
+AUTH_PROFILE_MODULE = 'profile.Profile'
+
 INSTALLED_APPS = (
     'django.contrib.admin',
     'django.contrib.contenttypes',
@@ -31,7 +33,10 @@ INSTALLED_APPS = (
     # djangoappengine should come last, so it can override a few manage.py commands
     'djangoappengine',
     'website.home',
-    'website.league_or_tournament'
+    'website.league',
+    'website.tournament',
+    'website.profile',
+    'website.fan'
 )
 
 MIDDLEWARE_CLASSES = (
