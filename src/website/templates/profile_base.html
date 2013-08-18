@@ -343,17 +343,7 @@
 
 			<div class="main-content">
 				<div class="breadcrumbs" id="breadcrumbs">
-					<ul class="breadcrumb">
-						<li class="active">
-							<i class="icon-home home-icon"></i>
-							<a href="#">SPUDS</a>
-
-							<!-- <span class="divider">
-								<i class="icon-angle-right arrow-icon"></i>
-							</span> -->
-						</li>
-
-					</ul><!--.breadcrumb-->
+					{% block site_path %} {% endblock %}
 
 					<div class="nav-search" id="nav-search">
 						<form class="form-search">
@@ -444,7 +434,24 @@
 
 		<script src="/media/profile/js/ace-elements.min.js"></script>
 		<script src="/media/profile/js/ace.min.js"></script>
-
+		
+		{% block scripts %} {% endblock %}
+		
+		<script type="text/javascript">
+			$(document).ready(function() {
+				var currentPath = document.location.pathname;
+				var linkElementForCurrentPath = $('.nav-list a[href="' + currentPath + '"]');
+				var listElementForCurrentPath = linkElementForCurrentPath.parent('li');
+				var submenu = linkElementForCurrentPath.parent().parent('.submenu');
+				
+				listElementForCurrentPath.addClass('active');
+				if ( submenu.length > 0 ) {
+					submenu.parent('li').addClass('open');
+					submenu.css('display', 'block');
+				}
+			});
+		</script>
 		<!--inline scripts related to this page-->
+		
 	</body>
 </html>

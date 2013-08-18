@@ -1,5 +1,15 @@
 {% extends 'profile_base.html' %}
 
+{% block site_path %}
+<ul class="breadcrumb">
+	<li class="active">
+		<i class="icon-home home-icon"></i>
+		<a href="#">SPUDS</a>
+	</li>
+
+</ul><!--.breadcrumb-->
+{% endblock %}
+
 {% block left_side_nav %}
 	{% include 'fan/parts/left_side_nav.html' %}
 {% endblock %}
