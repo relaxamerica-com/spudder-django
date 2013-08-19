@@ -1,0 +1,11 @@
+.nomargin {
+	margin: 0px;
+}
+
+#fans .favorite-team {
+	margin-bottom: 10px;
+}
+
+#fans .tab-content {
+	overflow: visible;
+}

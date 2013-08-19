@@ -1,5 +1,39 @@
 {% extends 'profile_base.html' %}
 
+{% block head %}
+	<link rel="stylesheet" href="/media/profile/css/chosen.css" />
+{% endblock %}
+
+{% block scripts %}
+<script src="/media/profile/js/chosen.jquery.min.js"></script>
+<script src="/media/profile/js/bootstrap-tag.min.js"></script>
+<script type="text/javascript">
+	$(document).ready(function() {
+		$(".chzn-select").chosen({ 'width' : '220px' });
+		
+		var our = $('#form-field-tags-our');
+		our.tag({ placeholder : our.attr('placeholder') });
+		
+		var their = $('#form-field-tags-their');
+		their.tag({ placeholder : their.attr('placeholder') });
+		
+		$('#id-input-file-2').ace_file_input({
+			no_file:'No File ...',
+			btn_choose:'Choose',
+			btn_change:'Change',
+			droppable:false,
+			onchange:null,
+			thumbnail:false //| true | large
+			//whitelist:'gif|png|jpg|jpeg'
+			//blacklist:'exe|php'
+			//onchange:''
+			//
+		});
+	});
+</script>
+{% endblock %}
+
+
 {% block site_path %}
 <ul class="breadcrumb">
 	<li class="active">
@@ -21,7 +55,7 @@
 {% endblock %}
 
 {% block content %}
-<div id="spuds" class="">
+<div id="fans" class="">
 	<div class="row-fluid">
 		<div class="span12">
 			<div class="tabbable">
@@ -39,7 +73,7 @@
 					</li>
 	
 					<li>
-						<a href="#spuds" data-toggle="tab">
+						<a href="#spuds-toggle" data-toggle="tab">
 							SPUDS
 						</a>
 					</li>
@@ -62,17 +96,17 @@
 					</li>
 				</ul>
 	
-				<div class="tab-content">
+				<div class="tab-content clearfix">
 					<div class="tab-pane in active" id="welcome">
-						<p>Raw denim you probably haven't heard of them jean shorts Austin.</p>
+						<iframe width="560" height="315" src="//www.youtube.com/embed/N3iLMny-M0o" frameborder="0" allowfullscreen></iframe>
 					</div>
 	
 					<div class="tab-pane" id="favorites">
-						<p>Food truck fixie locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid.</p>
+						{% include 'fan/parts/favorites.html' %}
 					</div>
 	
-					<div class="tab-pane" id="spuds">
-						<p>Etsy mixtape wayfarers, ethical wes anderson tofu before they sold out mcsweeney's organic lomo retro fanny pack lo-fi farm-to-table readymade.</p>
+					<div class="tab-pane" id="spuds-toggle">
+						{% include 'fan/parts/fan_spuds.html' %}
 					</div>
 	
 					<div class="tab-pane" id="basic_info">
