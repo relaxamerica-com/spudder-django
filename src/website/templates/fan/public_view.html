@@ -1,10 +1,24 @@
 {% extends 'base.html' %}
 
+{% load utils %}
+
 {% block scripts %}
+<script type="text/javascript" src="/media/profile/js/jquery-ui-1.10.3.custom.min.js"></script>
 <script type="text/javascript" src="/media/js/switches.js"></script>
+<script type="text/javascript">
+	$(document).ready(function() {
+		$('.ui-slider-green').slider({
+			orientation: "horizontal",
+			range: "min",
+			max: 100,
+			value: 50
+		});
+	});
+</script>
 {% endblock %}
 
 {% block head %}
+	<link href="/media/profile/css/jquery-ui-1.10.3.custom.min.css" rel="stylesheet" />
 {% endblock %}
 
 
@@ -46,6 +60,9 @@
 	</div>
 	<div class="row-fluid">
 		<div class="span6">
+		
+			{% display_items 'sponsors-items' 'Sponsors I Follow' %}
+			
 			<h4>
 				Filter My Spuds
 			</h4>
@@ -65,7 +82,7 @@
 					<div class="accordion-body collapse" id="collapseOne" style="height: 0px;">
 						<div class="accordion-inner">
 							<p>
-								 Diam alienum oporteat ad vis, latine intellegebat cu his. Ei eros dicam commodo duo, an assum meliore eam. In sed albucius dissentiet. Sit laudem graece malorum ne, at eam omnesque expetenda pertinacia, tale meliore vim ea. Dolore legere deleniti ius at, mea nibh discere perfecto ex. Mea ea iuvaret eripuit, eos no vivendo intellegat definiebas, patrioque eloquentiam eos et.
+								{% include 'filter_verbiage/all.html' %}
 							</p>
 						</div>
 					</div>
@@ -85,7 +102,7 @@
 					<div class="accordion-body collapse" id="collapseTwo" style="height: 0px;">
 						<div class="accordion-inner">
 							<p>
-								 Nihil suscipit posidonium eos id. An cetero fierent insolens mel, ex sit rebum falli erroribus. Ius in nemore dolorum officiis. Et vel harum dicant, vix eius persius an. Ex eam malis postea, erat nihil consulatu nam ea. Ex quem dolores euripidis eum, tempor aperiam voluptaria has ad. Ea est persecuti dissentiet voluptatibus, at illum malorum minimum usu eum aeterno tritani.
+								{% include 'filter_verbiage/images.html' %}
 							</p>
 						</div>
 					</div>
@@ -105,7 +122,7 @@
 					<div class="accordion-body collapse" id="collapseThree">
 						<div class="accordion-inner">
 							<p>
-								 Vel purto oportere principes ne, ut mel graeco omnesque. Habeo justo congue mei cu, eu est molestie sensibus, oratio tibique ad mei. Admodum consetetur cu eam, nec cu doming prompta inciderint, ne vim ceteros mnesarchum scriptorem. Ex eam malis postea, erat nihil consulatu nam ea. Ex quem dolores euripidis eum, tempor aperiam voluptaria has ad. Et vel harum dicant vix.
+								{% include 'filter_verbiage/videos.html' %}
 							</p>
 						</div>
 					</div>
@@ -125,7 +142,7 @@
 					<div class="accordion-body collapse" id="collapseFour">
 						<div class="accordion-inner">
 							<p>
-								 Diam alienum oporteat ad vis, latine intellegebat cu his. Ei eros dicam commodo duo, an assum meliore eam. In sed albucius dissentiet. Sit laudem graece malorum ne, at eam omnesque expetenda pertinacia, tale meliore vim ea. Dolore legere deleniti ius at, mea nibh discere perfecto ex. Mea ea iuvaret eripuit, eos no vivendo intellegat definiebas, patrioque eloquentiam eos et.
+								{% include 'filter_verbiage/updates.html' %}
 							</p>
 						</div>
 					</div>
@@ -145,12 +162,27 @@
 					<div class="accordion-body collapse" id="collapseFive">
 						<div class="accordion-inner">
 							<p>
-								 Diam alienum oporteat ad vis, latine intellegebat cu his. Ei eros dicam commodo duo, an assum meliore eam. In sed albucius dissentiet. Sit laudem graece malorum ne, at eam omnesque expetenda pertinacia, tale meliore vim ea. Dolore legere deleniti ius at, mea nibh discere perfecto ex. Mea ea iuvaret eripuit, eos no vivendo intellegat definiebas, patrioque eloquentiam eos et.
+								{% include 'filter_verbiage/favorites.html' %}
 							</p>
 						</div>
 					</div>
 				</div>
 			</div>
+			
+			<div id="date-slider">
+				<div class="row-fluid">
+					<div class="span3">
+						Date Registered
+					</div>
+					<div class="span7">
+						<div class="ui-slider-green"></div>
+					</div>
+					<div class="span2 text-right">
+						Current
+					</div>
+				</div>
+			</div>
+			
 		</div>
 		<div class="span6">
 			<div class="flexslider">
@@ -166,6 +198,18 @@
 					</li>
 				</ul>
 			<ol class="flex-control-nav flex-control-paging"><li><a class="flex-active">1</a></li><li><a class="">2</a></li><li><a class="">3</a></li></ol><ul class="flex-direction-nav"><li><a href="#" class="flex-prev">Previous</a></li><li><a href="#" class="flex-next">Next</a></li></ul></div>
+		</div>
+	</div>
+	
+	<div class="row-fluid">
+		<div class="span12">
+			{% display_items 'teams-items' 'Teams I Follow' %}
+		</div>
+	</div>
+	
+	<div class="row-fluid">
+		<div class="span12">
+			{% display_items 'players-items' 'Players I Follow' %}
 		</div>
 	</div>
 </div>

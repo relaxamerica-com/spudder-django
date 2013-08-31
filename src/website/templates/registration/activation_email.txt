@@ -1,3 +1,4 @@
+{% autoescape off %}
 <p>Activate your account at Spudder.com</p>
 
 Just <b>click</b> on the link below:
@@ -7,3 +8,4 @@ Just <b>click</b> on the link below:
 <b>
 	This mail is valid until: {{ expiration_days }} days.
 </b>
+{% endautoescape %}

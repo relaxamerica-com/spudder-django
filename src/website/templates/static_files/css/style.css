@@ -2882,3 +2882,37 @@ input[type="checkbox"]+.lbl,input[type="radio"]+.lbl {
     width:100%;
     display:block;
 }
+
+#fan-public-view #date-slider {
+	margin-top: 40px;
+}
+
+#fan-public-view .ui-slider-range {
+	background-color: #8bbc67;
+}
+
+#fan-public-view .ui-slider-handle:before {
+	display: inline-block;
+	content: "|||";
+	font-size: 7px;
+	font-family: Arial,Helvetica,sans-serif;
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	text-align: center;
+	line-height: 14px;
+}
+
+#fan-public-view .ui-slider {
+	margin-top: 5px;
+}
+
+#fan-public-view .ui-slider-handle {
+	border-radius: 0;
+	background-color: #f5f5f5;
+	border: 1px solid;
+	border-color: #8bbc67;
+	color: #8bbc67;
+}

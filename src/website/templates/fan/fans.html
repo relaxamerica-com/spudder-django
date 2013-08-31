@@ -10,9 +10,8 @@
 <script src="/media/profile/js/tab-control.js"></script>
 
 <script type="text/javascript">
-	
-
 	$(document).ready(function() {
+		// TODO: remove after creating other example
 		$(".chzn-select").chosen({ 'width' : '220px' });
 		
 		var our = $('#form-field-tags-our');
@@ -32,6 +31,49 @@
 			//blacklist:'exe|php'
 			//onchange:''
 			//
+		});
+		
+		$('#images-input-file').ace_file_input({
+			style:'well',
+			btn_choose:'Drop files here or click to choose',
+			btn_change:null,
+			no_icon:'icon-cloud-upload',
+			droppable:true,
+			thumbnail:'small'
+			//,icon_remove:null//set null, to hide remove/reset button
+			/**,before_change:function(files, dropped) {
+				//Check an example below
+				//or examples/file-upload.html
+				return true;
+			}*/
+			/**,before_remove : function() {
+				return true;
+			}*/
+			,
+			preview_error : function(filename, error_code) {
+				//name of the file that failed
+				//error_code values
+				//1 = 'FILE_LOAD_FAILED',
+				//2 = 'IMAGE_LOAD_FAILED',
+				//3 = 'THUMBNAIL_FAILED'
+				//alert(error_code);
+			}
+		});
+		
+		$('#create-spuds-buttons > div').modal({ 'show' : false });
+		
+		$('#create-spuds-buttons > div').click(function() {
+			var modalID = $(this).attr('modal-id');
+			var modal = $('' + modalID);
+			modal.appendTo($('body'));
+			modal.modal('show');
+		});
+		
+		$('.create-spuds-modals .modal .next').on('click', function() {
+			$('.modal').modal('hide');
+			var modal = $('#tag-modal');
+			modal.appendTo($('body'));
+			modal.modal();
 		});
 	});
 </script>
@@ -110,7 +152,7 @@
 					</div>
 	
 					<div class="tab-pane" id="spuds-toggle">
-						{% include 'fan/parts/fan_spuds.html' %}
+						{% include 'fan/parts/create_spuds.html' %}
 					</div>
 	
 					<div class="tab-pane" id="basic_info">

@@ -64,8 +64,9 @@ TEMPLATE_DIRS = (os.path.join(os.path.dirname(__file__), 'website/templates'),)
 
 ROOT_URLCONF = 'urls'
 
-EMAIL_HOST = 'localhost'
-EMAIL_PORT = 1025
+#EMAIL_HOST = 'localhost'
+#EMAIL_PORT = 1025
+DEFAULT_FROM_EMAIL = 'Karol@spudder.com'
 #EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 #EMAIL_BACKEND = 'appengine_emailbackend.EmailBackend'
 EMAIL_BACKEND = 'djangoappengine.mail.EmailBackend'

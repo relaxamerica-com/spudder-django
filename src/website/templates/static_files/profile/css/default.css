@@ -2,10 +2,81 @@
 	margin: 0px;
 }
 
+.border-bottom {
+	border-bottom: 1px solid #C5D0DC;
+}
+
 #fans .favorite-team {
 	margin-bottom: 10px;
 }
 
 #fans .tab-content {
 	overflow: visible;
+}
+
+.icon-huge {
+	font-size: 6em;
+}
+
+#spuds-toggle #view-spuds {
+	margin-top: 20px;
+}
+
+#create-spuds-buttons {
+	margin-top: 10px;
+}
+
+#create-spuds-buttons > div:hover {
+	background-color: #111;
+	cursor: pointer;
+}
+
+#create-spuds-buttons > div {
+	background-color: #FF6B00;
+	color: #fff;
+	padding: 5px;
+	border-radius: 10px;
+	padding-bottom: 10px;
+	margin-bottom: 10px;
+}
+
+#create-spuds-buttons div.modal {
+	color: #111;
+}
+
+#tag-modal .title {
+	display: inline-block;
+	margin-left: 10px;
+	font-size: 1.5em;
+}
+
+#tag-modal .row-fluid div.button {
+	font-size: 1.5em;
+	background-color: #FF6B00;
+	color: #fff;
+	padding: 15px 5px;
+	border-radius: 10px;
+	text-align: center;
+}
+
+#tag-modal .row-fluid div.button:hover {
+	background-color: #111;
+	cursor: pointer;
+}
+
+#tag-modal {
+	width: 760px;
+	margin-left: -380px;
+}
+
+#tag-modal .row-fluid .bar {
+	background-color: #F5F5F5;
+	border-bottom: 1px solid #E5E5E5;
+	padding: 10px 0px;
+	float: left;
+	width: 100%;
+}
+
+#tag-modal .icon-microphone {
+	font-size: 2.5em;
 }

@@ -132,6 +132,7 @@ jQuery(document).ready(function($) {
 
 		$('#mycarousel').jcarousel();
 		$('#mycarousel1').jcarousel();
+		$('.jcarousel-skin-tango').jcarousel();
 		
 	
 		//TWITTER
