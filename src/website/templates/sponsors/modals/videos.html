@@ -1,0 +1,25 @@
+{% extends 'fan/modals/modal.html' %}
+
+{% block modal_id %}videos-modal{% endblock %}
+
+{% block content %}
+<div class="widget-body">
+	<div class="widget-main">
+		<form id="add-video">
+			<div class="row-fluid">
+				<div class="span6">
+					<input type="file" id="videos-input-file" />
+				</div>
+				<div class="span6">
+					<div class="control-group">
+						<div class="controls">
+							<label for="add-image-comment">Comment:</label>
+							<textarea name="comment" id="add-image-comment"></textarea>
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+{% endblock %}

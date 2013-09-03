@@ -1,0 +1,46 @@
+{% extends 'profile_base.html' %}
+
+{% block scripts %}
+	<script src="/media/profile/js/tab-control.js"></script>
+	<script type='text/javascript' src='https://static-na.payments-amazon.com/OffAmazonPayments/us/sandbox/js/Widgets.js?sellerId=YOUR_SELLER_ID_HERE'></script>
+{% endblock %}
+
+{% block site_path %}
+<ul class="breadcrumb">
+	<li class="active">
+		<i class="icon-home home-icon"></i>
+		<a href="#">SPONSORS > AMAZON </a>
+	</li>
+
+</ul><!--.breadcrumb-->
+{% endblock %}
+
+{% block left_side_nav %}
+	{% include 'fan/parts/left_side_nav.html' %}
+{% endblock %}
+
+{% block content %}
+<div id="spuds" class="">
+	<div class="row-fluid">
+		<div class="span12">
+			<div class="tabbable">
+				<ul id="myTab" class="nav nav-tabs">
+					<li class="active">
+						<a href="#all" data-toggle="tab">
+							<i class="green icon-home bigger-110"></i>
+							All
+						</a>
+					</li>
+				</ul>
+	
+				<div class="tab-content">
+					<div class="tab-pane in active" id="all">
+						<p>Thank you for paying!</p>
+						<p>Your token ID is <b>{{tokenID}}</b></p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}
