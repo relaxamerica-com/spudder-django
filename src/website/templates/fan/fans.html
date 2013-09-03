@@ -5,6 +5,7 @@
 {% endblock %}
 
 {% block scripts %}
+<script src="/media/profile/js/jquery-ui-1.10.3.custom.min.js"></script>
 <script src="/media/profile/js/chosen.jquery.min.js"></script>
 <script src="/media/profile/js/bootstrap-tag.min.js"></script>
 <script src="/media/profile/js/tab-control.js"></script>
@@ -17,11 +18,16 @@
 		var playerTagsInput = $('#player-tags-input');
 		playerTagsInput.tag({ placeholder : playerTagsInput.attr('placeholder') });
 		
-		var our = $('#form-field-tags-our');
-		our.tag({ placeholder : our.attr('placeholder') });
-		
-		var their = $('#form-field-tags-their');
-		their.tag({ placeholder : their.attr('placeholder') });
+		$("div.bar div.button").tooltip({
+			hide: {
+				effect: "explode",
+				delay: 2500
+			},
+			show: {
+				effect: "slideDown",
+				delay: 2500
+			}
+		});
 		
 		$('#id-input-file-2').ace_file_input({
 			no_file:'No File ...',
@@ -80,7 +86,6 @@
 		});
 		
 		$('.open-modal').on('click', function() {
-			console.log('test')
 			var modalID = $(this).attr('modal-id');
 			$('.modal').modal('hide');
 			var modal = $('' + modalID);

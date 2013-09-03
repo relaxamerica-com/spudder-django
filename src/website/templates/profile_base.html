@@ -43,18 +43,15 @@
 		<div class="navbar">
 			<div class="navbar-inner">
 				<div class="container-fluid">
-					<a href="#" class="brand">
-						<small>
-							<i class="icon-microphone"></i>
-							Spudder Admin
-						</small>
+					<a href="/" class="brand">
+						<img src="/media/img/spudder_logo.jpg" />
 					</a><!--/.brand-->
 
 					<ul class="nav ace-nav pull-right">
-						<li class="grey">
-							<a data-toggle="dropdown" class="dropdown-toggle" href="#">
+						<li class="black">
+							<a data-toggle="dropdown" class="dropdown-toggle btn-orange" href="#">
 								<i class="icon-plus-sign-alt"></i>
-								<span class="badge badge-grey">4</span>
+								<span class="badge badge-black">4</span>
 							</a>
 
 							<ul class="pull-right dropdown-navbar dropdown-menu dropdown-caret dropdown-closer">
@@ -124,10 +121,10 @@
 							</ul>
 						</li>
 
-						<li class="purple">
-							<a data-toggle="dropdown" class="dropdown-toggle" href="#">
+						<li class="black">
+							<a data-toggle="dropdown" class="dropdown-toggle btn-orange" href="#">
 								<i class="icon-microphone"></i>
-								<span class="badge badge-important">8</span>
+								<span class="badge badge-black">8</span>
 							</a>
 
 							<ul class="pull-right dropdown-navbar navbar-pink dropdown-menu dropdown-caret dropdown-closer">
@@ -188,10 +185,10 @@
 							</ul>
 						</li>
 
-						<li class="green">
-							<a data-toggle="dropdown" class="dropdown-toggle" href="#">
+						<li class="black">
+							<a data-toggle="dropdown" class="dropdown-toggle btn-orange" href="#">
 								<i class="icon-envelope icon-animated-vertical"></i>
-								<span class="badge badge-success">5</span>
+								<span class="badge badge-black">5</span>
 							</a>
 
 							<ul class="pull-right dropdown-navbar dropdown-menu dropdown-caret dropdown-closer">
@@ -260,8 +257,8 @@
 							</ul>
 						</li>
 
-						<li class="light-blue">
-							<a data-toggle="dropdown" href="#" class="dropdown-toggle">
+						<li class="black">
+							<a data-toggle="dropdown" href="#" class="dropdown-toggle btn-orange">
 								<img class="nav-user-photo" src="/media/profile/avatars/user.jpg" alt="Jason's Photo" />
 								<span class="user-info">
 									<small>Welcome,</small>
@@ -271,7 +268,7 @@
 								<i class="icon-caret-down"></i>
 							</a>
 
-							<ul class="user-menu pull-right dropdown-menu dropdown-yellow dropdown-caret dropdown-closer">
+							<ul class="user-menu pull-right dropdown-menu dropdown-orange dropdown-caret dropdown-closer">
 								<li>
 									<a href="/fan/fans#settings">
 										<i class="icon-cog"></i>
@@ -327,13 +324,13 @@
 					</div>
 
 					<div class="sidebar-shortcuts-mini" id="sidebar-shortcuts-mini">
-						<span class="btn btn-success"></span>
+						<span class="btn btn-orange"></span>
 
-						<span class="btn btn-info"></span>
+						<span class="btn btn-orange"></span>
 
-						<span class="btn btn-warning"></span>
+						<span class="btn btn-orange"></span>
 
-						<span class="btn btn-danger"></span>
+						<span class="btn btn-orange"></span>
 					</div>
 				</div><!--#sidebar-shortcuts-->
 
@@ -413,6 +410,12 @@
 					submenu.parent('li').addClass('open');
 					submenu.css('display', 'block');
 				}
+				
+				$('.ace-nav > li.black').hover(function() {
+					$(this).find('.badge').addClass('hover');
+				}, function() {
+					$(this).find('.badge').removeClass('hover');
+				});
 			});
 		</script>
 		<!--inline scripts related to this page-->

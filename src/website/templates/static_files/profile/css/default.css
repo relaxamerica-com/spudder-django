@@ -1,3 +1,47 @@
+.breadcrumb > li > a {
+	color: #F03C02;
+}
+
+.nav-tabs > li > a:hover {
+	color: #F03C02;
+}
+
+.ace-nav > li > a > .badge-black {
+	background-color: #111!important;
+}
+
+.ace-nav > li > a > .badge-black.hover {
+	background-color: #F03C02!important;
+}
+
+.ace-nav > li.black.open .btn-orange {
+	background-color: #111!important;
+}
+
+.ace-nav .dropdown-menu.dropdown-orange li > a:hover {
+	background-color: #111!important;
+}
+
+.skin-3 .menu-min .nav-list > li.active > a {
+	background-color: #a89b94;
+}
+
+.skin-3 .nav-list > li > a:focus {
+	color: #F03C02;
+}
+
+.nav-search .nav-search-input {
+	border-color: #F03C02;
+}
+
+.nav-search .nav-search-icon {
+	color: #F03C02!important;
+}
+
+.nav-search .nav-search-input:focus, .nav-search .nav-search-input:hover {
+	border-color: #000;
+}
+
 .nomargin {
 	margin: 0px;
 }
@@ -88,4 +132,8 @@
 
 .btn-orange:hover {
 	background-color: #000!important;
+}
+
+.sidebar-shortcuts-large .btn {
+	width: 35px;
 }
