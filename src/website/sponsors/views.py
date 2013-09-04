@@ -22,7 +22,7 @@ def call_cbui(request):
     info('Name: %s' % teamName)
     info('Amount: %s' % transactionAmount)
 
-    cbui_url = fps_connection.cbui_url(returnURL='http://localhost:8000/sponsors/thanks', pipelineName='SingleUse', transactionAmount=transactionAmount,
+    cbui_url = fps_connection.cbui_url(returnURL='%s/sponsors/thanks' % settings.DOMAIN_NAME, pipelineName='SingleUse', transactionAmount=transactionAmount,
                                        paymentReason='Sponsoring %s' % teamName)
     
     return HttpResponseRedirect(cbui_url)
@@ -35,7 +35,7 @@ def thanks(request):
 def register_recipient(request):
     fps_connection = _get_fps_connection()
     
-    cbui_url = fps_connection.cbui_url(returnURL='http://localhost:8000/sponsors/thanks_recipient', pipelineName='Recipient', recipientPaysFee=True)
+    cbui_url = fps_connection.cbui_url(returnURL='%s/sponsors/thanks_recipient' % settings.DOMAIN_NAME, pipelineName='Recipient', recipientPaysFee=True)
     
     return render(request, 'sponsors/register.html', {'cbui_url': cbui_url})
 

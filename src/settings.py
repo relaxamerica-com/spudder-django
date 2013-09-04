@@ -16,6 +16,9 @@ SECRET_KEY = '=r-$b*8hglm+858&9t043hlm6-&6-3d3vfc4((7yd0dbrakhvi'
 
 DEBUG=True
 
+DOMAIN_NAME = 'spudmart.appspot.com'
+#DOMAIN_NAME = 'localhost:8000'
+
 APP_NAME = 'spuds.com'
 
 AUTH_PROFILE_MODULE = 'profile.Profile'
