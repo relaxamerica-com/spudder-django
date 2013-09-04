@@ -6,6 +6,10 @@
 	color: #F03C02;
 }
 
+.skin-3 .sidebar-shortcuts {
+	background-color: #a89b94;
+}
+
 .ace-nav > li > a > .badge-black {
 	background-color: #111!important;
 }
@@ -23,11 +27,53 @@
 }
 
 .skin-3 .menu-min .nav-list > li.active > a {
+	background-color: #BCAFA8;
+}
+
+.skin-3 .nav-list > li.active > a {
+	background-color: #BCAFA8;
+}
+
+.skin-3 .nav-list > li.active > a:focus {
+	color: #F03C02;
+}
+
+.skin-3 .nav-list > li.open > a {
+	color: #000;
 	background-color: #a89b94;
 }
 
+.skin-3 .nav-list > li > a {
+	background-color: #a89b94;
+	color: #000;
+}
 .skin-3 .nav-list > li > a:focus {
+	background-color: #a89b94;
+	color: #000;
+}
+
+.nav-list > li .submenu > li > a {
+	color: #000;
+}
+
+.nav-list > li .submenu > li > a:hover {
 	color: #F03C02;
+}
+
+.skin-3 .sidebar-collapse {
+	background-color: #a89b94;
+}
+
+.skin-3 .sidebar, .skin-3 .sidebar:before {
+	background-color: #a89b94;
+}
+
+.breadcrumbs {
+	background-color: #a89b94;
+}
+
+.breadcrumb > li {
+	text-shadow: 0 1px 0 #BCAFA8;
 }
 
 .nav-search .nav-search-input {
