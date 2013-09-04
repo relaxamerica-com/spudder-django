@@ -20,6 +20,9 @@ APP_NAME = 'spuds.com'
 
 AUTH_PROFILE_MODULE = 'profile.Profile'
 
+AWS_ACCESS_KEY_ID = 'AKIAIV6G36242PJ4L7WQ'
+AWS_SECRET_KEY_ID = '5EIFJLrQB6RhtI4wOBLF7DPu4ZyTMbOrwXrneJZg'
+
 INSTALLED_APPS = (
     'django.contrib.admin',
     'django.contrib.contenttypes',
@@ -29,6 +32,7 @@ INSTALLED_APPS = (
     'autoload',
     'dbindexer',
     'registration',
+	'boto', # Amazon Web Services Boto
 
     # djangoappengine should come last, so it can override a few manage.py commands
     'djangoappengine',
