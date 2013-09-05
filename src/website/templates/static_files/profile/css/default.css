@@ -1,9 +1,22 @@
 .breadcrumb > li > a {
-	color: #F03C02;
+	color: #000;
 }
 
 .nav-tabs > li > a:hover {
 	color: #F03C02;
+}
+
+.nav-tabs > li > a, .nav-tabs > li > a:focus {
+	background-color: #a89b94;
+	color: #000;
+}
+
+.skin-3 .nav-list > li:hover > a {
+	background-color: #BCAFA8;
+}
+
+.skin-3 .nav-list > li:hover {
+	background-color: #BCAFA8;
 }
 
 .skin-3 .sidebar-shortcuts {
@@ -39,16 +52,20 @@
 }
 
 .skin-3 .nav-list > li.open > a {
-	color: #000;
-	background-color: #a89b94;
+	background-color: #BCAFA8;
 }
 
 .skin-3 .nav-list > li > a {
 	background-color: #a89b94;
 	color: #000;
 }
+
+.skin-3 .nav-list > li.open > a:focus {
+	color: #F03C02;
+}
+
 .skin-3 .nav-list > li > a:focus {
-	background-color: #a89b94;
+	background-color: #BCAFA8;
 	color: #000;
 }
 
