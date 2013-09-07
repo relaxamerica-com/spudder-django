@@ -259,10 +259,10 @@
 
 						<li class="black">
 							<a data-toggle="dropdown" href="#" class="dropdown-toggle btn-orange">
-								<img class="nav-user-photo" src="/media/profile/avatars/user.jpg" alt="Jason's Photo" />
+								<img class="nav-user-photo" src="/media/profile/avatars/user.jpg" alt="{{ request.user.id }}'s Photo" />
 								<span class="user-info">
 									<small>Welcome,</small>
-									Jason
+									#{{ request.user.id }}
 								</span>
 
 								<i class="icon-caret-down"></i>

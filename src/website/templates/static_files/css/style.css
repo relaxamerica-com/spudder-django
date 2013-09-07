@@ -1044,7 +1044,7 @@ ul.link-list li{
 }
 
 footer ul.link-list li a{
-	color:#919191;
+	color:#fff;
 }
 
 /* --- Heading style --- */
@@ -1864,7 +1864,7 @@ ul.time-post li.time{
 footer{
 	background:#111;
 	padding:50px 0 0 0;
-	color:#bbb;
+	color:#fff;
 }
 
 footer a {
@@ -2715,7 +2715,20 @@ article img.pull-right, article .align-right{
 
 
 #page-header .header-parts div[class*="span"] {
-	margin-top: 20px;
+	margin-top: 10px;
+	margin-bottom: 4px;
+}
+
+#page-header .header-parts .follows {
+	font-size: 10px;
+	line-height: 1em;
+	width: 75px;
+	text-align: center;
+	margin-top: 2px;
+}
+
+#page-header .header-parts h5 {
+	margin-bottom: 0px;
 }
 
 #page-header .path a:link,

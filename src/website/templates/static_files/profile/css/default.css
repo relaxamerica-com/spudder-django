@@ -1,3 +1,7 @@
+.orange {
+	color: #F03C02!important;
+}
+
 .breadcrumb > li > a {
 	color: #000;
 }
@@ -196,6 +200,17 @@
 .btn-orange:hover {
 	background-color: #000!important;
 }
+
+.btn-darkgrey {
+	background-color: #a89b94!important;
+	border-color: #a89b94;
+}
+
+.btn-darkgrey:hover {
+	background-color: #a89b94!important;
+	border-color: #BCAFA8;
+}
+
 
 .sidebar-shortcuts-large .btn {
 	width: 35px;
