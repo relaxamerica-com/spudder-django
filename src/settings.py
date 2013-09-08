@@ -43,7 +43,8 @@ INSTALLED_APPS = (
     'website.league',
     'website.tournament',
     'website.profile',
-    'website.fan'
+    'website.fan',
+    'website.spud'
 )
 
 MIDDLEWARE_CLASSES = (

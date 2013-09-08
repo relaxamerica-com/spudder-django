@@ -155,13 +155,15 @@
 	color: #111;
 }
 
-[id^="tag-modal"] .title {
+[id^="tag-modal"] .title,
+.spud-container .title {
 	display: inline-block;
 	margin-left: 10px;
 	font-size: 1.3em;
 }
 
-[id^="tag-modal"] .row-fluid div.button {
+[id^="tag-modal"] .row-fluid div.button,
+.spud-container .row-fluid div.button {
 	font-size: 1.5em;
 	background-color: #FF6B00;
 	color: #fff;
@@ -170,7 +172,8 @@
 	text-align: center;
 }
 
-[id^="tag-modal"] .row-fluid div.button:hover {
+[id^="tag-modal"] .row-fluid div.button:hover,
+.spud-container .row-fluid div.button:hover {
 	background-color: #111;
 	cursor: pointer;
 }
@@ -180,16 +183,35 @@
 	margin-left: -380px;
 }
 
-[id^="tag-modal"] .row-fluid .bar {
+[id^="tag-modal"] .row-fluid.bar,
+.spud-container .row-fluid.bar {
 	background-color: #F5F5F5;
 	border-bottom: 1px solid #E5E5E5;
 	padding: 10px 0px;
-	float: left;
 	width: 100%;
 }
 
 [id^="tag-modal"] h3 [class^="icon"] {
 	font-size: 2.5em;
+}
+
+.spud-container h3 [class^="icon"] {
+	margin-left: 20px;
+	font-size: 1.8em;
+}
+
+.spud-container h3 {
+	font-size: 1.4em;
+	margin-bottom: -5px;
+}
+
+.centered {
+	display: table;
+	margin: auto;
+}
+
+.spud-container [class^="icon-"], [class*=" icon-"] {
+	margin-right: 0px;
 }
 
 .btn-orange {
@@ -199,6 +221,16 @@
 
 .btn-orange:hover {
 	background-color: #000!important;
+}
+
+.btn-orange.btn-noborder {
+	background-color: #F03C02!important;
+	border: 0;
+}
+
+.btn-orange.btn-noborder:hover {
+	background-color: #000!important;
+	border: 0;
 }
 
 .btn-darkgrey {
