@@ -14,7 +14,7 @@
 /* Table of content */
 /*===================================
 1. General
-2. layout
+2. Layout
 3. Responsive media
 4. Header
 5. Section: Featured
@@ -34,6 +34,7 @@
 19. More icon from custom font icon 
 20. Spacer, margin
 21. Media queries 
+22. Spudmart custom formatting
 ==================================== */
 /* ===================================
 1. General
@@ -1403,6 +1404,13 @@ a.custom-carousel-nav:hover{
 
 .icon-control {
 	margin:0 0 0 140px;
+}
+
+/* --- Custom buttons --- */
+.btn.btn-hover-orange:hover {
+	background: #EF5523;
+	color: #FFF;
+	border-color: #EF5523;
 }
 
 /* ===============================
@@ -2928,4 +2936,39 @@ input[type="checkbox"]+.lbl,input[type="radio"]+.lbl {
 	border: 1px solid;
 	border-color: #8bbc67;
 	color: #8bbc67;
+}
+
+/* ===================================
+22. Spudmart custom formatting
+==================================== */
+
+/* Pages :: Base */
+
+footer.spudmart-footer,
+footer.spudmart-footer #sub-footer {
+	background: #F9F9F9;
+	color: #353535;
+}
+
+footer.spudmart-footer h5 {
+	color: black;
+}
+
+footer.spudmart-footer #sub-footer span {
+	color: #5D5D5D;
+}
+
+footer.spudmart-footer ul.link-list li,
+footer.spudmart-footer ul.link-list li a {
+	color: black;
+}
+
+/* Pages :: Home (splash) */
+
+#spudmart-home .callaction {
+	padding-top: 10px;
+}
+
+#spudmart-home .callaction .container .row {
+	margin-bottom: 0;
 }
