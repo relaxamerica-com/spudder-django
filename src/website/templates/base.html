@@ -35,15 +35,19 @@
 <body>
 	<div id="wrapper">
 		
+		{% block header %}
 		<header>
 			{% include 'base_parts/header.html' %}
 		</header>
+		{% endblock header %}
 		
 		{% block content %} {% endblock %}
 		
+		{% block footer %}
 		<footer>
 			{% include 'base_parts/footer.html' %}
 		</footer>
+		{% endblock %}
 	</div>
 	<a href="#" class="scrollup"><i class="icon-chevron-up icon-square icon-32 active"></i></a>
 	<script src="/media/js/jquery.js"></script>

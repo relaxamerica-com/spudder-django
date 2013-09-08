@@ -14,5 +14,6 @@ urlpatterns = patterns('',
     (r'^profile/', include('website.profile.urls')),
     (r'^fan/', include('website.fan.urls')),
     (r'^sponsors/', include('website.sponsors.urls')),
-    (r'^spud/', include('website.spud.urls'))
+    (r'^spud/', include('website.spud.urls')),
+    (r'^spudmart/', include('website.spudmart.urls'))
 )
