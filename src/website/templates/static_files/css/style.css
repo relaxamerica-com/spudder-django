@@ -2967,7 +2967,7 @@ input[type="checkbox"]+.lbl,input[type="radio"]+.lbl {
 
 #spud-view .column {
 	border: 1px solid #696969;
-	min-height: 730px;
+	margin-bottom: 20px;
 }
 
 @media only screen and (max-width: 767px) {
@@ -4137,6 +4137,22 @@ dialogs {
 
 .input-prepend > .btn.btn-small, .input-append > .btn.btn-small {
 	line-height: 26px;
+}
+
+.spud-container .span9.small.text-center {
+	margin-top: 15px;
+}
+
+.small {
+	font-size: 0.9em;
+}
+
+.smaller {
+	font-size: 0.8em;
+}
+
+.padding-side5 {
+	padding: 0px 5px;
 }
 
 /* ===================================

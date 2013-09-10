@@ -4,30 +4,32 @@
 
 {% block scripts %}
 <script type="text/javascript" src="/media/profile/js/jquery-ui-1.10.3.custom.min.js"></script>
+<script type="text/javascript" src="/media/js/spud-container.js"></script>
 <script type="text/javascript" src="/media/js/equal-height.js"></script>
 <script type="text/javascript">
 	$(document).ready(function() {
 		$('.memberdiv').popover();
 		
-		//equalHeight($('.column'));
+		equalHeight($('.column'));
 		
-					
-		$('.dialogs,.comments').slimScroll({
-			height: '300px'
-		});
-		
-		$("div.bar div.button").tooltip({
-			hide: {
-				effect: "explode",
-				delay: 2500
-			},
-			show: {
-				effect: "slideDown",
-				delay: 2500
+		$('#toggle-chat').click(function() {
+			var chat = $('.chat-wrapper');
+			
+			if ( chat.is(':visible') ) {
+				$('.column').css('height', 'auto');
+			} else {
+				equalHeight($('.column'));
 			}
 		});
 	});
 	
+	$(window).resize(function() {
+		if( $(this).width() < 766 ) {
+			$('.column').css('height', 'auto');
+		} else {
+			equalHeight($('.column'));
+		}
+	});
 </script>
 {% endblock %}
 
@@ -80,7 +82,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="row-fluid">
+				<div class="row-fluid nomargin">
 					<div class="span12">
 						{% include 'commons/spud_container.html' %}
 					</div>
@@ -104,14 +106,6 @@
 			
 		</div>
 		
-	</div>
-	
-	<div class="row-fluid">
-		<div class="span8 offset2">
-			<div class="chat-wrapper">
-				{% include 'commons/chat.html' %}
-			</div>
-		</div>
 	</div>
 	
 </div>
