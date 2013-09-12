@@ -243,7 +243,30 @@
 	border-color: #BCAFA8;
 }
 
-
 .sidebar-shortcuts-large .btn {
 	width: 35px;
+}
+
+.spud-container .row-fluid  div.button.grey,
+[id^="tag-modal"] .row-fluid div.button.grey {
+	background-color: #A9A9A9;
+	color: #fff!important;
+}
+
+.spud-container .row-fluid  div.button.green,
+[id^="tag-modal"] .row-fluid div.button.green {
+	background-color: #46B946;
+	color: #fff!important;
+}
+
+.spud-container .row-fluid  div.button.red,
+[id^="tag-modal"] .row-fluid div.button.red {
+	background-color: #FF3333;
+	color: #fff!important;
+}
+
+.spud-container .row-fluid  div.button.yellow,
+[id^="tag-modal"] .row-fluid div.button.yellow {
+	background-color: #FF3333;
+	color: #fff!important;
 }

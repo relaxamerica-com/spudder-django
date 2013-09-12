@@ -4148,22 +4148,6 @@ dialogs {
 	margin-top: 15px;
 }
 
-.spud-container .row-fluid  div.button.grey {
-	background-color: #A9A9A9;
-}
-
-.spud-container .row-fluid  div.button.green {
-	background-color: #46B946;
-}
-
-.spud-container .row-fluid  div.button.red {
-	background-color: #FF3333;
-}
-
-.spud-container .row-fluid  div.button.yellow {
-	background-color: #FF3333;
-}
-
 .small {
 	font-size: 0.9em;
 }
