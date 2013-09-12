@@ -1,0 +1,128 @@
+{% extends 'spudmart_base.html' %}
+{% load utils %}
+
+{% block content %}
+
+<div id="spudmart-offer">
+	<section id="content">
+		<div class="container">
+			<div class="row">
+				<div class="span12">
+					{% display_items 'sports-items' 'Top rates sponsors:' %}
+				</div>
+			</div>
+			
+			<div class="row">
+				<div class="span8">
+					<article>
+						<div class="top-wrapper">
+							<div class="flexslider">
+								<ul class="slides">
+									<li style="width: 100%; float: left; margin-right: -100%; position: relative; display: list-item;" class="flex-active-slide">
+										<div class="offer-presentation">
+											<div class="post-heading">
+												<h3>
+													<a href="http://alfonsostrattoria.com" target="_blank">Alfonso's Family Trattoria & Gourment Pizza</a>
+												</h3>
+											</div>
+											
+											<div class="offer-header">
+												<div class="sponsor-icon-container align-left">
+													<img alt="Alexa's Avatar" src="/media/profile/avatars/avatar1.png" title="Alexa">
+												</div>
+												<div class="offer-headline align-left">
+													<span>30% off only 10 offered</span>
+												</div>
+												<div class="clearfix"></div>
+											</div>
+											
+											<div class="offer-actions">
+												{% include 'spudmart/parts/bar_buttons.html' %}
+											</div>
+											
+											<div class="offer-description-container">
+												<div class="preview-image align-left">
+													<img src="/media/img/slides/flexslider/offers-picture.png"/>
+												</div>
+												<div class="offer-description align-right">
+													<span>
+														Our patent pending system gives more than just the score, it gives amateur sports leagues a platform to connect, promote, fund and grow their local communities with about 50% the effort.
+													</span>
+												</div>
+												<div class="clearfix"></div>
+											</div>
+										</div>
+									</li>
+								</ul>
+								
+								<ul class="flex-direction-nav">
+									<li><a class="flex-prev" href="#">Previous</a></li>
+									<li><a class="flex-next" href="#">Next</a></li>
+								</ul>
+							</div>
+						</div>
+					</article>
+				</div>
+
+				<div class="span4">
+					<aside class="right-sidebar">
+						<div class="widget offer-widget">
+							<div>
+								<ul class="social-network">
+									<li><a href="http://www.facebook.com/spudderdotcom"
+										target="_blank" data-placement="bottom" title=""
+										data-original-title="Facebook"><i
+											class="icon-facebook icon-square"></i></a></li>
+									<li><a href="https://twitter.com/spudderdotcom"
+										target="_blank" data-placement="bottom" title=""
+										data-original-title="Twitter"><i
+											class="icon-twitter icon-square"></i></a></li>
+									<li><a href="http://pinterest.com/spudderdotcom/"
+										target="_blank" data-placement="bottom" title=""
+										data-original-title="Pinterest"><i
+											class="icon-pinterest icon-square"></i></a></li>
+									<li><a
+										href="https://plus.google.com/113968251038874482620"
+										target="_blank" rel="publisher" data-placement="bottom"
+										title="" data-original-title="Google plus"><i
+											class="icon-google-plus icon-square"></i></a></li>
+								</ul>
+							</div>
+
+							<h5 class="widgetheading">Spudder only Offer</h5>
+							<ul class="folio-detail offer-details">
+								<li><label>Special Offer: </label> 30% off</li>
+								<li><label>Location: </label> 101 West Main Street,
+									Somerville, NJ 08876</li>
+								<li><label>Map: </label> <a
+									href="https://maps.google.com/maps?q=Somerville+High+School,+Davenport+Street,+Somerville,+NJ&amp;hl=en&amp;ll=40.580715,-74.612553&amp;spn=0.0103,0.026157&amp;sll=40.860469,-74.460741&amp;sspn=0.65641,1.674042&amp;oq=somerville+Somerville+nj&amp;t=m&amp;z=16&amp;iwloc=A"
+									target="_blank">Click for a map</a></li>
+								<li><label>Website: </label> <a
+									href="http://alfonsostrattoria.com/" target="_blank">alfonsostrattoria.com</a>
+								</li>
+								<li><label>Phone: </label> 908.526.0616</li>
+								<li><label>Quanity Available:</label> 10/10</li>
+								<li><label>Experation Time:</label> 9/15/13 12:00 Pm</li>
+								<li><label>Video :</label> <a
+									href="http://video-embed.nj.com/services/player/bcpid1949044328001?bctid=1178923103001&amp;bckey=AQ~~,AAAAPLMIP6E~,BRrRHTAljlHRdo2SPuH4cYpjTxdIZDlA"
+									target="_blank">Our Video</a></li>
+							</ul>
+						</div>
+						<div class="widget redemption-widget">
+							<h5 class="widgetheading">Redemption</h5>
+							<p>In person Redemption only</p>
+						</div>
+					</aside>
+				</div>
+			</div>
+			
+			<div class="row-fluid nomargin">
+				<div class="span12">
+					{% display_items 'sports-items' 'We sponsor:' %}
+				</div>
+			</div>
+		</div>
+	</section>
+</div>
+
+{% endblock %}

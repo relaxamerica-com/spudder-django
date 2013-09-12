@@ -1870,9 +1870,9 @@ ul.time-post li.time{
 ================================ */
 
 footer{
-	background:#111;
+	background: #E9E9E9;
 	padding:50px 0 0 0;
-	color:#fff;
+	color: #353535;
 }
 
 footer a {
@@ -1880,7 +1880,7 @@ footer a {
 }
 
 footer h1, footer h2, footer h3, footer h4, footer h5, footer h6{
-	color:#eee;
+	color: black;
 }
 
 footer address {
@@ -1901,9 +1901,9 @@ ul.social-network li {
 }
 
 #sub-footer{
-	background:#0a0a0a;
+	background: #E9E9E9;
+	color: #353535;
 	text-shadow:none;
-	color:#5d5d5d;
 	padding:0;
 	padding-top:30px;
 	margin:20px 0 0 0;
@@ -1915,7 +1915,7 @@ ul.social-network li {
 }
 
 #sub-footer span{
-	color:#c7c7c7;
+	color: #5D5D5D;
 }
 
 .copyright {
@@ -1927,6 +1927,10 @@ ul.social-network li {
 	float:right;
 }
 
+footer ul.link-list li,
+footer ul.link-list li a {
+	color: black;
+}
 
 /* ===============================
  Live preview purpose
@@ -4164,27 +4168,6 @@ dialogs {
 22. Spudmart custom formatting
 ==================================== */
 
-/* Pages :: Base */
-
-footer.spudmart-footer,
-footer.spudmart-footer #sub-footer {
-	background: #F9F9F9;
-	color: #353535;
-}
-
-footer.spudmart-footer h5 {
-	color: black;
-}
-
-footer.spudmart-footer #sub-footer span {
-	color: #5D5D5D;
-}
-
-footer.spudmart-footer ul.link-list li,
-footer.spudmart-footer ul.link-list li a {
-	color: black;
-}
-
 /* Pages :: Home (splash) */
 
 #spudmart-home .callaction {
@@ -4193,4 +4176,80 @@ footer.spudmart-footer ul.link-list li a {
 
 #spudmart-home .callaction .container .row {
 	margin-bottom: 0;
+}
+
+/* Pages :: Offer */
+.offer-widget ul.folio-detail.offer-details li {
+	color: red;
+}
+
+.redemption-widget p {
+	color: red;
+}
+
+.offer-presentation .offer-header .sponsor-icon-container {
+	width: 42px;
+}
+
+.offer-presentation .offer-header .sponsor-icon-container img {
+	border-color: #C9D6E5;
+	border-radius: 120px;
+	border-width: 2px;
+	border-style: solid;
+}
+
+.offer-presentation .offer-header .offer-headline {
+	margin-left: 100px;
+}
+
+.offer-presentation .offer-header .offer-headline span {
+	color: #FF6B00;
+	font-size: 28px;
+	margin-bottom: 20px;
+	font-family: 'Open Sans', sans-serif;
+	font-weight: bolder;
+	line-height: 1.5em;
+	margin-top: 0;
+}
+
+.offer-presentation .offer-actions {
+	height: 60px;
+	padding-top: 10px;
+	background-color: #E9E9E9;
+	border-radius: 10px;
+}
+
+.offer-presentation .offer-actions .button {	
+	font-size: 1.5em;
+	background-color: #FF6B00;
+	color: #FF6B00;
+	padding: 15px 5px;
+	border-radius: 10px;
+	text-align: center;
+	float: left;
+	min-height: 1px;
+	margin-left: 15px;
+	width: 35px;
+	cursor: pointer;
+}
+
+.offer-presentation .offer-actions .padding-side5 .button:first-child {
+	margin-left: 0;
+}
+
+.offer-presentation .offer-actions .button i {
+	color: white;
+	margin-right: 0;
+}
+
+.offer-presentation .offer-description-container {
+	margin-top: 10px;
+}
+
+.offer-presentation .offer-description-container .preview-image img {
+	width: 300px;
+}
+
+.offer-presentation .offer-description {
+	width: 400px;
 }
