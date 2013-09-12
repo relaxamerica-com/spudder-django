@@ -2904,15 +2904,18 @@ input[type="checkbox"]+.lbl,input[type="radio"]+.lbl {
     display:block;
 }
 
-#fan-public-view #date-slider {
+#fan-public-view #date-slider,
+#league-or-tournament #date-slider {
 	margin-top: 40px;
 }
 
-#fan-public-view .ui-slider-range {
+#fan-public-view .ui-slider-range,
+#league-or-tournament .ui-slider-range {
 	background-color: #8bbc67;
 }
 
-#fan-public-view .ui-slider-handle:before {
+#fan-public-view .ui-slider-handle:before,
+#league-or-tournament .ui-slider-handle:before {
 	display: inline-block;
 	content: "|||";
 	font-size: 7px;
@@ -2926,11 +2929,13 @@ input[type="checkbox"]+.lbl,input[type="radio"]+.lbl {
 	line-height: 14px;
 }
 
-#fan-public-view .ui-slider {
+#fan-public-view .ui-slider,
+#league-or-tournament .ui-slider {
 	margin-top: 5px;
 }
 
-#fan-public-view .ui-slider-handle {
+#fan-public-view .ui-slider-handle,
+#league-or-tournament .ui-slider-handle {
 	border-radius: 0;
 	background-color: #f5f5f5;
 	border: 1px solid;
@@ -4141,6 +4146,22 @@ dialogs {
 
 .spud-container .span9.small.text-center {
 	margin-top: 15px;
+}
+
+.spud-container .row-fluid  div.button.grey {
+	background-color: #A9A9A9;
+}
+
+.spud-container .row-fluid  div.button.green {
+	background-color: #46B946;
+}
+
+.spud-container .row-fluid  div.button.red {
+	background-color: #FF3333;
+}
+
+.spud-container .row-fluid  div.button.yellow {
+	background-color: #FF3333;
 }
 
 .small {
