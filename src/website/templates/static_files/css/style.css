@@ -4184,12 +4184,26 @@ dialogs {
 }
 
 /* Pages :: Offer */
+#spudmart-offer #content {
+	padding: 0;
+}
+
 .offer-widget ul.folio-detail.offer-details li {
 	color: red;
 }
 
 .redemption-widget p {
 	color: red;
+}
+
+.offer-presentation .offer-header .product-icon {
+	transform:scale(2.2,2.2);
+    -ms-transform:scale(2.2,2.2); /* IE 9 */
+    -moz-transform:scale(2.2,2.2); /* Firefox */
+    -webkit-transform:scale(2.2,2.2); /* Safari and Chrome */
+    -o-transform:scale(2.2,2.2); /* Opera */
+	width: 42px;
+	padding-top: 9px;
 }
 
 .offer-presentation .offer-header .sponsor-icon-container {
