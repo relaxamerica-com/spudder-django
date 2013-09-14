@@ -1048,6 +1048,10 @@ footer ul.link-list li a{
 	color:#fff;
 }
 
+footer .spud-video {
+	margin-left: 35px;
+}
+
 /* --- Heading style --- */
 
 h4.heading {
@@ -1907,6 +1911,7 @@ ul.social-network li {
 	padding:0;
 	padding-top:30px;
 	margin:20px 0 0 0;
+	border-top: 1px solid #fff;
 }
 
 #sub-footer p{

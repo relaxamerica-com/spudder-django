@@ -32,16 +32,20 @@
 						<h3>Name {{ lor.name }}</h3>
 					</div>
 					<div class="span2">
+						<!-- 
 						<div class="btn btn-primary">Follow</div>
 						<div class="btn btn-primary"><i class="icon-calendar"></i></div>
 						<div class="clear-fix follows">
 							2200 Follows
 						</div>
+						 -->
 					</div>
 					<div class="span3">
 						<div class="btn btn-primary">Teams</div>
 						<div class="btn btn-primary">Schedule</div>
+						<!-- 
 						<div class="btn btn-primary">Our Store</div>
+						 -->
 					</div>
 					<div class="span4">
 						<ul class="breadcrumb path">
@@ -60,12 +64,11 @@
 	</div>
 	<div class="row-fluid nomargin">
 		<div class="span12">
-			{% display_items 'sponsors-items' 'Sponsors' %}
+			{% display_items 'sponsors-items' 'Sponsors' 'True' %}
 		</div>
 	</div>
 	<div class="row-fluid">
 		<div class="span6">
-			<div class="btn btn-success btn-large" id="sponsor-us-btn">Sponsor Us</div>
 			<h4>
 				Filter the Spuds
 			</h4>
