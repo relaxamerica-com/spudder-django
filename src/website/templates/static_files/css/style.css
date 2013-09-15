@@ -4248,8 +4248,22 @@ dialogs {
 	float: left;
 	min-height: 1px;
 	margin-left: 15px;
-	width: 35px;
 	cursor: pointer;
+}
+
+.offer-presentation .offer-actions .button.green {
+	background-color: #46B946;
+	color: #FFF!important;
+}
+
+.offer-presentation .offer-actions .button.red {
+	background-color: #F33;
+	color: #FFF!important;
+}
+
+.offer-presentation .offer-actions .button.grey {
+	background-color: #A9A9A9;
+	color: #FFF!important;
 }
 
 .offer-presentation .offer-actions .padding-side5 .button:first-child {
