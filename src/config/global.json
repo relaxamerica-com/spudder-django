@@ -1,0 +1,14 @@
+{
+    "applications": {
+        "Spudder": {
+            "applicationId": "RwjN7ubrqVZSXcwd2AWaQtov6Mgsi7hAXZ510xTR", 
+            "masterKey": "cLJqpiXlWstUaXqbj9V2TiXTFv3c6nUZ0XcLfZzf"
+        }, 
+        "_default": {
+            "link": "Spudder"
+        }
+    }, 
+    "global": {
+        "parseVersion": "1.2.12"
+    }
+}
