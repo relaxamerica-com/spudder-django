@@ -1,18 +1,22 @@
 
 // These two lines are required to initialize Express in Cloud Code.
 var express = require('express');
-
+var parseExpressHttpsRedirect = require('parse-express-https-redirect');
+var parseExpressCookieSession = require('parse-express-cookie-session');
 var app = express();
 
 // Global app configuration section
+
 app.set('views', 'cloud/views');  // Specify the folder to find templates
 app.set('view engine', 'ejs');    // Set the template engine
 app.use(parseExpressHttpsRedirect());
 app.use(express.bodyParser());    // Middleware for reading request body
-app.use(express.cookieParser('kgebertCookie'));
+app.use(express.cookieParser('SpudderLoginCookie'));
 app.use(parseExpressCookieSession({ cookie: { maxAge: 3600000 } }));
 
-var keys = require('cloud/keys.js')('lukasz');
+var keys = require('cloud/keys.js')('karol');
+
+// middleware allowing to use user in template
 
 app.use(function(req, res, next){
 	Parse.initialize(keys.getApplicationID(), keys.getJavaScriptKey());
@@ -29,28 +33,15 @@ app.use(function(req, res, next){
 });
 
 // modules
+
+var home = require('cloud/home/actions');
+app.get('/', home.home);
+
 var accounts = require('cloud/accounts/actions')(keys);
-
-// This is an example of hooking up a request handler with a specific request
-// path and HTTP verb using the Express routing API.
-app.get('/', function(req, res) {
-	res.render('home/home');
-});
-
 app.post('/accounts/login', accounts.login);
+app.post('/accounts/register', accounts.register);
 app.get('/accounts/logout', accounts.logout);
 
-// // Example reading from the request query string of an HTTP get request.
-// app.get('/test', function(req, res) {
-//   // GET http://example.parseapp.com/test?message=hello
-//   res.send(req.query.message);
-// });
 
-// // Example reading from the request body of an HTTP post request.
-// app.post('/test', function(req, res) {
-//   // POST http://example.parseapp.com/test (with request body "message=hello")
-//   res.send(req.body.message);
-// });
 
-// Attach the Express app to Cloud Code.
 app.listen();

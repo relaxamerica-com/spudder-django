@@ -15,5 +15,5 @@ module.exports = function (version) {
         getApplicationID: function () {
             return applicationIds[versions[version]];
         }
-    }
+    };
 };
