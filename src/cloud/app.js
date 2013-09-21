@@ -43,6 +43,7 @@ app.post('/accounts/login', accounts.login);
 app.post('/accounts/register', accounts.register);
 app.get('/accounts/logout', accounts.logout);
 
-
+var tournament = require('cloud/tournament/actions');
+app.get('/tournament', tournament.view);
 
 app.listen();
