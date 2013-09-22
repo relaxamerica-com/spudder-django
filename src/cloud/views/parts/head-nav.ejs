@@ -1,0 +1,24 @@
+<div class="headnav span4">
+    <ul>
+        <% if (user) { %>
+        <li><a href="/profile" data-toggle="modal"><i class="icon-user"></i><%= user.getUsername() %></a></li>
+        <li><a href="/accounts/logout" data-toggle="modal">Sign out</a></li>
+        <% } else { %>
+        <li><a href="#mySignup" data-toggle="modal"><i class="icon-user"></i> Sign up</a></li>
+        <li><a href="#mySignin" data-toggle="modal">Sign in</a></li>
+        <% } %>
+    </ul>
+</div>
+
+<div class="hidden-top span8">
+    <div class="row-fluid" id="download-buttons">
+        <a href="" class="span3 btn btn-primary btn-large">App Store</a>
+        <a href="" class="span3 btn btn-primary btn-large">Google Play</a>
+        <a href="" class="span3 btn btn-primary btn-large">Amazon Apps</a>
+        <a href="" class="span3 btn btn-primary btn-large">Direct Download</a>
+    </div>
+</div>
+
+<div id="header-hidden-link">
+    <a href="#" class="toggle-link" title="Click me you'll get a surprise" data-target=".hidden-top"><i></i>Open</a>
+</div>
