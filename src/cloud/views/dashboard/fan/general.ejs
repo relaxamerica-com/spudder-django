@@ -1,0 +1,169 @@
+<% include ../parts/head %>
+
+<link rel="stylesheet" href="/media/dashboard/css/chosen.css" />
+
+<% include ../parts/bodyStart %>
+
+<div id="fans" class="">
+	<div class="row-fluid">
+		<div class="span12">
+			<div class="tabbable">
+				<ul id="myTab" class="nav nav-tabs">
+					<li class="active">
+						<a href="#welcome" data-toggle="tab">
+							Welcome
+						</a>
+					</li>
+	
+					<li>
+						<a href="#favorites" data-toggle="tab">
+							Favorites
+						</a>
+					</li>
+	
+					<li>
+						<a href="#spuds-toggle" data-toggle="tab">
+							SPUDS
+						</a>
+					</li>
+					
+					<li>
+						<a href="#basic_info" data-toggle="tab">
+							Basic Info
+						</a>
+					</li>
+					
+					<li>
+						<a href="#settings" data-toggle="tab">
+							Settings
+						</a>
+					</li>
+					<li>
+						<a href="#password" data-toggle="tab">
+							Password
+						</a>
+					</li>
+				</ul>
+	
+				<div class="tab-content clearfix">
+					<div class="tab-pane in active" id="welcome">
+						<iframe width="560" height="315" src="//www.youtube.com/embed/N3iLMny-M0o" frameborder="0" allowfullscreen></iframe>
+					</div>
+	
+					<div class="tab-pane" id="favorites">
+						<% include parts/favorites %>
+					</div>
+	
+					<div class="tab-pane" id="spuds-toggle">
+						<% include parts/createSpuds %>
+					</div>
+	
+					<div class="tab-pane" id="basic_info">
+						<% include parts/basicInfo %>
+					</div>
+					
+					<div class="tab-pane" id="settings">
+						<% include parts/settings %>
+					</div>
+					<div class="tab-pane" id="password">
+						<% include parts/editPassword %>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<% include ../parts/scripts %>
+
+<script src="/media/dashboard/js/jquery-ui-1.10.3.custom.min.js"></script>
+<script src="/media/dashboard/js/chosen.jquery.min.js"></script>
+<script src="/media/dashboard/js/bootstrap-tag.min.js"></script>
+<script src="/media/dashboard/js/tab-control.js"></script>
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		// TODO: remove after creating other example
+		$(".chzn-select").chosen({ 'width' : '220px' });
+		
+		var playerTagsInput = $('#player-tags-input');
+		playerTagsInput.tag({ placeholder : playerTagsInput.attr('placeholder') });
+		
+		$("div.bar div.button").tooltip({
+			hide: {
+				effect: "explode",
+				delay: 2500
+			},
+			show: {
+				effect: "slideDown",
+				delay: 2500
+			}
+		});
+		
+		$('#id-input-file-2').ace_file_input({
+			no_file:'No File ...',
+			btn_choose:'Choose',
+			btn_change:'Change',
+			droppable:false,
+			onchange:null,
+			thumbnail:false //| true | large
+			//whitelist:'gif|png|jpg|jpeg'
+			//blacklist:'exe|php'
+			//onchange:''
+			//
+		});
+		
+		$('#images-input-file').ace_file_input({
+			style:'well',
+			btn_choose:'Drop files here or click to choose',
+			btn_change:null,
+			no_icon:'icon-cloud-upload',
+			droppable:true,
+			thumbnail:'small'
+			//,icon_remove:null//set null, to hide remove/reset button
+			/**,before_change:function(files, dropped) {
+				//Check an example below
+				//or examples/file-upload.html
+				return true;
+			}*/
+			/**,before_remove : function() {
+				return true;
+			}*/
+			,
+			preview_error : function(filename, error_code) {
+				//name of the file that failed
+				//error_code values
+				//1 = 'FILE_LOAD_FAILED',
+				//2 = 'IMAGE_LOAD_FAILED',
+				//3 = 'THUMBNAIL_FAILED'
+				//alert(error_code);
+			}
+		});
+		
+		$('#create-spuds-buttons > div').modal({ 'show' : false });
+		
+		$('#create-spuds-buttons > div').click(function() {
+			var modalID = $(this).attr('modal-id');
+			var modal = $('' + modalID);
+			modal.appendTo($('body'));
+			modal.modal('show');
+		});
+		
+		$('.create-spuds-modals .modal .next').on('click', function() {
+			$('.modal').modal('hide');
+			var modal = $('#tag-modal');
+			modal.appendTo($('body'));
+			modal.modal();
+		});
+		
+		$('.open-modal').on('click', function() {
+			var modalID = $(this).attr('modal-id');
+			$('.modal').modal('hide');
+			var modal = $('' + modalID);
+			modal.appendTo($('body'));
+			modal.modal();
+		});
+	});
+</script>
+
+<% include ../parts/foot %>

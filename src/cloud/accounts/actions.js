@@ -5,7 +5,7 @@ module.exports = function (keys) {
         login: function(req, res) {
             Parse.User.logIn(req.body.email, req.body.password, {
                 success: function(user) {
-                    res.redirect('/');
+                    res.redirect('/dashboard');
                 },
                 error: function(user, error) {
                     console.log(error);

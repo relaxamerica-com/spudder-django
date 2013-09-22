@@ -96,4 +96,30 @@
 					</div>
 				</div>
 			</div>
+			
+			<div id="mySignupComplete" class="modal styled hide fade" tabindex="-1" role="dialog" aria-labelledby="mySignupModalLabel" aria-hidden="true">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+					<h4 id="mySignupModalLabel">Sign Up <strong>Complete</strong></h4>
+				</div>
+				<div class="modal-body">
+					Registration was successful. Activation link has been sent to your e-mail address.
+				</div>
+			</div>
+			
+			<div id="activationComplete" class="modal styled hide fade" tabindex="-1" role="dialog" aria-labelledby="mySignupModalLabel" aria-hidden="true">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+					<h4 id="mySignupModalLabel">Activation <strong>Complete</strong></h4>
+				</div>
+				<div class="modal-body">
+					Your account has been succesfuly activated. You can <b><a data-toggle="modal" href="#mySignin" id="mySignin-after-activation">login</a></b> now.
+				</div>
+			</div>
+
+			<% include ../accounts/signUp %>
+			
+			<% include ../accounts/signIn %>
+			
+			<% include ../accounts/resetPassword %>
 		</header>

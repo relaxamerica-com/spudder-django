@@ -179,8 +179,8 @@
 }
 
 [id^="tag-modal"] {
-	width: 760px;
-	margin-left: -380px;
+	width: 780px;
+	margin-left: -390px;
 }
 
 [id^="tag-modal"] .row-fluid.bar,

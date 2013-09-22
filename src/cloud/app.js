@@ -33,7 +33,7 @@ app.use(function(req, res, next){
 	
 });
 
-// modules
+// modules 
 
 var home = require('cloud/home/actions');
 app.get('/', home.home);
@@ -45,5 +45,9 @@ app.get('/accounts/logout', accounts.logout);
 
 var tournament = require('cloud/tournament/actions');
 app.get('/tournament', tournament.view);
+
+var dashboard = require('cloud/dashboard/actions');
+app.get('/dashboard', dashboard.spuds);
+app.get('/dashboard/general', dashboard.general);
 
 app.listen();
