@@ -127,15 +127,18 @@ img.img-polaroid {
 
 /* --- hidden top area --- */
 
- .hidden-top {
-   height: 0;
-   color:#fff;
-  overflow: hidden;
-  -webkit-transition: all 0.4s ease-out;
-  -moz-transition: all 0.4s ease-out;
-  -o-transition: all 0.4s ease-out;
-  transition: all 0.4s ease-out;
+.hidden-top {
+    height: 0;
+    color: #fff;
+    overflow: hidden;
+    -webkit-transition: all 0.4s ease-out;
+    -moz-transition: all 0.4s ease-out;
+    -o-transition: all 0.4s ease-out;
+    transition: all 0.4s ease-out;
+}
 
+.hidden-top.download-buttons-wrapper {
+    background-color: #ffffff;
 }
 
 .hidden-top  ul {
@@ -149,17 +152,40 @@ img.img-polaroid {
 	display:inline;
 	margin:0 20px 0 0;
 }
- .hidden-top.toggle-link-open {
+.hidden-top.toggle-link-open {
   padding: 15px;
 }
+
+.hidden-top.download-buttons-wrapper.toggle-link-open {
+    padding-top: 0;
+}
+
 .hidden-top a {
   color: #ffffff;
+}
+
+.hidden-top.download-buttons-wrapper a {
+    height: 70px;
+    background-color: inherit;
+    border-width: 1px;
+    border-top-width: 0;
+    padding: 5px 12px;
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+
+    -webkit-box-shadow: 5px 5px 5px rgba(70, 70, 70, 0.6);
+    -moz-box-shadow:    5px 5px 5px rgba(70, 70, 70, 0.6);
+    box-shadow:         5px 5px 5px rgba(70, 70, 70, 0.6);
+}
+
+.hidden-top.download-buttons-wrapper i {
+    margin-top: 3px !important;
 }
 
 #header-hidden-link {
   position: absolute;
   right: 60px;
-  top: 0px;
+  top: 0;
   
 }
 #header-hidden-link a.toggle-link,
