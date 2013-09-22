@@ -223,7 +223,9 @@
 								<img class="nav-user-photo" src="/media/dashboard/avatars/user.jpg" alt="{{ request.user.id }}'s Photo" />
 								<span class="user-info">
 									<small>Welcome,</small>
-									#{{ request.user.id }}
+									<% if (user) { %>
+										#<%= user.get('userId') %>
+									<% } %>
 								</span>
 
 								<i class="icon-caret-down"></i>
