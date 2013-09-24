@@ -178,6 +178,10 @@ img.img-polaroid {
     box-shadow:         5px 5px 5px rgba(70, 70, 70, 0.6);
 }
 
+.hidden-top.download-buttons-wrapper a.amazon {
+    margin-top: -2px;
+}
+
 .hidden-top.download-buttons-wrapper i {
     margin-top: 3px !important;
 }
