@@ -1,0 +1,30 @@
+<% include ../../dashboard/parts/head %>
+
+<% include ../../dashboard/parts/bodyStart %>
+
+<div id="spuds" class="">
+	<div class="row-fluid">
+		<div class="span12">
+            <p>
+                Please verify donation information. If they're correct press "Proceed with donation".
+            </p>
+            <form>
+                <label>
+                    Team: <%= teamName %>
+                </label>
+                <label>
+                    Donation amount: <%= amount %> $
+                </label>
+            </form>
+            <p>
+                <a href="<%= cbui %>">
+                    Proceed with donation
+                </a> (You will be redirected to Amazon Marketplace to verify your account).
+            </p>
+		</div>
+	</div>
+</div>
+
+<% include ../../dashboard/parts/scripts %>
+	<script src="/media/dashboard/js/tab-control.js"></script>
+<% include ../../dashboard/parts/foot %>

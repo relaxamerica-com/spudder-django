@@ -1,0 +1,64 @@
+<% include ../../dashboard/parts/head %>
+
+<% include ../../dashboard/parts/bodyStart %>
+
+<div id="spuds" class="">
+	<div class="row-fluid">
+		<div class="span12">
+            <p>
+                Total count of donations: <%= count %>
+            </p>
+            <p>
+                Total amount of donations: <%= totalAmount %> $
+            </p>
+            <% if (count) { %>
+            <table class="table table-hover table-condensed">
+                <thead>
+                    <tr>
+                        <td>#</td>
+                        <td>Team name</td>
+                        <td>Amount</td>
+                        <td>Transaction token</td>
+                    </tr>
+                </thead>
+                <tbody>
+                <% donations.forEach(function(donation){ %>
+                    <tr>
+                        <td><%= donation.rank %></td>
+                        <td><%= donation.teamName %></td>
+                        <td><%= donation.amount %> $</td>
+                        <td><%= donation.tokenID %></td>
+                    </tr>
+                <% }) %>
+                </tbody>
+            </table>
+            <% } %>
+		</div>
+	</div>
+</div>
+
+<% include ../../dashboard/parts/scripts %>
+
+	<script src="/media/dashboard/js/tab-control.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            window.validate = function () {
+                if ($("select option:selected").text() == "---") return false;
+
+                var amount = $("input[name='amount']").val(),
+                    parsedAmount = parseFloat(amount);
+
+                return !(!amount || isNaN(parsedAmount) || parsedAmount < 1);
+            };
+
+            $('select').change(function (event) {
+                var $selected = $("select option:selected"),
+                    $teamName = $("input[name='teamName']");
+
+                $teamName.val($selected.data('name'));
+            });
+        });
+    </script>
+	
+<% include ../../dashboard/parts/foot %>
