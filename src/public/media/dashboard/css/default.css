@@ -270,3 +270,10 @@
 	background-color: #FF3333;
 	color: #fff!important;
 }
+
+#mySignup .loading,
+#mySignin .loading {
+	display: inline-block;
+	margin-left: 10px;
+	visibility: hidden;
+}

@@ -6,6 +6,7 @@ module.exports = function (app, express) {
     app.set('view engine', 'ejs');    // Set the template engine
     app.use(parseExpressHttpsRedirect());
     app.use(express.bodyParser());    // Middleware for reading request body
-    app.use(express.cookieParser('SpudderCookieLogin'));
+    app.use(express.cookieParser('SpudderCookies'));
+    app.use(express.cookieSession({ secret: 'SpudderCookies' }));
     app.use(parseExpressCookieSession({ cookie: { maxAge: 3600000 } }));
 };
