@@ -1,0 +1,40 @@
+<% include ../parts/head %>
+
+<link rel="stylesheet" href="/media/dashboard/css/chosen.css" />
+
+<% include ../parts/bodyStart %>
+
+<div id="teams-create">
+    <p class="head">
+        <i class="icon-group"></i> Teams
+    </p>
+
+    <% if (list.length) { %>
+    <table class="table table-hovered">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Location</th>
+                <th>Contact Details</th>
+                <th>Profile</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        <% list.forEach(function(team) { %>
+            <tr>
+                <td><%= team.get('name') %></td>
+                <td><%= team.get('location') %></td>
+                <td><%= team.get('contact') %></td>
+                <td><%= team.get('profile') %></td>
+                <td><a class="btn btn-mini btn-danger" href="/dashboard/teams/remove/<%= team.id %>">Remove</a></td>
+            </tr>
+        <% }) %>
+        </tbody>
+    </table>
+    <% } %>
+</div>
+
+<% include ../parts/scripts %>
+
+<% include ../parts/foot %>

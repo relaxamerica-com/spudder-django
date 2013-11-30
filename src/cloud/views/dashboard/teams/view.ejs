@@ -1,0 +1,57 @@
+<% include ../parts/head %>
+
+<link rel="stylesheet" href="/media/dashboard/css/chosen.css" />
+
+<% include ../parts/bodyStart %>
+
+<% if (found) { %>
+<div id="teams-create">
+    <p class="head">
+        <i class="icon-group"></i> <%= team.name %>
+    </p>
+    <p class="location"><%= team.location %></p>
+
+    <h3>Update this Team:</h3>
+
+    <form action="/dashboard/teams/update" method="post" id="create-team-form">
+        <dl class="dl-horizontal">
+            <dt>Team Name:</dt>
+            <dd><input name="name" value="<%= team.name %>"/></dd>
+            <dt>Team Location:</dt>
+            <dd><input name="location" value="<%= team.location %>"/></dd>
+            <dt>Team Contact Details:</dt>
+            <dd><input name="contact-details" value="<%= team.details %>"/></dd>
+            <dt>Team Profile:</dt>
+            <dd><textarea name="profile" rows="2"><%= team.profile %></textarea></dd>
+        </dl>
+
+        <input type="hidden" name="teamID" value="<%= team.id %>" />
+
+        <button class="btn btn-danger" type="submit">Save</button>
+    </form>
+</div>
+<% } else { %>
+<p>Team with provided ID not found!</p>
+<% } %>
+
+<% include ../parts/scripts %>
+
+<% if (found) { %>
+<script src="/media/dashboard/js/jquery.validate.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#create-team-form').validate({
+            rules: {
+                name: "required",
+                location: "required"
+            },
+            messages: {
+                name: "A team name is required",
+                location: "A team location is required"
+            }
+        });
+    });
+</script>
+<% } %>
+
+<% include ../parts/foot %>
