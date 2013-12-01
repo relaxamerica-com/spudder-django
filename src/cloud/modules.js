@@ -34,12 +34,12 @@ module.exports = function (app, keys) {
     app.get('/dashboard/donations', loginRequired, dashboard.list_donations);
 
     var teams = require('cloud/dashboard/teams')(keys);
-    app.get('/dashboard/teams', teams.list.get);
-    app.get('/dashboard/teams/create', teams.create.get);
-    app.post('/dashboard/teams/create', teams.create.post);
-    app.get('/dashboard/teams/view/:id', teams.view.get);
-    app.post('/dashboard/teams/update', teams.update.post);
-    app.get('/dashboard/teams/remove/:id', teams.remove.get);
+    app.get('/dashboard/teams', loginRequired, teams.list.get);
+    app.get('/dashboard/teams/create', loginRequired, teams.create.get);
+    app.post('/dashboard/teams/create', loginRequired, teams.create.post);
+    app.get('/dashboard/teams/view/:id', loginRequired, teams.view.get);
+    app.post('/dashboard/teams/update', loginRequired, teams.update.post);
+    app.get('/dashboard/teams/remove/:id', loginRequired, teams.remove.get);
 
     var spudmart = require('cloud/spudmart/actions');
     app.get('/spudmart', loginRequired, spudmart.view);
