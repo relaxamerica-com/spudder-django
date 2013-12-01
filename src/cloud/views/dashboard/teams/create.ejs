@@ -1,0 +1,46 @@
+<% include ../parts/head %>
+
+<link rel="stylesheet" href="/media/dashboard/css/chosen.css" />
+
+<% include ../parts/bodyStart %>
+
+<div id="teams-create">
+    <p class="head">
+        <i class="icon-group"></i> Team details:
+    </p>
+
+    <form action="/dashboard/teams/create" method="post" id="create-team-form">
+        <dl class="dl-horizontal">
+            <dt>Team Name:</dt>
+            <dd><input name="name"/></dd>
+            <dt>Team Location:</dt>
+            <dd><input name="location"/></dd>
+            <dt>Team Contact Details:</dt>
+            <dd><input name="contact-details"/></dd>
+            <dt>Team Profile:</dt>
+            <dd><textarea name="profile" rows="2"></textarea></dd>
+        </dl>
+
+        <button class="btn btn-danger" type="submit">Save</button>
+    </form>
+</div>
+
+<% include ../parts/scripts %>
+
+<script src="/media/dashboard/js/jquery.validate.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $('#create-team-form').validate({
+            rules: {
+                name: "required",
+                location: "required"
+            },
+            messages: {
+                name: "A team name is required",
+                location: "A team location is required"
+            }
+        });
+    });
+</script>
+<% include ../parts/foot %>
