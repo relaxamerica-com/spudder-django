@@ -32,11 +32,9 @@
 
 <script type="text/javascript">
 	$(document).ready(function() {
-		
-		$('#mySignin-after-activation').click(function() {
-			$('#activationComplete').modal('hide');
-			$('#mySignupComplete').modal('hide');
-		});
+		if (document.location.hash == '#mySignin') {
+			$('#mySignin').modal('show');
+		}
 		
 		$('#mySignin form').submit(function() {
 			var loading = $(this).find('.loading');
