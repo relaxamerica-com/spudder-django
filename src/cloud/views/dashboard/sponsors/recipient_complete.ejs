@@ -5,20 +5,24 @@
 <div id="spuds" class="">
 	<div class="row-fluid">
 		<div class="span12">
+            <% if (isError) { %>
             <p>
-                Your registration process is almost complete. Please enter your team name and press "Save".
+                Problem with registration!
             </p>
-            <form action="/dashboard/recipient/save" method="post" onsubmit="return validate();">
-                <label>
-                    Team name
-                    <input name="name" placeholder="Team name"/>
-                </label>
-                <input type="hidden" name="tokenID" value="<%= tokenID %>"/>
-                <input type="hidden" name="refundTokenID" value="<%= refundTokenID %>"/>
-                <input type="hidden" name="callerReference" value="<%= callerReference %>"/>
-                <input type="hidden" name="signature" value="<%= signature %>"/>
-                <button type="submit" class="btn btn-success">Save</button>
-            </form>
+            <p>
+                <%= error %>
+            </p>
+            <% } else { %>
+            <p>
+                Registration complete!
+            </p>
+            <p>
+                Thank you for your patience!
+            </p>
+            <p>
+                Now you can create Sponsorship Offers or register other team. To do either one please go to <a href="/dashboard/teams">you teams list</a>.
+            </p>
+            <% } %>
 		</div>
 	</div>
 </div>
@@ -26,13 +30,5 @@
 <% include ../../dashboard/parts/scripts %>
 
 	<script src="/media/dashboard/js/tab-control.js"></script>
-
-    <script type="text/javascript">
-        $(document).ready(function () {
-            function validate () {
-                return $("input[name='amount']").val() != "";
-            }
-        });
-    </script>
 	
 <% include ../../dashboard/parts/foot %>

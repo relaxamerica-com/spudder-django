@@ -19,60 +19,54 @@ module.exports = function (keys) {
 
         recipient: function (req, res) {
             var amazonFPS = require('cloud/amazon/fps')(keys),
+                teamID = req.params.teamID,
                 params = {
                     'pipelineName': 'Recipient',
                     'recipientPaysFee': 'True',
-                    'returnURL': 'https://' + keys.getAppName() + '.parseapp.com/dashboard/recipient/complete'
+                    'returnURL': 'https://' + keys.getAppName() + '.parseapp.com/dashboard/recipient/' + teamID + '/complete'
             };
 
             res.render('dashboard/sponsors/recipient', {
-                'breadcrumbs' : ['Sponsors', 'Became a recipient'],
+                'breadcrumbs' : ['Teams', 'Registering as Recipient'],
                 'cbui': amazonFPS.getCBUI(params)
             });
         },
 
         recipient_complete: function (req, res) {
-            var query = req.query;
+            var tokenID = req.query.tokenID,
+                refundTokenID = req.query.refundTokenID,
+                signature = req.query.signature,
+                callerReference = req.query.callerReference,
+                teamID = req.params.teamID;
 
-            res.render('dashboard/sponsors/recipient_complete', {
-                'breadcrumbs' : ['Sponsors', 'Saving team in database'],
-                'tokenID': query.tokenID,
-                'refundTokenID': query.refundTokenID,
-                'callerReference': query.callerReference,
-                'signature': query.signature
-            });
-        },
+            var Team = Parse.Object.extend("Team"),
+                query = new Parse.Query(Team);
 
-        recipient_save: function (req, res) {
-            var tokenID = req.body.tokenID,
-                refundTokenID = req.body.refundTokenID,
-                signature = req.body.signature,
-                callerReference = req.body.callerReference,
-                teamName = req.body.name;
+            query.get(teamID).then(function (team) {
+                var Recipient = Parse.Object.extend('Recipient'),
+                    recipient = new Recipient();
 
-            var Recipient = Parse.Object.extend('Recipient'),
-                recipient = new Recipient();
+                recipient.set('tokenID', tokenID);
+                recipient.set('refundTokenID', refundTokenID);
+                recipient.set('callerReference', callerReference);
+                recipient.set('signature', signature);
+                recipient.set('team', team);
 
-            recipient.set('tokenID', tokenID);
-            recipient.set('refundTokenID', refundTokenID);
-            recipient.set('callerReference', callerReference);
-            recipient.set('signature', signature);
-            recipient.set('name', teamName);
-
-            recipient.save(null, {
-                success: function () {
-                    res.render('dashboard/sponsors/recipient_save', {
-                        'breadcrumbs': ['Sponsors', 'Registration complete'],
-                        'isError': false
-                    });
-                },
-                error: function (recipient, error) {
-                    res.render('dashboard/sponsors/recipient_save', {
-                        'breadcrumbs': ['Sponsors', 'Registration complete'],
-                        'isError': true,
-                        'error': error
-                    });
-                }
+                recipient.save(null, {
+                    success: function () {
+                        res.render('dashboard/sponsors/recipient_complete', {
+                            'breadcrumbs': ['Teams', 'Registration complete'],
+                            'isError': false
+                        });
+                    },
+                    error: function (recipient, error) {
+                        res.render('dashboard/sponsors/recipient_complete', {
+                            'breadcrumbs': ['Teams', 'Errors during registration'],
+                            'isError': true,
+                            'error': error
+                        });
+                    }
+                });
             });
         },
 

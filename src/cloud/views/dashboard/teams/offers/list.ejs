@@ -1,12 +1,12 @@
-<% include ../parts/head %>
+<% include ../../parts/head %>
 
 <link rel="stylesheet" href="/media/dashboard/css/chosen.css" />
 
-<% include ../parts/bodyStart %>
+<% include ../../parts/bodyStart %>
 
 <div id="teams-create">
     <p class="head">
-        <i class="icon-group"></i> Teams
+        <i class="icon-group"></i> Sponsorships
     </p>
 
     <% if (list.length) { %>
@@ -18,7 +18,6 @@
                 <th>Contact Details</th>
                 <th>Profile</th>
                 <th>Actions</th>
-                <th>Manage</th>
             </tr>
         </thead>
         <tbody>
@@ -29,14 +28,7 @@
                 <td><%= team.get('contact') %></td>
                 <td><%= team.get('profile') %></td>
                 <td>
-                    <% if (team.get('isRegisteredRecipient')) { %>
                     <a class="btn btn-mini btn-success" href="/dashboard/teams/<%= team.id %>/offers">Sponsorship Offers</a>
-                    <% } else { %>
-                    <a class="btn btn-mini btn-success" href="/dashboard/recipient/<%= team.id %>">Register as Recipient</a>
-                    <% } %>
-                </td>
-                <td>
-                    <a class="btn btn-mini btn-danger" href="/dashboard/teams/view/<%= team.id %>">Edit</a>
                     <a class="btn btn-mini btn-danger" href="/dashboard/teams/remove/<%= team.id %>">Remove</a>
                 </td>
             </tr>
@@ -46,6 +38,6 @@
     <% } %>
 </div>
 
-<% include ../parts/scripts %>
+<% include ../../parts/scripts %>
 
-<% include ../parts/foot %>
+<% include ../../parts/foot %>
