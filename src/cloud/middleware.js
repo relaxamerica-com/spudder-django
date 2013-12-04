@@ -13,4 +13,16 @@ module.exports = function (app, keys) {
             next();
         }
     });
+    
+    app.use(function(req, res, next) {
+    	res.locals.getValueOrEmpty = function(value) {
+    		if (!value) {
+    			return '';
+    		} else {
+    			return value;
+    		}
+    	};
+    	
+		next();
+    });
 };

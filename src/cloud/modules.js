@@ -15,6 +15,7 @@ module.exports = function (app, keys) {
     app.post('/accounts/login', accounts.login);
     app.post('/accounts/register', accounts.register);
     app.get('/accounts/logout', accounts.logout);
+    app.post('/accounts/editProfile', loginRequired, accounts.editProfile);
 
     var tournament = require('cloud/tournament/actions');
     app.get('/tournament', loginRequired, tournament.view);

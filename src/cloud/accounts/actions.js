@@ -61,7 +61,34 @@ module.exports = function (keys) {
         },
         
         editProfile: function(req, res) {
+        	function trim(text) {
+        		return text.replace(/^\s+|\s+$/g, '');
+        	}
         	
+        	var name = req.body.name, freeText = req.body.freeText;
+        	
+        	//if (trim(name).length == 0 || trim(freeText).length == 0)
+            	
+        	var user = Parse.User.current();
+        	user.set('nickname', req.body.nickname);
+	        user.set('name', name);
+	        user.set('lastName', req.body.lastName);
+	        user.set('nameSearch', req.body.name.toLowerCase());
+	        user.set('freeText', freeText);
+	        user.set('email', req.body.email);
+	        user.set('phone', req.body.phone);
+	        user.set('facebook', req.body.facebook);
+	        user.set('googlePlus', req.body.googlePlus);
+	        user.set('twitter', req.body.twitter);
+        	user.set('dob', req.body.dateOfBirth);
+        	
+    		user.set('avatarURL', req.body.avatarId);
+
+    		user.save()
+            .then(function(){
+            	krowdio.krowdioUploadProfilePicture(user, req.body.avatarId);
+                res.redirect('/dashboard/general#basic_info');
+            });
         }
     };
 };

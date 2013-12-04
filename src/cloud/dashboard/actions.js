@@ -12,7 +12,8 @@ module.exports = function (keys) {
             res.render('dashboard/fan/general', {
                 'breadcrumbs' : breadcrumbs,
                 'displayUsers' : require('cloud/commons/displayUsers'),
-                'modalTop' : require('cloud/dashboard/fan/modalTop')
+                'modalTop' : require('cloud/dashboard/fan/modalTop'),
+                'keys' : { 'jsKey' : keys.getJavaScriptKey(), 'appId' : keys.getApplicationID() }
             });
         },
 

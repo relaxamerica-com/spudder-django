@@ -61,18 +61,21 @@ exports.krowdioRegisterEntityAndSave = function (entity) {
 };
 		
 exports.krowdioEnsureOAuthToken = function(entity){
-    if (entity.id == Parse.User.current().id)
+	var self = this;
+    if (entity.id == Parse.User.current().id) {
         return new Parse.Query(Parse.User).get(entity.id)
             .then(function(entity){
-                return _krowdidEnsureOAuthTokenForEntity(entity);
+                return self._krowdidEnsureOAuthTokenForEntity(entity);
             });
-    else
-        return _krowdidEnsureOAuthTokenForEntity(entity);
-
+    }
+    else {
+        return self._krowdidEnsureOAuthTokenForEntity(entity);
+    }
 };
 		
 exports._krowdidEnsureOAuthTokenForEntity = function(entity){
     var expires = entity.get('krowdioAccessTokenExpires');
+    
     if (Math.round(new Date().getTime() / 1000) > (expires + 10)) {
         var promise = new Parse.Promise();
         var postData = {
@@ -80,26 +83,28 @@ exports._krowdidEnsureOAuthTokenForEntity = function(entity){
             email: entity.id + "@spudder.com",
             password: krowdioGlobalPassword
         };
-        $.ajax({ url: 'http://auth.krowd.io/user/login', data: postData, type: 'POST'})
-            .success(function(krowdioData){
-                if ($.type(krowdioData) === "string")
-                    krowdioData = JSON.parse(krowdioData);
-                if (krowdioData.error != null)
-                    promise.reject(krowdioData);
-//                    return Parse.Promise.error(krowdioData);
-                var access_token = krowdioData.access_token;
-//                currentAccessToken = access_token;
-                entity.set('krowdioAccessToken', access_token);
-                entity.set('krowdioAccessTokenExpires', Math.round(new Date().getTime() / 1000) + krowdioData.expires_in);
-                entity.set('krowdioUserId', krowdioData.user._id);
-                promise.resolve(entity);
-                entity.save(null);
-            });
-        return promise;
-    }
+        
+        Parse.Cloud.httpRequest({
+	    	method: 'POST',
+	    	url: 'http://auth.krowd.io/user/login',
+	    	body: postData,
+	        success: function(httpResponse) {
+	        	console.log(httpResponse.code);
+	        	// var krowdioData = JSON.parse(httpResponse.text);
+	            // entity.set('krowdioAccessToken', access_token);
+	            // entity.set('krowdioAccessTokenExpires', Math.round(new Date().getTime() / 1000) + krowdioData.expires_in);
+	            // entity.set('krowdioUserId', krowdioData.user._id);
+	            // promise.resolve(entity);
+	            // entity.save(null);
+	    	},
+	    	error: function(httpResponse) {
+	    		console.log(httpResponse.code);
+	    	}
+	   });
+       return promise;
+	}
     else {
         return Parse.Promise.as(entity);
-//        currentAccessToken = entity.get('krowdioAccessToken');
     }
 };
 		
@@ -158,30 +163,35 @@ exports.krowdioGetPostsForEntity = function(entity){
 };
 		
 exports.krowdioUploadProfilePicture = function(entity, dataUri){
-    var promise = new Parse.Promise();
-    krowdioEnsureOAuthToken(entity)
+    var promise = new Parse.Promise(),
+    	self = this;
+    self.krowdioEnsureOAuthToken(entity)
         .then(function(entity){
             var token = 'Token token="' + entity.get('krowdioAccessToken') + '"';
-            var url = 'http://auth.krowd.io/user/update';
             var postData = {
                 data: dataUri
             };
-            $.ajax({url: url, data: postData, type:'POST', headers: {'Authorization':token }})
-                .done(function(krowdioData){
-                    if ($.type(krowdioData) === "string")
-                        krowdioData = JSON.parse(krowdioData);
-                    if (krowdioData.error != null)
-                        promise.reject(krowdioData);
-                    entity.set('profileImageThumb', krowdioData.profile_image);
-                    entity.save(null, {
-                        success: function(entity){
-                            promise.resolve(entity);
-                        },
-                        error: function(error){
-                            promise.reject(error);
-                        }
-                    });
-                });
+            Parse.Cloud.httpRequest({
+		    	method: 'POST',
+		    	url: 'http://auth.krowd.io/user/update',
+		    	body: postData,
+		    	headers: {'Authorization': token },
+		        success: function(httpResponse) {
+		        	console.log(httpResponse.code);
+		        	// entity.set('profileImageThumb', krowdioData.profile_image);
+                    // entity.save(null, {
+                        // success: function(entity){
+                            // promise.resolve(entity);
+                        // },
+                        // error: function(error){
+                            // promise.reject(error);
+                        // }
+                    // });
+		    	},
+		    	error: function(httpResponse) {
+		    		console.log(httpResponse.code);
+		    	}
+		   });
         });
     return promise;
 };

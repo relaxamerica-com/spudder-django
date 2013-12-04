@@ -53,5 +53,28 @@
 				}, function() {
 					$(this).find('.badge').removeClass('hover');
 				});
+				
+				$('#sidebar-shortcuts-large button').tooltip({
+					hide: {
+						effect: "explode",
+						delay: 2500
+					},
+					show: {
+						effect: "slideDown",
+						delay: 2500
+					}
+				});
+				
+				$('#top-right-icons li.black').tooltip({
+					hide: {
+						effect: "explode",
+						delay: 2500
+					},
+					show: {
+						effect: "slideDown",
+						delay: 2500
+					},
+					placement: 'bottom'
+				});
 			});
 		</script>

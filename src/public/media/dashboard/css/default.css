@@ -304,3 +304,28 @@
 	margin-left: 10px;
 	visibility: hidden;
 }
+
+form .input-required {
+	font-size: 0.8em;
+	color: #C41A08;
+	display: inline-block;
+	margin-bottom: 5px;
+	margin-left: 5px;
+	vertical-align: middle;
+}
+
+.tooltip-inner {
+    white-space:pre-wrap;
+}
+
+#basic_info label {
+	display: inline-block;
+}
+
+#basic_info #avatar-preview {
+	float: right;
+}
+
+#basic_info .ace-file-input label:before {
+	background-color: #F03C02;
+}
