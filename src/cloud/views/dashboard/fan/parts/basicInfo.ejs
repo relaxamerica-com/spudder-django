@@ -3,7 +3,7 @@
 	
 	<div class="row-fluid">
 	
-		<div class="span6">
+		<div class="span2">
 			<div class="control-group">
 				<label class="control-label" for="form-field-username">Username</label>
 				<div class="controls">
@@ -23,17 +23,19 @@
 	
 		<div class="vspace"></div>
 		
-		<div class="span2">
-			<img id="avatar-preview" class="img-polaroid" width="150" height="150" src="<%= getValueOrEmpty(user.get('avatarURL')) %>" />
-		</div>
-		
-		<div class="span4">
+		<div class="span3">
 			<div class="widget-body">
 				<div class="widget-main">
 					<input type="hidden" name="avatarId" id="avatarURL" />
 					<input type="file" id="profile-avatar-input" />
 				</div>
 			</div>
+		</div>
+		
+		<div class="span2">
+			<% if (getValueOrEmpty(user.get('avatarURL')) != '') { %>
+				<img id="avatar-preview" class="img-polaroid" width="150" height="150" src="<%= getValueOrEmpty(user.get('avatarURL')) %>" />
+			<% } %>
 		</div>
 	</div>
 	

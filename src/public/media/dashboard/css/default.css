@@ -322,10 +322,6 @@ form .input-required {
 	display: inline-block;
 }
 
-#basic_info #avatar-preview {
-	float: right;
-}
-
 #basic_info .ace-file-input label:before {
 	background-color: #F03C02;
 }
