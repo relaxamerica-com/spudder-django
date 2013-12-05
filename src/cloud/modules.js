@@ -1,10 +1,10 @@
 function loginRequired(req, res, next) {
-	var currentUser = Parse.User.current();
-	if (!currentUser) {
-		res.redirect('/#mySignin');
-	} else {
-		return next();
-	}
+    var currentUser = Parse.User.current();
+    if (!currentUser) {
+        res.redirect('/#mySignin');
+    } else {
+        return next();
+    }
 }
 
 module.exports = function (app, keys) {
@@ -15,18 +15,16 @@ module.exports = function (app, keys) {
     app.post('/accounts/login', accounts.login);
     app.post('/accounts/register', accounts.register);
     app.get('/accounts/logout', accounts.logout);
-    app.post('/accounts/editProfile', loginRequired, accounts.editProfile);
 
     var tournament = require('cloud/tournament/actions');
-    app.get('/tournament', loginRequired, tournament.view);
+    app.get('/tournament', tournament.view);
 
     var dashboard = require('cloud/dashboard/actions')(keys);
     app.get('/dashboard', loginRequired, dashboard.spuds);
     app.get('/dashboard/general', loginRequired, dashboard.general);
 
-    app.get('/dashboard/recipient', loginRequired, dashboard.recipient);
-    app.post('/dashboard/recipient/save', loginRequired, dashboard.recipient_save);
-    app.get('/dashboard/recipient/complete', loginRequired, dashboard.recipient_complete);
+    app.get('/dashboard/recipient/:teamID', loginRequired, dashboard.recipient);
+    app.get('/dashboard/recipient/:teamID/complete', loginRequired, dashboard.recipient_complete);
 
     app.get('/dashboard/sponsor', loginRequired, dashboard.sponsor);
     app.post('/dashboard/sponsor/confirm', loginRequired, dashboard.sponsor_confirm);
@@ -34,7 +32,7 @@ module.exports = function (app, keys) {
 
     app.get('/dashboard/donations', loginRequired, dashboard.list_donations);
 
-    var teams = require('cloud/dashboard/teams')(keys);
+    var teams = require('cloud/dashboard/teams/teams')(keys);
     app.get('/dashboard/teams', loginRequired, teams.list.get);
     app.get('/dashboard/teams/create', loginRequired, teams.create.get);
     app.post('/dashboard/teams/create', loginRequired, teams.create.post);
@@ -42,7 +40,10 @@ module.exports = function (app, keys) {
     app.post('/dashboard/teams/update', loginRequired, teams.update.post);
     app.get('/dashboard/teams/remove/:id', loginRequired, teams.remove.get);
 
+    var teamOffers = require('cloud/dashboard/teams/offers')(keys);
+    app.get('/dashboard/teams/:id/offers', teamOffers.list.get);
+
     var spudmart = require('cloud/spudmart/actions');
-    app.get('/spudmart', loginRequired, spudmart.view);
-    app.get('/spudmart/offer', loginRequired, spudmart.offer);
+    app.get('/spudmart', spudmart.view);
+    app.get('/spudmart/offer', spudmart.offer);
 };

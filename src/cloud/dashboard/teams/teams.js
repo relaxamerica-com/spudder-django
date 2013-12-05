@@ -113,20 +113,43 @@ module.exports = function (keys) {
 
         list: {
             get: function (req, res) {
+                var _ = require('underscore');
+
                 Parse.User.current().fetch().then(function (user) {
                     var Team = Parse.Object.extend('Team'),
-                        query = new Parse.Query(Team);
+                        query = new Parse.Query(Team),
+                        teamsList = [];
 
                     query.equalTo('admins', user);
 
                     query.find().then(function (list) {
+                        var promise = Parse.Promise.as();
+
+                        _.each(list, function(team) {
+                            var Recipient = Parse.Object.extend('Recipient'),
+                                recipientQuery = new Parse.Query(Recipient);
+
+                            recipientQuery.equalTo('team', team);
+
+                            promise = promise.then(function() {
+                                var findPromise = new Parse.Promise();
+
+                                recipientQuery.find().then(function (results) {
+                                    team.set('isRegisteredRecipient', results.length > 0);
+                                    teamsList.push(team);
+                                    findPromise.resolve();
+                                });
+
+                                return findPromise;
+                            });
+                        });
+
+                        return promise;
+                    }).then(function () {
                         res.render('dashboard/teams/list', {
                             'breadcrumbs' : ['Teams', 'My teams'],
-                            'list': list
+                            'list': teamsList
                         });
-                    },
-                    function (error) {
-                        console.log(error);
                     });
                 });
             }
