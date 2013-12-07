@@ -87,7 +87,7 @@ module.exports = function (keys) {
     		user.save()
             .then(function(){
             	krowdio.krowdioUploadProfilePicture(user, req.body.avatarId);
-                res.redirect('/dashboard/general#basic_info');
+                res.redirect('/dashboard/fans/basicInfo');
             });
         }
     };

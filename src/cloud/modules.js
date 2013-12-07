@@ -15,6 +15,7 @@ module.exports = function (app, keys) {
     app.post('/accounts/login', accounts.login);
     app.post('/accounts/register', accounts.register);
     app.get('/accounts/logout', accounts.logout);
+    app.post('/accounts/editProfile', accounts.editProfile);
 
     var tournament = require('cloud/tournament/actions');
     app.get('/tournament', tournament.view);
@@ -22,6 +23,11 @@ module.exports = function (app, keys) {
     var dashboard = require('cloud/dashboard/actions')(keys);
     app.get('/dashboard', loginRequired, dashboard.spuds);
     app.get('/dashboard/general', loginRequired, dashboard.general);
+    
+    app.get('/dashboard/fans/spuds', loginRequired, dashboard.mySpuds);
+    app.get('/dashboard/fans/favorites', loginRequired, dashboard.myFavorites);
+    app.get('/dashboard/fans/settings', loginRequired, dashboard.settings);
+    app.get('/dashboard/fans/basicInfo', loginRequired, dashboard.basicInfo);
 
     app.get('/dashboard/recipient/:teamID', loginRequired, dashboard.recipient);
     app.get('/dashboard/recipient/:teamID/complete', loginRequired, dashboard.recipient_complete);

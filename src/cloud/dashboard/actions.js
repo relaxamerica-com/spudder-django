@@ -16,6 +16,37 @@ module.exports = function (keys) {
                 'keys' : { 'jsKey' : keys.getJavaScriptKey(), 'appId' : keys.getApplicationID() }
             });
         },
+        
+        mySpuds: function(req, res) {
+        	var breadcrumbs = ['Fans', 'My Spuds'];
+        	res.render('dashboard/fan/mySpuds', {
+                'breadcrumbs' : breadcrumbs,
+                'modalTop' : require('cloud/dashboard/fan/modalTop'),
+            });
+        },
+        
+        myFavorites: function(req, res) {
+        	var breadcrumbs = ['Fans', 'My Favorites'];
+        	res.render('dashboard/fan/myFavorites', {
+                'breadcrumbs' : breadcrumbs,
+                'displayUsers' : require('cloud/commons/displayUsers'),
+            });
+        },
+        
+        basicInfo: function(req, res) {
+        	var breadcrumbs = ['Fans', 'Basic Info'];
+        	res.render('dashboard/fan/basicInfo', {
+                'breadcrumbs' : breadcrumbs,
+                'keys' : { 'jsKey' : keys.getJavaScriptKey(), 'appId' : keys.getApplicationID() }
+            });
+        },
+        
+        settings: function(req, res) {
+        	var breadcrumbs = ['Fans', 'Settings'];
+        	res.render('dashboard/fan/settings', {
+                'breadcrumbs' : breadcrumbs,
+            });
+        },
 
         recipient: function (req, res) {
             var amazonFPS = require('cloud/amazon/fps')(keys),

@@ -1,0 +1,160 @@
+<% include ../parts/head %>
+
+<link rel="stylesheet" href="/media/dashboard/css/chosen.css" />
+<link rel="stylesheet" href="/media/dashboard/css/datepicker.css" />
+
+<% include ../parts/bodyStart %>
+
+<div id="basic_info" class="tab-content clearfix">
+	<form method="POST" action="/accounts/editProfile" id="basicInfoForm">
+		<h4 class="header orange bolder smaller">General</h4>
+		
+		<div class="row-fluid">
+		
+			<div class="span2">
+				<div class="control-group">
+					<label class="control-label" for="form-field-username">Username</label>
+					<div class="controls">
+						<input id="form-field-username" name="nickname" placeholder="Username" value="<%= getValueOrEmpty(user.get('nickname')) %>" type="text">
+					</div>
+				</div>
+		
+				<div class="control-group">
+					<label class="control-label" for="form-field-first">Name</label>
+		
+					<div class="controls">
+						<input class="input-small" name="name" id="form-field-first" placeholder="First Name" value="<%= getValueOrEmpty(user.get('name')) %>" type="text">
+						<input class="input-small" name="lastName" id="form-field-last" placeholder="Last Name" value="<%= getValueOrEmpty(user.get('lastName')) %>" type="text">
+					</div>
+				</div>
+			</div>
+		
+			<div class="vspace"></div>
+			
+			<div class="span3">
+				<div class="widget-body">
+					<div class="widget-main">
+						<input type="hidden" name="avatarId" id="avatarURL" />
+						<input type="file" id="profile-avatar-input" />
+					</div>
+				</div>
+			</div>
+			
+			<div class="span2">
+				<% if (getValueOrEmpty(user.get('avatarURL')) != '') { %>
+					<img id="avatar-preview" class="img-polaroid" width="150" height="150" src="<%= getValueOrEmpty(user.get('avatarURL')) %>" />
+				<% } %>
+			</div>
+		</div>
+		
+		<hr>
+		<div class="control-group">
+			<label class="control-label" for="form-field-date">Birth Date</label>
+		
+			<span class="input-required">*required</span>
+		
+			<div class="controls">
+				<div class="input-append">
+					<input class="input-small date-picker" value="<%= getValueOrEmpty(user.get('dob')) %>" name="dateOfBirth" id="form-field-date" data-date-format="yyyy-mm-dd" placeholder="yyyy-mm-dd" type="text">
+					<span class="add-on">
+						<i class="icon-calendar" title="You don't have to give this but won't be able to claim roles such as players or coaches if you don't."></i>
+					</span>
+				</div>
+			</div>
+		</div>
+		
+		<div class="control-group">
+			<label class="control-label" for="form-field-comment">Say something about yourself</label>
+		
+			<div class="controls">
+				<textarea id="form-field-comment" name="freeText"><%= getValueOrEmpty(user.get('freeText')) %></textarea>
+			</div>
+		</div>
+		
+		<div class="space"></div>
+		<h4 class="header orange bolder smaller">Contact</h4>
+		
+		<div class="control-group">
+			<label class="control-label" for="form-field-email">Email</label>
+			
+			<div class="controls">
+				<span class="input-icon input-icon-right">
+					<input name="email" id="form-field-email" value="<%= user.getEmail() %>" type="email">
+					<i class="icon-envelope"></i>
+				</span>
+			</div>
+		</div>
+		
+		<div class="control-group">
+			<label class="control-label" for="form-field-phone">Phone</label>
+		
+			<div class="controls">
+				<span class="input-icon input-icon-right">
+					<input class="input-medium input-mask-phone" name="phone" id="form-field-phone" value="<%= getValueOrEmpty(user.get('phone')) %>" type="text">
+					<i class="icon-phone icon-flip-horizontal"></i>
+				</span>
+			</div>
+		</div>
+		
+		<div class="space"></div>
+		<h4 class="header orange bolder smaller">Social</h4>
+		
+		<div class="control-group">
+			<label class="control-label" for="form-field-facebook">Facebook</label>
+		
+			<div class="controls">
+				<span class="input-icon">
+					<input name="facebook" value="<%= getValueOrEmpty(user.get('facebook')) %>" id="form-field-facebook" type="text">
+					<i class="icon-facebook"></i>
+				</span>
+			</div>
+		</div>
+		
+		<div class="control-group">
+			<label class="control-label" for="form-field-twitter">Twitter</label>
+		
+			<div class="controls">
+				<span class="input-icon">
+					<input value="<%= getValueOrEmpty(user.get('twitter')) %>" name="twitter" id="form-field-twitter" type="text">
+					<i class="icon-twitter"></i>
+				</span>
+			</div>
+		</div>
+		
+		<div class="control-group">
+			<label class="control-label" for="form-field-gplus">Google+</label>
+		
+			<div class="controls">
+				<span class="input-icon">
+					<input value="<%= getValueOrEmpty(user.get('googlePlus')) %>" name="googlePlus" id="form-field-gplus" type="text">
+					<i class="icon-google-plus"></i>
+				</span>
+			</div>
+		</div>
+		<div>
+			<button type="submit" class="btn btn-orange">
+				<i class="icon-ok bigger-110"></i>
+				Save
+			</button>
+		
+			&nbsp; &nbsp; &nbsp;
+			<button type="reset" class="btn btn-darkgrey">
+				<i class="icon-undo bigger-110"></i>
+				Reset
+			</button>
+		</div>
+	</form>
+</div>
+
+<% include ../parts/scripts %>
+
+<script src="/media/dashboard/js/jquery-ui-1.10.3.custom.min.js"></script>
+<script src="/media/dashboard/js/bootstrap-tag.min.js"></script>
+<script src="/media/dashboard/js/date-time/bootstrap-datepicker.min.js"></script>
+<script src="/media/js/parse.js"></script>
+<script type="text/javascript">
+	Parse.initialize('<%= keys.appId %>', '<%= keys.jsKey %>');
+</script>
+<script src="/media/dashboard/js/general/basicInfo.js"></script>
+
+<% include ../parts/foot %>

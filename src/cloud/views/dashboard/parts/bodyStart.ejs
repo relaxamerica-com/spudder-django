@@ -219,10 +219,12 @@
 
 						<li class="black">
 							<a data-toggle="dropdown" href="#" class="dropdown-toggle btn-orange">
-								<img class="nav-user-photo" src="/media/dashboard/avatars/user.jpg" alt="{{ request.user.id }}'s Photo" />
+								<img class="nav-user-photo" src="/media/dashboard/avatars/user.jpg" alt="<%= getValueOrEmpty(user.get('nickname')) %>'s Photo" />
 								<span class="user-info">
 									<small>Welcome,</small>
-									<% if (user) { %>
+									<% if (getValueOrEmpty(user.get('nickname')) != '') { %>
+										<%= user.get('nickname') %>
+									<% } else { %>
 										#<%= user.get('krowdioUserId') %>
 									<% } %>
 								</span>
@@ -232,14 +234,14 @@
 
 							<ul class="user-menu pull-right dropdown-menu dropdown-orange dropdown-caret dropdown-closer">
 								<li>
-									<a href="/dashboard/general#settings">
+									<a href="/dashboard/fans/settings">
 										<i class="icon-cog"></i>
 										Settings
 									</a>
 								</li>
 
 								<li>
-									<a href="/fan/public/{{ request.user.pk }}">
+									<a href="/dashboard/fans/basicInfo">
 										<i class="icon-user"></i>
 										Profile
 									</a>
