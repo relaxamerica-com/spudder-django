@@ -168,8 +168,27 @@ module.exports = function (keys) {
                     teamID = req.params.id;
 
                 query.get(teamID).then(function (team) {
-                    team.destroy().then(function () {
-                        res.redirect('/dashboard/teams');
+                    var Recipient = Parse.Object.extend('Recipient'),
+                        recipientQuery = new Parse.Query(Recipient);
+
+                    recipientQuery.equalTo('team', team);
+
+                    recipientQuery.find().then(function (results) {
+                        var promise = new Parse.Promise();
+
+                        if (results.length > 0) {
+                            results[0].destroy().then(function() {
+                                promise.resolve();
+                            })
+                        } else {
+                            promise.resolve();
+                        }
+
+                        return promise;
+                    }).then(function () {
+                        team.destroy().then(function () {
+                            res.redirect('/dashboard/teams');
+                        });
                     },
                     function (error) {
                         console.log(error);

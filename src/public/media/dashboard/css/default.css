@@ -276,6 +276,10 @@
     margin-top: 10px;
 }
 
+#teams-create a.btn-success {
+    width: 120px;
+}
+
 #teams-create p.head {
     font-size: 26px;
 }
