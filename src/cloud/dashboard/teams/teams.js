@@ -3,25 +3,28 @@ module.exports = function (keys) {
         create: {
             get: function (req, res) {
                 res.render('dashboard/teams/create', {
-                    'breadcrumbs' : ['Teams', 'Create a team']
+                    'breadcrumbs' : ['Teams', 'Create a team'],
+                    'keys' : { 'jsKey' : keys.getJavaScriptKey(), 'appId' : keys.getApplicationID() }
                 });
             },
 
             post: function (req, res) {
                 var name = req.body.name,
-                    location = req.body.location,
-                    details = req.body['contact-details'],
-                    profile =  req.body.profile;
-
-                var Team = Parse.Object.extend('Team'),
+                    profileImageThumb = req.body.profileImageThumb;
+                    Team = Parse.Object.extend('Team'),
                     team = new Team();
+
+                if (!profileImageThumb) {
+                    profileImageThumb = 'http://static1.krowd.io/media/52769e9ff1f70e0552df58a4/0/52a1a4fef1f70e07929ba700/050760a660_t.jpeg';
+                }
 
                 team.set('name', name);
                 team.set('nameSearch', name.toLowerCase());
-                team.set('location', location);
-                team.set('profile', profile);
-                team.set('contact', details);
-                team.set('profileImageThumb', 'http://static2.krowd.io/media/52769e9ff1f70e0552df58a4/0/52979ffce9b6cc55d0cd073d/d22078392a_t.png');
+                team.set('location', req.body.location);
+                team.set('contact', req.body['contact-details']);
+                team.set('profile', req.body.profile);
+                team.set('sport', req.body.sport);
+                team.set('profileImageThumb', profileImageThumb);
 
                 team.save(null, {
                     success: function (team) {
@@ -60,13 +63,8 @@ module.exports = function (keys) {
                         res.render('dashboard/teams/view', {
                             'breadcrumbs' : ['Teams', 'Update this team'],
                             'found': true,
-                            'team': {
-                                name: team.get('name'),
-                                location: team.get('location'),
-                                details: team.get('contact'),
-                                profile: team.get('profile'),
-                                id: team.id
-                            }
+                            'team': team,
+                            'keys' : { 'jsKey' : keys.getJavaScriptKey(), 'appId' : keys.getApplicationID() }
                         });
                     },
                     error: function(object, error) {
@@ -95,9 +93,17 @@ module.exports = function (keys) {
                     success: function(team) {
                         team.set('name', name);
                         team.set('nameSearch', name.toLowerCase());
-                        team.set('location', location);
-                        team.set('profile', profile);
-                        team.set('contact', details);
+                        team.set('location', req.body.location);
+                        team.set('contact', req.body.contact);
+                        team.set('profile', req.body.profile);
+                        team.set('sport', req.body.sport);
+                        team.set('profileImageThumb', req.body.profileImageThumb);
+                        team.set('website', req.body.website);
+                        team.set('email', req.body.email);
+                        team.set('homeVenue', req.body.homeVenue);
+                        team.set('facebook', req.body.facebook);
+                        team.set('twitter', req.body.twitter);
+                        team.set('googlePlus', req.body.googlePlus);
 
                         team.save();
 

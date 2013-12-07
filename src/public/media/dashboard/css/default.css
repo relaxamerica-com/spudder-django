@@ -286,6 +286,12 @@
 
 #teams-create textarea {
     width: 390px;
+    margin-bottom: 0;
+}
+
+#teams-create select {
+    width: 405px;
+    margin-bottom: 0;
 }
 
 #teams-create dl.dl-horizontal dd,
@@ -296,6 +302,45 @@
 
 #teams-create .location {
     font-size: 18px;
+}
+
+#teams-create .ace-file-input {
+    width: 405px;
+    margin-bottom: 0;
+}
+
+#teams-create .ace-file-input label:before {
+    background-color: #F03C02;
+}
+
+#teams-create .ace-file-input label.selected {
+    right: 0;
+}
+
+#teams-create .ace-file-input label.selected+.remove {
+    right: -24px;
+}
+
+#teams-create table.header-table td.image-cell {
+    vertical-align: top;
+}
+
+#teams-create table.header-table td:not(.image-cell) {
+    padding-top: 5px;
+}
+
+#teams-create table.header-table img {
+    width: 65px;
+    margin-right: 10px;
+    border-radius: 15px;
+}
+
+#teams-create .control-group {
+    margin-bottom: 0;
+}
+
+#create-team-form label.error {
+    color: #C41A08;
 }
 
 #mySignup .loading,

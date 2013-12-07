@@ -12,13 +12,31 @@
     <form action="/dashboard/teams/create" method="post" id="create-team-form">
         <dl class="dl-horizontal">
             <dt>Team Name:</dt>
-            <dd><input name="name"/></dd>
+            <dd>
+                <input name="name"/>
+                <span class="input-required">*required</span>
+            </dd>
             <dt>Team Location:</dt>
-            <dd><input name="location"/></dd>
+            <dd>
+                <input name="location"/>
+                <span class="input-required">*required</span>
+            </dd>
             <dt>Team Contact Details:</dt>
             <dd><input name="contact-details"/></dd>
             <dt>Team Profile:</dt>
             <dd><textarea name="profile" rows="2"></textarea></dd>
+            <dt>Sport:</dt>
+            <dd>
+                <select name="sport">
+                    <option value="football">Football</option>
+                    <option value="soccer">Soccer</option>
+                </select>
+            </dd>
+            <dt>Profile Picture:</dt>
+            <dd>
+                <input type="hidden" name="profileImageThumb" />
+                <input type="file" id="profile-picture-input" />
+            </dd>
         </dl>
 
         <button class="btn btn-danger" type="submit">Save</button>
@@ -28,17 +46,62 @@
 <% include ../parts/scripts %>
 
 <script src="/media/dashboard/js/jquery.validate.js"></script>
+<script src="/media/js/parse.js"></script>
 
 <script>
     $(document).ready(function () {
-        $('#create-team-form').validate({
+        Parse.initialize('<%= keys.appId %>', '<%= keys.jsKey %>');
+
+        var $form = $('#create-team-form');
+
+        $form.validate({
             rules: {
                 name: "required",
                 location: "required"
             },
             messages: {
-                name: "A team name is required",
-                location: "A team location is required"
+                name: "A team name is required!",
+                location: "A team location is required!"
+            },
+            errorPlacement: function(error, element) {
+                error.appendTo( element.parent() );
+            }
+        });
+
+        $('#profile-picture-input').ace_file_input({
+            no_file:'No File ...',
+            btn_choose:'Choose',
+            btn_change:'Select',
+            droppable: false,
+            onchange: null,
+            thumbnail: true,
+            whitelist: 'gif|png|jpg|jpeg',
+            blacklist: 'exe|php'
+        });
+
+        var $formSubmit = $form.find('button[type="submit"]');
+
+        $formSubmit.click(function(event) {
+            event.preventDefault();
+            $formSubmit.text('Saving...');
+            $formSubmit.attr('disabled', 'disabled');
+
+            var pictureURL = $form.find('input[name="profileImageThumb"]'),
+                fileUploadControl = $("#profile-picture-input")[0];
+
+            if (fileUploadControl.files.length > 0) {
+                var file = fileUploadControl.files[0],
+                    name = file.name;
+
+                var parseFile = new Parse.File(name, file);
+                parseFile.save().then(function(image) {
+                    pictureURL.val(image.url());
+                    $form.submit();
+                }, function(error) {
+                    console.log(error);
+                });
+            } else {
+                $form.submit();
             }
         });
     });
