@@ -14,10 +14,6 @@ module.exports = function (keys) {
                     Team = Parse.Object.extend('Team'),
                     team = new Team();
 
-                if (!profileImageThumb) {
-                    profileImageThumb = 'http://static1.krowd.io/media/52769e9ff1f70e0552df58a4/0/52a1a4fef1f70e07929ba700/050760a660_t.jpeg';
-                }
-
                 team.set('name', name);
                 team.set('nameSearch', name.toLowerCase());
                 team.set('location', req.body.location);
@@ -40,7 +36,7 @@ module.exports = function (keys) {
                             teamAdminRole.getUsers().add(user);
                             teamAdminRole.save();
 
-                            res.redirect('/dashboard/teams/view/' + team.id);
+                            res.redirect('/dashboard/teams/edit/' + team.id);
                         });
                     },
 
@@ -52,7 +48,7 @@ module.exports = function (keys) {
             }
         },
 
-        view: {
+        edit: {
             get: function (req, res) {
                 var Team = Parse.Object.extend("Team"),
                     query = new Parse.Query(Team),
@@ -60,8 +56,8 @@ module.exports = function (keys) {
 
                 query.get(teamID, {
                     success: function(team) {
-                        res.render('dashboard/teams/view', {
-                            'breadcrumbs' : ['Teams', 'Update this team'],
+                        res.render('dashboard/teams/edit', {
+                            'breadcrumbs' : ['Teams', 'Edit this team'],
                             'found': true,
                             'team': team,
                             'keys' : { 'jsKey' : keys.getJavaScriptKey(), 'appId' : keys.getApplicationID() }
@@ -69,16 +65,14 @@ module.exports = function (keys) {
                     },
                     error: function(object, error) {
                         console.log(error);
-                        res.render('dashboard/teams/view', {
-                            'breadcrumbs' : ['Teams', 'Update this team'],
+                        res.render('dashboard/teams/edit', {
+                            'breadcrumbs' : ['Teams', 'Edit this team'],
                             'found': false
                         });
                     }
                 });
-            }
-        },
+            },
 
-        update: {
             post: function (req, res) {
                 var name = req.body.name,
                     location = req.body.location,
@@ -107,11 +101,11 @@ module.exports = function (keys) {
 
                         team.save();
 
-                        res.redirect('/dashboard/teams/view/' + teamID);
+                        res.redirect('/dashboard/teams/edit/' + teamID);
                     },
                     error: function(object, error) {
                         console.log(error);
-                        res.redirect('/dashboard/teams/view/' + teamID);
+                        res.redirect('/dashboard/teams/edit/' + teamID);
                     }
                 });
             }

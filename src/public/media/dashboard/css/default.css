@@ -243,6 +243,11 @@
 	border-color: #BCAFA8;
 }
 
+.btn-lightgrey {
+    background-color: #cfcfcf !important;
+    border-color: #cfcfcf !important;
+}
+
 .sidebar-shortcuts-large .btn {
 	width: 35px;
 }
@@ -274,10 +279,6 @@
 /** Teams */
 #teams-create {
     margin-top: 10px;
-}
-
-#teams-create a.btn-success {
-    width: 120px;
 }
 
 #teams-create p.head {
@@ -375,12 +376,51 @@
     border-radius: 15px;
 }
 
+#teams-create table.header-table i {
+    font-size: 50px;
+    margin-right: 10px;
+}
+
 #teams-create .control-group {
     margin-bottom: 0;
 }
 
 #create-team-form label.error {
     color: #C41A08;
+}
+
+#create-team-form label[for='profile-picture-input'] {
+    top: 35px;
+    border: 0;
+}
+
+#create-team-form label[for^='offer-image-input'] {
+    top: 5px;
+    left: 450px;
+    width: 300px;
+    border: 0;
+}
+
+#create-team-form label[for='profile-picture-input']:before,
+#create-team-form label[for^='offer-image-input']:before {
+    display: none;
+}
+
+#my-teams-list a.btn-action {
+    padding-top: 2px;
+}
+
+#my-teams-list a.btn-action i[class^='icon-'] {
+    font-size: 20px;
+}
+
+#my-teams-list tbody tr:first-child td {
+    padding-top: 8px;
+}
+
+#my-teams-list td {
+    padding-top: 4px;
+    padding-bottom: 4px;
 }
 
 #mySignup .loading,

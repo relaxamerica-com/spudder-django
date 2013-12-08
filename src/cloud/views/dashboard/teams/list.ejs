@@ -10,7 +10,7 @@
     </p>
 
     <% if (list.length) { %>
-    <table class="table table-hovered">
+    <table class="table table-hovered" id="my-teams-list">
         <thead>
             <tr>
                 <th>Name</th>
@@ -30,14 +30,25 @@
                 <td><%= team.get('profile') %></td>
                 <td>
                     <% if (team.get('isRegisteredRecipient')) { %>
-                    <a class="btn btn-mini btn-success" href="/dashboard/teams/<%= team.id %>/offers">Sponsorship Offers</a>
+                    <a class="btn btn-mini btn-lightgrey btn-action" href="/dashboard/teams/<%= team.id %>/offers" title="Offers">
+                        <i class="icon-time"></i>
+                    </a>
                     <% } else { %>
-                    <a class="btn btn-mini btn-success" href="/dashboard/recipient/<%= team.id %>">Register as Recipient</a>
+                    <a class="btn btn-mini btn-lightgrey btn-action" href="/dashboard/recipient/<%= team.id %>" title="Register with Amazon">
+                        <i class="icon-credit-card"></i>
+                    </a>
                     <% } %>
+                    <a class="btn btn-mini btn-lightgrey btn-action" href="javascript:void(0);" title="Reports">
+                        <i class="icon-file-text"></i>
+                    </a>
                 </td>
                 <td>
-                    <a class="btn btn-mini btn-danger" href="/dashboard/teams/view/<%= team.id %>">Edit</a>
-                    <a class="btn btn-mini btn-danger" href="/dashboard/teams/remove/<%= team.id %>">Remove</a>
+                    <a class="btn btn-mini btn-lightgrey btn-action" href="/dashboard/teams/edit/<%= team.id %>" title="Edit">
+                        <i class="icon-edit"></i>
+                    </a>
+                    <a class="btn btn-mini btn-lightgrey btn-action" href="/dashboard/teams/remove/<%= team.id %>" title="Remove">
+                        <i class="icon-trash"></i>
+                    </a>
                 </td>
             </tr>
         <% }) %>

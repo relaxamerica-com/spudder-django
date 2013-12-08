@@ -42,8 +42,8 @@ module.exports = function (app, keys) {
     app.get('/dashboard/teams', loginRequired, teams.list.get);
     app.get('/dashboard/teams/create', loginRequired, teams.create.get);
     app.post('/dashboard/teams/create', loginRequired, teams.create.post);
-    app.get('/dashboard/teams/view/:id', loginRequired, teams.view.get);
-    app.post('/dashboard/teams/update', loginRequired, teams.update.post);
+    app.get('/dashboard/teams/edit/:id', loginRequired, teams.edit.get);
+    app.post('/dashboard/teams/edit', loginRequired, teams.edit.post);
     app.get('/dashboard/teams/remove/:id', loginRequired, teams.remove.get);
 
     var teamOffers = require('cloud/dashboard/teams/offers')(keys);

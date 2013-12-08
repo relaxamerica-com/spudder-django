@@ -9,11 +9,15 @@
     <table class="header-table">
         <tr>
             <td class="image-cell">
+                <% if (team.get('profileImageThumb')) { %>
                 <img src="<%= team.get('profileImageThumb') %>" />
+                <% } else { %>
+                <i class="icon-group"></i>
+                <% } %>
             </td>
             <td>
                 <p class="head">
-                    <i class="icon-group"></i> <%= team.get('name') %>
+                    <%= team.get('name') %>
                 </p>
                 <p class="location"><%= team.get('location') %></p>
             </td>
@@ -22,7 +26,7 @@
 
     <h3>Update this Team:</h3>
 
-    <form action="/dashboard/teams/update" method="post" id="create-team-form">
+    <form action="/dashboard/teams/edit" method="post" id="create-team-form">
         <dl class="dl-horizontal">
             <dt>Team Name:</dt>
             <dd><input name="name" value="<%= team.get('name') %>"/></dd>
@@ -47,7 +51,7 @@
             <dt>Profile Picture:</dt>
             <dd>
                 <input type="hidden" name="profileImageThumb" value="<%= team.get('profileImageThumb') %>"/>
-                <input type="file" name="picture" id="profile-picture-input" />
+                <input type="file" name="picture" id="profile-picture-input" accept="image/*"/>
             </dd>
         </dl>
 
@@ -58,7 +62,7 @@
             <div class="controls">
             <span class="input-icon input-icon-right">
                 <input name="website" value="<%= getValueOrEmpty(team.get('website')) %>" id="form-field-website" type="url">
-                <i class="icon-bookmark"></i>
+                <i class="icon-bookmark icon-for-not-required-field"></i>
             </span>
             </div>
         </div>
@@ -68,7 +72,7 @@
             <div class="controls">
             <span class="input-icon input-icon-right">
                 <input name="email" value="<%= getValueOrEmpty(team.get('email')) %>" id="form-field-email"type="email">
-                <i class="icon-envelope"></i>
+                <i class="icon-envelope icon-for-not-required-field"></i>
             </span>
             </div>
         </div>
@@ -78,7 +82,7 @@
             <div class="controls">
             <span class="input-icon input-icon-right">
                 <input name="homeVenue" id="form-field-home-venue" value="<%= getValueOrEmpty(team.get('homeVenue')) %>" type="text">
-                <i class="icon-home"></i>
+                <i class="icon-home icon-for-not-required-field"></i>
             </span>
             </div>
         </div>
@@ -89,7 +93,7 @@
 
             <div class="controls">
                 <span class="input-icon">
-                <input name="facebook" value="<%= getValueOrEmpty(team.get('facebook')) %>" id="form-field-facebook" type="text">
+                <input name="facebook" value="<%= getValueOrEmpty(team.get('facebook')) %>" id="form-field-facebook" type="url">
                 <i class="icon-facebook"></i>
             </span>
             </div>
@@ -100,7 +104,7 @@
 
             <div class="controls">
             <span class="input-icon">
-                <input value="<%= getValueOrEmpty(team.get('twitter')) %>" name="twitter" id="form-field-twitter" type="text">
+                <input value="<%= getValueOrEmpty(team.get('twitter')) %>" name="twitter" id="form-field-twitter" type="url">
                 <i class="icon-twitter"></i>
             </span>
             </div>
@@ -111,7 +115,7 @@
 
             <div class="controls">
             <span class="input-icon">
-                <input value="<%= getValueOrEmpty(team.get('googlePlus')) %>" name="googlePlus" id="form-field-gplus" type="text">
+                <input value="<%= getValueOrEmpty(team.get('googlePlus')) %>" name="googlePlus" id="form-field-gplus" type="url">
                 <i class="icon-google-plus"></i>
             </span>
             </div>
@@ -130,6 +134,7 @@
 
 <% if (found) { %>
 <script src="/media/dashboard/js/jquery.validate.js"></script>
+<script src="/media/dashboard/js/additional-methods.min.js"></script>
 <script src="/media/js/parse.js"></script>
 
 <script>
@@ -141,11 +146,46 @@
         $form.validate({
             rules: {
                 name: "required",
-                location: "required"
+                location: "required",
+                picture: {
+                    extension: "gif|png|jpg|jpeg"
+                }
             },
             messages: {
                 name: "A team name is required",
                 location: "A team location is required"
+            },
+            submitHandler: function (form) {
+                var $formSubmit = $(form).find('button[type="submit"]');
+                $formSubmit.text('Saving...');
+                $formSubmit.attr('disabled', 'disabled');
+
+                var dfd = new jQuery.Deferred(),
+                    promise = dfd.promise();
+
+                var pictureURL = $form.find('input[name="profileImageThumb"]'),
+                    fileUploadControl = $("#profile-picture-input")[0];
+
+                if (fileUploadControl.files.length > 0) {
+                    var file = fileUploadControl.files[0],
+                        name = file.name;
+
+                    var parseFile = new Parse.File(name, file);
+                    parseFile.save().then(function(image) {
+                        pictureURL.val(image.url());
+                        dfd.resolve();
+                    }, function(error) {
+                        $formSubmit.text('Save');
+                        $formSubmit.removeAttr('disabled');
+                        console.log(error);
+                    });
+                } else {
+                    dfd.resolve();
+                }
+
+                $.when(promise).then(function () {
+                    form.submit();
+                })
             }
         });
 
@@ -160,31 +200,7 @@
             blacklist: 'exe|php'
         });
 
-        var $formSubmit = $form.find('button[type="submit"]');
 
-        $formSubmit.click(function(event) {
-            event.preventDefault();
-            $formSubmit.text('Saving...');
-            $formSubmit.attr('disabled', 'disabled');
-
-            var pictureURL = $form.find('input[name="profileImageThumb"]'),
-                fileUploadControl = $("#profile-picture-input")[0];
-
-            if (fileUploadControl.files.length > 0) {
-                var file = fileUploadControl.files[0],
-                        name = file.name;
-
-                var parseFile = new Parse.File(name, file);
-                parseFile.save().then(function(image) {
-                    pictureURL.val(image.url());
-                    $form.submit();
-                }, function(error) {
-                    console.log(error);
-                });
-            } else {
-                $form.submit();
-            }
-        });
     });
 </script>
 <% } %>
