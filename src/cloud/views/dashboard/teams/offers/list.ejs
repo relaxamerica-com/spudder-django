@@ -35,6 +35,9 @@
         <% }) %>
         </tbody>
     </table>
+    <% } else { %>
+        <p>There are no offers created for <%= team.get('name') %> team.</p>
+        <p><a href="/dashboard/teams/Th4D76dUdZ/offers/create" class="btn btn-success btn-small">Create offer</a></p>
     <% } %>
 </div>
 

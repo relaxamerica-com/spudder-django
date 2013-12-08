@@ -47,7 +47,9 @@ module.exports = function (app, keys) {
     app.get('/dashboard/teams/remove/:id', loginRequired, teams.remove.get);
 
     var teamOffers = require('cloud/dashboard/teams/offers')(keys);
-    app.get('/dashboard/teams/:id/offers', teamOffers.list.get);
+    app.get('/dashboard/teams/:id/offers', loginRequired, teamOffers.list.get);
+    app.get('/dashboard/teams/:id/offers/create', loginRequired, teamOffers.create.get);
+    app.post('/dashboard/teams/:id/offers/create', loginRequired, teamOffers.create.post);
 
     var spudmart = require('cloud/spudmart/actions');
     app.get('/spudmart', spudmart.view);

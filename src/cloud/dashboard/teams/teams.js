@@ -10,7 +10,7 @@ module.exports = function (keys) {
 
             post: function (req, res) {
                 var name = req.body.name,
-                    profileImageThumb = req.body.profileImageThumb;
+                    profileImageThumb = req.body.profileImageThumb,
                     Team = Parse.Object.extend('Team'),
                     team = new Team();
 

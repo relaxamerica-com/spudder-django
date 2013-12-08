@@ -288,6 +288,34 @@
     width: 400px;
 }
 
+#teams-create input.input-mask-phone,
+#teams-create input.input-mask-website{
+    margin-bottom: 0;
+    padding: 0;
+    border: 2px inset;
+}
+
+#teams-create span.input-icon i.icon-phone,
+#teams-create span.input-icon i.icon-bookmark{
+    top: -1px;
+}
+
+#teams-create .input-icon.input-icon-right>[class*="icon-"] {
+    right: 60px;
+}
+
+#teams-create .input-icon.input-icon-right>.icon-for-not-required-field {
+    right: 5px;
+}
+
+#teams-create div.input-append {
+    margin-bottom: 0;
+}
+
+#teams-create input.date-picker {
+    width: 390px;
+}
+
 #teams-create textarea {
     width: 390px;
     margin-bottom: 0;
@@ -315,6 +343,14 @@
 
 #teams-create .ace-file-input label:before {
     background-color: #F03C02;
+}
+
+#teams-create dd.offer-images .ace-file-input label {
+    margin-bottom: 0;
+}
+
+#teams-create dd.offer-images .ace-file-input {
+    height: 34px;
 }
 
 #teams-create .ace-file-input label.selected {

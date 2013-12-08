@@ -1,0 +1,231 @@
+<% include ../../parts/head %>
+
+<link rel="stylesheet" href="/media/dashboard/css/chosen.css" />
+
+<% include ../../parts/bodyStart %>
+
+<div id="teams-create">
+    <p class="head">
+        <i class="icon-briefcase"></i> Team details:
+    </p>
+
+    <form action="/dashboard/teams/<%= team.id %>/offers/create" method="post" id="create-team-form">
+        <dl class="dl-horizontal">
+            <dt>Title:</dt>
+            <dd>
+                <input name="title"/>
+                <span class="input-required">*required</span>
+            </dd>
+            <dt>Phone:</dt>
+            <dd>
+                <span class="input-icon input-icon-right">
+                    <input class="input-medium input-mask-phone" name="phone" id="form-field-phone" type="text">
+                    <i class="icon-phone icon-flip-horizontal"></i>
+                    <span class="input-required">*required</span>
+                </span>
+            </dd>
+            <dt>Website:</dt>
+            <dd>
+                <span class="input-icon input-icon-right">
+                    <input class="input-medium input-mask-website" name="website" id="form-field-website" type="url">
+                    <i class="icon-bookmark icon-flip-horizontal icon-for-not-required-field"></i>
+                </span>
+            </dd>
+            <dt>Quantity available:</dt>
+            <dd>
+                <input name="quantity"/>
+                <span class="input-required">*required</span>
+            </dd>
+            <dt>Video:</dt>
+            <dd>
+                <span class="input-icon input-icon-right">
+                    <input class="input-medium input-mask-website" name="video" id="form-field-video" type="url">
+                    <i class="icon-bookmark  icon-flip-horizontal icon-for-not-required-field"></i>
+                </span>
+            </dd>
+            <dt>End date:</dt>
+            <dd>
+                <div class="input-append">
+                    <input class="input-small date-picker" name="endDate" id="form-field-date" data-date-format="yyyy-mm-dd" placeholder="yyyy-mm-dd" type="text">
+                </div>
+                <span class="input-required">*required</span>
+            </dd>
+            <dt>Details:</dt>
+            <dd>
+                <textarea name="details" rows="5"></textarea>
+                <span class="input-required">*required</span>
+            </dd>
+            <dt>Images:</dt>
+            <dd class="offer-images">
+                <input type="hidden" name="offerImage1" />
+                <input type="file" id="offer-image-input1" class="file-upload-input"/>
+                <input type="hidden" name="offerImage2" />
+                <input type="file" id="offer-image-input2" class="file-upload-input" />
+                <input type="hidden" name="offerImage3" />
+                <input type="file" id="offer-image-input3" class="file-upload-input" />
+            </dd>
+        </dl>
+
+        <button class="btn btn-danger" type="submit">Create</button>
+    </form>
+</div>
+
+<% include ../../parts/scripts %>
+
+<script src="/media/dashboard/js/jquery.validate.js"></script>
+<script src="/media/dashboard/js/date-time/bootstrap-datepicker.min.js"></script>
+<script src="/media/js/parse.js"></script>
+
+<script>
+    $(document).ready(function () {
+        Parse.initialize('<%= keys.appId %>', '<%= keys.jsKey %>');
+
+        $.validator.addMethod(
+            "endDate",
+            function(value) {
+                var currentDate = new Date(),
+                    currentDay = currentDate.getDate(),
+                    currentMonth = currentDate.getMonth() + 1,
+                    currentYear = currentDate.getFullYear(),
+                    splittedValue = value.split('-'),
+                    year = parseInt(splittedValue[0], 10),
+                    month = parseInt(splittedValue[1], 10),
+                    day = parseInt(splittedValue[2], 10);
+
+                if (currentYear > year) return false;
+                if (currentMonth > month) return false;
+
+                return currentDay <= day;
+            },
+            "End date has to be today or further."
+        );
+
+        $.validator.addMethod(
+            "positiveInteger",
+            function(value) {
+                var parsedValue = parseInt(value, 10);
+
+                return !isNaN(parsedValue) && parsedValue > 0;
+            },
+            "Please enter valid positive integer value."
+        );
+
+        var $form = $('#create-team-form');
+
+        $form.validate({
+            rules: {
+                title: "required",
+                phone: "required",
+                quantity: {
+                    required: true,
+                    positiveInteger: true
+                },
+                endDate: {
+                    required: true,
+                    endDate: true
+                }
+            },
+            errorPlacement: function(error, element) {
+                error.appendTo( element.parent() );
+            },
+            submitHandler: function (form) {
+                var $formSubmit = $(form).find('button[type="submit"]');
+
+                $formSubmit.text('Creating...');
+                $formSubmit.attr('disabled', 'disabled');
+
+                var offerImage1 = $(form).find('input[name="offerImage1"]'),
+                    fileUploadControl1 = $("#offer-image-input1")[0],
+                    offerImage2 = $(form).find('input[name="offerImage2"]'),
+                    fileUploadControl2 = $("#offer-image-input2")[0],
+                    offerImage3 = $(form).find('input[name="offerImage3"]'),
+                    fileUploadControl3 = $("#offer-image-input3")[0];
+
+                var deffers = [ new jQuery.Deferred(), new jQuery.Deferred(), new jQuery.Deferred() ],
+                    promises =  [deffers[0].promise(), deffers[1].promise(), deffers[2].promise() ];
+
+                if (fileUploadControl1.files.length > 0) {
+                    var file1 = fileUploadControl1.files[0],
+                        fileName1 = file1.name;
+
+                    var parseFile1 = new Parse.File(fileName1, file1);
+                    parseFile1.save().then(function(image) {
+                        offerImage1.val(image.url());
+                        deffers[0].resolve();
+                    }, function(error) {
+                        console.log(error);
+                    });
+                } else {
+                    deffers[0].resolve();
+                }
+
+                $.when(promises[0]).then(function () {
+                    if (fileUploadControl2.files.length > 0) {
+                        var file2 = fileUploadControl2.files[0],
+                            fileName2 = file2.name;
+
+                        var parseFile2 = new Parse.File(fileName2, file2);
+                        parseFile2.save().then(function(image) {
+                            offerImage2.val(image.url());
+                            deffers[1].resolve();
+                        }, function(error) {
+                            console.log(error);
+                        });
+                    } else {
+                        deffers[1].resolve();
+                    }
+                });
+
+                $.when(promises[1]).then(function () {
+                    if (fileUploadControl3.files.length > 0) {
+                        var file3 = fileUploadControl3.files[0],
+                            fileName3 = file3.name;
+
+                        var parseFile3 = new Parse.File(fileName3, file3);
+                        parseFile3.save().then(function(image) {
+                            offerImage3.val(image.url());
+                            deffers[2].resolve();
+                        }, function(error) {
+                            console.log(error);
+                        });
+                    } else {
+                        deffers[2].resolve();
+                    }
+                });
+
+                $.when(promises[2]).then(function () {
+                    if (!offerImage1.val() && !offerImage2.val() && !offerImage3.val()) {
+                        var $label = $(document.createElement('label'));
+
+                        $label.attr('for', 'offer-image-input1');
+                        $label.addClass('error');
+                        $label.text('At least one image must be chosen');
+
+                        $('dd.offer-images').append($label);
+
+                        $formSubmit.text('Create');
+                        $formSubmit.removeAttr('disabled');
+                    } else {
+                        form.submit();
+                    }
+                });
+            }
+        });
+
+        $('#form-field-date').datepicker();
+
+        $('.file-upload-input').each(function () {
+            $(this).ace_file_input({
+                no_file:'No File ...',
+                btn_choose:'Choose',
+                btn_change:'Select',
+                droppable: false,
+                onchange: null,
+                thumbnail: true,
+                whitelist: 'gif|png|jpg|jpeg',
+                blacklist: 'exe|php'
+            })
+        });
+    });
+</script>
+<% include ../../parts/foot %>
