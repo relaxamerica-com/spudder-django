@@ -4316,3 +4316,67 @@ dialogs {
 .offer-presentation .offer-description {
 	width: 400px;
 }
+
+/* ===================================
+23. Teams custom formatting
+==================================== */
+
+.row.logo-and-nav-row {
+    margin-bottom: 0;
+}
+
+#team-offer #content {
+    padding-top: 20px;
+}
+
+/* Pages :: Offer */
+
+#team-offer h3.offer-title {
+    font-weight: 700;
+}
+
+#team-offer article {
+    margin-bottom: 5px;
+}
+
+#team-offer article .post-heading h3.team-name,
+#team-offer article .post-heading h3.offer-title {
+    margin-bottom: 0;
+}
+
+#team-offer img.team-logo {
+    width: 150px;
+    border-radius: 20px;
+}
+
+#team-offer .widget.donation-widget {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+#team-offer #content > .container > .row {
+    margin-bottom: 0;
+}
+
+#team-offer #content > .container > .row .right-sidebar,
+#team-offer .article {
+    margin-bottom: 10px;
+}
+
+#team-offer .offer-presentation .offer-description {
+    width: 100%;
+    text-align: justify;
+    margin-top: 35px;
+}
+
+#team-offer .flexslider {
+    margin-bottom: 0;
+}
+
+#team-offer .slides {
+    margin-left: 15%;
+}
+
+#team-offer .slides img {
+    width: 80%;
+}

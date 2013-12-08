@@ -75,6 +75,7 @@ module.exports = function (keys) {
                         }
 
                         teamOffer.set('title', req.body['title']);
+                        teamOffer.set('donation', req.body['donation']);
                         teamOffer.set('phone', req.body['phone']);
                         teamOffer.set('website', req.body['website']);
                         teamOffer.set('quantity', parseInt(req.body['quantity'], 10));

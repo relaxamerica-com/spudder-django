@@ -8,4 +8,7 @@ module.exports = function (app) {
     var spudmart = require('cloud/spudmart/actions');
     app.get('/spudmart', spudmart.view);
     app.get('/spudmart/offer', spudmart.offer);
+
+    var teams = require('cloud/teams/actions');
+    app.get('/teams/:teamID/offers/:offerID', teams.offer);
 };

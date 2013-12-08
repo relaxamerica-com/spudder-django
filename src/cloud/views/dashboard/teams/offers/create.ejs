@@ -16,6 +16,11 @@
                 <input name="title"/>
                 <span class="input-required">*required</span>
             </dd>
+            <dt>Donation:</dt>
+            <dd>
+                <input name="donation"/>
+                <span class="input-required">*required</span>
+            </dd>
             <dt>Phone:</dt>
             <dd>
                 <span class="input-icon input-icon-right">
@@ -118,6 +123,7 @@
                 title: "required",
                 phone: "required",
                 quantity: { required: true, positiveInteger: true },
+                donation: { required: true, positiveInteger: true },
                 endDate: { required: true, endDate: true },
                 offerImageInput1: { extension: "gif|png|jpg|jpeg" },
                 offerImageInput2: { extension: "gif|png|jpg|jpeg" },

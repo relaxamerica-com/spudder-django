@@ -1,0 +1,82 @@
+<div class="widget offer-widget">
+    <div>
+        <ul class="social-network">
+            <% if (team.get('facebook') != '') { %>
+            <li>
+                <a href="<%= team.get('facebook') %>"
+                   target="_blank" data-placement="bottom" title="Team Facebook profile"
+                   data-original-title="Facebook">
+                    <i class="icon-facebook icon-square"></i>
+                </a>
+            </li>
+            <% } %>
+            <% if (team.get('twitter') != '') { %>
+            <li>
+                <a href="<%= team.get('twitter') %>"
+                   target="_blank" data-placement="bottom" title="Team Twitter profile"
+                   data-original-title="Twitter">
+                    <i class="icon-twitter icon-square"></i>
+                </a>
+            </li>
+            <% } %>
+            <% if (team.get('googlePlus') != '') { %>
+            <li>
+                <a href="<%= team.get('googlePlus') %>"
+                    target="_blank" rel="publisher" data-placement="bottom"
+                    title="Team Google+ profile" data-original-title="Google plus">
+                    <i class="icon-google-plus icon-square"></i>
+                </a>
+            </li>
+            <% } %>
+        </ul>
+    </div>
+
+    <h5 class="widgetheading">
+        <% if (team.get('profileImageThumb')) { %>
+        <img src="<%= team.get('profileImageThumb') %>" class="team-logo" />
+        <% } else { %>
+        <i class="icon-group"></i>
+        <% } %>
+    </h5>
+
+
+    <ul class="folio-detail offer-details">
+        <li>
+            <label>Donation: </label> $<%= offer.get('donation') %>
+        </li>
+        <li>
+            <label>Quantity Available: </label> <%= offer.get('quantity') %>
+        </li>
+        <li>
+            <label>End date: </label> <%= offer.get('endDate') %>
+        </li>
+        <% if (offer.get('video') != '') { %>
+        <li>
+            <label>Video: </label>
+            <a href="<%= offer.get('video')%>">Learn More</a>
+        </li>
+        <% } %>
+        <% if (offer.get('website') != '') { %>
+        <li>
+            <label>Website: </label>
+            <a href="<%= offer.get('website')%>"><%= offer.get('website')%></a>
+        </li>
+        <% } %>
+        <li>
+            <label>Phone: </label>
+            <%= offer.get('phone')%>
+        </li>
+        <% if (team.get('homeVenue') != '') { %>
+        <li>
+            <label>Home Field: </label>
+            <a href="<%= team.get('homeVenue')%>"><%= team.get('homeVenue')%></a>
+        </li>
+        <% } %>
+    </ul>
+</div>
+<div class="widget donation-widget">
+    <a class="btn btn-danger">
+        <i class="icon-credit-card"></i>
+        DONATE NOW
+    </a>
+</div>
