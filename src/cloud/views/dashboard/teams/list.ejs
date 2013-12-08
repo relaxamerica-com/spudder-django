@@ -7,6 +7,7 @@
 <div id="teams-create">
     <p class="head">
         <i class="icon-group"></i> Teams
+        <a class="btn btn-success btn-small" href="/dashboard/teams/create">Create</a>
     </p>
 
     <% if (list.length) { %>
@@ -29,16 +30,24 @@
                 <td><%= team.get('contact') %></td>
                 <td><%= team.get('profile') %></td>
                 <td>
-                    <% if (team.get('isRegisteredRecipient')) { %>
-                    <a class="btn btn-mini btn-lightgrey btn-action" href="/dashboard/teams/<%= team.id %>/offers" title="Offers">
+                <% if (team.get('isRegisteredRecipient')) { %>
+                    <a class="btn btn-mini btn-lightgrey btn-action" title="Offers" href="/dashboard/teams/<%= team.id %>/offers" >
+                <% } else { %>
+                    <a class="btn btn-mini btn-lightgrey btn-action" title="Offers" href="javascript:void(0);" disabled>
+                <% } %>
                         <i class="icon-time"></i>
                     </a>
-                    <% } else { %>
-                    <a class="btn btn-mini btn-lightgrey btn-action" href="/dashboard/recipient/<%= team.id %>" title="Register with Amazon">
+
+
+                <% if (!team.get('isRegisteredRecipient')) { %>
+                    <a class="btn btn-mini btn-lightgrey btn-action" title="Register with Amazon" href="/dashboard/recipient/<%= team.id %>" >
+                <% } else { %>
+                    <a class="btn btn-mini btn-lightgrey btn-action" title="Register with Amazon" href="javascript:void(0);" disabled>
+                <% } %>
                         <i class="icon-credit-card"></i>
                     </a>
-                    <% } %>
-                    <a class="btn btn-mini btn-lightgrey btn-action" href="javascript:void(0);" title="Reports">
+
+                    <a class="btn btn-mini btn-lightgrey btn-action" href="javascript:void(0);" title="Reports" disabled>
                         <i class="icon-file-text"></i>
                     </a>
                 </td>
