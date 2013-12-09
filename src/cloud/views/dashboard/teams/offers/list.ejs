@@ -4,40 +4,76 @@
 
 <% include ../../parts/bodyStart %>
 
-<div id="teams-create">
+<div id="teams-offers-list">
     <p class="head">
         <i class="icon-group"></i> Sponsorship Offers
+        <a href="/dashboard/teams/Th4D76dUdZ/offers/create" class="btn btn-success btn-small">Create offer</a>
     </p>
 
-    <% if (list.length) { %>
-    <table class="table table-hovered">
-        <thead>
+    <% if (count) { %>
+        <% if (currentOffers.length) { %>
+        <h3>Active offers:</h3>
+        <table class="table table-hovered">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th class="quantity">Quantity</th>
+                    <th class="end-date">End Date</th>
+                    <th class="public-page">Public Page</th>
+                    <th class="actions">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            <% currentOffers.forEach(function(offer) { %>
+                <tr>
+                    <td><%= offer.get('title') %></td>
+                    <td class="quantity">
+                        <%= offer.get('quantity') %> / <%= offer.get('quantity') %>
+                    </td>
+                    <td class="end-date"><%= offer.get('endDate') %></td>
+                    <td class="public-page"><a href="/teams/<%= team.id %>/offers/<%= offer.id %>">Link</a></td>
+                    <td class="actions">
+                        <a class="btn btn-mini btn-success" href="#">Edit</a>
+                        <a class="btn btn-mini btn-danger" href="/dashboard/teams/<%= team.id %>/offers/<%= offer.id %>">Remove</a>
+                    </td>
+                </tr>
+            <% }) %>
+            </tbody>
+        </table>
+        <% } %>
+
+        <% if (pastOffers.length) { %>
+        <h3>Past offers:</h3>
+        <table class="table table-hovered">
+            <thead>
             <tr>
-                <th>Name</th>
-                <th>Location</th>
-                <th>Contact Details</th>
-                <th>Profile</th>
-                <th>Actions</th>
+                <th>Title</th>
+                <th class="quantity">Quantity</th>
+                <th class="end-date">End Date</th>
+                <th class="public-page">Public Page</th>
+                <th class="actions">Actions</th>
             </tr>
-        </thead>
-        <tbody>
-        <% list.forEach(function(team) { %>
+            </thead>
+            <tbody>
+            <% pastOffers.forEach(function(offer) { %>
             <tr>
-                <td><%= team.get('name') %></td>
-                <td><%= team.get('location') %></td>
-                <td><%= team.get('contact') %></td>
-                <td><%= team.get('profile') %></td>
-                <td>
-                    <a class="btn btn-mini btn-success" href="/dashboard/teams/<%= team.id %>/offers">Sponsorship Offers</a>
-                    <a class="btn btn-mini btn-danger" href="/dashboard/teams/remove/<%= team.id %>">Remove</a>
+                <td><%= offer.get('title') %></td>
+                <td class="quantity">
+                    <%= offer.get('quantity') %> / <%= offer.get('quantity') %>
+                </td>
+                <td class="end-date"><%= offer.get('endDate') %></td>
+                <td class="public-page"><a href="/teams/<%= team.id %>/offers/<%= offer.id %>">Link</a></td>
+                <td class="actions">
+                    <a class="btn btn-mini btn-success" href="#">Edit</a>
+                    <a class="btn btn-mini btn-danger" href="/dashboard/teams/<%= team.id %>/offers/<%= offer.id %>">Remove</a>
                 </td>
             </tr>
-        <% }) %>
-        </tbody>
-    </table>
+            <% }) %>
+            </tbody>
+        </table>
+        <% } %>
     <% } else { %>
         <p>There are no offers created for <%= team.get('name') %> team.</p>
-        <p><a href="/dashboard/teams/Th4D76dUdZ/offers/create" class="btn btn-success btn-small">Create offer</a></p>
     <% } %>
 </div>
 

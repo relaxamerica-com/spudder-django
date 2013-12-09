@@ -423,6 +423,36 @@
     padding-bottom: 4px;
 }
 
+#teams-offers-list {
+    margin-top: 10px;
+}
+
+#teams-offers-list p.head {
+    font-size: 26px;
+}
+
+#teams-offers-list p.head a {
+    top: -3px;
+}
+
+#teams-offers-list table th.quantity,
+#teams-offers-list table th.end-date,
+#teams-offers-list table th.public-page {
+    width: 10%;
+}
+
+#teams-offers-list table th.actions {
+    width: 20%;
+}
+
+#teams-offers-list table td.quantity {
+    padding-left: 20px;
+}
+
+#teams-offers-list table td.public-page {
+    padding-left: 35px;
+}
+
 #mySignup .loading,
 #mySignin .loading {
 	display: inline-block;

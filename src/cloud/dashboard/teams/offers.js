@@ -8,10 +8,46 @@ module.exports = function (keys) {
 
                 query.get(teamID, {
                     success: function(team) {
-                        res.render('dashboard/teams/offers/list', {
-                            'breadcrumbs' : ['Teams', team.get('name'), 'Offers'],
-                            'team': team,
-                            'list': []
+                        var TeamOffer = Parse.Object.extend("TeamOffer"),
+                            offerQuery = new Parse.Query(TeamOffer),
+                            pastOffers = [], currentOffers = [],
+                            currentDate = new Date(),
+                            currentDateString = currentDate.getFullYear() + '-' +
+                                ('0' + (currentDate.getMonth() + 1)).slice(-2) + '-' +
+                                ('0' + currentDate.getDate()).slice(-2);
+
+
+                        console.log("Current: " + currentDateString);
+
+                        offerQuery.equalTo('team', team);
+
+                        offerQuery.find().then(function (list) {
+                            for (var i = 0; i < list.length; i++) {
+                                var endDate = list[i].get('endDate');
+
+                                var endDateSplitted = endDate.split('-'),
+                                    year = endDateSplitted[0],
+                                    month = endDateSplitted[1],
+                                    day = endDateSplitted[2];
+
+                                month = ('0' + month).slice(-2);
+                                day = ('0' + day).slice(-2);
+                                endDate = year + '-' + month + '-' + day;
+
+                                if (endDate >= currentDateString) {
+                                    currentOffers.push(list[i]);
+                                } else {
+                                    pastOffers.push(list[i]);
+                                }
+                            }
+
+                            res.render('dashboard/teams/offers/list', {
+                                'breadcrumbs' : ['Teams', team.get('name'), 'Offers'],
+                                'team': team,
+                                'count': list.length,
+                                'currentOffers': currentOffers,
+                                'pastOffers': pastOffers
+                            });
                         });
                     },
                     error: function(object, error) {
@@ -58,15 +94,7 @@ module.exports = function (keys) {
                     success: function(team) {
                         var TeamOffer = Parse.Object.extend('TeamOffer'),
                             teamOffer = new TeamOffer(),
-                            dateString = req.body['endDate'],
-                            dateRegExp = /(\d{4})-(\d{2})-(\d{2})/,
-                            endDateArray = dateRegExp.exec(dateString),
-                            endDate = new Date(
-                                (+endDateArray[1]),
-                                (+endDateArray[2] - 1), // Months starts from 0!
-                                (+endDateArray[3]),
-                                0, 0, 0 // Hours, minutes and seconds
-                            ),
+                            endDateString = req.body['endDate'], // YYYY-MM-DD
                             images = [ req.body['offerImage1'], req.body['offerImage2'], req.body['offerImage3'] ],
                             offerImages = [];
 
@@ -79,7 +107,7 @@ module.exports = function (keys) {
                         teamOffer.set('phone', req.body['phone']);
                         teamOffer.set('website', req.body['website']);
                         teamOffer.set('quantity', parseInt(req.body['quantity'], 10));
-                        teamOffer.set('endDate', endDate);
+                        teamOffer.set('endDate', endDateString);
                         teamOffer.set('video', req.body['video']);
                         teamOffer.set('details', req.body['details']);
                         teamOffer.set('team', team);
@@ -103,6 +131,25 @@ module.exports = function (keys) {
                             'list': []
                         });
                     }
+                });
+            }
+        },
+
+        remove: {
+            get: function (req, res) {
+                var TeamOffer = Parse.Object.extend("TeamOffer"),
+                    query = new Parse.Query(TeamOffer),
+                    offerId = req.params.offerID,
+                    teamID = req.params.teamID;
+
+                query.get(offerId).then(function (offer) {
+                    offer.destroy().then(function () {
+                        res.redirect('/dashboard/teams/' + teamID + '/offers');
+                    });
+                },
+                function (error) {
+                    console.log(error);
+                    res.redirect('/dashboard/teams/' + teamID + '/offers');
                 });
             }
         }
