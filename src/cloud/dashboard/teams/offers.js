@@ -49,13 +49,6 @@ module.exports = function (keys) {
                                 'pastOffers': pastOffers
                             });
                         });
-                    },
-                    error: function(object, error) {
-                        console.log(error);
-                        res.render('dashboard/teams/offers/list', {
-                            'breadcrumbs' : ['Teams', 'Error'],
-                            'list': []
-                        });
                     }
                 });
             }
@@ -115,7 +108,7 @@ module.exports = function (keys) {
 
                         teamOffer.save(null, {
                             success: function () {
-                                res.redirect('/dashboard/teams/Th4D76dUdZ/offers');
+                                res.redirect('/dashboard/teams/' + teamID + '/offers');
                             },
 
                             error: function (team, error) {
