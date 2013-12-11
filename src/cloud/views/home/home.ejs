@@ -97,8 +97,8 @@
 		            '-1': 'Opps, something went wrong, please try again.',
 		            '202': 'Email already taken.'
 				}
-			}
-			return errors[type][code];
+			};
+			return errors[type][code] ? errors[type][code] : 'An unknown error occured. Please try again or contact administrators.';
 		}
 	});
 </script>	
