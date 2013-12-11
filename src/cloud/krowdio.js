@@ -203,7 +203,7 @@ exports.krowdidGetPopularStream = function(){
             return $.ajax({
                 url: "http://api.krowd.io/stream/popular?limit=30&page=1&maxid=&paging=None",
                 type: 'GET',
-                headers: {'Authorization':token }
+                headers: {'Authorization' : token }
             });
         })
         .then(function(krowdioData){

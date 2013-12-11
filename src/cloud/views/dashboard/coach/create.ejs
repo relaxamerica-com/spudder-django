@@ -6,24 +6,34 @@
 
 <div id="entity-create">
     <p class="head">
-        <i class="icon-group"></i> Team details:
+        <i class="icon-bullhorn"></i> Coach details:
     </p>
-
-    <form action="/dashboard/teams/create" method="post" id="create-team-form">
+    
+    <% if (errors.length > 0) { %>
+	    <div class="alert alert-error">
+			<%= errors %>
+	    </div>
+	<% } %>
+	
+    <form action="/dashboard/createEntity/Coach" method="post" id="create-coach-form">
+    	
         <dl class="dl-horizontal">
-            <dt>Team Name:</dt>
+        	<input type="hidden" name="jsKey" value="<%= keys.jsKey %>" />
+        	<input type="hidden" name="appId" value="<%= keys.appId %>" />
+        	
+            <dt>Coach Name:</dt>
             <dd>
                 <input name="name"/>
                 <span class="input-required">*required</span>
             </dd>
-            <dt>Team Location:</dt>
+            <dt>Coach Location:</dt>
             <dd>
                 <input name="location"/>
                 <span class="input-required">*required</span>
             </dd>
-            <dt>Team Contact Details:</dt>
+            <dt>Coach Contact Details:</dt>
             <dd><input name="contact-details"/></dd>
-            <dt>Team Profile:</dt>
+            <dt>Coach Profile:</dt>
             <dd><textarea name="profile" rows="2"></textarea></dd>
             <dt>Sport:</dt>
             <dd>
@@ -53,7 +63,11 @@
     $(document).ready(function () {
         Parse.initialize('<%= keys.appId %>', '<%= keys.jsKey %>');
 
-        var $form = $('#create-team-form');
+		$('.btn[type="submit"]').click(function() {
+			$('.alert').hide();
+		});
+
+        var $form = $('#create-coach-form');
 
         $form.validate({
             rules: {
@@ -64,8 +78,8 @@
                 }
             },
             messages: {
-                name: "A team name is required!",
-                location: "A team location is required!"
+                name: "A coach name is required!",
+                location: "A coach location is required!"
             },
             errorPlacement: function(error, element) {
                 error.appendTo( element.parent() );
@@ -100,7 +114,7 @@
 
                 $.when(promise).then(function () {
                     form.submit();
-                })
+                });
             }
         });
 
@@ -116,4 +130,5 @@
         });
     });
 </script>
+
 <% include ../parts/foot %>

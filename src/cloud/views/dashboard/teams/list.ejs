@@ -4,10 +4,10 @@
 
 <% include ../parts/bodyStart %>
 
-<div id="teams-create">
+<div id="entity-create">
     <p class="head">
         <i class="icon-group"></i> Teams
-        <a class="btn btn-success btn-small" href="/dashboard/teams/create">Create</a>
+        <a class="btn btn-orange pull-left create-entity-button" href="/dashboard/teams/create">Create</a>
     </p>
 
     <% if (list.length) { %>
@@ -27,8 +27,8 @@
             <tr>
                 <td><%= team.get('name') %></td>
                 <td><%= team.get('location') %></td>
-                <td><%= team.get('contact') %></td>
-                <td><%= team.get('profile') %></td>
+                <td><%= getValueOrEmpty(team.get('contact')) %></td>
+                <td><%= getValueOrEmpty(team.get('profile')) %></td>
                 <td>
                 <% if (team.get('isRegisteredRecipient')) { %>
                     <a class="btn btn-mini btn-lightgrey btn-action" title="Offers" href="/dashboard/teams/<%= team.id %>/offers" >
@@ -55,7 +55,7 @@
                     <a class="btn btn-mini btn-lightgrey btn-action" href="/dashboard/teams/edit/<%= team.id %>" title="Edit">
                         <i class="icon-edit"></i>
                     </a>
-                    <a class="btn btn-mini btn-lightgrey btn-action" href="/dashboard/teams/remove/<%= team.id %>" title="Remove">
+                    <a class="btn btn-mini btn-lightgrey btn-action" href="/dashboard/teams/remove/<%= team.id %>" title="Remove" id="remove-button">
                         <i class="icon-trash"></i>
                     </a>
                 </td>
@@ -67,5 +67,15 @@
 </div>
 
 <% include ../parts/scripts %>
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		$('#remove-button').click(function(e) {
+			if ( !confirm('Are you sure?') ) {
+				e.preventDefault();
+			}
+		});
+	});
+</script>
 
 <% include ../parts/foot %>

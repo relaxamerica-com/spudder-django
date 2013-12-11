@@ -82,7 +82,7 @@ module.exports = function (keys) {
 	        user.set('twitter', req.body.twitter);
         	user.set('dob', req.body.dateOfBirth);
         	
-    		user.set('avatarURL', req.body.avatarId);
+    		user.set('profileImageThumb', req.body.avatarId);
 
     		user.save()
             .then(function(){
@@ -90,5 +90,6 @@ module.exports = function (keys) {
                 res.redirect('/dashboard/fans/basicInfo');
             });
         }
+        
     };
 };

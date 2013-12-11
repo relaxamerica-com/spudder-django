@@ -6,24 +6,33 @@
 
 <div id="entity-create">
     <p class="head">
-        <i class="icon-group"></i> Team details:
+        <i class="icon-user"></i> Player details:
     </p>
 
-    <form action="/dashboard/teams/create" method="post" id="create-team-form">
+	<% if (errors.length > 0) { %>
+	    <div class="alert alert-error">
+			<%= errors %>
+	    </div>
+	<% } %>
+
+    <form action="/dashboard/createEntity/Player" method="post" id="create-player-form">
         <dl class="dl-horizontal">
-            <dt>Team Name:</dt>
+        	<input type="hidden" name="jsKey" value="<%= keys.jsKey %>" />
+        	<input type="hidden" name="appId" value="<%= keys.appId %>" />
+        	
+            <dt>Player Name:</dt>
             <dd>
                 <input name="name"/>
                 <span class="input-required">*required</span>
             </dd>
-            <dt>Team Location:</dt>
+            <dt>Player Location:</dt>
             <dd>
                 <input name="location"/>
                 <span class="input-required">*required</span>
             </dd>
-            <dt>Team Contact Details:</dt>
+            <dt>Player Contact Details:</dt>
             <dd><input name="contact-details"/></dd>
-            <dt>Team Profile:</dt>
+            <dt>Player Profile:</dt>
             <dd><textarea name="profile" rows="2"></textarea></dd>
             <dt>Sport:</dt>
             <dd>
@@ -53,7 +62,11 @@
     $(document).ready(function () {
         Parse.initialize('<%= keys.appId %>', '<%= keys.jsKey %>');
 
-        var $form = $('#create-team-form');
+		$('.btn[type="submit"]').click(function() {
+			$('.alert').hide();
+		});
+
+        var $form = $('#create-player-form');
 
         $form.validate({
             rules: {
@@ -64,8 +77,8 @@
                 }
             },
             messages: {
-                name: "A team name is required!",
-                location: "A team location is required!"
+                name: "A player name is required!",
+                location: "A player location is required!"
             },
             errorPlacement: function(error, element) {
                 error.appendTo( element.parent() );
@@ -100,7 +113,7 @@
 
                 $.when(promise).then(function () {
                     form.submit();
-                })
+                });
             }
         });
 
@@ -116,4 +129,5 @@
         });
     });
 </script>
+
 <% include ../parts/foot %>

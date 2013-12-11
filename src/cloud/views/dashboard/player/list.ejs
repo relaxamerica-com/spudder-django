@@ -1,0 +1,58 @@
+<% include ../parts/head %>
+
+<link rel="stylesheet" href="/media/dashboard/css/chosen.css" />
+
+<% include ../parts/bodyStart %>
+
+<div id="entity-create">
+    <p class="head">
+        <i class="icon-user"></i> Players
+        <a class="btn btn-orange pull-left create-entity-button" href="/dashboard/createEntity/Player">Create</a>
+    </p>
+
+    <% if (list.length) { %>
+    <table class="table table-hovered" id="my-entity-list">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Location</th>
+                <th>Contact Details</th>
+                <th>Profile</th>
+                <th>Manage</th>
+            </tr>
+        </thead>
+        <tbody>
+        <% list.forEach(function(player) { %>
+            <tr>
+                <td><%= player.get('name') %></td>
+                <td><%= player.get('location') %></td>
+                <td><%= getValueOrEmpty(player.get('contact')) %></td>
+                <td><%= getValueOrEmpty(player.get('profile')) %></td>
+                <td>
+                    <a class="btn btn-mini btn-lightgrey btn-action" href="/dashboard/editEntity/Player/<%= player.id %>" title="Edit">
+                        <i class="icon-edit"></i>
+                    </a>
+                    <a class="btn btn-mini btn-lightgrey btn-action" href="/dashboard/removeEntity/Player/<%= player.id %>" title="Remove" id="remove-button">
+                        <i class="icon-trash"></i>
+                    </a>
+                </td>
+            </tr>
+        <% }) %>
+        </tbody>
+    </table>
+    <% } %>
+</div>
+
+<% include ../parts/scripts %>
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		$('#remove-button').click(function(e) {
+			if ( !confirm('Are you sure?') ) {
+				e.preventDefault();
+			}
+		});
+	});
+</script>
+
+<% include ../parts/foot %>
