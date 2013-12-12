@@ -146,7 +146,7 @@ module.exports = function (keys) {
 
                         return promise;
                     }).then(function () {
-                        res.render('dashboard/teams/list', {
+                        return res.render('dashboard/teams/list', {
                             'breadcrumbs' : ['Teams', 'My teams'],
                             'list': teamsList
                         });

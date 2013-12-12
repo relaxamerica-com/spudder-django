@@ -219,7 +219,11 @@
 
 						<li class="black">
 							<a data-toggle="dropdown" href="#" class="dropdown-toggle btn-orange">
-								<img class="nav-user-photo" src="/media/dashboard/avatars/user.jpg" alt="<%= getValueOrEmpty(user.get('nickname')) %>'s Photo" />
+								<% if( getValueOrEmpty( user.get('profileImageThumb') ) == '' ) { %>
+									<img class="nav-user-photo" src="/media/dashboard/avatars/user.jpg" alt="<%= getValueOrEmpty(user.get('nickname')) %>'s Photo" />
+								<% } else { %>
+									<img class="nav-user-photo" src="<%= user.get('profileImageThumb') %>" alt="<%= getValueOrEmpty(user.get('nickname')) %>'s Photo" />
+								<% } %>
 								<span class="user-info">
 									<small>Welcome,</small>
 									<% if (getValueOrEmpty(user.get('nickname')) != '') { %>

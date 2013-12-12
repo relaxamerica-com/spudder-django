@@ -15,41 +15,79 @@
 	    </div>
 	<% } %>
 	
-    <form action="/dashboard/createEntity/Coach" method="post" id="create-coach-form">
+    <form action="/dashboard/createEntity/Coach" method="post" id="create-coach-form" class="form-horizontal">
     	
-        <dl class="dl-horizontal">
-        	<input type="hidden" name="jsKey" value="<%= keys.jsKey %>" />
-        	<input type="hidden" name="appId" value="<%= keys.appId %>" />
-        	
-            <dt>Coach Name:</dt>
-            <dd>
-                <input name="name"/>
+    	<input type="hidden" name="jsKey" value="<%= keys.jsKey %>" />
+    	<input type="hidden" name="appId" value="<%= keys.appId %>" />
+    
+    	<div class="control-group">
+            <label class="control-label" for="name">Name (Nickname):</label>
+            <div class="controls">
+                <input name="name" id="name" />
                 <span class="input-required">*required</span>
-            </dd>
-            <dt>Coach Location:</dt>
-            <dd>
-                <input name="location"/>
-                <span class="input-required">*required</span>
-            </dd>
-            <dt>Coach Contact Details:</dt>
-            <dd><input name="contact-details"/></dd>
-            <dt>Coach Profile:</dt>
-            <dd><textarea name="profile" rows="2"></textarea></dd>
-            <dt>Sport:</dt>
-            <dd>
+                <input type="checkbox" name="hide-publicly" /> <span class="hide-publicly-text">Do NOT display publicly</span>
+            </div>
+    	</div>
+    	
+    	<div class="control-group">
+            <label class="control-label" for="location">Home Zip:</label>
+            <div class="controls">
+                <input name="location" id="location" />
+                <span class="input-required" title="But never displayed, simply used to speed search">*required</span>
+            </div>
+    	</div>
+    	
+    	<div class="control-group">
+            <label class="control-label" for="team">Team:</label>
+            <div class="controls">
+                <input name="team" id="team" />
+            </div>
+    	</div>
+    	
+    	<div class="control-group">
+            <label class="control-label" for="sport">Sport:</label>
+            <div class="controls">
                 <select name="sport">
                     <option value="football">Football</option>
                     <option value="soccer">Soccer</option>
                 </select>
-            </dd>
-            <dt>Profile Picture:</dt>
-            <dd>
+            </div>
+    	</div>
+    	
+    	<div class="control-group">
+            <label class="control-label" for="admins">Admins:</label>
+            <div class="controls">
+                <input name="admins" id="admins" placeholder="Enter emails..." />
+            </div>
+    	</div>
+    	
+    	<div class="control-group">
+            <label class="control-label" for="contact-details">Coach Contact Details:</label>
+            <div class="controls">
+                <input name="contact-details" id="contact-details" />
+            </div>
+    	</div>
+    	
+    	<div class="control-group">
+            <label class="control-label" for="profile">Coach Profile:</label>
+            <div class="controls">
+                <textarea name="profile" rows="2" id="profile">&nbsp;</textarea>
+            </div>
+    	</div>
+    	
+    	<div class="control-group">
+            <label class="control-label" for="profile-picture-input">Profile Picture:</label>
+            <div class="controls">
                 <input type="hidden" name="profileImageThumb" />
-                <input type="file" id="profile-picture-input" accept="image/*" />
-            </dd>
-        </dl>
+            	<input type="file" id="profile-picture-input" accept="image/*" />
+            </div>
+    	</div>
 
-        <button class="btn btn-danger" type="submit">Save</button>
+		<div class="control-group">
+            <div class="controls">
+                <button class="btn btn-orange" type="submit">Save</button>
+            </div>
+    	</div>
     </form>
 </div>
 
@@ -58,6 +96,7 @@
 <script src="/media/dashboard/js/jquery.validate.js"></script>
 <script src="/media/dashboard/js/additional-methods.min.js"></script>
 <script src="/media/js/parse.js"></script>
+<script src="/media/dashboard/js/bootstrap-tag.min.js"></script>
 
 <script>
     $(document).ready(function () {
@@ -78,8 +117,8 @@
                 }
             },
             messages: {
-                name: "A coach name is required!",
-                location: "A coach location is required!"
+                name: "A name (nickname) is required!",
+                location: "A home zip is required!"
             },
             errorPlacement: function(error, element) {
                 error.appendTo( element.parent() );
@@ -128,6 +167,19 @@
             whitelist: 'gif|png|jpg|jpeg',
             blacklist: 'exe|php'
         });
+        
+        $("#entity-create .input-required").tooltip({
+			hide: {
+				effect: "explode",
+				delay: 2500
+			},
+			show: {
+				effect: "slideDown",
+				delay: 2500
+			}
+		});
+		
+		$('#admins').tag({ placeholder : $('#admins').attr('placeholder'), width: '400px' });
     });
 </script>
 

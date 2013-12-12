@@ -210,8 +210,13 @@
     color: #FFFFFF !important;
 }
 #entity-create {
-    margin-top: 24px;
+    margin-top: 10px;
 }
+
+#entity-create .form-horizontal .controls {
+	margin-top: 5px;
+}
+
 #entity-create p.head {
     font-size: 34px;
     line-height: 40px;
@@ -219,6 +224,30 @@
 #entity-create input {
     width: 400px;
 }
+
+#entity-create .tags input {
+	width: auto;
+}
+
+#entity-create input[type="checkbox"] {
+	width: auto;
+	opacity: 1;
+	margin-left: 5px;
+} 
+
+#entity-create .hide-publicly-text {
+	margin-left: 25px;
+}
+
+#entity-create input.player-position {
+	margin-left: 1px;
+    width: 340px;
+}
+
+#entity-create input.player-number {
+	width: 50px;
+}
+
 #entity-create input.input-mask-phone, #entity-create input.input-mask-website {
     border: 2px inset;
     margin-bottom: 0;
@@ -251,6 +280,11 @@
     margin-bottom: 5px;
     margin-top: 5px;
 }
+
+#entity-create dl.dl-horizontal dt {
+	height: 23px;
+}
+
 #entity-create .location {
     font-size: 18px;
 }
@@ -368,3 +402,13 @@ form .input-required {
     margin-bottom: 10px;
     margin-right: 10px;
 }
+
+.ace-nav .nav-user-photo {
+	max-height: 36px;
+}
+
+.create-entity-button.btn > [class*="icon-"] {
+	margin: 0px;
+	line-height: 20px;
+}
+
