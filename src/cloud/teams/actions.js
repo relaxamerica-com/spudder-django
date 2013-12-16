@@ -2,9 +2,6 @@ exports.offer = function (req, res) {
     var teamID = req.params.teamID,
         offerID = req.params.offerID;
 
-    console.log("Team ID: " + teamID);
-    console.log("Offer ID: " + offerID);
-
     var Team = Parse.Object.extend("Team"),
         query = new Parse.Query(Team);
 
