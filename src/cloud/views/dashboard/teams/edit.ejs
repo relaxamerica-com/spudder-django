@@ -51,7 +51,7 @@
             <dt>Profile Picture:</dt>
             <dd>
                 <input type="hidden" name="profileImageThumb" value="<%= team.get('profileImageThumb') %>"/>
-                <input type="file" name="picture" id="profile-picture-input" accept="image/*"/>
+                <input type="file" name="picture" id="profile-picture-input" accept="image/*" class="file-upload-input"/>
             </dd>
         </dl>
 
@@ -135,6 +135,7 @@
 <% if (found) { %>
 <script src="/media/dashboard/js/jquery.validate.js"></script>
 <script src="/media/dashboard/js/additional-methods.min.js"></script>
+<script src="/media/dashboard/js/teams/helpers.js"></script>
 <script src="/media/js/parse.js"></script>
 
 <script>
@@ -188,19 +189,6 @@
                 })
             }
         });
-
-        $('#profile-picture-input').ace_file_input({
-            no_file:'No File ...',
-            btn_choose:'Choose',
-            btn_change:'Select',
-            droppable: false,
-            onchange: null,
-            thumbnail: true,
-            whitelist: 'gif|png|jpg|jpeg',
-            blacklist: 'exe|php'
-        });
-
-
     });
 </script>
 <% } %>

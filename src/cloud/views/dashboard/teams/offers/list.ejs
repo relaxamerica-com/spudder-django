@@ -33,8 +33,8 @@
                     <td class="end-date"><%= offer.get('endDate') %></td>
                     <td class="public-page"><a href="/teams/<%= team.id %>/offers/<%= offer.id %>">Link</a></td>
                     <td class="actions">
-                        <a class="btn btn-mini btn-success" href="#">Edit</a>
-                        <a class="btn btn-mini btn-danger" href="/dashboard/teams/<%= team.id %>/offers/<%= offer.id %>">Remove</a>
+                        <a class="btn btn-mini btn-success" href="/dashboard/teams/<%= team.id %>/offers/<%= offer.id %>/edit">Edit</a>
+                        <a class="btn btn-mini btn-danger" href="/dashboard/teams/<%= team.id %>/offers/<%= offer.id %>/remove">Remove</a>
                     </td>
                 </tr>
             <% }) %>
@@ -64,8 +64,7 @@
                 <td class="end-date"><%= offer.get('endDate') %></td>
                 <td class="public-page"><a href="/teams/<%= team.id %>/offers/<%= offer.id %>">Link</a></td>
                 <td class="actions">
-                    <a class="btn btn-mini btn-success" href="#">Edit</a>
-                    <a class="btn btn-mini btn-danger" href="/dashboard/teams/<%= team.id %>/offers/<%= offer.id %>">Remove</a>
+                    <a class="btn btn-mini btn-danger" href="/dashboard/teams/<%= team.id %>/offers/<%= offer.id %>/remove">Remove</a>
                 </td>
             </tr>
             <% }) %>

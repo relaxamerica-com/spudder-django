@@ -1,4 +1,12 @@
 <div class="widget offer-widget">
+    <h5 class="widgetheading">
+        <% if (team.get('profileImageThumb')) { %>
+        <img src="<%= team.get('profileImageThumb') %>" class="team-logo" />
+        <% } else { %>
+        <i class="icon-group"></i>
+        <% } %>
+    </h5>
+
     <div>
         <ul class="social-network">
             <% if (team.get('facebook') != '') { %>
@@ -22,23 +30,14 @@
             <% if (team.get('googlePlus') != '') { %>
             <li>
                 <a href="<%= team.get('googlePlus') %>"
-                    target="_blank" rel="publisher" data-placement="bottom"
-                    title="Team Google+ profile" data-original-title="Google plus">
+                   target="_blank" rel="publisher" data-placement="bottom"
+                   title="Team Google+ profile" data-original-title="Google plus">
                     <i class="icon-google-plus icon-square"></i>
                 </a>
             </li>
             <% } %>
         </ul>
     </div>
-
-    <h5 class="widgetheading">
-        <% if (team.get('profileImageThumb')) { %>
-        <img src="<%= team.get('profileImageThumb') %>" class="team-logo" />
-        <% } else { %>
-        <i class="icon-group"></i>
-        <% } %>
-    </h5>
-
 
     <ul class="folio-detail offer-details">
         <li>

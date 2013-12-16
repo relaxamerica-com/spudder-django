@@ -9,22 +9,21 @@
         <i class="icon-briefcase"></i> Sponsorship Offer:
     </p>
 
-    <form action="/dashboard/teams/<%= team.id %>/offers/create" method="post" id="create-team-form">
+    <form action="/dashboard/teams/<%= teamID %>/offers/<%= offer.id %>/edit" method="post" id="create-team-form">
         <dl class="dl-horizontal">
             <dt>Title:</dt>
             <dd>
-                <input name="title"/>
+                <input name="title" value="<%= offer.get('title') %>"/>
                 <span class="input-required">*required</span>
             </dd>
             <dt>Donation:</dt>
             <dd>
-                <input name="donation"/>
-                <span class="input-required">*required</span>
+                <input name="donation" value="<%= offer.get('donation') %>" disabled/>
             </dd>
             <dt>Phone:</dt>
             <dd>
                 <span class="input-icon input-icon-right">
-                    <input class="input-medium input-mask-phone" name="phone" id="form-field-phone" type="text">
+                    <input class="input-medium input-mask-phone" name="phone" id="form-field-phone" type="text" value="<%= offer.get('phone') %>">
                     <i class="icon-phone icon-flip-horizontal"></i>
                     <span class="input-required">*required</span>
                 </span>
@@ -32,32 +31,34 @@
             <dt>Website:</dt>
             <dd>
                 <span class="input-icon input-icon-right">
-                    <input class="input-medium input-mask-website" name="website" id="form-field-website" type="url">
+                    <input class="input-medium input-mask-website" name="website" id="form-field-website" type="url" value="<%= offer.get('website') %>">
                     <i class="icon-bookmark icon-flip-horizontal icon-for-not-required-field"></i>
                 </span>
             </dd>
             <dt>Quantity available:</dt>
             <dd>
-                <input name="quantity"/>
+                <input name="quantity" value="<%= offer.get('quantity') %>"/>
                 <span class="input-required">*required</span>
             </dd>
             <dt>Video:</dt>
             <dd>
                 <span class="input-icon input-icon-right">
-                    <input class="input-medium input-mask-website" name="video" id="form-field-video" type="url">
+                    <input class="input-medium input-mask-website" name="video" id="form-field-video" type="url" value="<%= offer.get('video') %>">
                     <i class="icon-bookmark  icon-flip-horizontal icon-for-not-required-field"></i>
                 </span>
             </dd>
             <dt>End date:</dt>
             <dd>
                 <div class="input-append">
-                    <input class="input-small date-picker" name="endDate" id="form-field-date" data-date-format="yyyy-mm-dd" placeholder="yyyy-mm-dd" type="text">
+                    <input class="input-small date-picker" name="endDate" id="form-field-date" data-date-format="yyyy-mm-dd" placeholder="yyyy-mm-dd" type="text" value="<%= offer.get('endDate') %>">
                 </div>
                 <span class="input-required">*required</span>
             </dd>
             <dt>Details:</dt>
             <dd>
-                <textarea name="details" rows="5"></textarea>
+                <textarea name="details" rows="5">
+                    <%= offer.get('details') %>
+                </textarea>
                 <span class="input-required">*required</span>
             </dd>
             <dt>Images:</dt>
@@ -71,7 +72,7 @@
             </dd>
         </dl>
 
-        <button class="btn btn-danger" type="submit">Create</button>
+        <button class="btn btn-danger" type="submit">Save</button>
     </form>
 </div>
 
@@ -107,7 +108,7 @@
             submitHandler: function (form) {
                 var $formSubmit = $(form).find('button[type="submit"]');
 
-                $formSubmit.text('Creating...');
+                $formSubmit.text('Saving...');
                 $formSubmit.attr('disabled', 'disabled');
 
                 var offerImage1 = $(form).find('input[name="offerImage1"]'),
@@ -170,20 +171,7 @@
                 });
 
                 $.when(promises[2]).then(function () {
-                    if (!offerImage1.val() && !offerImage2.val() && !offerImage3.val()) {
-                        var $label = $(document.createElement('label'));
-
-                        $label.attr('for', 'offer-image-input1');
-                        $label.addClass('error');
-                        $label.text('At least one image must be chosen');
-
-                        $('dd.offer-images').append($label);
-
-                        $formSubmit.text('Create');
-                        $formSubmit.removeAttr('disabled');
-                    } else {
-                        form.submit();
-                    }
+                    form.submit();
                 });
             }
         });

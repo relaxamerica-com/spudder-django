@@ -13,5 +13,7 @@ module.exports = function (app, keys) {
     app.get('/dashboard/teams/:id/offers', helpers.loginRequired, teamOffers.list.get);
     app.get('/dashboard/teams/:id/offers/create', helpers.loginRequired, teamOffers.create.get);
     app.post('/dashboard/teams/:id/offers/create', helpers.loginRequired, teamOffers.create.post);
-    app.get('/dashboard/teams/:teamID/offers/:offerID', helpers.loginRequired, teamOffers.remove.get);
+    app.get('/dashboard/teams/:teamID/offers/:offerID/edit', helpers.loginRequired, teamOffers.edit.get);
+    app.post('/dashboard/teams/:teamID/offers/:offerID/edit', helpers.loginRequired, teamOffers.edit.post);
+    app.get('/dashboard/teams/:teamID/offers/:offerID/remove', helpers.loginRequired, teamOffers.remove.get);
 };

@@ -128,6 +128,72 @@ module.exports = function (keys) {
             }
         },
 
+        edit: {
+            get: function (req, res) {
+                var TeamOffer = Parse.Object.extend("TeamOffer"),
+                    query = new Parse.Query(TeamOffer),
+                    teamID = req.params.teamID,
+                    offerID = req.params.offerID;
+
+                query.get(offerID, {
+                    success: function(offer) {
+                        res.render('dashboard/teams/offers/edit', {
+                            'breadcrumbs' : ['Teams', 'Offers', 'Edit this offer'],
+                            'teamID': teamID,
+                            'offer': offer,
+                            'keys' : { 'jsKey' : keys.getJavaScriptKey(), 'appId' : keys.getApplicationID() }
+                        });
+                    },
+                    error: function(object, error) {
+                        console.log(error);
+                        res.render('dashboard/teams/offers/edit', {
+                            'breadcrumbs' : ['Teams', 'Offers', 'Edit this offer'],
+                            'found': false
+                        });
+                    }
+                });
+            },
+
+            post: function (req, res) {
+                var TeamOffer = Parse.Object.extend('TeamOffer'),
+                    query = new Parse.Query(TeamOffer),
+                    offerID = req.params.offerID,
+                    teamID = req.params.teamID;
+
+                query.get(offerID, {
+                    success: function(teamOffer) {
+                        var endDateString = req.body['endDate'], // YYYY-MM-DD
+                            images = [ req.body['offerImage1'], req.body['offerImage2'], req.body['offerImage3'] ],
+                            offerImages = [];
+
+                        for (var i = 0; i < images.length; i++) {
+                            if (images[i]) offerImages.push(images[i]);
+                        }
+
+                        teamOffer.set('title', req.body['title']);
+                        teamOffer.set('phone', req.body['phone']);
+                        teamOffer.set('website', req.body['website']);
+                        teamOffer.set('quantity', parseInt(req.body['quantity'], 10));
+                        teamOffer.set('endDate', endDateString);
+                        teamOffer.set('video', req.body['video']);
+                        teamOffer.set('details', req.body['details']);
+
+                        if (offerImages) {
+                            teamOffer.set('images', offerImages);
+                        }
+
+                        teamOffer.save();
+
+                        res.redirect('/dashboard/teams/' + teamID + '/offers/' + offerID + '/edit');
+                    },
+                    error: function(object, error) {
+                        console.log(error);
+                        res.redirect('/dashboard/teams/' + teamID + '/offers/' + offerID + '/edit');
+                    }
+                });
+            }
+        },
+
         remove: {
             get: function (req, res) {
                 var TeamOffer = Parse.Object.extend("TeamOffer"),
