@@ -16,4 +16,5 @@ module.exports = function (app, keys) {
     app.get('/dashboard/editEntity/:entityType/:id', helpers.loginRequired, dashboard.editEntity.get);
     app.post('/dashboard/editEntity/:entityType/:id', helpers.loginRequired, dashboard.editEntity.post);
     app.get('/dashboard/removeEntity/:entityType/:id', helpers.loginRequired, dashboard.removeEntity);
+    app.post('/dashboard/removeAdmin/:entityType/:id', helpers.loginRequired, dashboard.removeAdmin);
 };

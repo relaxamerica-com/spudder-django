@@ -1,6 +1,33 @@
 module.exports = function (keys) {
 	var krowdio = require('cloud/krowdio'),
-		pluralizer = require('cloud/pluralize');
+		pluralizer = require('cloud/pluralize'),
+		utilities = require('cloud/utilities')();
+	
+	var addAdmins = function(entity, i, addAdminsPromise, adminsList, notFoundEmails) {
+	                	if (i == adminsList.length) {
+		                	addAdminsPromise.resolve();
+	                	}
+		            	new Parse.Query(Parse.User).equalTo('email', adminsList[i]).first().then(function(admin) {
+		            		if (admin === null || admin === undefined) {
+		            			console.log('notFound');
+		            			notFoundEmails.push(adminsList[i]);
+		            			addAdmins(entity, i + 1, addAdminsPromise, adminsList, notFoundEmails);
+		            			return;
+		            		}
+		            		
+		            		if (entity.get('adminsEmails') && entity.get('adminsEmails').indexOf(adminsList[i]) >= 0) {
+		            			addAdmins(entity, i + 1, addAdminsPromise, adminsList, notFoundEmails);
+		            			return;
+		            		}
+		            		
+		                	entity.relation('admins').add(admin);
+		                	entity.add('adminsEmails', admin.getEmail());
+		                	entity.save(null).then(function(_entity) {
+			                	
+		                		addAdmins(_entity, i + 1, addAdminsPromise, adminsList, notFoundEmails);
+		                	});
+	                	});
+		           };
 	
     return {
         spuds: function (req, res) {
@@ -56,7 +83,7 @@ module.exports = function (keys) {
         		var entityType = req.params.entityType;
         			breadcrumbs = [entityType, 'Create a ' + entityType.toLowerCase()],
                     keys = { 'jsKey' : keys.getJavaScriptKey(), 'appId' : keys.getApplicationID() };
-        		return res.render('dashboard/' + entityType.toLowerCase() + '/create', { 'breadcrumbs' : breadcrumbs, 'keys' : keys, 'errors' : [] });
+        		res.render('dashboard/' + entityType.toLowerCase() + '/create', { 'breadcrumbs' : breadcrumbs, 'keys' : keys, 'errors' : [] });
         	},
         	
         	post: function(req, res) {
@@ -67,6 +94,9 @@ module.exports = function (keys) {
 		        	location = req.body.location,
 		        	contact = req.body.contact,
 		        	profile = req.body.profile,
+		        	team = req.body.team,
+		        	admins = utilities.removeSpaces(req.body.admins),
+		        	isDisplayPublicly = 'hide-publicly' in req.body,
 		        	profileImageThumb = req.body.profileImageThumb,
         			breadcrumbs = [entityType, 'Create a ' + entityType.toLowerCase()],
                     keys = { 'jsKey' : req.body.jsKey, 'appId' : req.body.appId };
@@ -77,8 +107,9 @@ module.exports = function (keys) {
 			        relation;
 	
 				var context = { 'breadcrumbs' : breadcrumbs, 'keys' : keys },
-					promise = new Parse.Promise();
-	
+					promise = new Parse.Promise(),
+					adminsList = admins.split(',').filter(function(el) { return el.length != 0; });
+				
 		        new Parse.Query(entityType).equalTo('nameSearch', name.toLowerCase()).find()
 		            .then(function(entities) {
 		                if (entities.length > 0) {
@@ -95,7 +126,16 @@ module.exports = function (keys) {
 		                entity.set('profile', profile);
 		                entity.set('sport', sport);
 		                entity.set('profileImageThumb', profileImageThumb);
+		                entity.set('isDisplayPublicly', isDisplayPublicly);
+		                entity.set('team', team);
+		                
+		                if (entityType == 'Player') {
+							entity.set('position', req.body.position);
+							entity.set('number', req.body.number);
+						}
+		                
 		                entity.relation('admins').add(Parse.User.current());
+		                
 		                // if (currentEntityCreateKey != null) {
 		                    // relationName = currentEntityCreateKey.split('-')[0];
 		                    // relationType = currentEntityCreateKey.split('-')[1];
@@ -114,12 +154,31 @@ module.exports = function (keys) {
 		                    // currentEntityCreateReverse = false;
 		                // }
 		                krowdio.krowdioRegisterEntityAndSave(entity);
-		                return res.redirect('/dashboard/listEntities/' + entityType);
+		                
+		                promise.resolve(entity);
 		            },
 		            function(error){
 		            	context['errors'] = [error];
-		            	console.log(context);
-		                return res.render('dashboard/' + entityType.toLowerCase() + '/create', context);
+		                res.render('dashboard/' + entityType.toLowerCase() + '/create', context);
+		            });
+		            
+		            var i = 0,
+		            	addAdminsPromise = new Parse.Promise(),
+		            	notFoundEmails = [];
+		            	
+		            promise.then(function(entity) {
+		            	if (adminsList.length > 0) {
+			            	addAdmins(entity, i, addAdminsPromise, adminsList, notFoundEmails);
+		            	} else {
+		            		res.redirect('/dashboard/listEntities/' + entityType);
+		            	}
+		            	addAdminsPromise.then(function() {
+		            		if (notFoundEmails.length > 0) {
+		            			res.redirect('/dashboard/listEntities/' + entityType + '?error');
+		            		} else {
+				            	res.redirect('/dashboard/listEntities/' + entityType);
+		            		}
+		            	});
 		            });
 		        }
         },
@@ -135,7 +194,7 @@ module.exports = function (keys) {
                 query.equalTo('admins', user);
 
                 query.find().then(function (list) {
-                    return res.render('dashboard/' + entityType.toLowerCase() + '/list', {
+                    res.render('dashboard/' + entityType.toLowerCase() + '/list', {
                         'breadcrumbs' : [entityType, 'My ' + pluralized],
                         'list': list
                     });
@@ -159,11 +218,11 @@ module.exports = function (keys) {
                             'entity' : entity,
                             'keys' : { 'jsKey' : keys.getJavaScriptKey(), 'appId' : keys.getApplicationID() }
                        	};
-                        return res.render('dashboard/' + entityName + '/edit', context);
+                        res.render('dashboard/' + entityName + '/edit', context);
                     },
                     error: function(object, error) {
                         console.log(error);
-                        return res.render('dashboard/' + entityName + '/edit', {
+                        res.render('dashboard/' + entityName + '/edit', {
                             'breadcrumbs' : [entityType, 'Edit this ' + entityName],
                             'found': false
                         });
@@ -177,10 +236,15 @@ module.exports = function (keys) {
                     details = req.body['contact-details'],
                     profile = req.body.profile,
                     id = req.params.id,
-                    entityType = req.params.entityType;
+                    entityType = req.params.entityType,
+                    team = req.body.team,
+		        	admins = utilities.removeSpaces(req.body.admins),
+		        	isDisplayPublicly = 'hide-publicly' in req.body;
 
                 var EntityClass = Parse.Object.extend(entityType),
-                    query = new Parse.Query(EntityClass);
+                    query = new Parse.Query(EntityClass),
+                    promise = new Parse.Promise(),
+                    adminsList = admins.split(',').filter(function(el) { return el.length != 0; });
 
                 query.get(id, {
                     success: function(entity) {
@@ -196,16 +260,36 @@ module.exports = function (keys) {
                         entity.set('facebook', req.body.facebook);
                         entity.set('twitter', req.body.twitter);
                         entity.set('googlePlus', req.body.googlePlus);
+                        entity.set('isDisplayPublicly', isDisplayPublicly);
+                        entity.set('team', team);
 
                         entity.save(null).then(function() {
-	                        return res.redirect('/dashboard/editEntity/' + entityType + '/' + id);
+	                        promise.resolve(entity);
                         });
                     },
                     error: function(object, error) {
                         console.log(error);
-                        return res.redirect('/dashboard/editEntity/' + entityType + '/' + id);
+                        res.redirect('/dashboard/editEntity/' + entityType + '/' + id);
                     }
                 });
+                var i = 0,
+	            	addAdminsPromise = new Parse.Promise(),
+	            	notFoundEmails = [];
+		            	
+	            promise.then(function(entity) {
+	            	if (adminsList.length > 0) {
+		            	addAdmins(entity, i, addAdminsPromise, adminsList, notFoundEmails);
+	            	} else {
+	            		res.redirect('/dashboard/listEntities/' + entityType);
+	            	}
+	            	addAdminsPromise.then(function() {
+	            		if (notFoundEmails.length > 0) {
+	            			res.redirect('/dashboard/listEntities/' + entityType + '?error');
+	            		} else {
+			            	res.redirect('/dashboard/listEntities/' + entityType);
+	            		}
+	            	});
+	            });
         	}
         },
         
@@ -217,9 +301,34 @@ module.exports = function (keys) {
 
             query.get(id).then(function (entity) {
         		entity.destroy().then(function () {
-                    return res.redirect('/dashboard/listEntities/' + entityType);
+                    res.redirect('/dashboard/listEntities/' + entityType);
 				});
             });
+        },
+        
+        removeAdmin: function(req, res) {
+        	var adminEmail = req.body.adminEmail,
+        		userId = req.params.id,
+        		entityType = req.params.entityType,
+        		EntityClass = Parse.Object.extend(entityType),
+        		query = new Parse.Query(EntityClass),
+        		promise = new Parse.Promise();
+
+        	query.get(userId).then(function(entity) {
+        		console.log(entity);
+        		new Parse.Query(Parse.User).equalTo('email', adminEmail).first().then(function(user) {
+	            	entity.relation('admins').remove(user);
+	            	entity.remove('adminsEmails', adminEmail);
+	            	return entity.save(null);
+        		}).then(function() {
+        			promise.resolve();
+        		});
+           	});
+           	
+           	promise.then(function(){
+           		res.send('OK');
+           	});
+        	
         }
     };
 };

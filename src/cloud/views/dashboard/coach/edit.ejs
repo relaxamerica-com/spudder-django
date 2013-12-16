@@ -26,18 +26,35 @@
 
     <h3>Update this Coach:</h3>
 
-    <form action="/dashboard/editEntity/Coach/<%= entity.id %>" method="post" id="create-coach-form">
-        <dl class="dl-horizontal">
-            <dt>Coach Name:</dt>
-            <dd><input name="name" value="<%= entity.get('name') %>"/></dd>
-            <dt>Coach Location:</dt>
-            <dd><input name="location" value="<%= entity.get('location') %>"/></dd>
-            <dt>Coach Contact Details:</dt>
-            <dd><input name="contact" value="<%= getValueOrEmpty( entity.get('contact') ) %>"/></dd>
-            <dt>Coach Profile:</dt>
-            <dd><textarea name="profile" rows="2"><%= entity.get('profile') %></textarea></dd>
-            <dt>Sport:</dt>
-            <dd>
+    <form action="/dashboard/editEntity/Coach/<%= entity.id %>" method="post" id="create-coach-form" class="form-horizontal">
+    	
+    	<div class="control-group">
+            <label class="control-label" for="name">Name (Nickname):</label>
+            <div class="controls">
+                <input name="name" id="name" value="<%= entity.get('name') %>" />
+                <span class="input-required">*required</span>
+                <input type="checkbox" name="hide-publicly" /> <span class="hide-publicly-text">Do NOT display publicly</span>
+            </div>
+    	</div>
+    	
+    	<div class="control-group">
+            <label class="control-label" for="location">Home Zip:</label>
+            <div class="controls">
+                <input name="location" id="location" value="<%= entity.get('location') %>" />
+                <span class="input-required" title="But never displayed, simply used to speed search">*required</span>
+            </div>
+    	</div>
+    	
+    	<div class="control-group">
+            <label class="control-label" for="team">Team:</label>
+            <div class="controls">
+                <input name="team" id="team" value="<%= getValueOrEmpty( entity.get('team') ) %>" />
+            </div>
+    	</div>
+    	
+    	<div class="control-group">
+            <label class="control-label" for="sport">Sport:</label>
+            <div class="controls">
                 <select name="sport">
                     <% if (entity.get('sport') == 'football') { %>
 	                    <option value="football" selected>Football</option>
@@ -47,14 +64,38 @@
 	                    <option value="soccer" selected>Soccer</option>
                     <% } %>
                 </select>
-            </dd>
-            <dt>Profile Picture:</dt>
-            <dd>
-                <input type="hidden" name="profileImageThumb" value="<%= entity.get('profileImageThumb') %>"/>
-                <input type="file" name="picture" id="profile-picture-input" accept="image/*"/>
-            </dd>
-        </dl>
-
+            </div>
+    	</div>
+    	
+    	<div class="control-group">
+            <label class="control-label" for="admins">Admins:</label>
+            <div class="controls" id="admins-controls">
+                <input name="admins" id="admins" placeholder="Enter emails..."  value="<%= getValueOrEmpty( entity.get('adminsEmails') ) %>" />
+            </div>
+    	</div>
+    	
+    	<div class="control-group">
+            <label class="control-label" for="contact-details">Coach Contact Details:</label>
+            <div class="controls">
+                <input name="contact-details" id="contact-details" value="<%= getValueOrEmpty( entity.get('contact-details') ) %>" />
+            </div>
+    	</div>
+    	
+    	<div class="control-group">
+            <label class="control-label" for="profile">Coach Profile:</label>
+            <div class="controls">
+                <textarea name="profile" rows="2" id="profile"><%= entity.get('profile') %></textarea>
+            </div>
+    	</div>
+    	
+    	<div class="control-group">
+            <label class="control-label" for="profile-picture-input">Profile Picture:</label>
+            <div class="controls">
+                <input type="hidden" name="profileImageThumb" value="<%= entity.get('profileImageThumb') %>" />
+            	<input type="file" id="profile-picture-input" accept="image/*" />
+            </div>
+    	</div>
+    	
         <h4 class="header orange bolder smaller">Information</h4>
         <div class="control-group">
             <label class="control-label" for="form-field-website">Website</label>
@@ -110,8 +151,11 @@
             </span>
             </div>
         </div>
-
-        <button class="btn btn-danger" type="submit">Save</button>
+		<div class="control-group">
+			<div class="controls">
+        		<button class="btn btn-orange" type="submit">Save</button>
+        	</div>
+   		</div>
     </form>
 </div>
 <% } else { %>
@@ -124,6 +168,7 @@
 <script src="/media/dashboard/js/jquery.validate.js"></script>
 <script src="/media/dashboard/js/additional-methods.min.js"></script>
 <script src="/media/js/parse.js"></script>
+<script src="/media/dashboard/js/bootstrap-tag.min.js"></script>
 
 <script>
     $(document).ready(function () {
@@ -186,6 +231,25 @@
             thumbnail: true,
             whitelist: 'gif|png|jpg|jpeg',
             blacklist: 'exe|php'
+        });
+        
+        $("#entity-create .input-required").tooltip({
+			hide: {
+				effect: "explode",
+				delay: 2500
+			},
+			show: {
+				effect: "slideDown",
+				delay: 2500
+			}
+		});
+        
+        $('#admins').tag({ placeholder: $('#admins').attr('placeholder') });
+        $('#admins-controls').click(function(e) {
+        	if ( $(e.target).hasClass('close') ) {
+        		var email = $(e.target).parent()[0].firstChild.data;
+       			$.post('/dashboard/removeAdmin/Coach/<%= entity.id %>', {'adminEmail' : email });
+        	}
         });
 
     });
