@@ -9,68 +9,86 @@
         <i class="icon-briefcase"></i> Sponsorship Offer:
     </p>
 
-    <form action="/dashboard/teams/<%= teamID %>/offers/<%= offer.id %>/edit" method="post" id="create-team-form">
-        <dl class="dl-horizontal">
-            <dt>Title:</dt>
-            <dd>
-                <input name="title" value="<%= offer.get('title') %>"/>
+    <form action="/dashboard/teams/<%= teamID %>/offers/<%= offer.id %>/edit" method="post" id="create-team-form" class="form-horizontal">
+        <div class="control-group">
+            <label class="control-label" for="title">Title:</label>
+            <div class="controls">
+                <input tabindex="1" name="title" id="title" value="<%= offer.get('title') %>"/>
                 <span class="input-required">*required</span>
-            </dd>
-            <dt>Donation:</dt>
-            <dd>
-                <input name="donation" value="<%= offer.get('donation') %>" disabled/>
-            </dd>
-            <dt>Phone:</dt>
-            <dd>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="donation">Donations:</label>
+            <div class="controls">
+                <input tabindex="2" name="donation" id="donation" value="<%= offer.get('donation') %>" disabled/>
+                <span class="input-required">*required</span>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="form-field-phone">Phone:</label>
+            <div class="controls">
                 <span class="input-icon input-icon-right">
-                    <input class="input-medium input-mask-phone" name="phone" id="form-field-phone" type="text" value="<%= offer.get('phone') %>">
-                    <i class="icon-phone icon-flip-horizontal"></i>
-                    <span class="input-required">*required</span>
+                    <input tabindex="3" class="input-medium input-mask-phone" name="phone" id="form-field-phone" type="text" value="<%= offer.get('phone') %>">
+                    <i class="icon-phone icon-flip-horizontal icon-right"></i>
                 </span>
-            </dd>
-            <dt>Website:</dt>
-            <dd>
+                <span class="input-required">*required</span>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="form-field-website">Website:</label>
+            <div class="controls">
                 <span class="input-icon input-icon-right">
-                    <input class="input-medium input-mask-website" name="website" id="form-field-website" type="url" value="<%= offer.get('website') %>">
+                    <input tabindex="4" class="input-medium input-mask-website" name="website" id="form-field-website" type="url" value="<%= offer.get('website') %>">
                     <i class="icon-bookmark icon-flip-horizontal icon-for-not-required-field"></i>
                 </span>
-            </dd>
-            <dt>Quantity available:</dt>
-            <dd>
-                <input name="quantity" value="<%= offer.get('quantity') %>"/>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="quantity">Quantity available:</label>
+            <div class="controls">
+                <input tabindex="5" name="quantity" id="quantity" value="<%= offer.get('quantity') %>"/>
                 <span class="input-required">*required</span>
-            </dd>
-            <dt>Video:</dt>
-            <dd>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="form-field-video">Video</label>
+            <div class="controls">
                 <span class="input-icon input-icon-right">
-                    <input class="input-medium input-mask-website" name="video" id="form-field-video" type="url" value="<%= offer.get('video') %>">
+                    <input tabindex="6" class="input-medium input-mask-website" name="video" id="form-field-video" type="url" value="<%= offer.get('video') %>">
                     <i class="icon-bookmark  icon-flip-horizontal icon-for-not-required-field"></i>
                 </span>
-            </dd>
-            <dt>End date:</dt>
-            <dd>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="form-field-date">End date:</label>
+            <div class="controls">
                 <div class="input-append">
-                    <input class="input-small date-picker" name="endDate" id="form-field-date" data-date-format="yyyy-mm-dd" placeholder="yyyy-mm-dd" type="text" value="<%= offer.get('endDate') %>">
+                    <input class="input-small date-picker" name="endDate" id="form-field-date"
+                           data-date-format="yyyy-mm-dd" placeholder="yyyy-mm-dd" type="text"
+                           value="<%= offer.get('endDate') %>"
+                           data-original-end-date="<%= offer.get('endDate') %>">
                 </div>
                 <span class="input-required">*required</span>
-            </dd>
-            <dt>Details:</dt>
-            <dd>
-                <textarea name="details" rows="5">
-                    <%= offer.get('details') %>
-                </textarea>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="details">Details:</label>
+            <div class="controls">
+                <textarea name="details" id="details" rows="5"><%= offer.get('details') %></textarea>
                 <span class="input-required">*required</span>
-            </dd>
-            <dt>Images:</dt>
-            <dd class="offer-images">
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="offer-image-input1">Images:</label>
+            <div class="controls">
                 <input type="hidden" name="offerImage1" />
                 <input type="file" id="offer-image-input1" name="offerImageInput1" class="file-upload-input" accept="image/*" />
                 <input type="hidden" name="offerImage2" />
                 <input type="file" id="offer-image-input2" name="offerImageInput2" class="file-upload-input" accept="image/*" />
                 <input type="hidden" name="offerImage3" />
                 <input type="file" id="offer-image-input3" name="offerImageInput3" class="file-upload-input" accept="image/*" />
-            </dd>
-        </dl>
+            </div>
+        </div>
 
         <button class="btn btn-danger" type="submit">Save</button>
     </form>
@@ -97,7 +115,7 @@
                 phone: "required",
                 quantity: { required: true, positiveInteger: true },
                 donation: { required: true, positiveInteger: true },
-                endDate: { required: true, endDate: true },
+                endDate: { required: true, originalDate: true },
                 offerImageInput1: { extension: "gif|png|jpg|jpeg" },
                 offerImageInput2: { extension: "gif|png|jpg|jpeg" },
                 offerImageInput3: { extension: "gif|png|jpg|jpeg" }

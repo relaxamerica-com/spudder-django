@@ -10,7 +10,10 @@ module.exports = function (keys) {
             };
 
             res.render('dashboard/sponsors/recipient', {
-                'breadcrumbs' : ['Teams', 'Registering as Recipient'],
+                'breadcrumbs' : [
+                    { 'title' : 'Teams', 'href' : '/dashboard/teams' },
+                    { 'title' : 'Registering as Recipient', 'href' : 'javascript:void(0);' }
+                ],
                 'cbui': amazonFPS.getCBUI(params)
             });
         },
@@ -38,13 +41,19 @@ module.exports = function (keys) {
                 recipient.save(null, {
                     success: function () {
                         res.render('dashboard/sponsors/recipient_complete', {
-                            'breadcrumbs': ['Teams', 'Registration complete'],
+                            'breadcrumbs' : [
+                                { 'title' : 'Teams', 'href' : '/dashboard/teams' },
+                                { 'title' : 'Registration complete', 'href' : 'javascript:void(0);' }
+                            ],
                             'isError': false
                         });
                     },
                     error: function (recipient, error) {
                         res.render('dashboard/sponsors/recipient_complete', {
-                            'breadcrumbs': ['Teams', 'Errors during registration'],
+                            'breadcrumbs' : [
+                                { 'title' : 'Teams', 'href' : '/dashboard/teams' },
+                                { 'title' : 'Errors during registration', 'href' : 'javascript:void(0);' }
+                            ],
                             'isError': true,
                             'error': error
                         });
@@ -74,7 +83,10 @@ module.exports = function (keys) {
                     }
 
                     res.render('dashboard/sponsors/sponsor', {
-                        'breadcrumbs': ['Sponsors', 'Became a sponsor'],
+                        'breadcrumbs' : [
+                            { 'title' : 'Sponsors', 'href' : '/dashboard/sponsor' },
+                            { 'title' : 'Become a sponsor', 'href' : 'javascript:void(0);' }
+                        ],
                         'recipients': recipients
                     });
                 }
@@ -99,7 +111,10 @@ module.exports = function (keys) {
                 };
 
             res.render('dashboard/sponsors/sponsor_confirm', {
-                'breadcrumbs': ['Sponsors', 'Confirm donation'],
+                'breadcrumbs' : [
+                    { 'title' : 'Sponsors', 'href' : '/dashboard/sponsor' },
+                    { 'title' : 'Confirm donation', 'href' : 'javascript:void(0);' }
+                ],
                 'cbui': amazonFPS.getCBUI(params),
                 'amount': '' + amount,
                 'teamName': teamName
@@ -130,7 +145,10 @@ module.exports = function (keys) {
 
             function renderError(errorMsg) {
                 res.render('dashboard/sponsors/sponsor_complete', {
-                    'breadcrumbs': ['Sponsors', 'Donation completed'],
+                    'breadcrumbs' : [
+                        { 'title' : 'Sponsors', 'href' : '/dashboard/sponsor' },
+                        { 'title' : 'Donation completed', 'href' : 'javascript:void(0);' }
+                    ],
                     'isError': true,
                     'error': errorMsg
                 });
@@ -171,7 +189,10 @@ module.exports = function (keys) {
                         donation.save(null, {
                             success: function () {
                                 res.render('dashboard/sponsors/sponsor_complete', {
-                                    'breadcrumbs': ['Sponsors', 'Registration complete'],
+                                    'breadcrumbs' : [
+                                        { 'title' : 'Sponsors', 'href' : '/dashboard/sponsor' },
+                                        { 'title' : 'Registration complete', 'href' : 'javascript:void(0);' }
+                                    ],
                                     'isError': false
                                 });
                             },
@@ -207,7 +228,9 @@ module.exports = function (keys) {
                     }
 
                     res.render('dashboard/sponsors/donations', {
-                        'breadcrumbs': ['Donations'],
+                        'breadcrumbs' : [
+                            { 'title' : 'Donations', 'href' : 'javascript:void(0);' }
+                        ],
                         'count': count,
                         'donations': donations,
                         'totalAmount': totalAmount
