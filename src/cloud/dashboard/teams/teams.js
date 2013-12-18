@@ -3,7 +3,7 @@ module.exports = function (keys) {
         create: {
             get: function (req, res) {
                 res.render('dashboard/teams/create', {
-                    'breadcrumbs' : ['Teams', 'Create a team'],
+                    'breadcrumbs' : [{ 'title' : 'Teams', 'href' : '/dashboard/teams' }, { 'title' : 'My teams', 'href' : '/dashboard/teams' }],
                     'keys' : { 'jsKey' : keys.getJavaScriptKey(), 'appId' : keys.getApplicationID() }
                 });
             },
@@ -57,7 +57,7 @@ module.exports = function (keys) {
                 query.get(teamID, {
                     success: function(team) {
                         res.render('dashboard/teams/edit', {
-                            'breadcrumbs' : ['Teams', 'Edit this team'],
+                            'breadcrumbs' : [{ 'title' : 'Teams', 'href' : '/dashboard/teams' }, { 'title' : 'My teams', 'href' : '/dashboard/teams' }],
                             'found': true,
                             'team': team,
                             'keys' : { 'jsKey' : keys.getJavaScriptKey(), 'appId' : keys.getApplicationID() }
@@ -66,7 +66,7 @@ module.exports = function (keys) {
                     error: function(object, error) {
                         console.log(error);
                         res.render('dashboard/teams/edit', {
-                            'breadcrumbs' : ['Teams', 'Edit this team'],
+                            'breadcrumbs' : [{ 'title' : 'Teams', 'href' : '/dashboard/teams' }, { 'title' : 'My teams', 'href' : '/dashboard/teams' }],
                             'found': false
                         });
                     }
@@ -147,7 +147,7 @@ module.exports = function (keys) {
                         return promise;
                     }).then(function () {
                         return res.render('dashboard/teams/list', {
-                            'breadcrumbs' : ['Teams', 'My teams'],
+                            'breadcrumbs' : [{ 'title' : 'Teams', 'href' : '/dashboard/teams' }, { 'title' : 'My teams', 'href' : '/dashboard/teams' }],
                             'list': teamsList
                         });
                     });
@@ -173,7 +173,7 @@ module.exports = function (keys) {
                         if (results.length > 0) {
                             results[0].destroy().then(function() {
                                 promise.resolve();
-                            })
+                            });
                         } else {
                             promise.resolve();
                         }

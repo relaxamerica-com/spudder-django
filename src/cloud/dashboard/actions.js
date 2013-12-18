@@ -28,17 +28,28 @@ module.exports = function (keys) {
 		                	});
 	                	});
 		           };
+
+	var createTeam = function(name, admin) {
+		var TeamClass = Parse.Object.extend('Team');
+        	team = new TeamClass();
+        team.set('name', name);
+        team.set('nameSearch', name.toLowerCase());
+        var admins = team.relation('admins');
+        admins.add(admin);
+        
+        return team.save();
+	};
 	
     return {
         spuds: function (req, res) {
-            var breadcrumbs = ['SPUDS'];
+            var breadcrumbs = [{ 'title' : 'SPUDS', 'href' : '/dashboard' }];
             res.render('dashboard/spuds', {
                 'breadcrumbs' : breadcrumbs
             });
         },
 
         general: function (req, res) {
-            var breadcrumbs = ['Fans', 'General'];
+            var breadcrumbs = [{ 'title' : 'Fans', 'href' : '/dashboard/fans/spuds' }, { 'title' : 'General', 'href' : '/dashboard/fans/spuds' }];
             res.render('dashboard/fan/general', {
                 'breadcrumbs' : breadcrumbs,
                 'displayUsers' : require('cloud/commons/displayUsers'),
@@ -48,7 +59,7 @@ module.exports = function (keys) {
         },
         
         mySpuds: function(req, res) {
-        	var breadcrumbs = ['Fans', 'My Spuds'];
+        	var breadcrumbs = [{ 'title' : 'Fans', 'href' : '/dashboard/fans/spuds' }, { 'title' : 'My Spuds', 'href' : '/dashboard/fans/spuds' }];
         	res.render('dashboard/fan/mySpuds', {
                 'breadcrumbs' : breadcrumbs,
                 'modalTop' : require('cloud/dashboard/fan/modalTop'),
@@ -56,7 +67,7 @@ module.exports = function (keys) {
         },
         
         myFavorites: function(req, res) {
-        	var breadcrumbs = ['Fans', 'My Favorites'];
+        	var breadcrumbs = [{ 'title' : 'Fans', 'href' : '/dashboard/fans/favorites' }, { 'title' : 'My Favorites', 'href' : '/dashboard/fans/favorites' }];
         	res.render('dashboard/fan/myFavorites', {
                 'breadcrumbs' : breadcrumbs,
                 'displayUsers' : require('cloud/commons/displayUsers'),
@@ -64,7 +75,7 @@ module.exports = function (keys) {
         },
         
         basicInfo: function(req, res) {
-        	var breadcrumbs = ['Fans', 'Basic Info'];
+        	var breadcrumbs = [{ 'title' : 'Fans', 'href' : '/dashboard/fans/basicInfo' }, { 'title' : 'Basic Info', 'href' : '/dashboard/fans/basicInfo' }];
         	res.render('dashboard/fan/basicInfo', {
                 'breadcrumbs' : breadcrumbs,
                 'keys' : { 'jsKey' : keys.getJavaScriptKey(), 'appId' : keys.getApplicationID() }
@@ -72,7 +83,7 @@ module.exports = function (keys) {
         },
         
         settings: function(req, res) {
-        	var breadcrumbs = ['Fans', 'Settings'];
+        	var breadcrumbs = [{ 'title' : 'Fans', 'href' : '/dashboard/fans/settings' }, { 'title' : 'Settings', 'href' : '/dashboard/fans/settings' }];
         	res.render('dashboard/fan/settings', {
                 'breadcrumbs' : breadcrumbs,
             });
@@ -81,7 +92,10 @@ module.exports = function (keys) {
         createEntity: {
         	get: function(req, res) {
         		var entityType = req.params.entityType;
-        			breadcrumbs = [entityType, 'Create a ' + entityType.toLowerCase()],
+        			breadcrumbs = [
+        				{ 'title' : pluralizer.pluralize(entityType, 2), 'href' : '/dashboard/listEntities/' + entityType }, 
+        				{ 'title' : 'Create a ' + entityType.toLowerCase(), 'href' : '/dashboard/createEntity/' + entityType }
+        			],
                     keys = { 'jsKey' : keys.getJavaScriptKey(), 'appId' : keys.getApplicationID() };
         		res.render('dashboard/' + entityType.toLowerCase() + '/create', { 'breadcrumbs' : breadcrumbs, 'keys' : keys, 'errors' : [] });
         	},
@@ -166,19 +180,31 @@ module.exports = function (keys) {
 		            	addAdminsPromise = new Parse.Promise(),
 		            	notFoundEmails = [];
 		            	
+		            	
 		            promise.then(function(entity) {
+		            	var teamPromise = new Parse.Promise();
+		            	if (team.length > 0) {
+			            	teamPromise = createTeam(team, user);
+		            	} else {
+		            		teamPromise.resolve();
+		            	}
+		            	
 		            	if (adminsList.length > 0) {
 			            	addAdmins(entity, i, addAdminsPromise, adminsList, notFoundEmails);
 		            	} else {
-		            		res.redirect('/dashboard/listEntities/' + entityType);
+		            		addAdminsPromise.resolve();
 		            	}
-		            	addAdminsPromise.then(function() {
+		            	
+		            	Parse.Promise.when([addAdmins, teamPromise]).then(function() {
 		            		if (notFoundEmails.length > 0) {
-		            			res.redirect('/dashboard/listEntities/' + entityType + '?error');
-		            		} else {
-				            	res.redirect('/dashboard/listEntities/' + entityType);
+		            			res.redirect('/dashboard/listEntities/' + entityType + '?error=Team with given name already exists.');
 		            		}
+		            		res.redirect('/dashboard/listEntities/' + entityType);
+		            	}, function(error) {
+		            		console.log(error[1].message);
+		            		res.redirect('/dashboard/listEntities/' + entityType + '?error=' + error[1].message);
 		            	});
+		            	
 		            });
 		        }
         },
@@ -194,8 +220,12 @@ module.exports = function (keys) {
                 query.equalTo('admins', user);
 
                 query.find().then(function (list) {
+                	var breadcrumbs = [
+                		{ 'title' : pluralized, 'href' : '/dashboard/listEntities/' + entityType }, 
+        				{ 'title' : 'My ' + pluralized, 'href' : '/dashboard/listEntities/' + entityType }
+        			];
                     res.render('dashboard/' + entityType.toLowerCase() + '/list', {
-                        'breadcrumbs' : [entityType, 'My ' + pluralized],
+                        'breadcrumbs' : breadcrumbs,
                         'list': list
                     });
                 });
@@ -208,12 +238,16 @@ module.exports = function (keys) {
         			EntityClass = Parse.Object.extend(entityType),
                     query = new Parse.Query(EntityClass),
                     id = req.params.id,
-            		entityName = entityType.toLowerCase();
+            		entityName = entityType.toLowerCase(),
+            		breadcrumbs = [
+	            		{ 'title' : pluralizer.pluralize(entityType, 2), 'href' : '/dashboard/listEntities/' + entityType }, 
+						{ 'title' : 'Edit this ' + entityType.toLowerCase(), 'href' : '/dashboard/editEntity/' + entityType + '/' + id }
+    				];
 
                 query.get(id, {
                     success: function(entity) {
-                    	var context = {
-                            'breadcrumbs' : [entityType, 'Edit this ' + entityName],
+                    	context = {
+                            'breadcrumbs' : breadcrumbs,
                             'found': true,
                             'entity' : entity,
                             'keys' : { 'jsKey' : keys.getJavaScriptKey(), 'appId' : keys.getApplicationID() }
@@ -223,7 +257,7 @@ module.exports = function (keys) {
                     error: function(object, error) {
                         console.log(error);
                         res.render('dashboard/' + entityName + '/edit', {
-                            'breadcrumbs' : [entityType, 'Edit this ' + entityName],
+                            'breadcrumbs' : breadcrumbs,
                             'found': false
                         });
                     }
