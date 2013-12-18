@@ -316,8 +316,8 @@
 						<li>
 							<i class="icon-home home-icon"></i>
 							<% breadcrumbs.forEach(function(breadcrumb, i) { %>
-								<a href="#">
-									<%= breadcrumb %>
+								<a href="<%= breadcrumb.href %>">
+									<%= breadcrumb.title %>
 								</a>
 								<% if ( breadcrumbs.length - 1 != i ) { %>
 									<span class="divider"> 
