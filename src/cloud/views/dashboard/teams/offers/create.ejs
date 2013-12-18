@@ -9,67 +9,83 @@
         <i class="icon-briefcase"></i> Sponsorship Offer:
     </p>
 
-    <form action="/dashboard/teams/<%= team.id %>/offers/create" method="post" id="create-team-form">
-        <dl class="dl-horizontal">
-            <dt>Title:</dt>
-            <dd>
-                <input name="title"/>
+    <form action="/dashboard/teams/<%= team.id %>/offers/create" method="post" id="create-team-form" class="form-horizontal">
+        <div class="control-group">
+            <label class="control-label" for="title">Title:</label>
+            <div class="controls">
+                <input tabindex="1" name="title" id="title" />
                 <span class="input-required">*required</span>
-            </dd>
-            <dt>Donation:</dt>
-            <dd>
-                <input name="donation"/>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="donation">Donations:</label>
+            <div class="controls">
+                <input tabindex="2" name="donation" id="donation" />
                 <span class="input-required">*required</span>
-            </dd>
-            <dt>Phone:</dt>
-            <dd>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="form-field-phone">Phone:</label>
+            <div class="controls">
                 <span class="input-icon input-icon-right">
-                    <input class="input-medium input-mask-phone" name="phone" id="form-field-phone" type="text">
-                    <i class="icon-phone icon-flip-horizontal"></i>
-                    <span class="input-required">*required</span>
+                    <input tabindex="3" class="input-medium input-mask-phone" name="phone" id="form-field-phone" type="text">
+                    <i class="icon-phone icon-flip-horizontal icon-right"></i>
                 </span>
-            </dd>
-            <dt>Website:</dt>
-            <dd>
+                <span class="input-required">*required</span>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="form-field-website">Website:</label>
+            <div class="controls">
                 <span class="input-icon input-icon-right">
-                    <input class="input-medium input-mask-website" name="website" id="form-field-website" type="url">
+                    <input tabindex="4" class="input-medium input-mask-website" name="website" id="form-field-website" type="url">
                     <i class="icon-bookmark icon-flip-horizontal icon-for-not-required-field"></i>
                 </span>
-            </dd>
-            <dt>Quantity available:</dt>
-            <dd>
-                <input name="quantity"/>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="quantity">Quantity available:</label>
+            <div class="controls">
+                <input tabindex="5" name="quantity" id="quantity" />
                 <span class="input-required">*required</span>
-            </dd>
-            <dt>Video:</dt>
-            <dd>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="form-field-video">Video</label>
+            <div class="controls">
                 <span class="input-icon input-icon-right">
-                    <input class="input-medium input-mask-website" name="video" id="form-field-video" type="url">
+                    <input tabindex="6" class="input-medium input-mask-website" name="video" id="form-field-video" type="url">
                     <i class="icon-bookmark  icon-flip-horizontal icon-for-not-required-field"></i>
                 </span>
-            </dd>
-            <dt>End date:</dt>
-            <dd>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="form-field-date">End date:</label>
+            <div class="controls">
                 <div class="input-append">
                     <input class="input-small date-picker" name="endDate" id="form-field-date" data-date-format="yyyy-mm-dd" placeholder="yyyy-mm-dd" type="text">
                 </div>
                 <span class="input-required">*required</span>
-            </dd>
-            <dt>Details:</dt>
-            <dd>
-                <textarea name="details" rows="5"></textarea>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="details">Details:</label>
+            <div class="controls">
+                <textarea name="details" id="details" rows="5"></textarea>
                 <span class="input-required">*required</span>
-            </dd>
-            <dt>Images:</dt>
-            <dd class="offer-images">
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="offer-image-input1">Images:</label>
+            <div class="controls">
                 <input type="hidden" name="offerImage1" />
                 <input type="file" id="offer-image-input1" name="offerImageInput1" class="file-upload-input" accept="image/*" />
                 <input type="hidden" name="offerImage2" />
                 <input type="file" id="offer-image-input2" name="offerImageInput2" class="file-upload-input" accept="image/*" />
                 <input type="hidden" name="offerImage3" />
                 <input type="file" id="offer-image-input3" name="offerImageInput3" class="file-upload-input" accept="image/*" />
-            </dd>
-        </dl>
+            </div>
+        </div>
 
         <button class="btn btn-danger" type="submit">Create</button>
     </form>

@@ -42,7 +42,7 @@ module.exports = function (keys) {
                             }
 
                             res.render('dashboard/teams/offers/list', {
-                                'breadcrumbs' : ['Teams', team.get('name'), 'Offers'],
+                                'breadcrumbs' : [{ 'title' : 'Teams', 'href' : '/dashboard/teams' }, { 'title' : 'Offers', 'href' : 'javascript:void(0);' }],
                                 'team': team,
                                 'count': list.length,
                                 'currentOffers': currentOffers,
@@ -63,7 +63,11 @@ module.exports = function (keys) {
                 query.get(teamID, {
                     success: function(team) {
                         res.render('dashboard/teams/offers/create', {
-                            'breadcrumbs' : ['Teams', team.get('name'), 'Offers', 'Create offer'],
+                            'breadcrumbs' : [
+                                { 'title' : 'Teams', 'href' : '/dashboard/teams' },
+                                { 'title' : 'Offers', 'href' : '/dashboard/teams/' + team.id + '/offers' },
+                                { 'title' : 'Create offer', 'href' : 'javascript:void(0);' }
+                            ],
                             'team': team,
                             'keys' : { 'jsKey' : keys.getJavaScriptKey(), 'appId' : keys.getApplicationID() }
                         });
@@ -71,7 +75,11 @@ module.exports = function (keys) {
                     error: function(object, error) {
                         console.log(error);
                         res.render('dashboard/teams/offers/list', {
-                            'breadcrumbs' : ['Teams', 'Error'],
+                            'breadcrumbs' : [
+                                { 'title' : 'Teams', 'href' : '/dashboard/teams' },
+                                { 'title' : 'Offers', 'href' : '/dashboard/teams/' + team.id + '/offers' },
+                                { 'title' : 'Error', 'href' : 'javascript:void(0);' }
+                            ],
                             'list': []
                         });
                     }
@@ -120,7 +128,11 @@ module.exports = function (keys) {
                     error: function(object, error) {
                         console.log(error);
                         res.render('dashboard/teams/offers/list', {
-                            'breadcrumbs' : ['Teams', 'Error'],
+                            'breadcrumbs' : [
+                                { 'title' : 'Teams', 'href' : '/dashboard/teams' },
+                                { 'title' : 'Offers', 'href' : 'javascript:void(0);' },
+                                { 'title' : 'Error', 'href' : 'javascript:void(0);' }
+                            ],
                             'list': []
                         });
                     }
@@ -138,7 +150,11 @@ module.exports = function (keys) {
                 query.get(offerID, {
                     success: function(offer) {
                         res.render('dashboard/teams/offers/edit', {
-                            'breadcrumbs' : ['Teams', 'Offers', 'Edit this offer'],
+                            'breadcrumbs' : [
+                                { 'title' : 'Teams', 'href' : '/dashboard/teams' },
+                                { 'title' : 'Offers', 'href' : '/dashboard/teams/' + teamID + '/offers' },
+                                { 'title' : 'Edit this offer', 'href' : 'javascript:void(0);' }
+                            ],
                             'teamID': teamID,
                             'offer': offer,
                             'keys' : { 'jsKey' : keys.getJavaScriptKey(), 'appId' : keys.getApplicationID() }
@@ -147,7 +163,11 @@ module.exports = function (keys) {
                     error: function(object, error) {
                         console.log(error);
                         res.render('dashboard/teams/offers/edit', {
-                            'breadcrumbs' : ['Teams', 'Offers', 'Edit this offer'],
+                            'breadcrumbs' : [
+                                { 'title' : 'Teams', 'href' : '/dashboard/teams' },
+                                { 'title' : 'Offers', 'href' : '/dashboard/teams/' + teamID + '/offers' },
+                                { 'title' : 'Edit this offer', 'href' : 'javascript:void(0);' }
+                            ],
                             'found': false
                         });
                     }

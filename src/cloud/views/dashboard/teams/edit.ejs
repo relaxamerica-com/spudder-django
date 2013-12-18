@@ -26,19 +26,37 @@
 
     <h3>Update this Team:</h3>
 
-    <form action="/dashboard/teams/edit" method="post" id="create-team-form">
-        <dl class="dl-horizontal">
-            <dt>Team Name:</dt>
-            <dd><input name="name" value="<%= team.get('name') %>"/></dd>
-            <dt>Team Location:</dt>
-            <dd><input name="location" value="<%= team.get('location') %>"/></dd>
-            <dt>Team Contact Details:</dt>
-            <dd><input name="contact" value="<%= team.get('contact') %>"/></dd>
-            <dt>Team Profile:</dt>
-            <dd><textarea name="profile" rows="2"><%= team.get('profile') %></textarea></dd>
-            <dt>Sport:</dt>
-            <dd>
-                <select name="sport">
+    <form action="/dashboard/teams/edit" method="post" id="create-team-form" class="form-horizontal">
+        <div class="control-group">
+            <label class="control-label" for="name">Team Name:</label>
+            <div class="controls">
+                <input tabindex="1" name="name" id="name" value="<%= team.get('name') %>" />
+                <span class="input-required">*required</span>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="location">Team Location:</label>
+            <div class="controls">
+                <input tabindex="2" name="location" id="location" value="<%= team.get('location') %>"/>
+                <span class="input-required">*required</span>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="contact-details">Team Contact Details:</label>
+            <div class="controls">
+                <input tabindex="3" name="contact-details" id="contact-details" value="<%= team.get('contact') %>"/>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="profile">Team Profile:</label>
+            <div class="controls">
+                <textarea tabindex="4" name="profile" id="profile"><%= team.get('profile') %></textarea>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="sport">Sport:</label>
+            <div class="controls">
+                <select tabindex="5" name="sport" id="sport">
                     <% if (team.get('sport') == 'football') { %>
                     <option value="football" selected>Football</option>
                     <option value="soccer">Soccer</option>
@@ -47,74 +65,70 @@
                     <option value="soccer" selected>Soccer</option>
                     <% } %>
                 </select>
-            </dd>
-            <dt>Profile Picture:</dt>
-            <dd>
-                <input type="hidden" name="profileImageThumb" value="<%= team.get('profileImageThumb') %>"/>
-                <input type="file" name="picture" id="profile-picture-input" accept="image/*" class="file-upload-input"/>
-            </dd>
-        </dl>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="profile-picture-input">Profile Picture:</label>
+            <div class="controls">
+                <input type="hidden" name="profileImageThumb" />
+                <input type="file" id="profile-picture-input" accept="image/*" class="file-upload-input"/>
+            </div>
+        </div>
 
         <h4 class="header orange bolder smaller">Information</h4>
         <div class="control-group">
             <label class="control-label" for="form-field-website">Website</label>
-
             <div class="controls">
-            <span class="input-icon input-icon-right">
-                <input name="website" value="<%= getValueOrEmpty(team.get('website')) %>" id="form-field-website" type="url">
-                <i class="icon-bookmark icon-for-not-required-field"></i>
-            </span>
+                <span class="input-icon input-icon-right">
+                    <input name="website" value="<%= getValueOrEmpty(team.get('website')) %>" id="form-field-website" type="url">
+                    <i class="icon-bookmark"></i>
+                </span>
             </div>
         </div>
         <div class="control-group">
             <label class="control-label" for="form-field-email">Email</label>
-
             <div class="controls">
-            <span class="input-icon input-icon-right">
-                <input name="email" value="<%= getValueOrEmpty(team.get('email')) %>" id="form-field-email"type="email">
-                <i class="icon-envelope icon-for-not-required-field"></i>
-            </span>
+                <span class="input-icon input-icon-right">
+                    <input name="email" value="<%= getValueOrEmpty(team.get('email')) %>" id="form-field-email"type="email">
+                    <i class="icon-envelope"></i>
+                </span>
             </div>
         </div>
         <div class="control-group">
             <label class="control-label" for="form-field-home-venue">Home Venue</label>
-
             <div class="controls">
-            <span class="input-icon input-icon-right">
-                <input name="homeVenue" id="form-field-home-venue" value="<%= getValueOrEmpty(team.get('homeVenue')) %>" type="text">
-                <i class="icon-home icon-for-not-required-field"></i>
-            </span>
+                <span class="input-icon input-icon-right">
+                    <input name="homeVenue" id="form-field-home-venue" value="<%= getValueOrEmpty(team.get('homeVenue')) %>" type="text">
+                    <i class="icon-home"></i>
+                </span>
             </div>
         </div>
 
         <h4 class="header orange bolder smaller">Social</h4>
         <div class="control-group">
             <label class="control-label" for="form-field-facebook">Facebook</label>
-
             <div class="controls">
-                <span class="input-icon">
-                <input name="facebook" value="<%= getValueOrEmpty(team.get('facebook')) %>" id="form-field-facebook" type="url">
-                <i class="icon-facebook"></i>
-            </span>
+                <span class="input-icon input-icon-left">
+                    <input name="facebook" value="<%= getValueOrEmpty(team.get('facebook')) %>" id="form-field-facebook" type="url">
+                    <i class="icon-facebook"></i>
+                </span>
             </div>
         </div>
 
         <div class="control-group">
             <label class="control-label" for="form-field-twitter">Twitter</label>
-
             <div class="controls">
-            <span class="input-icon">
-                <input value="<%= getValueOrEmpty(team.get('twitter')) %>" name="twitter" id="form-field-twitter" type="url">
-                <i class="icon-twitter"></i>
-            </span>
+                <span class="input-icon input-icon-left">
+                    <input value="<%= getValueOrEmpty(team.get('twitter')) %>" name="twitter" id="form-field-twitter" type="url">
+                    <i class="icon-twitter"></i>
+                </span>
             </div>
         </div>
 
         <div class="control-group">
             <label class="control-label" for="form-field-gplus">Google+</label>
-
             <div class="controls">
-            <span class="input-icon">
+            <span class="input-icon input-icon-left">
                 <input value="<%= getValueOrEmpty(team.get('googlePlus')) %>" name="googlePlus" id="form-field-gplus" type="url">
                 <i class="icon-google-plus"></i>
             </span>

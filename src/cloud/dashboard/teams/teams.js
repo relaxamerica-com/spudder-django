@@ -3,7 +3,7 @@ module.exports = function (keys) {
         create: {
             get: function (req, res) {
                 res.render('dashboard/teams/create', {
-                    'breadcrumbs' : [{ 'title' : 'Teams', 'href' : '/dashboard/teams' }, { 'title' : 'My teams', 'href' : '/dashboard/teams' }],
+                    'breadcrumbs' : [{ 'title' : 'Teams', 'href' : '/dashboard/teams' }, { 'title' : 'Create a team', 'href' : 'javascript:void(0);' }],
                     'keys' : { 'jsKey' : keys.getJavaScriptKey(), 'appId' : keys.getApplicationID() }
                 });
             },
@@ -57,7 +57,7 @@ module.exports = function (keys) {
                 query.get(teamID, {
                     success: function(team) {
                         res.render('dashboard/teams/edit', {
-                            'breadcrumbs' : [{ 'title' : 'Teams', 'href' : '/dashboard/teams' }, { 'title' : 'My teams', 'href' : '/dashboard/teams' }],
+                            'breadcrumbs' : [{ 'title' : 'Teams', 'href' : '/dashboard/teams' }, { 'title' : 'Edit this team', 'href' : 'javascript:void(0);' }],
                             'found': true,
                             'team': team,
                             'keys' : { 'jsKey' : keys.getJavaScriptKey(), 'appId' : keys.getApplicationID() }
@@ -66,7 +66,7 @@ module.exports = function (keys) {
                     error: function(object, error) {
                         console.log(error);
                         res.render('dashboard/teams/edit', {
-                            'breadcrumbs' : [{ 'title' : 'Teams', 'href' : '/dashboard/teams' }, { 'title' : 'My teams', 'href' : '/dashboard/teams' }],
+                            'breadcrumbs' : [{ 'title' : 'Teams', 'href' : '/dashboard/teams' }, { 'title' : 'Edit this team', 'href' : 'javascript:void(0);' }],
                             'found': false
                         });
                     }
@@ -147,7 +147,7 @@ module.exports = function (keys) {
                         return promise;
                     }).then(function () {
                         return res.render('dashboard/teams/list', {
-                            'breadcrumbs' : [{ 'title' : 'Teams', 'href' : '/dashboard/teams' }, { 'title' : 'My teams', 'href' : '/dashboard/teams' }],
+                            'breadcrumbs' : [{ 'title' : 'Teams', 'href' : '/dashboard/teams' }, { 'title' : 'My teams', 'href' : 'javascript:void(0);' }],
                             'list': teamsList
                         });
                     });

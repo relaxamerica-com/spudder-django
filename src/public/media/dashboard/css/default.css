@@ -225,6 +225,18 @@
     width: 400px;
 }
 
+#entity-create span.input-icon.input-icon-right input {
+    width: 370px;
+    padding-left: 0;
+    padding-right: 30px;
+}
+
+#entity-create span.input-icon.input-icon-left input {
+    width: 370px;
+    padding-left: 30px;
+    padding-right: 0;
+}
+
 #entity-create .tags input {
 	width: auto;
 }
@@ -257,9 +269,6 @@
     top: -1px;
 }
 #entity-create .input-icon.input-icon-right > [class*="icon-"] {
-    right: 60px;
-}
-#entity-create .input-icon.input-icon-right > .icon-for-not-required-field {
     right: 5px;
 }
 #entity-create div.input-append {
@@ -307,7 +316,7 @@
     right: -24px;
 }
 #entity-create table.header-table td.image-cell {
-    vertical-align: top;
+    vertical-align: middle;
 }
 #entity-create table.header-table td:not(.image-cell) {
     padding-top: 5px;
