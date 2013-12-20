@@ -41,6 +41,7 @@ module.exports = function (keys) {
                             res.render('teams/offer/offer', {
                                 'displayItems' : require('cloud/commons/displayItems.js'),
                                 'twitterShareButton': require('cloud/commons/twitterShareButton'),
+                                'googlePlusShareButton': require('cloud/commons/googlePlusShareButton'),
                                 'team': team,
                                 'offer': offer
                             });
