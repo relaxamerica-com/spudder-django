@@ -4457,3 +4457,7 @@ dialogs {
 #team-offer .share-widget h4 {
     margin-bottom: 0;
 }
+
+#team-offer aside .widget .widgetheading .facebook-share-button span {
+    right: auto !important;
+}

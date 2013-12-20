@@ -42,6 +42,7 @@ module.exports = function (keys) {
                                 'displayItems' : require('cloud/commons/displayItems.js'),
                                 'twitterShareButton': require('cloud/commons/twitterShareButton'),
                                 'googlePlusShareButton': require('cloud/commons/googlePlusShareButton'),
+                                'facebookShareButton': require('cloud/commons/facebookShareButton'),
                                 'team': team,
                                 'offer': offer
                             });
