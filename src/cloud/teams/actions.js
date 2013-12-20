@@ -1,7 +1,8 @@
-exports.view = function (req, res) {
-    var teamID = req.params.teamID;
+var helpers = require('cloud/teams/helpers')();
 
-    var Team = Parse.Object.extend("Team"),
+exports.view = function (req, res) {
+    var teamID = req.params.teamID,
+        Team = Parse.Object.extend("Team"),
         query = new Parse.Query(Team);
 
     query.get(teamID, {
@@ -12,8 +13,6 @@ exports.view = function (req, res) {
             });
         },
         error: function(object, error) {
-            console.log('Error fetching Team');
-            console.log(error);
             res.render('teams/view');
         }
     });
@@ -33,6 +32,10 @@ exports.offer = function (req, res) {
 
             offerQuery.get(offerID,{
                 success: function(offer) {
+                    // Database end date format is YYYY-MM-DD, user format is DD-MM-YYYY
+                    var endDate = helpers.revertDate(offer.get('endDate'));
+                    offer.set('endDate', endDate);
+
                     res.render('teams/offer/offer', {
                         'displayItems' : require('cloud/commons/displayItems.js'),
                         'team': team,
