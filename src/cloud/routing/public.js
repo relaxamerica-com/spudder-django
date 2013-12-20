@@ -10,5 +10,6 @@ module.exports = function (app) {
     app.get('/spudmart/offer', spudmart.offer);
 
     var teams = require('cloud/teams/actions');
+    app.get('/teams/:teamID', teams.view);
     app.get('/teams/:teamID/offers/:offerID', teams.offer);
 };
