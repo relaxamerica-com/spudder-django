@@ -153,6 +153,10 @@ module.exports = function (keys) {
 
                 query.get(offerID, {
                     success: function(offer) {
+                        // Database end date format is YYYY-MM-DD, user format is DD-MM-YYYY
+                        var endDate = helpers.revertDate(offer.get('endDate'));
+                        offer.set('endDate', endDate);
+
                         res.render('dashboard/teams/offers/edit', {
                             'breadcrumbs' : [
                                 { 'title' : 'Teams', 'href' : '/dashboard/teams' },
@@ -187,6 +191,7 @@ module.exports = function (keys) {
                 query.get(offerID, {
                     success: function(teamOffer) {
                         var endDateString = req.body['endDate'], // YYYY-MM-DD
+                            revertedEndDate = helpers.revertDate(endDateString), // YYYY-MM-DD
                             images = [ req.body['offerImage1'], req.body['offerImage2'], req.body['offerImage3'] ],
                             offerImages = [];
 
@@ -198,7 +203,7 @@ module.exports = function (keys) {
                         teamOffer.set('phone', req.body['phone']);
                         teamOffer.set('website', req.body['website']);
                         teamOffer.set('quantity', parseInt(req.body['quantity'], 10));
-                        teamOffer.set('endDate', endDateString);
+                        teamOffer.set('endDate', revertedEndDate);
                         teamOffer.set('video', req.body['video']);
                         teamOffer.set('details', req.body['details']);
 
