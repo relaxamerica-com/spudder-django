@@ -1442,6 +1442,21 @@ a.custom-carousel-nav:hover{
 }
 
 /* --- Custom buttons --- */
+
+.btn.btn-spud-orange {
+    background-color: #FF6B00;
+    color: #ffffff;
+}
+
+.btn.btn-spud-orange:hover {
+    background-color: #111;
+    cursor: pointer;
+}
+
+.btn.btn-spud-orange.dropdown-toggle:hover span.caret {
+    border-top-color: white;
+}
+
 .btn.btn-hover-orange:hover {
 	background: #EF5523;
 	color: #FFF;
@@ -4380,4 +4395,61 @@ dialogs {
 
 #team-offer .slides img {
     width: 80%;
+}
+
+#team .team-logo {
+    border-radius: 15px;
+    width: 100px;
+}
+
+#team .sponsors-title {
+    display: inline;
+    margin-left: 15px;
+}
+
+#team #follow-button,
+#team #sponsor-button {
+    margin-bottom: 10px;
+    margin-left: 15px;
+    border-radius: 10px;
+}
+
+#team #sponsor-button + #follow-button {
+    margin-left: 5px;
+}
+
+#team [class^="icon-"].icon-30,
+#team [class*=" icon-"].icon-30 {
+    margin-left: 10px;
+}
+
+[class^="icon-"].icon-30,
+[class*=" icon-"].icon-30 {
+    font-size: 30px;
+    width: 30px;
+}
+
+[class^="icon-"].icon-middle,
+[class*=" icon-"].icon-middle {
+    vertical-align: middle;
+}
+
+#team div.navigation-buttons .btn {
+    margin-left: 5px;
+    margin-right: 5px;
+    border-radius: 5px;
+}
+
+[class^="icon-"].icon-20,
+[class*=" icon-"].icon-20 {
+    font-size: 20px;
+    width: 20px;
+}
+
+#team .navigation-buttons span.caret {
+    margin-left: 5px;
+}
+
+#team .social-links a:hover {
+    text-decoration: none;
 }
