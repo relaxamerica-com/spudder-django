@@ -33,6 +33,10 @@ module.exports = function (keys) {
                                 day = ('0' + day).slice(-2);
                                 endDate = year + '-' + month + '-' + day;
 
+                                // Database end date format is YYYY-MM-DD, user format is DD-MM-YYYY
+                                var revertedEndDate = helpers.revertDate(list[i].get('endDate'));
+                                list[i].set('endDate', revertedEndDate);
+
                                 if (endDate >= currentDateString) {
                                     currentOffers.push(list[i]);
                                 } else {
