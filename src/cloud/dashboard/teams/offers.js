@@ -1,4 +1,6 @@
 module.exports = function (keys) {
+    var helpers = require('cloud/teams/helpers')();
+
     return {
         list: {
             get: function (req, res) {
@@ -15,9 +17,6 @@ module.exports = function (keys) {
                             currentDateString = currentDate.getFullYear() + '-' +
                                 ('0' + (currentDate.getMonth() + 1)).slice(-2) + '-' +
                                 ('0' + currentDate.getDate()).slice(-2);
-
-
-                        console.log("Current: " + currentDateString);
 
                         offerQuery.equalTo('team', team);
 
@@ -95,7 +94,8 @@ module.exports = function (keys) {
                     success: function(team) {
                         var TeamOffer = Parse.Object.extend('TeamOffer'),
                             teamOffer = new TeamOffer(),
-                            endDateString = req.body['endDate'], // YYYY-MM-DD
+                            endDateString = req.body['endDate'], // DD-MM-YYY
+                            revertedEndDate = helpers.revertDate(endDateString), // YYYY-MM-DD
                             images = [ req.body['offerImage1'], req.body['offerImage2'], req.body['offerImage3'] ],
                             offerImages = [];
 
@@ -108,7 +108,7 @@ module.exports = function (keys) {
                         teamOffer.set('phone', req.body['phone']);
                         teamOffer.set('website', req.body['website']);
                         teamOffer.set('quantity', parseInt(req.body['quantity'], 10));
-                        teamOffer.set('endDate', endDateString);
+                        teamOffer.set('endDate', revertedEndDate);
                         teamOffer.set('video', req.body['video']);
                         teamOffer.set('details', req.body['details']);
                         teamOffer.set('team', team);
