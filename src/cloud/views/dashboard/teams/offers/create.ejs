@@ -109,7 +109,7 @@
         $form.validate({
             rules: {
                 title: "required",
-                phone: "required",
+                phone: { required: true, phoneUS: true },
                 quantity: { required: true, positiveInteger: true },
                 donation: { required: true, positiveInteger: true },
                 endDate: { required: true, endDate: true },
