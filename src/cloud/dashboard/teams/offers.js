@@ -1,4 +1,6 @@
 module.exports = function (keys) {
+    var helpers = require('cloud/teams/helpers')();
+
     return {
         list: {
             get: function (req, res) {
@@ -16,9 +18,6 @@ module.exports = function (keys) {
                                 ('0' + (currentDate.getMonth() + 1)).slice(-2) + '-' +
                                 ('0' + currentDate.getDate()).slice(-2);
 
-
-                        console.log("Current: " + currentDateString);
-
                         offerQuery.equalTo('team', team);
 
                         offerQuery.find().then(function (list) {
@@ -33,6 +32,10 @@ module.exports = function (keys) {
                                 month = ('0' + month).slice(-2);
                                 day = ('0' + day).slice(-2);
                                 endDate = year + '-' + month + '-' + day;
+
+                                // Database end date format is YYYY-MM-DD, user format is DD-MM-YYYY
+                                var revertedEndDate = helpers.revertDate(list[i].get('endDate'));
+                                list[i].set('endDate', revertedEndDate);
 
                                 if (endDate >= currentDateString) {
                                     currentOffers.push(list[i]);
@@ -95,7 +98,8 @@ module.exports = function (keys) {
                     success: function(team) {
                         var TeamOffer = Parse.Object.extend('TeamOffer'),
                             teamOffer = new TeamOffer(),
-                            endDateString = req.body['endDate'], // YYYY-MM-DD
+                            endDateString = req.body['endDate'], // DD-MM-YYY
+                            revertedEndDate = helpers.revertDate(endDateString), // YYYY-MM-DD
                             images = [ req.body['offerImage1'], req.body['offerImage2'], req.body['offerImage3'] ],
                             offerImages = [];
 
@@ -108,7 +112,7 @@ module.exports = function (keys) {
                         teamOffer.set('phone', req.body['phone']);
                         teamOffer.set('website', req.body['website']);
                         teamOffer.set('quantity', parseInt(req.body['quantity'], 10));
-                        teamOffer.set('endDate', endDateString);
+                        teamOffer.set('endDate', revertedEndDate);
                         teamOffer.set('video', req.body['video']);
                         teamOffer.set('details', req.body['details']);
                         teamOffer.set('team', team);
@@ -149,6 +153,10 @@ module.exports = function (keys) {
 
                 query.get(offerID, {
                     success: function(offer) {
+                        // Database end date format is YYYY-MM-DD, user format is DD-MM-YYYY
+                        var endDate = helpers.revertDate(offer.get('endDate'));
+                        offer.set('endDate', endDate);
+
                         res.render('dashboard/teams/offers/edit', {
                             'breadcrumbs' : [
                                 { 'title' : 'Teams', 'href' : '/dashboard/teams' },
@@ -183,6 +191,7 @@ module.exports = function (keys) {
                 query.get(offerID, {
                     success: function(teamOffer) {
                         var endDateString = req.body['endDate'], // YYYY-MM-DD
+                            revertedEndDate = helpers.revertDate(endDateString), // YYYY-MM-DD
                             images = [ req.body['offerImage1'], req.body['offerImage2'], req.body['offerImage3'] ],
                             offerImages = [];
 
@@ -194,7 +203,7 @@ module.exports = function (keys) {
                         teamOffer.set('phone', req.body['phone']);
                         teamOffer.set('website', req.body['website']);
                         teamOffer.set('quantity', parseInt(req.body['quantity'], 10));
-                        teamOffer.set('endDate', endDateString);
+                        teamOffer.set('endDate', revertedEndDate);
                         teamOffer.set('video', req.body['video']);
                         teamOffer.set('details', req.body['details']);
 
