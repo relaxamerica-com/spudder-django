@@ -1,4 +1,4 @@
-module.exports = function (app) {
+module.exports = function (app, keys) {
     var home = require('cloud/home/actions');
     app.get('/', home.home);
 
@@ -9,7 +9,7 @@ module.exports = function (app) {
     app.get('/spudmart', spudmart.view);
     app.get('/spudmart/offer', spudmart.offer);
 
-    var teams = require('cloud/teams/actions');
+    var teams = require('cloud/teams/actions')(keys);
     app.get('/teams/:teamID', teams.view);
     app.get('/teams/:teamID/offers/:offerID', teams.offer);
 };
