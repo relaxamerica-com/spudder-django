@@ -11,7 +11,16 @@ module.exports = function (keys) {
                 success: function(team) {
                     res.render('teams/view', {
                         'displayItems' : require('cloud/commons/displayItems.js'),
-                        'team': team
+                        'team': team,
+                        'twitterShareButton': require('cloud/commons/twitterShareButton'),
+                        'googlePlusShareButton': require('cloud/commons/googlePlusShareButton'),
+                        'facebookShareButton': require('cloud/commons/facebookShareButton'),
+                        'meta': {
+                            title: team.get('name'),
+                            description: team.get('profile'),
+                            image: team.get('profileImageThumb') ? team.get('profileImageThumb') : '',
+                            url: 'https://' + keys.getAppName() + 'parseapp.com/teams/' + teamID
+                        }
                     });
                 },
                 error: function(object, error) {
@@ -38,7 +47,6 @@ module.exports = function (keys) {
                             var endDate = helpers.revertDate(offer.get('endDate'));
                             offer.set('endDate', endDate);
 
-                            var url = 'https://' + keys.getAppName() + 'parseapp.com/teams/' + teamID + '/offers/' + offerID;
                             res.render('teams/offer/offer', {
                                 'displayItems' : require('cloud/commons/displayItems.js'),
                                 'twitterShareButton': require('cloud/commons/twitterShareButton'),
@@ -50,7 +58,7 @@ module.exports = function (keys) {
                                     title: offer.get('title') + ' :: ' + team.get('name'),
                                     description: offer.get('details'),
                                     image: offer.get('images')[0] ? offer.get('images')[0] : '',
-                                    url: url
+                                    url: 'https://' + keys.getAppName() + 'parseapp.com/teams/' + teamID + '/offers/' + offerID
                                 }
                             });
 
