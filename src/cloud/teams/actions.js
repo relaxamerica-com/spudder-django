@@ -38,13 +38,20 @@ module.exports = function (keys) {
                             var endDate = helpers.revertDate(offer.get('endDate'));
                             offer.set('endDate', endDate);
 
+                            var url = 'https://' + keys.getAppName() + 'parseapp.com/teams/' + teamID + '/offers/' + offerID;
                             res.render('teams/offer/offer', {
                                 'displayItems' : require('cloud/commons/displayItems.js'),
                                 'twitterShareButton': require('cloud/commons/twitterShareButton'),
                                 'googlePlusShareButton': require('cloud/commons/googlePlusShareButton'),
                                 'facebookShareButton': require('cloud/commons/facebookShareButton'),
                                 'team': team,
-                                'offer': offer
+                                'offer': offer,
+                                'meta': {
+                                    title: offer.get('title') + ' :: ' + team.get('name'),
+                                    description: offer.get('details'),
+                                    image: offer.get('images')[0] ? offer.get('images')[0] : '',
+                                    url: url
+                                }
                             });
 
                         },
