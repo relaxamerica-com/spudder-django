@@ -97,31 +97,22 @@
                 Follow
             </a>
 
-            <span class="social-links">
-                <% if (team.get('facebook') != '') { %>
-                <a href="<%= team.get('facebook') %>"
-                   target="_blank" data-placement="bottom" title="Team Facebook profile"
-                   data-original-title="Facebook">
-                    <i class="icon-facebook icon-square icon-30 icon-middle"></i>
-                </a>
-                <% } %>
-
-                <% if (team.get('twitter') != '') { %>
-                <a href="<%= team.get('twitter') %>"
-                   target="_blank" data-placement="bottom" title="Team Twitter profile"
-                   data-original-title="Twitter">
-                    <i class="icon-twitter icon-square icon-30 icon-middle"></i>
-                </a>
-                <% } %>
-
-                <% if (team.get('googlePlus') != '') { %>
-                <a href="<%= team.get('googlePlus') %>"
-                   target="_blank" rel="publisher" data-placement="bottom"
-                   title="Team Google+ profile" data-original-title="Google plus">
-                    <i class="icon-google-plus icon-square icon-30 icon-middle"></i>
-                </a>
-                <% } %>
-            </span>
+            <div class="social-links">
+                <table>
+                    <tr>
+                        <td class="share-cell">Share:</td>
+                        <td class="twitter-cell">
+                            <%- twitterShareButton('Checkout this great team!') %>
+                        </td>
+                        <td class="google-plus-cell">
+                            <%- googlePlusShareButton() %>
+                        </td>
+                        <td class="facebook-cell">
+                            <%- facebookShareButton() %>
+                        </td>
+                    </tr>
+                </table>
+            </div>
         </div>
     </div>
     <div class="row-fluid nomargin">

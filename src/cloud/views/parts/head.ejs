@@ -6,6 +6,17 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<meta name="description" content="" />
 		<meta name="author" content="" />
+
+        <!-- Open Graph -->
+        <% if (typeof meta != 'undefined') { %>
+        <meta property="fb:app_id" content="673127649376371">
+        <meta property="og:site_name" content="Facebook Developers">
+        <meta property="og:title" content="<%= meta.title %>" />
+        <meta property="og:description" content="<%= meta.description %>" />
+        <meta name="description" content="<%= meta.description %>" />
+        <meta property="og:image" content="<%= meta.image %>" />
+        <% } %>
+
 		<!-- css -->
 		<link href="/media/css/bootstrap.css" rel="stylesheet" />
 		<link href="/media/css/bootstrap-responsive.css" rel="stylesheet" />
