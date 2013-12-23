@@ -6,27 +6,37 @@
 	<div class="row-fluid">
 		<div class="span12">
             <p>
-                Total count of donations: <%= count %>
+                Total count of donations: <%= donations.length %>
             </p>
             <p>
                 Total amount of donations: <%= totalAmount %> $
             </p>
-            <% if (count) { %>
+            <% if (donations.length) { %>
             <table class="table table-hover table-condensed">
                 <thead>
                     <tr>
                         <td>#</td>
                         <td>Team name</td>
+                        <td>Team public page</td>
+                        <td>Offer title</td>
+                        <td>Offer public page</td>
                         <td>Amount</td>
                         <td>Transaction token</td>
                     </tr>
                 </thead>
                 <tbody>
-                <% donations.forEach(function(donation){ %>
+                <% donations.forEach(function(donation, index){ %>
                     <tr>
-                        <td><%= donation.rank %></td>
-                        <td><%= donation.teamName %></td>
-                        <td><%= donation.amount %> $</td>
+                        <td><%= index + 1 %></td>
+                        <td><%= donation.team.get('name') %></td>
+                        <td>
+                            <a href="/teams/<%= donation.team.id %>">Link</a>
+                        </td>
+                        <td><%= donation.offer.get('title') %></td>
+                        <td>
+                            <a href="/teams/<%= donation.team.id %>/offers/<%= donation.offer.id %>">Link</a>
+                        </td>
+                        <td>$<%= donation.offer.get('donation') %></td>
                         <td><%= donation.tokenID %></td>
                     </tr>
                 <% }) %>

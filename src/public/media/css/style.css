@@ -4507,3 +4507,22 @@ dialogs {
 #team-offer aside .widget .widgetheading .facebook-share-button span {
     right: auto !important;
 }
+
+#donation-modal div.modal-header h4 {
+    margin-bottom: 0;
+}
+
+.display-sponsors li {
+    text-align: center;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.display-sponsors li a:hover {
+    text-decoration: none;
+}
+
+.display-sponsors li i {
+    font-size: 50px;
+    margin-left: 5px;
+}

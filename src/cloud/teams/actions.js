@@ -9,18 +9,54 @@ module.exports = function (keys) {
 
             query.get(teamID, {
                 success: function(team) {
-                    res.render('teams/view', {
-                        'displayItems' : require('cloud/commons/displayItems.js'),
-                        'team': team,
-                        'twitterShareButton': require('cloud/commons/twitterShareButton'),
-                        'googlePlusShareButton': require('cloud/commons/googlePlusShareButton'),
-                        'facebookShareButton': require('cloud/commons/facebookShareButton'),
-                        'meta': {
-                            title: team.get('name'),
-                            description: team.get('profile'),
-                            image: team.get('profileImageThumb') ? team.get('profileImageThumb') : '',
-                            url: 'https://' + keys.getAppName() + 'parseapp.com/teams/' + teamID
-                        }
+                    var _ = require('underscore');
+
+                    var Donation = Parse.Object.extend('Donation'),
+                        query = new Parse.Query(Donation),
+                        sponsors = [];
+
+                    query.equalTo('team', team);
+
+                    query.find().then(function (list) {
+                        var promise = Parse.Promise.as();
+
+                        _.each(list, function(donation) {
+                            promise = promise.then(function() {
+                                var findPromise = new Parse.Promise();
+
+                                var sponsor = donation.get('sponsor');
+
+                                sponsor.fetch({
+                                    success: function (fetchedSponsor) {
+                                        sponsors.push(fetchedSponsor);
+
+                                        findPromise.resolve();
+                                    }
+                                });
+
+                                return findPromise;
+                            });
+                        });
+
+                        return promise;
+                    }).then(function () {
+                            var path = 'https://' + keys.getAppName() + '.parseapp.com/teams/' + teamID;
+
+                            res.render('teams/view', {
+                                'displaySponsors' : require('cloud/commons/displaySponsors'),
+                                'team': team,
+                                'twitterShareButton': require('cloud/commons/twitterShareButton'),
+                                'googlePlusShareButton': require('cloud/commons/googlePlusShareButton'),
+                                'facebookShareButton': require('cloud/commons/facebookShareButton'),
+                                'sponsors': sponsors,
+                                'meta': {
+                                    title: team.get('name'),
+                                    description: team.get('profile'),
+                                    image: team.get('profileImageThumb') ? team.get('profileImageThumb') : '',
+                                    url: path
+                                },
+                                'returnURL': path
+                        });
                     });
                 },
                 error: function(object, error) {
@@ -43,25 +79,74 @@ module.exports = function (keys) {
 
                     offerQuery.get(offerID,{
                         success: function(offer) {
-                            // Database end date format is YYYY-MM-DD, user format is DD-MM-YYYY
-                            var endDate = helpers.revertDate(offer.get('endDate'));
-                            offer.set('endDate', endDate);
+                            var _ = require('underscore');
 
-                            res.render('teams/offer/offer', {
-                                'displayItems' : require('cloud/commons/displayItems.js'),
-                                'twitterShareButton': require('cloud/commons/twitterShareButton'),
-                                'googlePlusShareButton': require('cloud/commons/googlePlusShareButton'),
-                                'facebookShareButton': require('cloud/commons/facebookShareButton'),
-                                'team': team,
-                                'offer': offer,
-                                'meta': {
-                                    title: offer.get('title') + ' :: ' + team.get('name'),
-                                    description: offer.get('details'),
-                                    image: offer.get('images')[0] ? offer.get('images')[0] : '',
-                                    url: 'https://' + keys.getAppName() + 'parseapp.com/teams/' + teamID + '/offers/' + offerID
+                            var Donation = Parse.Object.extend('Donation'),
+                                query = new Parse.Query(Donation),
+                                sponsors = [];
+
+                            query.equalTo('team', team);
+
+                            query.find().then(function (list) {
+                                var promise = Parse.Promise.as();
+
+                                _.each(list, function(donation) {
+                                    promise = promise.then(function() {
+                                        var findPromise = new Parse.Promise();
+
+                                        var sponsor = donation.get('sponsor');
+
+                                        sponsor.fetch({
+                                            success: function (fetchedSponsor) {
+                                                sponsors.push(fetchedSponsor);
+
+                                                findPromise.resolve();
+                                            }
+                                        });
+
+                                        return findPromise;
+                                    });
+                                });
+
+                                return promise;
+                            }).then(function () {
+                                // Database end date format is YYYY-MM-DD, user format is DD-MM-YYYY
+                                var path = 'https://' + keys.getAppName() + '.parseapp.com/teams/' + teamID + '/offers/' + offerID,
+                                    endDate = helpers.revertDate(offer.get('endDate')),
+                                    isSoldOut = sponsors.length == offer.get('quantity'),
+                                    params = {
+                                        'displaySponsors' : require('cloud/commons/displaySponsors'),
+                                        'twitterShareButton': require('cloud/commons/twitterShareButton'),
+                                        'googlePlusShareButton': require('cloud/commons/googlePlusShareButton'),
+                                        'facebookShareButton': require('cloud/commons/facebookShareButton'),
+                                        'team': team,
+                                        'offer': offer,
+                                        'isSoldOut': isSoldOut,
+                                        'quantity': isSoldOut ? 'Sold out!' : offer.get('quantity') - sponsors.length,
+                                        'sponsors': sponsors,
+                                        'meta': {
+                                            title: offer.get('title') + ' :: ' + team.get('name'),
+                                            description: offer.get('details'),
+                                            image: offer.get('images')[0] ? offer.get('images')[0] : '',
+                                            url: path
+                                        },
+                                        'returnURL': path
+                                    }, currentUser = Parse.User.current();
+
+                                offer.set('endDate', endDate);
+
+                                if (!currentUser) {
+                                    params.isLoggedIn = false;
+
+                                    res.render('teams/offer/offer', params);
+                                } else {
+                                    Parse.User.current().fetch().then(function (user) {
+                                        params.isLoggedIn = true;
+
+                                        res.render('teams/offer/offer', params);
+                                    });
                                 }
                             });
-
                         },
                         error: function(object, error) {
                             console.log('Error fetching Offer');

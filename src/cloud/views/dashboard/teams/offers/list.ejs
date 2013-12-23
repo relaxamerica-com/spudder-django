@@ -33,8 +33,15 @@
                     <td class="end-date"><%= offer.get('endDate') %></td>
                     <td class="public-page"><a href="/teams/<%= team.id %>/offers/<%= offer.id %>">Link</a></td>
                     <td class="actions">
-                        <a class="btn btn-mini btn-success" href="/dashboard/teams/<%= team.id %>/offers/<%= offer.id %>/edit">Edit</a>
-                        <a class="btn btn-mini btn-danger" href="/dashboard/teams/<%= team.id %>/offers/<%= offer.id %>/remove">Remove</a>
+                        <a class="btn btn-mini btn-lightgrey btn-action" href="/dashboard/teams/<%= team.id %>/offers/<%= offer.id %>/donations" title="Donations">
+                            <i class="icon-dollar"></i>
+                        </a>
+                        <a class="btn btn-mini btn-lightgrey btn-action" href="/dashboard/teams/<%= team.id %>/offers/<%= offer.id %>/edit" title="Edit">
+                            <i class="icon-edit"></i>
+                        </a>
+                        <a class="btn btn-mini btn-lightgrey btn-action" href="/dashboard/teams/<%= team.id %>/offers/<%= offer.id %>/remove" title="Remove" id="remove-button">
+                            <i class="icon-trash"></i>
+                        </a>
                     </td>
                 </tr>
             <% }) %>
@@ -64,7 +71,12 @@
                 <td class="end-date"><%= offer.get('endDate') %></td>
                 <td class="public-page"><a href="/teams/<%= team.id %>/offers/<%= offer.id %>">Link</a></td>
                 <td class="actions">
-                    <a class="btn btn-mini btn-danger" href="/dashboard/teams/<%= team.id %>/offers/<%= offer.id %>/remove">Remove</a>
+                    <a class="btn btn-mini btn-lightgrey btn-action" href="/dashboard/teams/<%= team.id %>/offers/<%= offer.id %>/donations" title="Donations">
+                        <i class="icon-dollar"></i>
+                    </a>
+                    <a class="btn btn-mini btn-lightgrey btn-action" href="/dashboard/teams/<%= team.id %>/offers/<%= offer.id %>/remove" title="Remove" id="remove-button">
+                        <i class="icon-trash"></i>
+                    </a>
                 </td>
             </tr>
             <% }) %>

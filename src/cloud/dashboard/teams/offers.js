@@ -1,5 +1,6 @@
 module.exports = function (keys) {
     var helpers = require('cloud/teams/helpers')();
+    var _ = require('underscore');
 
     return {
         list: {
@@ -238,6 +239,63 @@ module.exports = function (keys) {
                 function (error) {
                     console.log(error);
                     res.redirect('/dashboard/teams/' + teamID + '/offers');
+                });
+            }
+        },
+
+        donations: {
+            get: function (req, res) {
+                var TeamOffer = Parse.Object.extend("TeamOffer"),
+                    offerQuery = new Parse.Query(TeamOffer),
+                    teamID = req.params.teamID,
+                    offerID = req.params.offerID;
+
+                offerQuery.get(offerID, {
+                    success: function(offer) {
+                        var Donation = Parse.Object.extend('Donation'),
+                            donationQuery = new Parse.Query(Donation),
+                            donations = [], totalAmount = 0;
+
+                        donationQuery.equalTo('offer', offer);
+
+                        donationQuery.find().then(function (list) {
+                            var promise = Parse.Promise.as();
+
+                            _.each(list, function(donation) {
+                                promise = promise.then(function() {
+                                    var findPromise = new Parse.Promise();
+                                    console.log(typeof  donation.createdAt)
+                                    console.log(donation.createdAt);
+                                    donation.get('sponsor').fetch({
+                                        success: function (fetchedSponsor) {
+                                            donations.push({
+                                                sponsor: fetchedSponsor,
+                                                date: donation.createdAt
+                                            });
+
+                                            findPromise.resolve();
+                                        }
+                                    });
+
+                                    return findPromise;
+                                });
+                            });
+
+                            return promise;
+                        }).then(function () {
+                            res.render('dashboard/teams/offers/donations', {
+                                'breadcrumbs' : [
+                                    { 'title' : 'Teams', 'href' : '/dashboard/teams' },
+                                    { 'title' : 'Offers', 'href' : '/dashboard/teams/' + teamID + '/offers' },
+                                    { 'title' : offer.get('title'), 'href' : '/dashboard/teams/' + teamID + '/offers/' + offerID },
+                                    { 'title' : 'Donations', 'href' : 'javascript:void(0);' }
+                                ],
+                                'offer': offer,
+                                'donations': donations,
+                                'totalAmount': totalAmount
+                            });
+                        });
+                    }
                 });
             }
         }

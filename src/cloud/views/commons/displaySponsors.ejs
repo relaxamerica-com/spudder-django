@@ -1,0 +1,14 @@
+<h4><%= title %></h4>
+<ul id="<%= id %>" class="jcarousel-skin-tango recent-jcarousel clients display-sponsors">
+    <% sponsors.forEach(function(sponsor) { %>
+    <li>
+        <a href="#">
+            <% if (sponsor.get('profileImageThumb')) { %>
+            <img src="<%= sponsor.get('profileImageThumb') %>" class="sponsor-logo" />
+            <% } else { %>
+            <i class="icon-group"></i>
+            <% } %>
+        </a>
+    </li>
+    <% }) %>
+</ul>

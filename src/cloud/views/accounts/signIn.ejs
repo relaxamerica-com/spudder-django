@@ -19,6 +19,9 @@
 					<input type="password" id="loginPassword" placeholder="Password" name="password">
 				</div>
 			</div>
+
+            <input type="hidden" name="returnURL" <% if (typeof returnURL != 'undefined') { %>value="<%= returnURL %>"<% } %>>
+
 			<div class="control-group">
 				<div class="controls">
 					<button type="submit" class="btn">Sign in</button>

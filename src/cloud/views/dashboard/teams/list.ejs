@@ -20,6 +20,7 @@
                 <th>Location</th>
                 <th>Contact Details</th>
                 <th>Profile</th>
+                <th>Public Page</th>
                 <th>Actions</th>
                 <th>Manage</th>
             </tr>
@@ -31,6 +32,7 @@
                 <td><%= team.get('location') %></td>
                 <td><%= getValueOrEmpty(team.get('contact')) %></td>
                 <td><%= getValueOrEmpty(team.get('profile')) %></td>
+                <td><a href="/teams/<%= team.id %>">Link</a></td>
                 <td>
                 <% if (team.get('isRegisteredRecipient')) { %>
                     <a class="btn btn-mini btn-lightgrey btn-action" title="Offers" href="/dashboard/teams/<%= team.id %>/offers" >

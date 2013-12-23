@@ -115,11 +115,13 @@
             </div>
         </div>
     </div>
+    <% if (sponsors.length) { %>
     <div class="row-fluid nomargin">
         <div class="span12">
-            <%- displayItems('sponsors-items', '', true) %>
+            <%- displaySponsors('sponsors-items', '', sponsors) %>
         </div>
     </div>
+    <% } %>
     <div class="row-fluid">
         <div class="span6">
             <h4>Team Details</h4>
