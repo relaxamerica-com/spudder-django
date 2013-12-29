@@ -12,4 +12,7 @@ module.exports = function (app, keys) {
     var teams = require('cloud/teams/actions')(keys);
     app.get('/teams/:teamID', teams.view);
     app.get('/teams/:teamID/offers/:offerID', teams.offer);
+    
+    var entity = require('cloud/entity/actions')(keys);
+    app.get('/public/:entityType/:id', entity.view);
 };

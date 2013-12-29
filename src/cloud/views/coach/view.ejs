@@ -1,0 +1,84 @@
+<% include ../parts/head %>
+
+<link href="/media/dashboard/css/jquery-ui-1.10.3.custom.min.css" rel="stylesheet" />
+
+<% include ../parts/bodyStartWithSocial %>
+
+<div id="entity-public" class="container">
+    <div class="row-fluid primary" id="page-header">
+        <div class="wrapper">
+            <div class="span12">
+                <div class="row-fluid header-parts nomargin">
+                    <div class="span3">
+                        <h3><%= entity.get('name') %></h3>
+                    </div>
+
+                    <div class="span4 offset5">
+                        <ul class="breadcrumb path">
+                            <li>
+                                <a href="#"><i class="icon-home"></i></a> <span class="divider"> <i class="icon-chevron-right"></i> </span>
+                            </li>
+                            <li>
+                                <a href="/dashboard/listEntities/Coach">Coaches</a> <span class="divider"> <i class="icon-chevron-right"></i> </span>
+                            </li>
+                            <li class="active"><strong><%= entity.get('name') %></strong></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row-fluid margin-bottom5">
+        <div class="span6">
+            <div class="row-fluid">
+            	 <% if (team && team.get('profileImageThumb')) { %>
+	            	<a href="/teams/<%= team.id %>">
+	            		<img src="<%= team.get('profileImageThumb') %>" class="entity-logo" />
+	            	</a>
+	            <% } %>
+            </div>
+        	<div class="row-fluid">
+	            <% if (entity.get('profileImageThumb')) { %>
+	            	<img src="<%= entity.get('profileImageThumb') %>" class="entity-logo" />
+	            <% } else { %>
+	            	<i class="icon-user icon-128 no-padding"></i>
+	            <% } %>
+            </div>
+	        <div class="row-fluid">
+	            <h4>Coach Profile:</h4>
+	            <%= getValueOrEmpty(entity.get('profile')) %>
+	        </div>
+        </div>
+	    <div class="span6">
+	    	<div class="row-fluid">
+	            <a href="#" class="btn btn-spud-orange btn-large pull-right" id="follow-button">
+	                <i class="icon-microphone icon-3"></i>
+	                Follow
+	            </a>
+	        </div>
+	        <div class="row-fluid">
+	            <% include ../commons/spudsContainer.ejs %>
+	        </div>
+	    </div>
+    </div>
+</div>
+
+<% include ../parts/foot %>
+
+<% include ../parts/scripts %>
+
+        <script type="text/javascript" src="/media/dashboard/js/jquery-ui-1.10.3.custom.min.js"></script>
+        <script type="text/javascript" src="/media/js/switches.js"></script>
+        <script type="text/javascript" src="/media/js/spud-container.js"></script>
+        <script type="text/javascript">
+            $(document).ready(function() {
+                $('.ui-slider-green').slider({
+                    orientation: "horizontal",
+                    range: "min",
+                    max: 100,
+                    value: 50
+                });
+            });
+        </script>
+    </body>
+</html>

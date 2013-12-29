@@ -4450,53 +4450,53 @@ dialogs {
     margin-left: 5px;
 }
 
-#team .social-links {
+.social-links {
     display: inline-block;
     margin-left: 10px;
     position: relative;
     top: 10px;
 }
 
-#team .social-links table {
+.social-links table {
     margin-top: -20px;
 }
 
-#team .social-links table td {
+.social-links table td {
     vertical-align: middle;
 }
 
-#team .social-links table td.share-cell {
+.social-links table td.share-cell {
     font-size: 24px;
     padding-top: 20px;
     padding-right: 10px;
 }
 
-#team .social-links table td.twitter-cell iframe {
+.social-links table td.twitter-cell iframe {
     margin-top: 25px;
 }
 
-#team .social-links table td.google-plus-cell > div {
+.social-links table td.google-plus-cell > div {
     padding-top: 25px !important;
 }
 
-#team .social-links table td.facebook-cell div.fb-share-button {
+.social-links table td.facebook-cell div.fb-share-button {
     padding-top: 15px;
 }
 
-#team .social-links h4 {
+.social-links h4 {
     font-size: 24px;
 }
 
-#team .social-links .align-left {
+.social-links .align-left {
     margin-bottom: 0;
     margin-right: 5px;
 }
 
-#team .social-links iframe[id^="twitter-"] {
+.social-links iframe[id^="twitter-"] {
     width: 110px !important;
 }
 
-#team .social-links a:hover {
+.social-links a:hover {
     text-decoration: none;
 }
 
@@ -4512,6 +4512,15 @@ dialogs {
     margin-bottom: 0;
 }
 
+#entity-public .player-details {
+	margin-left: 10px;
+	display: inline-block;
+}
+
+#entity-public .entity-logo {
+	width: 128px;
+}
+
 .display-sponsors li {
     text-align: center;
     padding-top: 5px;
@@ -4520,6 +4529,14 @@ dialogs {
 
 .display-sponsors li a:hover {
     text-decoration: none;
+}
+
+.no-padding {
+	padding: 0px;
+}
+
+.margin-bottom5 {
+	margin-bottom: 5px;
 }
 
 .display-sponsors li i {

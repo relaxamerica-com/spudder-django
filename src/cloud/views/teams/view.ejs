@@ -2,7 +2,7 @@
 
 <link href="/media/dashboard/css/jquery-ui-1.10.3.custom.min.css" rel="stylesheet" />
 
-<% include ../parts/bodyStart %>
+<% include ../parts/bodyStartWithSocial %>
 
 <div id="team" class="container">
     <div class="row-fluid primary" id="page-header">
@@ -97,22 +97,6 @@
                 Follow
             </a>
 
-            <div class="social-links">
-                <table>
-                    <tr>
-                        <td class="share-cell">Share:</td>
-                        <td class="twitter-cell">
-                            <%- twitterShareButton('Checkout this great team!') %>
-                        </td>
-                        <td class="google-plus-cell">
-                            <%- googlePlusShareButton() %>
-                        </td>
-                        <td class="facebook-cell">
-                            <%- facebookShareButton() %>
-                        </td>
-                    </tr>
-                </table>
-            </div>
         </div>
     </div>
     <% if (sponsors.length) { %>
