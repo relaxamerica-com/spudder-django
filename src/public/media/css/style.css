@@ -4500,6 +4500,12 @@ dialogs {
     text-decoration: none;
 }
 
+.social-links .email-cell img {
+    height: 30px;
+    padding-top: 20px;
+    padding-left: 10px;
+}
+
 #team-offer .share-widget h4 {
     margin-bottom: 0;
 }

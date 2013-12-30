@@ -5,7 +5,7 @@ module.exports = function (app, keys) {
         var currentUser = Parse.User.current();
         if (currentUser) {
             currentUser.fetch().then(function(user) {
-                res.locals.user = currentUser;
+                res.locals.user = user;
                 next();
             });
         } else {
@@ -15,14 +15,10 @@ module.exports = function (app, keys) {
     });
     
     app.use(function(req, res, next) {
-    	res.locals.getValueOrEmpty = function(value) {
-    		if (!value) {
-    			return '';
-    		} else {
-    			return value;
-    		}
-    	};
-    	
-		next();
+        res.locals.getValueOrEmpty = function(value) {
+            return value ? value : '';
+        };
+
+        next();
     });
 };

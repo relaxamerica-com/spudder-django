@@ -1,11 +1,11 @@
 <div class="widget donation-widget">
 <% if (!isSoldOut) { %>
-    <a class="btn btn-danger" href="#donation-modal" data-toggle="modal">
+    <a class="btn btn-danger" href="#donation-modal" data-toggle="modal" id="donate-btn">
         <i class="icon-credit-card"></i>
         DONATE NOW
     </a>
 <% } else { %>
-    <a class="btn btn-danger" href="javascript:void(0);" title="Sold out!" disabled>
+    <a class="btn btn-danger" href="javascript:void(0);" title="Sold out!" id="donate-btn" disabled>
         <i class="icon-credit-card"></i>
         DONATE NOW
     </a>

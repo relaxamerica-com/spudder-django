@@ -17,10 +17,11 @@ module.exports = function (keys) {
 	                        'twitterShareButton': require('cloud/commons/twitterShareButton'),
 	                        'googlePlusShareButton': require('cloud/commons/googlePlusShareButton'),
 	                        'facebookShareButton': require('cloud/commons/facebookShareButton'),
+                            'emailShareButton': require('cloud/commons/emailShareButton'),
 	                        'meta': {
 	                            title: entity.get('name'),
 	                            description: entity.get('profile'),
-	                            image: entity.get('profileImageThumb') ? team.get('profileImageThumb') : '',
+	                            image: entity.get('profileImageThumb') ? entity.get('profileImageThumb') : '',
 	                            url: path
 	                        },
 	                        'returnURL': path,

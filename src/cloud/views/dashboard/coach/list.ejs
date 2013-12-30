@@ -6,9 +6,9 @@
 
 <div id="entity-create">
     <p class="head">
-        <i class="icon-bullhorn"></i> Coaches
+        <i class="icon-bullhorn"></i> My Coaches
         <a class="btn btn-orange pull-left create-entity-button" href="/dashboard/createEntity/Coach" title="Add">
-        	<i class="icon icon-plus-sign icon-large"></i>
+            <i class="icon icon-plus-sign icon-large"></i>
         </a>
     </p>
 
@@ -27,7 +27,7 @@
         <tbody>
         <% list.forEach(function(coach) { %>
             <tr>
-                <td><%= coach.get('name') %></td>
+                <td><a href="/public/Coach/<%= coach.id  %>"><%= coach.get('name') %></a></td>
                 <td><%= coach.get('location') %></td>
                 <td><%= getValueOrEmpty(coach.get('contact')) %></td>
                 <td><%= getValueOrEmpty(coach.get('profile')) %></td>

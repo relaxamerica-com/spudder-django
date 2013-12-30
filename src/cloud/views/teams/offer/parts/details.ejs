@@ -7,19 +7,6 @@
         <% } %>
     </h5>
 
-    <div class="widgetheading share-widget">
-        <h4>Share:</h4>
-        <div>
-            <%- twitterShareButton('Checkout this great offer!') %>
-        </div>
-        <div>
-            <%- googlePlusShareButton() %>
-        </div>
-        <div class="facebook-share-button">
-            <%- facebookShareButton() %>
-        </div>
-    </div>
-
     <div>
         <ul class="social-network">
             <% if (team.get('facebook') != '') { %>
@@ -60,7 +47,7 @@
             <label>Quantity Available: </label> <%= quantity %>
         </li>
         <li>
-            <label>End date: </label> <%= offer.get('endDate') %>
+            <label>Offer ends: </label> <span data-end-date="<%= offer.get('endDate') %>" id="offer-end-date"></span>
         </li>
         <% if (offer.get('video') != '') { %>
         <li>
