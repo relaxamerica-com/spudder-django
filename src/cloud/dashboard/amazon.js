@@ -10,7 +10,10 @@ module.exports = function (keys) {
             };
 
             res.render('dashboard/sponsors/recipient', {
-                'breadcrumbs' : ['Teams', 'Registering as Recipient'],
+                'breadcrumbs' : [
+                    { 'title' : 'Teams', 'href' : '/dashboard/teams' },
+                    { 'title' : 'Registering as Recipient', 'href' : 'javascript:void(0);' }
+                ],
                 'cbui': amazonFPS.getCBUI(params)
             });
         },
@@ -38,13 +41,19 @@ module.exports = function (keys) {
                 recipient.save(null, {
                     success: function () {
                         res.render('dashboard/sponsors/recipient_complete', {
-                            'breadcrumbs': ['Teams', 'Registration complete'],
+                            'breadcrumbs' : [
+                                { 'title' : 'Teams', 'href' : '/dashboard/teams' },
+                                { 'title' : 'Registration complete', 'href' : 'javascript:void(0);' }
+                            ],
                             'isError': false
                         });
                     },
                     error: function (recipient, error) {
                         res.render('dashboard/sponsors/recipient_complete', {
-                            'breadcrumbs': ['Teams', 'Errors during registration'],
+                            'breadcrumbs' : [
+                                { 'title' : 'Teams', 'href' : '/dashboard/teams' },
+                                { 'title' : 'Errors during registration', 'href' : 'javascript:void(0);' }
+                            ],
                             'isError': true,
                             'error': error
                         });
@@ -54,55 +63,64 @@ module.exports = function (keys) {
         },
 
         sponsor: function (req, res) {
-            var Recipient = Parse.Object.extend('Recipient'),
-                query = new Parse.Query(Recipient),
-                recipients = [], count, result, i;
+            var teamID = req.params.teamID,
+                offerID = req.params.offerID,
+                recipient;
 
-            query.ascending('name');
+            var Team = Parse.Object.extend('Team'),
+                teamQuery = new Parse.Query(Team);
 
-            query.find({
-                success: function (results) {
-                    count = results.length;
+            teamQuery.get(teamID, {
+                success: function(team) {
+                    var Recipient = Parse.Object.extend('Recipient'),
+                        query = new Parse.Query(Recipient);
 
-                    for (i = 0; i < count; i++) {
-                        result = results[i];
+                    query.equalTo('team', team);
 
-                        recipients.push({
-                            'name': result.get('name'),
-                            'refundTokenID': result.get('refundTokenID')
-                        });
-                    }
+                    query.find({
+                        success: function (results) {
+                            recipient = results[0];
 
-                    res.render('dashboard/sponsors/sponsor', {
-                        'breadcrumbs': ['Sponsors', 'Became a sponsor'],
-                        'recipients': recipients
+                            var TeamOffer = Parse.Object.extend('TeamOffer'),
+                                offerQuery = new Parse.Query(TeamOffer);
+
+                            offerQuery.get(offerID,{
+                                success: function(offer) {
+                                    Parse.User.current().fetch().then(function (user) {
+                                        var refundTokenID = recipient.get('refundTokenID'),
+                                            teamName = team.get('name'),
+                                            amount = offer.get('donation'),
+                                            returnURL = 'https://' + keys.getAppName() + '.parseapp.com/dashboard/sponsor/complete';
+
+                                        returnURL += '?teamID=' + encodeURIComponent(teamID);
+                                        returnURL += '&offerID=' + encodeURIComponent(offerID);
+                                        returnURL += '&refundTokenID=' + encodeURIComponent(refundTokenID);
+                                        returnURL += '&sponsorID=' + encodeURIComponent(user.id);
+
+                                        var amazonFPS = require('cloud/amazon/fps')(keys),
+                                            params = {
+                                                'pipelineName': 'SingleUse',
+                                                'transactionAmount': '' + amount,
+                                                'paymentReason': 'Sponsoring ' + teamName + ' - offer ' + offer.get('title'),
+                                                'returnURL': returnURL
+                                            };
+
+                                        res.render('dashboard/sponsors/sponsor', {
+                                            'breadcrumbs' : [
+                                                { 'title' : 'Sponsors', 'href' : '/dashboard/sponsor' },
+                                                { 'title' : 'Confirm donation', 'href' : 'javascript:void(0);' }
+                                            ],
+                                            'cbui': amazonFPS.getCBUI(params),
+                                            'team': team,
+                                            'offer': offer
+                                        });
+                                    });
+
+                                }
+                            });
+                        }
                     });
                 }
-            });
-        },
-
-        sponsor_confirm: function (req, res) {
-            var refundTokenID = req.body.refundTokenID,
-                teamName = req.body.teamName,
-                amount = parseFloat(req.body.amount),
-                returnURL = 'https://' + keys.getAppName() + '.parseapp.com/dashboard/sponsor/complete';
-
-            returnURL += '?refundTokenID=' + encodeURIComponent(refundTokenID);
-            returnURL += '&amount=' + encodeURIComponent(amount);
-
-            var amazonFPS = require('cloud/amazon/fps')(keys),
-                params = {
-                    'pipelineName': 'SingleUse',
-                    'transactionAmount': '' + amount,
-                    'paymentReason': 'Sponsoring ' + teamName,
-                    'returnURL': returnURL
-                };
-
-            res.render('dashboard/sponsors/sponsor_confirm', {
-                'breadcrumbs': ['Sponsors', 'Confirm donation'],
-                'cbui': amazonFPS.getCBUI(params),
-                'amount': '' + amount,
-                'teamName': teamName
             });
         },
 
@@ -130,7 +148,10 @@ module.exports = function (keys) {
 
             function renderError(errorMsg) {
                 res.render('dashboard/sponsors/sponsor_complete', {
-                    'breadcrumbs': ['Sponsors', 'Donation completed'],
+                    'breadcrumbs' : [
+                        { 'title' : 'Sponsors', 'href' : '/dashboard/sponsor' },
+                        { 'title' : 'Donation completed with errors', 'href' : 'javascript:void(0);' }
+                    ],
                     'isError': true,
                     'error': errorMsg
                 });
@@ -140,9 +161,11 @@ module.exports = function (keys) {
                 tokenID = query.tokenID,
                 signature = query.signature,
                 callerReference = query.callerReference,
-                refundTokenID = query.refundTokenID,
+                teamID = query.teamID,
+                offerID = query.offerID,
+                sponsorID = query.sponsorID,
                 status = query.status,
-                amount = query.amount,
+                refundTokenID = query.refundTokenID,
                 isError = false, errorMessage = '';
 
             checkStatus();
@@ -150,69 +173,123 @@ module.exports = function (keys) {
             if (isError) {
                 renderError(errorMessage);
             } else {
-                var Recipient = Parse.Object.extend('Recipient'),
-                    databaseQuery = new Parse.Query(Recipient),
-                    recipients = [], count, result, i;
+                var Team = Parse.Object.extend("Team"),
+                    teamQuery = new Parse.Query(Team);
 
-                databaseQuery.equalTo('refundTokenID', refundTokenID);
+                teamQuery.get(teamID, {
+                    success: function(team) {
+                        var TeamOffer = Parse.Object.extend('TeamOffer'),
+                            offerQuery = new Parse.Query(TeamOffer);
 
-                databaseQuery.first({
-                    success: function (recipient) {
-                        var Donation = Parse.Object.extend('Donation'),
-                            donation = new Donation();
+                        offerQuery.get(offerID,{
+                            success: function(offer) {
+                                var userQuery = new Parse.Query(Parse.User);
+                                userQuery.get(sponsorID, {
+                                    success: function(sponsor) {
+                                        var Donation = Parse.Object.extend('Donation'),
+                                            donation = new Donation();
 
-                        donation.set('tokenID', tokenID);
-                        donation.set('callerReference', callerReference);
-                        donation.set('signature', signature);
-                        donation.set('refundTokenID', refundTokenID);
-                        donation.set('amount', amount);
-                        donation.set('teamName', recipient.get('name'));
+                                        donation.set('tokenID', tokenID);
+                                        donation.set('callerReference', callerReference);
+                                        donation.set('signature', signature);
+                                        donation.set('refundTokenID', refundTokenID);
+                                        donation.set('offer', offer);
+                                        donation.set('team', team);
+                                        donation.set('sponsor', sponsor);
 
-                        donation.save(null, {
-                            success: function () {
-                                res.render('dashboard/sponsors/sponsor_complete', {
-                                    'breadcrumbs': ['Sponsors', 'Registration complete'],
-                                    'isError': false
+                                        donation.save(null, {
+                                            success: function () {
+                                                var roleACL = new Parse.ACL();
+                                                roleACL.setPublicReadAccess(true);
+                                                var teamAdminRole = new Parse.Role("Sponsor", roleACL);
+                                                teamAdminRole.getUsers().add(sponsor);
+                                                teamAdminRole.save();
+
+                                                res.render('dashboard/sponsors/sponsor_complete', {
+                                                    'breadcrumbs' : [
+                                                        { 'title' : 'Sponsors', 'href' : '/dashboard/sponsor' },
+                                                        { 'title' : 'Donation complete', 'href' : 'javascript:void(0);' }
+                                                    ],
+                                                    'isError': false
+                                                });
+                                            },
+                                            error: function (recipient, error) {
+                                                renderError(error);
+                                            }
+                                        });
+
+                                    }
                                 });
                             },
-                            error: function (recipient, error) {
-                                renderError(error);
+                            error: function(object, error) {
+                                console.log('Error fetching Offer (' + offerID + ')');
+                                console.log(error);
+                                res.render('teams/offer/error');
                             }
                         });
+                    },
+                    error: function(object, error) {
+                        console.log('Error fetching Team (' + teamID + ')');
+                        console.log(error);
+                        res.render('teams/offer/error');
                     }
                 });
             }
         },
 
-        list_donations: function (req, res) {
-            var Donation = Parse.Object.extend('Donation'),
-                query = new Parse.Query(Donation),
-                donations = [], count, i, totalAmount = 0;
+        donations: function (req, res) {
+            var _ = require('underscore');
 
-            query.descending('refundTokenID');
+            Parse.User.current().fetch().then(function (user) {
+                var Donation = Parse.Object.extend('Donation'),
+                    query = new Parse.Query(Donation),
+                    donations = [], totalAmount = 0;
 
-            query.find({
-                success: function (results) {
-                    count = results.length;
+                query.equalTo('sponsor', user);
 
-                    for (i = 0; i < count; i++) {
-                        donations.push({
-                            tokenID: results[i].get('tokenID'),
-                            rank: '' + (i + 1),
-                            amount: results[i].get('amount'),
-                            teamName: results[i].get('teamName')
+                query.find().then(function (list) {
+                    var promise = Parse.Promise.as();
+
+                    _.each(list, function(donation) {
+                        promise = promise.then(function() {
+                            var findPromise = new Parse.Promise();
+
+                            var offer = donation.get('offer'),
+                                team = donation.get('team');
+
+                            offer.fetch({
+                                success: function (fetchedOffer) {
+                                    team.fetch({
+                                        success: function (fetchedTeam) {
+                                            donations.push({
+                                                tokenID: donation.get('tokenID'),
+                                                offer: fetchedOffer,
+                                                team: fetchedTeam
+                                            });
+
+                                            totalAmount += parseFloat(fetchedOffer.get('donation'));
+
+                                            findPromise.resolve();
+                                        }
+                                    });
+                                }
+                            });
+
+                            return findPromise;
                         });
+                    });
 
-                        totalAmount += parseFloat(results[i].get('amount'));
-                    }
-
+                    return promise;
+                }).then(function () {
                     res.render('dashboard/sponsors/donations', {
-                        'breadcrumbs': ['Donations'],
-                        'count': count,
+                        'breadcrumbs' : [
+                            { 'title' : 'Sponsors', 'href' : '/dashboard/sponsor' },
+                            { 'title' : 'My donations', 'href' : 'javascript:void(0);' }
+                        ],
                         'donations': donations,
                         'totalAmount': totalAmount
                     });
-                }
+                });
             });
         }
     };

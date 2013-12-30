@@ -21,6 +21,26 @@
         );
 
         $.validator.addMethod(
+            "originalDate",
+            function(value, element) {
+                var originalDate = $(element).data('original-end-date').split('-'),
+                    originalYear = parseInt(originalDate[0], 10),
+                    originalMonth = parseInt(originalDate[1], 10),
+                    originalDay = parseInt(originalDate[2], 10),
+                    splittedValue = value.split('-'),
+                    year = parseInt(splittedValue[0], 10),
+                    month = parseInt(splittedValue[1], 10),
+                    day = parseInt(splittedValue[2], 10);
+
+                if (originalYear > year) return false;
+                if (originalMonth > month) return false;
+
+                return originalDay <= day;
+            },
+            "End date cannot be set before originally submitted."
+        );
+
+        $.validator.addMethod(
             "positiveInteger",
             function(value) {
                 var parsedValue = parseInt(value, 10);

@@ -20,6 +20,7 @@
                 <th>Location</th>
                 <th>Contact Details</th>
                 <th>Profile</th>
+                <th>Public Page</th>
                 <th>Manage</th>
             </tr>
         </thead>
@@ -30,6 +31,7 @@
                 <td><%= player.get('location') %></td>
                 <td><%= getValueOrEmpty(player.get('contact')) %></td>
                 <td><%= getValueOrEmpty(player.get('profile')) %></td>
+                <td><a href="/public/Player/<%= player.id  %>">Link</a></td>
                 <td>
                     <a class="btn btn-mini btn-lightgrey btn-action" href="/dashboard/editEntity/Player/<%= player.id %>" title="Edit">
                         <i class="icon-edit"></i>

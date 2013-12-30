@@ -1,0 +1,151 @@
+<% include ../parts/head %>
+
+<link href="/media/dashboard/css/jquery-ui-1.10.3.custom.min.css" rel="stylesheet" />
+
+<% include ../parts/bodyStartWithSocial %>
+
+<div id="team" class="container">
+    <div class="row-fluid primary" id="page-header">
+        <div class="wrapper">
+            <div class="span12">
+                <div class="row-fluid header-parts nomargin">
+                    <div class="span3">
+                        <h3><%= team.get('name') %></h3>
+                    </div>
+
+                    <div class="span5 navigation-buttons">
+                        <a class="btn btn-spud-orange" href="#" title="Home Venue"><i class="icon-map-marker icon-20"></i></a>
+                        <div class="btn-group">
+                            <a class="btn btn-spud-orange dropdown-toggle" data-toggle="dropdown" href="#" title="Players">
+                                <i class="icon-user icon-20"></i>
+                                <span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a href="#">Players option 1</a></li>
+                                <li><a href="#">Players option 2</a></li>
+                                <li><a href="#">Players option 3</a></li>
+                            </ul>
+                        </div>
+                        <div class="btn-group">
+                            <a class="btn btn-spud-orange dropdown-toggle" data-toggle="dropdown" href="#" title="Coaches">
+                                <i class="icon-bullhorn icon-20"></i>
+                                <span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a href="#">Coaches option 1</a></li>
+                                <li><a href="#">Coaches option 2</a></li>
+                                <li><a href="#">Coaches option 3</a></li>
+                            </ul>
+                        </div>
+                        <a class="btn btn-spud-orange" href="#" title="Schedule"><i class="icon-calendar"></i></a>
+                        <div class="btn-group">
+                            <a class="btn btn-spud-orange dropdown-toggle" data-toggle="dropdown" href="#" title="League">
+                                <i class="icon-sitemap icon-20"></i>
+                                <span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a href="#">League option 1</a></li>
+                                <li><a href="#">League option 2</a></li>
+                                <li><a href="#">League option 3</a></li>
+                            </ul>
+                        </div>
+                        <div class="btn-group">
+                            <a class="btn btn-spud-orange dropdown-toggle" data-toggle="dropdown" href="#" title="Tournaments">
+                                <i class="icon-trophy icon-20"></i>
+                                <span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a href="#">Tournaments option 1</a></li>
+                                <li><a href="#">Tournaments option 2</a></li>
+                                <li><a href="#">Tournaments option 3</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="span4">
+                        <ul class="breadcrumb path">
+                            <li>
+                                <a href="#"><i class="icon-home"></i></a> <span class="divider"> <i class="icon-chevron-right"></i> </span>
+                            </li>
+                            <li>
+                                <a href="#">Team</a> <span class="divider"> <i class="icon-chevron-right"></i> </span>
+                            </li>
+                            <li class="active"><strong><%= team.get('name') %></strong></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row-fluid nomargin">
+        <div class="span10">
+            <% if (team.get('profileImageThumb')) { %>
+            <img src="<%= team.get('profileImageThumb') %>" class="team-logo" />
+            <% } else { %>
+            <i class="icon-group"></i>
+            <% } %>
+
+            <h3 class="sponsors-title">Sponsors</h3>
+
+            <a href="#" class="btn btn-spud-orange btn-large" id="sponsor-button">
+                <i class="icon-money icon-3"></i>
+                Sponsor
+            </a>
+
+            <a href="#" class="btn btn-spud-orange btn-large" id="follow-button">
+                <i class="icon-microphone icon-3"></i>
+                Follow
+            </a>
+
+        </div>
+    </div>
+    <% if (sponsors.length) { %>
+    <div class="row-fluid nomargin">
+        <div class="span12">
+            <%- displaySponsors('sponsors-items', '', sponsors) %>
+        </div>
+    </div>
+    <% } %>
+    <div class="row-fluid">
+        <div class="span6">
+            <h4>Team Details</h4>
+            <dl class="dl-horizontal">
+                <dt>Location:</dt>
+                <dd><%= team.get('location') %></dd>
+                <dt>Contact Details:</dt>
+                <dd><%= team.get('contact') %></dd>
+                <dt>Team Profile:</dt>
+                <dd><%= team.get('profile') %></dd>
+                <dt>Website:</dt>
+                <dd><a href="<%= team.get('website') %>"><%= team.get('website') %></a></dd>
+                <dt>Email:</dt>
+                <dd><%= team.get('email') %></dd>
+                <dt>Home Venue:</dt>
+                <dd><%= team.get('homeVenue') %></dd>
+            </dl>
+        </div>
+        <div class="span6">
+            <% include ../commons/spudsContainer.ejs %>
+        </div>
+    </div>
+</div>
+
+<% include ../parts/foot %>
+
+<% include ../parts/scripts %>
+
+        <script type="text/javascript" src="/media/dashboard/js/jquery-ui-1.10.3.custom.min.js"></script>
+        <script type="text/javascript" src="/media/js/switches.js"></script>
+        <script type="text/javascript" src="/media/js/spud-container.js"></script>
+        <script type="text/javascript">
+            $(document).ready(function() {
+                $('.ui-slider-green').slider({
+                    orientation: "horizontal",
+                    range: "min",
+                    max: 100,
+                    value: 50
+                });
+            });
+        </script>
+    </body>
+</html>

@@ -1,5 +1,5 @@
 module.exports = function (app, keys) {
-    require('cloud/routing/public')(app);
+    require('cloud/routing/public')(app, keys);
 
     require('cloud/routing/accounts')(app, keys);
 

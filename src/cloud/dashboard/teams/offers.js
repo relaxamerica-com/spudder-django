@@ -1,4 +1,7 @@
 module.exports = function (keys) {
+    var helpers = require('cloud/teams/helpers')();
+    var _ = require('underscore');
+
     return {
         list: {
             get: function (req, res) {
@@ -16,9 +19,6 @@ module.exports = function (keys) {
                                 ('0' + (currentDate.getMonth() + 1)).slice(-2) + '-' +
                                 ('0' + currentDate.getDate()).slice(-2);
 
-
-                        console.log("Current: " + currentDateString);
-
                         offerQuery.equalTo('team', team);
 
                         offerQuery.find().then(function (list) {
@@ -34,6 +34,10 @@ module.exports = function (keys) {
                                 day = ('0' + day).slice(-2);
                                 endDate = year + '-' + month + '-' + day;
 
+                                // Database end date format is YYYY-MM-DD, user format is DD-MM-YYYY
+                                var revertedEndDate = helpers.revertDate(list[i].get('endDate'));
+                                list[i].set('endDate', revertedEndDate);
+
                                 if (endDate >= currentDateString) {
                                     currentOffers.push(list[i]);
                                 } else {
@@ -42,7 +46,7 @@ module.exports = function (keys) {
                             }
 
                             res.render('dashboard/teams/offers/list', {
-                                'breadcrumbs' : ['Teams', team.get('name'), 'Offers'],
+                                'breadcrumbs' : [{ 'title' : 'Teams', 'href' : '/dashboard/teams' }, { 'title' : 'Offers', 'href' : 'javascript:void(0);' }],
                                 'team': team,
                                 'count': list.length,
                                 'currentOffers': currentOffers,
@@ -63,7 +67,11 @@ module.exports = function (keys) {
                 query.get(teamID, {
                     success: function(team) {
                         res.render('dashboard/teams/offers/create', {
-                            'breadcrumbs' : ['Teams', team.get('name'), 'Offers', 'Create offer'],
+                            'breadcrumbs' : [
+                                { 'title' : 'Teams', 'href' : '/dashboard/teams' },
+                                { 'title' : 'Offers', 'href' : '/dashboard/teams/' + team.id + '/offers' },
+                                { 'title' : 'Create offer', 'href' : 'javascript:void(0);' }
+                            ],
                             'team': team,
                             'keys' : { 'jsKey' : keys.getJavaScriptKey(), 'appId' : keys.getApplicationID() }
                         });
@@ -71,7 +79,11 @@ module.exports = function (keys) {
                     error: function(object, error) {
                         console.log(error);
                         res.render('dashboard/teams/offers/list', {
-                            'breadcrumbs' : ['Teams', 'Error'],
+                            'breadcrumbs' : [
+                                { 'title' : 'Teams', 'href' : '/dashboard/teams' },
+                                { 'title' : 'Offers', 'href' : '/dashboard/teams/' + team.id + '/offers' },
+                                { 'title' : 'Error', 'href' : 'javascript:void(0);' }
+                            ],
                             'list': []
                         });
                     }
@@ -87,7 +99,8 @@ module.exports = function (keys) {
                     success: function(team) {
                         var TeamOffer = Parse.Object.extend('TeamOffer'),
                             teamOffer = new TeamOffer(),
-                            endDateString = req.body['endDate'], // YYYY-MM-DD
+                            endDateString = req.body['endDate'], // DD-MM-YYY
+                            revertedEndDate = helpers.revertDate(endDateString), // YYYY-MM-DD
                             images = [ req.body['offerImage1'], req.body['offerImage2'], req.body['offerImage3'] ],
                             offerImages = [];
 
@@ -100,7 +113,7 @@ module.exports = function (keys) {
                         teamOffer.set('phone', req.body['phone']);
                         teamOffer.set('website', req.body['website']);
                         teamOffer.set('quantity', parseInt(req.body['quantity'], 10));
-                        teamOffer.set('endDate', endDateString);
+                        teamOffer.set('endDate', revertedEndDate);
                         teamOffer.set('video', req.body['video']);
                         teamOffer.set('details', req.body['details']);
                         teamOffer.set('team', team);
@@ -120,7 +133,11 @@ module.exports = function (keys) {
                     error: function(object, error) {
                         console.log(error);
                         res.render('dashboard/teams/offers/list', {
-                            'breadcrumbs' : ['Teams', 'Error'],
+                            'breadcrumbs' : [
+                                { 'title' : 'Teams', 'href' : '/dashboard/teams' },
+                                { 'title' : 'Offers', 'href' : 'javascript:void(0);' },
+                                { 'title' : 'Error', 'href' : 'javascript:void(0);' }
+                            ],
                             'list': []
                         });
                     }
@@ -137,8 +154,16 @@ module.exports = function (keys) {
 
                 query.get(offerID, {
                     success: function(offer) {
+                        // Database end date format is YYYY-MM-DD, user format is DD-MM-YYYY
+                        var endDate = helpers.revertDate(offer.get('endDate'));
+                        offer.set('endDate', endDate);
+
                         res.render('dashboard/teams/offers/edit', {
-                            'breadcrumbs' : ['Teams', 'Offers', 'Edit this offer'],
+                            'breadcrumbs' : [
+                                { 'title' : 'Teams', 'href' : '/dashboard/teams' },
+                                { 'title' : 'Offers', 'href' : '/dashboard/teams/' + teamID + '/offers' },
+                                { 'title' : 'Edit this offer', 'href' : 'javascript:void(0);' }
+                            ],
                             'teamID': teamID,
                             'offer': offer,
                             'keys' : { 'jsKey' : keys.getJavaScriptKey(), 'appId' : keys.getApplicationID() }
@@ -147,7 +172,11 @@ module.exports = function (keys) {
                     error: function(object, error) {
                         console.log(error);
                         res.render('dashboard/teams/offers/edit', {
-                            'breadcrumbs' : ['Teams', 'Offers', 'Edit this offer'],
+                            'breadcrumbs' : [
+                                { 'title' : 'Teams', 'href' : '/dashboard/teams' },
+                                { 'title' : 'Offers', 'href' : '/dashboard/teams/' + teamID + '/offers' },
+                                { 'title' : 'Edit this offer', 'href' : 'javascript:void(0);' }
+                            ],
                             'found': false
                         });
                     }
@@ -163,6 +192,7 @@ module.exports = function (keys) {
                 query.get(offerID, {
                     success: function(teamOffer) {
                         var endDateString = req.body['endDate'], // YYYY-MM-DD
+                            revertedEndDate = helpers.revertDate(endDateString), // YYYY-MM-DD
                             images = [ req.body['offerImage1'], req.body['offerImage2'], req.body['offerImage3'] ],
                             offerImages = [];
 
@@ -174,7 +204,7 @@ module.exports = function (keys) {
                         teamOffer.set('phone', req.body['phone']);
                         teamOffer.set('website', req.body['website']);
                         teamOffer.set('quantity', parseInt(req.body['quantity'], 10));
-                        teamOffer.set('endDate', endDateString);
+                        teamOffer.set('endDate', revertedEndDate);
                         teamOffer.set('video', req.body['video']);
                         teamOffer.set('details', req.body['details']);
 
@@ -209,6 +239,63 @@ module.exports = function (keys) {
                 function (error) {
                     console.log(error);
                     res.redirect('/dashboard/teams/' + teamID + '/offers');
+                });
+            }
+        },
+
+        donations: {
+            get: function (req, res) {
+                var TeamOffer = Parse.Object.extend("TeamOffer"),
+                    offerQuery = new Parse.Query(TeamOffer),
+                    teamID = req.params.teamID,
+                    offerID = req.params.offerID;
+
+                offerQuery.get(offerID, {
+                    success: function(offer) {
+                        var Donation = Parse.Object.extend('Donation'),
+                            donationQuery = new Parse.Query(Donation),
+                            donations = [], totalAmount = 0;
+
+                        donationQuery.equalTo('offer', offer);
+
+                        donationQuery.find().then(function (list) {
+                            var promise = Parse.Promise.as();
+
+                            _.each(list, function(donation) {
+                                promise = promise.then(function() {
+                                    var findPromise = new Parse.Promise();
+                                    console.log(typeof  donation.createdAt)
+                                    console.log(donation.createdAt);
+                                    donation.get('sponsor').fetch({
+                                        success: function (fetchedSponsor) {
+                                            donations.push({
+                                                sponsor: fetchedSponsor,
+                                                date: donation.createdAt
+                                            });
+
+                                            findPromise.resolve();
+                                        }
+                                    });
+
+                                    return findPromise;
+                                });
+                            });
+
+                            return promise;
+                        }).then(function () {
+                            res.render('dashboard/teams/offers/donations', {
+                                'breadcrumbs' : [
+                                    { 'title' : 'Teams', 'href' : '/dashboard/teams' },
+                                    { 'title' : 'Offers', 'href' : '/dashboard/teams/' + teamID + '/offers' },
+                                    { 'title' : offer.get('title'), 'href' : '/dashboard/teams/' + teamID + '/offers/' + offerID },
+                                    { 'title' : 'Donations', 'href' : 'javascript:void(0);' }
+                                ],
+                                'offer': offer,
+                                'donations': donations,
+                                'totalAmount': totalAmount
+                            });
+                        });
+                    }
                 });
             }
         }

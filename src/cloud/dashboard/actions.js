@@ -2,6 +2,7 @@ module.exports = function (keys) {
 	var krowdio = require('cloud/krowdio'),
 		pluralizer = require('cloud/pluralize'),
 		utilities = require('cloud/utilities')();
+		_ = require('underscore');
 	
 	var addAdmins = function(entity, i, addAdminsPromise, adminsList, notFoundEmails) {
 	                	if (i == adminsList.length) {
@@ -29,15 +30,36 @@ module.exports = function (keys) {
 	                	});
 		           };
 
-	var createTeam = function(name, admin) {
-		var TeamClass = Parse.Object.extend('Team');
-        	team = new TeamClass();
-        team.set('name', name);
-        team.set('nameSearch', name.toLowerCase());
-        var admins = team.relation('admins');
-        admins.add(admin);
+	var createTeam = function(name, admin, location) {
+		var TeamClass = Parse.Object.extend('Team'),
+			query = new Parse.Query(TeamClass),
+			promise = new Parse.Promise();
+			
+		query.equalTo('nameSearch', name.toLowerCase());
+		
+		query.first().then(function(_team) {
+			if (_team) {
+				var admins = _team.relation('admins');
+		        admins.add(admin);
+		        _team.save().then(function() {
+		        	promise.resolve(_team);
+		        });
+			} else {
+		        var team = new TeamClass();
+		        team.set('name', name);
+		        team.set('location', location);
+		        team.set('nameSearch', name.toLowerCase());
+		        var admins = team.relation('admins');
+		        admins.add(admin);
+		        team.save().then(function() {
+		        	promise.resolve(team);
+		        });
+			}
+		}, function(error) {
+			console.log(error);
+		});
         
-        return team.save();
+        return promise;
 	};
 	
     return {
@@ -184,7 +206,7 @@ module.exports = function (keys) {
 		            promise.then(function(entity) {
 		            	var teamPromise = new Parse.Promise();
 		            	if (team.length > 0) {
-			            	teamPromise = createTeam(team, user);
+			            	teamPromise = createTeam(team, user, location);
 		            	} else {
 		            		teamPromise.resolve();
 		            	}
@@ -296,6 +318,11 @@ module.exports = function (keys) {
                         entity.set('googlePlus', req.body.googlePlus);
                         entity.set('isDisplayPublicly', isDisplayPublicly);
                         entity.set('team', team);
+                        
+                        if (entityType == 'Player') {
+							entity.set('position', req.body.position);
+							entity.set('number', req.body.number);
+						}
 
                         entity.save(null).then(function() {
 	                        promise.resolve(entity);

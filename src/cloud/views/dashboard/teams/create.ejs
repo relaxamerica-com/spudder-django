@@ -9,35 +9,49 @@
         <i class="icon-group"></i> Team details:
     </p>
 
-    <form action="/dashboard/teams/create" method="post" id="create-team-form">
-        <dl class="dl-horizontal">
-            <dt>Team Name:</dt>
-            <dd>
-                <input name="name"/>
+    <form action="/dashboard/teams/create" method="post" id="create-team-form" class="form-horizontal">
+        <div class="control-group">
+            <label class="control-label" for="name">Team Name:</label>
+            <div class="controls">
+                <input tabindex="1" name="name" id="name" />
                 <span class="input-required">*required</span>
-            </dd>
-            <dt>Team Location:</dt>
-            <dd>
-                <input name="location"/>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="location">Team Location:</label>
+            <div class="controls">
+                <input tabindex="2" name="location" id="location" />
                 <span class="input-required">*required</span>
-            </dd>
-            <dt>Team Contact Details:</dt>
-            <dd><input name="contact-details"/></dd>
-            <dt>Team Profile:</dt>
-            <dd><textarea name="profile" rows="2"></textarea></dd>
-            <dt>Sport:</dt>
-            <dd>
-                <select name="sport">
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="contact-details">Team Contact Details:</label>
+            <div class="controls">
+                <input tabindex="3" name="contact-details" id="contact-details" />
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="profile">Team Profile:</label>
+            <div class="controls">
+                <textarea tabindex="4" name="profile" id="profile"></textarea>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="sport">Sport:</label>
+            <div class="controls">
+                <select tabindex="5" name="sport" id="sport">
                     <option value="football">Football</option>
                     <option value="soccer">Soccer</option>
                 </select>
-            </dd>
-            <dt>Profile Picture:</dt>
-            <dd>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="profile-picture-input">Profile Picture:</label>
+            <div class="controls">
                 <input type="hidden" name="profileImageThumb" />
                 <input type="file" id="profile-picture-input" accept="image/*" class="file-upload-input"/>
-            </dd>
-        </dl>
+            </div>
+        </div>
 
         <button class="btn btn-danger" type="submit">Save</button>
     </form>

@@ -7,6 +7,19 @@
         <% } %>
     </h5>
 
+    <div class="widgetheading share-widget">
+        <h4>Share:</h4>
+        <div>
+            <%- twitterShareButton('Checkout this great offer!') %>
+        </div>
+        <div>
+            <%- googlePlusShareButton() %>
+        </div>
+        <div class="facebook-share-button">
+            <%- facebookShareButton() %>
+        </div>
+    </div>
+
     <div>
         <ul class="social-network">
             <% if (team.get('facebook') != '') { %>
@@ -44,7 +57,7 @@
             <label>Donation: </label> $<%= offer.get('donation') %>
         </li>
         <li>
-            <label>Quantity Available: </label> <%= offer.get('quantity') %>
+            <label>Quantity Available: </label> <%= quantity %>
         </li>
         <li>
             <label>End date: </label> <%= offer.get('endDate') %>
@@ -73,9 +86,4 @@
         <% } %>
     </ul>
 </div>
-<div class="widget donation-widget">
-    <a class="btn btn-danger">
-        <i class="icon-credit-card"></i>
-        DONATE NOW
-    </a>
-</div>
+<% include donate-button %>

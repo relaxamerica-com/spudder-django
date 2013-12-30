@@ -6,60 +6,25 @@
 	<div class="row-fluid">
 		<div class="span12">
             <p>
-                On this page you can sponsor any team that registered as a recipient. Choose one of them from drop-down and
-                specify the size of donation.
+                Please verify below donation information before proceeding with donation. If everything is as it should be, press 'Proceed with donation' button.
             </p>
-            <% if (recipients) { %>
-            <form action="/dashboard/sponsor/confirm" method="post" onsubmit="return validate();">
-                <label>
-                    Team:
-                    <select name="refundTokenID">
-                        <option value="---">---</option>
-                        <% recipients.forEach(function(recipient){ %>
-                        <option value="<%= recipient.refundTokenID%>" data-name="<%= recipient.name %>">
-                            <%= recipient.name %>
-                        </option>
-                        <% }) %>
-                    </select>
-                </label>
-                <label>
-                    Donation amount:
-                    <input type="text" name="amount"/>
-                </label>
-                <input type="hidden" name="teamName" value=""/>
-                <button type="submit" class="btn btn-success">Sponsor!</button>
-            </form>
-            <% } else { %>
-            <p>
-                Currently there are no recipients registered. Please come back later...
-            </p>
-            <% } %>
+            <dl class="dl-horizontal">
+                <dt>Team Name:</dt>
+                <dd><%= team.get('name') %></dd>
+                <dt>Offer Title:</dt>
+                <dd><%= offer.get('title') %></dd>
+                <dt>Donation:</dt>
+                <dd>$<%= offer.get('donation') %></dd>
+
+            </dl>
+            <a href="<%= cbui %>" class="btn btn-small btn-success">
+                Proceed with donation
+            </a> (you will be redirected to Amazon Marketplace site to verify you account and start payment process).
 		</div>
 	</div>
 </div>
 
 <% include ../../dashboard/parts/scripts %>
+<script src="/media/dashboard/js/tab-control.js"></script>
 
-	<script src="/media/dashboard/js/tab-control.js"></script>
-
-    <script type="text/javascript">
-        $(document).ready(function () {
-            window.validate = function () {
-                if ($("select option:selected").text() == "---") return false;
-
-                var amount = $("input[name='amount']").val(),
-                    parsedAmount = parseFloat(amount);
-
-                return !(!amount || isNaN(parsedAmount) || parsedAmount < 1);
-            };
-
-            $('select').change(function (event) {
-                var $selected = $("select option:selected"),
-                    $teamName = $("input[name='teamName']");
-
-                $teamName.val($selected.data('name'));
-            });
-        });
-    </script>
-	
 <% include ../../dashboard/parts/foot %>
