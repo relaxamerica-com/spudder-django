@@ -2,6 +2,7 @@ module.exports = function (keys) {
 	var krowdio = require('cloud/krowdio'),
 		pluralizer = require('cloud/pluralize'),
 		utilities = require('cloud/utilities')();
+		_ = require('underscore');
 	
 	var addAdmins = function(entity, i, addAdminsPromise, adminsList, notFoundEmails) {
 	                	if (i == adminsList.length) {
@@ -34,17 +35,17 @@ module.exports = function (keys) {
 			query = new Parse.Query(TeamClass),
 			promise = new Parse.Promise();
 			
-		query.equalTo('nameSeach', name.toLowerCase());
+		query.equalTo('nameSearch', name.toLowerCase());
 		
-		query.first().then(function(team) {
-			if (team) {
-				var admins = team.relation('admins');
-		        admins.addUnique(admin);
-		        team.save().then(function() {
-		        	promise.resolve(team);
+		query.first().then(function(_team) {
+			if (_team) {
+				var admins = _team.relation('admins');
+		        admins.add(admin);
+		        _team.save().then(function() {
+		        	promise.resolve(_team);
 		        });
 			} else {
-		        team = new TeamClass();
+		        var team = new TeamClass();
 		        team.set('name', name);
 		        team.set('location', location);
 		        team.set('nameSearch', name.toLowerCase());
