@@ -55,9 +55,11 @@
 <script src="/media/dashboard/js/jquery-ui-1.10.3.custom.min.js"></script>
 <script src="/media/dashboard/js/chosen.jquery.min.js"></script>
 <script src="/media/dashboard/js/bootstrap-tag.min.js"></script>
+<script src="/media/js/parse.js"></script>
 
 <script type="text/javascript">
 	$(document).ready(function() {
+		Parse.initialize('<%= keys.appId %>', '<%= keys.jsKey %>');
 	
 		// TODO: remove after creating other example
 		$(".chzn-select").chosen({ 'width' : '220px' });
@@ -76,45 +78,44 @@
 			}
 		});
 		
-		$('#id-input-file-2').ace_file_input({
-			no_file:'No File ...',
-			btn_choose:'Choose',
-			btn_change:'Change',
-			droppable:false,
-			onchange:null,
-			thumbnail:false //| true | large
-			//whitelist:'gif|png|jpg|jpeg'
-			//blacklist:'exe|php'
-			//onchange:''
-			//
-		});
-		
 		$('#images-input-file').ace_file_input({
-			style:'well',
-			btn_choose:'Drop files here or click to choose',
-			btn_change:null,
-			no_icon:'icon-cloud-upload',
-			droppable:true,
-			thumbnail:'small'
-			//,icon_remove:null//set null, to hide remove/reset button
-			/**,before_change:function(files, dropped) {
-				//Check an example below
-				//or examples/file-upload.html
-				return true;
-			}*/
-			/**,before_remove : function() {
-				return true;
-			}*/
-			,
-			preview_error : function(filename, error_code) {
-				//name of the file that failed
-				//error_code values
-				//1 = 'FILE_LOAD_FAILED',
-				//2 = 'IMAGE_LOAD_FAILED',
-				//3 = 'THUMBNAIL_FAILED'
-				//alert(error_code);
-			}
-		});
+            no_file:'No File ...',
+            btn_choose:'Choose',
+            btn_change:'Select',
+            droppable: false,
+            onchange: null,
+            thumbnail: true,
+            whitelist: 'gif|png|jpg|jpeg',
+            blacklist: 'exe|php'
+        });
+        
+		function openModal() {
+			$('.modal').modal('hide');
+			var modal = $('#tag-modal');
+			modal.appendTo($('body'));
+			modal.modal();
+		}
+		
+		window.loadImage = function() {
+			var fileUploadControl = $("#images-input-file")[0];
+	
+	        if (fileUploadControl.files.length > 0) {
+	            var file = fileUploadControl.files[0],
+	                name = file.name;
+	
+	            var parseFile = new Parse.File(name, file);
+	            parseFile.save().then(function(image) {
+	                $('#image-preview').attr('src', image.url());
+	                $('#comment-preview').html($('#add-image-comment').val());
+	                openModal();
+	            }, function(error) {
+	                console.log(error);
+	            });
+	        } else {
+	        	openModal();
+	        }
+	        
+        };
 		
 		$('#create-spuds-buttons > div').modal({ 'show' : false });
 		
@@ -126,10 +127,7 @@
 		});
 		
 		$('.create-spuds-modals .modal .next').on('click', function() {
-			$('.modal').modal('hide');
-			var modal = $('#tag-modal');
-			modal.appendTo($('body'));
-			modal.modal();
+			
 		});
 		
 		$('.open-modal').on('click', function() {

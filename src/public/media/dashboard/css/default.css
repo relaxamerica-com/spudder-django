@@ -424,3 +424,9 @@ form .input-required {
 	margin-right: 5px;
 }
 
+#tag-modal #image-preview,
+#tag-modal #comment-preview {
+	width: 90%;
+	margin-top: 10px;
+}
+

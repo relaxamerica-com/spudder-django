@@ -2,7 +2,6 @@ module.exports = function (keys) {
 	var krowdio = require('cloud/krowdio'),
 		pluralizer = require('cloud/pluralize'),
 		utilities = require('cloud/utilities')();
-		_ = require('underscore');
 	
 	var addAdmins = function(entity, i, addAdminsPromise, adminsList, notFoundEmails) {
 	                	if (i == adminsList.length) {
@@ -75,7 +74,6 @@ module.exports = function (keys) {
             res.render('dashboard/fan/general', {
                 'breadcrumbs' : breadcrumbs,
                 'displayUsers' : require('cloud/commons/displayUsers'),
-                'modalTop' : require('cloud/dashboard/fan/modalTop'),
                 'keys' : { 'jsKey' : keys.getJavaScriptKey(), 'appId' : keys.getApplicationID() }
             });
         },
@@ -85,6 +83,8 @@ module.exports = function (keys) {
         	res.render('dashboard/fan/mySpuds', {
                 'breadcrumbs' : breadcrumbs,
                 'modalTop' : require('cloud/dashboard/fan/modalTop'),
+                'modalBottom' : require('cloud/dashboard/fan/modalBottom'),
+                'keys' : { 'jsKey' : keys.getJavaScriptKey(), 'appId' : keys.getApplicationID() }
             });
         },
         
