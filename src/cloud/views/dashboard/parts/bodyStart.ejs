@@ -147,7 +147,7 @@
 
 						<li class="black" title="Announcements">
 							<a data-toggle="dropdown" class="dropdown-toggle btn-orange" href="#">
-								<i class="icon-envelope icon-animated-vertical"></i>
+								<i class="icon-volume-up icon-animated-vertical"></i>
 								<span class="badge badge-black">5</span>
 							</a>
 
@@ -219,19 +219,21 @@
 
 						<li class="black">
 							<a data-toggle="dropdown" href="#" class="dropdown-toggle btn-orange">
-								<% if( getValueOrEmpty( user.get('profileImageThumb') ) == '' ) { %>
-									<img class="nav-user-photo" src="/media/dashboard/avatars/user.jpg" alt="<%= getValueOrEmpty(user.get('nickname')) %>'s Photo" />
-								<% } else { %>
-									<img class="nav-user-photo" src="<%= user.get('profileImageThumb') %>" alt="<%= getValueOrEmpty(user.get('nickname')) %>'s Photo" />
-								<% } %>
-								<span class="user-info">
-									<small>Welcome,</small>
-									<% if (getValueOrEmpty(user.get('nickname')) != '') { %>
-										<%= user.get('nickname') %>
-									<% } else { %>
-										#<%= user.get('krowdioUserId') %>
-									<% } %>
-								</span>
+                                <% if( getValueOrEmpty( user.get('profileImageThumb') ) == '' ) { %>
+                                    <img class="nav-user-photo" src="/media/dashboard/avatars/no_avatar.png" alt="<%= getValueOrEmpty(user.get('nickname')) %>'s Photo" />
+                                <% } else { %>
+                                    <img class="nav-user-photo" src="<%= user.get('profileImageThumb') %>" alt="<%= getValueOrEmpty(user.get('nickname')) %>'s Photo" />
+                                <% } %>
+                                <span class="user-info">
+                                    <small>Welcome,</small>
+                                    <% if (getValueOrEmpty(user.get('nickname')) != '') { %>
+                                        <%= user.get('nickname') %>
+                                    <% } else if (getValueOrEmpty(user.get('krowdioUserId')) != '') { %>
+                                        #<%= user.get('krowdioUserId') %>
+                                    <% } else { %>
+                                        Anonymous
+                                    <% } %>
+                                </span>
 
 								<i class="icon-caret-down"></i>
 							</a>

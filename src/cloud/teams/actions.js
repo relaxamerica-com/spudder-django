@@ -48,6 +48,7 @@ module.exports = function (keys) {
                                 'twitterShareButton': require('cloud/commons/twitterShareButton'),
                                 'googlePlusShareButton': require('cloud/commons/googlePlusShareButton'),
                                 'facebookShareButton': require('cloud/commons/facebookShareButton'),
+                                'emailShareButton': require('cloud/commons/emailShareButton'),
                                 'sponsors': sponsors,
                                 'meta': {
                                     title: team.get('name'),
@@ -114,11 +115,13 @@ module.exports = function (keys) {
                                 var path = 'https://' + keys.getAppName() + '.parseapp.com/teams/' + teamID + '/offers/' + offerID,
                                     endDate = helpers.revertDate(offer.get('endDate')),
                                     isSoldOut = sponsors.length == offer.get('quantity'),
+                                    image = team.get('profileImageThumb') ? team.get('profileImageThumb') : (offer.get('images')[0] ? offer.get('images')[0] : ''),
                                     params = {
                                         'displaySponsors' : require('cloud/commons/displaySponsors'),
                                         'twitterShareButton': require('cloud/commons/twitterShareButton'),
                                         'googlePlusShareButton': require('cloud/commons/googlePlusShareButton'),
                                         'facebookShareButton': require('cloud/commons/facebookShareButton'),
+                                        'emailShareButton': require('cloud/commons/emailShareButton'),
                                         'team': team,
                                         'offer': offer,
                                         'isSoldOut': isSoldOut,
@@ -127,7 +130,7 @@ module.exports = function (keys) {
                                         'meta': {
                                             title: offer.get('title') + ' :: ' + team.get('name'),
                                             description: offer.get('details'),
-                                            image: offer.get('images')[0] ? offer.get('images')[0] : '',
+                                            image: image,
                                             url: path
                                         },
                                         'returnURL': path

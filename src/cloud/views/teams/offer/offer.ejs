@@ -76,6 +76,34 @@
 <% include ../parts/footer %>
 
 <% include ../../parts/scripts %>
+<script src="/media/js/moment-with-langs.js"></script>
+<script>
+    $(document).ready(function () {
+        var $offerEndDateContainer = $('#offer-end-date'),
+            endDateStr = $offerEndDateContainer.data('end-date'),
+            endDate = moment(endDateStr + ' 23:59:59:999', 'DD-MM-YYYY HH:mm:ss:SSS'),
+            today = moment();
+
+        today.hour(23);
+        today.minute(59);
+        today.second(59);
+        today.milliseconds(999);
+
+        $offerEndDateContainer.text(today > endDate ? 'Ended' : endDate.fromNow());
+
+        if (today > endDate) {
+            var $donateBtn = $('#donate-btn');
+
+            if (!$donateBtn.attr('disabled')) {
+                $donateBtn.attr({
+                    'href': 'javascript:void(0);',
+                    'disabled': 'disabled',
+                    'title': 'Offer ended!'
+                });
+            }
+        }
+    });
+</script>
 
     </body>
 </html>
