@@ -24,14 +24,21 @@
             <div class="controls">
                 <input tabindex="1" name="name" id="name" />
                 <span class="input-required">*required</span>
-                <input tabindex="15" type="checkbox" name="hide-publicly" /> <span class="hide-publicly-text">Do NOT display publicly</span>
+                <input tabindex="2" type="checkbox" name="hide-publicly" /> <span class="hide-publicly-text">Do NOT display publicly</span>
+            </div>
+    	</div>
+    	
+    	<div class="control-group">
+            <label class="control-label" for="name">Name (Public):</label>
+            <div class="controls">
+                <input tabindex="3" name="publicName" id="publicName" />
             </div>
     	</div>
     	
     	<div class="control-group">
             <label class="control-label" for="location">Home Zip:</label>
             <div class="controls">
-                <input tabindex="2" name="location" id="location" />
+                <input tabindex="4" name="location" id="location" />
                 <span class="input-required" title="But never displayed, simply used to speed search">*required</span>
             </div>
     	</div>
@@ -39,14 +46,14 @@
     	<div class="control-group">
             <label class="control-label" for="team">Team:</label>
             <div class="controls">
-                <input tabindex="3" name="team" id="team" />
+                <input tabindex="5" name="team" id="team" />
             </div>
     	</div>
     	
     	<div class="control-group">
             <label class="control-label" for="sport">Sport:</label>
             <div class="controls">
-                <select name="sport">
+                <select name="sport" tabindex="6">
                     <option value="football">Football</option>
                     <option value="soccer">Soccer</option>
                 </select>
@@ -56,28 +63,28 @@
     	<div class="control-group">
             <label class="control-label" for="number">Number and Position:</label>
             <div class="controls">
-                <input name="number" class="player-number" />
-        		<input name="position" class="player-position" />
+                <input name="number" class="player-number" tabindex="7" />
+        		<input name="position" class="player-position" tabindex="8" />
             </div>
     	</div>
         <div class="control-group">
             <label class="control-label" for="admins">Admins:</label>
             <div class="controls">
-                <input name="admins" id="admins" placeholder="Enter emails..." />
+                <input name="admins" id="admins" placeholder="Enter emails..." tabindex="9" />
             </div>
     	</div>
     	
     	<div class="control-group">
             <label class="control-label" for="contact-details">Player Contact Details:</label>
             <div class="controls">
-                <input name="contact-details" id="contact-details" />
+                <input name="contact-details" id="contact-details" tabindex="10" />
             </div>
     	</div>
     	
     	<div class="control-group">
             <label class="control-label" for="profile">Player Profile:</label>
             <div class="controls">
-                <textarea name="profile" rows="2" id="profile">&nbsp;</textarea>
+                <textarea name="profile" rows="2" id="profile" tabindex="11">&nbsp;</textarea>
             </div>
     	</div>
     	
@@ -85,13 +92,13 @@
             <label class="control-label" for="profile-picture-input">Profile Picture:</label>
             <div class="controls">
                 <input type="hidden" name="profileImageThumb" />
-            	<input type="file" id="profile-picture-input" accept="image/*" />
+            	<input type="file" id="profile-picture-input" accept="image/*" tabindex="12" />
             </div>
     	</div>
 
 		<div class="control-group">
             <div class="controls">
-                <button class="btn btn-orange" type="submit">Save</button>
+                <button class="btn btn-orange" type="submit" tabindex="13">Save</button>
             </div>
     	</div>
     </form>

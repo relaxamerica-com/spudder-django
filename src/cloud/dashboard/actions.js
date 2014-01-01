@@ -163,6 +163,7 @@ module.exports = function (keys) {
 		                entity.set('sport', sport);
 		                entity.set('profileImageThumb', profileImageThumb);
 		                entity.set('isDisplayPublicly', isDisplayPublicly);
+		                entity.set('publicName', req.body.publicName);
 		                entity.set('team', team);
 		                
 		                if (entityType == 'Player') {
@@ -293,7 +294,6 @@ module.exports = function (keys) {
                     profile = req.body.profile,
                     id = req.params.id,
                     entityType = req.params.entityType,
-                    team = req.body.team,
 		        	admins = utilities.removeSpaces(req.body.admins),
 		        	isDisplayPublicly = 'hide-publicly' in req.body;
 
@@ -317,7 +317,7 @@ module.exports = function (keys) {
                         entity.set('twitter', req.body.twitter);
                         entity.set('googlePlus', req.body.googlePlus);
                         entity.set('isDisplayPublicly', isDisplayPublicly);
-                        entity.set('team', team);
+                        entity.set('publicName', req.body.publicName);
                         
                         if (entityType == 'Player') {
 							entity.set('position', req.body.position);
