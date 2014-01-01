@@ -31,16 +31,16 @@
         <div class="control-group">
             <label class="control-label" for="name">Name (Nickname):</label>
             <div class="controls">
-                <input name="name" id="name" value="<%= entity.get('name') %>" />
+                <input tabindex="1" name="name" id="name" value="<%= entity.get('name') %>" />
                 <span class="input-required">*required</span>
-                <input type="checkbox" name="hide-publicly" <% if (entity.get('isDisplayPublicly') == true) { %>checked="checked"<% }  %>/> <span class="hide-publicly-text">Do NOT display publicly</span>
+                <input tabindex="2" type="checkbox" name="hide-publicly" <% if (entity.get('isDisplayPublicly') == true) { %>checked="checked"<% }  %>/> <span class="hide-publicly-text">Do NOT display publicly</span>
             </div>
     	</div>
     	
     	<div class="control-group">
             <label class="control-label" for="location">Home Zip:</label>
             <div class="controls">
-                <input name="location" id="location" value="<%= entity.get('location') %>" />
+                <input tabindex="3" name="location" id="location" value="<%= entity.get('location') %>" />
                 <span class="input-required" title="But never displayed, simply used to speed search">*required</span>
             </div>
     	</div>
@@ -55,7 +55,7 @@
     	<div class="control-group">
             <label class="control-label" for="sport">Sport:</label>
             <div class="controls">
-                <select name="sport">
+                <select name="sport" tabindex="4">
                     <% if (entity.get('sport') == 'football') { %>
 	                    <option value="football" selected>Football</option>
 	                    <option value="soccer">Soccer</option>
@@ -70,29 +70,29 @@
     	<div class="control-group">
             <label class="control-label" for="number">Number and Position:</label>
             <div class="controls">
-                <input name="number" class="player-number" value="<%= getValueOrEmpty( entity.get('number') ) %>" />
-        		<input name="position" class="player-position" value="<%= getValueOrEmpty( entity.get('position') ) %>" />
+                <input tabindex="5" name="number" class="player-number" value="<%= getValueOrEmpty( entity.get('number') ) %>" />
+        		<input tabindex="6" name="position" class="player-position" value="<%= getValueOrEmpty( entity.get('position') ) %>" />
             </div>
     	</div>
     	
     	<div class="control-group">
             <label class="control-label" for="admins">Admins:</label>
             <div class="controls" id="admins-controls">
-                <input name="admins" id="admins" placeholder="Enter emails..."  value="<%= getValueOrEmpty( entity.get('adminsEmails') ) %>" />
+                <input tabindex="7" name="admins" id="admins" placeholder="Enter emails..."  value="<%= getValueOrEmpty( entity.get('adminsEmails') ) %>" />
             </div>
     	</div>
     	
     	<div class="control-group">
             <label class="control-label" for="contact-details">Coach Contact Details:</label>
             <div class="controls">
-                <input name="contact-details" id="contact-details" value="<%= getValueOrEmpty( entity.get('contact-details') ) %>" />
+                <input tabindex="8" name="contact-details" id="contact-details" value="<%= getValueOrEmpty( entity.get('contact-details') ) %>" />
             </div>
     	</div>
     	
     	<div class="control-group">
             <label class="control-label" for="profile">Coach Profile:</label>
             <div class="controls">
-                <textarea name="profile" rows="2" id="profile"><%= entity.get('profile') %></textarea>
+                <textarea tabindex="9" name="profile" rows="2" id="profile"><%= entity.get('profile') %></textarea>
             </div>
     	</div>
     	
@@ -100,7 +100,7 @@
             <label class="control-label" for="profile-picture-input">Profile Picture:</label>
             <div class="controls">
                 <input type="hidden" name="profileImageThumb" value="<%= entity.get('profileImageThumb') %>" />
-            	<input type="file" id="profile-picture-input" accept="image/*" />
+            	<input tabindex="10" type="file" id="profile-picture-input" accept="image/*" />
             </div>
     	</div>
 
@@ -110,7 +110,7 @@
 
             <div class="controls">
             <span class="input-icon input-icon-right">
-                <input name="website" value="<%= getValueOrEmpty(entity.get('website')) %>" id="form-field-website" type="url">
+                <input tabindex="11" name="website" value="<%= getValueOrEmpty(entity.get('website')) %>" id="form-field-website" type="url">
                 <i class="icon-bookmark icon-for-not-required-field"></i>
             </span>
             </div>
@@ -120,7 +120,7 @@
 
             <div class="controls">
             <span class="input-icon input-icon-right">
-                <input name="email" value="<%= getValueOrEmpty(entity.get('email')) %>" id="form-field-email"type="email">
+                <input tabindex="12" name="email" value="<%= getValueOrEmpty(entity.get('email')) %>" id="form-field-email"type="email">
                 <i class="icon-envelope icon-for-not-required-field"></i>
             </span>
             </div>
@@ -132,7 +132,7 @@
 
             <div class="controls">
                 <span class="input-icon">
-                <input name="facebook" value="<%= getValueOrEmpty(entity.get('facebook')) %>" id="form-field-facebook" type="url">
+                <input tabindex="13" name="facebook" value="<%= getValueOrEmpty(entity.get('facebook')) %>" id="form-field-facebook" type="url">
                 <i class="icon-facebook"></i>
             </span>
             </div>
@@ -143,7 +143,7 @@
 
             <div class="controls">
             <span class="input-icon">
-                <input value="<%= getValueOrEmpty(entity.get('twitter')) %>" name="twitter" id="form-field-twitter" type="url">
+                <input tabindex="14" value="<%= getValueOrEmpty(entity.get('twitter')) %>" name="twitter" id="form-field-twitter" type="url">
                 <i class="icon-twitter"></i>
             </span>
             </div>
@@ -154,7 +154,7 @@
 
             <div class="controls">
             <span class="input-icon">
-                <input value="<%= getValueOrEmpty(entity.get('googlePlus')) %>" name="googlePlus" id="form-field-gplus" type="url">
+                <input tabindex="15" value="<%= getValueOrEmpty(entity.get('googlePlus')) %>" name="googlePlus" id="form-field-gplus" type="url">
                 <i class="icon-google-plus"></i>
             </span>
             </div>
@@ -162,7 +162,7 @@
 
         <div class="control-group">
 			<div class="controls">
-        		<button class="btn btn-orange" type="submit">Save</button>
+        		<button tabindex="16" class="btn btn-orange" type="submit">Save</button>
         	</div>
    		</div>
     </form>
