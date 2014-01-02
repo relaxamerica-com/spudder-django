@@ -10,7 +10,13 @@
             <div class="span12">
                 <div class="row-fluid header-parts nomargin">
                     <div class="span5">
-                        <h3><%= entity.get('name') %></h3>
+                        <h3>
+							<% if (entity.get('isDisplayPublicly')) { %>
+                        		<%= entity.get('publicName') %>
+                        	<% } else { %>
+                        		<%= entity.get('name') %>
+                        	<% } %>
+						</h3>
                     </div>
 
                     <div class="span4 offset3">
@@ -21,7 +27,15 @@
                             <li>
                                 <a href="/dashboard/listEntities/Coach">Coaches</a> <span class="divider"> <i class="icon-chevron-right"></i> </span>
                             </li>
-                            <li class="active"><strong><%= entity.get('name') %></strong></li>
+                            <li class="active">
+	                        	<strong>
+	                        		<% if (entity.get('isDisplayPublicly')) { %>
+	                        			<%= entity.get('publicName') %>
+		                        	<% } else { %>
+		                        		<%= entity.get('name') %>
+		                        	<% } %>
+	                        	</strong>
+                        	</li>
                         </ul>
                     </div>
                 </div>
