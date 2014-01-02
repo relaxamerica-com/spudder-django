@@ -21,9 +21,11 @@
                                 <span class="caret"></span>
                             </a>
                             <ul class="dropdown-menu">
-                                <li><a href="#">Players option 1</a></li>
-                                <li><a href="#">Players option 2</a></li>
-                                <li><a href="#">Players option 3</a></li>
+                            	<% players.forEach(function(player) { %>
+	                                <li>
+	                                	<a href="/public/Player/<%- player.id  %>"><%- getEntityName(player) %></a>
+	                                </li>
+                            	<% }) %>
                             </ul>
                         </div>
                         <div class="btn-group">
@@ -32,9 +34,11 @@
                                 <span class="caret"></span>
                             </a>
                             <ul class="dropdown-menu">
-                                <li><a href="#">Coaches option 1</a></li>
-                                <li><a href="#">Coaches option 2</a></li>
-                                <li><a href="#">Coaches option 3</a></li>
+                                <% coaches.forEach(function(coach) { %>
+	                                <li>
+	                                	<a href="/public/Coach/<%- coach.id  %>"><%- getEntityName(coach) %></a>
+	                                </li>
+                            	<% }) %>
                             </ul>
                         </div>
                         <a class="btn btn-spud-orange" href="#" title="Schedule"><i class="icon-calendar"></i></a>

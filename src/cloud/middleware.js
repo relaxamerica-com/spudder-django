@@ -18,6 +18,19 @@ module.exports = function (app, keys) {
         res.locals.getValueOrEmpty = function(value) {
             return value ? value : '';
         };
+        
+        res.locals.getEntityName = function(entity) {
+        	try {
+        		if (entity.get('isDisplayPublicly')) {
+        			name = entity.get('publicName');
+        		} else {
+        			name = entity.get('name');
+        		}
+        		return name;
+        	} catch(error) {
+        		return '';
+        	}
+        };
 
         next();
     });

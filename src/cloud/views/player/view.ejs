@@ -11,11 +11,7 @@
                 <div class="row-fluid header-parts nomargin">
                     <div class="span5">
                         <h3>
-                        	<% if (entity.get('isDisplayPublicly')) { %>
-                        		<%= entity.get('publicName') %>
-                        	<% } else { %>
-                        		<%= entity.get('name') %>
-                        	<% } %>
+                        	<%- getEntityName(entity) %>
                         </h3>
                     </div>
 
@@ -29,11 +25,7 @@
                             </li>
                             <li class="active">
                             	<strong>
-									<% if (entity.get('isDisplayPublicly')) { %>
-	                        			<%= entity.get('publicName') %>
-		                        	<% } else { %>
-		                        		<%= entity.get('name') %>
-		                        	<% } %>
+									<%- getEntityName(entity) %>
 		                        </strong>
 		                    </li>
                         </ul>

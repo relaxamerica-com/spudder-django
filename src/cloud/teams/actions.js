@@ -5,15 +5,17 @@ module.exports = function (keys) {
         view: function (req, res) {
             var teamID = req.params.teamID,
                 Team = Parse.Object.extend("Team"),
-                query = new Parse.Query(Team);
+                query = new Parse.Query(Team),
+                currentTeam = null;
 
             query.get(teamID, {
                 success: function(team) {
                     var _ = require('underscore');
-
+                    
                     var Donation = Parse.Object.extend('Donation'),
                         query = new Parse.Query(Donation),
-                        sponsors = [];
+                        sponsors = [],
+                        currentTeam = team;
 
                     query.equalTo('team', team);
 
@@ -39,25 +41,45 @@ module.exports = function (keys) {
                         });
 
                         return promise;
-                    }).then(function () {
+                    }).then(function() {
+                    	var playersPromise = new Parse.Promise(),
+                    		Player = Parse.Object.extend('Player'),
+                    		playersQuery = new Parse.Query(Player),
+                    		coachesPromise = new Parse.Promise(),
+                    		Coach = Parse.Object.extend('Coach'),
+                    		coachesQuery = new Parse.Query(Coach);
+                    	
+                    	playersQuery.equalTo('team', currentTeam.get('name'));
+                    	playersPromise = playersQuery.find();
+                    	
+                    	coachesQuery.equalTo('team', currentTeam.get('name'));
+                    	coachesPromise = coachesQuery.find();
+                    	
+                    	
+                    	Parse.Promise.when([playersPromise, coachesPromise]).then(function(players, coaches) {
                             var path = 'https://' + keys.getAppName() + '.parseapp.com/teams/' + teamID;
 
                             res.render('teams/view', {
                                 'displaySponsors' : require('cloud/commons/displaySponsors'),
-                                'team': team,
+                                'team': currentTeam,
                                 'twitterShareButton': require('cloud/commons/twitterShareButton'),
                                 'googlePlusShareButton': require('cloud/commons/googlePlusShareButton'),
                                 'facebookShareButton': require('cloud/commons/facebookShareButton'),
                                 'emailShareButton': require('cloud/commons/emailShareButton'),
                                 'sponsors': sponsors,
                                 'meta': {
-                                    title: team.get('name'),
-                                    description: team.get('profile'),
-                                    image: team.get('profileImageThumb') ? team.get('profileImageThumb') : '',
+                                    title: currentTeam.get('name'),
+                                    description: currentTeam.get('profile'),
+                                    image: currentTeam.get('profileImageThumb') ? currentTeam.get('profileImageThumb') : '',
                                     url: path
                                 },
-                                'returnURL': path
-                        });
+                                'returnURL': path,
+                                'players' : players,
+                                'coaches' : coaches
+                        	});
+                    	});
+                    	
+                    	
                     });
                 },
                 error: function(object, error) {
