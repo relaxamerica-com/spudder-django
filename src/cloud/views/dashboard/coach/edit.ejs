@@ -33,7 +33,7 @@
             <div class="controls">
                 <input name="name" id="name" value="<%= entity.get('name') %>" tabindex="1" />
                 <span class="input-required">*required</span>
-                <input tabindex="2" type="checkbox" name="hide-publicly" <% if (entity.get('isDisplayPublicly') == true) { %>checked="checked"<% }  %>/> <span class="hide-publicly-text">Do NOT display publicly</span>
+                <input tabindex="2" type="checkbox" name="hide-publicly" <% if (entity.get('isDisplayPublicly') == false) { %>checked="checked"<% }  %>/> <span class="hide-publicly-text">Do NOT display publicly</span>
             </div>
     	</div>
     	

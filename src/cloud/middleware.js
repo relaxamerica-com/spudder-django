@@ -22,9 +22,9 @@ module.exports = function (app, keys) {
         res.locals.getEntityName = function(entity) {
         	try {
         		if (entity.get('isDisplayPublicly')) {
-        			name = entity.get('publicName');
-        		} else {
         			name = entity.get('name');
+        		} else {
+        			name = entity.get('publicName');
         		}
         		return name;
         	} catch(error) {

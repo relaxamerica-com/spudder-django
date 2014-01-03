@@ -18,20 +18,30 @@
             <tr>
                 <th>Name</th>
                 <th>Location</th>
-                <th>Contact Details</th>
-                <th>Profile</th>
-                <th>Public Page</th>
+                <th>View</th>
+                <th>Admins</th>
                 <th>Manage</th>
             </tr>
         </thead>
         <tbody>
         <% list.forEach(function(coach) { %>
             <tr>
-                <td><a href="/public/Coach/<%= coach.id  %>"><%= coach.get('name') %></a></td>
+                <td>
+                	<a href="/public/Coach/<%= coach.id  %>">
+                		<%= coach.get('name') %>
+                	</a>
+            	</td>
                 <td><%= coach.get('location') %></td>
-                <td><%= getValueOrEmpty(coach.get('contact')) %></td>
-                <td><%= getValueOrEmpty(coach.get('profile')) %></td>
-                <td><a href="/public/Coach/<%= coach.id  %>">Link</a></td>
+                <td>
+                	<% if(coach.get('isDisplayPublicly')) { %>
+                		Public
+                	<% } else { %>
+                		Private
+                	<% } %>
+                </td>
+                <td>
+				
+				</td>
                 <td>
                     <a class="btn btn-mini btn-lightgrey btn-action" href="/dashboard/editEntity/Coach/<%= coach.id %>" title="Edit">
                         <i class="icon-edit"></i>

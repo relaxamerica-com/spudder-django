@@ -18,20 +18,38 @@
             <tr>
                 <th>Name</th>
                 <th>Location</th>
-                <th>Contact Details</th>
-                <th>Profile</th>
-                <th>Public Page</th>
+                <th>View</th>
+                <th>Admins</th>
                 <th>Manage</th>
             </tr>
         </thead>
         <tbody>
         <% list.forEach(function(player) { %>
             <tr>
-                <td><a href="/public/Player/<%= player.id  %>"><%= player.get('name') %></a></td>
+                <td>
+                	<a href="/public/Player/<%= player.id  %>">
+                		<%= player.get('name') %>
+            		</a>
+            	</td>
                 <td><%= player.get('location') %></td>
-                <td><%= getValueOrEmpty(player.get('contact')) %></td>
-                <td><%= getValueOrEmpty(player.get('profile')) %></td>
-                <td><a href="/public/Player/<%= player.id  %>">Link</a></td>
+                <td>
+                	<% if(player.get('isDisplayPublicly')) { %>
+                		Public
+                	<% } else { %>
+                		Private
+                	<% } %>
+                </td>
+                <td>
+                	<% player.otherAdmins.forEach(function(admin) { %>
+                		<div>
+                		<% if (admin.id != user.id) { %>
+                			<%= admin.get('name') %>
+                		<% } else { %>
+                			You
+                		<% } %>
+                		</div>
+                	<% }) %>
+                </td>
                 <td>
                     <a class="btn btn-mini btn-lightgrey btn-action" href="/dashboard/editEntity/Player/<%= player.id %>" title="Edit">
                         <i class="icon-edit"></i>

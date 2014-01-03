@@ -132,7 +132,7 @@ module.exports = function (keys) {
 		        	profile = req.body.profile,
 		        	team = req.body.team,
 		        	admins = utilities.removeSpaces(req.body.admins),
-		        	isDisplayPublicly = 'hide-publicly' in req.body,
+		        	isDisplayPublicly = !('hide-publicly' in req.body),
 		        	profileImageThumb = req.body.profileImageThumb,
         			breadcrumbs = [entityType, 'Create a ' + entityType.toLowerCase()],
                     keys = { 'jsKey' : req.body.jsKey, 'appId' : req.body.appId };
@@ -238,18 +238,40 @@ module.exports = function (keys) {
 
             Parse.User.current().fetch().then(function (user) {
                 var EntityClass = Parse.Object.extend(entityType),
-                    query = new Parse.Query(EntityClass);
+                    query = new Parse.Query(EntityClass),
+                    _ = require('underscore'),
+                    entities = [];
 
                 query.equalTo('admins', user);
 
                 query.find().then(function (list) {
+                	var promise = Parse.Promise.as();
+
+                    _.each(list, function(entity) {
+
+                        promise = promise.then(function() {
+                            var findPromise = new Parse.Promise();
+
+                            entity.relation('admins').query().find().then(function (admins) {
+                                entity['otherAdmins'] = admins;
+                                entities.push(entity);
+                                findPromise.resolve();
+                            });
+
+                            return findPromise;
+                        });
+                    });
+
+                    return promise;
+                 }).then(function(list) {
                 	var breadcrumbs = [
                 		{ 'title' : pluralized, 'href' : '/dashboard/listEntities/' + entityType }, 
         				{ 'title' : 'My ' + pluralized, 'href' : '/dashboard/listEntities/' + entityType }
         			];
+        			console.log(list);
                     res.render('dashboard/' + entityType.toLowerCase() + '/list', {
                         'breadcrumbs' : breadcrumbs,
-                        'list': list
+                        'list': entities
                     });
                 });
             });
@@ -295,7 +317,7 @@ module.exports = function (keys) {
                     id = req.params.id,
                     entityType = req.params.entityType,
 		        	admins = utilities.removeSpaces(req.body.admins),
-		        	isDisplayPublicly = 'hide-publicly' in req.body;
+		        	isDisplayPublicly = !('hide-publicly' in req.body);
 
                 var EntityClass = Parse.Object.extend(entityType),
                     query = new Parse.Query(EntityClass),
