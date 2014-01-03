@@ -16,7 +16,6 @@
 	<% } %>
 	
     <form action="/dashboard/createEntity/Coach" method="post" id="create-coach-form" class="form-horizontal">
-    	
     	<input type="hidden" name="jsKey" value="<%= keys.jsKey %>" />
     	<input type="hidden" name="appId" value="<%= keys.appId %>" />
     
@@ -39,7 +38,7 @@
     	<div class="control-group">
             <label class="control-label" for="location">Home Zip:</label>
             <div class="controls">
-                <input tabindex="4" name="location" id="location" />
+                <input tabindex="4" name="location" id="location" <% if (team) { %>value="<%= team.get('location') %>"<% } %> />
                 <span class="input-required" title="But never displayed, simply used to speed search">*required</span>
             </div>
     	</div>
@@ -47,7 +46,7 @@
     	<div class="control-group">
             <label class="control-label" for="team">Team:</label>
             <div class="controls">
-                <input tabindex="5" name="team" id="team" />
+                <input tabindex="5" name="team" id="team" <% if (team) { %>value="<%= team.get('name') %>"<% } %> />
             </div>
     	</div>
     	
@@ -187,11 +186,6 @@
 		});
 		
 		$('#admins').tag({ placeholder : $('#admins').attr('placeholder'), width: '400px' });
-		
-		var hash = document.location.hash;
-		if (hash.length > 0) {
-			$('#team').val(hash.replace('#', ''));
-		}
     });
 </script>
 

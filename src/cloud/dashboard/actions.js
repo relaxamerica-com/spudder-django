@@ -116,13 +116,27 @@ module.exports = function (keys) {
         
         createEntity: {
         	get: function(req, res) {
-        		var entityType = req.params.entityType;
+        		var entityType = req.params.entityType,
+        			teamId = 'teamId' in req.params ? req.params.teamId : null,
         			breadcrumbs = [
         				{ 'title' : pluralizer.pluralize(entityType, 2), 'href' : '/dashboard/listEntities/' + entityType }, 
         				{ 'title' : 'Create a ' + entityType.toLowerCase(), 'href' : '/dashboard/createEntity/' + entityType }
         			],
-                    keys = { 'jsKey' : keys.getJavaScriptKey(), 'appId' : keys.getApplicationID() };
-        		res.render('dashboard/' + entityType.toLowerCase() + '/create', { 'breadcrumbs' : breadcrumbs, 'keys' : keys, 'errors' : [] });
+                    parseKeys = { 'jsKey' : keys.getJavaScriptKey(), 'appId' : keys.getApplicationID() };
+                
+                if (teamId) {
+                	var Team = Parse.Object.extend('Team'),
+                		query = new Parse.Query(Team);
+                	
+                	query.get(teamId).then(function(team) {
+                		res.render('dashboard/' + entityType.toLowerCase() + '/create', { 'breadcrumbs' : breadcrumbs, 'keys' : parseKeys, 'errors' : [], 'team' : team });
+                	}, function(err) {
+                		console.log(err);
+                	});
+                	
+                } else {
+	        		res.render('dashboard/' + entityType.toLowerCase() + '/create', { 'breadcrumbs' : breadcrumbs, 'keys' : parseKeys, 'errors' : [], 'team' : null });
+                } 
         	},
         	
         	post: function(req, res) {

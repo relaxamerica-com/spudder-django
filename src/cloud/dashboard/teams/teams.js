@@ -214,7 +214,7 @@ module.exports = function (keys) {
                  				{'title' : 'My Teams', 'href' : '/dashboard/teams'},
                  				{'title' : 'My Team ' + pluralized, 'href' : '/dashboard/teams/' + teamID + '/list/' + entityType }
                  			],
-                 			'teamName' : team.get('name')
+                 			'teamId' : team.id
                  		});
                  	}, function(err) {
                  		console.log(err);
