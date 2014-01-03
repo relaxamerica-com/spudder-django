@@ -40,7 +40,15 @@
                 	<% } %>
                 </td>
                 <td>
-				
+					<% coach.otherAdmins.forEach(function(admin) { %>
+                		<div>
+                		<% if (admin.id != user.id) { %>
+                			<%= admin.get('email') %>
+                		<% } else { %>
+                			You
+                		<% } %>
+                		</div>
+                	<% }) %>
 				</td>
                 <td>
                     <a class="btn btn-mini btn-lightgrey btn-action" href="/dashboard/editEntity/Coach/<%= coach.id %>" title="Edit">
