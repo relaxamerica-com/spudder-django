@@ -9,7 +9,6 @@ module.exports = function (keys) {
 	                	}
 		            	new Parse.Query(Parse.User).equalTo('email', adminsList[i]).first().then(function(admin) {
 		            		if (admin === null || admin === undefined) {
-		            			console.log('notFound');
 		            			notFoundEmails.push(adminsList[i]);
 		            			addAdmins(entity, i + 1, addAdminsPromise, adminsList, notFoundEmails);
 		            			return;
@@ -29,28 +28,32 @@ module.exports = function (keys) {
 	                	});
 		           };
 
-	var createTeam = function(name, admin, location) {
+	var createTeam = function(name, admin, entity) {
 		var TeamClass = Parse.Object.extend('Team'),
-			query = new Parse.Query(TeamClass),
+			queryName = new Parse.Query(TeamClass),
+			queryLocation = new Parse.Query(TeamClass),
 			promise = new Parse.Promise();
 			
-		query.equalTo('nameSearch', name.toLowerCase());
+		queryName.equalTo('nameSearch', name.toLowerCase());
+		queryLocation.equalTo('location', entity.get('location'));
 		
-		query.first().then(function(_team) {
+		Parse.Query.and(queryName, queryLocation).first().then(function(_team) {
 			if (_team) {
 				var admins = _team.relation('admins');
 		        admins.add(admin);
-		        _team.save().then(function() {
+		        entity.set('team', _team);
+		        Parse.Promise.when([_team.save(), entity.save()]).then(function() {
 		        	promise.resolve(_team);
 		        });
 			} else {
 		        var team = new TeamClass();
 		        team.set('name', name);
-		        team.set('location', location);
+		        team.set('location', entity.get('location'));
 		        team.set('nameSearch', name.toLowerCase());
 		        var admins = team.relation('admins');
 		        admins.add(admin);
-		        team.save().then(function() {
+		        entity.set('team', team);
+		        Parse.Promise.when([team.save(), entity.save()]).then(function() {
 		        	promise.resolve(team);
 		        });
 			}
@@ -164,7 +167,6 @@ module.exports = function (keys) {
 		                entity.set('profileImageThumb', profileImageThumb);
 		                entity.set('isDisplayPublicly', isDisplayPublicly);
 		                entity.set('publicName', req.body.publicName);
-		                entity.set('team', team);
 		                
 		                if (entityType == 'Player') {
 							entity.set('position', req.body.position);
@@ -207,7 +209,7 @@ module.exports = function (keys) {
 		            promise.then(function(entity) {
 		            	var teamPromise = new Parse.Promise();
 		            	if (team.length > 0) {
-			            	teamPromise = createTeam(team, user, location);
+			            	teamPromise = createTeam(team, user, entity);
 		            	} else {
 		            		teamPromise.resolve();
 		            	}

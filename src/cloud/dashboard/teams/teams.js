@@ -189,6 +189,38 @@ module.exports = function (keys) {
                     });
                 });
             }
+        },
+        
+        teamEntities: {
+        	get: function(req, res) {
+        		 var Team = Parse.Object.extend("Team"),
+                    query = new Parse.Query(Team),
+                    teamID = req.params.id,
+                    entityType = req.params.entityType,
+                    pluralizer = require('cloud/pluralize'),
+                    pluralized = pluralizer.pluralize(entityType);
+                    
+                 query.get(teamID).then(function (team) {
+                 	var EntityClass = Parse.Object.extend(entityType),
+                 		entityQuery = new Parse.Query(EntityClass);
+                 		
+                 	entityQuery.equalTo('team', team);
+                 	
+                 	entityQuery.find().then(function(list) {
+                 		res.render('dashboard/teams/list' + pluralized, {
+                 			'list' : list,
+                 			'breadcrumbs' : [
+                 				{'title' : 'Teams', 'href' : '/dashboard/teams'},
+                 				{'title' : 'My Teams', 'href' : '/dashboard/teams'},
+                 				{'title' : 'My Team ' + pluralized, 'href' : '/dashboard/teams/' + teamID + '/list/' + entityType }
+                 			],
+                 			'teamName' : team.get('name')
+                 		});
+                 	}, function(err) {
+                 		console.log(err);
+                 	});
+                 });
+        	}
         }
     };
 };

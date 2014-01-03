@@ -8,6 +8,7 @@ module.exports = function (app, keys) {
     app.get('/dashboard/teams/edit/:id', helpers.loginRequired, teams.edit.get);
     app.post('/dashboard/teams/edit', helpers.loginRequired, teams.edit.post);
     app.get('/dashboard/teams/remove/:id', helpers.loginRequired, teams.remove.get);
+    app.get('/dashboard/teams/:id/list/:entityType', helpers.loginRequired, teams.teamEntities.get);
 
     var teamOffers = require('cloud/dashboard/teams/offers')(keys);
     app.get('/dashboard/teams/:id/offers', helpers.loginRequired, teamOffers.list.get);

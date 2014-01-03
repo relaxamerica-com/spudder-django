@@ -62,7 +62,7 @@
                     <a class="btn btn-mini btn-lightgrey btn-action" href="/dashboard/teams/edit/<%= team.id %>" title="Edit">
                         <i class="icon-edit"></i>
                     </a>
-                    <a class="btn btn-mini btn-lightgrey btn-action" href="/dashboard/teams/remove/<%= team.id %>" title="Remove" id="remove-button">
+                    <a class="btn btn-mini btn-lightgrey btn-action remove-button" href="/dashboard/teams/remove/<%= team.id %>" title="Remove">
                         <i class="icon-trash"></i>
                     </a>
                 </td>
@@ -77,7 +77,7 @@
 
 <script type="text/javascript">
 	$(document).ready(function() {
-		$('#remove-button').click(function(e) {
+		$('.remove-button').click(function(e) {
 			if ( !confirm('Are you sure?') ) {
 				e.preventDefault();
 			}

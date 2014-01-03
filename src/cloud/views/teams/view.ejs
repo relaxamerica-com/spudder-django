@@ -15,32 +15,8 @@
 
                     <div class="span5 navigation-buttons">
                         <a class="btn btn-spud-orange" href="#" title="Home Venue"><i class="icon-map-marker icon-20"></i></a>
-                        <div class="btn-group">
-                            <a class="btn btn-spud-orange dropdown-toggle" data-toggle="dropdown" href="#" title="Players">
-                                <i class="icon-user icon-20"></i>
-                                <span class="caret"></span>
-                            </a>
-                            <ul class="dropdown-menu">
-                            	<% players.forEach(function(player) { %>
-	                                <li>
-	                                	<a href="/public/Player/<%- player.id  %>"><%- getEntityName(player) %></a>
-	                                </li>
-                            	<% }) %>
-                            </ul>
-                        </div>
-                        <div class="btn-group">
-                            <a class="btn btn-spud-orange dropdown-toggle" data-toggle="dropdown" href="#" title="Coaches">
-                                <i class="icon-bullhorn icon-20"></i>
-                                <span class="caret"></span>
-                            </a>
-                            <ul class="dropdown-menu">
-                                <% coaches.forEach(function(coach) { %>
-	                                <li>
-	                                	<a href="/public/Coach/<%- coach.id  %>"><%- getEntityName(coach) %></a>
-	                                </li>
-                            	<% }) %>
-                            </ul>
-                        </div>
+                        <a class="btn btn-spud-orange" href="/dashboard/teams/<%= team.id %>/list/Player" title="Players"><i class="icon-user"></i></a>
+                        <a class="btn btn-spud-orange" href="/dashboard/teams/<%= team.id %>/list/Coach" title="Coaches"><i class="icon-bullhorn"></i></a>
                         <a class="btn btn-spud-orange" href="#" title="Schedule"><i class="icon-calendar"></i></a>
                         <div class="btn-group">
                             <a class="btn btn-spud-orange dropdown-toggle" data-toggle="dropdown" href="#" title="League">

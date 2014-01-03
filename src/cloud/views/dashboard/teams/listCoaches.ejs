@@ -1,0 +1,58 @@
+<% include ../parts/head %>
+
+<link rel="stylesheet" href="/media/dashboard/css/chosen.css" />
+
+<% include ../parts/bodyStart %>
+
+<div id="entity-create">
+    <p class="head">
+        <i class="icon-group"></i> My Team Coaches
+        <a class="btn btn-orange pull-left create-entity-button" href="/dashboard/createEntity/Coach#<%= teamName %>" title="Add">
+        	<i class="icon icon-plus-sign icon-large"></i>
+        </a>
+    </p>
+
+    <% if (list.length) { %>
+    <table class="table table-hovered" id="my-teams-list">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Status</th>
+                <th>Admins</th>
+                <th>Manage</th>
+            </tr>
+        </thead>
+        <tbody>
+        <% list.forEach(function(entity) { %>
+            <tr>
+                <td><%= getEntityName(entity) %></td>
+                <td>status</td>
+                <td>admins</td>
+                <td>
+                    <a class="btn btn-mini btn-lightgrey btn-action" href="#" title="Edit">
+                        <i class="icon-edit"></i>
+                    </a>
+                    <a class="btn btn-mini btn-lightgrey btn-action remove-button" href="#" title="Remove">
+                        <i class="icon-trash"></i>
+                    </a>
+                </td>
+            </tr>
+        <% }) %>
+        </tbody>
+    </table>
+    <% } %>
+</div>
+
+<% include ../parts/scripts %>
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		$('.remove-button').click(function(e) {
+			if ( !confirm('Are you sure?') ) {
+				e.preventDefault();
+			}
+		});
+	});
+</script>
+
+<% include ../parts/foot %>

@@ -187,6 +187,11 @@
 		});
 		
 		$('#admins').tag({ placeholder : $('#admins').attr('placeholder'), width: '400px' });
+		
+		var hash = document.location.hash;
+		if (hash.length > 0) {
+			$('#team').val(hash.replace('#', ''));
+		}
     });
 </script>
 

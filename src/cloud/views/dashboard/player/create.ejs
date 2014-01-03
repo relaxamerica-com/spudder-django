@@ -199,6 +199,11 @@
 		});
         
         $('#admins').tag({ placeholder : $('#admins').attr('placeholder') });
+        
+        var hash = document.location.hash;
+		if (hash.length > 0) {
+			$('#team').val(hash.replace('#', ''));
+		}
     });
 </script>
 
