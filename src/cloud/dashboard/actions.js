@@ -30,14 +30,13 @@ module.exports = function (keys) {
 
 	var createTeam = function(name, admin, entity) {
 		var TeamClass = Parse.Object.extend('Team'),
-			queryName = new Parse.Query(TeamClass),
-			queryLocation = new Parse.Query(TeamClass),
+			query = new Parse.Query(TeamClass),
 			promise = new Parse.Promise();
 			
-		queryName.equalTo('nameSearch', name.toLowerCase());
-		queryLocation.equalTo('location', entity.get('location'));
+		query.equalTo('nameSearch', name.toLowerCase());
+		query.equalTo('location', entity.get('location'));
 		
-		Parse.Query.and(queryName, queryLocation).first().then(function(_team) {
+		query.first().then(function(_team) {
 			if (_team) {
 				var admins = _team.relation('admins');
 		        admins.add(admin);
