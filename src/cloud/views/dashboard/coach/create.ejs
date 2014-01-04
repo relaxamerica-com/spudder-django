@@ -117,14 +117,20 @@
         $form.validate({
             rules: {
                 name: "required",
-                location: "required",
+                location: {
+                	required: true,
+                	digits: true
+                },
                 picture: {
                     extension: "gif|png|jpg|jpeg"
                 }
             },
             messages: {
-                name: "A name (nickname) is required!",
-                location: "A home zip is required!"
+                name: "A coach name (nickname) is required!",
+                location: {
+                	required: "A home zip is required!",
+                	digits: "Must be a valid zip. Only digits."
+                }
             },
             errorPlacement: function(error, element) {
                 error.appendTo( element.parent() );
