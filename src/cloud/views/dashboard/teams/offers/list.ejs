@@ -19,19 +19,17 @@
                     <th>Title</th>
                     <th class="quantity">Quantity</th>
                     <th class="end-date">End Date</th>
-                    <th class="public-page">Public Page</th>
                     <th class="actions">Actions</th>
                 </tr>
             </thead>
             <tbody>
             <% currentOffers.forEach(function(offer) { %>
                 <tr>
-                    <td><%= offer.get('title') %></td>
+                    <td><a href="/teams/<%= team.id %>/offers/<%= offer.id %>"><%= offer.get('title') %></a></td>
                     <td class="quantity">
                         <%= offer.get('quantity') %> / <%= offer.get('quantity') %>
                     </td>
                     <td class="end-date"><%= offer.get('endDate') %></td>
-                    <td class="public-page"><a href="/teams/<%= team.id %>/offers/<%= offer.id %>">Link</a></td>
                     <td class="actions">
                         <a class="btn btn-mini btn-lightgrey btn-action" href="/dashboard/teams/<%= team.id %>/offers/<%= offer.id %>/donations" title="Donations">
                             <i class="icon-dollar"></i>
@@ -57,19 +55,17 @@
                 <th>Title</th>
                 <th class="quantity">Quantity</th>
                 <th class="end-date">End Date</th>
-                <th class="public-page">Public Page</th>
                 <th class="actions">Actions</th>
             </tr>
             </thead>
             <tbody>
             <% pastOffers.forEach(function(offer) { %>
             <tr>
-                <td><%= offer.get('title') %></td>
+                <td><a href="/teams/<%= team.id %>/offers/<%= offer.id %>"><%= offer.get('title') %></a></td>
                 <td class="quantity">
                     <%= offer.get('quantity') %> / <%= offer.get('quantity') %>
                 </td>
                 <td class="end-date"><%= offer.get('endDate') %></td>
-                <td class="public-page"><a href="/teams/<%= team.id %>/offers/<%= offer.id %>">Link</a></td>
                 <td class="actions">
                     <a class="btn btn-mini btn-lightgrey btn-action" href="/dashboard/teams/<%= team.id %>/offers/<%= offer.id %>/donations" title="Donations">
                         <i class="icon-dollar"></i>

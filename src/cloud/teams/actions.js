@@ -89,6 +89,7 @@ module.exports = function (keys) {
                                 sponsors = [];
 
                             query.equalTo('team', team);
+                            query.equalTo('offer', offer);
 
                             query.find().then(function (list) {
                                 var promise = Parse.Promise.as();
