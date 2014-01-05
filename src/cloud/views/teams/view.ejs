@@ -57,7 +57,7 @@
             </div>
         </div>
     </div>
-    <div class="row-fluid nomargin">
+    <div class="row-fluid <% if (team.get('profileImageThumb')) { %>nomargin <% } %>header-logo-with-actions">
         <div class="span12">
             <% if (team.get('profileImageThumb')) { %>
             <img src="<%= team.get('profileImageThumb') %>" class="team-logo" />

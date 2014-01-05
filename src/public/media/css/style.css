@@ -2827,6 +2827,11 @@ article img.pull-right, article .align-right{
     font-weight: 500;
 }
 
+.header-logo-with-actions i.icon-group {
+    font-size: 50px;
+    line-height: 50px;
+}
+
 input[type=checkbox].ace-switch {
 	width: 55px;
 	height: 20px;
