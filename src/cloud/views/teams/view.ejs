@@ -58,25 +58,22 @@
         </div>
     </div>
     <div class="row-fluid nomargin">
-        <div class="span10">
+        <div class="span12">
             <% if (team.get('profileImageThumb')) { %>
             <img src="<%= team.get('profileImageThumb') %>" class="team-logo" />
             <% } else { %>
             <i class="icon-group"></i>
             <% } %>
 
-            <h3 class="sponsors-title">Sponsors</h3>
-
-            <a href="/teams/<%= team.id %>/offers" class="btn btn-spud-orange btn-large" id="sponsor-button">
-                <i class="icon-money icon-3"></i>
-                Sponsor
-            </a>
-
-            <a href="#" class="btn btn-spud-orange btn-large" id="follow-button">
+            <a href="#" class="btn btn-spud-orange btn-large pull-right" id="follow-button">
                 <i class="icon-microphone icon-3"></i>
                 Follow
             </a>
 
+            <a href="/teams/<%= team.id %>/offers" class="btn btn-spud-orange btn-large pull-right" id="sponsor-button">
+                <i class="icon-money icon-3"></i>
+                Sponsor
+            </a>
         </div>
     </div>
     <% if (sponsors.length) { %>
