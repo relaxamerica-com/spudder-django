@@ -16,10 +16,8 @@
                 <thead>
                     <tr>
                         <td>#</td>
-                        <td>Team name</td>
-                        <td>Team public page</td>
-                        <td>Offer title</td>
-                        <td>Offer public page</td>
+                        <td>Team</td>
+                        <td>Offer</td>
                         <td>Amount</td>
                         <td>Transaction token</td>
                     </tr>
@@ -28,13 +26,15 @@
                 <% donations.forEach(function(donation, index){ %>
                     <tr>
                         <td><%= index + 1 %></td>
-                        <td><%= donation.team.get('name') %></td>
                         <td>
-                            <a href="/teams/<%= donation.team.id %>">Link</a>
+                            <a href="/teams/<%= donation.team.id %>">
+                                <%= donation.team.get('name') %>
+                            </a>
                         </td>
-                        <td><%= donation.offer.get('title') %></td>
                         <td>
-                            <a href="/teams/<%= donation.team.id %>/offers/<%= donation.offer.id %>">Link</a>
+                            <a href="/teams/<%= donation.team.id %>/offers/<%= donation.offer.id %>">
+                                <%= donation.offer.get('title') %>
+                            </a>
                         </td>
                         <td>$<%= donation.offer.get('donation') %></td>
                         <td><%= donation.tokenID %></td>
