@@ -27,7 +27,7 @@
                 <tr>
                     <td><a href="/teams/<%= team.id %>/offers/<%= offer.id %>"><%= offer.get('title') %></a></td>
                     <td class="quantity">
-                        <%= offer.get('quantity') %> / <%= offer.get('quantity') %>
+                        <%= offer.get('available') %> / <%= offer.get('quantity') %>
                     </td>
                     <td class="end-date"><%= offer.get('endDate') %></td>
                     <td class="actions">

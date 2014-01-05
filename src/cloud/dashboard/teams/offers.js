@@ -7,7 +7,8 @@ module.exports = function (keys) {
             get: function (req, res) {
                 var Team = Parse.Object.extend("Team"),
                     query = new Parse.Query(Team),
-                    teamID = req.params.id;
+                    teamID = req.params.id,
+                    offersCount = 0;
 
                 query.get(teamID, {
                     success: function(team) {
@@ -21,9 +22,12 @@ module.exports = function (keys) {
 
                         offerQuery.equalTo('team', team);
 
-                        offerQuery.find().then(function (list) {
-                            for (var i = 0; i < list.length; i++) {
-                                var endDate = list[i].get('endDate');
+                        offerQuery.find().then(function (offers) {
+                            offersCount = offers.length;
+                            var promise = Parse.Promise.as();
+
+                            _.each(offers, function(offer) {
+                                var endDate = offer.get('endDate');
 
                                 var endDateSplitted = endDate.split('-'),
                                     year = endDateSplitted[0],
@@ -35,20 +39,38 @@ module.exports = function (keys) {
                                 endDate = year + '-' + month + '-' + day;
 
                                 // Database end date format is YYYY-MM-DD, user format is DD-MM-YYYY
-                                var revertedEndDate = helpers.revertDate(list[i].get('endDate'));
-                                list[i].set('endDate', revertedEndDate);
+                                var revertedEndDate = helpers.revertDate(offer.get('endDate'));
+                                offer.set('endDate', revertedEndDate);
 
-                                if (endDate >= currentDateString) {
-                                    currentOffers.push(list[i]);
-                                } else {
-                                    pastOffers.push(list[i]);
-                                }
-                            }
+                                promise = promise.then(function() {
+                                    var findPromise = new Parse.Promise(),
+                                        Donation = Parse.Object.extend('Donation'),
+                                        donationQuery = new Parse.Query(Donation);
 
+                                    donationQuery.equalTo('offer', offer);
+
+                                    donationQuery.find().then(function (donations) {
+                                        offer.set('available', offer.get('quantity') - donations.length);
+
+                                        if (endDate >= currentDateString) {
+                                            currentOffers.push(offer);
+                                        } else {
+                                            pastOffers.push(offer);
+                                        }
+
+                                        findPromise.resolve();
+                                    });
+
+                                    return findPromise;
+                                });
+                            });
+
+                            return promise;
+                        }).then(function () {
                             res.render('dashboard/teams/offers/list', {
                                 'breadcrumbs' : [{ 'title' : 'Teams', 'href' : '/dashboard/teams' }, { 'title' : 'Offers', 'href' : 'javascript:void(0);' }],
                                 'team': team,
-                                'count': list.length,
+                                'count': offersCount,
                                 'currentOffers': currentOffers,
                                 'pastOffers': pastOffers
                             });
@@ -264,8 +286,7 @@ module.exports = function (keys) {
                             _.each(list, function(donation) {
                                 promise = promise.then(function() {
                                     var findPromise = new Parse.Promise();
-                                    console.log(typeof  donation.createdAt)
-                                    console.log(donation.createdAt);
+
                                     donation.get('sponsor').fetch({
                                         success: function (fetchedSponsor) {
                                             donations.push({
