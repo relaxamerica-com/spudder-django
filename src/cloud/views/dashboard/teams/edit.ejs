@@ -80,7 +80,7 @@
             <label class="control-label" for="form-field-website">Website</label>
             <div class="controls">
                 <span class="input-icon input-icon-right">
-                    <input name="website" value="<%= getValueOrEmpty(team.get('website')) %>" id="form-field-website" type="url">
+                    <input name="website" value="<%= getValueOrEmpty(team.get('website')) %>" id="form-field-website" type="url" placeholder="http://www.website.com">
                     <i class="icon-bookmark"></i>
                 </span>
             </div>
@@ -89,7 +89,7 @@
             <label class="control-label" for="form-field-email">Email</label>
             <div class="controls">
                 <span class="input-icon input-icon-right">
-                    <input name="email" value="<%= getValueOrEmpty(team.get('email')) %>" id="form-field-email"type="email">
+                    <input name="email" value="<%= getValueOrEmpty(team.get('email')) %>" id="form-field-email"type="email" placeholder="me@website.com">
                     <i class="icon-envelope"></i>
                 </span>
             </div>

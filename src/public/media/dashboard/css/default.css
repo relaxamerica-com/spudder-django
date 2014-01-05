@@ -222,18 +222,19 @@
     line-height: 40px;
 }
 #entity-create input {
-    width: 400px;
+    width: 390px;
+    padding-left: 10px;
 }
 
 #entity-create span.input-icon.input-icon-right input {
-    width: 370px;
-    padding-left: 0;
+    width: 360px;
+    padding-left: 10px;
     padding-right: 30px;
 }
 
 #entity-create span.input-icon.input-icon-left input {
-    width: 370px;
-    padding-left: 30px;
+    width: 375px;
+    padding-left: 25px;
     padding-right: 0;
 }
 
@@ -279,7 +280,8 @@
 }
 #entity-create textarea {
     margin-bottom: 0;
-    width: 390px;
+    width: 385px;
+    padding-left: 10px;
 }
 #entity-create select {
     margin-bottom: 0;
