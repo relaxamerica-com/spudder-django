@@ -2822,6 +2822,11 @@ article img.pull-right, article .align-right{
 	margin: -10px 0px 0px 0px;
 }
 
+#page-header a.team-name-link {
+    color: #000000;
+    font-weight: 500;
+}
+
 input[type=checkbox].ace-switch {
 	width: 55px;
 	height: 20px;
@@ -4548,4 +4553,41 @@ dialogs {
 .display-sponsors li i {
     font-size: 50px;
     margin-left: 5px;
+}
+
+#teams-offers-list .pricing-box-alt .pricing-heading {
+    padding: 20px 0;
+    height: 100px;
+    min-height: 100px;
+    max-height: 100px;
+    width: 100%;
+    min-width: 100%;
+    max-width: 100%;
+    display: table;
+    vertical-align: middle;
+    text-align: center;
+    font-size: 32px;
+    font-weight: 300;
+    letter-spacing: -1px;
+    font-family: 'Open Sans', sans-serif;
+    color: #353535;
+    line-height: 1.5em;
+    text-rendering: optimizelegibility;
+}
+
+#teams-offers-list .pricing-box-alt .pricing-heading .pricing-heading-title {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+#teams-offers-list .pricing-box-alt .pricing-heading {
+    margin-bottom: 0;
+}
+
+#teams-offers-list .pricing-box-alt .pricing-terms {
+    padding: 20px 0 10px;
+}
+
+#teams-offers-list .pricing-box-alt .pricing-terms h6 {
+    font-size: 26px;
 }

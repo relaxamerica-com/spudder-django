@@ -1,0 +1,163 @@
+<% include ../../parts/head %>
+
+<link href="/media/dashboard/css/jquery-ui-1.10.3.custom.min.css" rel="stylesheet" />
+
+<% include ../../parts/bodyStartWithSocial %>
+
+<div id="team" class="container">
+    <div class="row-fluid primary" id="page-header">
+        <div class="wrapper">
+            <div class="span12">
+                <div class="row-fluid header-parts nomargin">
+                    <div class="span3">
+                        <h3><a href="/teams/<%= team.id %>" class="team-name-link"><%= team.get('name') %></a></h3>
+                    </div>
+
+                    <div class="span5 navigation-buttons">
+                        <a class="btn btn-spud-orange" href="#" title="Home Venue"><i class="icon-map-marker icon-20"></i></a>
+                        <a class="btn btn-spud-orange" href="/dashboard/teams/<%= team.id %>/list/Player" title="Players"><i class="icon-user"></i></a>
+                        <a class="btn btn-spud-orange" href="/dashboard/teams/<%= team.id %>/list/Coach" title="Coaches"><i class="icon-bullhorn"></i></a>
+                        <a class="btn btn-spud-orange" href="#" title="Schedule"><i class="icon-calendar"></i></a>
+                        <div class="btn-group">
+                            <a class="btn btn-spud-orange dropdown-toggle" data-toggle="dropdown" href="#" title="League">
+                                <i class="icon-sitemap icon-20"></i>
+                                <span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a href="#">League option 1</a></li>
+                                <li><a href="#">League option 2</a></li>
+                                <li><a href="#">League option 3</a></li>
+                            </ul>
+                        </div>
+                        <div class="btn-group">
+                            <a class="btn btn-spud-orange dropdown-toggle" data-toggle="dropdown" href="#" title="Tournaments">
+                                <i class="icon-trophy icon-20"></i>
+                                <span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a href="#">Tournaments option 1</a></li>
+                                <li><a href="#">Tournaments option 2</a></li>
+                                <li><a href="#">Tournaments option 3</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="span4">
+                        <ul class="breadcrumb path">
+                            <li>
+                                <a href="/"><i class="icon-home"></i></a> <span class="divider"> <i class="icon-chevron-right"></i> </span>
+                            </li>
+                            <li>
+                                <a href="/teams/<%= team.id %>">Team</a> <span class="divider"> <i class="icon-chevron-right"></i> </span>
+                            </li>
+                            <li>
+                                <a href="/teams/<%= team.id %>"><%= team.get('name') %></a> <span class="divider"> <i class="icon-chevron-right"></i> </span>
+                            </li>
+                            <li class="active"><strong>Offers</strong></li>
+
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row" id="teams-offers-list">
+    <% offers.forEach(function(offer) { %>
+        <div class="span3">
+            <div class="pricing-box-alt">
+                <div class="pricing-heading">
+                    <div class="pricing-heading-title">
+                        <%= offer.get('title') %>
+                    </div>
+                </div>
+                <div class="pricing-terms">
+                    <h6>$<%= offer.get('donation') %></h6>
+                </div>
+                <div class="pricing-content">
+                    <ul>
+                        <li>
+                            <i class="icon-external-link-sign"></i>
+                            <a href="/teams/<%= team.id %>/offers/<%= offer.id %>">Details</a>
+                        </li>
+                        <li>
+                            <i class="icon-tasks"></i>
+                            <% if (offer.get('available')) { %>
+                                <%= offer.get('available') %> / <%= offer.get('quantity') %>
+                            <% } else { %>
+                                Sold out!
+                            <% } %>
+                        </li>
+                        <li class="offer-end-date" data-end-date="<%= offer.get('endDate') %>">
+                            <i class="icon-time"></i>
+                        </li>
+                        <li>
+                        <% if (offer.get('video') != '' ) { %>
+                            <i class="icon-facetime-video"></i>
+                            <a href="<%= offer.get('video') %>" target="_blank">Video</a>
+                        <% } else { %>
+                            -
+                        <% } %>
+                        </li>
+                        <li>
+                            <i class="icon-money"></i>
+                            Sponsor page
+                        </li>
+                    </ul>
+                </div>
+                <div class="pricing-action">
+                <% if (offer.get('available')) { %>
+                    <a href="#donation-modal-<%= offer.id %>" class="btn btn-medium btn-danger" data-toggle="modal">
+                <% } else { %>
+                    <a href="javascript:void(0);" class="btn btn-medium btn-danger" disabled title="Sold out!">
+                <% } %>
+                        <i class="icon-credit-card"></i> Donate now
+                    </a>
+
+                    <div id="donation-modal-<%= offer.id %>" class="modal styled hide fade" tabindex="-1" role="dialog" aria-labelledby="mySigninModalLabel" aria-hidden="true">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+                            <h4 id="mySigninModalLabel">Donation</h4>
+                        </div>
+                        <div class="modal-body">
+                            <% if (!isLoggedIn) { %>
+                            You need to be logged in to make a donation. Try again after you log in successfully.
+                            <% } else { %>
+                            In order to make a donation please press 'Make donation' button (you will be redirected to the Dashboard).
+                            <% } %>
+                        </div>
+                        <div class="modal-footer">
+                            <% if (!isLoggedIn) { %>
+                            <a href="#" data-dismiss="modal" class="btn btn-danger">OK</a>
+                            <% } else { %>
+                            <a href="/dashboard/sponsor/<%= team.id %>/<%= offer.id %>" class="btn btn-danger">Make donation</a>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <% }) %>
+    </div>
+</div>
+
+<% include ../../parts/foot %>
+
+<% include ../../parts/scripts %>
+
+        <script type="text/javascript" src="/media/dashboard/js/jquery-ui-1.10.3.custom.min.js"></script>
+        <script type="text/javascript" src="/media/js/switches.js"></script>
+        <script type="text/javascript" src="/media/js/spud-container.js"></script>
+        <script src="/media/js/moment-with-langs.js"></script>
+        <script type="text/javascript">
+            $(document).ready(function() {
+                $('.offer-end-date').each(function () {
+                    var $element = $(this),
+                        endDate = moment($element.data('end-date') + ' 23:59:59:999', 'DD-MM-YYYY HH:mm:ss:SSS');
+
+                    $element.html('<i class="icon-time"></i>' + endDate.fromNow());
+                });
+            });
+        </script>
+    </body>
+</html>
