@@ -18,6 +18,7 @@
                 <tr>
                     <th>Title</th>
                     <th class="quantity">Quantity</th>
+                    <th class="amount">Amount</th>
                     <th class="end-date">End Date</th>
                     <th class="actions">Actions</th>
                 </tr>
@@ -28,6 +29,9 @@
                     <td><a href="/teams/<%= team.id %>/offers/<%= offer.id %>"><%= offer.get('title') %></a></td>
                     <td class="quantity">
                         <%= offer.get('available') %> / <%= offer.get('quantity') %>
+                    </td>
+                    <td class="amount">
+                        $<%= (offer.get('quantity') - offer.get('available')) * offer.get('donation') %>
                     </td>
                     <td class="end-date"><%= offer.get('endDate') %></td>
                     <td class="actions">
