@@ -79,11 +79,15 @@
                             <%= offer.get('title') %>
                         </div>
                     </div>
-                    <div class="pricing-terms">
-                        <h6>$<%= offer.get('donation') %></h6>
+                    <div class="offer-image">
+                        <img src="<%= offer.get('images')[0] %>" />
                     </div>
                     <div class="pricing-content">
                         <ul>
+                            <li>
+                                <i class="icon-dollar"></i>
+                                <%= offer.get('donation') %>
+                            </li>
                             <li>
                                 <i class="icon-external-link-sign"></i>
                                 <a href="/teams/<%= team.id %>/offers/<%= offer.id %>">Details</a>
@@ -158,6 +162,7 @@
         <script type="text/javascript" src="/media/js/switches.js"></script>
         <script type="text/javascript" src="/media/js/spud-container.js"></script>
         <script src="/media/js/moment-with-langs.js"></script>
+        <script type="text/javascript" src="/media/js/equal-height.js"></script>
         <script type="text/javascript">
             $(document).ready(function() {
                 $('.offer-end-date').each(function () {
@@ -165,6 +170,11 @@
                         endDate = moment($element.data('end-date') + ' 23:59:59:999', 'DD-MM-YYYY HH:mm:ss:SSS');
 
                     $element.html('<i class="icon-time"></i>' + endDate.fromNow());
+                });
+
+                resizeImagesWithAspectRation($('.offer-image img'), {
+                    maxWidth: $('.offer-image').width(),
+                    maxHeight: 200
                 });
             });
         </script>
