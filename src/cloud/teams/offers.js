@@ -7,7 +7,7 @@ module.exports = function (keys) {
             var Team = Parse.Object.extend("Team"),
                 query = new Parse.Query(Team),
                 teamID = req.params.teamID,
-                offersCount = 0;
+                offersCount = 0, teamAdmin;
 
             query.get(teamID, {
                 success: function(team) {
@@ -64,35 +64,38 @@ module.exports = function (keys) {
 
                         return promise;
                     }).then(function () {
-                            var path = 'https://' + keys.getAppName() + '.parseapp.com/teams/' + teamID + '/offers',
-                                image = team.get('profileImageThumb') ? team.get('profileImageThumb') : '';
+                        var findPromise = new Parse.Promise();
 
-                            // For testing purposes
-//                            var duplicatedOffers = [];
-//                            for (var i = 0; i < 3; i++) {
-//                                for (var j = 0; j < currentOffers.length; j++) {
-//                                    duplicatedOffers.push(currentOffers[j]);
-//                                }
-//                            }
+                        team.relation('admins').query().find().then(function (admins) {
+                            teamAdmin = admins[0];
 
-                            res.render('teams/offer/list', {
-                                'team': team,
-                                'count': offersCount,
-                                'offers': currentOffers,
-                                'isLoggedIn': Parse.User.current() ? true : false,
-                                'twitterShareButton': require('cloud/commons/twitterShareButton'),
-                                'googlePlusShareButton': require('cloud/commons/googlePlusShareButton'),
-                                'facebookShareButton': require('cloud/commons/facebookShareButton'),
-                                'emailShareButton': require('cloud/commons/emailShareButton'),
-                                'meta': {
-                                    title: 'Offers :: ' + team.get('name'),
-                                    description: team.get('profile'),
-                                    image: image,
-                                    url: path
-                                },
-                                'returnURL': path
-                            });
+                            findPromise.resolve();
                         });
+
+                        return findPromise;
+                    }).then(function () {
+                        var path = 'https://' + keys.getAppName() + '.parseapp.com/teams/' + teamID + '/offers',
+                            image = team.get('profileImageThumb') ? team.get('profileImageThumb') : '';
+
+                        res.render('teams/offer/list', {
+                            'team': team,
+                            'count': offersCount,
+                            'offers': currentOffers,
+                            'teamAdmin': teamAdmin,
+                            'isLoggedIn': Parse.User.current() ? true : false,
+                            'twitterShareButton': require('cloud/commons/twitterShareButton'),
+                            'googlePlusShareButton': require('cloud/commons/googlePlusShareButton'),
+                            'facebookShareButton': require('cloud/commons/facebookShareButton'),
+                            'emailShareButton': require('cloud/commons/emailShareButton'),
+                            'meta': {
+                                title: 'Offers :: ' + team.get('name'),
+                                description: team.get('profile'),
+                                image: image,
+                                url: path
+                            },
+                            'returnURL': path
+                        });
+                    });
                 }
             });
         },

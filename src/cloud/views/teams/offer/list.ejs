@@ -67,7 +67,7 @@
         <div class="span12">
             <p>
                 This team is not offering any sponsorships at this time.
-                <a href="javascript:void(0);" class="btn btn-small btn-spud-orange">Click here</a> to contact the team admin about doing so.
+                <a id="mail-admin" href="mailto:<%= teamAdmin.get('email') %>?subject=Sponsorhip offer request for team <%= team.get('name') %>&amp;body=A visitor to your teams page wished to sponsor you but you do not have anny offers at this time. Follow this link: https://spudmart.parseapp.com/dashboard/recipient/<%= team.id %> to set up your Amazon Payment account and Start Creating offers." title="Send a sponsorhip request" class="btn btn-small btn-spud-orange">Click here</a> to contact the team admin about doing so.
             </p>
         </div>
     <% } else { %>
