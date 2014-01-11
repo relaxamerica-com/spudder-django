@@ -30,8 +30,17 @@
 
 <% include ../parts/scripts %>
 
+<script type="text/javascript" src="/media/js/parseUri.js"></script>
 <script type="text/javascript">
+	
 	$(document).ready(function() {
+		var parsed = parseUri(document.location)['queryKey'];
+		console.log(parsed);
+		console.log('next' in parsed)
+		if ( 'next' in parsed ) {
+			$('input[name="returnURL"]').val(parsed['next']);
+		}
+		
 		if (document.location.hash == '#mySignin') {
 			$('#mySignin').modal('show');
 		}

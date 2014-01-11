@@ -28,6 +28,7 @@ module.exports = function () {
         },
 
         AWS_ACCESS_KEY_ID: 'AKIAIV6G36242PJ4L7WQ',
-        AWS_SECRET_KEY_ID: '5EIFJLrQB6RhtI4wOBLF7DPu4ZyTMbOrwXrneJZg'
+        AWS_SECRET_KEY_ID: '5EIFJLrQB6RhtI4wOBLF7DPu4ZyTMbOrwXrneJZg',
+        MANDRILL_API_KEY: 'uz2cyx-FdEKZTYLhcKw-OA'
     };
 };
