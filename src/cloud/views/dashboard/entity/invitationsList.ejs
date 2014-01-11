@@ -26,8 +26,8 @@
             		<%= inv.invitingName %> [ <%= inv.invitingEmail %> ]
             	</td>
                 <td>
-                	<%= inv.get('entity').className %>: 
-                	<%= inv.get('entityName') %>
+                	<%= inv.get('entityType') %>: 
+                	<b><%= inv.get('entityName') %></b>
                 </td>
                 <td>
                 	<%= convertDate(inv.createdAt) %>

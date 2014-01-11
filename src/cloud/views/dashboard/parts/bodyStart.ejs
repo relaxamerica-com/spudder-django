@@ -217,7 +217,7 @@
 							</ul>
 						</li>
 						
-						<li class="black" title="Invites" id="invites">
+						<li class="black" title="Invitations" id="invites">
 							<a data-toggle="dropdown" class="dropdown-toggle btn-orange" href="#">
 								<i class="icon-bell-alt <% if( invites.length > 0 ) { %>icon-animated-vertical<% } %>"></i>
 								<span class="badge badge-black"><%= invites.length %></span>
@@ -232,7 +232,7 @@
 								<% invites.slice(0, 3).forEach(function(invite) { %>
 									<li>
 										<div class="question">
-											Would you like to be an admin of <%= invite.get('entity').className %>: <%= invite.get('entityName') %>?
+											Would you like to be an admin of <%= invite.get('entityType') %>: <%= invite.get('entityName') %>?
 										</div>
 										<div class="row-fluid">
 											<div class="span6 inline">

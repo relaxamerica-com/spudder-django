@@ -46,7 +46,7 @@
     	<div class="control-group">
             <label class="control-label" for="team">Team:</label>
             <div class="controls">
-                <input tabindex="5" name="team" id="team" <% if (team) { %>value="<%= team.get('name') %><% } %>" />
+                <input tabindex="5" name="team" id="team" <% if (team != undefined) { %>value="<%= team.get('name') %><% } %>" />
             </div>
     	</div>
     	

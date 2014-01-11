@@ -20,9 +20,6 @@ module.exports = function () {
         },
         
         convertDate: function (date) {
-        	// var curr_date = d.getDate();
-    // var curr_month = d.getMonth() + 1; //Months are zero based
-    // var curr_year = d.getFullYear();
         	return (date.getMonth() + 1) + '/' + date.getDate() + '/' + date.getFullYear();
         }
     };

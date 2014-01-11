@@ -17,16 +17,18 @@ module.exports = function (keys) {
     			return;
     		}
     		
-    		if (entity.get('adminsEmails') && entity.get('adminsEmails').indexOf(adminsList[i]) >= 0) {
+    		if (entity.get('adminsEmails') !== undefined && entity.get('adminsEmails').indexOf(adminsList[i]) >= 0) {
     			addAdmins(entity, i + 1, addAdminsPromise, adminsList, notFoundEmails);
     			return;
     		}
     		
     		var EntityInvitation = Parse.Object.extend('EntityInvitation'),
-    			entityInv = new EntityInvitation();
+    			entityInv = new EntityInvitation(),
+    			entityType = entity.className;
     			
     		entityInv.set('entityName', entity.get('name'));
-    		entityInv.set('entity', entity);
+    		entityInv.set('entityType', entityType);
+    		entityInv.set('entityId', entity.id);
     		entityInv.set('inviting', Parse.User.current());
     		entityInv.set('invited', admin);
     		
@@ -38,7 +40,7 @@ module.exports = function (keys) {
             				'name' : admin.get('name'),
             				'acceptURL' : acceptURL,
             				'rejectURL' : rejectURL,
-            				'entityType' : entity.className,
+            				'entityType' : entityType,
             				'listURL' : listURL
         				});
         		
@@ -242,23 +244,32 @@ module.exports = function (keys) {
         	var	entityType = req.params.entityType,
         		pluralized = pluralizer.pluralize(entityType, 2);
 
+			console.log('listEntities start');
+
             Parse.User.current().fetch().then(function (user) {
                 var EntityClass = Parse.Object.extend(entityType),
                     query = new Parse.Query(EntityClass),
                     _ = require('underscore'),
                     entities = [];
 
+				console.log('listEntities vars initailized');
+
                 query.equalTo('admins', user);
 
                 query.find().then(function (list) {
                 	var promise = Parse.Promise.as();
 
+					console.log('listEntities players found');
+
                     _.each(list, function(entity) {
+                    	
+                    	console.log('listEntities enity iteration');
 
                         promise = promise.then(function() {
                             var findPromise = new Parse.Promise();
 
                             entity.relation('admins').query().find().then(function (admins) {
+                            	console.log('listEntities realtion');
                                 entity['otherAdmins'] = admins;
                                 entities.push(entity);
                                 findPromise.resolve();
@@ -274,6 +285,8 @@ module.exports = function (keys) {
                 		{ 'title' : pluralized, 'href' : '/dashboard/listEntities/' + entityType }, 
         				{ 'title' : 'My ' + pluralized, 'href' : '/dashboard/listEntities/' + entityType }
         			];
+        			console.log('listEntities render');
+        			console.log(entities);
                     res.render('dashboard/' + entityType.toLowerCase() + '/list', {
                         'breadcrumbs' : breadcrumbs,
                         'list': entities
@@ -296,13 +309,17 @@ module.exports = function (keys) {
 
                 query.get(id, {
                     success: function(entity) {
-                    	context = {
-                            'breadcrumbs' : breadcrumbs,
-                            'found': true,
-                            'entity' : entity,
-                            'keys' : { 'jsKey' : keys.getJavaScriptKey(), 'appId' : keys.getApplicationID() }
-                       	};
-                        res.render('dashboard/' + entityName + '/edit', context);
+                    	var _entity = entity;
+                    	entity.get('team').fetch().then(function(team) {
+                    		_entity.team = team.get('name');
+	                    	context = {
+	                            'breadcrumbs' : breadcrumbs,
+	                            'found': true,
+	                            'entity' : _entity,
+	                            'keys' : { 'jsKey' : keys.getJavaScriptKey(), 'appId' : keys.getApplicationID() }
+	                       	};
+	                        res.render('dashboard/' + entityName + '/edit', context);
+                    	});
                     },
                     error: function(object, error) {
                         console.log(error);
@@ -423,9 +440,11 @@ module.exports = function (keys) {
         		invQuery = new Parse.Query(Invitation);
         	
         	invQuery.get(req.params.entityInvitationId).then(function(invitation) {
-        		var inv = invitation;
+        		var inv = invitation,
+        			EntityClass = Parse.Object.extend(inv.get('entityType')),
+        			query = new Parse.Query(EntityClass);
         			
-        		invitation.get('entity').fetch().then(function(entity) {
+        		query.get(invitation.get('entityId')).then(function(entity) {
         			var invited = inv.get('invited'),
         				_entity = entity;
         				
@@ -448,7 +467,7 @@ module.exports = function (keys) {
         		
         	invQuery.get(req.params.entityInvitationId).then(function(invitation) {
         		invitation.destroy().then(function() {
-        			res.redirect('/dashboard/listEntities/' + invitation.get('entity').className + '#rejected');
+        			res.redirect('/dashboard/listEntities/' + invitation.get('entityType') + '#rejected');
         		});
         	});
         },
