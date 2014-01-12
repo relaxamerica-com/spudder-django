@@ -3,7 +3,6 @@ module.exports = function (app, keys) {
 
     var dashboard = require('cloud/dashboard/actions')(keys);
     app.get('/dashboard', helpers.loginRequired, dashboard.spuds);
-    app.get('/dashboard/general', helpers.loginRequired, dashboard.general);
 
     app.get('/dashboard/fans/spuds', helpers.loginRequired, dashboard.mySpuds);
     app.get('/dashboard/fans/favorites', helpers.loginRequired, dashboard.myFavorites);

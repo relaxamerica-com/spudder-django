@@ -35,8 +35,6 @@
 	
 	$(document).ready(function() {
 		var parsed = parseUri(document.location)['queryKey'];
-		console.log(parsed);
-		console.log('next' in parsed)
 		if ( 'next' in parsed ) {
 			$('input[name="returnURL"]').val(parsed['next']);
 		}

@@ -7,15 +7,6 @@ module.exports = function (keys) {
             });
         },
 
-        general: function (req, res) {
-            var breadcrumbs = [{ 'title' : 'Fans', 'href' : '/dashboard/fans/spuds' }, { 'title' : 'General', 'href' : '/dashboard/fans/spuds' }];
-            res.render('dashboard/fan/general', {
-                'breadcrumbs' : breadcrumbs,
-                'displayUsers' : require('cloud/commons/displayUsers'),
-                'keys' : { 'jsKey' : keys.getJavaScriptKey(), 'appId' : keys.getApplicationID() }
-            });
-        },
-        
         mySpuds: function(req, res) {
         	var breadcrumbs = [{ 'title' : 'Fans', 'href' : '/dashboard/fans/spuds' }, { 'title' : 'My Spuds', 'href' : '/dashboard/fans/spuds' }];
         	res.render('dashboard/fan/mySpuds', {

@@ -23,7 +23,7 @@
         <% list.forEach(function(inv) { %>
             <tr>
                 <td>
-            		<%= inv.invitingName %> [ <%= inv.invitingEmail %> ]
+            		<%= getValueOrEmpty(inv.invitingName) %> [ <%= inv.invitingEmail %> ]
             	</td>
                 <td>
                 	<%= inv.get('entityType') %>: 

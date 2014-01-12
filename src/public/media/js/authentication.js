@@ -35,7 +35,7 @@ $(document).ready(function () {
         var response = $.post('/accounts/register', { 'email' : email, 'password1' : password1, 'password2' : password2 });
 
         response.done(function() {
-            document.location = '/dashboard/general#basic_info';
+            document.location = '/dashboard/fans/basicInfo';
         });
 
         response.fail(function(error) {
