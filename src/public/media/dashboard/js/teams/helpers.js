@@ -9,6 +9,6 @@ $(document).ready(function() {
             thumbnail: true,
             whitelist: 'gif|png|jpg|jpeg',
             blacklist: 'exe|php'
-        })
+        });
     });
 });

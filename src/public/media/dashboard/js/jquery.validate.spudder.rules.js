@@ -49,5 +49,21 @@
             },
             "Please enter valid positive integer value."
         );
+        
+        var template = jQuery.validator.format("{0} do NOT exists in our database."),
+			_notExistsEmails = '';
+
+		$.validator.addMethod("checkEmailsExists", function(value, element) {
+			var notExistsEmails = checkEmailsExists( $('#admins').val() );
+			
+    		if (notExistsEmails.length == 0) {
+    			return true;
+    		} else {
+    			_notExistsEmails = notExistsEmails.join(', ');
+    			return false;
+    		}
+		}, function(params, element) {
+			return template(_notExistsEmails);
+		});
     });
 }(jQuery));

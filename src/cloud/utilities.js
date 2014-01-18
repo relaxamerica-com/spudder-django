@@ -21,6 +21,10 @@ module.exports = function () {
         
         convertDate: function (date) {
         	return (date.getMonth() + 1) + '/' + date.getDate() + '/' + date.getFullYear();
-        }
+        },
+        
+        isOnList: function(list, element) {
+			return list.indexOf(element) >= 0;
+		}
     };
 };

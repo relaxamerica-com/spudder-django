@@ -339,6 +339,7 @@
 }
 #entity-create label.error {
     color: #C41A08;
+    margin-top: 5px;
 }
 #entity-create label[for="profile-picture-input"] {
     border: 0 none;

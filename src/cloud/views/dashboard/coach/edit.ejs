@@ -33,7 +33,7 @@
             <div class="controls">
                 <input name="name" id="name" value="<%= entity.get('name') %>" tabindex="1" />
                 <span class="input-required">*required</span>
-                <input tabindex="2" type="checkbox" name="hide-publicly" <% if (entity.get('isDisplayPublicly') == false) { %>checked="checked"<% }  %>/> <span class="hide-publicly-text">Do NOT display publicly</span>
+                <input tabindex="16" type="checkbox" name="hide-publicly" <% if (entity.get('isDisplayPublicly') == false) { %>checked="checked"<% }  %>/> <span class="hide-publicly-text">Do NOT display publicly</span>
             </div>
     	</div>
     	
@@ -47,7 +47,7 @@
     	<div class="control-group">
             <label class="control-label" for="location">Home Zip:</label>
             <div class="controls">
-                <input name="location" id="location" value="<%= entity.get('location') %>" tabindex="3" />
+                <input name="location" id="location" value="<%= entity.get('location') %>" tabindex="4" />
                 <span class="input-required" title="But never displayed, simply used to speed search">*required</span>
             </div>
     	</div>
@@ -55,14 +55,14 @@
     	<div class="control-group">
             <label class="control-label" for="team">Team:</label>
             <div class="controls">
-                <%= getValueOrEmpty( entity.team ) %>
+           	 	<%= getValueOrEmpty( entity.team ) %>
             </div>
     	</div>
     	
     	<div class="control-group">
             <label class="control-label" for="sport">Sport:</label>
             <div class="controls">
-                <select name="sport" tabindex="4">
+                <select name="sport" tabindex="5">
                     <% if (entity.get('sport') == 'football') { %>
 	                    <option value="football" selected>Football</option>
 	                    <option value="soccer">Soccer</option>
@@ -77,21 +77,21 @@
     	<div class="control-group">
             <label class="control-label" for="admins">Admins:</label>
             <div class="controls" id="admins-controls">
-                <input tabindex="5" name="admins" id="admins" placeholder="Enter emails..."  value="<%= getValueOrEmpty( entity.get('adminsEmails') ) %>" />
+                <input tabindex="6" name="admins" id="admins" placeholder="Enter emails..."  value="<%= getValueOrEmpty( entity.get('adminsEmails') ) %>" />
             </div>
     	</div>
     	
     	<div class="control-group">
             <label class="control-label" for="contact">Coach Contact Details:</label>
             <div class="controls">
-                <input tabindex="6" name="contact" id="contact" value="<%= getValueOrEmpty( entity.get('contact') ) %>" />
+                <input tabindex="7" name="contact" id="contact" value="<%= getValueOrEmpty( entity.get('contact') ) %>" />
             </div>
     	</div>
     	
     	<div class="control-group">
             <label class="control-label" for="profile">Coach Profile:</label>
             <div class="controls">
-                <textarea tabindex="7" name="profile" rows="2" id="profile"><%= entity.get('profile') %></textarea>
+                <textarea tabindex="8" name="profile" rows="2" id="profile"><%= entity.get('profile') %></textarea>
             </div>
     	</div>
     	
@@ -99,7 +99,7 @@
             <label class="control-label" for="profile-picture-input">Profile Picture:</label>
             <div class="controls">
                 <input type="hidden" name="profileImageThumb" value="<%= entity.get('profileImageThumb') %>" />
-            	<input tabindex="8" type="file" id="profile-picture-input" accept="image/*" />
+            	<input tabindex="9" type="file" id="profile-picture-input" accept="image/*" />
             </div>
     	</div>
     	
@@ -109,7 +109,7 @@
 
             <div class="controls">
             <span class="input-icon input-icon-right">
-                <input tabindex="9" name="website" value="<%= getValueOrEmpty(entity.get('website')) %>" id="form-field-website" type="url" placeholder="http://www.website.com">
+                <input tabindex="10" name="website" value="<%= getValueOrEmpty(entity.get('website')) %>" id="form-field-website" type="url" placeholder="http://www.website.com">
                 <i class="icon-bookmark icon-for-not-required-field"></i>
             </span>
             </div>
@@ -119,7 +119,7 @@
 
             <div class="controls">
             <span class="input-icon input-icon-right">
-                <input tabindex="10" name="email" value="<%= getValueOrEmpty(entity.get('email')) %>" id="form-field-email"type="email" placeholder="me@website.com">
+                <input tabindex="11" name="email" value="<%= getValueOrEmpty(entity.get('email')) %>" id="form-field-email"type="email" placeholder="me@website.com">
                 <i class="icon-envelope icon-for-not-required-field"></i>
             </span>
             </div>
@@ -131,7 +131,7 @@
 
             <div class="controls">
                 <span class="input-icon">
-                <input tabindex="11" name="facebook" value="<%= getValueOrEmpty(entity.get('facebook')) %>" id="form-field-facebook" type="url">
+                <input tabindex="12" name="facebook" value="<%= getValueOrEmpty(entity.get('facebook')) %>" id="form-field-facebook" type="url">
                 <i class="icon-facebook"></i>
             </span>
             </div>
@@ -142,7 +142,7 @@
 
             <div class="controls">
             <span class="input-icon">
-                <input tabindex="12" value="<%= getValueOrEmpty(entity.get('twitter')) %>" name="twitter" id="form-field-twitter" type="url">
+                <input tabindex="13" value="<%= getValueOrEmpty(entity.get('twitter')) %>" name="twitter" id="form-field-twitter" type="url">
                 <i class="icon-twitter"></i>
             </span>
             </div>
@@ -153,14 +153,14 @@
 
             <div class="controls">
             <span class="input-icon">
-                <input tabindex="13" value="<%= getValueOrEmpty(entity.get('googlePlus')) %>" name="googlePlus" id="form-field-gplus" type="url">
+                <input tabindex="14" value="<%= getValueOrEmpty(entity.get('googlePlus')) %>" name="googlePlus" id="form-field-gplus" type="url">
                 <i class="icon-google-plus"></i>
             </span>
             </div>
         </div>
 		<div class="control-group">
 			<div class="controls">
-        		<button tabindex="14" class="btn btn-orange" type="submit">Save</button>
+        		<button tabindex="15" class="btn btn-orange" type="submit">Save</button>
         	</div>
    		</div>
     </form>
@@ -173,6 +173,8 @@
 
 <% if (found) { %>
 <script src="/media/dashboard/js/jquery.validate.js"></script>
+<script src="/media/dashboard/js/checkEmailsExists.js"></script>
+<script src="/media/dashboard/js/jquery.validate.spudder.rules.js"></script>
 <script src="/media/dashboard/js/additional-methods.min.js"></script>
 <script src="/media/js/parse.js"></script>
 <script src="/media/dashboard/js/bootstrap-tag.min.js"></script>
@@ -189,12 +191,25 @@
                 location: "required",
                 picture: {
                     extension: "gif|png|jpg|jpeg"
+                },
+                admins: {
+                	checkEmailsExists: true	
                 }
             },
             messages: {
                 name: "A coach name is required",
                 location: "A coach location is required"
             },
+            errorPlacement: function(error, element) {
+            	if ( element.attr('name') == 'admins' ) {
+            		error.appendTo( element.parent().parent() );
+            	} else {
+	                error.appendTo( element.parent() );
+            	}
+            },
+            onkeyup: false,
+            onfocus: false,
+            onclick: false,
             submitHandler: function (form) {
                 var $formSubmit = $(form).find('button[type="submit"]');
                 $formSubmit.text('Saving...');
@@ -251,7 +266,7 @@
 			}
 		});
         
-        $('#admins').tag({ placeholder: $('#admins').attr('placeholder') });
+        $('#admins').tag({ placeholder: $('#admins').attr('placeholder'), name: $('#admins').attr('name'), tabindex: $('#admins').attr('tabindex') });
         $('#admins-controls').click(function(e) {
         	if ( $(e.target).hasClass('close') ) {
         		var email = $(e.target).parent()[0].firstChild.data;

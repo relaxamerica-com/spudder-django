@@ -2,73 +2,9 @@ module.exports = function (keys) {
 	var krowdio = require('cloud/krowdio'),
 		pluralizer = require('cloud/pluralize'),
 		utilities = require('cloud/utilities')(),
-		mandrill = require('mandrill');
-		
-	var addAdmins = function(entity, i, addAdminsPromise, adminsList, notFoundEmails) {
-    	if (i == adminsList.length) {
-        	addAdminsPromise.resolve();
-        	return;
-    	}
-    	new Parse.Query(Parse.User).equalTo('email', adminsList[i]).first().then(function(admin) {
-    		
-    		if (admin === null || admin === undefined) {
-    			notFoundEmails.push(adminsList[i]);
-    			addAdmins(entity, i + 1, addAdminsPromise, adminsList, notFoundEmails);
-    			return;
-    		}
-    		
-    		if (entity.get('adminsEmails') !== undefined && entity.get('adminsEmails').indexOf(adminsList[i]) >= 0) {
-    			addAdmins(entity, i + 1, addAdminsPromise, adminsList, notFoundEmails);
-    			return;
-    		}
-    		
-    		var EntityInvitation = Parse.Object.extend('EntityInvitation'),
-    			entityInv = new EntityInvitation(),
-    			entityType = entity.className;
-    			
-    		entityInv.set('entityName', entity.get('name'));
-    		entityInv.set('entityType', entityType);
-    		entityInv.set('entityId', entity.id);
-    		entityInv.set('inviting', Parse.User.current());
-    		entityInv.set('invited', admin);
-    		
-        	entityInv.save(null).then(function(_entityInv) {
-        		var acceptURL = 'https://' + keys.getAppName() +'.parseapp.com/acceptEntityInvitation/' + _entityInv.id,
-        			rejectURL = 'https://' + keys.getAppName() +'.parseapp.com/acceptEntityInvitation/' + _entityInv.id,
-        			listURL = 'https://' + keys.getAppName() + '.parse.app.com/invitationsList',
-        			text = utilities.renderEmail('cloud/views/emails/inviteEntity.ejs', { 
-            				'name' : admin.get('name'),
-            				'acceptURL' : acceptURL,
-            				'rejectURL' : rejectURL,
-            				'entityType' : entityType,
-            				'listURL' : listURL
-        				});
-        		
-				mandrill.initialize(keys.MANDRILL_API_KEY);
-        		mandrill.sendEmail({
-					message: {
-				    	html: text,
-					    subject: "You have been invited to become a " + entity.className,
-					    from_email: "help@spudder.com",
-					    from_name: "Spudder.com",
-				    	to: [{
-						        email: admin.getEmail(),
-						        name: admin.get('name')
-				      		}]
-			  		},
-			  		async: true
-				}, {
-					success: function(res) {
-                		addAdmins(entity, i + 1, addAdminsPromise, adminsList, notFoundEmails);
-					},
-					error: function(res) {
-						addAdmins(entity, i + 1, addAdminsPromise, adminsList, notFoundEmails);
-					}
-				});
-        	});
-    	});
-   };
-
+		_ = require('underscore'),
+		entityUtilities = require('cloud/entity/utilities')();
+	
 	var createTeam = function(name, admin, entity) {
 		var TeamClass = Parse.Object.extend('Team'),
 			query = new Parse.Query(TeamClass),
@@ -139,7 +75,11 @@ module.exports = function (keys) {
 		        	contact = req.body.contact,
 		        	profile = req.body.profile,
 		        	team = req.body.team,
-		        	admins = utilities.removeSpaces(req.body.admins),
+		        	adminsList = req.body.admins.map(function(el) { 
+                    				if (el.length != 0) {
+				                		return utilities.removeSpaces(el);
+                    				}
+			                	});
 		        	isDisplayPublicly = !('hide-publicly' in req.body),
 		        	profileImageThumb = req.body.profileImageThumb,
         			breadcrumbs = [entityType, 'Create a ' + entityType.toLowerCase()],
@@ -151,8 +91,7 @@ module.exports = function (keys) {
 			        relation;
 	
 				var context = { 'breadcrumbs' : breadcrumbs, 'keys' : keys },
-					promise = new Parse.Promise(),
-					adminsList = admins.split(',').filter(function(el) { return el.length != 0; });
+					promise = new Parse.Promise();
 				
 		        new Parse.Query(entityType).equalTo('nameSearch', name.toLowerCase()).find()
 		            .then(function(entities) {
@@ -178,25 +117,9 @@ module.exports = function (keys) {
 							entity.set('number', req.body.number);
 						}
 		                
-		                entity.relation('admins').add(Parse.User.current());
-		                
-		                // if (currentEntityCreateKey != null) {
-		                    // relationName = currentEntityCreateKey.split('-')[0];
-		                    // relationType = currentEntityCreateKey.split('-')[1];
-		                    // relationId = currentEntityCreateKey.split('-')[2];
-		                    // relation = adminCache[relationType][relationId];
-		                    // if (!currentEntityCreateReverse)
-		                        // entity.relation(relationName).add(relation);
-		                    // currentEntityCreateKey = null;
-		                // }
 		                return entity.save(null);
 		            })
 		            .then(function(entity){
-		                // if (currentEntityCreateReverse) {
-		                    // relation.relation(relationName).add(entity);
-		                    // relation.save(null);
-		                    // currentEntityCreateReverse = false;
-		                // }
 		                krowdio.krowdioRegisterEntityAndSave(entity);
 		                
 		                promise.resolve(entity);
@@ -206,10 +129,8 @@ module.exports = function (keys) {
 		                res.render('dashboard/' + entityType.toLowerCase() + '/create', context);
 		            });
 		            
-		            var i = 0,
-		            	addAdminsPromise = new Parse.Promise(),
-		            	notFoundEmails = [];
-		            	
+		            var notFoundEmails = [],
+		            	addAdminsPromise = new Parse.Promise();
 		            	
 		            promise.then(function(entity) {
 		            	var teamPromise = new Parse.Promise();
@@ -221,7 +142,7 @@ module.exports = function (keys) {
 		            	
 		            	if (adminsList.length > 0) {
 		            		console.log('adding addmins');
-			            	addAdmins(entity, i, addAdminsPromise, adminsList, notFoundEmails);
+			            	addAdminsPromise = entityUtilities.addAdmins(entity, adminsList, notFoundEmails);
 		            	} else {
 		            		addAdminsPromise.resolve();
 		            	}
@@ -244,32 +165,22 @@ module.exports = function (keys) {
         	var	entityType = req.params.entityType,
         		pluralized = pluralizer.pluralize(entityType, 2);
 
-			console.log('listEntities start');
-
             Parse.User.current().fetch().then(function (user) {
                 var EntityClass = Parse.Object.extend(entityType),
                     query = new Parse.Query(EntityClass),
-                    _ = require('underscore'),
                     entities = [];
-
-				console.log('listEntities vars initailized');
 
                 query.equalTo('admins', user);
 
                 query.find().then(function (list) {
                 	var promise = Parse.Promise.as();
 
-					console.log('listEntities players found');
-
                     _.each(list, function(entity) {
                     	
-                    	console.log('listEntities enity iteration');
-
                         promise = promise.then(function() {
                             var findPromise = new Parse.Promise();
 
                             entity.relation('admins').query().find().then(function (admins) {
-                            	console.log('listEntities realtion');
                                 entity['otherAdmins'] = admins;
                                 entities.push(entity);
                                 findPromise.resolve();
@@ -285,8 +196,6 @@ module.exports = function (keys) {
                 		{ 'title' : pluralized, 'href' : '/dashboard/listEntities/' + entityType }, 
         				{ 'title' : 'My ' + pluralized, 'href' : '/dashboard/listEntities/' + entityType }
         			];
-        			console.log('listEntities render');
-        			console.log(entities);
                     res.render('dashboard/' + entityType.toLowerCase() + '/list', {
                         'breadcrumbs' : breadcrumbs,
                         'list': entities
@@ -309,17 +218,23 @@ module.exports = function (keys) {
 
                 query.get(id, {
                     success: function(entity) {
-                    	var _entity = entity;
-                    	entity.get('team').fetch().then(function(team) {
-                    		_entity.team = team.get('name');
+                    	var _entity = entity,
+                    		_team = entity.get('team'),
 	                    	context = {
 	                            'breadcrumbs' : breadcrumbs,
-	                            'found': true,
+	                            'found'  : true,
 	                            'entity' : _entity,
 	                            'keys' : { 'jsKey' : keys.getJavaScriptKey(), 'appId' : keys.getApplicationID() }
 	                       	};
-	                        res.render('dashboard/' + entityName + '/edit', context);
-                    	});
+	                       	
+                    	if (_team !== undefined) {
+                    		_entity.team = _team.get('name');
+	                    	_team.fetch().then(function(team) {
+		                        res.render('dashboard/' + entityName + '/edit', context);
+	                    	});
+                    	} else {
+                    		res.render('dashboard/' + entityName + '/edit', context);
+                    	}
                     },
                     error: function(object, error) {
                         console.log(error);
@@ -338,13 +253,16 @@ module.exports = function (keys) {
                     profile = req.body.profile,
                     id = req.params.id,
                     entityType = req.params.entityType,
-		        	admins = utilities.removeSpaces(req.body.admins),
 		        	isDisplayPublicly = !('hide-publicly' in req.body);
 
                 var EntityClass = Parse.Object.extend(entityType),
                     query = new Parse.Query(EntityClass),
                     promise = new Parse.Promise(),
-                    adminsList = admins.split(',').filter(function(el) { return el.length != 0; });
+                    adminsList = req.body.admins.map(function(el) { 
+                    				if (el.length != 0) {
+				                		return utilities.removeSpaces(el);
+                    				}
+			                	});
 
                 query.get(id, {
                     success: function(entity) {
@@ -377,13 +295,13 @@ module.exports = function (keys) {
                         res.redirect('/dashboard/editEntity/' + entityType + '/' + id);
                     }
                 });
-                var i = 0,
-	            	addAdminsPromise = new Parse.Promise(),
+                
+	            var addAdminsPromise = new Parse.Promise(),
 	            	notFoundEmails = [];
 		            	
 	            promise.then(function(entity) {
 	            	if (adminsList.length > 0) {
-		            	addAdmins(entity, i, addAdminsPromise, adminsList, notFoundEmails);
+		            	addAdminsPromise = entityUtilities.addAdmins(entity, adminsList, notFoundEmails);
 	            	} else {
 	            		res.redirect('/dashboard/listEntities/' + entityType);
 	            	}
@@ -421,6 +339,9 @@ module.exports = function (keys) {
 
         	query.get(userId).then(function(entity) {
         		new Parse.Query(Parse.User).equalTo('email', adminEmail).first().then(function(user) {
+        			if (user == undefined || user == null) {
+        				promise.resolve();
+        			}
 	            	entity.relation('admins').remove(user);
 	            	entity.remove('adminsEmails', adminEmail);
 	            	return entity.save(null);
@@ -453,7 +374,7 @@ module.exports = function (keys) {
 	        			_entity.add('adminsEmails', _invited.getEmail());
 	        			_entity.save().then(function() {
 	        				inv.destroy().then(function() {
-		        				res.redirect('/dashboard/listEntities/' + _entity.className + '#accepted');
+		        				res.redirect('/invitationsList#accepted');
 	        				});
 	        			});
         			});
@@ -467,7 +388,7 @@ module.exports = function (keys) {
         		
         	invQuery.get(req.params.entityInvitationId).then(function(invitation) {
         		invitation.destroy().then(function() {
-        			res.redirect('/dashboard/listEntities/' + invitation.get('entityType') + '#rejected');
+        			res.redirect('/invitationsList#rejected');
         		});
         	});
         },
@@ -475,7 +396,6 @@ module.exports = function (keys) {
         invitationsList: function(req, res) {
         	var Invitation = Parse.Object.extend('EntityInvitation'),
         		invQuery = new Parse.Query(Invitation),
-        		_ = require('underscore'),
         		list = [];
         	
         	invQuery.equalTo('invited', Parse.User.current());

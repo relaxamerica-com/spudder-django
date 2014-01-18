@@ -1,4 +1,7 @@
 module.exports = function (keys) {
+	var entityUtilities = require('cloud/entity/utilities')(),
+		utilities = require('cloud/utilities')();
+	
     return {
         create: {
             get: function (req, res) {
@@ -12,7 +15,12 @@ module.exports = function (keys) {
                 var name = req.body.name,
                     profileImageThumb = req.body.profileImageThumb,
                     Team = Parse.Object.extend('Team'),
-                    team = new Team();
+                    team = new Team(),
+                    adminsList = req.body.admins.map(function(el) { 
+                    				if (el.length != 0) {
+				                		return utilities.removeSpaces(el);
+                    				}
+			                	});
 
                 team.set('name', name);
                 team.set('nameSearch', name.toLowerCase());
@@ -28,15 +36,22 @@ module.exports = function (keys) {
                             var admins = team.relation('admins');
 
                             admins.add(user);
-                            team.save();
+                            team.save().then(function(team) {
+	                            var roleACL = new Parse.ACL();
+	                            console.log(team);
+	                            roleACL.setPublicReadAccess(true);
+	                            var teamAdminRole = new Parse.Role("TeamAdmin", roleACL);
+	                            teamAdminRole.getUsers().add(user);
+                            	if (adminsList.length > 0) {
+                            		var notFoundEmails = [];
+                            		entityUtilities.addAdmins(team, adminsList, notFoundEmails).then(function() {
+	                            		res.redirect('/dashboard/teams/edit/' + team.id);
+                            		});
+                            	} else {
+		                            res.redirect('/dashboard/teams/edit/' + team.id);
+                            	}
+                            });
 
-                            var roleACL = new Parse.ACL();
-                            roleACL.setPublicReadAccess(true);
-                            var teamAdminRole = new Parse.Role("TeamAdmin", roleACL);
-                            teamAdminRole.getUsers().add(user);
-                            teamAdminRole.save();
-
-                            res.redirect('/dashboard/teams/edit/' + team.id);
                         });
                     },
 

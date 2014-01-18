@@ -1,6 +1,5 @@
 $(document).ready(function() {
 	var hash = document.location.hash.replace('#', '');
-	console.log(hash);
 	if (hash == 'accepted') {
 		$('.alert').addClass('alert-success');
 		$('.alert').show();

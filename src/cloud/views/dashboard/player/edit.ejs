@@ -182,6 +182,8 @@
 
 <% if (found) { %>
 <script src="/media/dashboard/js/jquery.validate.js"></script>
+<script src="/media/dashboard/js/checkEmailsExists.js"></script>
+<script src="/media/dashboard/js/jquery.validate.spudder.rules.js"></script>
 <script src="/media/dashboard/js/additional-methods.min.js"></script>
 <script src="/media/js/parse.js"></script>
 <script src="/media/dashboard/js/bootstrap-tag.min.js"></script>
@@ -198,12 +200,25 @@
                 location: "required",
                 picture: {
                     extension: "gif|png|jpg|jpeg"
+                },
+                admins: {
+                	checkEmailsExists: true	
                 }
             },
             messages: {
                 name: "A player name is required",
                 location: "A player location is required"
             },
+            errorPlacement: function(error, element) {
+            	if ( element.attr('name') == 'admins' ) {
+            		error.appendTo( element.parent().parent() );
+            	} else {
+	                error.appendTo( element.parent() );
+            	}
+            },
+            onkeyup: false,
+            onfocus: false,
+            onclick: false,
             submitHandler: function (form) {
                 var $formSubmit = $(form).find('button[type="submit"]');
                 $formSubmit.text('Saving...');
@@ -260,7 +275,7 @@
 			}
 		});
         
-        $('#admins').tag({ placeholder : $('#admins').attr('placeholder') });
+        $('#admins').tag({ placeholder: $('#admins').attr('placeholder'), name: $('#admins').attr('name'), tabindex: $('#admins').attr('tabindex') });
         $('#admins-controls').click(function(e) {
         	if ( $(e.target).hasClass('close') ) {
         		var email = $(e.target).parent()[0].firstChild.data;

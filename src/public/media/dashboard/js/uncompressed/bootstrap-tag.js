@@ -52,6 +52,8 @@
       
       that.input = $('<input type="text">')
         .attr('placeholder', that.options.placeholder)
+        .attr('tabindex', that.options.tabindex)
+        .attr('name', that.options.name)
         .insertAfter(that.element)
         .on('focus', function () {
           that.element.parent().addClass('tags-hover')
