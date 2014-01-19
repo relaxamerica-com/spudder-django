@@ -142,15 +142,13 @@ module.exports = function (keys) {
 		            	
 		            	if (adminsList.length > 0) {
 		            		console.log('adding addmins');
+		            		entity.relation('admins').add(Parse.User.current());
 			            	addAdminsPromise = entityUtilities.addAdmins(entity, adminsList, notFoundEmails);
 		            	} else {
 		            		addAdminsPromise.resolve();
 		            	}
 		            	
 		            	Parse.Promise.when([addAdminsPromise, teamPromise]).then(function() {
-		            		if (notFoundEmails.length > 0) {
-		            			res.redirect('/dashboard/listEntities/' + entityType + '?error=Team with given name already exists.');
-		            		}
 		            		res.redirect('/dashboard/listEntities/' + entityType);
 		            	}, function(error) {
 		            		console.log(error[1].message);
