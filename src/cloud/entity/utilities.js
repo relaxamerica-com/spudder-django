@@ -12,13 +12,15 @@ module.exports = function() {
 					var finalPromise = new Parse.Promise();
 					
 	    			new Parse.Query(Parse.User).equalTo('email', adminEmail).first().then(function(user) {
+	    				console.log(user);
 	    				if (user === null || user === undefined) {
 	    					finalPromise.resolve();
 	    				}
 	    				
 	    				var EntityInvitation = Parse.Object.extend('EntityInvitation'),
 			    			entityInv = new EntityInvitation(),
-			    			entityType = entity.className;
+			    			entityType = entity.className,
+			    			_user = user;
 			    			
 			    		entityInv.set('entityName', entity.get('name'));
 			    		entityInv.set('entityType', entityType);
@@ -32,7 +34,7 @@ module.exports = function() {
 			        			rejectURL = 'https://' + keys.getAppName() +'.parseapp.com/acceptEntityInvitation/' + _entityInv.id,
 			        			listURL = 'https://' + keys.getAppName() + '.parse.app.com/invitationsList',
 			        			text = utilities.renderEmail('cloud/views/emails/inviteEntity.ejs', { 
-			            				'name' : user.get('name'),
+			            				'name' : _user.get('name'),
 			            				'acceptURL' : acceptURL,
 			            				'rejectURL' : rejectURL,
 			            				'entityType' : entityType,

@@ -15,13 +15,15 @@ module.exports = function (keys) {
                 var name = req.body.name,
                     profileImageThumb = req.body.profileImageThumb,
                     Team = Parse.Object.extend('Team'),
-                    team = new Team(),
-                    adminsList = req.body.admins.map(function(el) { 
-                    				if (el.length != 0) {
-				                		return utilities.removeSpaces(el);
-                    				}
-			                	});
-
+                    team = new Team();
+                	adminsList = [];
+                	
+   				for(var i = 0; i < req.body.admins.length; i++) {
+   					var el = req.body.admins[i];
+					if (el.length != 0 && el !== null && el !== undefined) {
+						adminsList.push(utilities.removeSpaces(el));
+					}
+				}
                 team.set('name', name);
                 team.set('nameSearch', name.toLowerCase());
                 team.set('location', req.body.location);
@@ -93,7 +95,15 @@ module.exports = function (keys) {
                     location = req.body.location,
                     details = req.body['contact-details'],
                     profile =  req.body.profile,
-                    teamID = req.body.teamID;
+                    teamID = req.body.teamID,
+                    adminsList = [];
+                
+                for(var i = 0; i < req.body.admins.length; i++) {
+   					var el = req.body.admins[i];
+					if (el.length != 0 && el !== null && el !== undefined) {
+						adminsList.push(utilities.removeSpaces(el));
+					}
+				}
 
                 var Team = Parse.Object.extend('Team'),
                     query = new Parse.Query(Team);
@@ -116,7 +126,14 @@ module.exports = function (keys) {
 
                         team.save();
 
-                        res.redirect('/dashboard/teams/edit/' + teamID);
+                        if (adminsList.length > 0) {
+                    		var notFoundEmails = [];
+                    		entityUtilities.addAdmins(team, adminsList, notFoundEmails).then(function() {
+                        		res.redirect('/dashboard/teams');
+                    		});
+                    	} else {
+                            res.redirect('/dashboard/teams');
+                    	}
                     },
                     error: function(object, error) {
                         console.log(error);

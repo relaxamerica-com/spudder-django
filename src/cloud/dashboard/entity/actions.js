@@ -75,15 +75,18 @@ module.exports = function (keys) {
 		        	contact = req.body.contact,
 		        	profile = req.body.profile,
 		        	team = req.body.team,
-		        	adminsList = req.body.admins.map(function(el) { 
-                    				if (el.length != 0) {
-				                		return utilities.removeSpaces(el);
-                    				}
-			                	});
+		        	adminsList = [];
 		        	isDisplayPublicly = !('hide-publicly' in req.body),
 		        	profileImageThumb = req.body.profileImageThumb,
         			breadcrumbs = [entityType, 'Create a ' + entityType.toLowerCase()],
                     keys = { 'jsKey' : req.body.jsKey, 'appId' : req.body.appId };
+	
+				for(var i = 0; i < req.body.admins.length; i++) {
+   					var el = req.body.admins[i];
+					if (el.length != 0 && el !== null && el !== undefined) {
+						adminsList.push(utilities.removeSpaces(el));
+					}
+				}
 	
 		        var relationName,
 			        relationType,
@@ -145,7 +148,10 @@ module.exports = function (keys) {
 		            		entity.relation('admins').add(Parse.User.current());
 			            	addAdminsPromise = entityUtilities.addAdmins(entity, adminsList, notFoundEmails);
 		            	} else {
-		            		addAdminsPromise.resolve();
+		            		entity.relation('admins').add(Parse.User.current());
+		            		entity.save().then(function() {
+			            		addAdminsPromise.resolve();
+		            		});
 		            	}
 		            	
 		            	Parse.Promise.when([addAdminsPromise, teamPromise]).then(function() {
@@ -256,11 +262,14 @@ module.exports = function (keys) {
                 var EntityClass = Parse.Object.extend(entityType),
                     query = new Parse.Query(EntityClass),
                     promise = new Parse.Promise(),
-                    adminsList = req.body.admins.map(function(el) { 
-                    				if (el.length != 0) {
-				                		return utilities.removeSpaces(el);
-                    				}
-			                	});
+                    adminsList = [];
+                    
+                for(var i = 0; i < req.body.admins.length; i++) {
+   					var el = req.body.admins[i];
+					if (el.length != 0 && el !== null && el !== undefined) {
+						adminsList.push(utilities.removeSpaces(el));
+					}
+				}
 
                 query.get(id, {
                     success: function(entity) {
