@@ -32,7 +32,7 @@ module.exports = function() {
 			        		console.log(_entityInv);
 			        		var acceptURL = 'https://' + keys.getAppName() +'.parseapp.com/acceptEntityInvitation/' + _entityInv.id,
 			        			rejectURL = 'https://' + keys.getAppName() +'.parseapp.com/acceptEntityInvitation/' + _entityInv.id,
-			        			listURL = 'https://' + keys.getAppName() + '.parse.app.com/invitationsList',
+			        			listURL = 'https://' + keys.getAppName() + '.parseapp.com/invitationsList',
 			        			text = utilities.renderEmail('cloud/views/emails/inviteEntity.ejs', { 
 			            				'name' : _user.get('name'),
 			            				'acceptURL' : acceptURL,
