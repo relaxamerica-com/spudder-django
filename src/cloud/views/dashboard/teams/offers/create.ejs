@@ -80,13 +80,14 @@
         </div>
         <div class="control-group">
             <label class="control-label" for="offer-image-input1">Images:</label>
-            <div class="controls">
+            <div class="controls ace-files-container" name="offerImagesContainer">
                 <input type="hidden" name="offerImage1" />
                 <input type="file" id="offer-image-input1" name="offerImageInput1" class="file-upload-input" accept="image/*" />
                 <input type="hidden" name="offerImage2" />
                 <input type="file" id="offer-image-input2" name="offerImageInput2" class="file-upload-input" accept="image/*" />
                 <input type="hidden" name="offerImage3" />
                 <input type="file" id="offer-image-input3" name="offerImageInput3" class="file-upload-input" accept="image/*" />
+                <span class="input-required">*at least one required</span>
             </div>
         </div>
 
@@ -97,8 +98,8 @@
 <% include ../../parts/scripts %>
 
 <script src="/media/dashboard/js/jquery.validate.js"></script>
-<script src="/media/dashboard/js/jquery.validate.spudder.rules.js"></script>
 <script src="/media/dashboard/js/additional-methods.min.js"></script>
+<script src="/media/dashboard/js/jquery.validate.spudder.rules.js"></script>
 <script src="/media/dashboard/js/date-time/bootstrap-datepicker.min.js"></script>
 <script src="/media/dashboard/js/teams/helpers.js"></script>
 <script src="/media/js/parse.js"></script>
@@ -193,10 +194,9 @@
                         var $label = $(document.createElement('label'));
 
                         $label.attr('for', 'offer-image-input1');
-                        $label.addClass('error');
+                        $label.addClass('error').addClass('error-pushed-up');
                         $label.text('At least one image must be chosen');
-
-                        $('dd.offer-images').append($label);
+                        $('div.controls.ace-files-container').append($label);
 
                         $formSubmit.text('Create');
                         $formSubmit.removeAttr('disabled');

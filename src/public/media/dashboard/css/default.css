@@ -341,16 +341,16 @@
     color: #C41A08;
     margin-top: 5px;
 }
+
+#entity-create label.error.error-pushed-up {
+    margin-top: -20px;
+}
+
 #entity-create label[for="profile-picture-input"] {
     border: 0 none;
     top: 35px;
 }
-#entity-create label[for^="offer-image-input"] {
-    border: 0 none;
-    left: 450px;
-    top: 5px;
-    width: 300px;
-}
+
 #entity-create label[for="profile-picture-input"]:before, #entity-create label[for^="offer-image-input"]:before {
     display: none;
 }
@@ -414,6 +414,12 @@ form .input-required {
 #entity-create .create-entity-button {
     margin-bottom: 10px;
     margin-right: 10px;
+}
+
+div.controls.ace-files-container .input-required {
+    position: relative;
+    left: 405px;
+    top: -110px
 }
 
 .ace-nav .nav-user-photo {
