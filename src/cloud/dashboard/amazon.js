@@ -45,6 +45,7 @@ module.exports = function (keys) {
                                 { 'title' : 'Teams', 'href' : '/dashboard/teams' },
                                 { 'title' : 'Registration complete', 'href' : 'javascript:void(0);' }
                             ],
+                            'teamID': teamID,
                             'isError': false
                         });
                     },
@@ -54,6 +55,7 @@ module.exports = function (keys) {
                                 { 'title' : 'Teams', 'href' : '/dashboard/teams' },
                                 { 'title' : 'Errors during registration', 'href' : 'javascript:void(0);' }
                             ],
+                            'teamID': teamID,
                             'isError': true,
                             'error': error
                         });

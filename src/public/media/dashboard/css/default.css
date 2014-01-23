@@ -484,3 +484,23 @@ div.controls.ace-files-container .input-required {
 #top-right-icons a.orange-link:hover {
 	color: #F06F05;
 }
+
+/* --- Custom buttons --- */
+
+.btn.btn-spud-orange {
+    background-color: #FF6B00 !important;
+    border-color: #FF6B00 !important;
+    color: #ffffff;
+}
+
+.btn.btn-spud-orange:hover {
+    background-color: #FF6B00 !important;
+    border-color: #FF6B00 !important;
+    color: #ffffff;
+    -webkit-filter: brightness(90%);
+    filter: brightness(0.9);
+}
+
+.btn.btn-large.btn-rounded-corners {
+    border-radius: 10px;
+}
