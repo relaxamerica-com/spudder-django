@@ -37,11 +37,16 @@
     <div class="row-fluid margin-bottom5">
         <div class="span6">
             <div class="row-fluid">
-            	 <% if (team && team.get('profileImageThumb')) { %>
-            	 	<a href="/teams/<%= team.id %>">
-	            		<img src="<%= team.get('profileImageThumb') %>" class="entity-logo" />
-	            	</a>
-	            <% } %>
+                <% if (team && team.get('profileImageThumb')) { %>
+                <a href="/teams/<%= team.id %>">
+                    <div>
+                        <img src="<%= team.get('profileImageThumb') %>" class="entity-logo align-left" />
+                        <div class="clearfix"></div>
+                        <div class="entity-name align-left"><%= team.get('name') %></div>
+                        <div class="clearfix"></div>
+                    </div>
+                </a>
+                <% } %>
             </div>
         	<div class="row-fluid">
 	            <% if (entity.get('profileImageThumb')) { %>
@@ -69,7 +74,7 @@
         </div>
         <div class="span6">
         	<div class="row-fluid">
-	            <a href="#" class="btn btn-spud-orange btn-large pull-right" id="follow-button">
+	            <a href="#" class="btn btn-spud-orange btn-large btn-follow pull-right">
 	                <i class="icon-microphone icon-3"></i>
 	                Follow
 	            </a>

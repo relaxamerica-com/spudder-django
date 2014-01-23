@@ -80,7 +80,7 @@ module.exports = function (keys) {
 		        	profileImageThumb = req.body.profileImageThumb,
         			breadcrumbs = [entityType, 'Create a ' + entityType.toLowerCase()],
                     keys = { 'jsKey' : req.body.jsKey, 'appId' : req.body.appId };
-	
+
 				for(var i = 0; i < req.body.admins.length; i++) {
    					var el = req.body.admins[i];
 					if (el.length != 0 && el !== null && el !== undefined) {
@@ -129,6 +129,10 @@ module.exports = function (keys) {
 		            },
 		            function(error){
 		            	context['errors'] = [error];
+                        context['team'] = undefined;
+
+                        console.log('Error while creating entity [' + entityType + ']: ' + error);
+
 		                res.render('dashboard/' + entityType.toLowerCase() + '/create', context);
 		            });
 		            

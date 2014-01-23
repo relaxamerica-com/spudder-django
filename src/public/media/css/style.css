@@ -4417,14 +4417,14 @@ dialogs {
     margin-left: 15px;
 }
 
-#team #follow-button,
-#team #sponsor-button {
+.btn.btn-large.btn-follow,
+.btn.btn-large.btn-sponsor {
     margin-bottom: 10px;
     margin-left: 15px;
     border-radius: 10px;
 }
 
-#team #sponsor-button + #follow-button {
+.btn.btn-large.btn-sponsor + .btn.btn-large.btn-follow {
     margin-left: 5px;
 }
 
@@ -4535,7 +4535,7 @@ dialogs {
 
 #entity-public .entity-logo {
 	width: 128px;
-    border-radius: 15px;
+    border-radius: 15px;id="follow-button"
 }
 
 #entity-public .entity-name {
