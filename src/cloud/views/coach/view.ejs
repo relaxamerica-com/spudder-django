@@ -39,7 +39,12 @@
             <div class="row-fluid">
             	 <% if (team && team.get('profileImageThumb')) { %>
 	            	<a href="/teams/<%= team.id %>">
-	            		<img src="<%= team.get('profileImageThumb') %>" class="entity-logo" />
+                        <div>
+                            <img src="<%= team.get('profileImageThumb') %>" class="entity-logo align-left" />
+                            <div class="clearfix"></div>
+                            <div class="entity-name align-left"><%= team.get('name') %></div>
+                            <div class="clearfix"></div>
+                        </div>
 	            	</a>
 	            <% } %>
             </div>

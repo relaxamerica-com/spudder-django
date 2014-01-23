@@ -4535,6 +4535,18 @@ dialogs {
 
 #entity-public .entity-logo {
 	width: 128px;
+    border-radius: 15px;
+}
+
+#entity-public .entity-name {
+    width: 128px;
+    text-align: center;
+    font-size: 18px;
+    font-family: 'Open Sans', sans-serif;
+    color: #353535;
+    font-weight: 300;
+    line-height: 1.5em;
+    margin: 0;
 }
 
 .display-sponsors li {
