@@ -38,7 +38,7 @@
     	<div class="control-group">
             <label class="control-label" for="location">Home Zip:</label>
             <div class="controls">
-                <input tabindex="4" name="location" id="location" <% if (team) { %>value="<%= team.get('location') %>"<% } %> />
+                <input tabindex="4" name="location" id="location" <% if (team != undefined) { %>value="<%= team.get('location') %>"<% } %> />
                 <span class="input-required" title="But never displayed, simply used to speed search">*required</span>
             </div>
     	</div>
