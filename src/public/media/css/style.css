@@ -4244,6 +4244,10 @@ dialogs {
 	padding: 0;
 }
 
+aside .widget.offer-widget {
+    margin-bottom: 20px;
+}
+
 .offer-widget ul.folio-detail.offer-details li {
 	color: red;
 }

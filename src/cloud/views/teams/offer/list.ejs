@@ -119,11 +119,11 @@
                     </div>
                     <div class="pricing-action">
                     <% if (offer.get('available')) { %>
-                        <a href="#donation-modal-<%= offer.id %>" class="btn btn-medium btn-danger" data-toggle="modal">
+                        <a href="#donation-modal-<%= offer.id %>" data-toggle="modal">
                     <% } else { %>
-                        <a href="javascript:void(0);" class="btn btn-medium btn-danger" disabled title="Sold out!">
+                        <a href="javascript:void(0);" disabled title="Sold out!">
                     <% } %>
-                            <i class="icon-credit-card"></i> Donate now
+                            <img src="/media/img/buttons/pay-with-amazon.png" />
                         </a>
 
                         <div id="donation-modal-<%= offer.id %>" class="modal styled hide fade" tabindex="-1" role="dialog" aria-labelledby="mySigninModalLabel" aria-hidden="true">
