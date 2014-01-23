@@ -1,0 +1,27 @@
+<p>Dear <%= name %>,</p>
+
+<p>You have been invited to become an admin of <%= entityType %>: <%= entityName %>.</p>
+
+<p>
+	<h4>
+		In order to accept the invitation, you must sign up:
+	</h4>
+	<p>
+		The invitation will be accepted after you signed up.
+	</p>
+	<div>
+		<a href="<%= signUpURL %>">Sign Up and Accept</a>
+	</div>
+	
+	<h4>
+		I you don't agree to it, please reject:
+	</h4>
+	<div>
+		<a href="<%= rejectURL %>">Reject</a>
+	</div>
+	
+	<p>
+		Regards, <br />
+		Spudder Team
+	</p>
+</p>

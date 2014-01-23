@@ -17,6 +17,7 @@ $(document).ready(function () {
         response.fail(function(error) {
             var alert = $(self).find('.alert-error');
             loading.css('visibility', 'hidden');
+            alert.addClass('alert-error');
             alert.removeClass('hidden');
             alert.html(getErrorMessage('login', error.responseText));
         });
@@ -30,16 +31,24 @@ $(document).ready(function () {
         var email = $(this).find('#registerEmail').val(),
             password1 = $(this).find('#registerPassword1').val(),
             password2 = $(this).find('#registerPassword2').val(),
-            self = this;
+            self = this,
+            acceptInvitation = $('input[name="acceptInvitation"]');
 
         var response = $.post('/accounts/register', { 'email' : email, 'password1' : password1, 'password2' : password2 });
 
         response.done(function() {
-            document.location = '/dashboard/fans/basicInfo';
+        	if ( acceptInvitation.val().length > 0 ) {
+        		$.get('/acceptEntityInvitation/' + acceptInvitation.val(), function() {
+        			document.location = '/dashboard/fans/basicInfo#invitationAccepted';
+        		});
+        	} else {
+	            document.location = '/dashboard/fans/basicInfo';
+        	}
         });
 
         response.fail(function(error) {
-            var alert = $(self).find('.alert-error');
+            var alert = $(self).find('.alert');
+            alert.addClass('alert-error');
             loading.css('visibility', 'hidden');
             alert.removeClass('hidden');
             alert.html(getErrorMessage('register', error.responseText));

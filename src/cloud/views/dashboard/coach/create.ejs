@@ -100,8 +100,6 @@
 <% include ../parts/scripts %>
 
 <script src="/media/dashboard/js/jquery.validate.js"></script>
-<script src="/media/dashboard/js/checkEmailsExists.js"></script>
-<script src="/media/dashboard/js/jquery.validate.spudder.rules.js"></script>
 <script src="/media/dashboard/js/additional-methods.min.js"></script>
 <script src="/media/js/parse.js"></script>
 <script src="/media/dashboard/js/bootstrap-tag.min.js"></script>
@@ -125,9 +123,6 @@
                 },
                 picture: {
                     extension: "gif|png|jpg|jpeg"
-                },
-                admins: {
-                	checkEmailsExists: true	
                 }
             },
             messages: {
@@ -138,11 +133,7 @@
                 }
             },
             errorPlacement: function(error, element) {
-            	if ( element.attr('name') == 'admins' ) {
-            		error.appendTo( element.parent().parent() );
-            	} else {
-	                error.appendTo( element.parent() );
-            	}
+                error.appendTo( element.parent() );
             },
             onkeyup: false,
             onfocus: false,

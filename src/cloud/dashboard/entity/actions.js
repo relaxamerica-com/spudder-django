@@ -144,7 +144,6 @@ module.exports = function (keys) {
 		            	}
 		            	
 		            	if (adminsList.length > 0) {
-		            		console.log('adding addmins');
 		            		entity.relation('admins').add(Parse.User.current());
 			            	addAdminsPromise = entityUtilities.addAdmins(entity, adminsList, notFoundEmails);
 		            	} else {
@@ -313,11 +312,7 @@ module.exports = function (keys) {
 	            		res.redirect('/dashboard/listEntities/' + entityType);
 	            	}
 	            	addAdminsPromise.then(function() {
-	            		if (notFoundEmails.length > 0) {
-	            			res.redirect('/dashboard/listEntities/' + entityType + '?error');
-	            		} else {
-			            	res.redirect('/dashboard/listEntities/' + entityType);
-	            		}
+		            	res.redirect('/dashboard/listEntities/' + entityType + '#invitationSent');
 	            	});
 	            });
         	}
@@ -373,15 +368,23 @@ module.exports = function (keys) {
         			query = new Parse.Query(EntityClass);
         			
         		query.get(invitation.get('entityId')).then(function(entity) {
-        			var invited = inv.get('invited'),
+        			var invited = invitation.get('invited') == undefined ? Parse.User.current() : invitation.get('invited'),
         				_entity = entity;
         				
         			invited.fetch().then(function(_invited) {
 	        			_entity.relation('admins').add(_invited);
 	        			_entity.add('adminsEmails', _invited.getEmail());
 	        			_entity.save().then(function() {
-	        				inv.destroy().then(function() {
-		        				res.redirect('/invitationsList#accepted');
+	        				var confirmationSentPromise = new Parse.Promise();
+	        				invitation.get('inviting').fetch().then(function(_inviting) {
+	        					
+		        				entityUtilities.sendConfirmation(inv, _invited, _inviting, true, confirmationSentPromise);
+		        				
+		        				confirmationSentPromise.then(function() {
+			        				inv.destroy().then(function() {
+				        				res.redirect('/invitationsList#invitationAccepted');
+			        				});
+		        				});
 	        				});
 	        			});
         			});
@@ -394,8 +397,39 @@ module.exports = function (keys) {
         		invQuery = new Parse.Query(Invitation);
         		
         	invQuery.get(req.params.entityInvitationId).then(function(invitation) {
-        		invitation.destroy().then(function() {
-        			res.redirect('/invitationsList#rejected');
+        		var _invitation = invitation,
+        			invited = _invitation.get('invited'),
+        			invitedPromise = new Parse.Promise();
+        			
+        		if (invited == undefined) {
+        			invited = {
+        				getEmail: function() {
+        					return _invitation.get('invitedEmail');
+        				},
+        				get: function(value) {
+        					return _invitation.get('invitedEmail');
+        				}
+        			};
+        			invitedPromise.resolve(invited);
+        		} else {
+        			invited.fetch().then(function(user) {
+        				invitedPromise.resolve(user);
+        			});
+        		}
+        		
+        		invitedPromise.then(function(_invited) {
+        			var _invited = _invited,
+        				confirmationSentPromise = new Parse.Promise();
+        			
+        			_invitation.get('inviting').fetch().then(function(_inviting) {
+		        		entityUtilities.sendConfirmation(_invitation, _invited, _inviting, false, confirmationSentPromise);
+        			});
+	        		
+	        		confirmationSentPromise.then(function() {
+		        		_invitation.destroy().then(function() {
+		        			res.redirect('/invitationsList#invitationRejected');
+		        		});
+	        		});
         		});
         	});
         },

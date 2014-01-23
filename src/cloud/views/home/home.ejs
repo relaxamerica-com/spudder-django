@@ -35,12 +35,25 @@
 	
 	$(document).ready(function() {
 		var parsed = parseUri(document.location)['queryKey'];
+		
 		if ( 'next' in parsed ) {
 			$('input[name="returnURL"]').val(parsed['next']);
 		}
 		
+		if ( 'acceptInvitation' in parsed ) {
+			$('input[name="acceptInvitation"]').val(parsed['acceptInvitation']);
+		}
+		
+		if ( 'email' in parsed ) {
+			$('input#registerEmail').val(parsed['email'].replace('%40', '@'));
+		}
+		
 		if (document.location.hash == '#mySignin') {
 			$('#mySignin').modal('show');
+		}
+		
+		if (document.location.hash == '#mySignup') {
+			$('#mySignup').modal('show');
 		}
 	});
 </script>

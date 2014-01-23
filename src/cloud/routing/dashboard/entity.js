@@ -11,6 +11,6 @@ module.exports = function (app, keys) {
     app.get('/dashboard/removeEntity/:entityType/:id', helpers.loginRequired, entity.removeEntity);
     app.post('/dashboard/removeAdmin/:entityType/:id', helpers.loginRequired, entity.removeAdmin);
     app.get('/acceptEntityInvitation/:entityInvitationId', helpers.loginRequired, entity.acceptEntityInvitation);
-    app.get('/rejectEntityInvitation/:entityInvitationId', helpers.loginRequired, entity.rejectEntityInvitation);
+    app.get('/rejectEntityInvitation/:entityInvitationId', entity.rejectEntityInvitation);
     app.get('/invitationsList', helpers.loginRequired, entity.invitationsList);
 };
