@@ -29,8 +29,16 @@
             <tr>
                 <td><a href="/teams/<%= team.id %>"><%= team.get('name') %></a></td>
                 <td><%= team.get('location') %></td>
-                <td><%= getValueOrEmpty(team.get('contact')) %></td>
-                <td><%= getValueOrEmpty(team.get('profile')) %></td>
+                <td class="team-contact-details">
+                    <div class="team-contact-details-container">
+                        <%= getValueOrEmpty(team.get('contact')) %>
+                    </div>
+                </td>
+                <td class="team-profile">
+                    <div class="team-profile-container">
+                        <%= getValueOrEmpty(team.get('profile')) %>
+                    </div>
+                </td>
                 <td>
                 <% if (team.get('isRegisteredRecipient')) { %>
                     <a class="btn btn-mini btn-lightgrey btn-action" title="Offers" href="/dashboard/teams/<%= team.id %>/offers" >
@@ -74,13 +82,13 @@
 <% include ../parts/scripts %>
 
 <script type="text/javascript">
-	$(document).ready(function() {
-		$('.remove-button').click(function(e) {
-			if ( !confirm('Are you sure?') ) {
-				e.preventDefault();
-			}
-		});
-	});
+    $(document).ready(function() {
+        $('.remove-button').click(function(e) {
+            if ( !confirm('Are you sure?') ) {
+                e.preventDefault();
+            }
+        });
+    });
 </script>
 
 <% include ../parts/foot %>

@@ -408,6 +408,19 @@
     padding-bottom: 4px;
     padding-top: 4px;
 }
+
+#my-teams-list td.team-profile,
+#my-teams-list td.team-contact-details {
+    width: 25%;
+    padding-right: 20px;
+}
+
+#my-teams-list td.team-profile .team-profile-container,
+#my-teams-list td.team-contact-details .team-contact-details-container{
+    height: 20px;
+    overflow: hidden;
+}
+
 #teams-offers-list {
     margin-top: 10px;
 }
