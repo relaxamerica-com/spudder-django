@@ -51,19 +51,29 @@
         );
         
         var template = jQuery.validator.format("{0} do NOT exists in our database."),
-			_notExistsEmails = '';
+          _notExistsEmails = '';
 
-		$.validator.addMethod("checkEmailsExists", function(value, element) {
-			var notExistsEmails = checkEmailsExists( $('#admins').val() );
-			
-    		if (notExistsEmails.length == 0) {
-    			return true;
-    		} else {
-    			_notExistsEmails = notExistsEmails.join(', ');
-    			return false;
-    		}
-		}, function(params, element) {
-			return template(_notExistsEmails);
-		});
+        $.validator.addMethod("checkEmailsExists", function(value, element) {
+            var notExistsEmails = checkEmailsExists( $('#admins').val() );
+
+            if (notExistsEmails.length == 0) {
+                return true;
+            } else {
+                _notExistsEmails = notExistsEmails.join(', ');
+                return false;
+            }
+        }, function(params, element) {
+            return template(_notExistsEmails);
+        });
+
+        // jQuery validation custom rules from Stackoverflow
+        // URL: http://stackoverflow.com/questions/15794913/jquery-validation-plugin-accept-only-us-canada-and-mexic-zip-code/15795150#15795150
+        // ziprange and zipcodeUS are combained into one rule for simplicity
+        jQuery.validator.addMethod("zipcodeUS", function(value, element) {
+            var isValidRange = this.optional(element) || /^90[2-5]\d\{2\}-\d{4}$/.test(value),
+                isValidCode = this.optional(element) || /\d{5}-\d{4}$|^\d{5}$/.test(value);
+
+            return isValidRange && isValidCode;
+        }, "The specified US ZIP Code is invalid");
     });
 }(jQuery));

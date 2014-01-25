@@ -84,14 +84,20 @@
         $form.validate({
             rules: {
                 name: "required",
-                location: "required",
+                location: {
+                    required: true,
+                    zipcodeUS: true
+                },
                 picture: {
                     extension: "gif|png|jpg|jpeg"
                 }
             },
             messages: {
                 name: "A team name is required!",
-                location: "A team location is required!"
+                location: {
+                    required: "A team location is required!",
+                    zipcodeUS: "The specified US ZIP Code is invalid"
+                }
             },
             errorPlacement: function(error, element) {
                 error.appendTo( element.parent() );
@@ -132,8 +138,9 @@
                 });
             }
         });
-        
-        $('#admins').tag({ placeholder: $('#admins').attr('placeholder'), name: $('#admins').attr('name'), tabindex: $('#admins').attr('tabindex') });
+
+        var $admins = $('#admins');
+        $admins.tag({ placeholder: $admins.attr('placeholder'), name: $admins.attr('name'), tabindex: $admins.attr('tabindex') });
     });
 </script>
 <% include ../parts/foot %>
