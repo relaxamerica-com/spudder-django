@@ -106,6 +106,21 @@
                 });
             }
         }
+
+        $('#makeDonationSignInBtn').click(function () {
+            var $loginModal = $('#mySignin'),
+                $returnURL = $loginModal.find('input[name="returnURL"]');
+
+            $returnURL.data('old-url', $returnURL.val());
+            $returnURL.val("/dashboard/sponsor/<%= team.id %>/<%= offer.id %>");
+
+            $loginModal.on('hidden', function () {
+                $returnURL.val($returnURL.data('old-url'));
+            });
+
+            $('#donation-modal').modal('hide');
+            $loginModal.modal('show');
+        });
     });
 </script>
 

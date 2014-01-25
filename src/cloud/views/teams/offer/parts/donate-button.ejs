@@ -17,14 +17,15 @@
     </div>
     <div class="modal-body">
         <% if (!isLoggedIn) { %>
-            You need to be logged in to make a donation. Try again after you log in successfully.
+            You need to be logged in to make a donation.
         <% } else { %>
             In order to make a donation please press 'Make donation' button (you will be redirected to the Dashboard).
         <% } %>
     </div>
     <div class="modal-footer">
         <% if (!isLoggedIn) { %>
-        <a href="#" data-dismiss="modal" class="btn btn-danger">OK</a>
+        <a href="#" id="makeDonationSignInBtn" class="btn btn-danger">Sign in and proceed</a>
+        <a href="#" data-dismiss="modal" class="btn btn-danger">Cancel</a>
         <% } else { %>
         <a href="/dashboard/sponsor/<%= team.id %>/<%= offer.id %>" class="btn btn-danger">Make donation</a>
         <% } %>
