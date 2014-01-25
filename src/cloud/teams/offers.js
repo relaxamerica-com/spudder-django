@@ -175,7 +175,7 @@ module.exports = function (keys) {
 
                                 params.isLoggedIn = Parse.User.current() ? true : false;
 
-                                res.render('teams/offer/offer', params);
+                                res.render('teams/offer/view', params);
                             });
                         },
                         error: function(object, error) {

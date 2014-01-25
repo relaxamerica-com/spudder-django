@@ -81,16 +81,30 @@
         <div class="control-group">
             <label class="control-label" for="offer-image-input1">Images:</label>
             <div class="controls">
+                <% if (offer.get('images').length) { %>
+                    <% offer.get('images').forEach(function(image, index) { %>
+                        <div class="thumbnail" data-thumbnail-index="<%= index + 1 %>">
+                            <img src="<%= image %>"/>
+                            <div class="remove-image-container">
+                                <a href="#" class="btn btn-small btn-danger">Remove</a>
+                            </div>
+                        </div>
+                    <% }) %>
+                <% } %>
+
                 <input type="hidden" name="offerImage1" />
                 <input type="file" id="offer-image-input1" name="offerImageInput1" class="file-upload-input" accept="image/*" />
                 <input type="hidden" name="offerImage2" />
                 <input type="file" id="offer-image-input2" name="offerImageInput2" class="file-upload-input" accept="image/*" />
                 <input type="hidden" name="offerImage3" />
                 <input type="file" id="offer-image-input3" name="offerImageInput3" class="file-upload-input" accept="image/*" />
+                <div class="save-btn-container">
+                    <div class="save-btn-inner-container">
+                        <button class="btn btn-danger" type="submit">Save</button>
+                    </div>
+                </div>
             </div>
         </div>
-
-        <button class="btn btn-danger" type="submit">Save</button>
     </form>
 </div>
 
@@ -104,6 +118,34 @@
 <script src="/media/js/parse.js"></script>
 
 <script>
+    $(window).load(function () {
+        <% if (offer.get('images').length) { %>
+            $('.ace-file-input, .save-btn-container').addClass('below-thumbnail');
+
+            $('.thumbnail').each(function () {
+                var $removeButton = $(this).find('a'),
+                    index = parseInt($(this).data('thumbnail-index'), 10),
+                    $aceFileInput = $('#offer-image-input' + index).parent();
+
+                $aceFileInput.hide();
+
+                $removeButton.click(function () {
+                    var $self = $(this),
+                        $thumbnail = $self.parent().parent(),
+                        index = parseInt($thumbnail.data('thumbnail-index'), 10),
+                        $aceFileInput = $('#offer-image-input' + index).parent();
+
+                    $thumbnail.hide();
+                    $aceFileInput.show();
+
+                    if ($('.thumbnail:visible').length == 0) {
+                        $('.ace-file-input, .save-btn-container').removeClass('below-thumbnail');
+                    }
+                });
+            });
+        <% } %>
+    });
+
     $(document).ready(function () {
         Parse.initialize('<%= keys.appId %>', '<%= keys.jsKey %>');
 
@@ -131,15 +173,21 @@
 
                 var offerImage1 = $(form).find('input[name="offerImage1"]'),
                     fileUploadControl1 = $("#offer-image-input1")[0],
+                    $thumbnail1 = $(form).find('.thumbnail[data-thumbnail-index="1"]'),
                     offerImage2 = $(form).find('input[name="offerImage2"]'),
                     fileUploadControl2 = $("#offer-image-input2")[0],
+                    $thumbnail2 = $(form).find('.thumbnail[data-thumbnail-index="2"]'),
                     offerImage3 = $(form).find('input[name="offerImage3"]'),
-                    fileUploadControl3 = $("#offer-image-input3")[0];
+                    fileUploadControl3 = $("#offer-image-input3")[0],
+                    $thumbnail3 = $(form).find('.thumbnail[data-thumbnail-index="3"]');
 
                 var deffers = [ new jQuery.Deferred(), new jQuery.Deferred(), new jQuery.Deferred() ],
                     promises =  [deffers[0].promise(), deffers[1].promise(), deffers[2].promise() ];
 
-                if (fileUploadControl1.files.length > 0) {
+                if ($thumbnail1.is(':visible')) {
+                    offerImage1.val($thumbnail1.find('img').attr('src'));
+                    deffers[0].resolve();
+                } else if (fileUploadControl1.files.length > 0) {
                     var file1 = fileUploadControl1.files[0],
                         fileName1 = file1.name;
 
@@ -155,7 +203,10 @@
                 }
 
                 $.when(promises[0]).then(function () {
-                    if (fileUploadControl2.files.length > 0) {
+                    if ($thumbnail2.is(':visible')) {
+                        offerImage2.val($thumbnail2.find('img').attr('src'));
+                        deffers[1].resolve();
+                    } else  if (fileUploadControl2.files.length > 0) {
                         var file2 = fileUploadControl2.files[0],
                             fileName2 = file2.name;
 
@@ -172,7 +223,10 @@
                 });
 
                 $.when(promises[1]).then(function () {
-                    if (fileUploadControl3.files.length > 0) {
+                    if ($thumbnail3.is(':visible')) {
+                        offerImage3.val($thumbnail3.find('img').attr('src'));
+                        deffers[2].resolve();
+                    } else if (fileUploadControl3.files.length > 0) {
                         var file3 = fileUploadControl3.files[0],
                             fileName3 = file3.name;
 

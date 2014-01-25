@@ -4339,10 +4339,6 @@ aside .widget.offer-widget {
 	margin-top: 10px;
 }
 
-.offer-presentation .offer-description-container .preview-image img {
-	width: 300px;
-}
-
 .offer-presentation .offer-description {
 	width: 400px;
 }
@@ -4409,6 +4405,15 @@ aside .widget.offer-widget {
 
 #team-offer .slides img {
     width: 80%;
+}
+
+#team-offer .no-image-available {
+    text-align: center;
+    margin-top: 10px;
+}
+
+#team-offer .no-image-available img {
+    width: 300px;
 }
 
 #team .team-logo {

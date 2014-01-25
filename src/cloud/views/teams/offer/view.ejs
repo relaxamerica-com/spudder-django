@@ -26,26 +26,30 @@
                                 </h3>
                             </div>
                         <div class="top-wrapper">
-                            <div class="flexslider">
-                                <ul class="slides">
-                                    <% offer.get('images').forEach(function(image) { %>
-
-                                    <li style="width: 100%; float: left; margin-right: -100%; position: relative; display: list-item;" class="flex-active-slide">
-                                        <div class="offer-description-container">
-                                            <div class="preview-image">
-                                                <img src="<%= image %>"/>
+                            <% if (offer.get('images').length) { %>
+                                <div class="flexslider">
+                                    <ul class="slides">
+                                    <% offer.get('images').forEach(function(image, index) { %>
+                                        <li style="width: 100%; float: left; margin-right: -100%; position: relative; display: <% if (index == 0) { %>list-item;<% } else {%> none;<% } %>" class="flex-active-slide">
+                                            <div class="offer-description-container">
+                                                <div class="preview-image">
+                                                    <img src="<%= image %>"/>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </li>
-
+                                        </li>
                                     <% }) %>
-                                </ul>
+                                    </ul>
 
-                                <ul class="flex-direction-nav">
-                                    <li><a class="flex-prev" href="#">Previous</a></li>
-                                    <li><a class="flex-next" href="#">Next</a></li>
-                                </ul>
-                            </div>
+                                    <ul class="flex-direction-nav">
+                                        <li><a class="flex-prev" href="#">Previous</a></li>
+                                        <li><a class="flex-next" href="#">Next</a></li>
+                                    </ul>
+                                </div>
+                            <% } else { %>
+                                <div class="no-image-available">
+                                    <img src="/media/img/no-image-available.png"/>
+                                </div>
+                            <% } %>
                             <div class="offer-description">
                                 <p>
                                     <%= offer.get('details') %>
