@@ -4469,6 +4469,31 @@ aside .widget.offer-widget {
     margin-left: 5px;
 }
 
+#team #team-players {
+    display: none;
+    margin-left: 0;
+    margin-bottom: 5px;
+}
+
+#team #team-players table {
+    margin-bottom: 10px;
+}
+
+#team #team-coaches {
+    display: none;
+    margin-left: 0;
+    margin-bottom: 15px;
+}
+
+#team #team-players h4,
+#team #team-coaches h4 {
+    margin-bottom: 5px;
+}
+
+#team #team-details {
+    margin-left: 0;
+}
+
 .social-links {
     display: inline-block;
     margin-left: 10px;

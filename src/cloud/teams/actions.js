@@ -40,7 +40,25 @@ module.exports = function (keys) {
                         });
 
                         return promise;
-                    }).then(function () {
+                    }).then(function (coaches) {
+                        var Player = Parse.Object.extend("Player"),
+                            playerQuery = new Parse.Query(Player),
+                            Coach = Parse.Object.extend("Coach"),
+                            coachQuery = new Parse.Query(Coach);
+
+                        playerQuery.equalTo('team', team);
+                        playerQuery.ascending("number");
+                        coachQuery.equalTo('team', team);
+
+                        return Parse.Promise.when([
+                            playerQuery.find().then(function(players){
+                                return players;
+                            }),
+                            coachQuery.find().then(function(coaches){
+                                return coaches;
+                            })
+                        ]);
+                    }).then(function (results) {// arguments passed to this callback are: players, coaches
                         var path = 'https://' + keys.getAppName() + '.parseapp.com/teams/' + teamID;
 
                         res.render('teams/view', {
@@ -51,6 +69,8 @@ module.exports = function (keys) {
                             'facebookShareButton': require('cloud/commons/facebookShareButton'),
                             'emailShareButton': require('cloud/commons/emailShareButton'),
                             'sponsors': sponsors,
+                            'players': arguments[0],
+                            'coaches': arguments[1],
                             'meta': {
                                 title: currentTeam.get('name'),
                                 description: currentTeam.get('profile'),
