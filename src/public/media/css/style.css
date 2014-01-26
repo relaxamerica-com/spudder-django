@@ -4558,8 +4558,39 @@ aside .widget.offer-widget {
     right: auto !important;
 }
 
-#donation-modal div.modal-header h4 {
+div[id^=donation-modal] div.modal-header h4 {
     margin-bottom: 0;
+}
+
+div[id^=donation-modal] ul.nav-tabs {
+    margin-top: 10px;
+}
+
+div[id^=donation-modal] ul.nav-tabs li a {
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+
+div[id^=donation-modal] form {
+    margin-bottom: 0;
+}
+
+div[id^=donation-modal] .tab-content > .tab-pane {
+    padding: 10px 10px 0;
+}
+
+div[id^=donation-modal] .control-group p {
+    margin-top: 20px;
+}
+
+div[id^=donation-modal] .form-horizontal .control-group {
+    margin-bottom: 10px;
+}
+
+div[id^=donation-modal] .loading {
+    display: inline-block;
+    margin-left: 10px;
+    visibility: hidden;
 }
 
 #entity-public .player-details {

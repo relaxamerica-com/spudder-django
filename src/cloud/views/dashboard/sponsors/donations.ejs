@@ -19,7 +19,7 @@
                         <td>Team</td>
                         <td>Offer</td>
                         <td>Amount</td>
-                        <td>Transaction token</td>
+                        <td>Date</td>
                     </tr>
                 </thead>
                 <tbody>
@@ -37,7 +37,7 @@
                             </a>
                         </td>
                         <td>$<%= donation.offer.get('donation') %></td>
-                        <td><%= donation.tokenID %></td>
+                        <td><%= donation.date %></td>
                     </tr>
                 <% }) %>
                 </tbody>

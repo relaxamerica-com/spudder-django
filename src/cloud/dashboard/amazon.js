@@ -248,6 +248,7 @@ module.exports = function (keys) {
                     donations = [], totalAmount = 0;
 
                 query.equalTo('sponsor', user);
+                query.descending('createdAt');
 
                 query.find().then(function (list) {
                     var promise = Parse.Promise.as();
@@ -264,9 +265,9 @@ module.exports = function (keys) {
                                     team.fetch({
                                         success: function (fetchedTeam) {
                                             donations.push({
-                                                tokenID: donation.get('tokenID'),
                                                 offer: fetchedOffer,
-                                                team: fetchedTeam
+                                                team: fetchedTeam,
+                                                date: donation.createdAt
                                             });
 
                                             totalAmount += parseFloat(fetchedOffer.get('donation'));

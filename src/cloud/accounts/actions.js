@@ -7,11 +7,11 @@ module.exports = function (keys) {
         login: function(req, res) {
             Parse.User.logIn(req.body.email, req.body.password, {
                 success: function(user) {
-                    res.send(200, 'OK');
+                    res.send(200, '200');
                 },
                 error: function(user, error) {
                 	console.log(error);
-                	res.send(401, '' + error.code);
+                	res.send(200, '' + error.code);
                 }
             });
         },
@@ -31,13 +31,13 @@ module.exports = function (keys) {
         	}	
         	
         	if (email == "") {
-        		res.send(500, '0');
+        		res.send(200, '0');
     		}
 	        else if (password1 == "" && password2 == "") {
-	            res.send(500, '1');
+	            res.send(200, '1');
 	        }
 	        else if (password1 > "" && password1 != password2) {
-	            res.send(500, '2');
+	            res.send(200, '2');
 	        }
     		else {
 	            var user = new Parse.User();
@@ -53,10 +53,10 @@ module.exports = function (keys) {
             		
         			return krowdio.krowdioRegisterEntityAndSave(_user);
         		}).then(function() {
-        			res.send(200, 'OK');
+        			res.send(200, '200');
         		}, function(error) {
         			console.log(error);
-        			res.send(500, '-1');
+        			res.send(200, '' + error.code);
         		});
 
     		}

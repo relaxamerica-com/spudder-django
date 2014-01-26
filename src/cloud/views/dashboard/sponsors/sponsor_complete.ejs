@@ -5,9 +5,12 @@
 <div id="spuds" class="">
 	<div class="row-fluid">
 		<div class="span12">
-            <p>
-                Thank you for your donation!
-            </p>
+            <% if (isError) { %>
+                <p>Unfortunately errors occured while making donation.</p>
+                <p>Error message: <%= error %></p>
+            <% } else { %>
+                <p>Thank you for your donation!</p>
+            <% } %>
 		</div>
 	</div>
 </div>

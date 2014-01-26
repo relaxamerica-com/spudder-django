@@ -73,4 +73,5 @@
         <% } %>
     </ul>
 </div>
-<% include donate-button %>
+
+<%- donateButtonWithModal(isLoggedIn, isSoldOut, team.id, offer.id) %>

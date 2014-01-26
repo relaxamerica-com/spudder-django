@@ -50,6 +50,7 @@ module.exports = function (keys) {
 
                                 donationQuery.find().then(function (donations) {
                                     offer.set('available', offer.get('quantity') - donations.length);
+                                    offer.set('isSoldOut', (offer.get('quantity') - donations.length) == 0);
 
                                     if (endDate >= currentDateString) {
                                         currentOffers.push(offer);
@@ -87,6 +88,7 @@ module.exports = function (keys) {
                             'googlePlusShareButton': require('cloud/commons/googlePlusShareButton'),
                             'facebookShareButton': require('cloud/commons/facebookShareButton'),
                             'emailShareButton': require('cloud/commons/emailShareButton'),
+                            'donateButtonWithModal': require('cloud/teams/commons/donateButtonWithModal'),
                             'meta': {
                                 title: 'Offers :: ' + team.get('name'),
                                 description: team.get('profile'),
@@ -157,6 +159,7 @@ module.exports = function (keys) {
                                         'googlePlusShareButton': require('cloud/commons/googlePlusShareButton'),
                                         'facebookShareButton': require('cloud/commons/facebookShareButton'),
                                         'emailShareButton': require('cloud/commons/emailShareButton'),
+                                        'donateButtonWithModal': require('cloud/teams/commons/donateButtonWithModal'),
                                         'team': team,
                                         'offer': offer,
                                         'isSoldOut': isSoldOut,
