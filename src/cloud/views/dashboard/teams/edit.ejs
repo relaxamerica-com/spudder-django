@@ -213,6 +213,9 @@
                         $formSubmit.removeAttr('disabled');
                         console.log(error);
                     });
+                } else if ($('td.image-cell').has('img').length) {
+                    pictureURL.val($('td.image-cell').find('img').attr('src'));
+                    dfd.resolve();
                 } else {
                     dfd.resolve();
                 }
