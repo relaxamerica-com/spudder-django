@@ -34,6 +34,8 @@ $(document).ready(function () {
 
             response.always(function(statusCode) {
                 if (statusCode == '200') {
+                    $alert.removeClass('alert-error').hide();
+
                     document.location = returnURL ? returnURL : '/dashboard';
                 } else {
                     $loading.css('visibility', 'hidden');
@@ -62,6 +64,8 @@ $(document).ready(function () {
 
             response.always(function(statusCode) {
                 if (statusCode == '200') {
+                    $alert.removeClass('alert-error').hide();
+
                     if (returnURL) {
                         document.location = returnURL;
                     } else {

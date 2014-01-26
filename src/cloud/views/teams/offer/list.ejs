@@ -152,8 +152,8 @@
                 });
 
                 $('[id^="donation-modal-"]').each(function () {
-                    handleSignInForm($('[id^="embed-sign-in-"]'));
-                    handleSignUpForm($('[id^="embed-sign-up-"]'));
+                    handleSignInForm($(this).find('[id^="embed-sign-in-"]'));
+                    handleSignUpForm($(this).find('[id^="embed-sign-up-"]'));
                 });
             });
 
