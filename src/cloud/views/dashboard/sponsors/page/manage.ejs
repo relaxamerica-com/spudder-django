@@ -6,14 +6,21 @@
 
 <div id="entity-create">
     <p class="head">
-        <i class="icon-briefcase"></i> Sponsorship Offer:
+        <i class="icon-briefcase"></i> Sponsor Page:
     </p>
 
     <form action="/dashboard/sponsor/page" method="post" id="create-team-form" class="form-horizontal">
         <div class="control-group">
+            <label class="control-label" for="name">Name:</label>
+            <div class="controls">
+                <input tabindex="1" name="name" id="name" <% if (page != undefined) { %>value="<%= page.get('name') %>"<% } %>/>
+                <span class="input-required">*required</span>
+            </div>
+        </div>
+        <div class="control-group">
             <label class="control-label" for="speciality">Speciality:</label>
             <div class="controls">
-                <input tabindex="1" name="speciality" id="speciality" <% if (page != undefined) { %>value="<%= page.get('speciality') %>"<% } %>/>
+                <input tabindex="2" name="speciality" id="speciality" <% if (page != undefined) { %>value="<%= page.get('speciality') %>"<% } %>/>
                 <span class="input-required">*required</span>
             </div>
         </div>
@@ -21,7 +28,7 @@
             <label class="control-label" for="form-field-phone">Phone:</label>
             <div class="controls">
                 <span class="input-icon input-icon-right">
-                    <input tabindex="2" class="input-medium input-mask-phone" name="phone" id="form-field-phone" type="text"
+                    <input tabindex="3" class="input-medium input-mask-phone" name="phone" id="form-field-phone" type="text"
                             <% if (page != undefined) { %>value="<%= page.get('phone') %>"<% } %>>
                     <i class="icon-phone icon-flip-horizontal icon-right"></i>
                 </span>
@@ -32,7 +39,7 @@
             <label class="control-label" for="form-field-fax">Fax:</label>
             <div class="controls">
                 <span class="input-icon input-icon-right">
-                    <input tabindex="3" class="input-medium input-mask-phone" name="fax" id="form-field-fax" type="text"
+                    <input tabindex="4" class="input-medium input-mask-phone" name="fax" id="form-field-fax" type="text"
                             <% if (page != undefined) { %>value="<%= page.get('fax') %>"<% } %>>
                     <i class="icon-phone icon-flip-horizontal icon-right"></i>
                 </span>
@@ -44,7 +51,7 @@
 
             <div class="controls">
                 <span class="input-icon input-icon-right">
-                    <input tabindex="4" class="input-medium input-mask-email" id="email" name="email" type="email" placeholder="me@website.com"
+                    <input tabindex="5" class="input-medium input-mask-email" id="email" name="email" type="email" placeholder="me@website.com"
                         <% if (page != undefined) { %>value="<%= page.get('email') %>"<% } %>>
                     <i class="icon-envelope"></i>
                 </span>
@@ -54,7 +61,7 @@
             <label class="control-label" for="form-field-website">Website:</label>
             <div class="controls">
                 <span class="input-icon input-icon-right">
-                    <input tabindex="5" class="input-medium input-mask-website" name="website" id="form-field-website" type="url" placeholder="http://www.website.com"
+                    <input tabindex="6" class="input-medium input-mask-website" name="website" id="form-field-website" type="url" placeholder="http://www.website.com"
                             <% if (page != undefined) { %>value="<%= page.get('website') %>"<% } %>>
                     <i class="icon-bookmark icon-flip-horizontal icon-for-not-required-field"></i>
                 </span>
@@ -64,7 +71,7 @@
             <label class="control-label" for="form-field-video">Video:</label>
             <div class="controls">
                 <span class="input-icon input-icon-right">
-                    <input tabindex="6" class="input-medium input-mask-website" name="video" id="form-field-video" type="url"
+                    <input tabindex="7" class="input-medium input-mask-website" name="video" id="form-field-video" type="url"
                             <% if (page != undefined) { %>value="<%= page.get('video') %>"<% } %>>
                     <i class="icon-facetime-video icon-for-not-required-field"></i>
                 </span>
@@ -295,6 +302,7 @@
 
         $form.validate({
             rules: {
+                name: "required",
                 speciality: "required",
                 phone: { required: true, phoneUS: true },
                 fax: { required: true, phoneUS: true },

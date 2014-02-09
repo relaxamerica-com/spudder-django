@@ -65,6 +65,7 @@ module.exports = function (keys) {
                             var sponsorPage = results.length ? results[0] : new SponsorPage();
 
                             sponsorPage.set('sponsor', sponsor);
+                            sponsorPage.set('name', req.body['name']);
                             sponsorPage.set('speciality', req.body['speciality']);
                             sponsorPage.set('phone', req.body['phone']);
                             sponsorPage.set('fax', req.body['fax']);

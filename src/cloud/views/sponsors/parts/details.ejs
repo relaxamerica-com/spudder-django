@@ -1,0 +1,62 @@
+<div class="widget offer-widget">
+    <h5 class="widgetheading">
+        <% if (page.get('thumbnail')) { %>
+        <img src="<%= page.get('thumbnail') %>" class="team-logo" />
+        <% } else { %>
+        <i class="icon-group"></i>
+        <% } %>
+        <div>Support your Sponsors</div>
+    </h5>
+
+    <ul class="folio-detail offer-details">
+        <li>
+            <label>Speciality: </label> <%= page.get('speciality') %>
+        </li>
+
+        <% if (page.get('location')) { %>
+        <li>
+            <label>Location: </label>
+            <a href="<%- page.get('externalLink') %>" target="_blank">
+                <%= page.get('location') %>
+            </a>
+        </li>
+        <% } %>
+
+        <% if (page.get('phone') != '') { %>
+        <li>
+            <label>Phone: </label> <%= page.get('phone')%>
+        </li>
+        <% } %>
+
+        <% if (page.get('email') != '') { %>
+        <li>
+            <label>Email: </label>
+            <a href="mailto:<%= page.get('email')%>"><%= page.get('email')%></a>
+        </li>
+        <% } %>
+
+        <% if (page.get('website') != '') { %>
+        <li>
+            <label>Website: </label>
+            <a href="<%= page.get('website')%>" target="_blank"><%= page.get('website')%></a>
+        </li>
+        <% } %>
+
+        <% if (page.get('video') != '') { %>
+        <li>
+            <label>Video: </label>
+            <a href="<%= page.get('video')%>" target="_blank">Our video</a>
+        </li>
+        <% } %>
+
+        <% if (page.get('fax') != '') { %>
+        <li>
+            <label>Fax: </label> <%= page.get('fax') %>
+        </li>
+        <% } %>
+    </ul>
+
+    <h5 class="widgetheading">
+        Special Offers
+    </h5>
+</div>
