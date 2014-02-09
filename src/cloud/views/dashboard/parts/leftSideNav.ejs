@@ -113,6 +113,7 @@
 			<span class="menu-text"> Venues </span>
 		</a>
 	</li>
+    <% if (isSponsor) { %>
 	<li>
 		<a class="dropdown-toggle" href="#">
 			<i class="icon-money"></i>
@@ -131,6 +132,19 @@
 					My donations
 				</a>
 			</li>
+            <li>
+                <a href="/dashboard/sponsor/page">
+                    <i class="icon-double-angle-right"></i>
+                    Sponsor page
+                </a>
+            </li>
+            <li>
+                <a href="/dashboard/sponsor/offers">
+                    <i class="icon-double-angle-right"></i>
+                    Special offers
+                </a>
+            </li>
 		</ul>
 	</li>
+    <% } %>
 </ul>

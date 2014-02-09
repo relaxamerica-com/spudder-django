@@ -23,6 +23,10 @@ module.exports = function () {
             return applicationIds[versions[version]];
         },
 
+        getGooglePlacesAPIKey: function () {
+            return 'AIzaSyBY2lT_31eUX7yTH90gyPXxcJvM4pqSycs';
+        },
+
         getAppName: function () {
             return appNames[versions[version]];
         },

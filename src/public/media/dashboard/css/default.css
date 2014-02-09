@@ -263,12 +263,17 @@
 	width: 50px;
 }
 
-#entity-create input.input-mask-phone, #entity-create input.input-mask-website {
+#entity-create input.input-mask-phone,
+#entity-create input.input-mask-website,
+#entity-create input.input-mask-email{
     border: 2px inset;
     margin-bottom: 0;
     padding: 0;
 }
-#entity-create span.input-icon i.icon-phone, #entity-create span.input-icon i.icon-bookmark {
+#entity-create span.input-icon i.icon-phone,
+#entity-create span.input-icon i.icon-bookmark,
+#entity-create span.input-icon i.icon-envelope,
+#entity-create span.input-icon i.icon-facetime-video {
     top: -1px;
 }
 #entity-create .input-icon.input-icon-right > [class*="icon-"] {
@@ -393,6 +398,31 @@
 #entity-create .ace-file-input.below-thumbnail,
 #entity-create .save-btn-container.below-thumbnail{
     top: 165px;
+}
+
+#entity-create .google-map-canvas {
+    width: 400px;
+    height: 300px;
+    margin: 10px 0 0;
+    padding: 0;
+}
+
+#entity-create #location {
+    background-color: #fff;
+    padding: 0 11px 0 13px;
+    width: 320px !important;
+    font-family: Roboto,serif;
+    font-size: 15px;
+    font-weight: 300;
+    text-overflow: ellipsis;
+    margin-left: 0;
+}
+
+#entity-create #location:focus {
+    border-color: #4d90fe;
+    margin-left: -1px;
+    padding-left: 14px;
+    width: 401px;
 }
 
 #my-entity-list a.btn-action {
