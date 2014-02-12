@@ -136,9 +136,19 @@ module.exports = function (keys) {
 
                                         sponsor.fetch({
                                             success: function (fetchedSponsor) {
-                                                sponsors.push(fetchedSponsor);
+                                                var SponsorPage = Parse.Object.extend('SponsorPage'),
+                                                    sponsorPageQuery = new Parse.Query(SponsorPage);
 
-                                                findPromise.resolve();
+                                                sponsorPageQuery.equalTo('sponsor', fetchedSponsor);
+
+                                                sponsorPageQuery.find({
+                                                    success: function (results) {
+                                                        fetchedSponsor.page = results.length ? results[0] : undefined;
+                                                        sponsors.push(fetchedSponsor);
+
+                                                        findPromise.resolve();
+                                                    }
+                                                });
                                             }
                                         });
 

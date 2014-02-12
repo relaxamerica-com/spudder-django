@@ -146,6 +146,8 @@ module.exports = function (keys) {
                                                 var SponsorPage = Parse.Object.extend('SponsorPage'),
                                                     sponsorPageQuery = new Parse.Query(SponsorPage);
 
+                                                sponsorPageQuery.equalTo('sponsor', sponsor);
+
                                                 sponsorPageQuery.find({
                                                     success: function (results) {
                                                         res.render('dashboard/sponsors/sponsor_complete', {

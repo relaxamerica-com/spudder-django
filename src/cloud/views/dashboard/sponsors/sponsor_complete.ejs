@@ -10,7 +10,7 @@
                 <p>Error message: <%= error %></p>
             <% } else { %>
                 <p>Thank you for your donation!</p>
-                <% if (sponsorPageExists) { %>
+                <% if (!sponsorPageExists) { %>
                     <p>
                         Don't have a sponsor page? <a href="/dashboard/sponsor/page" class="btn btn-small btn-success">Go and create one!</a>
                     </p>
