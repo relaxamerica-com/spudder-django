@@ -96,7 +96,7 @@
         $offerEndDateContainer.text(today > endDate ? 'Ended' : endDate.fromNow());
 
         if (today > endDate) {
-            var $donateBtn = $('#donate-btn');
+            var $donateBtn = $('div.donation-widget a');
 
             if (!$donateBtn.attr('disabled')) {
                 $donateBtn.attr({
