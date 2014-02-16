@@ -27,7 +27,7 @@
         <tbody>
         <% list.forEach(function(team) { %>
             <tr>
-                <td><a href="/teams/<%= team.id %>"><%= team.get('name') %></a></td>
+                <td><a href="/teams/<%= team.id %>" target="_blank"><%= team.get('name') %></a></td>
                 <td><%= team.get('location') %></td>
                 <td class="team-contact-details">
                     <div class="team-contact-details-container">

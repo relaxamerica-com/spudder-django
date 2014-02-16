@@ -26,7 +26,7 @@
             <tbody>
             <% currentOffers.forEach(function(offer) { %>
                 <tr>
-                    <td><a href="/teams/<%= team.id %>/offers/<%= offer.id %>"><%= offer.get('title') %></a></td>
+                    <td><a href="/teams/<%= team.id %>/offers/<%= offer.id %>" target="_blank"><%= offer.get('title') %></a></td>
                     <td class="quantity">
                         <%= offer.get('available') %> / <%= offer.get('quantity') %>
                     </td>
