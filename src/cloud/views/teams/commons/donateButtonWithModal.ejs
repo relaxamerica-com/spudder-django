@@ -41,7 +41,7 @@
                         </div>
                     </div>
 
-                    <input type="hidden" name="returnURL" value="/dashboard/sponsor/<%= teamID %>/<%= offerID %>">
+                    <input type="hidden" name="returnURL" value="/dashboard/payments/donate/<%= teamID %>/<%= offerID %>">
 
                     <div class="control-group">
                         <div class="controls">
@@ -82,7 +82,7 @@
                         </div>
                     </div>
 
-                    <input type="hidden" name="returnURL" value="/dashboard/sponsor/<%= teamID %>/<%= offerID %>">
+                    <input type="hidden" name="returnURL" value="/dashboard/payments/donate/<%= teamID %>/<%= offerID %>">
 
                     <div class="control-group">
                         <div class="controls">
@@ -103,7 +103,7 @@
         <% if (!isLoggedIn) { %>
         <a href="#" data-dismiss="modal" class="btn btn-danger">Cancel</a>
         <% } else { %>
-        <a href="/dashboard/sponsor/<%= teamID %>/<%= offerID %>" class="btn btn-danger">Make donation</a>
+        <a href="/dashboard/payments/donate/<%= teamID %>/<%= offerID %>" class="btn btn-danger">Make donation</a>
         <% } %>
     </div>
 </div>

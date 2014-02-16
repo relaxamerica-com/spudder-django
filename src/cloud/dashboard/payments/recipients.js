@@ -50,27 +50,22 @@ module.exports = function (keys) {
         },
 
         register_thanks: function (req, res) {
-            var teamID = req.params.teamID;
-
             res.render('dashboard/payments/recipient/register_thanks', {
                 'breadcrumbs' : [
                     { 'title' : 'Teams', 'href' : '/dashboard/teams' },
                     { 'title' : 'Registration complete', 'href' : 'javascript:void(0);' }
                 ],
-                'teamID': teamID
+                'teamID': req.params.teamID
             });
         },
 
         register_error: function (req, res) {
-            var teamID = req.params.teamID,
-                error = req.query.error;
-
             res.render('dashboard/payments/recipient/register_error', {
                 'breadcrumbs' : [
                     { 'title' : 'Teams', 'href' : '/dashboard/teams' },
                     { 'title' : 'Errors during registration', 'href' : 'javascript:void(0);' }
                 ],
-                'error': error
+                'error': req.query.error
             });
         }
     }
