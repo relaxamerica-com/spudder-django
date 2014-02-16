@@ -1,15 +1,15 @@
 module.exports = function (keys) {
     return {
-        recipient: function (req, res) {
+        register: function (req, res) {
             var amazonFPS = require('cloud/amazon/fps')(keys),
                 teamID = req.params.teamID,
                 params = {
                     'pipelineName': 'Recipient',
                     'recipientPaysFee': 'True',
-                    'returnURL': 'https://' + keys.getAppName() + '.parseapp.com/dashboard/recipient/' + teamID + '/complete'
+                    'returnURL': 'https://' + keys.getAppName() + '.parseapp.com/dashboard/payments/recipient/' + teamID + '/complete'
                 };
 
-            res.render('dashboard/sponsors/recipient', {
+            res.render('dashboard/payments/recipient/register', {
                 'breadcrumbs' : [
                     { 'title' : 'Teams', 'href' : '/dashboard/teams' },
                     { 'title' : 'Registering as Recipient', 'href' : 'javascript:void(0);' }
@@ -18,7 +18,7 @@ module.exports = function (keys) {
             });
         },
 
-        recipient_complete: function (req, res) {
+        register_complete: function (req, res) {
             var tokenID = req.query.tokenID,
                 refundTokenID = req.query.refundTokenID,
                 signature = req.query.signature,
@@ -40,27 +40,37 @@ module.exports = function (keys) {
 
                 recipient.save(null, {
                     success: function () {
-                        res.render('dashboard/sponsors/recipient_complete', {
-                            'breadcrumbs' : [
-                                { 'title' : 'Teams', 'href' : '/dashboard/teams' },
-                                { 'title' : 'Registration complete', 'href' : 'javascript:void(0);' }
-                            ],
-                            'teamID': teamID,
-                            'isError': false
-                        });
+                        res.redirect('/dashboard/payments/recipient/' + teamID + '/thanks');
                     },
                     error: function (recipient, error) {
-                        res.render('dashboard/sponsors/recipient_complete', {
-                            'breadcrumbs' : [
-                                { 'title' : 'Teams', 'href' : '/dashboard/teams' },
-                                { 'title' : 'Errors during registration', 'href' : 'javascript:void(0);' }
-                            ],
-                            'teamID': teamID,
-                            'isError': true,
-                            'error': error
-                        });
+                        res.redirect('/dashboard/payments/recipient/' + teamID + '/error?error=' + encodeURIComponent(error));
                     }
                 });
+            });
+        },
+
+        register_thanks: function (req, res) {
+            var teamID = req.params.teamID;
+
+            res.render('dashboard/payments/recipient/register_thanks', {
+                'breadcrumbs' : [
+                    { 'title' : 'Teams', 'href' : '/dashboard/teams' },
+                    { 'title' : 'Registration complete', 'href' : 'javascript:void(0);' }
+                ],
+                'teamID': teamID
+            });
+        },
+
+        register_error: function (req, res) {
+            var teamID = req.params.teamID,
+                error = req.query.error;
+
+            res.render('dashboard/payments/recipient/register_error', {
+                'breadcrumbs' : [
+                    { 'title' : 'Teams', 'href' : '/dashboard/teams' },
+                    { 'title' : 'Errors during registration', 'href' : 'javascript:void(0);' }
+                ],
+                'error': error
             });
         }
     }
