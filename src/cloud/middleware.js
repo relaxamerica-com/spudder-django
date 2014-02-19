@@ -44,4 +44,33 @@ module.exports = function (app, keys) {
 
         next();
     });
+
+    app.use(function(req, res, next) {
+        Parse.initialize(keys.getApplicationID(), keys.getJavaScriptKey());
+
+        var currentUser = Parse.User.current();
+        if (currentUser) {
+            currentUser.fetch().then(function(user) {
+                var Donation = Parse.Object.extend('Donation'),
+                    query = new Parse.Query(Donation);
+
+                query.equalTo('sponsor', user);
+
+                query.find({
+                    success: function (results) {
+                        res.locals.isSponsor = results.length > 0;
+                        next();
+                    },
+
+                    error: function () {
+                        res.locals.isSponsor = false;
+                        next();
+                    }
+                })
+            });
+        } else {
+            res.locals.isSponsor = false;
+            next();
+        }
+    });
 };

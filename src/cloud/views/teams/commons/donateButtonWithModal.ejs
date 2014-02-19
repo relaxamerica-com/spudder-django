@@ -1,0 +1,109 @@
+<div class="widget donation-widget">
+    <% if (!isSoldOut) { %>
+    <a href="#donation-modal-<%= offerID %>" data-toggle="modal">
+        <img src="/media/img/buttons/pay-with-amazon.png" />
+    </a>
+    <% } else { %>
+    <a href="javascript:void(0);" title="Sold out!" disabled>
+        <img src="/media/img/buttons/pay-with-amazon.png" />
+    </a>
+    <% } %>
+</div>
+
+<div id="donation-modal-<%= offerID %>" class="modal styled hide fade" tabindex="-1" role="dialog" aria-labelledby="mySigninModalLabel-<%= offerID %>" aria-hidden="true">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+        <h4 id="mySigninModalLabel-<%= offerID %>">Donation</h4>
+    </div>
+    <div class="modal-body">
+        <% if (!isLoggedIn) { %>
+        You need to be registered and logged in to make a donation.
+
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="#signin-tab-<%= offerID %>" data-toggle="tab">Sign in</a></li>
+            <li><a href="#signup-tab-<%= offerID %>" data-toggle="tab">Sign up</a></li>
+        </ul>
+
+        <div class="tab-content">
+            <div class="tab-pane active" id="signin-tab-<%= offerID %>">
+                <form class="form-horizontal" action="javascript:void(0)" method="POST" id="embed-sign-in-<%= offerID %>">
+                    <div class="alert"></div>
+                    <div class="control-group">
+                        <label class="control-label" for="loginEmailIn-<%= offerID %>">E-mail</label>
+                        <div class="controls">
+                            <input type="text" id="loginEmailIn-<%= offerID %>" placeholder="E-mail" name="email">
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label" for="loginPasswordIn-<%= offerID %>">Password</label>
+                        <div class="controls">
+                            <input type="password" id="loginPasswordIn-<%= offerID %>" placeholder="Password" name="password">
+                        </div>
+                    </div>
+
+                    <input type="hidden" name="returnURL" value="/dashboard/payments/donate/<%= teamID %>/<%= offerID %>">
+
+                    <div class="control-group">
+                        <div class="controls">
+                            <button type="submit" class="btn">Sign in</button>
+                            <div class="loading">
+                                <img src="/media/img/ajax-loader.gif" />
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="tab-pane" id="signup-tab-<%= offerID %>">
+                <form class="form-horizontal" action="javascript:void(0)" method="POST" id="embed-sign-up-<%= offerID %>">
+
+                    <div class="alert"></div>
+
+                    <input type="hidden" name="acceptInvitation" value="" />
+
+                    <div class="control-group">
+                        <label class="control-label" for="registerEmailUp-<%= offerID %>">E-mail</label>
+                        <div class="controls">
+                            <input type="text" id="registerEmailUp-<%= offerID %>" placeholder="E-mail" name="email">
+                            <span class="help-inline errors" for="email"></span>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label" for="registerPassword1Up-<%= offerID %>">Password</label>
+                        <div class="controls">
+                            <input type="password" id="registerPassword1Up-<%= offerID %>" placeholder="Password" name="password1">
+                            <span class="help-inline errors" for="password1"></span>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label" for="registerPassword2Up-<%= offerID %>">Confirm Password</label>
+                        <div class="controls">
+                            <input type="password" id="registerPassword2Up-<%= offerID %>" placeholder="Password" name="password2">
+                            <span class="help-inline errors" for="password2"></span>
+                        </div>
+                    </div>
+
+                    <input type="hidden" name="returnURL" value="/dashboard/payments/donate/<%= teamID %>/<%= offerID %>">
+
+                    <div class="control-group">
+                        <div class="controls">
+                            <button type="submit" class="btn">Sign up</button>
+                            <div class="loading">
+                                <img src="/media/img/ajax-loader.gif" />
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <% } else { %>
+        In order to make a donation please press 'Make donation' button (you will be redirected to the Dashboard).
+        <% } %>
+    </div>
+    <div class="modal-footer">
+        <% if (!isLoggedIn) { %>
+        <a href="#" data-dismiss="modal" class="btn btn-danger">Cancel</a>
+        <% } else { %>
+        <a href="/dashboard/payments/donate/<%= teamID %>/<%= offerID %>" class="btn btn-danger">Make donation</a>
+        <% } %>
+    </div>
+</div>

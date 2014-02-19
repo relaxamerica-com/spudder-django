@@ -19,7 +19,7 @@
                         <td>Team</td>
                         <td>Offer</td>
                         <td>Amount</td>
-                        <td>Transaction token</td>
+                        <td>Date</td>
                     </tr>
                 </thead>
                 <tbody>
@@ -27,17 +27,17 @@
                     <tr>
                         <td><%= index + 1 %></td>
                         <td>
-                            <a href="/teams/<%= donation.team.id %>">
+                            <a href="/teams/<%= donation.team.id %>" target="_blank">
                                 <%= donation.team.get('name') %>
                             </a>
                         </td>
                         <td>
-                            <a href="/teams/<%= donation.team.id %>/offers/<%= donation.offer.id %>">
+                            <a href="/teams/<%= donation.team.id %>/offers/<%= donation.offer.id %>" target="_blank">
                                 <%= donation.offer.get('title') %>
                             </a>
                         </td>
                         <td>$<%= donation.offer.get('donation') %></td>
-                        <td><%= donation.tokenID %></td>
+                        <td><%= donation.date %></td>
                     </tr>
                 <% }) %>
                 </tbody>
@@ -49,26 +49,6 @@
 
 <% include ../../dashboard/parts/scripts %>
 
-	<script src="/media/dashboard/js/tab-control.js"></script>
+<script src="/media/dashboard/js/tab-control.js"></script>
 
-    <script type="text/javascript">
-        $(document).ready(function () {
-            window.validate = function () {
-                if ($("select option:selected").text() == "---") return false;
-
-                var amount = $("input[name='amount']").val(),
-                    parsedAmount = parseFloat(amount);
-
-                return !(!amount || isNaN(parsedAmount) || parsedAmount < 1);
-            };
-
-            $('select').change(function (event) {
-                var $selected = $("select option:selected"),
-                    $teamName = $("input[name='teamName']");
-
-                $teamName.val($selected.data('name'));
-            });
-        });
-    </script>
-	
 <% include ../../dashboard/parts/foot %>

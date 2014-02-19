@@ -2,13 +2,19 @@
 <ul id="<%= id %>" class="jcarousel-skin-tango recent-jcarousel clients display-sponsors">
     <% sponsors.forEach(function(sponsor) { %>
     <li>
-        <a href="#">
-            <% if (sponsor.get('profileImageThumb')) { %>
-            <img src="<%= sponsor.get('profileImageThumb') %>" class="sponsor-logo" />
-            <% } else { %>
-            <i class="icon-group"></i>
-            <% } %>
-        </a>
+        <% if (sponsor.page != undefined && sponsor.page.get('thumbnail')) { %>
+            <a href="/sponsors/<%= sponsor.id %>">
+                <img src="<%= sponsor.page.get('thumbnail') %>" class="sponsor-logo" />
+            </a>
+        <% } else { %>
+            <a href="javascript:void(0);">
+                <% if (sponsor.get('profileImageThumb')) { %>
+                    <img src="<%= sponsor.get('profileImageThumb') %>" class="sponsor-logo" />
+                <% } else { %>
+                    <i class="icon-group"></i>
+                <% } %>
+            </a>
+        <% } %>
     </li>
     <% }) %>
 </ul>

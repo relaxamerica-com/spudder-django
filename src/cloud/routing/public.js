@@ -16,6 +16,9 @@ module.exports = function (app, keys) {
     app.get('/teams/:teamID/offers/:offerID', offers.view);
     app.get('/teams/:teamID/offers', offers.list);
 
+    var sponsors = require('cloud/sponsors/actions')(keys);
+    app.get('/sponsors/:id', sponsors.view);
+
     var entity = require('cloud/entity/actions')(keys);
     app.get('/public/:entityType/:id', entity.view);
 };

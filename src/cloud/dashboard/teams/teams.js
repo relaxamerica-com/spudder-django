@@ -99,11 +99,11 @@ module.exports = function (keys) {
                     adminsList = [];
                 
                 for(var i = 0; i < req.body.admins.length; i++) {
-   					var el = req.body.admins[i];
-					if (el.length != 0 && el !== null && el !== undefined) {
-						adminsList.push(utilities.removeSpaces(el));
-					}
-				}
+                    var el = req.body.admins[i];
+                    if (el.length != 0 && el !== null && el !== undefined) {
+                        adminsList.push(utilities.removeSpaces(el));
+                    }
+                }
 
                 var Team = Parse.Object.extend('Team'),
                     query = new Parse.Query(Team);
@@ -127,13 +127,13 @@ module.exports = function (keys) {
                         team.save();
 
                         if (adminsList.length > 0) {
-                    		var notFoundEmails = [];
-                    		entityUtilities.addAdmins(team, adminsList, notFoundEmails).then(function() {
-                        		res.redirect('/dashboard/teams');
-                    		});
-                    	} else {
+                            var notFoundEmails = [];
+                            entityUtilities.addAdmins(team, adminsList, notFoundEmails).then(function() {
+                                res.redirect('/dashboard/teams');
+                            });
+                        } else {
                             res.redirect('/dashboard/teams');
-                    	}
+                        }
                     },
                     error: function(object, error) {
                         console.log(error);

@@ -263,12 +263,17 @@
 	width: 50px;
 }
 
-#entity-create input.input-mask-phone, #entity-create input.input-mask-website {
+#entity-create input.input-mask-phone,
+#entity-create input.input-mask-website,
+#entity-create input.input-mask-email{
     border: 2px inset;
     margin-bottom: 0;
     padding: 0;
 }
-#entity-create span.input-icon i.icon-phone, #entity-create span.input-icon i.icon-bookmark {
+#entity-create span.input-icon i.icon-phone,
+#entity-create span.input-icon i.icon-bookmark,
+#entity-create span.input-icon i.icon-envelope,
+#entity-create span.input-icon i.icon-facetime-video {
     top: -1px;
 }
 #entity-create .input-icon.input-icon-right > [class*="icon-"] {
@@ -354,6 +359,72 @@
 #entity-create label[for="profile-picture-input"]:before, #entity-create label[for^="offer-image-input"]:before {
     display: none;
 }
+
+#entity-create .control-group .thumbnail {
+    width: 100px;
+    height: 140px;
+    text-align: center;
+    float: left;
+    margin-right: 20px;
+    position: relative;
+}
+
+#entity-create .control-group .thumbnail > img {
+    max-height: 100px;
+}
+
+#entity-create .control-group .thumbnail .remove-image-container {
+    position: absolute;
+    bottom: 5px;
+    width: 100px;
+}
+
+#entity-create .control-group .thumbnail a {
+    margin-top: 10px;
+    border-radius: 10px;
+}
+
+#entity-create .save-btn-container {
+    position: relative;
+    left: 0;
+}
+
+#entity-create .save-btn-container .save-btn-inner-container {
+    position: absolute;
+    left: -150px;
+    top: 10px;
+}
+
+#entity-create .ace-file-input.below-thumbnail,
+#entity-create .save-btn-container.below-thumbnail{
+    top: 165px;
+}
+
+#entity-create .google-map-canvas {
+    width: 400px;
+    height: 300px;
+    margin: 10px 0 0;
+    padding: 0;
+}
+
+#entity-create #location {
+    background-color: #fff;
+    padding: 0 11px 0 13px;
+    width: 320px !important;
+    font-family: Roboto,serif;
+    font-size: 15px;
+    font-weight: 300;
+    text-overflow: ellipsis;
+    margin-left: 0;
+}
+
+#entity-create #location:focus {
+    border-color: #4d90fe;
+    margin-left: -1px;
+    padding-left: 14px;
+    width: 401px;
+}
+
 #my-entity-list a.btn-action {
     padding-top: 2px;
 }
@@ -367,6 +438,19 @@
     padding-bottom: 4px;
     padding-top: 4px;
 }
+
+#my-teams-list td.team-profile,
+#my-teams-list td.team-contact-details {
+    width: 25%;
+    padding-right: 20px;
+}
+
+#my-teams-list td.team-profile .team-profile-container,
+#my-teams-list td.team-contact-details .team-contact-details-container{
+    height: 20px;
+    overflow: hidden;
+}
+
 #teams-offers-list {
     margin-top: 10px;
 }
@@ -414,12 +498,6 @@ form .input-required {
 #entity-create .create-entity-button {
     margin-bottom: 10px;
     margin-right: 10px;
-}
-
-div.controls.ace-files-container .input-required {
-    position: relative;
-    left: 405px;
-    top: -110px
 }
 
 .ace-nav .nav-user-photo {
@@ -483,4 +561,24 @@ div.controls.ace-files-container .input-required {
 
 #top-right-icons a.orange-link:hover {
 	color: #F06F05;
+}
+
+/* --- Custom buttons --- */
+
+.btn.btn-spud-orange {
+    background-color: #FF6B00 !important;
+    border-color: #FF6B00 !important;
+    color: #ffffff;
+}
+
+.btn.btn-spud-orange:hover {
+    background-color: #FF6B00 !important;
+    border-color: #FF6B00 !important;
+    color: #ffffff;
+    -webkit-filter: brightness(90%);
+    filter: brightness(0.9);
+}
+
+.btn.btn-large.btn-rounded-corners {
+    border-radius: 10px;
 }

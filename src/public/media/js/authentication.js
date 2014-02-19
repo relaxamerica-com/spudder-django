@@ -1,61 +1,4 @@
 $(document).ready(function () {
-    $('#mySignin form').submit(function() {
-        var loading = $(this).find('.loading');
-        loading.css('visibility', 'visible');
-
-        var email = $(this).find('#loginEmail').val(),
-            password = $(this).find('#loginPassword').val(),
-            returnURL = $(this).find('input[name="returnURL"]').val(),
-            self = this;
-
-        var response = $.post('/accounts/login', { 'email' : email, 'password' : password });
-
-        response.done(function() {
-            document.location = returnURL ? returnURL : '/dashboard';
-        });
-
-        response.fail(function(error) {
-            var alert = $(self).find('.alert-error');
-            loading.css('visibility', 'hidden');
-            alert.addClass('alert-error');
-            alert.removeClass('hidden');
-            alert.html(getErrorMessage('login', error.responseText));
-        });
-
-    });
-
-    $('#mySignup form').submit(function() {
-        var loading = $(this).find('.loading');
-        loading.css('visibility', 'visible');
-
-        var email = $(this).find('#registerEmail').val(),
-            password1 = $(this).find('#registerPassword1').val(),
-            password2 = $(this).find('#registerPassword2').val(),
-            self = this,
-            acceptInvitation = $('input[name="acceptInvitation"]');
-
-        var response = $.post('/accounts/register', { 'email' : email, 'password1' : password1, 'password2' : password2 });
-
-        response.done(function() {
-        	if ( acceptInvitation.val().length > 0 ) {
-        		$.get('/acceptEntityInvitation/' + acceptInvitation.val(), function() {
-        			document.location = '/dashboard/fans/basicInfo#invitationAccepted';
-        		});
-        	} else {
-	            document.location = '/dashboard/fans/basicInfo';
-        	}
-        });
-
-        response.fail(function(error) {
-            var alert = $(self).find('.alert');
-            alert.addClass('alert-error');
-            loading.css('visibility', 'hidden');
-            alert.removeClass('hidden');
-            alert.html(getErrorMessage('register', error.responseText));
-        });
-
-    });
-
     function getErrorMessage(type, code) {
         var errors = {
             'login' : {
@@ -68,9 +11,82 @@ $(document).ready(function () {
                 '1': "Password and password confirmation are required",
                 '2': "The passwords you entered did not match",
                 '-1': 'Opps, something went wrong, please try again.',
+                '125': "Email invalid",
                 '202': 'Email already taken.'
             }
         };
         return errors[type][code] ? errors[type][code] : 'An unknown error occured. Please try again or contact administrators.';
     }
+
+    window.handleSignInForm = function ($form) {
+        $form.submit(function() {
+            var $loading = $(this).find('.loading'),
+                $alert = $(this).find('.alert');
+
+            $loading.css('visibility', 'visible');
+            $alert.removeClass('alert-error').hide();
+
+            var email = $(this).find('input[name="email"]').val(),
+                password = $(this).find('input[name="password"]').val(),
+                returnURL = $(this).find('input[name="returnURL"]').val();
+
+            var response = $.post('/accounts/login', { 'email' : email, 'password' : password });
+
+            response.always(function(statusCode) {
+                if (statusCode == '200') {
+                    $alert.removeClass('alert-error').hide();
+
+                    document.location = returnURL ? returnURL : '/dashboard';
+                } else {
+                    $loading.css('visibility', 'hidden');
+                    $alert.addClass('alert-error').show();
+                    $alert.html(getErrorMessage('login', statusCode));
+                }
+            });
+        });
+    };
+
+    window.handleSignUpForm = function ($form) {
+        $form.submit(function() {
+            var $loading = $(this).find('.loading'),
+                $alert = $(this).find('.alert');
+
+            $loading.css('visibility', 'visible');
+            $alert.removeClass('alert-error').hide();
+
+            var email = $(this).find('input[name="email"]').val(),
+                password1 = $(this).find('input[name="password1"]').val(),
+                password2 = $(this).find('input[name="password2"]').val(),
+                returnURL = $(this).has('input[name="returnURL"]').length ? $(this).find('input[name="returnURL"]').val() : undefined,
+                acceptInvitation = $('input[name="acceptInvitation"]');
+
+            var response = $.post('/accounts/register', { 'email' : email, 'password1' : password1, 'password2' : password2 });
+
+            response.always(function(statusCode) {
+                if (statusCode == '200') {
+                    $alert.removeClass('alert-error').hide();
+
+                    if (returnURL) {
+                        document.location = returnURL;
+                    } else {
+                        if ( acceptInvitation.val().length > 0 ) {
+                            $.get('/acceptEntityInvitation/' + acceptInvitation.val(), function() {
+                                document.location = '/dashboard/fans/basicInfo#invitationAccepted';
+                            });
+                        } else {
+                            document.location = '/dashboard/fans/basicInfo';
+                        }
+                    }
+                } else {
+                    $loading.css('visibility', 'hidden');
+                    $alert.addClass('alert-error').show();
+                    $alert.html(getErrorMessage('register', statusCode));
+                }
+            });
+
+        });
+    };
+
+    window.handleSignInForm($('#mySignin').find('form'));
+    window.handleSignUpForm($('#mySignup').find('form'));
 });
