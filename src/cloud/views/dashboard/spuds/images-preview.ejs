@@ -1,4 +1,4 @@
-<div class="modal hide fade" aria-hidden="true" id="tag-images-modal">
+<div class="modal hide fade" aria-hidden="true" id="images-preview-modal">
 	<div class="modal-header">
 		
 		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -14,16 +14,21 @@
 				<div class="row-fluid">
 					<div class="span12">
 						<div class="row-fluid bar">
-							<% include ../../../commons/barButtons %>
+							<% include ../../commons/barButtons %>
 						</div>
 					</div>
 				</div>
 				<div class="row-fluid">
-					<div class="span11 offset1">
-						<img id="image-preview" src="" />
-						<p id="comment-preview">
+					<div class="span12">
+						<p id="comment-preview" class="well well-small">
 							
 						</p>
+						<img id="image-preview" src="" />
+						<form>
+							<input type="hidden" id="image" name="image" />
+							<input type="hidden" id="image-name" name="name" />
+							<input type="hidden" id="image-comment" name="comment" />
+						</form>
 					</div>
 				</div>
 			</div>

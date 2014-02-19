@@ -1,3 +1,14 @@
+.ace-file-input label:before {
+	background-color: #F03C02 !important;
+}
+
+textarea {
+	resize: none;	
+}
+
+.modal-footer {
+	background-color: #A89B94;
+}
 
 .orange {
     color: #F03C02 !important;
@@ -98,7 +109,7 @@
 .icon-huge {
     font-size: 6em;
 }
-#spuds-toggle #view-spuds {
+#view-spuds {
     margin-top: 20px;
 }
 #create-spuds-buttons {
@@ -118,36 +129,46 @@
 #create-spuds-buttons div.modal {
     color: #111111;
 }
-[id^="tag-modal"] .title, .spud-container .title {
+[id$="preview-modal"] .title, .spud-container .title {
     display: inline-block;
     font-size: 1.3em;
     margin-left: 10px;
 }
-[id^="tag-modal"] .row-fluid div.button, .spud-container .row-fluid div.button {
+[id$="preview-modal"] .row-fluid div.button, .spud-container .row-fluid div.button {
     background-color: #FF6B00;
     border-radius: 10px;
     color: #FFFFFF;
     font-size: 1.5em;
-    padding: 15px 5px;
+    padding: 10px 5px;
     text-align: center;
 }
-[id^="tag-modal"] .row-fluid div.button:hover, .spud-container .row-fluid div.button:hover {
+[id$="preview-modal"] .row-fluid div.button:hover, .spud-container .row-fluid div.button:hover {
     background-color: #111111;
     cursor: pointer;
 }
-[id^="tag-modal"] {
+[id$="preview-modal"] {
     margin-left: -390px;
     width: 780px;
 }
-[id^="tag-modal"] .row-fluid.bar, .spud-container .row-fluid.bar {
-    background-color: #F5F5F5;
-    border-bottom: 1px solid #E5E5E5;
+[id$="preview-modal"] .row-fluid.bar, .spud-container .row-fluid.bar {
+    background-color: #BCAFA8;
+    border-bottom: 1px solid #a89b94;
     padding: 10px 0;
     width: 100%;
 }
-[id^="tag-modal"] h3 [class^="icon"] {
+[id$="preview-modal"] h3 [class^="icon"] {
     font-size: 2.5em;
 }
+
+[id$="preview-modal"] #comment-preview {
+	margin-top: 10px;
+}
+
+#images-preview-modal img {
+	margin: auto;
+	display: block;
+}
+
 .spud-container h3 [class^="icon"] {
     font-size: 1.8em;
     margin-left: 20px;
@@ -193,19 +214,19 @@
 .sidebar-shortcuts-large .btn {
     width: 35px;
 }
-.spud-container .row-fluid div.button.grey, [id^="tag-modal"] .row-fluid div.button.grey {
+.spud-container .row-fluid div.button.grey, [id$="preview-modal"] .row-fluid div.button.grey {
     background-color: #A9A9A9;
     color: #FFFFFF !important;
 }
-.spud-container .row-fluid div.button.green, [id^="tag-modal"] .row-fluid div.button.green {
+.spud-container .row-fluid div.button.green, [id$="preview-modal"] .row-fluid div.button.green {
     background-color: #46B946;
     color: #FFFFFF !important;
 }
-.spud-container .row-fluid div.button.red, [id^="tag-modal"] .row-fluid div.button.red {
+.spud-container .row-fluid div.button.red, [id$="preview-modal"] .row-fluid div.button.red {
     background-color: #FF3333;
     color: #FFFFFF !important;
 }
-.spud-container .row-fluid div.button.yellow, [id^="tag-modal"] .row-fluid div.button.yellow {
+.spud-container .row-fluid div.button.yellow, [id$="preview-modal"] .row-fluid div.button.yellow {
     background-color: #FF3333;
     color: #FFFFFF !important;
 }
@@ -218,14 +239,15 @@
 }
 
 #entity-create p.head,
-#invitations-list p.head {
+#invitations-list p.head,
+#create-spuds p.head {
     font-size: 34px;
     line-height: 40px;
 }
 
 #entity-create input {
-    width: 390px;
-    padding-left: 10px;
+    width: 395px;
+    padding-left: 5px;
 }
 
 #entity-create span.input-icon.input-icon-right input {
@@ -244,6 +266,7 @@
 	width: auto;
 }
 
+
 #entity-create input[type="checkbox"] {
 	width: auto;
 	opacity: 1;
@@ -256,7 +279,7 @@
 
 #entity-create input.player-position {
 	margin-left: 1px;
-    width: 340px;
+   	width: 335px;
 }
 
 #entity-create input.player-number {
@@ -292,7 +315,7 @@
 }
 #entity-create select {
     margin-bottom: 0;
-    width: 405px;
+    width: 402px;
 }
 #entity-create dl.dl-horizontal dd, #entity-create dl.dl-horizontal dt {
     margin-bottom: 5px;
@@ -582,3 +605,250 @@ form .input-required {
 .btn.btn-large.btn-rounded-corners {
     border-radius: 10px;
 }
+
+#new-spuds-container,
+#new-spuds-preview-container {
+	width: 350px;
+	background: none repeat scroll 0 0 #F8F8F8;
+    font-weight: 200;
+    padding-top: 3px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+    float: left;
+    margin: 10px 0px;
+}
+
+#new-spuds-preview-container {
+	background: none repeat scroll 0 0 #FFFFFF;
+}
+
+#new-spuds-container .title textarea:after,
+#new-spuds-container .title textarea:before {
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
+#new-spuds-container .title {
+	padding: 15px;
+}
+
+#new-spuds-container .title textarea {
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+	width: 100%;
+	resize: none;
+	background-color: #FFFFFF;
+    border: 1px solid #CCCCCC;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
+    color: #555555;
+    display: block;
+    font-size: 14px;
+    line-height: 1.42857;
+    padding: 6px 12px;
+    transition: all 0.5s ease 0s;
+    vertical-align: middle;
+}
+
+#new-spuds-container .title textarea:focus {
+	border-color: #F03C02;
+}
+
+#new-spuds-container .buttons > div:hover {
+	color: #F03C02;
+	cursor: pointer;
+}
+
+#new-spuds-preview-container {
+	display: none;
+}
+
+#new-spuds-preview-container .preview-title .social-avatar {
+	margin-right: 14px;
+	border-radius: 50%;
+}
+
+#new-spuds-preview-container .preview-title {
+	padding: 5px;
+}
+
+#new-spuds-preview-container .preview-title .profile-details {
+	display: inline-block;
+}
+
+#new-spuds-preview-container .preview-title .profile-details a.user-name {
+	color: #000;
+	display: inline-block;
+    font-size: 20px;
+    font-weight: 300;
+    line-height: 1;
+    margin-bottom: 6px;
+}
+
+#new-spuds-preview-container .preview-title .profile-details a.user-name:hover {
+	color: #F03C02;
+}
+
+#new-spuds-preview-container .buttons-top {
+	margin-top: 5px;
+	margin-right: 5px;
+}
+
+#new-spuds-preview-container .buttons-bottom {
+	margin-bottom: 5px;
+	margin-left: 5px;
+}
+
+#new-spuds-preview-container #text-preview {
+	padding: 20px 10px;
+	margin: 10px 5px;
+	background: none repeat scroll 0 0 #FBFBFB;
+}
+
+.margin-left5 {
+	margin-left: 5px;
+}
+
+.margin-top10 {
+	margin-top: 10px;
+}
+
+.btn-black-outline {
+	background-color: transparent !important;
+	border: 1px solid #bbb;
+	color: #bbb !important;
+	border-radius: 3px;
+}
+
+.btn-black-outline:hover {
+	background-color: #bbb !important;
+	color: #fff !important;
+}
+
+#new-spuds-preview-container .buttons-bottom .btn-small {
+	width: 15px;
+}
+
+#new-spuds-preview-container .buttons-bottom .btn-small i {
+	margin: 0px;
+}
+
+.social-share span {
+	visibility: visible;
+}
+
+.btn-rounded {
+	border-radius: 3px;
+}
+
+.spud-container {
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+    margin: auto;
+    width: 350px;
+    background: none repeat scroll 0 0 #FFFFFF;
+    position: relative;
+}
+
+.spud-container .arrow {
+	position: absolute;
+	top: 45%;
+	font-size: 50px;
+	line-height: 50px;
+}
+
+.spud-container .arrow:hover {
+	color: #F03C02;
+	cursor: pointer;
+}
+
+.spud-container .arrow-left {
+	left: -50px;
+}
+
+.spud-container .arrow-right {
+	right: -50px;
+}
+
+.spud-container .content {
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+	width: 100%;
+	padding: 15px;
+}
+
+.spud-container .content p {
+	font-size: 14px;
+    font-weight: 300;
+    margin: 15px 0;
+}
+
+.spud-container .spud-comments {
+	background: none repeat scroll 0 0 #F6F6F6;
+    margin-top: 5px;
+    padding: 15px;
+}
+
+.spud-container .spud-comments form {
+	margin: 0px;
+}
+
+.spud-container .profile-details {
+	display: inline-block;
+}
+
+.spud-container .profile-details a.user-name {
+	color: #000000;
+    display: inline-block;
+    font-size: 20px;
+    font-weight: 300;
+    line-height: 1;
+    margin-bottom: 6px;
+}
+
+.spud-container .profile-details p {
+	color: #999999;
+    font-size: 13px;
+    margin-bottom: 2px;
+    margin-top: 2px;
+}
+
+.spud-container .profile-details em {
+	color: #999999;
+    font-size: 13px;
+    font-weight: 300;
+}
+
+.spud-container .profile-details a.user-name:hover {
+	color: #F03C02;
+}
+
+.spud-container .spud-comments form input {
+	background-color: #FFFFFF;
+    border: 1px solid #CCCCCC;
+    border-radius: 4px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
+    color: #555555;
+    display: block;
+    font-size: 14px;
+    height: 34px;
+    line-height: 1.42857;
+    padding: 6px 12px;
+    transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
+    vertical-align: middle;
+    width: 100%;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.spud-container .social-avatar {
+	margin-right: 14px;
+	border-radius: 50%;
+}
+
+.spud-container .spud-image {
+	margin: auto;
+	display: table;
+	margin-top: 15px;
+}
+

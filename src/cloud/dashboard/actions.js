@@ -1,10 +1,22 @@
+var krowdio = require('cloud/krowdio');
+
 module.exports = function (keys) {
     return {
         spuds: function (req, res) {
-            var breadcrumbs = [{ 'title' : 'SPUDS', 'href' : '/dashboard' }];
-            res.render('dashboard/spuds', {
-                'breadcrumbs' : breadcrumbs
+        	
+            var breadcrumbs = [{ 'title' : 'SPUDS', 'href' : '/dashboard' }],
+            	spuds = krowdio.krowdioGetPostsForEntity(Parse.User.current(), req.headers['user-agent']);
+            
+            
+            //console.log(_spuds);
+            
+            spuds.then(function(_spuds) {
+	            res.render('dashboard/spuds', {
+	                'breadcrumbs' : breadcrumbs,
+	                'spuds' : _spuds
+	            });
             });
+            	
         },
 
         mySpuds: function(req, res) {
@@ -13,7 +25,7 @@ module.exports = function (keys) {
                 'breadcrumbs' : breadcrumbs,
                 'modalTop' : require('cloud/dashboard/fan/modalTop'),
                 'modalBottom' : require('cloud/dashboard/fan/modalBottom'),
-                'keys' : { 'jsKey' : keys.getJavaScriptKey(), 'appId' : keys.getApplicationID() }
+                'keys' : { 'jsKey' : keys.getJavaScriptKey(), 'appId' : keys.getApplicationID() },
             });
         },
         
