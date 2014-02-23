@@ -1,0 +1,77 @@
+application: spudmart1
+version: spudmart
+runtime: python27
+api_version: 1
+threadsafe: false
+
+builtins:
+- remote_api: on
+# - appstats: on # uncomment to enable http://localhost:8000/_ah/stats
+
+inbound_services:
+- warmup
+
+handlers:
+- url: /_ah/queue/deferred
+  script: djangoappengine/deferred/handler.py
+  login: admin
+
+- url: /_ah/stats/.*
+  script: djangoappengine/appstats/ui.py
+
+- url: /media/admin
+  static_dir: django/contrib/admin/media
+  expiration: '0'
+
+- url: /media/images/(.*)
+  static_files: templates/static_files/images/\1
+  upload: templates/static_files/images/(.*)
+  expiration: "7d"
+
+- url: /media/fonts/(.*\.eot)
+  static_files: templates/static_files/fonts/\1
+  upload: templates/static_files/fonts/(.*\.eot)
+  expiration: "30d"
+  mime_type: font/eot
+
+- url: /media/fonts/(.*\.woff)
+  static_files: templates/static_files/fonts/\1
+  upload: templates/static_files/fonts/(.*\.woff)
+  expiration: "30d"
+  mime_type: font/woff
+
+- url: /media/fonts/(.*\.ttf)
+  static_files: templates/static_files/fonts/\1
+  upload: templates/static_files/fonts/(.*\.ttf)
+  expiration: "30d"
+  mime_type: font/ttf
+
+- url: /media/fonts/(.*)
+  static_files: templates/static_files/fonts/\1
+  upload: templates/static_files/fonts/(.*)
+  expiration: "30d"
+  
+- url: /media/icplayer/icplayer.nocache.js
+  static_files: templates/static_files/icplayer/icplayer.nocache.js
+  upload: templates/static_files/icplayer/icplayer.nocache.js
+  expiration: '0'
+
+- url: /media
+  static_dir: templates/static_files
+
+- url: /favicon\.ico
+  static_files: templates/static_files/favicon.ico
+  upload: templates/static_files/favicon\.ico
+  expiration: "30d"
+
+- url: /robots\.txt
+  static_files: templates/static_files/robots.txt
+  upload: templates/static_files/robots\.txt
+
+- url: /dev-admin/.*
+  script: $PYTHON_LIB/google/appengine/ext/admin
+  login: admin
+  auth_fail_action: unauthorized
+
+- url: /.*
+  script: djangoappengine/main/main.py

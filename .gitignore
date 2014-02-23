@@ -1,2 +1,8 @@
 .settings
 spudder/cloud/private-key.js
+*.pyc
+*.project
+*.pydevproject
+spudmart/src/.gaedata
+spudmart/src/test-reports
+spudmart/.idea
