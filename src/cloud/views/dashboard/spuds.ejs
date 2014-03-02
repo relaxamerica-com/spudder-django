@@ -1,5 +1,7 @@
 <% include ../dashboard/parts/head %>
 
+<link href="/media/dashboard/css/isotope.css" rel="stylesheet" type="text/css" />
+
 <% include ../dashboard/parts/bodyStart %>
 
 <div id="spuds" class="">
@@ -8,56 +10,43 @@
 			<div class="tabbable">
 				<ul id="myTab" class="nav nav-tabs">
 					<li class="active">
-						<a href="#all" data-toggle="tab">
+						<a href="#" data-toggle="tab" id="showAll">
 							All
 						</a>
 					</li>
 	
 					<li>
-						<a href="#messages" data-toggle="tab">
-							Announcements
+						<a href="#" data-toggle="tab" id="showText">
+							Text
 						</a>
 					</li>
 					
 					<li>
-						<a href="#images" data-toggle="tab">
+						<a href="#" data-toggle="tab" id="showImages">
 							Images
 						</a>
 					</li>
 					
 					<li>
-						<a href="#videos" data-toggle="tab">
+						<a href="#" data-toggle="tab" id="showVideos">
 							Videos
 						</a>
 					</li>
-					
-					<li>
-						<a href="#updates" data-toggle="tab">
-							Updates
-						</a>
-					</li>
 				</ul>
-	
-				<div class="tab-content">
-					<div class="tab-pane in active" id="all">
-						<p>All Spuds will be here.</p>
+				<div id="social-container"></div>
+				
+				<div class="row-fluid">
+					<div class="span12">
+						<div class="btn btn-orange" id="load-more">
+							<i class="icon-spinner icon-spin"></i>Loading content
+						</div>
 					</div>
-	
-					<div class="tab-pane" id="messages">
-						<p>Announcements Spuds will be here.</p>
-					</div>
-	
-					<div class="tab-pane" id="images">
-						<p>Images Spuds will be here.</p>
-					</div>
-	
-					<div class="tab-pane" id="videos">
-						<p>Videos Spuds will be here.</p>
-					</div>
-					
-					<div class="tab-pane" id="updates">
-						<p>Updates Spuds will be here.</p>
-					</div>
+				</div>
+				
+				<div class="tab-content hidden" id="all">
+					<% spuds.items.forEach(function(spud) { %>
+						<%- spudContainer(spud, false, getValueOrEmpty, user) %>
+					<% }) %>
 				</div>
 			</div>
 		</div>
@@ -67,5 +56,50 @@
 <% include ../dashboard/parts/scripts %>
 
 	<script src="/media/dashboard/js/tab-control.js"></script>
+	<script src="/media/dashboard/js/jquery.isotope.min.js"></script>
+	<script type="text/javascript">
+		var all = $('#all'),
+    		container = $('#social-container');
+    		
+	    $(window).load(function() {
+	      /*
+	      # init isotope, then insert all items from hidden alpha
+	      */
+	
+			container.isotope({
+				itemSelector: '.item'
+			}).isotope('insert', all.find('.item'));
+			
+			return $("#load-more").html("Load more").find("i").hide();
+	    });
+	    
+	    $(document).ready(function() {
+	    	$('#showAll').click(function() {
+	    		container.isotope({ filter: '.item' });
+	    	});
+	    	
+	    	$('#showText').click(function() {
+	    		container.isotope({ filter: '.status, .text' });
+	    	});
+	    	
+	    	$('#showImages').click(function() {
+	    		container.isotope({ filter: '.image' });
+	    	});
+	    	
+	    	$('#showVideos').click(function() {
+	    		container.isotope({ filter: '.video' });
+	    	});
+	    });
+	    
+	    // $('#load-more').click(function() {
+	      // var item1, item2, item3, items, tmp;
+	      // items = $container2.find('.social-entry');
+	      // item1 = $(items[Math.floor(Math.random() * items.length)]).clone();
+	      // item2 = $(items[Math.floor(Math.random() * items.length)]).clone();
+	      // item3 = $(items[Math.floor(Math.random() * items.length)]).clone();
+	      // tmp = $().add(item1).add(item2).add(item3);
+	      // return $container2.isotope('insert', tmp);
+	    // });
+	</script>
 	
 <% include ../dashboard/parts/foot %>

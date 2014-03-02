@@ -11,6 +11,10 @@
 	    	<div class="title">
 	    		<form action="/dashboard/createSpud" method="post" name="createSpud">
 	        		<textarea class="form-control" placeholder="What's new..." rows="4" name="title"></textarea>
+	        		<input type="hidden" name="video" class="video" />
+	        		<input type="hidden" name="tags" class="tags" />
+	        		<input type="hidden" name="image" id="imageURL" />
+	        		<input type="file" class="hidden" id="image" />
 	    		</form>
 	      	</div>
 	 
@@ -22,7 +26,7 @@
 		          	</p>
 		        </div>
 		        <div class="span3 text-center" id="photo">
-		        	<i class="icon-camera"></i>
+		        	<i class="icon-camera"> </i>
 		    		<p>
 		            	Photo
 		         	</p>
@@ -68,13 +72,22 @@
 		        	</div>
 	        	</div>
           	</div>
+          	<div id="image-preview" class="hidden">
+          		<img src="" />
+          	</div>
 	    	<div id="text-preview">
 	    	</div>
+	    	
+	    	<iframe id="video-preview" src="" frameborder="0" class="hidden"></iframe>
+	    	
+	    	<div class="tags">
+	    		
+	    	</div>
 	    	<div class="buttons-bottom">
-	    		<div class="btn btn-small btn-black-outline" title="Tag">
+	    		<div class="btn btn-small btn-black-outline" title="Tag" id="tag">
 	    			<i class="icon-tag"> </i>
 	    		</div>
-	    		<div class="btn btn-small btn-black-outline" title="Tag Venue">
+	    		<div class="btn btn-small btn-black-outline" title="Tag Venue" id="tag-venue">
 	    			<i class="icon-map-marker"> </i>
 	    		</div>
 	    		<div class="btn btn-small btn-black-outline" id="share" title="Share">
@@ -87,6 +100,59 @@
 					<span class='st_pinterest'> </span>
 					<span class='st_email'> </span>
 	    		</div>
+	    	</div>
+	    	<div class="tag-buttons">
+	    		<div class="btn btn-small btn-black-outline" title="Team">
+	    			<i class="icon-group"> </i>
+	    		</div>
+	    		<div class="btn btn-small btn-black-outline" title="Player">
+	    			<i class="icon-user"> </i>
+	    		</div>
+	    		<div class="btn btn-small btn-black-outline" title="Coach">
+	    			<i class="icon-bullhorn"> </i>
+	    		</div>
+	    	</div>
+	    	<div class="tag-inputs">
+	    		<div class="tag-team">
+    			    <form class="form-inline" class="tag-form">
+    			    	<div class="inputs">
+	    					<select class="select2-arrow">
+	    						<option value="">-- favorites --</option>
+	    						<option value="noTeam">No Team</option>
+	    						<% teams.forEach(function(team) { %>
+									<option value="<%- team.id %>"><%- team.get('name') %></option>    							
+	    						<% }) %>
+							</select>
+							
+							or
+							
+						    <input type="text" class="input-small" placeholder="Team Name">
+					    </div>
+						<button type="submit" class="btn btn-orange btn-small" id="tagTeam">Add</button>
+    				</form>
+	    		</div>
+	    		<div class="tag-player">
+    			    <form class="form-inline" class="tag-form">
+    			    	<div class="inputs">
+	    			    	<label>Select player</label>
+						</div>
+						<button type="submit" class="btn btn-orange btn-small" id="tagPlayer">Add</button>
+    				</form>
+	    		</div>
+	    		<div class="tag-coach">
+    			    <form class="form-inline" class="tag-form">
+    			    	<div class="inputs">
+	    			    	<label>Select coach</label>
+						</div>
+						<button type="submit" class="btn btn-orange btn-small" id="tagCoach">Add</button>
+    				</form>
+	    		</div>
+	    		<div class="tag-venue">
+    			    Tagging venue will be available soon
+	    		</div>
+	    	</div>
+	    	<div class="alert alert-danger">
+	    		
 	    	</div>
 	    </div>
     </div>
@@ -110,11 +176,15 @@
 	$(document).ready(function() {
 		Parse.initialize('<%= keys.appId %>', '<%= keys.jsKey %>');
 	
-		$('#text').click(function() {
+		function showPreview() {
 			var whatsNew = $('#new-spuds-container textarea').val();
 			$('#text-preview').html(whatsNew);
 			$('#new-spuds-preview-container').show();
 			$('#new-spuds-container').hide();
+		}
+	
+		$('#text').click(function() {
+			showPreview();
 		});
 		
 		$('#back').click(function() {
@@ -131,7 +201,7 @@
 			}
 		});
 		
-		$('.buttons-bottom .btn, #back').tooltip({
+		$('.buttons-bottom .btn, #back, .tag-buttons .btn').tooltip({
 			hide: {
 				effect: "explode",
 				delay: 2500
@@ -140,6 +210,22 @@
 				effect: "slideDown",
 				delay: 2500
 			}
+		});
+		
+		$('#video').click(function() {
+			var textarea = $('.title textarea'),
+				videoURL = '//' + textarea.val().replace('http', ''),
+				videoInput = $('.title .video'),
+				videoPreview = $('#video-preview');
+				
+			videoInput.val(videoURL);
+			textarea.val('');
+			
+			videoPreview.attr('src', videoURL);
+			videoPreview.removeClass('hidden');
+			$('#text-preview').hide();
+			
+			showPreview();
 		});
 		
 		$('#post').click(function() {
@@ -147,90 +233,220 @@
 			
 			form.submit();
 		});
-	
-		// TODO: remove after creating other example
-		$(".chzn-select").chosen({ 'width' : '220px' });
 		
-		var playerTagsInput = $('#player-tags-input');
-		playerTagsInput.tag({ placeholder : playerTagsInput.attr('placeholder') });
-		
-		$("div.bar div.button").tooltip({
-			hide: {
-				effect: "explode",
-				delay: 2500
-			},
-			show: {
-				effect: "slideDown",
-				delay: 2500
+		$('#tag').click(function() {
+			var buttons = $('.tag-buttons');
+			if (buttons.is(':visible')) {
+				buttons.hide();
+			} else {
+				buttons.show();
 			}
 		});
 		
-		$('#image-file').ace_file_input({
-            no_file:'No File ...',
-            btn_choose:'Choose',
-            btn_change:'Select',
-            droppable: false,
-            onchange: null,
-            thumbnail: true,
-            whitelist: 'gif|png|jpg|jpeg',
-            blacklist: 'exe|php'
-        });
-        
-		window.openModal = function(id) {
-			$('.modal').modal('hide');
-			var modal = $('#' + id);
-			modal.appendTo($('body'));
-			modal.modal();
-		};
+		$('.tag-buttons .btn').click(function() {
+			var title = $(this).attr('data-original-title').toLowerCase(),
+				inputs = $('.tag-' + title);
+			
+			if (title == 'team' && $(this).attr('alreadyTagged') == 'true') {
+				alert('You can tag only one Team per SPUD.');
+				return;
+			}
+			
+			if (inputs.is(':visible')) {
+				inputs.hide();
+			} else {
+				inputs.show();
+			}
+		});
 		
-		window.loadImage = function() {
-			var fileUploadControl = $("#image-file")[0];
+		$('#tag-venue').click(function() {
+			alert('coming soon');
+			return;
+			var inputs = $('.tag-venue');
+			if (inputs.is(':visible')) {
+				inputs.hide();
+			} else {
+				inputs.show();
+			}
+		});
+		
+		function setTeamIdByName(name, requestId) {
+			var _name = name,
+				loading = showLoading($('#tagTeam')),
+				deferred = new $.Deferred(),
+				idHasBeenSetDeferred = new $.Deferred();
+			
+			if (requestId) {
+				$.get('/getTeamIdByName', { 'name' : name }).done(function(data) {
+					var entity = JSON.parse(data);
+					
+					if ( entity.exists ) {
+						deferred.resolve(entity.id);
+					} else {
+						alert('The Team with the given name does NOT exists.');	
+					}
+				});
+			} else {
+				deferred.resolve($('.tag-team select').val());
+			}
+			
+			deferred.promise().then(function(entityId) {
+				addTag('Team', entityId, _name);
+				
+				loading.end();
+				
+				idHasBeenSetDeferred.resolve(entityId);
+			});
+			
+			return idHasBeenSetDeferred.promise();
+		}
+		
+		function alert(msg) {
+			var alert = $('#new-spuds-preview-container .alert-danger');
+			alert.html(
+				msg
+			);
+			
+			alert.show();
+		}
+		
+		function setTeamPlayersAndCoaches(teamId) {
+			var response = $.get('/getTeamPlayersAndCoaches', { 'id' : teamId });
+			
+			response.done(function(data) {
+				var selectPlayers = $('<select team="' + teamId + '"></select>'),
+					selectCoaches = $('<select team="' + teamId + '"></select>'),
+					parsed = JSON.parse(data);
+					
+				$.each(parsed.players, function() {
+					var option = $('<option></option>');
+					
+					option.attr('value', this.objectId);
+					option.html(this.name);
+					selectPlayers.append(option);
+				});
+				
+				$.each(parsed.coaches, function() {
+					var option = $('<option></option>');
+					
+					option.attr('value', this.id);
+					option.html(this.name);
+					selectCoaches.append(option);
+				});
+				
+				$('.tag-coach .inputs').append(selectCoaches);
+				$('.tag-player .inputs').append(selectPlayers);
+			});
+		}
+		
+		function showLoading(container) {
+			var deferred = new $.Deferred(),
+				previousValue = $(container).html(),
+				spinner = $('<img src="/media/img/ajax-loader-orange.gif" />');
+			
+			deferred.promise().then(function() {
+				$(container).html(previousValue);
+			});
+			
+			$(container).html(spinner);
+			
+			deferred.end = function() {
+				deferred.resolve();
+			};
+			
+			return deferred;
+		}
+		
+		$('#tagTeam').click(function(e) {
+			e.preventDefault();
+			
+			var nameFromInput = $(this).parent().find('input').val(),
+				select = $(this).parent().find('select'),
+				idFromSelect = select.val(),
+				nameFromSelect = select.find(':selected').html(),
+				name = idFromSelect.length > 0 ? nameFromSelect : nameFromInput;
+				
+			
+			if (nameFromInput.length == 0 && idFromSelect.length == 0) {
+				alert('You must select a team from favorites or type name of the existing team');
+			}
+				
+			setTeamIdByName(name, nameFromInput.length > 0).then(function(teamId) {
+				setTeamPlayersAndCoaches(teamId);
+				$('.tag-team').hide();
+				$('[data-original-title="Team"]').attr('alreadyTagged', 'true');
+			});
+			
+			
+		});
+		
+		$('#tagPlayer').click(function(e) {
+			e.preventDefault();
+			
+			var selected = $(this).parent().find('select').find(':selected');
+			
+			addTag('Player', selected.val(), selected.html());
+		});
+		
+		$('#tagCoach').click(function(e) {
+			e.preventDefault();
+			
+			var selected = $(this).parent().find('select').find(':selected');
+			
+			addTag('Coach', selected.val(), selected.html());
+		});
+	
+		function addTag(entityType, entityId, entityName) {
+			var tags = $('#new-spuds-preview-container .tags'),
+				tagSpan = $('<span class="tag">'),
+				tagsInput = $('#new-spuds-container input.tags');
+					
+			if (!tags.is(':visible')) {
+				tags.show();
+			}
+			
+			tagSpan.html( '@' + entityName );
+			tags.append( tagSpan );
+			tagsInput.append( '@' + entityType + entityId + ' ');
+		}
+	
+		var fileInput = $('#new-spuds-container input[type="file"]');
+		$('#photo').click(function() {
+			fileInput.trigger('click');
+		});
+		
+		fileInput.change(function() {
+			loadImage();
+		});
+		
+		function loadImage() {
+			var fileUploadControl = fileInput[0];
 	
 	        if (fileUploadControl.files.length > 0) {
 	            var file = fileUploadControl.files[0],
 	                name = file.name,
-	                imageName = $('#image-name'),
 	                validName = name.replace(/[\(\)]+/g, '');
 	            
-	            if (imageName.val() == name) {
-	            	openModal('images-preview-modal');
-	            	return;
-	            }
-	
 	            var parseFile = new Parse.File(validName, file);
 	            parseFile.save().then(function(image) {
-	            	var comment = $('#add-image .comment').val();
-	                $('#image-preview').attr('src', image.url());
-                 	$('#image').val(image.url());	
-                 	$('#image-comment').val(comment);	
-	                $('#comment-preview').html(comment);
-	                imageName.val(name);
-	                openModal('images-preview-modal');
+	            	var imagePreview = $('#image-preview');
+	                imagePreview.find('img').attr('src', image.url());
+	                $('#imageURL').val(image.url());
+	                imagePreview.removeClass('hidden');
+                 	showPreview();
 	            }, function(error) {
 	                console.log(error);
 	            });
-	        } else {
-	        	openModal('images-preview-modal');
-	        }
-	        
+	        } 
         };
-		
-		$('#create-spuds-buttons > div').modal({ 'show' : false });
-		
-		$('#create-spuds-buttons > div').click(function() {
-			var modalID = $(this).attr('modal-id');
-			var modal = $('' + modalID);
-			modal.appendTo($('body'));
-			modal.modal('show');
-		});
-		
-		$('.open-modal').on('click', function() {
-			var modalID = $(this).attr('modal-id');
-			$('.modal').modal('hide');
-			var modal = $('' + modalID);
-			modal.appendTo($('body'));
-			modal.modal();
-		});
+        
+        $('.tag-team select').change(function() {
+        	$('.tag-team input').val('');
+        });
+        
+        $('.tag-team input').on('change focus input', function() {
+        	$('.tag-team select').val('');
+        });
 	});
 </script>
 

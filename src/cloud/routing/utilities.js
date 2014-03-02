@@ -3,4 +3,6 @@ module.exports = function (app, keys) {
     	helpers = require('cloud/routing/helpers')();
 
     app.get('/checkEmailsExists', utilities.checkEmailsExists);
+    app.get('/getTeamIdByName', utilities.getTeamIdByName);
+    app.get('/getTeamPlayersAndCoaches', utilities.getTeamPlayersAndCoaches);
 };

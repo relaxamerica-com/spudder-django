@@ -6,26 +6,30 @@ module.exports = function (keys) {
         	
             var breadcrumbs = [{ 'title' : 'SPUDS', 'href' : '/dashboard' }],
             	spuds = krowdio.krowdioGetPostsForEntity(Parse.User.current(), req.headers['user-agent']);
-            
-            
-            //console.log(_spuds);
-            
-            spuds.then(function(_spuds) {
+			
+			spuds.then(function(_spuds) {
 	            res.render('dashboard/spuds', {
 	                'breadcrumbs' : breadcrumbs,
-	                'spuds' : _spuds
+	                'spuds' : JSON.parse(_spuds),
+	                'spudContainer' : require('cloud/commons/spudContainer')
 	            });
-            });
+			});
             	
         },
 
         mySpuds: function(req, res) {
-        	var breadcrumbs = [{ 'title' : 'Fans', 'href' : '/dashboard/fans/spuds' }, { 'title' : 'My Spuds', 'href' : '/dashboard/fans/spuds' }];
-        	res.render('dashboard/fan/mySpuds', {
-                'breadcrumbs' : breadcrumbs,
-                'modalTop' : require('cloud/dashboard/fan/modalTop'),
-                'modalBottom' : require('cloud/dashboard/fan/modalBottom'),
-                'keys' : { 'jsKey' : keys.getJavaScriptKey(), 'appId' : keys.getApplicationID() },
+        	var breadcrumbs = [{ 'title' : 'Fans', 'href' : '/dashboard/fans/spuds' }, { 'title' : 'My Spuds', 'href' : '/dashboard/fans/spuds' }],
+        		Team = Parse.Object.extend('Team'),
+            	teamQuery = new Parse.Query(Team);
+            	
+			teamQuery.equalTo('admins', Parse.User.current());
+            
+            teamQuery.find().then(function(teams) {
+	        	res.render('dashboard/fan/mySpuds', {
+	                'breadcrumbs' : breadcrumbs,
+	                'keys' : { 'jsKey' : keys.getJavaScriptKey(), 'appId' : keys.getApplicationID() },
+	                'teams' : teams
+	            });
             });
         },
         

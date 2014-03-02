@@ -28,6 +28,49 @@ module.exports = function (keys) {
 				};
 				res.send('200', JSON.stringify(obj) );
 			});
-    	}
+    	},
+    	
+    	getTeamIdByName: function(req, res) {
+        	var name = req.query.name,
+        		Team = Parse.Object.extend('Team'),
+        		query = new Parse.Query(Team);
+        		
+        	query.equalTo('name', name);
+        		
+        	query.first().then(function(entity) {
+        		if (entity == null || entity == undefined) {
+        			res.send('200',
+        				JSON.stringify({ 'exists' : false })
+         			);
+        			return;
+        		}
+        		
+        		res.send('200',
+    				JSON.stringify({ 'exists' : true, 'id' : entity.id })
+     			);
+        	});
+       },
+       
+       getTeamPlayersAndCoaches: function(req, res) {
+       		var teamId = req.query.id,
+       			Team = Parse.Object.extend('Team'),
+       			query = new Parse.Query(Team);
+       			
+       		query.get(teamId).then(function(team) {
+       			var Player = Parse.Object.extend('Player'),
+       				queryPlayer = new Parse.Query(Player),
+       				Coach = Parse.Object.extend('Coach'),
+       				queryCoach = new Parse.Query(Coach);
+       			
+       			queryCoach.equalTo('team', team);
+       			queryPlayer.equalTo('team', team);
+       			
+       			Parse.Promise.when([queryCoach.find(), queryPlayer.find()]).then(function(coaches, players) {
+       				res.send('200',
+    					JSON.stringify({ 'players' : players, 'coaches' : coaches })
+     				);
+       			});
+       		});
+       }
     };
 };

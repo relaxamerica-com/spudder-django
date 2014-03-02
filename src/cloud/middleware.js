@@ -41,7 +41,7 @@ module.exports = function (app, keys) {
         		return '';
         	}
         };
-
+        
         next();
     });
 
@@ -66,7 +66,7 @@ module.exports = function (app, keys) {
                         res.locals.isSponsor = false;
                         next();
                     }
-                })
+                });
             });
         } else {
             res.locals.isSponsor = false;

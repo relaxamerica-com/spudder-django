@@ -20,6 +20,7 @@ module.exports = function () {
         },
         
         convertDate: function (date) {
+        	var date = new Date(date);
         	return (date.getMonth() + 1) + '/' + date.getDate() + '/' + date.getFullYear();
         },
         

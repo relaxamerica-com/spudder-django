@@ -1,0 +1,71 @@
+<div class="spud-container item <% if (isDisplayArrows) { %>with-arrows<% } %> <%- spud.type %>">
+	
+	<% if (isDisplayArrows) { %>
+		<div class="arrow arrow-left">
+			<i class="icon-arrow-left"> </i>
+		</div>
+		<div class="arrow arrow-right">
+			<i class="icon-arrow-right"> </i>
+		</div>
+	<% } %>
+	
+	<div class="content">
+		<div class="clearfix">
+			<% if( getValueOrEmpty( user.get('profileImageThumb') ) == '' ) { %>
+		  		<img width="50" height="50" src="/media/dashboard/avatars/no_avatar.png" class="social-avatar pull-left">
+		    <% } else { %>
+		        <img width="50" height="50" src="<%= user.get('profileImageThumb') %>" class="social-avatar pull-left">
+		    <% } %>
+			<div class="profile-details clearfix">
+		        <a href="#" class="user-name">
+					<% if (getValueOrEmpty(user.get('nickname')) != '') { %>
+		                <%= user.get('nickname') %>
+		            <% } else if (getValueOrEmpty(user.get('krowdioUserId')) != '') { %>
+		                #<%= user.get('krowdioUserId') %>
+		        	<% } else { %>
+		                Anonymous
+		            <% } %>
+				</a>
+				<p>
+	            	<em><%- convertDate(spud.created_time) %></em>
+	            </p>
+			</div>
+		</div>
+		<% if (spud.type == 'image') { %>
+			<img src="<%- spud.media[0].full.url %>" class="spud-image" />
+		<% } %>
+		
+		<p>
+			<% if (spud.type == 'video') { %>
+				<iframe src="<%- spud.title %>" frameborder="0"></iframe>
+			<% } else { %>
+				<%- spud.title %>
+			<% } %>
+		</p>
+		
+		<div class="buttons-bottom"> 
+			<div title="Like" class="btn btn-small btn-black-outline"> 
+    			<i class="icon-thumbs-up"> </i> 
+    		</div> 
+    		<div title="Dislike" class="btn btn-small btn-black-outline"> 
+    			<i class="icon-thumbs-down"> </i> 
+    		</div> 
+    		<div title="Tag" class="btn btn-small btn-black-outline"> 
+    			<i class="icon-tag"> </i> 
+    		</div> 
+    		<div title="Tag Venue" class="btn btn-small btn-black-outline"> 
+    			<i class="icon-map-marker"> </i> 
+    		</div> 
+    		<div title="Share" id="share" class="btn btn-small btn-black-outline"> 
+    			<i class="icon-share-alt"> </i>
+    		</div> 
+    	</div>
+	</div>
+	<div class="spud-comments">
+		<form role="form">
+        	<div class="form-group">
+        		<input type="email" placeholder="Add a comment..." id="exampleInputEmail1" class="form-control">
+        	</div>
+        </form>
+	</div>
+</div>

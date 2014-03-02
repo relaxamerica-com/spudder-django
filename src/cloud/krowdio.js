@@ -112,24 +112,26 @@ exports._krowdidEnsureOAuthTokenForEntity = function(entity, userAgent) {
     }
 };
 		
-exports.krowdioUploadMedia = function(entity, userAgent) {
-    return krowdioEnsureOAuthToken(entity, userAgent)
+exports.krowdioUploadMedia = function(entity, url, userAgent) {
+	var self = this;
+    return self.krowdioEnsureOAuthToken(entity, userAgent)
         .then(function(entity){
             var token = 'Token token="' + entity.get('krowdioAccessToken') + '"',
             	promise = new Parse.Promise();
             
             Parse.Cloud.httpRequest({
                 url: "http://api.krowd.io/add/media",
-                body: { encode: 'base64', data: "data:image/jpeg;base64," + spudDataUri },
+                body: { encode: 'base64', url: url },
                 method: 'POST',
                 headers: { 'Authorization' : token },
                 success: function(httpResponse) {
-                	promise.resolve();
+                	promise.resolve(httpResponse);
                 },
                 error: function(httpResponse) {
                 	promise.reject();
                 }
             });
+            return promise;
         });
 };
 		
