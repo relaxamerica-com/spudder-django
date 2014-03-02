@@ -4,36 +4,98 @@
 	{% include 'parts/meta.html' %}
 	{% block meta %}{% endblock %}
 </head>
-{% block body %}
+
 <body>
-    {%  include 'parts/navbar.html' %}
+    <div id="wrapper">
+        <header>
+            <div class="container">
+                <div class="row nomargin">
+                    <div class="span12">
+                        <div class="row">
+                            <!--
+                            <div class="headnav span4">
+                                <ul>
+                                    <% if (user) { %>
+                                    <li><a href="/dashboard" data-toggle="modal"><i class="icon-user"></i><%= user.getUsername() %></a></li>
+                                    <li><a href="/accounts/logout" data-toggle="modal">Sign out</a></li>
+                                    <% } else { %>
+                                    <li><a href="#mySignup" data-toggle="modal"><i class="icon-user"></i> Sign up</a></li>
+                                    <li><a href="#mySignin" data-toggle="modal">Sign in</a></li>
+                                    <% } %>
+                                </ul>
+                            </div>
+                            -->
 
-    <div class="main-container" id="main-container">
-			<script type="text/javascript">
-				try{ace.settings.check('main-container' , 'fixed')}catch(e){}
-			</script>
+                            <div class="hidden-top span8 download-buttons-wrapper">
+                                <div class="row-fluid" id="download-buttons">
+                                    <a href="http://www.spudder.com/mobile" class="span3 btn btn-primary btn-large" title="App Store">
+                                        <img src="/media/img/app_store_logo.png" />
+                                    </a>
+                                    <a href="http://www.spudder.com/mobile" class="span3 btn btn-primary btn-large" title="Google Play">
+                                        <img src="/media/img/google_play_logo.png" />
+                                    </a>
+                                    <a href="http://www.spudder.com/mobile" class="span3 btn btn-primary btn-large amazon" title="Amazon App">
+                                        <img src="/media/img/amazon_apps_logo.png" />
+                                    </a>
+                                    <a href="http://www.spudder.com/mobile" class="span3 btn btn-primary btn-large" title="Direct Download">
+                                        <i class="icon-coffee icon-circled icon-64 active" ></i>
+                                    </a>
+                                </div>
+                            </div>
 
-			<div class="main-container-inner">
-				<a class="menu-toggler" id="menu-toggler" href="#">
-					<span class="menu-text"></span>
-				</a>
+                            <div id="header-hidden-link">
+                                <a href="#" class="toggle-link" title="Click me you'll get a surprise" data-target=".hidden-top"><i></i>Open</a>
+                            </div>
+                        </div>
+                    </div>
 
-                {%  include 'parts/sidebar.html' %}
+                    <!-- logo and social -->
+                    <div class="row">
+                        <div class="span4">
+                            <div class="logo">
+                                <a href="/"><img src="/media/img/spudder_logo.jpg" alt="" class="logo" /></a>
+                            </div>
+                        </div>
+                        <div class="span8">
+                            <div class="social-links pull-right">
+                                <table>
+                                    <tr>
+                                        <td class="twitter-cell">
+{#                                            <%- twitterShareButton('Checkout this great entity!') %>#}
+                                        </td>
+                                        <td class="google-plus-cell">
+{#                                            <%- googlePlusShareButton() %>#}
+                                        </td>
+                                        <td class="facebook-cell">
+{#                                            <%- facebookShareButton() %>#}
+                                        </td>
+                                        <td class="email-cell">
+{#                                            <%- emailShareButton(meta.url) %>#}
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- end of logo and social -->
+                </div>
+            </div>
 
-				<div class="main-content">
-                    {%  include 'parts/breadcrumbs.html' %}
+            {% include 'parts/modals.html' %}
 
-					{%  block content %}{% endblock content %}
-				</div><!-- /.main-content -->
-			</div><!-- /.main-container-inner -->
+            {% include 'accounts/signUp.html' %}
 
-			<a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
-				<i class="icon-double-angle-up icon-only bigger-110"></i>
-			</a>
-		</div>
+            {% include 'accounts/signIn.html' %}
 
-    {%  include 'parts/scripts.html' %}
-	{% block scripts %}{% endblock %}
+            {% include 'accounts/resetPassword.html' %}
+        </header>
+
+        {% block content %}{% endblock content %}
+
+    {% include 'parts/footer.html' %}
+
+    {% include 'parts/scripts.html' %}
+    {% block scripts %}{% endblock scripts %}
+    </div>
 </body>
-{% endblock %}
 </html>

@@ -5,10 +5,6 @@ module.exports = function (app, keys) {
     var tournament = require('cloud/tournament/actions');
     app.get('/tournament', tournament.view);
 
-    var spudmart = require('cloud/spudmart/actions');
-    app.get('/spudmart', spudmart.view);
-    app.get('/spudmart/offer', spudmart.offer);
-
     var teams = require('cloud/teams/actions')(keys);
     app.get('/teams/:teamID', teams.view);
 
