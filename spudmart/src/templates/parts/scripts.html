@@ -1,0 +1,42 @@
+<script src="/media/js/jquery.js"></script>
+<script src="/media/js/jquery.easing.1.3.js"></script>
+<script src="/media/js/bootstrap.js"></script>
+<script src="/media/js/jcarousel/jquery.jcarousel.min.js"></script>
+<script src="/media/js/jquery.fancybox.pack.js"></script>
+<script src="/media/js/jquery.fancybox-media.js"></script>
+<script src="/media/js/google-code-prettify/prettify.js"></script>
+<script src="/media/js/portfolio/jquery.quicksand.js"></script>
+<script src="/media/js/portfolio/setting.js"></script>
+<script src="/media/js/tweet/jquery.tweet.js"></script>
+<script src="/media/js/jquery.flexslider.js"></script>
+<script src="/media/js/jquery.nivo.slider.js"></script>
+<script src="/media/js/modernizr.custom.79639.js"></script>
+<script src="/media/js/jquery.ba-cond.min.js"></script>
+<script src="/media/js/jquery.slitslider.js"></script>
+<script src="/media/js/animate.js"></script>
+<script src="/media/dashboard/js/jquery.slimscroll.min.js"></script>
+<script src="/media/js/parse.js"></script>
+<script src="/media/js/purl.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        var logo = $('header .logo'),
+            buttons = $('header #download-buttons'),
+            hiddenTop = $('header .hidden-top');
+
+        $('#header-hidden-link').find('.toggle-link').toggle(function(e) {
+            e.preventDefault();
+            buttons.css({
+                'display' : 'table',
+                'margin' : 'auto'
+            });
+            hiddenTop.css('margin-top', '0px');
+            logo.css('margin-top', '5px');
+        }, function() {
+            hiddenTop.css('margin-top', '-5px');
+            logo.css('margin-top', '-10px');
+        });
+    });
+</script>
+<script src="/media/js/custom.js"></script>
+<script src="/media/js/authentication.js"></script>
+<script src="/media/js/share/facebook.js"></script>
