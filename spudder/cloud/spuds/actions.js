@@ -7,9 +7,14 @@ module.exports = function (keys) {
 				userAgent = req.headers['user-agent'],
 				videoURL = req.body.video,
 				imageLoadedPromise = new Parse.Promise(),
-				spudData = { 'title': req.body.title || videoURL, 'usertext' : req.body.tags, 'type' : videoURL.length > 0 ? 'video' : 'text' };
-				
-			if (url.length == 0) {
+				isVideo = videoURL.length > 0,
+				spudData = { 'title': req.body.title, 'usertext' : req.body.tags, 'type' : isVideo ? 'video' : 'text' };
+			
+			if (isVideo) {
+				spudData.text = videoURL;
+			}
+			
+			if (url.length == 0 || isVideo) {
 				imageLoadedPromise.resolve();
 			} else {
 				krowdio.krowdioUploadMedia(Parse.User.current(), url, userAgent).then(function(imageData) {

@@ -35,12 +35,13 @@
 			<img src="<%- spud.media[0].full.url %>" class="spud-image" />
 		<% } %>
 		
+		
+		<% if (spud.type == 'video') { %>
+			<iframe src="<%- spud.text %>" frameborder="0"></iframe>
+		<% } %>
+				
 		<p>
-			<% if (spud.type == 'video') { %>
-				<iframe src="<%- spud.title %>" frameborder="0"></iframe>
-			<% } else { %>
-				<%- spud.title %>
-			<% } %>
+			<%- spud.title %>
 		</p>
 		
 		<div class="buttons-bottom"> 

@@ -953,3 +953,14 @@ form .input-required {
 	margin: auto;
 	margin-bottom: 5px;
 }
+
+#hidden-video .btn {
+	margin-left: 5px;
+	height: 22px;
+	font-size: 13px;
+	line-height: 20px;
+}
+
+#hidden-video input {
+	width: 250px;
+}

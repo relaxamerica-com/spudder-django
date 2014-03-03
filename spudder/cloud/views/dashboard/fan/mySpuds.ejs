@@ -10,8 +10,11 @@
 		<div class="clearfix" id="new-spuds-container">
 	    	<div class="title">
 	    		<form action="/dashboard/createSpud" method="post" name="createSpud">
+	    			<div class="hidden" id="hidden-video">
+	    				<input type="url" name="video" class="video pull-left" placeholder="Youtube video's URL" />
+	    				<a class="btn btn-orange btn-small pull-left" id="next">Next</a>
+	    			</div>
 	        		<textarea class="form-control" placeholder="What's new..." rows="4" name="title"></textarea>
-	        		<input type="hidden" name="video" class="video" />
 	        		<input type="hidden" name="tags" class="tags" />
 	        		<input type="hidden" name="image" id="imageURL" />
 	        		<input type="file" class="hidden" id="image" />
@@ -75,10 +78,11 @@
           	<div id="image-preview" class="hidden">
           		<img src="" />
           	</div>
-	    	<div id="text-preview">
-	    	</div>
 	    	
 	    	<iframe id="video-preview" src="" frameborder="0" class="hidden"></iframe>
+	    	
+	    	<div id="text-preview">
+	    	</div>
 	    	
 	    	<div class="tags">
 	    		
@@ -170,6 +174,7 @@
 <script src="/media/dashboard/js/jquery-ui-1.10.3.custom.min.js"></script>
 <script src="/media/dashboard/js/chosen.jquery.min.js"></script>
 <script src="/media/dashboard/js/bootstrap-tag.min.js"></script>
+<script src="/media/js/parseUri.js"></script>
 <script src="/media/js/parse.js"></script>
 
 <script type="text/javascript">
@@ -213,17 +218,31 @@
 		});
 		
 		$('#video').click(function() {
-			var textarea = $('.title textarea'),
-				videoURL = '//' + textarea.val().replace('http', ''),
-				videoInput = $('.title .video'),
+			var hiddenVideo = $('#hidden-video');
+			
+			if (hiddenVideo.is(':visible')) {
+				hiddenVideo.addClass('hidden');
+			} else {
+				hiddenVideo.removeClass('hidden');
+			}
+		});
+		
+		function getVideoURL(value) {
+			var parsedURI = parseUri(value),
+				videoID = parsedURI.queryKey['v'];
+			
+			return '//www.youtube.com/embed/' + videoID;
+		}
+		
+		$('#next').click(function() {
+			var videoInput = $('.title .video'),
+				videoURL = getVideoURL(videoInput.val()),
 				videoPreview = $('#video-preview');
 				
 			videoInput.val(videoURL);
-			textarea.val('');
 			
 			videoPreview.attr('src', videoURL);
 			videoPreview.removeClass('hidden');
-			$('#text-preview').hide();
 			
 			showPreview();
 		});
