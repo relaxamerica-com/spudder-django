@@ -249,7 +249,6 @@
 		
 		$('#post').click(function() {
 			var form = $('form[name="createSpud"]');
-			
 			form.submit();
 		});
 		
@@ -348,7 +347,7 @@
 				$.each(parsed.coaches, function() {
 					var option = $('<option></option>');
 					
-					option.attr('value', this.id);
+					option.attr('value', this.objectId);
 					option.html(this.name);
 					selectCoaches.append(option);
 				});
@@ -418,7 +417,8 @@
 		function addTag(entityType, entityId, entityName) {
 			var tags = $('#new-spuds-preview-container .tags'),
 				tagSpan = $('<span class="tag">'),
-				tagsInput = $('#new-spuds-container input.tags');
+				tagsInput = $('#new-spuds-container input.tags'),
+				tagsInputValue = tagsInput.val();
 					
 			if (!tags.is(':visible')) {
 				tags.show();
@@ -426,7 +426,7 @@
 			
 			tagSpan.html( '@' + entityName );
 			tags.append( tagSpan );
-			tagsInput.append( '@' + entityType + entityId + ' ');
+			tagsInput.val( tagsInputValue + (tagsInputValue.length > 0 ? ' ' : '') + '@' + entityType + entityId );
 		}
 	
 		var fileInput = $('#new-spuds-container input[type="file"]');

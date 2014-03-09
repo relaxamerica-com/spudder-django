@@ -1,4 +1,5 @@
 module.exports = function (keys) {
+	var krowdio = require('cloud/krowdio');
 	
     return {
     	checkEmailsExists: function(req, res){
@@ -70,6 +71,30 @@ module.exports = function (keys) {
     					JSON.stringify({ 'players' : players, 'coaches' : coaches })
      				);
        			});
+       		});
+       },
+       
+       fixDb: function(req, res) {
+       		var Team = Parse.Object.extend('Coach'),
+       			query = new Parse.Query(Team),
+       			_ = require('underscore');
+       		
+       		query.equalTo('krowdioUserId', undefined);
+       		console.log('fixing')
+       		query.find().then(function(teams) {
+       			console.log(teams)
+       			var promise = Parse.Promise.as();
+       			
+       			_.each(teams, function(team) {
+       				
+			    	promise = promise.then(function() {
+			    		return krowdio.krowdioRegisterEntityAndSave(team);
+		    		});
+			  	});
+			  	
+				return promise;
+       		}).then(function() {
+       			res.redirect('/');
        		});
        }
     };

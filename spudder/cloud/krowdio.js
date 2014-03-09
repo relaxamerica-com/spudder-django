@@ -35,18 +35,22 @@ exports.krowdioRegisterEntityAndSave = function (entity) {
     	url: 'http://auth.krowd.io/user/register',
     	body: params,
         success: function(httpResponse) {
+        	console.log('success: ' + httpResponse.text)
             setKrowdioUser(entity, httpResponse.text, promise);
     	},
     	error: function(httpResponse) {
+    		console.log('error: ' + httpResponse.text)
     		if (httpResponse.status == 302) {
     			Parse.Cloud.httpRequest({
     				method: 'POST',
 			    	url: httpResponse.headers.Location,
 			    	headers: httpResponse.headers,
 			    	success: function(response) {
+			    		console.log('success: ' + response.text)
             			setKrowdioUser(entity, response.text, promise);
 			    	},
 			    	error: function(response) {
+			    		console.log('error: ' + response.text)
 			    		promise.reject();
 			    	}
     			});
@@ -144,16 +148,12 @@ exports.krowdioPost = function(entity, post_data, userAgent){
             var token = 'Token token="' + entity.get('krowdioAccessToken') + '"',
             	promise = new Parse.Promise();
             
-            console.log(postData)
-            
             Parse.Cloud.httpRequest({
                 url: "http://api.krowd.io/post",
                 body: postData,
                 method: 'POST',
                 headers: { 'Authorization' : token },
 	            success: function(httpResponse) {
-	            	console.log(httpResponse.text)
-	            	console.log('success')
 	            	promise.resolve(entity);
 	            },
 	            error: function(httpResponse) {
@@ -196,7 +196,6 @@ exports.krowdioGetPostsForEntity = function(entity, userAgent){
                 krowdioData = JSON.parse(krowdioData);
             if (krowdioData.error != null)
                 return Parse.Pomise.error(krowdioData.error);
-            console.log(userAgent)
             return Parse.Promise.as(krowdioData.text);
         },
         function(krowdioData){
@@ -242,7 +241,7 @@ exports.krowdioUploadProfilePicture = function(entity, dataUri){
     return promise;
 };
 		
-exports.krowdidGetPopularStream = function(userAgent){
+exports.krowdioGetPopularStream = function(userAgent){
 	var self = this;
 	
     return self.krowdioEnsureOAuthToken(Parse.User.current(), userAgent)
@@ -276,4 +275,44 @@ exports.krowdidGetPopularStream = function(userAgent){
         function(krowdioData){
             return Parse.Promise.error(JSON.parse(krowdioData));
         });
+};
+
+exports.krowdioGetUserMentionActivity = function(userAgent, entity) {
+	var self = this,
+		userId = entity.get('krowdioUserId');
+	
+	return self.krowdioEnsureOAuthToken(Parse.User.current(), userAgent)
+        .then(function(entity){
+        	
+            var token = 'Token token="' + entity.get('krowdioAccessToken') + '"',
+            	promise = new Parse.Promise();
+            
+            Parse.Cloud.httpRequest({
+		    	method: 'GET',
+		    	url: 'http://api.krowd.io/activity/mentions?userid=' + userId + '&limit=10&page=1&maxid=&paging=None',
+		    	headers: { 'Authorization' : token },
+		        success: function(httpResponse) {
+		        	console.log(httpResponse.text);
+		            promise.resolve(httpResponse);
+		    	},
+		    	error: function(httpResponse) {
+		    		console.log(httpResponse.text);
+		    		promise.reject(httpResponse);
+		    	}
+		    });
+		    
+		    return promise;
+        })
+        .then(function(krowdioData){
+           	if (typeof krowdioData == 'string') {
+            	krowdioData = JSON.parse(krowdioData);
+            }
+            if (krowdioData.error != null)
+                return Parse.Pomise.error(krowdioData.error);
+            return Parse.Promise.as(krowdioData.text);
+        },
+        function(krowdioData){
+        	return Parse.Promise.error(JSON.parse(krowdioData));
+        });
+	
 };

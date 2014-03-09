@@ -168,7 +168,20 @@
         </div>
 
         <div class="span6">
-            <% include ../commons/spudsContainer.ejs %>
+        	<% if (spuds.items.length > 0) { %>
+			    <div class="carousel slide" id="spud-carousel">
+		        	<div class="carousel-inner">
+			           	<% spuds.items.forEach(function(spud, i) { %>
+			           		<div class="item <% if (i == 0) { %>active<% } %> <%- i %>">
+								<%- spudContainer(spud, true, getValueOrEmpty, user) %>
+							</div>
+						<% }) %>
+					</div>
+					
+					<a class="carousel-control left" href="#spud-carousel" data-slide="prev">&lsaquo;</a>
+		  			<a class="carousel-control right" href="#spud-carousel" data-slide="next">&rsaquo;</a>
+  				</div>
+			<% } %>
         </div>
     </div>
 </div>
@@ -182,6 +195,10 @@
         <script type="text/javascript" src="/media/js/spud-container.js"></script>
         <script type="text/javascript">
             $(document).ready(function() {
+            	$('#spud-carousel').carousel({
+            		interval: false
+            	});
+            	
                 $('.ui-slider-green').slider({
                     orientation: "horizontal",
                     range: "min",

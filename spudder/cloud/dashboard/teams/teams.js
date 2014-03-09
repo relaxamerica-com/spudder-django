@@ -1,6 +1,7 @@
 module.exports = function (keys) {
 	var entityUtilities = require('cloud/entity/utilities')(),
-		utilities = require('cloud/utilities')();
+		utilities = require('cloud/utilities')(),
+		krowdio = require('cloud/krowdio');
 	
     return {
         create: {
@@ -34,13 +35,13 @@ module.exports = function (keys) {
 
                 team.save(null, {
                     success: function (team) {
-                        Parse.User.current().fetch().then(function (user) {
+                    	
+                        Parse.Promise.when([Parse.User.current().fetch(), krowdio.krowdioRegisterEntityAndSave(team)]).then(function (user) {
                             var admins = team.relation('admins');
 
                             admins.add(user);
                             team.save().then(function(team) {
 	                            var roleACL = new Parse.ACL();
-	                            console.log(team);
 	                            roleACL.setPublicReadAccess(true);
 	                            var teamAdminRole = new Parse.Role("TeamAdmin", roleACL);
 	                            teamAdminRole.getUsers().add(user);

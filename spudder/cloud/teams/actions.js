@@ -1,11 +1,13 @@
 module.exports = function (keys) {
-    var helpers = require('cloud/teams/helpers')();
+    var helpers = require('cloud/teams/helpers')(),
+    	krowdio = require('cloud/krowdio');
 
     return {
         view: function (req, res) {
             var teamID = req.params.teamID,
                 Team = Parse.Object.extend("Team"),
-                query = new Parse.Query(Team);
+                query = new Parse.Query(Team),
+                userAgent = req.headers['user-agent'];
                 
             query.get(teamID, {
                 success: function(team) {
@@ -68,27 +70,33 @@ module.exports = function (keys) {
                                 return coaches;
                             })
                         ]);
-                    }).then(function (results) {// arguments passed to this callback are: players, coaches
+                    }).then(function (players, coaches) {// arguments passed to this callback are: players, coaches
                         var path = 'https://' + keys.getAppName() + '.parseapp.com/teams/' + teamID;
 
-                        res.render('teams/view', {
-                            'displaySponsors' : require('cloud/commons/displaySponsors'),
-                            'team': currentTeam,
-                            'twitterShareButton': require('cloud/commons/twitterShareButton'),
-                            'googlePlusShareButton': require('cloud/commons/googlePlusShareButton'),
-                            'facebookShareButton': require('cloud/commons/facebookShareButton'),
-                            'emailShareButton': require('cloud/commons/emailShareButton'),
-                            'sponsors': sponsors,
-                            'players': arguments[0],
-                            'coaches': arguments[1],
-                            'meta': {
-                                title: currentTeam.get('name'),
-                                description: currentTeam.get('profile'),
-                                image: currentTeam.get('profileImageThumb') ? currentTeam.get('profileImageThumb') : '',
-                                url: path
-                            },
-                            'returnURL': path
-                        });
+						krowdio.krowdioGetUserMentionActivity(userAgent, currentTeam).then(function(spuds) {
+							console.log(JSON.parse(spuds))
+	                        res.render('teams/view', {
+	                            'displaySponsors' : require('cloud/commons/displaySponsors'),
+	                            'team': currentTeam,
+	                            'twitterShareButton': require('cloud/commons/twitterShareButton'),
+	                            'googlePlusShareButton': require('cloud/commons/googlePlusShareButton'),
+	                            'facebookShareButton': require('cloud/commons/facebookShareButton'),
+	                            'emailShareButton': require('cloud/commons/emailShareButton'),
+	                            'sponsors': sponsors,
+	                            'players': players,
+	                            'coaches': coaches,
+	                            'meta': {
+	                                title: currentTeam.get('name'),
+	                                description: currentTeam.get('profile'),
+	                                image: currentTeam.get('profileImageThumb') ? currentTeam.get('profileImageThumb') : '',
+	                                url: path
+	                            },
+	                            'returnURL': path,
+	                            'spuds' : JSON.parse(spuds),
+	                            'spudContainer' : require('cloud/commons/spudContainer')
+	                        });
+						});
+						
                     });
                 },
                 error: function(object, error) {

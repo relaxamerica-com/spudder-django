@@ -123,9 +123,11 @@ module.exports = function (keys) {
 		                return entity.save(null);
 		            })
 		            .then(function(entity){
-		                krowdio.krowdioRegisterEntityAndSave(entity);
-		                
-		                promise.resolve(entity);
+		            	var _entity = entity;
+		                krowdio.krowdioRegisterEntityAndSave(entity).then(function() {
+		                	
+			                promise.resolve(_entity);
+		                });
 		            },
 		            function(error){
 		            	context['errors'] = [error];

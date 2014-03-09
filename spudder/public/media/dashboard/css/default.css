@@ -777,31 +777,23 @@ form .input-required {
     margin: 10px;
 }
 
-.spud-container.with-arrows {
+.spud-container.mentions {
     width: 350px;
 	margin: auto;
 	position: relative;
 	float: none;
 }
 
-.spud-container .arrow {
-	position: absolute;
-	top: 45%;
-	font-size: 50px;
-	line-height: 50px;
+.carousel-control {
+	color: #000000;
+	background: none;
+	font-size: 80px;
+	line-height: 60px;
 }
 
-.spud-container .arrow:hover {
+.carousel-control:hover {
 	color: #F03C02;
-	cursor: pointer;
-}
-
-.spud-container .arrow-left {
-	left: -50px;
-}
-
-.spud-container .arrow-right {
-	right: -50px;
+	background: none;
 }
 
 .spud-container .content {
@@ -952,6 +944,11 @@ form .input-required {
 	display: table;
 	margin: auto;
 	margin-bottom: 5px;
+}
+
+#new-spuds-preview-container iframe.hidden,
+.spud-container iframe.hidden {
+	display: none;
 }
 
 #hidden-video .btn {

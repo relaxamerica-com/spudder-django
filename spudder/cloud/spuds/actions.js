@@ -3,6 +3,7 @@ var krowdio = require('cloud/krowdio');
 module.exports = function (keys) {
 	return {
 		createSpud: function(req, res) {
+			console.log(req.body)
 			var url = req.body.image,
 				userAgent = req.headers['user-agent'],
 				videoURL = req.body.video,

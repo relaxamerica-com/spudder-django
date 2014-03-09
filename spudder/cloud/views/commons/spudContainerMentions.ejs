@@ -1,4 +1,4 @@
-<div class="spud-container item <%- spud.type %>">
+<div class="spud-container <%- spud.target.objectType %> mentions">
 	
 	<div class="content">
 		<div class="clearfix">
@@ -18,21 +18,21 @@
 		            <% } %>
 				</a>
 				<p>
-	            	<em><%- convertDate(spud.created_time) %></em>
+	            	<em><%- convertDate(spud.published) %></em>
 	            </p>
 			</div>
 		</div>
-		<% if (spud.type == 'image') { %>
-			<img src="<%- spud.media[0].full.url %>" class="spud-image" />
+		<% if (spud.target.objectType == 'image') { %>
+			<img src="<%- spud.target.image.url %>" class="spud-image" />
 		<% } %>
 		
 		
-		<% if (spud.type == 'video') { %>
-			<iframe src="<%- spud.text %>" frameborder="0"></iframe>
+		<% if (spud.target.objectType == 'video') { %>
+			<iframe src="<%- spud.target.text %>" frameborder="0" allowfullscreen></iframe>
 		<% } %>
 				
 		<p>
-			<%- spud.title %>
+			<%- spud.target.title %>
 		</p>
 		
 		<div class="buttons-bottom"> 
