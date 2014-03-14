@@ -1,0 +1,42 @@
+<% include ../../parts/head %>
+
+<% include ../../parts/bodyStart %>
+
+<div id="amazon-root"></div>
+<script type="text/javascript">
+    window.onAmazonLoginReady = function() {
+        amazon.Login.setClientId('<%= loginWithAmazonClientID %>');
+    };
+    (function(d) {
+        var a = d.createElement('script'); a.type = 'text/javascript';
+        a.async = true; a.id = 'amazon-login-sdk';
+        a.src = 'https://api-cdn.amazon.com/sdk/login1.js';
+        d.getElementById('amazon-root').appendChild(a);
+    })(document);
+</script>
+
+<div class="tab-content clearfix">
+    <p>Click "Login with Amazon" button to connect your Spudder account with Amazon. This way you will be able to login to Spudmart and make donations or manage teams tranasctions.</p>
+    <p><i>This operation can be undo at any time</i></p>
+    <p>&nbsp;</p>
+
+    <a href="#" id="LoginWithAmazon">
+        <img border="0" alt="Login with Amazon"
+            src="https://images-na.ssl-images-amazon.com/images/G/01/lwa/btnLWA_gold_156x32.png"
+            width="156" height="32" />
+    </a>
+</div>
+
+<% include ../../parts/scripts %>
+
+<script>
+    var loginWithAmazon = document.getElementById('LoginWithAmazon');
+
+    loginWithAmazon.onclick = function() {
+        options = { scope : 'profile' };
+        amazon.Login.authorize(options, '<%= baseURL %>/dashboard/fans/amazon/connect_complete');
+        return false;
+    };
+</script>
+
+<% include ../../parts/foot %>

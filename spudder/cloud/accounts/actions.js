@@ -1,17 +1,139 @@
 module.exports = function (keys) {
     Parse.initialize(keys.getApplicationID(), keys.getJavaScriptKey());
 
-	var krowdio = require('cloud/krowdio');
+    var krowdio = require('cloud/krowdio');
+
+    function decodeReturnURL(returnURL) {
+        return returnURL ? returnURL.replace(encodeURIComponent('#'), '#'): undefined;
+    }
+
+    function handleAmazonError(httpResponse, response, template) {
+        var jsonResponse = JSON.parse(httpResponse.text);
+
+        console.error('Request failed with response code ' + httpResponse.status);
+        console.error(jsonResponse.error + ' -> ' + jsonResponse.error_description);
+
+        response.render(template, {
+            'error': jsonResponse.error_description
+        });
+    }
+
+    function handleRegisterError(params, error, res) {
+        var messages = {
+            '-1': 'Opps, something went wrong, please try again.',
+            '125': "Email invalid",
+            '202': 'Email already taken.'
+        };
+        params['error'] = messages[error.code];
+        console.log(error);
+        res.render('accounts/register', params);
+    }
+
+    function signUpUser(user, response, params) {
+        user.signUp(null).then(function (_user) {
+            return krowdio.krowdioRegisterEntityAndSave(_user);
+        }).then(function () {
+            response.redirect(params.returnURL ? params.returnURL : '/dashboard');
+        }, function (error) {
+            handleRegisterError(params, error, response);
+        });
+    }
 
     return {
-        login: function(req, res) {
-            Parse.User.logIn(req.body.email, req.body.password, {
-                success: function(user) {
-                    res.send(200, '200');
+        login: {
+            get: function (req, res) {
+                res.render('accounts/login', {
+                    returnURL: decodeReturnURL(req.query.returnURL)
+                });
+            },
+
+            post: function(req, res) {
+                var params = {
+                    email: req.body.email,
+                    password: req.body.password,
+                    error: undefined
+                }, returnURL = req.body.returnURL;
+
+                Parse.User.logIn(req.body.email, req.body.password, {
+                    success: function() {
+                        res.redirect(returnURL ? returnURL : '/dashboard');
+                    },
+                    error: function(user, error) {
+                        params['error'] = error.message;
+                        console.log(error);
+                        res.render('accounts/login', params);
+                    }
+                });
+            }
+        },
+
+        login_with_amazon: function (req, res) {
+            var query = req.query,
+                accessToken = query.access_token,
+                error = query.error,
+                params = {
+                    email: '',
+                    password1: '',
+                    password2: '',
+                    error: undefined,
+                    returnURL: decodeReturnURL(req.query.returnURL)
+                };
+
+            if (error) {
+                res.render('accounts/login', {
+                    'error': query.error_description + '<br><a href="' + query.error_uri + '">Learn more</a>'
+                });
+            }
+
+            Parse.Cloud.httpRequest({
+                url: 'https://api.amazon.com/auth/O2/tokeninfo?access_token=' + encodeURIComponent(accessToken),
+                success: function(httpResponse) {
+                    var jsonResponse = JSON.parse(httpResponse.text),
+                        isVerified = (jsonResponse.aud == keys.getLoginWithAmazonClientID());
+
+                    if (!isVerified) {
+                        res.render('accounts/login', {
+                            error: 'Verification failed! Please contact administrators'
+                        });
+                    }
+
+                    Parse.Cloud.httpRequest({
+                        url: 'https://api.amazon.com/user/profile?access_token=' + encodeURIComponent(accessToken),
+                        success: function (httpResponse) {
+                            var jsonResponse = JSON.parse(httpResponse.text),
+                                userQuery = new Parse.Query(Parse.User);
+
+                            userQuery.equalTo('amazonID', jsonResponse.user_id);
+
+                            userQuery.first({
+                                success: function (_user) {
+                                    Parse.User.logIn(jsonResponse.email, _user.get('passwordRaw'), {
+                                        success: function () {
+                                            res.redirect(params.returnURL ? params.returnURL : '/dashboard');
+                                        },
+                                        error: function (user, error) {
+                                            params['error'] = error.message;
+                                            console.log(error);
+                                            res.render('accounts/login', params);
+                                        }
+                                    });
+                                },
+                                error: function (error) {
+                                    params['error'] = error.message;
+                                    console.log(error);
+                                    res.render('accounts/login', params);
+                                }
+                            });
+
+
+                        },
+                        error: function (httpResponse) {
+                            handleAmazonError(httpResponse, res, 'accounts/login');
+                        }
+                    })
                 },
-                error: function(user, error) {
-                	console.log(error);
-                	res.send(200, '' + error.code);
+                error: function(httpResponse) {
+                    handleAmazonError(httpResponse, res, 'accounts/login');
                 }
             });
         },
@@ -20,75 +142,141 @@ module.exports = function (keys) {
             Parse.User.logOut();
             res.redirect('/');
         },
-        
-        register: function(req, res) {
-        	var email = req.body.email,
-        		password1 = req.body.password1,
-        		password2 = req.body.password2;
-        		
-        	if (Parse.User.current()) {
-        		Parse.User.logOut();
-        	}	
-        	
-        	if (email == "") {
-        		res.send(200, '0');
-    		}
-	        else if (password1 == "" && password2 == "") {
-	            res.send(200, '1');
-	        }
-	        else if (password1 > "" && password1 != password2) {
-	            res.send(200, '2');
-	        }
-    		else {
-	            var user = new Parse.User();
-	            user.set("username", email);
-	            user.set("password", password1);
-	            user.set("email", email);
-	            user.set('passwordRaw', password1);
-	            user.set('krowdioAccessToken', '');
-	            user.set('krowdioAccessTokenExpires', 0);
-	            user.set('krowdioUserId', '');
-	            
-            	user.signUp(null).then(function(_user) {
-            		
-        			return krowdio.krowdioRegisterEntityAndSave(_user);
-        		}).then(function() {
-        			res.send(200, '200');
-        		}, function(error) {
-        			console.log(error);
-        			res.send(200, '' + error.code);
-        		});
 
-    		}
+        register: {
+            get: function(req, res) {
+                res.render('accounts/register', {
+                    email: '',
+                    password1: '',
+                    password2: '',
+                    error: undefined,
+                    returnURL: decodeReturnURL(req.query.returnURL)
+                });
+            },
+
+            post: function(req, res) {
+                var params = {
+                    email: req.body.email,
+                    password1: req.body.password1,
+                    password2: req.body.password2,
+                    error: undefined,
+                    returnURL: req.body.returnURL
+                };
+
+                if (Parse.User.current()) {
+                    Parse.User.logOut();
+                }
+
+                if (params.email == "") {
+                    params['error'] = "Email address is required!";
+                } else if (params.password1 == "" && params.password2 == "") {
+                    params['error'] = "Password and password confirmation are required!";
+                } else if (params.password1 > "" && params.password1 != params.password2) {
+                    params['error'] = "The passwords you entered did not match!";
+                }
+                if (params['error']) {
+                    res.render('accounts/register', params);
+                } else {
+                    var user = new Parse.User();
+                    user.set("username", params.email);
+                    user.set("password", params.password1);
+                    user.set("email", params.email);
+                    user.set('passwordRaw', params.password1);
+                    user.set('krowdioAccessToken', '');
+                    user.set('krowdioAccessTokenExpires', 0);
+                    user.set('krowdioUserId', '');
+
+                    signUpUser(user, res, params);
+                }
+            }
         },
-        
-        editProfile: function(req, res) {
-        	var name = req.body.name, freeText = req.body.freeText;
-        	
-        	var user = Parse.User.current();
-        	user.set('nickname', req.body.nickname);
-	        user.set('name', name);
-	        user.set('lastName', req.body.lastName);
-	        user.set('nameSearch', req.body.name.toLowerCase());
-	        user.set('freeText', freeText);
-	        user.set('email', req.body.email);
-	        user.set('phone', req.body.phone);
-	        user.set('facebook', req.body.facebook);
-	        user.set('googlePlus', req.body.googlePlus);
-	        user.set('twitter', req.body.twitter);
-	        
-	        var	dob = req.body.dateOfBirth.split('-').reverse().join('-');
-	        
-        	user.set('dob', dob);
-        	
-    		user.set('profileImageThumb', req.body.avatarId);
 
-    		user.save()
+        register_with_amazon: function (req, res) {
+            var query = req.query,
+                accessToken = query.access_token,
+                error = query.error,
+                params = {
+                    email: '',
+                    password1: '',
+                    password2: '',
+                    error: undefined,
+                    returnURL: decodeReturnURL(req.query.returnURL)
+                };
+
+            if (error) {
+                res.render('accounts/register', {
+                    'error': query.error_description + '<br><a href="' + query.error_uri + '">Learn more</a>'
+                });
+            }
+
+            Parse.Cloud.httpRequest({
+                url: 'https://api.amazon.com/auth/O2/tokeninfo?access_token=' + encodeURIComponent(accessToken),
+                success: function(httpResponse) {
+                    var jsonResponse = JSON.parse(httpResponse.text),
+                        isVerified = (jsonResponse.aud == keys.getLoginWithAmazonClientID());
+
+                    if (!isVerified) {
+                        res.render('accounts/register', {
+                            error: 'Verification failed! Please contact administrators'
+                        });
+                    }
+
+                    Parse.Cloud.httpRequest({
+                        url: 'https://api.amazon.com/user/profile?access_token=' + encodeURIComponent(accessToken),
+                        success: function (httpResponse) {
+                            var jsonResponse = JSON.parse(httpResponse.text),
+                                user = new Parse.User();
+
+                            user.set("username", jsonResponse.email);
+                            user.set("email", jsonResponse.email);
+                            user.set('name', jsonResponse.name ? jsonResponse.name : ' Anonymous');
+                            user.set("amazonID", jsonResponse.user_id);
+                            user.set("amazonAccessToken", accessToken);
+                            user.set("password", jsonResponse.user_id);
+                            user.set('passwordRaw', jsonResponse.user_id);
+                            user.set('krowdioAccessToken', '');
+                            user.set('krowdioAccessTokenExpires', 0);
+                            user.set('krowdioUserId', '');
+
+                            signUpUser(user, res, params);
+                        },
+                        error: function (httpResponse) {
+                            handleAmazonError(httpResponse, res, 'accounts/register');
+                        }
+                    })
+                },
+                error: function(httpResponse) {
+                    handleAmazonError(httpResponse, res, 'accounts/register');
+                }
+            });
+        },
+
+        editProfile: function(req, res) {
+            var name = req.body.name, freeText = req.body.freeText;
+
+            var user = Parse.User.current();
+            user.set('nickname', req.body.nickname);
+            user.set('name', name);
+            user.set('lastName', req.body.lastName);
+            user.set('nameSearch', req.body.name.toLowerCase());
+            user.set('freeText', freeText);
+            user.set('email', req.body.email);
+            user.set('phone', req.body.phone);
+            user.set('facebook', req.body.facebook);
+            user.set('googlePlus', req.body.googlePlus);
+            user.set('twitter', req.body.twitter);
+
+            var	dob = req.body.dateOfBirth.split('-').reverse().join('-');
+
+            user.set('dob', dob);
+
+            user.set('profileImageThumb', req.body.avatarId);
+
+            user.save()
             .then(function(){
-            	krowdio.krowdioUploadProfilePicture(user, req.body.avatarId);
+                krowdio.krowdioUploadProfilePicture(user, req.body.avatarId);
                 res.redirect('/dashboard/fans/basicInfo');
             });
         }
-        
     };
 };

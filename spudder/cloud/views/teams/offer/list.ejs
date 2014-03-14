@@ -150,16 +150,12 @@
                     maxWidth: $('.offer-image').width(),
                     maxHeight: 200
                 });
-
-                $('[id^="donation-modal-"]').each(function () {
-                    handleSignInForm($(this).find('[id^="embed-sign-in-"]'));
-                    handleSignUpForm($(this).find('[id^="embed-sign-up-"]'));
-                });
             });
 
             $(window).load(function () {
                 equalHeight($('.pricing-heading'));
             });
         </script>
+        <script src="/media/js/donation-modal.js"></script>
     </body>
 </html>

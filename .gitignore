@@ -1,5 +1,6 @@
 .settings
 spudder/cloud/private-key.js
+spudder/.idea
 *.pyc
 *.project
 *.pydevproject

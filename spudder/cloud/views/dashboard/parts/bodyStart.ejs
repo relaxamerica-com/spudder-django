@@ -290,6 +290,22 @@
 									</a>
 								</li>
 
+                                <% if( getValueOrEmpty( user.get('amazonID') ) == '' ) { %>
+                                    <li>
+                                        <a href="/dashboard/fans/amazon/connect">
+                                            <i class="icon-user"></i>
+                                            Connect with Amazon account
+                                        </a>
+                                    </li>
+                                <% } else if (user.get('amazonID') != user.get('passwordRaw')) { %>
+                                    <li>
+                                        <a href="/dashboard/fans/amazon/disconnect">
+                                            <i class="icon-user"></i>
+                                            Disconnect Amazon account
+                                        </a>
+                                    </li>
+                                <% } %>
+
 								<li class="divider"></li>
 
 								<li>

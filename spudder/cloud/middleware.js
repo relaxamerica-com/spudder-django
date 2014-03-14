@@ -73,4 +73,11 @@ module.exports = function (app, keys) {
             next();
         }
     });
+
+    // Basic information that are different on each server
+    app.use(function(req, res, next) {
+        res.locals.loginWithAmazonClientID = keys.getLoginWithAmazonClientID();
+        res.locals.baseURL = keys.getBaseURL();
+        next();
+    });
 };
