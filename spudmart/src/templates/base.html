@@ -12,19 +12,16 @@
                 <div class="row nomargin">
                     <div class="span12">
                         <div class="row">
-                            <!--
                             <div class="headnav span4">
                                 <ul>
-                                    <% if (user) { %>
-                                    <li><a href="/dashboard" data-toggle="modal"><i class="icon-user"></i><%= user.getUsername() %></a></li>
+                                    {% if request.user.is_authenticated %}
+                                    <li><a href="/dashboard" data-toggle="modal"><i class="icon-user"></i>{{ user.username }}</a></li>
                                     <li><a href="/accounts/logout" data-toggle="modal">Sign out</a></li>
-                                    <% } else { %>
-                                    <li><a href="#mySignup" data-toggle="modal"><i class="icon-user"></i> Sign up</a></li>
-                                    <li><a href="#mySignin" data-toggle="modal">Sign in</a></li>
-                                    <% } %>
+                                    {%  else  %}
+                                    <li><a href="/accounts/login" data-toggle="modal">Sign in</a></li>
+                                    {% endif %}
                                 </ul>
                             </div>
-                            -->
 
                             <div class="hidden-top span8 download-buttons-wrapper">
                                 <div class="row-fluid" id="download-buttons">
@@ -53,7 +50,7 @@
                     <div class="row">
                         <div class="span4">
                             <div class="logo">
-                                <a href="/"><img src="/media/img/spudder_logo.jpg" alt="" class="logo" /></a>
+                                <a href="/"><img src="/media/img/spudmart_logo.png" alt="" class="logo" /></a>
                             </div>
                         </div>
                         <div class="span8">
@@ -83,11 +80,6 @@
 
             {% include 'parts/modals.html' %}
 
-            {% include 'accounts/signUp.html' %}
-
-            {% include 'accounts/signIn.html' %}
-
-            {% include 'accounts/resetPassword.html' %}
         </header>
 
         {% block content %}{% endblock content %}

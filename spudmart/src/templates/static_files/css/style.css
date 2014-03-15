@@ -264,6 +264,7 @@ header .logo {
 
 header .logo img {
 	margin-bottom:10px;
+    width: 200px;
 }
 header .logo h1 {
 	font-size:14px;
@@ -4679,4 +4680,26 @@ div[id^=donation-modal] .loading {
     height: 200px;
     border-bottom: 1px solid #E9E9E9;
     border-top: 1px solid #E9E9E9;
+}
+
+.accounts-form-container {
+    width: 450px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.accounts-form-container .alert {
+    display: block;
+    padding-right: 15px;
+    margin-left: 40px;
+    margin-right: 50px;
+    text-align: center;
+}
+
+.accounts-form-container .loading {
+    visibility: hidden;
+}
+
+.accounts-form-container .accounts-form-header h4 {
+    text-align: center;
 }

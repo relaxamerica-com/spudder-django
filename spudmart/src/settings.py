@@ -18,7 +18,7 @@ DOMAIN_NAME = 'http://www.spudder.com'
 
 APP_NAME = 'spudder.com'
 
-AUTH_PROFILE_MODULE = 'profile.Profile'
+AUTH_PROFILE_MODULE = 'accounts.UserProfile'
 
 AWS_ACCESS_KEY_ID = 'AKIAIV6G36242PJ4L7WQ'
 AWS_SECRET_KEY_ID = '5EIFJLrQB6RhtI4wOBLF7DPu4ZyTMbOrwXrneJZg'
@@ -81,3 +81,6 @@ mimetypes.add_type("application/x-font-woff", ".woff")
 
 LOGIN_REDIRECT_URL = '/'
 ACCOUNT_ACTIVATION_DAYS = 5
+
+# Make this unique, and don't share it with anybody.
+SECRET_KEY = '8lu*6g0lg)9z!ba+a$ehk)xt)x%rxgb$i1&amp;022shmi1jcgihb*'
