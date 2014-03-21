@@ -107,7 +107,7 @@ module.exports = function (keys) {
 
                             userQuery.first({
                                 success: function (_user) {
-                                    Parse.User.logIn(jsonResponse.email, _user.get('passwordRaw'), {
+                                    Parse.User.logIn(_user.get('email'), _user.get('passwordRaw'), {
                                         success: function () {
                                             res.redirect(params.returnURL ? params.returnURL : '/dashboard');
                                         },
