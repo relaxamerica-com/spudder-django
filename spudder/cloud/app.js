@@ -6,4 +6,7 @@ require('cloud/config.js')(app, express);
 require('cloud/middleware.js')(app, keys);
 require('cloud/routing/main.js')(app, keys);
 
+/** Cloud functions */
+require('cloud/functions/teams.js');
+
 app.listen();

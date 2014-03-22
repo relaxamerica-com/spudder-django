@@ -1,20 +1,19 @@
 # Initialize App Engine and import the default settings (DB backend, etc.).
 # If you want to use a different backend you have to remove all occurences
 # of "djangoappengine" from this file.
-from djangoappengine.settings_base import *
-
 import os
 import mimetypes
 
+from djangoappengine.settings_base import *
+
 # Activate django-dbindexer for the default database
+from spudmart.utils.app_identity import get_application_version
+
 DATABASES['native'] = DATABASES['default']
 DATABASES['default'] = {'ENGINE': 'dbindexer', 'TARGET': 'native'}
 AUTOLOAD_SITECONF = 'indexes'
 
 DEBUG=True
-
-DOMAIN_NAME = 'http://www.spudder.com'
-#DOMAIN_NAME = 'localhost:8000'
 
 APP_NAME = 'spudder.com'
 
@@ -84,3 +83,36 @@ ACCOUNT_ACTIVATION_DAYS = 5
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = '8lu*6g0lg)9z!ba+a$ehk)xt)x%rxgb$i1&amp;022shmi1jcgihb*'
+
+app_version = get_application_version()
+# app_version = 'spudmart'
+
+shared_settings = {
+    'spudmart': {
+        'spudder_application_id': 'RwjN7ubrqVZSXcwd2AWaQtov6Mgsi7hAXZ510xTR',
+        'spudder_rest_api_key': 'aY5jEVPGJadgWcd2gOecgnzMNKDS9Igx8d5DNU04',
+        'spudder_base_url': 'https://spudmart.parseapp.com',
+        'spudmart_base_url': 'https://spudmart-dot-spudmart1.appspot.com',
+        'amazon_login_client_id': 'amzn1.application-oa2-client.f46864c6f8bb40d1bc2c3d211c514486'
+    },
+    'lukasz': {
+        'spudder_application_id': 'QZjpmUJQEwBE6Wc0YfKEMRwv2C5Aeb4qQbopyIg9',
+        'spudder_rest_api_key': 'S47GCWTSehKpwwJ2y8iXVnoYLWqOoPyydKiyWYYb',
+        'spudder_base_url': 'https://spudmartlukasz.parseapp.com',
+        'spudmart_base_url': 'https://lukasz-dot-spudmart1.appspot.com',
+        'amazon_login_client_id': 'amzn1.application-oa2-client.de78cbafe055444aa00e07a445644d16'
+    },
+    'karol': {
+        'spudder_application_id': 'YU4g6sCW8Dvl6khJsVYgXhr20Pu5zaaLcIQ4oRON',
+        'spudder_rest_api_key': 'AbvJ682IvzXdWMMi1CbdONZHZhdJH4gFEyTWo4k9',
+        'spudder_base_url': 'https://karol.parseapp.com',
+        'spudmart_base_url': 'https://karol-dot-spudmart1.appspot.com',
+        'amazon_login_client_id': 'amzn1.application-oa2-client.d8fccc9c77624577898dca9ff517eff3'
+    }
+}
+
+SPUDDER_APPLICATION_ID = shared_settings[app_version]['spudder_application_id']
+SPUDDER_REST_API_KEY = shared_settings[app_version]['spudder_rest_api_key']
+SPUDDER_BASE_URL = shared_settings[app_version]['spudder_base_url']
+SPUDMART_BASE_URL = shared_settings[app_version]['spudmart_base_url']
+AMAZON_LOGIN_CLIENT_ID = shared_settings[app_version]['amazon_login_client_id']

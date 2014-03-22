@@ -1,17 +1,22 @@
-import urllib
-import urllib2
+import urllib, urllib2
 import django
+import settings
+import json
 from django.contrib.auth import authenticate
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from spudmart.accounts.models import UserProfile
 from spudmart.utils.url import get_return_url
 from django.contrib.auth.models import User
-import json
 
 
 def login(request):
-    return render(request, 'accounts/login.html', { 'returnURL': get_return_url(request) })
+    return render(request, 'accounts/login.html', {
+        'client_id': settings.AMAZON_LOGIN_CLIENT_ID,
+        'base_url': settings.SPUDMART_BASE_URL,
+        'returnURL': get_return_url(request)
+    })
+
 
 def _handle_amazon_conn_error(request, json_data):
     return render(request, 'accounts/login.html', {
@@ -37,7 +42,7 @@ def amazon_login(request):
     token_request = urllib2.urlopen('https://api.amazon.com/auth/O2/tokeninfo?%s' % query_parameters)
     json_data = json.load(token_request)
     if token_request.getcode() == 200:
-        is_verified = json_data['aud'] == 'amzn1.application-oa2-client.f46864c6f8bb40d1bc2c3d211c514486'
+        is_verified = json_data['aud'] == settings.AMAZON_LOGIN_CLIENT_ID
         if not is_verified:
             return render(request, 'accounts/login.html', {
                 'next': return_url,

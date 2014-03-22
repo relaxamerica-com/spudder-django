@@ -1,0 +1,11 @@
+.page-content .page-header:first-child h1 {
+    margin: 0 20px;
+}
+
+.page-content .content {
+    margin: 0 20px;
+}
+
+.page-content .content a + a {
+    margin-left: 10px;
+}

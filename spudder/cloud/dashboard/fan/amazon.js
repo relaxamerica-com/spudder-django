@@ -30,7 +30,8 @@ module.exports = function (keys) {
 
             var query = req.query,
                 accessToken = query.access_token,
-                error = query.error;
+                error = query.error,
+                returnURL = req.query.returnURL;
 
             if (error) {
                 handleConnectError(query.error_description + '<br><a href="' + query.error_uri + '">Learn more</a>', res);
@@ -57,7 +58,7 @@ module.exports = function (keys) {
 
                                 user.save(null, {
                                     success: function () {
-                                        res.redirect('/dashboard/fans/amazon/connected');
+                                        res.redirect(returnURL ? returnURL : '/dashboard/fans/amazon/connected');
                                     },
 
                                     error: function (team, error) {

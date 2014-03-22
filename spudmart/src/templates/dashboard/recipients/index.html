@@ -1,0 +1,17 @@
+{% extends 'dashboard_base.html' %}
+
+{% block content %}
+    <div class="page-header">
+        <h1>
+            Dashboard <small><i class="icon-double-angle-right"></i> register team as recipient</small>
+        </h1>
+    </div>
+
+    <div class="content">
+        <p>You're about to register your team as a recipient. To complete the registration you need to navigate to Amazon.</p>
+        <p>But before that, please check if below information are correct. If not, please go back to Spudder.</p>
+        <p><strong>Team name: </strong>{{ team_name }}</p>
+        <a class="btn btn-success" href="{{ cbui_url }}">Go to Amazon</a>
+        <a class="btn btn-danger" href="{{ spudder_url }}">Cancel (go back to Spudder)</a>
+    </div>
+{% endblock content %}

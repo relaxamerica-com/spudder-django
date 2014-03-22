@@ -1,21 +1,22 @@
 module.exports = function (keys) {
     return {
         register: function (req, res) {
-            var amazonFPS = require('cloud/amazon/fps')(keys),
-                teamID = req.params.teamID,
-                params = {
-                    'pipelineName': 'Recipient',
-                    'recipientPaysFee': 'True',
-                    'returnURL': 'https://' + keys.getAppName() + '.parseapp.com/dashboard/payments/recipient/' + teamID + '/complete'
-                };
+            Parse.User.current().fetch().then(function (user) {
+                var teamID = req.params.teamID,
+                    connectedWithAmazon = user.get('amazonID') != '',
+                    spudmartURL = keys.getSpudmartURL() + '/dashboard/recipient/' + teamID;
 
-            res.render('dashboard/payments/recipient/register', {
-                'breadcrumbs' : [
-                    { 'title' : 'Teams', 'href' : '/dashboard/teams' },
-                    { 'title' : 'Registering as Recipient', 'href' : 'javascript:void(0);' }
-                ],
-                'cbui': amazonFPS.getCBUI(params)
+                res.render('dashboard/payments/recipient/register', {
+                    'breadcrumbs' : [
+                        { 'title' : 'Teams', 'href' : '/dashboard/teams' },
+                        { 'title' : 'Registering as Recipient', 'href' : 'javascript:void(0);' }
+                    ],
+                    'spudmartURL': spudmartURL,
+                    'teamID': teamID,
+                    'connected': connectedWithAmazon
+                });
             });
+
         },
 
         register_complete: function (req, res) {

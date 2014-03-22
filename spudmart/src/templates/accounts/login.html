@@ -5,7 +5,7 @@
 <div id="amazon-root"></div>
 <script type="text/javascript">
     window.onAmazonLoginReady = function() {
-        amazon.Login.setClientId('amzn1.application-oa2-client.f46864c6f8bb40d1bc2c3d211c514486');
+        amazon.Login.setClientId('{{ client_id }}');
     };
     (function(d) {
         var a = d.createElement('script'); a.type = 'text/javascript';
@@ -25,7 +25,7 @@
             <div class="alert alert-error"><%= error %></div>
             {% endif %}
 
-            <input type="hidden" name="returnURL" {% if next %}value="{{ next }}"{% endif %}>
+            <input type="hidden" name="returnURL" {% if returnURL %}value="{{ returnURL }}"{% endif %}>
 
             <div class="control-group">
                 <p class="aligncenter">
@@ -59,7 +59,7 @@
 
     var loginWithAmazon = document.getElementById('LoginWithAmazon'),
         next = getURLParameter('next'),
-        returnUrl = 'https://spudmart1.appspot.com/accounts/login/amazon';
+        returnUrl = '{{ base_url }}/accounts/login/amazon';
 
     if (next) returnUrl += '?next=' + next;
 

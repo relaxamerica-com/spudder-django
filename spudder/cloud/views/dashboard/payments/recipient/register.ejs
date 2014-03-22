@@ -5,14 +5,18 @@
 <div id="spuds" class="">
 	<div class="row-fluid">
 		<div class="span12">
-            <p>
-                On this page you can register as a recipient so funds can be transfered to you by sponsors.
-            </p>
-            <p>
-                <a href="<%= cbui %>">
-                    Register as a recipient!
-                </a> (You will be redirected to Amazon Marketplace to verify your account).
-            </p>
+            <% if (connected ){ %>
+                <p>
+                    In order to register your team as a recipient, you have to go to Spudmart. After successful registration, you will be redirected back to Spudder.
+                </p>
+                <p>
+                    <a href="<%= spudmartURL %>">Navigate to Spudmart</a>
+                </p>
+            <% } else { %>
+            <p><strong>It looks like you don't have Amazon account connected!</strong></p>
+            <p>Before moving forward with registering team as a recipient you have to
+                <a href="/dashboard/fans/amazon/connect?returnURL=/dashboard/payments/recipient/<%= teamID %>">Connect with Amazon account</a>!</p>
+            <% } %>
 		</div>
 	</div>
 </div>

@@ -30,11 +30,19 @@
 <% include ../../parts/scripts %>
 
 <script>
-    var loginWithAmazon = document.getElementById('LoginWithAmazon');
+    function getURLParameter(name) {
+        return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search)||[,""])[1].replace(/\+/g, '%20'))||null
+    }
+
+    var loginWithAmazon = document.getElementById('LoginWithAmazon'),
+        next = getURLParameter('returnURL'),
+        returnURL = '<%= baseURL %>/dashboard/fans/amazon/connect_complete';
+
+    if (next) returnURL += '?returnURL=' + next;
 
     loginWithAmazon.onclick = function() {
         options = { scope : 'profile' };
-        amazon.Login.authorize(options, '<%= baseURL %>/dashboard/fans/amazon/connect_complete');
+        amazon.Login.authorize(options, returnURL);
         return false;
     };
 </script>

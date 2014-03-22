@@ -8,7 +8,8 @@ module.exports = function () {
         javascriptKeys = ['zDk1PxddnEJwnLKxrnypGuM4pIq9Z7adAi4rprgH', 'UygLrj7cUKeLSxDWOd7Ch4bEyLfBxQglf2VkGc6Q', 'JRu7BtIEuRDl3QaYNRLguV4a1pFjES02wHfRP5Al'],
         appNames = ['spudmart', 'spudmartlukasz', 'karol'], version = 'spudmart',
         loginWithAmazonClientID = ['amzn1.application-oa2-client.788a2a4986a7412d98417564d8351dc1', 'amzn1.application-oa2-client.46cdd53e23404279b1148162f5f1c0e3', 'amzn1.application-oa2-client.f98d88c846394e5394f6130c0e33941b'],
-        baseURLs = ['https://spudmart.parseapp.com', 'https://spudmartlukasz.parseapp.com', 'https://karol.parseapp.com'];
+        baseURLs = ['https://spudmart.parseapp.com', 'https://spudmartlukasz.parseapp.com', 'https://karol.parseapp.com'],
+        spudmartURLs = ['https://spudmart-dot-spudmart1.appspot.com', 'https://lukasz-dot-spudmart1.appspot.com', 'https://karol-dot-spudmart1.appspot.com'];
 
     try {
         version = require('cloud/private-key.js')();
@@ -39,6 +40,10 @@ module.exports = function () {
 
         getBaseURL: function () {
             return baseURLs[versions[version]];
+        },
+
+        getSpudmartURL: function () {
+            return spudmartURLs[versions[version]];
         },
 
         AWS_ACCESS_KEY_ID: 'AKIAIV6G36242PJ4L7WQ',

@@ -156,32 +156,9 @@ module.exports = function (keys) {
                     query.equalTo('admins', user);
 
                     query.find().then(function (list) {
-                        var promise = Parse.Promise.as();
-
-                        _.each(list, function(team) {
-                            var Recipient = Parse.Object.extend('Recipient'),
-                                recipientQuery = new Parse.Query(Recipient);
-
-                            recipientQuery.equalTo('team', team);
-
-                            promise = promise.then(function() {
-                                var findPromise = new Parse.Promise();
-
-                                recipientQuery.find().then(function (results) {
-                                    team.set('isRegisteredRecipient', results.length > 0);
-                                    teamsList.push(team);
-                                    findPromise.resolve();
-                                });
-
-                                return findPromise;
-                            });
-                        });
-
-                        return promise;
-                    }).then(function () {
                         return res.render('dashboard/teams/list', {
                             'breadcrumbs' : [{ 'title' : 'Teams', 'href' : '/dashboard/teams' }, { 'title' : 'My teams', 'href' : 'javascript:void(0);' }],
-                            'list': teamsList
+                            'list': list
                         });
                     });
                 });

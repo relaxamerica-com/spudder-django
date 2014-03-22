@@ -12,6 +12,10 @@ module.exports = function (keys) {
 
                 query.get(teamID, {
                     success: function(team) {
+                        if (!team.get('isRegisteredRecipient')) {
+                            res.redirect('/dashboard/teams/');
+                        }
+
                         var TeamOffer = Parse.Object.extend("TeamOffer"),
                             offerQuery = new Parse.Query(TeamOffer),
                             pastOffers = [], currentOffers = [],
