@@ -1,5 +1,5 @@
 application: spudmart1
-version: lukasz
+version: spudmart
 runtime: python27
 api_version: 1
 threadsafe: false

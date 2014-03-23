@@ -1,4 +1,6 @@
 from django.db import models
+from spudmart.spudder.models import Team
+from django.contrib.auth.models import User
 
 
 class RecipientRegistrationState():
@@ -50,19 +52,11 @@ class RecipientRegistrationStatus():
         return 'Success'
 
 
-class RecipientRegistration(models.Model):
-    created_date = models.DateTimeField(auto_now_add=True)
-    modified_date = models.DateTimeField(auto_now_add=True)
-    team_id = models.CharField()
-    team_name = models.CharField()
-    state = models.IntegerField(default=RecipientRegistrationState.NOT_STARTED)
-    status_code = models.CharField()
-
-
 class Recipient(models.Model):
     created_date = models.DateTimeField(auto_now_add=True)
-    modified_date = models.DateTimeField(auto_now_add=True)
-    team_id = models.CharField()
-    team_name = models.CharField()
+    team = models.ForeignKey(Team)
     recipient_token_id = models.CharField()
     refund_token_id = models.CharField()
+    state = models.IntegerField(default=RecipientRegistrationState.NOT_STARTED)
+    status_code = models.CharField()
+    registered_by = models.ForeignKey(User)

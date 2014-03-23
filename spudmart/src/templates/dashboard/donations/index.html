@@ -3,17 +3,21 @@
 {% block content %}
     <div class="page-header">
         <h1>
-            Dashboard <small><i class="icon-double-angle-right"></i> register team as recipient</small>
+            Dashboard <small><i class="icon-double-angle-right"></i> making donation</small>
         </h1>
     </div>
 
     <div class="content">
-        <p>You're about to register your team as a recipient. To complete the registration you need to navigate to Amazon.</p>
+        <p>You're about to make a donation for team offer. To complete the registration you need to navigate to Amazon.</p>
         <p>But before that, please check if below information are correct. If not, please go back to Spudder.</p>
 
         <dl class="dl-horizontal">
+            <dt>Title:</dt>
+            <dd>{{ offer.title }}</dd>
+            <dt>Donation:</dt>
+            <dd>${{ offer.donation }}</dd>
             <dt>Team:</dt>
-            <dd>{{ team }}</dd>
+            <dd>{{ offer.team }}</dd>
         </dl>
 
         <a class="btn btn-success" href="{{ cbui_url }}">Go to Amazon</a>
