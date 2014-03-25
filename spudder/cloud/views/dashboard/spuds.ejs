@@ -44,8 +44,8 @@
 				</div>
 				
 				<div class="tab-content hidden" id="all">
-					<% spuds.items.forEach(function(spud) { %>
-						<%- spudContainer(spud, false, getValueOrEmpty, user) %>
+					<% spuds.forEach(function(spud) { %>
+						<%- spudContainer(spud, false, getValueOrEmpty, user, teams) %>
 					<% }) %>
 				</div>
 			</div>
@@ -57,11 +57,12 @@
 
 	<script src="/media/dashboard/js/tab-control.js"></script>
 	<script src="/media/dashboard/js/jquery.isotope.min.js"></script>
+	<script src="/media/js/spud-container-utils.js"></script>
 	<script type="text/javascript">
-		var all = $('#all'),
-    		container = $('#social-container');
     		
 	    $(window).load(function() {
+			var all = $('#all'),
+	    		container = $('#social-container');
 	      /*
 	      # init isotope, then insert all items from hidden alpha
 	      */
@@ -70,11 +71,7 @@
 				itemSelector: '.item'
 			}).isotope('insert', all.find('.item'));
 			
-			return $("#load-more").html("Load more").find("i").hide();
-	    });
-	    
-	    $(document).ready(function() {
-	    	$('#showAll').click(function() {
+			$('#showAll').click(function() {
 	    		container.isotope({ filter: '.item' });
 	    	});
 	    	
@@ -89,6 +86,272 @@
 	    	$('#showVideos').click(function() {
 	    		container.isotope({ filter: '.video' });
 	    	});
+	    	
+			
+			return $("#load-more").html("Load more").find("i").hide();
+	    });
+	    
+	    $(document).ready(function() {
+	    	
+	    	$('.buttons-bottom .btn, .tag-buttons .btn').tooltip({
+				hide: {
+					effect: "explode",
+					delay: 2500
+				},
+				show: {
+					effect: "slideDown",
+					delay: 2500
+				}
+			});
+
+            $('.btn.like').click(function() {
+                var spudContainer = $(this).parents('.spud-container'),
+                    spudID = spudContainer.attr('id'),
+                    loadingLikes = spudContainer.find('.loading-likes'),
+                    counter = spudContainer.find('.like-counter');
+
+                var response = $.post('/spuds/toggleLike', {
+                    'id' : spudID
+                });
+
+                loadingLikes.css('display', 'inline-block');
+                counter.hide();
+
+                response.done(function(data) {
+                    var parsed = JSON.parse(data);
+                    loadingLikes.hide();
+                    counter.html(parsed.totalItems);
+                    counter.css('display', 'inline-block');
+                });
+            });
+
+	    	$('.tag').click(function() {
+	    		var spudContainer = $(this).parents('.spud-container'),
+					buttons = spudContainer.find('.tag-buttons'),
+					decodedTags = spudContainer.find('.decodedTags'),
+					teamExists = teamTagExists(spudContainer),
+					isAlreadyLoaded = $(this).hasClass('alreadyLoaded'),
+					self = this;
+				
+				if (teamExists.doesExist && !isAlreadyLoaded) {
+					setTeamPlayersAndCoaches(teamExists.id, spudContainer);
+				}
+				
+				if (buttons.is(':visible')) {
+					buttons.hide();
+				} else {
+					buttons.show();
+				}
+				
+				reLayout();
+				
+	    		var tagsContainer = $(decodedTags).parents('.spud-container').find('.tags-container'),
+	    			tags = $(decodedTags).val();
+	    		
+	    		if (tags.length && !isAlreadyLoaded) {
+	    			
+	    			var loadingTags = $(spudContainer).find('.loading-tags');
+	    			
+	    			loadingTags.show();
+	    			
+	    			reLayout();
+	    			
+		    		$.post('/spuds/encodeTags', {
+		    			'tags' : $(decodedTags).val()
+		    		}, function(httpResponse) {
+		    			var tags = JSON.parse(httpResponse).items;
+		    			
+		    			$(self).addClass('alreadyLoaded');
+		    			
+		    			$.each(tags, function() {
+		    				var tagDiv = $('<div class="tag"></div>'),
+		    					tagLink = $('<a href=""></a>');
+		    				
+		    				tagLink.attr('href', getEntityPublicViewURL(this.clazz, this.id));
+		    				tagLink.html(this.name);
+		    				tagDiv.html(tagLink);
+		    				
+		    				tagsContainer.append(tagDiv);
+		    			});
+		    			
+		    			loadingTags.hide();
+		    			reLayout();
+		    		});
+		    		
+    			}
+				
+			});
+			
+			$('.tag-buttons .btn').click(function() {
+				var title = $(this).attr('data-original-title').toLowerCase(),
+					spudContainer = $(this).parents('.spud-container'),
+					inputs = spudContainer.find('.tag-' + title);
+				
+				if (title == 'team' && $(this).attr('alreadyTagged') == 'true') {
+					alert('You can tag only one Team per SPUD.', spudContainer);
+					return;
+				}
+				
+				if (inputs.is(':visible')) {
+					inputs.hide();
+				} else {
+					inputs.show();
+				}
+				
+				reLayout();
+			});
+			
+			function alert(msg, spudContainer) {
+				var alert = spudContainer.find('.alert-danger');
+				alert.html(
+					msg
+				);
+				
+				alert.show();
+				reLayout();
+			}
+			
+			function reLayout() {
+				$('#social-container').isotope('reLayout');
+			}
+			
+			$('.load-comments, [name="comment"]').click(function() {
+				var ids = [],
+					spudContainer = $(this).parents('.spud-container'),
+					loadingComments = spudContainer.find('.loading-comments'),
+					currentComments = spudContainer.find('.comment');
+					
+					
+				console.log(currentComments.is(':visible'))
+				console.log($(this).hasClass('load-comments'))
+				
+				if (currentComments.is(':visible') && $(this).hasClass('load-comments')) {
+					
+					currentComments.hide();
+					reLayout();
+					
+				} else if (!loadingComments.hasClass('alreadyLoaded')) { 
+				
+					loadingComments.css('display', 'table');
+
+                    reLayout();
+
+					$.each(currentComments, function() {
+						var id = $(this).attr('krowdioUserId');
+						
+						if ($.inArray(id, ids) === -1) {
+							ids.push(id);
+						}
+					});
+
+                    if (ids.length) {
+                        var response = $.post('/spuds/getCommentsPublishers', {
+                            'ids' : ids
+                        });
+
+                        response.done(function(data) {
+                            var items = JSON.parse(data).items;
+
+                            $.each(items, function(key, value) {
+                                var comment = $('[krowdiouserid="' + key + '"]');
+                                if (value.profileImageThumb.length > 0) {
+                                    comment.find('.social-avatar').attr('src', value.profileImageThumb);
+                                }
+
+                                var userName = 'Annonymous';
+
+                                if (value.nickname.length > 0) {
+                                    userName = value.nickname;
+                                } else if (value.krowdioUserId.length > 0) {
+                                    userName = value.krowdioUserId;
+                                }
+
+                                comment.find('.user-name').html(userName);
+                            });
+
+							loadingComments.addClass('alreadyLoaded');
+
+                            loadingComments.hide();
+                            currentComments.show();
+                            reLayout();
+                        });
+
+                    }
+				} else {
+					currentComments.show();
+                    reLayout();
+				}
+			});
+			
+			$('.spud-container .add-comment').on('submit', function(e) {
+				e.preventDefault();
+				
+				var url = $(this).attr('action'),
+					commentInput = $(this).find('input[name="comment"]'),
+					text = commentInput.val(),
+					self = this,
+					postingComment = $(this).find('.posting-comment'),
+					spudContainer = $(this).parents('.spud-container');
+					
+				postingComment.css('display', 'inline-block');
+				commentInput.val('');
+				
+				$.post(url, { 'comment' : text }, function(comments) {
+					var user = {
+						'nickname' : '<%- getValueOrEmpty(user.get("nickname")) %>',
+						'krowdioUserId' : '<%- getValueOrEmpty(user.get("krowdioUserId")) %>',
+						'profileImageThumb' : '<%- getValueOrEmpty(user.get("profileImageThumb")) %>'
+					}, comment = buildComment('', text, user, new Date().toString());
+					
+					$(self).after(comment);
+					
+					comment.show();
+					
+					postingComment.hide();
+					
+					reLayout();
+				});
+			});
+			
+			$('.tagTeam').click(function(e) {
+				e.preventDefault();
+				
+				var nameFromInput = $(this).parent().find('input').val(),
+					select = $(this).parent().find('select'),
+					idFromSelect = select.val(),
+					nameFromSelect = select.find(':selected').html(),
+					name = idFromSelect.length > 0 ? nameFromSelect : nameFromInput,
+					spudContainer = $(this).parents('.spud-container');
+				
+				if (nameFromInput.length == 0 && idFromSelect.length == 0) {
+					alert('You must select a team from favorites or type name of the existing team', spudContainer);
+				}
+					
+				setTeamIdByName(name, nameFromInput.length > 0, spudContainer).then(function(teamId) {
+					setTeamPlayersAndCoaches(teamId, spudContainer);
+					$('.tag-team').hide();
+					spudContainer.find('[data-original-title="Team"]').attr('alreadyTagged', 'true');
+				});
+				
+				
+			}); 
+			
+			$('.tagPlayer').click(function(e) {
+				e.preventDefault();
+				
+				var selected = $(this).parent().find('select').find(':selected');
+				
+				addTag('Player', selected.val(), selected.html(), $(this).find('.spud-container'));
+			});
+			
+			$('.tagCoach').click(function(e) {
+				e.preventDefault();
+				
+				var selected = $(this).parent().find('select').find(':selected');
+				
+				addTag('Coach', selected.val(), selected.html(), $(this).find('.spud-container'));
+			});
+		
 	    });
 	    
 	    // $('#load-more').click(function() {

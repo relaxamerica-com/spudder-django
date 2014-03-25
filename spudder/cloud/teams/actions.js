@@ -74,7 +74,6 @@ module.exports = function (keys) {
                         var path = 'https://' + keys.getAppName() + '.parseapp.com/teams/' + teamID;
 
 						krowdio.krowdioGetUserMentionActivity(userAgent, currentTeam).then(function(spuds) {
-							console.log(JSON.parse(spuds))
 	                        res.render('teams/view', {
 	                            'displaySponsors' : require('cloud/commons/displaySponsors'),
 	                            'team': currentTeam,

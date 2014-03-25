@@ -73,7 +73,7 @@
 			        	<div class="carousel-inner">
 				           	<% spuds.items.forEach(function(spud, i) { %>
 				           		<div class="item <% if (i == 0) { %>active<% } %> <%- i %>">
-									<%- spudContainer(spud, true, getValueOrEmpty, user) %>
+									<%- spudContainer(spud, true, getValueOrEmpty, user, []) %>
 								</div>
 							<% }) %>
 						</div>
@@ -94,11 +94,9 @@
         <script type="text/javascript" src="/media/dashboard/js/jquery-ui-1.10.3.custom.min.js"></script>
         <script type="text/javascript" src="/media/js/switches.js"></script>
         <script type="text/javascript" src="/media/js/spud-container.js"></script>
+        <script type="text/javascript" src="/media/js/spud-container-utils.js"></script>
         <script type="text/javascript">
             $(document).ready(function() {
-            	$('#spud-carousel').carousel({
-            		interval: false
-            	});
             	
                 $('.ui-slider-green').slider({
                     orientation: "horizontal",
@@ -106,6 +104,14 @@
                     max: 100,
                     value: 50
                 });
+                
+                var user = {
+					'nickname' : '<%- getValueOrEmpty(user.get("nickname")) %>',
+					'krowdioUserId' : '<%- getValueOrEmpty(user.get("krowdioUserId")) %>',
+					'profileImageThumb' : '<%- getValueOrEmpty(user.get("profileImageThumb")) %>'
+				};
+                
+                applyAddCommentListener(user);
             });
         </script>
     </body>

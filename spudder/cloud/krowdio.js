@@ -206,7 +206,7 @@ exports.krowdioGetPostsForEntity = function(entity, userAgent){
     	
 };
 		
-exports.krowdioUploadProfilePicture = function(entity, dataUri){
+exports.krowdioUploadProfilePicture = function(entity, dataUri, userAgent){
     var promise = new Parse.Promise(),
     	self = this;
     self.krowdioEnsureOAuthToken(entity, userAgent)
@@ -316,3 +316,109 @@ exports.krowdioGetUserMentionActivity = function(userAgent, entity) {
         });
 	
 };
+
+exports.krowdioPostComment = function(userAgent, contentID, text) {
+	var promise = new Parse.Promise(),
+    	self = this,
+    	_contentID = contentID,
+    	_text = text;
+    	
+    self.krowdioEnsureOAuthToken(Parse.User.current(), userAgent)
+        .then(function(entity){
+            var token = 'Token token="' + entity.get('krowdioAccessToken') + '"';
+            var postData = {
+                text: _text
+            };
+            Parse.Cloud.httpRequest({
+		    	method: 'POST',
+		    	url: 'http://api.krowd.io/comment/' + _contentID,
+		    	body: postData,
+		    	headers: { 'Authorization': token },
+		        success: function(httpResponse) {
+		        	promise.resolve(httpResponse.text);
+		    	},
+		    	error: function(httpResponse) {
+		    		console.log(httpResponse)
+		    		console.log(httpResponse.code);
+		    		promise.reject();
+		    	}
+		   });
+        });
+        
+    return promise;
+};
+
+exports.krowdioToggleLike = function(userAgent, contentID) {
+	var promise = new Parse.Promise(),
+    	self = this,
+    	_contentID = contentID;
+    	
+    self.krowdioEnsureOAuthToken(Parse.User.current(), userAgent)
+        .then(function(entity){
+            var token = 'Token token="' + entity.get('krowdioAccessToken') + '"';
+            
+            Parse.Cloud.httpRequest({
+		    	method: 'POST',
+		    	url: 'http://api.krowd.io/like/' + _contentID,
+		    	headers: { 'Authorization': token },
+		        success: function(httpResponse) {
+		        	promise.resolve(httpResponse.text);
+		    	},
+		    	error: function(httpResponse) {
+		    		console.log(httpResponse.text)
+		    		promise.reject();
+		    	}
+		   });
+        });
+        
+    return promise;
+};
+
+exports.getForPost = function(what, userAgent, postId) {
+    var self = this,
+        _postId = postId;
+
+    return self.krowdioEnsureOAuthToken(Parse.User.current(), userAgent)
+        .then(function(entity){
+
+            var token = 'Token token="' + entity.get('krowdioAccessToken') + '"',
+                promise = new Parse.Promise();
+
+            Parse.Cloud.httpRequest({
+                method: 'GET',
+                url: 'http://api.krowd.io/' + what + '/' + _postId + '?limit=10&page=1&newpage=1&startid=&direction=None',
+                headers: { 'Authorization' : token },
+                success: function(httpResponse) {
+                    promise.resolve(httpResponse);
+                },
+                error: function(httpResponse) {
+                    promise.reject(httpResponse);
+                }
+            });
+
+            return promise;
+        })
+        .then(function(krowdioData){
+            if (typeof krowdioData == 'string') {
+                krowdioData = JSON.parse(krowdioData);
+            }
+            if (krowdioData.error != null)
+                return Parse.Pomise.error(krowdioData.error);
+            return Parse.Promise.as(krowdioData.text);
+        },
+        function(krowdioData){
+            console.log(krowdioData);
+            return Parse.Promise.error(krowdioData);
+        });
+
+};
+
+exports.krowdioGetCommentsForPost = function(userAgent, postId) {
+	return this.getForPost('comment', userAgent, postId);
+};
+
+exports.krowdioGetLikesForPost = function(userAgent, postId) {
+    return this.getForPost('like', userAgent, postId);
+};
+
+

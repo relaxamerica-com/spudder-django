@@ -1,5 +1,4 @@
-<div class="spud-container <%- spud.target.objectType %> mentions">
-	
+<div class="spud-container <%- spud.target.objectType %> mentions" id="<%- spud.target.id %>">
 	<div class="content">
 		<div class="clearfix">
 			<% if( getValueOrEmpty( user.get('profileImageThumb') ) == '' ) { %>
@@ -34,30 +33,102 @@
 		<p>
 			<%- spud.target.title %>
 		</p>
+
+        <div class="tags-container">
+            <div class="loading-tags">
+                <img src="/media/img/ajax-loader.gif" /> Loading tags...
+            </div>
+            <input type="hidden" class="decodedTags" value="<%- spud.target.usertext %>" />
+            <input type="hidden" class="tags" value="" />
+        </div>
 		
-		<div class="buttons-bottom"> 
-			<div title="Like" class="btn btn-small btn-black-outline"> 
-    			<i class="icon-thumbs-up"> </i> 
-    		</div> 
-    		<div title="Dislike" class="btn btn-small btn-black-outline"> 
-    			<i class="icon-thumbs-down"> </i> 
-    		</div> 
-    		<div title="Tag" class="btn btn-small btn-black-outline"> 
-    			<i class="icon-tag"> </i> 
-    		</div> 
-    		<div title="Tag Venue" class="btn btn-small btn-black-outline"> 
-    			<i class="icon-map-marker"> </i> 
-    		</div> 
-    		<div title="Share" id="share" class="btn btn-small btn-black-outline"> 
-    			<i class="icon-share-alt"> </i>
-    		</div> 
+		<div class="buttons-bottom row-fluid">
+            <div class="span8">
+                <div title="Like" class="btn btn-small btn-black-outline like">
+                    <div class="loading-likes">
+                        <img src="/media/img/ajax-loader.gif" height="13" width="13" />
+                    </div>
+                    <i class="icon-thumbs-up"> </i>
+                </div>
+                <div title="Dislike" class="btn btn-small btn-black-outline">
+                    <i class="icon-thumbs-down"> </i>
+                </div>
+                <div title="Tag" class="btn btn-small btn-black-outline tag">
+                    <i class="icon-tag"> </i>
+                </div>
+                <div title="Tag Venue" class="btn btn-small btn-black-outline">
+                    <i class="icon-map-marker"> </i>
+                </div>
+                <div title="Share" id="share" class="btn btn-small btn-black-outline">
+                    <i class="icon-share-alt"> </i>
+                </div>
+            </div>
+            <div class="span4">
+                <a class="load-comments" href="#"></a>
+            </div>
     	</div>
+        <div class="tag-buttons">
+            <div class="btn btn-small btn-black-outline" title="Team">
+                <i class="icon-group"> </i>
+            </div>
+            <div class="btn btn-small btn-black-outline" title="Player">
+                <i class="icon-user"> </i>
+            </div>
+            <div class="btn btn-small btn-black-outline" title="Coach">
+                <i class="icon-bullhorn"> </i>
+            </div>
+        </div>
+        <div class="tag-inputs">
+    		<div class="tag-team">
+			    <form class="form-inline clearfix" class="tag-form">
+					<button type="submit" class="btn pull-right btn-orange btn-small tagTeam"><i class="icon-plus"></i></button>
+			    	<div class="inputs pull-right">
+    					<select class="select2-arrow">
+    						<option value="">-- favorites --</option>
+    						<option value="noTeam">No Team</option>
+    						<% teams.forEach(function(team) { %>
+								<option value="<%- team.id %>"><%- team.get('name') %></option>    							
+    						<% }) %>
+						</select>
+						
+						or
+						
+					    <input type="text" class="input-small" placeholder="Team Name">
+				    </div>
+				</form>
+    		</div>
+    		<div class="tag-player">
+			    <form class="form-inline clearfix" class="tag-form">
+					<button type="submit" class="btn pull-right btn-orange btn-small tagPlayer"><i class="icon-plus"></i></button>
+			    	<div class="inputs pull-right">
+    			    	<label>Select player</label>
+					</div>
+				</form>
+    		</div>
+    		<div class="tag-coach">
+			    <form class="form-inline clearfix" class="tag-form">
+					<button type="submit" class="pull-right btn btn-orange btn-small tagCoach"><i class="icon-plus"></i></button>
+			    	<div class="inputs pull-right">
+    			    	<label>Select coach</label>
+					</div>
+				</form>
+    		</div>
+    		<div class="tag-venue">
+			    Tagging venue will be available soon
+    		</div>
+    	</div>
+        <div class="alert alert-danger">
+
+        </div>
 	</div>
 	<div class="spud-comments">
-		<form role="form">
+		<form role="form" action="/spuds/comment/<%- spud.target.id %>" method="post" class="add-comment">
         	<div class="form-group">
-        		<input type="email" placeholder="Add a comment..." id="exampleInputEmail1" class="form-control">
+        		<input type="text" placeholder="Add a comment..." class="form-control" name="comment" /> <img class="posting-comment" src="/media/img/ajax-loader-posting-comment.gif" />
         	</div>
         </form>
+        <div class="loading-comments">
+            <img src="/media/img/ajax-loader-posting-comment.gif" /> Loading comments...
+        </div>
 	</div>
 </div>

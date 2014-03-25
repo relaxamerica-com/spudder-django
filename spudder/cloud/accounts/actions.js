@@ -243,7 +243,7 @@ module.exports = function (keys) {
                         error: function (httpResponse) {
                             handleAmazonError(httpResponse, res, 'accounts/register');
                         }
-                    })
+                    });
                 },
                 error: function(httpResponse) {
                     handleAmazonError(httpResponse, res, 'accounts/register');
@@ -274,7 +274,7 @@ module.exports = function (keys) {
 
             user.save()
             .then(function(){
-                krowdio.krowdioUploadProfilePicture(user, req.body.avatarId);
+                krowdio.krowdioUploadProfilePicture(user, req.body.avatarId, req.headers['user-agent']);
                 res.redirect('/dashboard/fans/basicInfo');
             });
         }

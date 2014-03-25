@@ -1,18 +1,18 @@
-<div class="spud-container item <%- spud.type %>">
+<div class="spud-container item <%- spud.type %>" id="<%- spud._id %>">
 	
 	<div class="content">
 		<div class="clearfix">
-			<% if( getValueOrEmpty( user.get('profileImageThumb') ) == '' ) { %>
+			<% if( getValueOrEmpty( spud.publisher.get('profileImageThumb') ) == '' ) { %>
 		  		<img width="50" height="50" src="/media/dashboard/avatars/no_avatar.png" class="social-avatar pull-left">
 		    <% } else { %>
-		        <img width="50" height="50" src="<%= user.get('profileImageThumb') %>" class="social-avatar pull-left">
+		        <img width="50" height="50" src="<%= spud.publisher.get('profileImageThumb') %>" class="social-avatar pull-left">
 		    <% } %>
 			<div class="profile-details clearfix">
 		        <a href="#" class="user-name">
-					<% if (getValueOrEmpty(user.get('nickname')) != '') { %>
-		                <%= user.get('nickname') %>
-		            <% } else if (getValueOrEmpty(user.get('krowdioUserId')) != '') { %>
-		                #<%= user.get('krowdioUserId') %>
+					<% if (getValueOrEmpty(spud.publisher.get('nickname')) != '') { %>
+		                <%= spud.publisher.get('nickname') %>
+		            <% } else if (getValueOrEmpty(spud.publisher.get('krowdioUserId')) != '') { %>
+		                #<%= spud.publisher.get('krowdioUserId') %>
 		        	<% } else { %>
 		                Anonymous
 		            <% } %>
@@ -30,34 +30,131 @@
 		<% if (spud.type == 'video') { %>
 			<iframe src="<%- spud.text %>" frameborder="0"></iframe>
 		<% } %>
-				
+				<% console.log(spud) %>
 		<p>
 			<%- spud.title %>
 		</p>
 		
-		<div class="buttons-bottom"> 
-			<div title="Like" class="btn btn-small btn-black-outline"> 
-    			<i class="icon-thumbs-up"> </i> 
-    		</div> 
-    		<div title="Dislike" class="btn btn-small btn-black-outline"> 
-    			<i class="icon-thumbs-down"> </i> 
-    		</div> 
-    		<div title="Tag" class="btn btn-small btn-black-outline"> 
-    			<i class="icon-tag"> </i> 
-    		</div> 
-    		<div title="Tag Venue" class="btn btn-small btn-black-outline"> 
-    			<i class="icon-map-marker"> </i> 
-    		</div> 
-    		<div title="Share" id="share" class="btn btn-small btn-black-outline"> 
-    			<i class="icon-share-alt"> </i>
-    		</div> 
+		<div class="tags-container">
+			<div class="loading-tags">
+				<img src="/media/img/ajax-loader.gif" /> Loading tags...
+			</div>
+			<input type="hidden" class="decodedTags" value="<%- spud.usertext %>" />
+			<input type="hidden" class="tags" value="" />
+    	</div>
+		
+		<div class="buttons-bottom row-fluid">
+			<div class="span8">
+				<div title="Like" class="btn btn-small btn-black-outline like"> 
+					<span class="like-counter"><%- spud.likes.count %></span>
+                    <div class="loading-likes">
+                        <img src="/media/img/ajax-loader.gif" height="13" width="13" />
+                    </div>
+	    			<i class="icon-thumbs-up"> </i> 
+	    		</div>
+                <div title="Dislike" class="btn btn-small btn-black-outline">
+                    <i class="icon-thumbs-down"> </i>
+                </div>
+	    		<div title="Tag" class="btn btn-small btn-black-outline tag"> 
+	    			<i class="icon-tag"> </i> 
+	    		</div> 
+	    		<div title="Tag Venue" class="btn btn-small btn-black-outline"> 
+	    			<i class="icon-map-marker"> </i> 
+	    		</div> 
+	    		<div title="Share" class="btn btn-small btn-black-outline"> 
+	    			<i class="icon-share-alt"> </i>
+	    		</div> 
+    		</div>
+    		<div class="span4">
+    			<% if (spud.comments.count > 0) { %>
+					<a class="load-comments" href="#"><%- spud.comments.count %> comments</a>
+				<% } %>
+    		</div>
+    	</div>
+    	<div class="tag-buttons">
+    		<div class="btn btn-small btn-black-outline" title="Team">
+    			<i class="icon-group"> </i>
+    		</div>
+    		<div class="btn btn-small btn-black-outline" title="Player">
+    			<i class="icon-user"> </i>
+    		</div>
+    		<div class="btn btn-small btn-black-outline" title="Coach">
+    			<i class="icon-bullhorn"> </i>
+    		</div>
+    	</div>
+    	<div class="tag-inputs">
+    		<div class="tag-team">
+			    <form class="form-inline clearfix" class="tag-form">
+					<button type="submit" class="btn pull-right btn-orange btn-small tagTeam"><i class="icon-plus"></i></button>
+			    	<div class="inputs pull-right">
+    					<select class="select2-arrow ">
+    						<option value="">-- favorites --</option>
+    						<option value="noTeam">No Team</option>
+    						<% teams.forEach(function(team) { %>
+								<option value="<%- team.id %>"><%- team.get('name') %></option>    							
+    						<% }) %>
+						</select>
+						
+						or
+						
+					    <input type="text" class="input-small" placeholder="Team Name">
+				    </div>
+				</form>
+    		</div>
+    		<div class="tag-player">
+			    <form class="form-inline clearfix" class="tag-form">
+					<button type="submit" class="btn pull-right btn-orange btn-small tagPlayer"><i class="icon-plus"></i></button>
+			    	<div class="inputs pull-right">
+    			    	<label>Select player</label>
+					</div>
+				</form>
+    		</div>
+    		<div class="tag-coach">
+			    <form class="form-inline clearfix" class="tag-form">
+					<button type="submit" class="pull-right btn btn-orange btn-small tagCoach"><i class="icon-plus"></i></button>
+			    	<div class="inputs pull-right">
+    			    	<label>Select coach</label>
+					</div>
+				</form>
+    		</div>
+    		<div class="tag-venue">
+			    Tagging venue will be available soon
+    		</div>
+    	</div>
+    	<div class="alert alert-danger">
+    		
     	</div>
 	</div>
 	<div class="spud-comments">
-		<form role="form">
+		<form role="form" action="/spuds/comment/<%- spud._id %>" method="post" class="add-comment">
         	<div class="form-group">
-        		<input type="email" placeholder="Add a comment..." id="exampleInputEmail1" class="form-control">
+        		<input type="text" placeholder="Add a comment..." class="form-control" name="comment" /> <img class="posting-comment" src="/media/img/ajax-loader-posting-comment.gif" />
         	</div>
         </form>
+	<% if (spud.comments.count > 0) { %>
+		<div class="loading-comments">
+			<img src="/media/img/ajax-loader-posting-comment.gif"  /> Loading comments...
+		</div>
+	<% } %>
+		<% if (spud.comments.count > 0) { %>
+			<% spud.comments.data.sort(function(a, b) { return new Date(b.created_time) - new Date(a.created_time) }).forEach(function(comment) { %>
+				<div class="comment" id="<%- comment._id %>" krowdioUserId="<%- comment.from._id %>">
+					<div class="clearfix">
+				  		<img width="50" height="50" src="/media/dashboard/avatars/no_avatar.png" class="social-avatar pull-left">
+						<div class="profile-details clearfix">
+					        <a href="#" class="user-name">
+							</a>
+							<p>
+				            	<em><%- convertDate(comment.created_time) %></em>
+				            </p>
+						</div>
+					</div>
+					
+					<p>
+						<%- comment.usertext %>
+					</p>
+				</div>
+			<% }) %>
+		<% } %>
 	</div>
 </div>
