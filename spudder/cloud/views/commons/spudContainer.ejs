@@ -8,7 +8,7 @@
 		        <img width="50" height="50" src="<%= spud.publisher.get('profileImageThumb') %>" class="social-avatar pull-left">
 		    <% } %>
 			<div class="profile-details clearfix">
-		        <a href="#" class="user-name">
+		        <a href="/public/fan/<%- spud.publisher.id %>" class="user-name">
 					<% if (getValueOrEmpty(spud.publisher.get('nickname')) != '') { %>
 		                <%= spud.publisher.get('nickname') %>
 		            <% } else if (getValueOrEmpty(spud.publisher.get('krowdioUserId')) != '') { %>
@@ -30,7 +30,7 @@
 		<% if (spud.type == 'video') { %>
 			<iframe src="<%- spud.text %>" frameborder="0"></iframe>
 		<% } %>
-				<% console.log(spud) %>
+		
 		<p>
 			<%- spud.title %>
 		</p>
@@ -142,7 +142,7 @@
 					<div class="clearfix">
 				  		<img width="50" height="50" src="/media/dashboard/avatars/no_avatar.png" class="social-avatar pull-left">
 						<div class="profile-details clearfix">
-					        <a href="#" class="user-name">
+					        <a href="" class="user-name">
 							</a>
 							<p>
 				            	<em><%- convertDate(comment.created_time) %></em>

@@ -11,20 +11,22 @@ module.exports = function (keys) {
 
             query.get(id, {
                 success: function (entity) {
+                	var _entity = entity;
+                	
                     function _renderView(team) {
                         var path = 'https://' + keys.getAppName() + '.parseapp.com/public/' + entityType + '/' + id;
-                        krowdio.krowdioGetUserMentionActivity(userAgent, entity).then(function(spuds) {
+                        krowdio.krowdioGetUserMentionActivity(userAgent, _entity).then(function(spuds) {
 	                        res.render(entityType.toLowerCase() + '/view', {
 	                            'displaySponsors' : require('cloud/commons/displaySponsors'),
-	                            'entity': entity,
+	                            'entity': _entity,
 	                            'twitterShareButton': require('cloud/commons/twitterShareButton'),
 	                            'googlePlusShareButton': require('cloud/commons/googlePlusShareButton'),
 	                            'facebookShareButton': require('cloud/commons/facebookShareButton'),
 	                            'emailShareButton': require('cloud/commons/emailShareButton'),
 	                            'meta': {
-	                                title: entity.get('name'),
-	                                description: entity.get('profile'),
-	                                image: entity.get('profileImageThumb') ? entity.get('profileImageThumb') : '',
+	                                title: _entity.get('name'),
+	                                description: _entity.get('profile'),
+	                                image: _entity.get('profileImageThumb') ? _entity.get('profileImageThumb') : '',
 	                                url: path
 	                            },
 	                            'returnURL': path,
@@ -45,6 +47,40 @@ module.exports = function (keys) {
                 },
                 error: function(object, error) {
                     res.render(entityType.toLowerCase() + '/view');
+                }
+            });
+        },
+        
+        fanPublicView: function(req, res) {
+        	var id = req.params.id,
+                query = new Parse.Query(Parse.User),
+                userAgent = req.headers['user-agent'];
+
+            query.get(id, {
+                success: function (entity) {
+                    var path = 'https://' + keys.getAppName() + '.parseapp.com/public/fan/' + id;
+                    krowdio.krowdioGetUserMentionActivity(userAgent, entity).then(function(spuds) {
+                        res.render('fan/view', {
+                            'displaySponsors' : require('cloud/commons/displaySponsors'),
+                            'entity': entity,
+                            'twitterShareButton': require('cloud/commons/twitterShareButton'),
+                            'googlePlusShareButton': require('cloud/commons/googlePlusShareButton'),
+                            'facebookShareButton': require('cloud/commons/facebookShareButton'),
+                            'emailShareButton': require('cloud/commons/emailShareButton'),
+                            'meta': {
+                                title: entity.get('name'),
+                                description: entity.get('profile'),
+                                image: entity.get('profileImageThumb') ? entity.get('profileImageThumb') : '',
+                                url: path
+                            },
+                            'returnURL': path,
+                        	'spuds' : JSON.parse(spuds),
+                        	'spudContainer' : require('cloud/commons/spudContainer')
+                       });
+                   });
+                },
+                error: function(object, error) {
+                    res.send(404, 'An error occured. ' + error);
                 }
             });
         }

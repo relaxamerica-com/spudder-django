@@ -90,6 +90,7 @@ $(document).ready(function() {
 					}
 					
 					userNameContainer.html(userName);
+					userNameContainer.attr('href', '/public/fan/' + this.publisher.id);
 					
 					var date = this.created_time;
 					

@@ -31,6 +31,7 @@ function buildComment(id, usertext, publisher, createdTime) {
 	}
 	
 	userNameContainer.html(userName);
+	userNameContainer.attr('href', '/public/fan/' + publisher.id);
 	
 	
 	var date = createdTime instanceof Date ? createdTime : new Date(createdTime),

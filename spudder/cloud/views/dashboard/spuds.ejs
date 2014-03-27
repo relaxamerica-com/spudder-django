@@ -221,10 +221,6 @@
 					loadingComments = spudContainer.find('.loading-comments'),
 					currentComments = spudContainer.find('.comment');
 					
-					
-				console.log(currentComments.is(':visible'))
-				console.log($(this).hasClass('load-comments'))
-				
 				if (currentComments.is(':visible') && $(this).hasClass('load-comments')) {
 					
 					currentComments.hide();
@@ -253,7 +249,9 @@
                             var items = JSON.parse(data).items;
 
                             $.each(items, function(key, value) {
-                                var comment = $('[krowdiouserid="' + key + '"]');
+                                var comment = $('[krowdiouserid="' + key + '"]'),
+                                	userNameContainer = comment.find('.user-name');
+                                	
                                 if (value.profileImageThumb.length > 0) {
                                     comment.find('.social-avatar').attr('src', value.profileImageThumb);
                                 }
@@ -266,7 +264,8 @@
                                     userName = value.krowdioUserId;
                                 }
 
-                                comment.find('.user-name').html(userName);
+                                userNameContainer.html(userName);
+                                userNameContainer.attr('href', '/public/fan/' + value._id);
                             });
 
 							loadingComments.addClass('alreadyLoaded');

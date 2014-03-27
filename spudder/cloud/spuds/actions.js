@@ -25,7 +25,8 @@ module.exports = function (keys) {
 						
 				});
 			}
-				
+			
+			spudData.usertext += ' @User' + Parse.User.current().id;
 			
 			imageLoadedPromise.then(function() {
 				krowdio.krowdioPost(Parse.User.current(), spudData, userAgent).then(function() {

@@ -7,7 +7,7 @@
 		        <img width="50" height="50" src="<%= user.get('profileImageThumb') %>" class="social-avatar pull-left">
 		    <% } %>
 			<div class="profile-details clearfix">
-		        <a href="#" class="user-name">
+		        <a href="/public/fan/<%- user.id %>" class="user-name">
 					<% if (getValueOrEmpty(user.get('nickname')) != '') { %>
 		                <%= user.get('nickname') %>
 		            <% } else if (getValueOrEmpty(user.get('krowdioUserId')) != '') { %>

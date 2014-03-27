@@ -130,7 +130,7 @@ module.exports = function (keys) {
                         error: function (httpResponse) {
                             handleAmazonError(httpResponse, res, 'accounts/login');
                         }
-                    })
+                    });
                 },
                 error: function(httpResponse) {
                     handleAmazonError(httpResponse, res, 'accounts/login');
@@ -252,7 +252,8 @@ module.exports = function (keys) {
         },
 
         editProfile: function(req, res) {
-            var name = req.body.name, freeText = req.body.freeText;
+            var name = req.body.name, freeText = req.body.freeText,
+            	isImageUploaded = req.body.avatarId ? true : false;
 
             var user = Parse.User.current();
             user.set('nickname', req.body.nickname);
@@ -270,11 +271,17 @@ module.exports = function (keys) {
 
             user.set('dob', dob);
 
-            user.set('profileImageThumb', req.body.avatarId);
+			if (isImageUploaded) {
+	            user.set('profileImageThumb', req.body.avatarId);
+			}
 
             user.save()
             .then(function(){
-                krowdio.krowdioUploadProfilePicture(user, req.body.avatarId, req.headers['user-agent']);
+            	if (isImageUploaded) {
+	                krowdio.krowdioUploadProfilePicture(user, req.body.avatarId, req.headers['user-agent']).then(function() {
+	                	res.redirect('/dashboard/fans/basicInfo');
+	                });
+            	}
                 res.redirect('/dashboard/fans/basicInfo');
             });
         }

@@ -1112,3 +1112,13 @@ select:focus {
 #spud-carousel .carousel-inner {
 	overflow: visible;
 }
+
+#entity-public .user-social-buttons i {
+	font-size: 40px;
+	color: #000 !important;
+}
+
+#entity-public .user-social-buttons a:hover {
+	text-decoration: none;
+	text-shadow: 1px 1px #F03C02;
+}

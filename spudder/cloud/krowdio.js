@@ -169,7 +169,7 @@ exports.krowdioGetPost = function(id) {
 
 };
 		
-exports.krowdioGetPostsForEntity = function(entity, userAgent){
+exports.krowdioGetPostsForEntity = function(entity, userAgent) {
 	var self = this;
 		
     return self.krowdioEnsureOAuthToken(entity, userAgent)
