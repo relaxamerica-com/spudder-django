@@ -123,47 +123,56 @@ module.exports = function (keys) {
 		
 		getComments: function(req, res) {
 			var spudId = req.query.spudId,
-				userAgent = req.headers['user-agent'];
-			
-			krowdio.krowdioGetCommentsForPost(userAgent, spudId).then(function(comments) {
-				var _comments = JSON.parse(comments).data,
-					promise = Parse.Promise.as(),
-					idUserMapping = {};
-            	
-	    		_.each(_comments, function(comment) {
-	    			promise = promise.then(function() {
-	    				var publisherFetchedPromise = new Parse.Promise(),
-	    					userQuery = new Parse.Query(Parse.User),
-	    					id = comment.from.username.replace('User', '');
-	    				
-	    				if (id in idUserMapping) {
-		    				comment.publisher = idUserMapping[id];
-	    					publisherFetchedPromise.resolve();
-	    				} else {
-	    					userQuery.get(id).then(function(user) {
-		    					comment.publisher = user;
-		    					idUserMapping[id] = user;
+				userAgent = req.headers['user-agent'],
+                entityId = req.query.entityId,
+                query = new Parse.Query(Parse.User);
+                
+			query.get(entityId).then(function(entity) {
+				krowdio.krowdioGetCommentsForPost(userAgent, spudId, entity).then(function(comments) {
+					var _comments = JSON.parse(comments).data,
+						promise = Parse.Promise.as(),
+						idUserMapping = {};
+	            	
+		    		_.each(_comments, function(comment) {
+		    			promise = promise.then(function() {
+		    				var publisherFetchedPromise = new Parse.Promise(),
+		    					userQuery = new Parse.Query(Parse.User),
+		    					id = comment.from.username.replace('User', '');
+		    				
+		    				if (id in idUserMapping) {
+			    				comment.publisher = idUserMapping[id];
 		    					publisherFetchedPromise.resolve();
-		    				});
-	    				}
-	    				
-	    				return publisherFetchedPromise;
-	    			});
-	    		});
-				
-				promise.then(function() {
-					res.send('200', JSON.stringify(_comments));
+		    				} else {
+		    					userQuery.get(id).then(function(user) {
+			    					comment.publisher = user;
+			    					idUserMapping[id] = user;
+			    					publisherFetchedPromise.resolve();
+			    				});
+		    				}
+		    				
+		    				return publisherFetchedPromise;
+		    			});
+		    		});
+					
+					promise.then(function() {
+						res.send('200', JSON.stringify(_comments));
+					});
 				});
 			});
 		},
 
         getLikes: function(req, res) {
             var spudId = req.query.spudId,
-                userAgent = req.headers['user-agent'];
-
-            krowdio.krowdioGetLikesForPost(userAgent, spudId).then(function(likes) {
-                res.send('200', likes);
-            });
+                userAgent = req.headers['user-agent'],
+                entityId = req.query.entityId,
+                query = new Parse.Query(Parse.User);
+			
+			query.get(entityId).then(function(entity) {
+	            krowdio.krowdioGetLikesForPost(userAgent, spudId, entity).then(function(likes) {
+	                res.send('200', likes);
+	            });
+			});
+			
         }
 	};
 };

@@ -10,5 +10,6 @@ module.exports = function (app, keys) {
     app.get('/accounts/amazon_register', accounts.register_with_amazon);
     app.get('/accounts/logout', accounts.logout);
     app.post('/accounts/editProfile', helpers.loginRequired, accounts.editProfile);
+    app.get('/accounts/loginOrRegister', accounts.loginOrRegister);
     
 };

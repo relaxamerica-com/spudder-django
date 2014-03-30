@@ -2,23 +2,28 @@ var krowdioClientKey = "52769e9ff1f70e0552df58a4",
 	krowdioGlobalPassword = "spudtastic";
 
 //This is a massive hack as the krowdio login call causes a riderct that I can cannot correctly follow
-//using the jQuery xhr promise
 var currentAccessToken = null,
     setKrowdioUser = function(entity, responseText, promise) {
     	var krowdioData = JSON.parse(responseText);
-    	if (krowdioData.error != null)
+    	if (krowdioData.error != null) {
             return Parse.Promise.error(krowdioData);
+    	}
         entity.set('krowdioAccessToken', krowdioData.access_token);
         entity.set('krowdioAccessTokenExpires', Math.round(new Date().getTime() / 1000) + krowdioData.expires_in);
         entity.set('krowdioUserId', krowdioData.user._id);
-        entity.save(null, {
-            success: function(_entity){
-                promise.resolve(_entity);
-            },
-            error: function(error){
-                promise.reject(error);
-            }
-        });
+        
+    	if (Parse.User.current()) {
+	        entity.save(null, {
+	            success: function(_entity){
+	                promise.resolve(_entity);
+	            },
+	            error: function(object, error) {
+	                promise.reject(error);
+	            }
+	        });
+    	} else {
+    		promise.resolve(entity);
+    	}
     };
 
 exports.krowdioRegisterEntityAndSave = function (entity) {
@@ -35,22 +40,18 @@ exports.krowdioRegisterEntityAndSave = function (entity) {
     	url: 'http://auth.krowd.io/user/register',
     	body: params,
         success: function(httpResponse) {
-        	console.log('success: ' + httpResponse.text)
             setKrowdioUser(entity, httpResponse.text, promise);
     	},
     	error: function(httpResponse) {
-    		console.log('error: ' + httpResponse.text)
     		if (httpResponse.status == 302) {
     			Parse.Cloud.httpRequest({
     				method: 'POST',
 			    	url: httpResponse.headers.Location,
 			    	headers: httpResponse.headers,
 			    	success: function(response) {
-			    		console.log('success: ' + response.text)
             			setKrowdioUser(entity, response.text, promise);
 			    	},
 			    	error: function(response) {
-			    		console.log('error: ' + response.text)
 			    		promise.reject();
 			    	}
     			});
@@ -66,10 +67,10 @@ exports.krowdioRegisterEntityAndSave = function (entity) {
 exports.krowdioEnsureOAuthToken = function(entity, userAgent){
 	var self = this;
 	
-	return self._krowdidEnsureOAuthTokenForEntity(entity, userAgent);	
+	return self._krowdioEnsureOAuthTokenForEntity(entity, userAgent);	
 };
 		
-exports._krowdidEnsureOAuthTokenForEntity = function(entity, userAgent) {
+exports._krowdioEnsureOAuthTokenForEntity = function(entity, userAgent) {
     var expires = entity.get('krowdioAccessTokenExpires');
     
     if (Math.round(new Date().getTime() / 1000) > (expires + 10)) {
@@ -80,6 +81,8 @@ exports._krowdidEnsureOAuthTokenForEntity = function(entity, userAgent) {
             'email': entity.id + "@spudder.com",
             'password': krowdioGlobalPassword
         };
+        
+        console.log('_krowdioEnsureOAuthToken')
         
         Parse.Cloud.httpRequest({
 	    	method: 'POST',
@@ -177,6 +180,7 @@ exports.krowdioGetPostsForEntity = function(entity, userAgent) {
         	
             var token = 'Token token="' + entity.get('krowdioAccessToken') + '"',
             	promise = new Parse.Promise();
+            	
             Parse.Cloud.httpRequest({
                 url: "http://api.krowd.io/stream/" + entity.get('krowdioUserId') + "?limit=10&page=1&maxid=&paging=None",
                 method: 'GET',
@@ -281,7 +285,7 @@ exports.krowdioGetUserMentionActivity = function(userAgent, entity) {
 	var self = this,
 		userId = entity.get('krowdioUserId');
 	
-	return self.krowdioEnsureOAuthToken(Parse.User.current(), userAgent)
+	return self.krowdioEnsureOAuthToken(entity, userAgent)
         .then(function(entity){
         	
             var token = 'Token token="' + entity.get('krowdioAccessToken') + '"',
@@ -292,11 +296,10 @@ exports.krowdioGetUserMentionActivity = function(userAgent, entity) {
 		    	url: 'http://api.krowd.io/activity/mentions?userid=' + userId + '&limit=10&page=1&maxid=&paging=None',
 		    	headers: { 'Authorization' : token },
 		        success: function(httpResponse) {
-		        	console.log(httpResponse.text);
 		            promise.resolve(httpResponse);
 		    	},
 		    	error: function(httpResponse) {
-		    		console.log(httpResponse.text);
+		    		console.log(httpResponse);
 		    		promise.reject(httpResponse);
 		    	}
 		    });
@@ -307,12 +310,17 @@ exports.krowdioGetUserMentionActivity = function(userAgent, entity) {
            	if (typeof krowdioData == 'string') {
             	krowdioData = JSON.parse(krowdioData);
             }
-            if (krowdioData.error != null)
+            if (krowdioData.error != null) {
+            	console.log(krowdioData.error);
                 return Parse.Pomise.error(krowdioData.error);
+            }
             return Parse.Promise.as(krowdioData.text);
         },
-        function(krowdioData){
-        	return Parse.Promise.error(JSON.parse(krowdioData));
+        function(krowdioData) {
+        	if (typeof krowdioData == 'string') {
+            	krowdioData = JSON.parse(krowdioData);
+            }
+        	return Parse.Promise.error(krowdioData);
         });
 	
 };
@@ -374,11 +382,11 @@ exports.krowdioToggleLike = function(userAgent, contentID) {
     return promise;
 };
 
-exports.getForPost = function(what, userAgent, postId) {
+exports.getForPost = function(what, userAgent, postId, entity) {
     var self = this,
         _postId = postId;
 
-    return self.krowdioEnsureOAuthToken(Parse.User.current(), userAgent)
+    return self.krowdioEnsureOAuthToken(entity, userAgent)
         .then(function(entity){
 
             var token = 'Token token="' + entity.get('krowdioAccessToken') + '"',
@@ -413,12 +421,12 @@ exports.getForPost = function(what, userAgent, postId) {
 
 };
 
-exports.krowdioGetCommentsForPost = function(userAgent, postId) {
-	return this.getForPost('comment', userAgent, postId);
+exports.krowdioGetCommentsForPost = function(userAgent, postId, entity) {
+	return this.getForPost('comment', userAgent, postId, entity);
 };
 
-exports.krowdioGetLikesForPost = function(userAgent, postId) {
-    return this.getForPost('like', userAgent, postId);
+exports.krowdioGetLikesForPost = function(userAgent, postId, entity) {
+    return this.getForPost('like', userAgent, postId, entity);
 };
 
 

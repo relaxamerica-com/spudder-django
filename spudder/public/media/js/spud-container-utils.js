@@ -202,3 +202,21 @@ function applyAddCommentListener(user) {
 		});
 	});
 }
+
+function getEntityIdFromURL() {
+	var parsed = $.url(document.location).data.attr.path.split('/');
+	
+	return parsed[parsed.length - 1];
+}
+
+function overwriteListeners() {
+	$('.buttons-bottom .btn').off('click');
+	$('.buttons-bottom .btn').click(function(e) {
+		e.preventDefault();
+		e.stopPropagation();
+		
+		document.location = '/accounts/loginOrRegister?next=' + document.location.pathname;
+	});
+}
+
+

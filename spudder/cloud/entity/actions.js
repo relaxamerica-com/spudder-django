@@ -58,19 +58,21 @@ module.exports = function (keys) {
 
             query.get(id, {
                 success: function (entity) {
-                    var path = 'https://' + keys.getAppName() + '.parseapp.com/public/fan/' + id;
+                    var path = 'https://' + keys.getAppName() + '.parseapp.com/public/fan/' + id,
+                    	_entity = entity;
+                    
                     krowdio.krowdioGetUserMentionActivity(userAgent, entity).then(function(spuds) {
                         res.render('fan/view', {
                             'displaySponsors' : require('cloud/commons/displaySponsors'),
-                            'entity': entity,
+                            'entity': _entity,
                             'twitterShareButton': require('cloud/commons/twitterShareButton'),
                             'googlePlusShareButton': require('cloud/commons/googlePlusShareButton'),
                             'facebookShareButton': require('cloud/commons/facebookShareButton'),
                             'emailShareButton': require('cloud/commons/emailShareButton'),
                             'meta': {
-                                title: entity.get('name'),
-                                description: entity.get('profile'),
-                                image: entity.get('profileImageThumb') ? entity.get('profileImageThumb') : '',
+                                title: _entity.get('name'),
+                                description: _entity.get('profile'),
+                                image: _entity.get('profileImageThumb') ? _entity.get('profileImageThumb') : '',
                                 url: path
                             },
                             'returnURL': path,

@@ -284,6 +284,13 @@ module.exports = function (keys) {
             	}
                 res.redirect('/dashboard/fans/basicInfo');
             });
+        },
+        
+        loginOrRegister: function(req, res) {
+        	res.render('accounts/loginOrRegister',
+        	{
+        		'next' : req.query.next
+        	});
         }
     };
 };

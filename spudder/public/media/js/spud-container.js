@@ -44,7 +44,8 @@ $(document).ready(function() {
 		loading.css('display', 'table');
 		
 		var response = $.get('/spuds/getComments', {
-			'spudId' : spudId
+			'spudId' : spudId,
+			'entityId' : getEntityIdFromURL()
 		});
 		
 		response.done(function(data) {
@@ -121,7 +122,7 @@ $(document).ready(function() {
         	currentComments.show();
         }
     });
-
+    
     function getLikes() {
         var spudContainer = $('.spud-container:visible'),
             spudId = spudContainer.attr('id'),
@@ -129,7 +130,8 @@ $(document).ready(function() {
             existingCounter = spudContainer.find('.like-counter');
 
         var response = $.get('/spuds/getLikes', {
-            'spudId' : spudId
+            'spudId' : spudId,
+            'entityId' : getEntityIdFromURL()
         });
 
         if (existingCounter.length) {

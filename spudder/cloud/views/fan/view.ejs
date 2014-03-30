@@ -85,7 +85,7 @@
 			        	<div class="carousel-inner">
 				           	<% spuds.items.forEach(function(spud, i) { %>
 				           		<div class="item <% if (i == 0) { %>active<% } %> <%- i %>">
-									<%- spudContainer(spud, true, getValueOrEmpty, user, []) %>
+									<%- spudContainer(spud, true, getValueOrEmpty, entity, []) %>
 								</div>
 							<% }) %>
 						</div>
@@ -118,12 +118,15 @@
                 });
                 
                 var user = {
-					'nickname' : '<%- getValueOrEmpty(user.get("nickname")) %>',
-					'krowdioUserId' : '<%- getValueOrEmpty(user.get("krowdioUserId")) %>',
-					'profileImageThumb' : '<%- getValueOrEmpty(user.get("profileImageThumb")) %>'
+					'nickname' : '<%- getValueOrEmpty(entity.get("nickname")) %>',
+					'krowdioUserId' : '<%- getValueOrEmpty(entity.get("krowdioUserId")) %>',
+					'profileImageThumb' : '<%- getValueOrEmpty(entity.get("profileImageThumb")) %>'
 				};
-                
-                applyAddCommentListener(user);
+                <% if (user) { %>
+                	applyAddCommentListener(user);
+                <% } else { %>
+                	overwriteListeners();
+                <% } %>
             });
         </script>
     </body>
