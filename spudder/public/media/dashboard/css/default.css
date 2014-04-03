@@ -542,6 +542,11 @@ form .input-required {
 	margin-top: 10px;
 }
 
+#new-spuds-preview-container .loading-image {
+	margin: 15px auto;
+	display: table;
+}
+
 .alert {
 	display: none;
 }
