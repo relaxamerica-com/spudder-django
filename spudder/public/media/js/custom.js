@@ -149,7 +149,7 @@ jQuery(document).ready(function($) {
 		//flexslider
 		$('.flexslider').flexslider();
 	
-		//nivo slider
+		/*//nivo slider
 		$('.nivo-slider').nivoSlider({
 			effect: 'random', // Specify sets like: 'fold,fade,sliceDown'
 			slices: 15, // For slice animations
@@ -171,7 +171,7 @@ jQuery(document).ready(function($) {
 			slideshowEnd: function(){}, // Triggers after all slides have been shown
 			lastSlide: function(){}, // Triggers when last slide is shown
 			afterLoad: function(){} // Triggers when slider has loaded
-		});
+		});*/
 				
 		//slitslider				
 		var Page = (function() {

@@ -186,13 +186,5 @@ ul.clients li:hover {
 	border-left:5px solid #F03C02;
 }
 
-/* Nivo slider */
-.nivo-directionNav a:hover {
-    background-color: #F03C02;
-}
-.nivo-caption, .caption {
-	border-bottom: #F03C02 5px solid;
-}
-
 /* footer */
 

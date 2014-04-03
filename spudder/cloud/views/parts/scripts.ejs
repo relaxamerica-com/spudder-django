@@ -9,7 +9,6 @@
 <script src="/media/js/portfolio/setting.js"></script>
 <script src="/media/js/tweet/jquery.tweet.js"></script>
 <script src="/media/js/jquery.flexslider.js"></script>
-<script src="/media/js/jquery.nivo.slider.js"></script>
 <script src="/media/js/modernizr.custom.79639.js"></script>
 <script src="/media/js/jquery.ba-cond.min.js"></script>
 <script src="/media/js/jquery.slitslider.js"></script>
@@ -34,6 +33,26 @@
         }, function() {
             hiddenTop.css('margin-top', '-5px');
             logo.css('margin-top', '-10px');
+        });
+        
+        $('.carousel').carousel();
+        $('.carousel').on('slid', function() {
+        	var iframe = $(this).find('.item.active[class!="first"] iframe');
+        	
+        	if (iframe.attr('src').length == 0) {
+        		iframe.attr('src', '//www.youtube.com/embed/Fde3tYVcuGc?hd=1&wmode=opaque&controls=1&showinfo=0;rel=0');
+        	}
+        	
+        	iframe.animate({
+        		opacity: 1
+        	}, 2000);
+        });
+        
+        $('.carousel').on('slide', function() {
+        	var iframe = $(this).find('.item.active iframe');
+        	iframe.animate({
+        		opacity: 0
+        	}, 2000);
         });
     });
 </script>
