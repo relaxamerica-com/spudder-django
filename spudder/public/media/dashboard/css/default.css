@@ -544,7 +544,7 @@ form .input-required {
 
 #new-spuds-preview-container .loading-image {
 	margin: 15px auto;
-	display: table;
+	display: none;
 }
 
 .alert {
@@ -1016,6 +1016,7 @@ form .input-required {
 	margin-bottom: 5px;
 	border-radius: 3px;
 	display: inline-block;
+	margin-right: 2px;
 }
 
 .spud-container .tags-container .tag a {
@@ -1089,6 +1090,11 @@ select:focus {
 	margin-bottom: 20px;
 }
 
+.spud-container .spud-comments .load-more {
+	margin: 0px auto 15px;
+	display: none;
+}
+
 .spud-container .alert-danger {
 	margin-top: 10px;
 	margin-bottom: 0px;	
@@ -1105,6 +1111,7 @@ select:focus {
 }
 
 .spud-container .spud-comments .comment {
+	opacity: 0;
 	display: none;
 }
 
@@ -1115,7 +1122,12 @@ select:focus {
 }
 
 #spud-carousel .carousel-inner {
-	overflow: visible;
+	overflow: hidden;
+	padding-bottom: 10px;
+}
+
+#spud-carousel .carousel-control {
+	top: 100px;
 }
 
 #entity-public .user-social-buttons i {

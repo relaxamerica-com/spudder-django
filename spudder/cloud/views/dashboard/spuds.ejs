@@ -272,12 +272,18 @@
 
                             loadingComments.hide();
                             currentComments.show();
+                            currentComments.animate({
+                            	opacity: 1
+                            }, 2000);
                             reLayout();
                         });
 
                     }
 				} else {
 					currentComments.show();
+					currentComments.animate({
+                    	opacity: 1
+                    }, 2000);
                     reLayout();
 				}
 			});
@@ -305,6 +311,9 @@
 					$(self).after(comment);
 					
 					comment.show();
+					comment.animate({
+						opacity: 1
+					}, 2000);
 					
 					postingComment.hide();
 					

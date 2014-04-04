@@ -8,6 +8,9 @@ var currentAccessToken = null,
     	if (krowdioData.error != null) {
             return Parse.Promise.error(krowdioData);
     	}
+    	
+    	console.log('setting')
+    	
         entity.set('krowdioAccessToken', krowdioData.access_token);
         entity.set('krowdioAccessTokenExpires', Math.round(new Date().getTime() / 1000) + krowdioData.expires_in);
         entity.set('krowdioUserId', krowdioData.user._id);
@@ -15,9 +18,12 @@ var currentAccessToken = null,
     	if (Parse.User.current()) {
 	        entity.save(null, {
 	            success: function(_entity){
+	            	console.log('save done');
+	            	console.log(promise);
 	                promise.resolve(_entity);
 	            },
 	            error: function(object, error) {
+	            	console.log(error);
 	                promise.reject(error);
 	            }
 	        });
@@ -382,9 +388,15 @@ exports.krowdioToggleLike = function(userAgent, contentID) {
     return promise;
 };
 
-exports.getForPost = function(what, userAgent, postId, entity) {
+exports.getForPost = function(what, userAgent, postId, entity, page) {
     var self = this,
         _postId = postId;
+       
+    if (page == undefined) {
+    	page = 1;
+    } else {
+    	page = parseInt(page, 10);
+    }
 
     return self.krowdioEnsureOAuthToken(entity, userAgent)
         .then(function(entity){
@@ -394,12 +406,14 @@ exports.getForPost = function(what, userAgent, postId, entity) {
 
             Parse.Cloud.httpRequest({
                 method: 'GET',
-                url: 'http://api.krowd.io/' + what + '/' + _postId + '?limit=10&page=1&newpage=1&startid=&direction=None',
+                url: 'http://api.krowd.io/' + what + '/' + _postId + '?limit=5&page=' + page + '&newpage=' + (page + 1) + '&startid=&direction=before',
                 headers: { 'Authorization' : token },
                 success: function(httpResponse) {
+                	console.log(httpResponse.text);
                     promise.resolve(httpResponse);
                 },
                 error: function(httpResponse) {
+                	console.log(httpResponse.text);
                     promise.reject(httpResponse);
                 }
             });
@@ -421,12 +435,12 @@ exports.getForPost = function(what, userAgent, postId, entity) {
 
 };
 
-exports.krowdioGetCommentsForPost = function(userAgent, postId, entity) {
-	return this.getForPost('comment', userAgent, postId, entity);
+exports.krowdioGetCommentsForPost = function(userAgent, postId, entity, page) {
+	return this.getForPost('comment', userAgent, postId, entity, page);
 };
 
-exports.krowdioGetLikesForPost = function(userAgent, postId, entity) {
-    return this.getForPost('like', userAgent, postId, entity);
+exports.krowdioGetLikesForPost = function(userAgent, postId, entity, page) {
+    return this.getForPost('like', userAgent, postId, entity, page);
 };
 
 

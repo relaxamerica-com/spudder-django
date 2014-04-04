@@ -35,27 +35,44 @@ $(document).ready(function() {
         getLikes();
 	});
 	
-	function populateComments() {
+	$('#spud-carousel').on('slide', function() {
+		$('.comment').css({
+			'opacity' : '0',
+			'display' : 'none'
+		});
+		$('.spud-comments .load-more').hide();
+	});
+	
+	$('.spud-container .spud-comments .load-more').click(function() {
+		var nextPage = $(this).attr('nextPage');
+		populateComments(nextPage);
+	});
+	
+	function populateComments(page) {
 		var spudContainer = $('.spud-container:visible'),
 			spudComments = spudContainer.find('.spud-comments'),
 			loading = spudContainer.find('.loading-comments'),
-			spudId = spudContainer.attr('id');
+			spudId = spudContainer.attr('id'),
+			loadMoreComments = spudContainer.find('.spud-comments .load-more'),
+			page = parseInt(page, 10);
 			
 		loading.css('display', 'table');
 		
 		var response = $.get('/spuds/getComments', {
 			'spudId' : spudId,
-			'entityId' : getEntityIdFromURL()
+			'entityId' : getEntityIdFromURL(),
+			'page' : page
 		});
 		
 		response.done(function(data) {
-			var comments = JSON.parse(data);
+			var parsed = JSON.parse(data),
+				comments = parsed.data;
 
             if (comments.length) {
-                $('.load-comments').html(comments.length + ' comments');
+                spudContainer.find('.load-comments').html(parsed.totalItems + ' comments');
             }
             
-            comments = comments.sort(function(a, b) { return new Date(b.created_time) - new Date(a.created_time); });
+            // comments = comments.sort(function(a, b) { return new Date(a.created_time) - new Date(b.created_time); });
 
 			$.each(comments, function() {
 				if ($('#' + this._id).length == 0) {
@@ -100,10 +117,21 @@ $(document).ready(function() {
 					
 					createdTime.find('.createdTime').html(data);
 					
-					spudComments.append(comment);
+					loadMoreComments.after(comment);
+					
+					comment.animate({
+						opacity: 1
+					}, 2000);
 					comment.show();
 				}
 			});
+			
+			if (parsed.pagination.next) {
+				loadMoreComments.css('display', 'table');
+				loadMoreComments.attr('nextPage', page + 1);
+			} else { 
+				loadMoreComments.hide();
+			}
 			
 			loading.hide();
 		});
@@ -117,9 +145,12 @@ $(document).ready(function() {
         var currentComments = $('.spud-container .comment');
 
         if (!currentComments.length) {
-	        populateComments();
+	        populateComments(1);
         } else if (!currentComments.is(':visible')) {
         	currentComments.show();
+        	currentComments.animate({
+        		opacity: 1
+        	}, 2000);
         }
     });
     
@@ -161,6 +192,9 @@ $(document).ready(function() {
 			currentComments.hide();
 		} else {
 			currentComments.show();
+        	currentComments.animate({
+        		opacity: 1
+        	}, 2000);
 		}
 	});
 

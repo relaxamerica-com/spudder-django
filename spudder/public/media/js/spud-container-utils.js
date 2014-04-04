@@ -193,9 +193,12 @@ function applyAddCommentListener(user) {
 			
 			var comment = buildComment('', text, _user, new Date().toString());
 			
-			$(self).after(comment);
+			$(self).find('.load-more').after(comment);
 			
 			comment.show();
+			comment.animate({
+				opacity: 1
+			}, 2000);
 			
 			postingComment.hide();
 			

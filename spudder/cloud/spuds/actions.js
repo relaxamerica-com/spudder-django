@@ -125,15 +125,16 @@ module.exports = function (keys) {
 			var spudId = req.query.spudId,
 				userAgent = req.headers['user-agent'],
                 entityId = req.query.entityId,
+                page = req.query.page,
                 query = new Parse.Query(Parse.User);
                 
 			query.get(entityId).then(function(entity) {
-				krowdio.krowdioGetCommentsForPost(userAgent, spudId, entity).then(function(comments) {
-					var _comments = JSON.parse(comments).data,
+				krowdio.krowdioGetCommentsForPost(userAgent, spudId, entity, page).then(function(comments) {
+					var _comments = JSON.parse(comments),
 						promise = Parse.Promise.as(),
 						idUserMapping = {};
 	            	
-		    		_.each(_comments, function(comment) {
+		    		_.each(_comments.data, function(comment) {
 		    			promise = promise.then(function() {
 		    				var publisherFetchedPromise = new Parse.Promise(),
 		    					userQuery = new Parse.Query(Parse.User),

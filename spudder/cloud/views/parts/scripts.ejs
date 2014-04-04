@@ -35,8 +35,8 @@
             logo.css('margin-top', '-10px');
         });
         
-        $('.carousel').carousel();
-        $('.carousel').on('slid', function() {
+        $('#slider').carousel();
+        $('#slider').on('slid', function() {
         	var iframe = $(this).find('.item.active[class!="first"] iframe');
         	
         	if (iframe.attr('src').length == 0) {
@@ -48,7 +48,7 @@
         	}, 2000);
         });
         
-        $('.carousel').on('slide', function() {
+        $('#slider').on('slide', function() {
         	var iframe = $(this).find('.item.active iframe');
         	iframe.animate({
         		opacity: 0
