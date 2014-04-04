@@ -192,8 +192,8 @@
 
         <script type="text/javascript" src="/media/dashboard/js/jquery-ui-1.10.3.custom.min.js"></script>
         <script type="text/javascript" src="/media/js/switches.js"></script>
-        <script type="text/javascript" src="/media/js/spud-container.js"></script>
         <script type="text/javascript" src="/media/js/spud-container-utils.js"></script>
+        <script type="text/javascript" src="/media/js/spud-container.js"></script>
         <script type="text/javascript">
             $(document).ready(function() {
             	
@@ -220,6 +220,11 @@
                 
                 <% if (user) { %>
                 	applyAddCommentListener(user);
+                	applyPopulateCommentsListener('Team');
+                	getLikes('Team');
+                	$('#spud-carousel').on('slid', function() {
+					    getLikes('Team');
+					});
                 <% } else { %>
                 	overwriteListeners();
                 <% } %>

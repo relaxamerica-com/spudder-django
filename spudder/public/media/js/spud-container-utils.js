@@ -189,7 +189,9 @@ function applyAddCommentListener(user) {
 		postingComment.css('display', 'inline-block');
 		commentInput.val('');
 		
-		$.post(url, { 'comment' : text }, function() {
+		var response = $.post(url, { 'comment' : text });
+		
+		response.done(function() {
 			
 			var comment = buildComment('', text, _user, new Date().toString());
 			
@@ -202,6 +204,12 @@ function applyAddCommentListener(user) {
 			
 			postingComment.hide();
 			
+		});
+		
+		response.fail(function(data) {
+			if (JSON.parse(data).statusCode == 401) {
+				document.location = '/accounts/loginOrRegister?next=' + document.location.pathname;
+			}
 		});
 	});
 }
@@ -220,6 +228,153 @@ function overwriteListeners() {
 		
 		document.location = '/accounts/loginOrRegister?next=' + document.location.pathname;
 	});
+}
+
+function applyPopulateCommentsListener(entityType) {
+	$('.spud-container .spud-comments .load-more').click(function() {
+		var nextPage = $(this).attr('nextPage');
+		populateComments(nextPage, entityType);
+	});
+
+    $('[name="comment"]').click(function() {
+        var currentComments = $('.spud-container:visible .comment');
+
+        if (!currentComments.length) {
+	        populateComments(1, entityType);
+        } else if (!currentComments.is(':visible')) {
+        	currentComments.show();
+        	currentComments.animate({
+        		opacity: 1
+        	}, 2000);
+        }
+    });
+}
+
+function populateComments(page, entityType) {
+	var spudContainer = $('.spud-container:visible'),
+		spudComments = spudContainer.find('.spud-comments'),
+		loading = spudContainer.find('.loading-comments'),
+		spudId = spudContainer.attr('id'),
+		loadMoreComments = spudContainer.find('.spud-comments .load-more'),
+		page = parseInt(page, 10);
+		
+	loading.css('display', 'table');
+	
+	var response = $.get('/spuds/getComments', {
+		'spudId' : spudId,
+		'entityId' : getEntityIdFromURL(),
+		'page' : page,
+		'entityType' : entityType
+	});
+	
+	response.done(function(data) {
+		var parsed = JSON.parse(data),
+			comments = parsed.data;
+
+        if (comments.length) {
+            spudContainer.find('.load-comments').html(parsed.totalItems + ' comments');
+        }
+        
+        // comments = comments.sort(function(a, b) { return new Date(a.created_time) - new Date(b.created_time); });
+
+		$.each(comments, function() {
+			if ($('#' + this._id).length == 0) {
+				var comment = $('<div class="comment"></div>'),
+					inner = $('<div class="clearfix"></div>'),
+					userText = $('<p class="userText"></p>'),
+					image = $('<img width="50" height="50" src="/media/dashboard/avatars/no_avatar.png" class="social-avatar pull-left">'),
+					profileDetails = $('<div class="profile-details clearfix"></div>'),
+					userNameContainer = $('<a href="#" class="user-name">'),
+					createdTime = $('<p><em class="createdTime"></em></p>');
+		
+				profileDetails.append(userNameContainer);
+				profileDetails.append(createdTime);
+				inner.append(image);
+				inner.append(profileDetails);
+				comment.append(inner);
+				comment.append(userText);
+				
+				comment.attr('id', this._id);			
+
+				userText.html(this.usertext);
+				
+				if (this.publisher.profileImageThumb.length > 0) {
+					image.attr('src', this.publisher.profileImageThumb);
+				}
+				
+				var userName = 'Annonymous';
+					
+				if (this.publisher.nickname.length > 0) {
+					userName = this.publisher.nickname;
+				} else if (this.publisher.krowdioUserId.length > 0) {
+					userName = this.publisher.krowdioUserId;
+				}
+				
+				userNameContainer.html(userName);
+				userNameContainer.attr('href', '/public/fan/' + this.publisher.id);
+				
+				var date = this.created_time;
+				
+				date = new Date(date);
+        		data = (date.getMonth() + 1) + '/' + date.getDate() + '/' + date.getFullYear();
+				
+				createdTime.find('.createdTime').html(data);
+				
+				loadMoreComments.after(comment);
+				
+				comment.animate({
+					opacity: 1
+				}, 2000);
+				comment.show();
+			}
+		});
+		
+		if (parsed.pagination.next) {
+			loadMoreComments.css('display', 'table');
+			loadMoreComments.attr('nextPage', page + 1);
+		} else { 
+			loadMoreComments.hide();
+			loadMoreComments.attr('nextPage', 'null');
+		}
+		
+		loading.hide();
+	});
+	
+	response.fail(function() {
+		loading.hide();
+	});
+}
+
+function getLikes(entityType) {
+    var spudContainer = $('.spud-container:visible'),
+        spudId = spudContainer.attr('id'),
+        loadingLikes = spudContainer.find('.loading-likes'),
+        existingCounter = spudContainer.find('.like-counter');
+
+    var response = $.get('/spuds/getLikes', {
+        'spudId' : spudId,
+        'entityId' : getEntityIdFromURL(),
+        'entityType' : entityType
+    });
+
+    if (existingCounter.length) {
+        existingCounter.hide();
+    }
+    loadingLikes.css('display', 'inline-block');
+
+    response.done(function(data) {
+        var parsed = JSON.parse(data),
+            counter = existingCounter.length ? existingCounter : $('<span class="like-counter"></span>');
+
+        counter.html(parsed.totalItems);
+
+        if (existingCounter.length == 0) {
+            spudContainer.find('.like').prepend(counter);
+        }
+
+        counter.show();
+        loadingLikes.hide();
+    });
 }
 
 

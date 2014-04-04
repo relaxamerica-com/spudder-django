@@ -124,6 +124,11 @@
 				};
                 <% if (user) { %>
                 	applyAddCommentListener(user);
+                	applyPopulateCommentsListener('User');
+                	getLikes('User');
+                	$('#spud-carousel').on('slid', function() {
+					    getLikes('User');
+					});
                 <% } else { %>
                 	overwriteListeners();
                 <% } %>

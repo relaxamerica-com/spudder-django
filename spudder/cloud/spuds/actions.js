@@ -39,6 +39,10 @@ module.exports = function (keys) {
 			var id = req.params.id,
 				userAgent = req.headers['user-agent'],
 				text = req.body.comment;
+			
+			if (!Parse.User.current()) {
+				res.send('401', JSON.stringify({ 'statusCode' : 401 }) );
+			}
 				
 			krowdio.krowdioPostComment(userAgent, id, text).then(function(response) {
 				res.send('200', response);
@@ -89,7 +93,11 @@ module.exports = function (keys) {
 		toggleLike: function(req, res) {
 			var id = req.body.id,
 				userAgent = req.headers['user-agent'];
-				
+			
+			if (!Parse.User.current()) {
+				res.send('401', JSON.stringify({ 'statusCode' : 401 }) );
+			}
+			
 			krowdio.krowdioToggleLike(userAgent, id).then(function(likes) {
 				res.send('200', likes);
 			});
@@ -126,7 +134,8 @@ module.exports = function (keys) {
 				userAgent = req.headers['user-agent'],
                 entityId = req.query.entityId,
                 page = req.query.page,
-                query = new Parse.Query(Parse.User);
+                entityType = req.query.entityType,
+                query = new Parse.Query(entityType);
                 
 			query.get(entityId).then(function(entity) {
 				krowdio.krowdioGetCommentsForPost(userAgent, spudId, entity, page).then(function(comments) {
@@ -166,7 +175,8 @@ module.exports = function (keys) {
             var spudId = req.query.spudId,
                 userAgent = req.headers['user-agent'],
                 entityId = req.query.entityId,
-                query = new Parse.Query(Parse.User);
+                entityType = req.query.entityType,
+                query = new Parse.Query(entityType);
 			
 			query.get(entityId).then(function(entity) {
 	            krowdio.krowdioGetLikesForPost(userAgent, spudId, entity).then(function(likes) {

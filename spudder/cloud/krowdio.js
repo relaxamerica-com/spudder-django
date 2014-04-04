@@ -394,8 +394,6 @@ exports.getForPost = function(what, userAgent, postId, entity, page) {
        
     if (page == undefined) {
     	page = 1;
-    } else {
-    	page = parseInt(page, 10);
     }
 
     return self.krowdioEnsureOAuthToken(entity, userAgent)
@@ -406,7 +404,7 @@ exports.getForPost = function(what, userAgent, postId, entity, page) {
 
             Parse.Cloud.httpRequest({
                 method: 'GET',
-                url: 'http://api.krowd.io/' + what + '/' + _postId + '?limit=5&page=' + page + '&newpage=' + (page + 1) + '&startid=&direction=before',
+                url: 'http://api.krowd.io/' + what + '/' + _postId + '?limit=5&page=' + page + '&newpage=1&startid=&direction=None',
                 headers: { 'Authorization' : token },
                 success: function(httpResponse) {
                 	console.log(httpResponse.text);
