@@ -100,6 +100,9 @@ function getEntityPublicViewURL(clazz, id) {
 	if (clazz == 'Player' || clazz == 'Coach') {
 		return '/public/' + clazz + '/' + id;
 	}
+	if (clazz == 'User') {
+		return '/public/fan/' + id; 
+	}
 }
 
 function addTag(entityType, entityId, entityName, spudContainer) {
@@ -350,6 +353,8 @@ function getLikes(entityType) {
         spudId = spudContainer.attr('id'),
         loadingLikes = spudContainer.find('.loading-likes'),
         existingCounter = spudContainer.find('.like-counter');
+
+	console.log(spudId);
 
     var response = $.get('/spuds/getLikes', {
         'spudId' : spudId,

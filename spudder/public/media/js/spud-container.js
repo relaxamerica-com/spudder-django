@@ -1,4 +1,10 @@
 $(document).ready(function() {
+	var spudId = $.url(document.location).data.param.query['spudId'];
+    if (spudId) {
+    	$('.item').removeClass('active');
+    	$('#' + spudId).parent('.item').addClass('active');
+    }
+	
 	$('.dialogs, .comments').slimScroll({
 		height: '300px'
 	});
@@ -39,7 +45,6 @@ $(document).ready(function() {
 		$('.spud-comments .load-more').hide();
 	});
 	
-
 	$('.load-comments').click(function() {
 		var spudContainer = $('.spud-container:visible'),
 			currentComments =  spudContainer.find('.comment'),

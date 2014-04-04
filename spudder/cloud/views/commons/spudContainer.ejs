@@ -8,7 +8,7 @@
 		        <img width="50" height="50" src="<%= spud.publisher.get('profileImageThumb') %>" class="social-avatar pull-left">
 		    <% } %>
 			<div class="profile-details clearfix">
-		        <a href="/public/fan/<%- spud.publisher.id %>" class="user-name">
+		        <a href="/public/fan/<%- spud.publisher.id %>?spudId=<%- spud._id %>" class="user-name">
 					<% if (getValueOrEmpty(spud.publisher.get('nickname')) != '') { %>
 		                <%= spud.publisher.get('nickname') %>
 		            <% } else if (getValueOrEmpty(spud.publisher.get('krowdioUserId')) != '') { %>

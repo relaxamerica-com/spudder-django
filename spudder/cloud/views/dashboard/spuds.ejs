@@ -167,7 +167,7 @@
 		    				var tagDiv = $('<div class="tag"></div>'),
 		    					tagLink = $('<a href=""></a>');
 		    				
-		    				tagLink.attr('href', getEntityPublicViewURL(this.clazz, this.id));
+		    				tagLink.attr('href', getEntityPublicViewURL(this.clazz, this.id) + '?spudId=' + spudContainer.attr('id'));
 		    				tagLink.html(this.name);
 		    				tagDiv.html(tagLink);
 		    				
@@ -265,7 +265,7 @@
                                 }
 
                                 userNameContainer.html(userName);
-                                userNameContainer.attr('href', '/public/fan/' + value._id);
+                                userNameContainer.attr('href', '/public/fan/' + value.objectId + '?spudId=' + spudContainer.attr('id'));
                             });
 
 							loadingComments.addClass('alreadyLoaded');
