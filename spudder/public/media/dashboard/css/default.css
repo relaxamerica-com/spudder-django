@@ -880,6 +880,46 @@ form .input-required {
 	box-sizing: border-box;
 	width: 100%;
 	padding: 15px 10px;
+	position: relative;
+}
+
+.spud-container .content .settings {
+	position: absolute;
+	right: 10px;
+	top: 15px;
+}
+
+.spud-container .content .settings i {
+	font-size: 1.5em;
+}
+
+.spud-container .content .settings a {
+	text-decoration: none;
+	color: #F03C02;
+}
+
+.spud-container .content .settings a:hover {
+	cursor: pointer;
+	color: #000;
+}
+
+.spud-container .content .settings-dropdown {
+	background-color: #a89b94;
+	min-width: 100px;
+	left: -80px;
+}
+
+.spud-container .content .settings-dropdown li {
+	background-color: #a89b94;
+}
+
+.spud-container .content .settings-dropdown li a {
+	color: #000;
+}
+
+.spud-container .content .settings-dropdown li a:hover {
+	color: #F03C02;
+	background-color: #BCAFA8;
 }
 
 #spuds #load-more {
