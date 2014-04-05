@@ -184,6 +184,16 @@ module.exports = function (keys) {
 	            });
 			});
 			
+        },
+        
+        deleteSpud: function(req, res) {
+        	var id = req.params.id,
+        		userAgent = req.headers['user-agent'];
+        	console.log('deleteSpud');
+        	
+        	krowdio.krowdioDeletePost(Parse.User.current(), id, userAgent).then(function() {
+        		res.redirect('/dashboard');
+        	});
         }
 	};
 };

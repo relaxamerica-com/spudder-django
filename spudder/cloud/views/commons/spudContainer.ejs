@@ -1,6 +1,15 @@
 <div class="spud-container item <%- spud.type %>" id="<%- spud._id %>">
 	
 	<div class="content">
+		<div class="settings dropdown">
+			<a class="dropdown-toggle" data-toggle="dropdown">
+				<i class="icon-gear icon-large"> </i>
+			</a>
+			<ul class="settings-dropdown dropdown-menu">
+				<li><a href="/spuds/delete/<%- spud._id %>">Delete</a></li>
+			</ul>
+		</div>
+		
 		<div class="clearfix">
 			<% if( getValueOrEmpty( spud.publisher.get('profileImageThumb') ) == '' ) { %>
 		  		<img width="50" height="50" src="/media/dashboard/avatars/no_avatar.png" class="social-avatar pull-left">

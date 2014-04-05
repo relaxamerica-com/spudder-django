@@ -173,6 +173,33 @@ exports.krowdioPost = function(entity, post_data, userAgent){
             return promise;
         });
 };
+
+exports.krowdioDeletePost = function(entity, id, userAgent){
+	var self = this,
+		_id = id;
+		
+    return self.krowdioEnsureOAuthToken(entity, userAgent)
+        .then(function(entity){
+            var token = 'Token token="' + entity.get('krowdioAccessToken') + '"',
+            	promise = new Parse.Promise();
+            
+            Parse.Cloud.httpRequest({
+                url: "http://api.krowd.io/post/" + _id,
+                method: 'DELETE',
+                headers: { 'Authorization' : token },
+	            success: function(httpResponse) {
+	            	console.log(httpResponse);
+	            	promise.resolve(entity);
+	            },
+	            error: function(httpResponse) {
+	            	console.log(httpResponse);
+	            	promise.reject(entity);
+	            }
+            });
+            
+            return promise;
+        });
+};
 		
 exports.krowdioGetPost = function(id) {
 
