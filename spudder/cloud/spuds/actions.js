@@ -174,16 +174,41 @@ module.exports = function (keys) {
         getLikes: function(req, res) {
             var spudId = req.query.spudId,
                 userAgent = req.headers['user-agent'],
-                entityId = req.query.entityId,
-                entityType = req.query.entityType,
-                query = new Parse.Query(entityType);
-			
-			query.get(entityId).then(function(entity) {
-	            krowdio.krowdioGetLikesForPost(userAgent, spudId, entity).then(function(likes) {
-	                res.send('200', likes);
-	            });
-			});
-			
+                isCurrentUser = req.query.isCurrentUser;
+
+            if (isCurrentUser) {
+                krowdio.krowdioGetLikesForPost(userAgent, spudId, Parse.User.current()).then(function(likes) {
+                    var updatedLikes = [],
+                        query = new Parse.Query(Parse.User),
+                        allUsersFetchedPromise = new Parse.Promise();
+
+                    _.each(likes.data, function(like) {
+                        var id = like.username.replace('User', '');
+
+                        query = query.get(id).then(function(user) {
+                            updatedLikes.push({
+                                userId: user.id,
+                                username: user.get('username') || user.get('krowdioUserId')
+                            })
+                        });
+                    });
+
+                    allUsersFetchedPromise.then(function() {
+                        res.send('200', JSON.stringify({ items: updatedLikes }));
+                    });
+                });
+            } else {
+                var entityId = req.query.entityId,
+                    entityType = req.query.entityType,
+                    query = new Parse.Query(entityType);
+
+                query.get(entityId).then(function(entity) {
+                    krowdio.krowdioGetLikesForPost(userAgent, spudId, entity).then(function(likes) {
+                        res.send('200', likes);
+                    });
+                });
+
+            }
         },
         
         deleteSpud: function(req, res) {
@@ -232,6 +257,7 @@ module.exports = function (keys) {
             		
             		promise.then(function() {
             			_.each(spuds, function(spud) {
+                            console.log(spud)
 		        			renderedSpuds.push(require('cloud/commons/spudContainer')(spud, false, require('cloud/utilities')().getValueOrEmpty, Parse.User.current(), teams));
 		        		});
             			res.send('200', JSON.stringify({ 'items' : renderedSpuds, 'hasMore' : parsed.pagination.next }));

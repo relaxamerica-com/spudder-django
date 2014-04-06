@@ -142,8 +142,25 @@
 					show: {
 						effect: "slideDown",
 						delay: 2500
-					}
+                    }
 				});
+
+                $('.buttons-bottom .btn.like').on('shown.bs.tooltip', function() {
+                    var tooltipContainer = $(this).parent().find('.tooltip'),
+                        self = $(this),
+                        response = $.get('/spuds/getLikes', {
+                            'spudId' : self.parents('.spud-container').attr('id'),
+                            'isCurrentUser' : true
+                        }, function(data) {
+                            $.each(data.items, function() {
+                                var userContainer = $('<div class="userContainer"></div>'),
+                                    userLink = $('<a href="/public/fan/' + this.userId + '">' + this.username + '</a>');
+                                userContainer.html(userLink);
+                                tooltipContainer.append(userContainer);
+                            });
+                        });
+                });
+
 			}
 	
             socialContainer.on('click', '.btn.like', function() {
@@ -402,11 +419,12 @@
 				addTag('Coach', selected.val(), selected.html(), $(this).find('.spud-container'));
 			});
 			
-			socialContainer.on('hover', '.btn.like', function() {
-			    $(this).find('img').attr('src', '/media/img/ajax-loader-dark-grey.gif');
-			}, function() {
-			    $(this).find('img').attr('src', '/media/img/ajax-loader.gif');
-			});
+			socialContainer.on({ mouseenter : function() {
+                $(this).find('img').attr('src', '/media/img/ajax-loader-dark-grey.gif');
+            }, mouseleave : function() {
+                $(this).find('img').attr('src', '/media/img/ajax-loader.gif');
+            }
+            }, '.btn.like');
     	});
 	</script>
 	
