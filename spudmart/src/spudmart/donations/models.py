@@ -20,3 +20,5 @@ class Donation(models.Model):
     donation = models.FloatField(default=0)
     state = models.IntegerField(default=DonationState.NOT_STARTED)
     sender_token_id = models.CharField()
+    status_code = models.CharField()
+    error_message = models.CharField(default='')
