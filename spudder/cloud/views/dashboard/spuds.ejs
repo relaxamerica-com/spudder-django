@@ -37,16 +37,14 @@
 				
 				<div class="row-fluid">
 					<div class="span12">
-						<div class="btn btn-orange" id="load-more">
-							<i class="icon-spinner icon-spin"></i>Loading content
+						<div class="btn btn-orange" id="load-more" nextPage="1">
+							<span class="loading"><i class="icon-spinner icon-spin"></i> Loading content</span>
+							<span class="hasMore hidden">Load More</span>
 						</div>
 					</div>
 				</div>
 				
 				<div class="tab-content hidden" id="all">
-					<% spuds.forEach(function(spud) { %>
-						<%- spudContainer(spud, false, getValueOrEmpty, user, teams) %>
-					<% }) %>
 				</div>
 			</div>
 		</div>
@@ -66,10 +64,9 @@
 	      /*
 	      # init isotope, then insert all items from hidden alpha
 	      */
-	
 			container.isotope({
 				itemSelector: '.item'
-			}).isotope('insert', all.find('.item'));
+			});//.isotope('insert', all.find('.item'));
 			
 			$('#showAll').click(function() {
 	    		container.isotope({ filter: '.item' });
@@ -87,24 +84,69 @@
 	    		container.isotope({ filter: '.video' });
 	    	});
 	    	
-			
-			return $("#load-more").html("Load more").find("i").hide();
 	    });
 	    
 	    $(document).ready(function() {
+	    	var socialContainer = $('#social-container');
 	    	
-	    	$('.buttons-bottom .btn, .tag-buttons .btn').tooltip({
-				hide: {
-					effect: "explode",
-					delay: 2500
-				},
-				show: {
-					effect: "slideDown",
-					delay: 2500
-				}
-			});
-
-            $('.btn.like').click(function() {
+	    	$('#load-more').click(function() {
+	    		getSpuds();
+	    	});
+	    	
+	    	function getSpuds() {
+	    		var loadMore = $('#load-more'),
+	    			hasMore = $(loadMore).find('.hasMore'),
+	    			loading = $(loadMore).find('.loading'),
+	    			self = $(loadMore);
+	    		
+	    		loading.show();
+    			hasMore.addClass('hidden');
+	    		
+	    		var nextPage = parseInt($(loadMore).attr('nextPage'), 10),
+		    		response = $.get('/spuds/getSpuds', { 
+			    		page: nextPage
+		    		});
+		    	
+		    	response.done(function(data) {
+		    		var parsed = JSON.parse(data),
+		    			container = $('#social-container'),
+		    			all = $('#all');
+		    		
+		    		$.each(parsed.items, function() {
+		    			all.append($(this.toString()));
+		    		});
+		    		
+		    		container.isotope('insert', all.find('.item'));
+		    		
+		    		loading.hide();
+		    		if (parsed.hasMore) {
+		    			hasMore.removeClass('hidden');
+		    		} else {
+		    			loadMore.hide();
+		    		}
+		    		
+		    		activateTooltips();
+		    		
+		    		self.attr('nextPage', nextPage + 1);
+		    	});
+	    	}
+	    	
+	    	getSpuds();
+	    	
+	    	function activateTooltips() {
+		    	$('.buttons-bottom .btn, .tag-buttons .btn').tooltip({
+					hide: {
+						effect: "explode",
+						delay: 2500
+					},
+					show: {
+						effect: "slideDown",
+						delay: 2500
+					}
+				});
+			}
+	
+            socialContainer.on('click', '.btn.like', function() {
                 var spudContainer = $(this).parents('.spud-container'),
                     spudID = spudContainer.attr('id'),
                     loadingLikes = spudContainer.find('.loading-likes'),
@@ -125,7 +167,7 @@
                 });
             });
 
-	    	$('.tag').click(function() {
+	    	socialContainer.on('click', '.tag', function() {
 	    		var spudContainer = $(this).parents('.spud-container'),
 					buttons = spudContainer.find('.tag-buttons'),
 					decodedTags = spudContainer.find('.decodedTags'),
@@ -182,7 +224,7 @@
 				
 			});
 			
-			$('.tag-buttons .btn').click(function() {
+			socialContainer.on('click', '.tag-buttons .btn', function() {
 				var title = $(this).attr('data-original-title').toLowerCase(),
 					spudContainer = $(this).parents('.spud-container'),
 					inputs = spudContainer.find('.tag-' + title);
@@ -215,7 +257,7 @@
 				$('#social-container').isotope('reLayout');
 			}
 			
-			$('.load-comments, [name="comment"]').click(function() {
+			socialContainer.on('click', '.load-comments, [name="comment"]', function() {
 				var ids = [],
 					spudContainer = $(this).parents('.spud-container'),
 					loadingComments = spudContainer.find('.loading-comments'),
@@ -288,7 +330,7 @@
 				}
 			});
 			
-			$('.spud-container .add-comment').on('submit', function(e) {
+			socialContainer.on('submit', '.spud-container .add-comment', function(e) {
 				e.preventDefault();
 				
 				var url = $(this).attr('action'),
@@ -321,7 +363,7 @@
 				});
 			});
 			
-			$('.tagTeam').click(function(e) {
+			socialContainer.on('click', '.tagTeam', function(e) {
 				e.preventDefault();
 				
 				var nameFromInput = $(this).parent().find('input').val(),
@@ -344,7 +386,7 @@
 				
 			}); 
 			
-			$('.tagPlayer').click(function(e) {
+			socialContainer.on('click', '.tagPlayer', function(e) {
 				e.preventDefault();
 				
 				var selected = $(this).parent().find('select').find(':selected');
@@ -352,25 +394,20 @@
 				addTag('Player', selected.val(), selected.html(), $(this).find('.spud-container'));
 			});
 			
-			$('.tagCoach').click(function(e) {
+			socialContainer.on('click', '.tagCoach', function(e) {
 				e.preventDefault();
 				
 				var selected = $(this).parent().find('select').find(':selected');
 				
 				addTag('Coach', selected.val(), selected.html(), $(this).find('.spud-container'));
 			});
-		
-	    });
-	    
-	    // $('#load-more').click(function() {
-	      // var item1, item2, item3, items, tmp;
-	      // items = $container2.find('.social-entry');
-	      // item1 = $(items[Math.floor(Math.random() * items.length)]).clone();
-	      // item2 = $(items[Math.floor(Math.random() * items.length)]).clone();
-	      // item3 = $(items[Math.floor(Math.random() * items.length)]).clone();
-	      // tmp = $().add(item1).add(item2).add(item3);
-	      // return $container2.isotope('insert', tmp);
-	    // });
+			
+			socialContainer.on('hover', '.btn.like', function() {
+			    $(this).find('img').attr('src', '/media/img/ajax-loader-dark-grey.gif');
+			}, function() {
+			    $(this).find('img').attr('src', '/media/img/ajax-loader.gif');
+			});
+    	});
 	</script>
 	
 <% include ../dashboard/parts/foot %>

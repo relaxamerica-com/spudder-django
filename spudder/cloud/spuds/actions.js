@@ -189,11 +189,57 @@ module.exports = function (keys) {
         deleteSpud: function(req, res) {
         	var id = req.params.id,
         		userAgent = req.headers['user-agent'];
-        	console.log('deleteSpud');
         	
         	krowdio.krowdioDeletePost(Parse.User.current(), id, userAgent).then(function() {
         		res.redirect('/dashboard');
         	});
+        },
+        
+        getSpuds: function(req, res) {
+        	var page = parseInt(req.query.page, 10);
+        	
+        	krowdio.krowdioGetPostsForEntity(Parse.User.current(), req.headers['user-agent'], page).then(function(_spuds) {
+				var parsed = JSON.parse(_spuds),
+					spuds = parsed.items,
+					Team = Parse.Object.extend('Team'),
+	            	teamQuery = new Parse.Query(Team),
+	            	updatedSpuds = [],
+			        renderedSpuds = [];
+            	
+				teamQuery.equalTo('admins', Parse.User.current());
+            
+            	teamQuery.find().then(function(teams) {
+            		var promise = Parse.Promise.as();
+            		
+            		_.each(spuds, function(spud) {
+            			var _spud = spud;
+            			
+            			promise = promise.then(function() {
+            				var publisherFetchedPromise = new Parse.Promise(),
+            					userQuery = new Parse.Query(Parse.User);
+            					
+            				userQuery.equalTo('krowdioUserId', _spud.user._id);
+            				
+            				userQuery.first().then(function(user) {
+            					_spud.publisher = user;
+            					updatedSpuds.push(_spud);
+            					publisherFetchedPromise.resolve();
+            				});
+            				
+            				return publisherFetchedPromise;
+            			});
+            		});
+            		
+            		promise.then(function() {
+            			_.each(spuds, function(spud) {
+		        			renderedSpuds.push(require('cloud/commons/spudContainer')(spud, false, require('cloud/utilities')().getValueOrEmpty, Parse.User.current(), teams));
+		        		});
+            			res.send('200', JSON.stringify({ 'items' : renderedSpuds, 'hasMore' : parsed.pagination.next }));
+            		});
+		            
+	            });
+			});
+        	
         }
 	};
 };

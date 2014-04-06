@@ -10,4 +10,5 @@ module.exports = function (app, keys) {
     app.get('/spuds/getComments', spuds.getComments);
     app.get('/spuds/getLikes', spuds.getLikes);
     app.get('/spuds/delete/:id', helpers.loginRequired, spuds.deleteSpud);
+    app.get('/spuds/getSpuds', helpers.loginRequired, spuds.getSpuds);
 };

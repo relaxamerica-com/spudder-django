@@ -205,7 +205,7 @@ exports.krowdioGetPost = function(id) {
 
 };
 		
-exports.krowdioGetPostsForEntity = function(entity, userAgent) {
+exports.krowdioGetPostsForEntity = function(entity, userAgent, page) {
 	var self = this;
 		
     return self.krowdioEnsureOAuthToken(entity, userAgent)
@@ -215,7 +215,7 @@ exports.krowdioGetPostsForEntity = function(entity, userAgent) {
             	promise = new Parse.Promise();
             	
             Parse.Cloud.httpRequest({
-                url: "http://api.krowd.io/stream/" + entity.get('krowdioUserId') + "?limit=10&page=1&maxid=&paging=None",
+                url: "http://api.krowd.io/stream/" + entity.get('krowdioUserId') + "?limit=1&page=" + page + "&maxid=&paging=None",
                 method: 'GET',
                 headers: { 'Authorization' : token },
            		success: function(httpResponse) {
