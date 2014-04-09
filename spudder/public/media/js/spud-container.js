@@ -1,4 +1,10 @@
 $(document).ready(function() {
+	var spudId = $.url(document.location).data.param.query['spudId'];
+    if (spudId) {
+    	$('.item').removeClass('active');
+    	$('#' + spudId).parent('.item').addClass('active');
+    }
+	
 	$('.dialogs, .comments').slimScroll({
 		height: '300px'
 	});
@@ -31,146 +37,41 @@ $(document).ready(function() {
 		interval: false
 	});
 	
-	$('#spud-carousel').on('slid', function() {
-        getLikes();
+	$('#spud-carousel').on('slide', function() {
+		$('.comment').css({
+			'opacity' : '0',
+			'display' : 'none'
+		});
+		$('.spud-comments .load-more').hide();
 	});
 	
-	function populateComments() {
-		var spudContainer = $('.spud-container:visible'),
-			spudComments = spudContainer.find('.spud-comments'),
-			loading = spudContainer.find('.loading-comments'),
-			spudId = spudContainer.attr('id');
-			
-		loading.css('display', 'table');
-		
-		var response = $.get('/spuds/getComments', {
-			'spudId' : spudId,
-			'entityId' : getEntityIdFromURL()
-		});
-		
-		response.done(function(data) {
-			var comments = JSON.parse(data);
-
-            if (comments.length) {
-                $('.load-comments').html(comments.length + ' comments');
-            }
-            
-            comments = comments.sort(function(a, b) { return new Date(b.created_time) - new Date(a.created_time); });
-
-			$.each(comments, function() {
-				if ($('#' + this._id).length == 0) {
-					var comment = $('<div class="comment"></div>'),
-						inner = $('<div class="clearfix"></div>'),
-						userText = $('<p class="userText"></p>'),
-						image = $('<img width="50" height="50" src="/media/dashboard/avatars/no_avatar.png" class="social-avatar pull-left">'),
-						profileDetails = $('<div class="profile-details clearfix"></div>'),
-						userNameContainer = $('<a href="#" class="user-name">'),
-						createdTime = $('<p><em class="createdTime"></em></p>');
-			
-					profileDetails.append(userNameContainer);
-					profileDetails.append(createdTime);
-					inner.append(image);
-					inner.append(profileDetails);
-					comment.append(inner);
-					comment.append(userText);
-					
-					comment.attr('id', this._id);			
-	
-					userText.html(this.usertext);
-					
-					if (this.publisher.profileImageThumb.length > 0) {
-						image.attr('src', this.publisher.profileImageThumb);
-					}
-					
-					var userName = 'Annonymous';
-						
-					if (this.publisher.nickname.length > 0) {
-						userName = this.publisher.nickname;
-					} else if (this.publisher.krowdioUserId.length > 0) {
-						userName = this.publisher.krowdioUserId;
-					}
-					
-					userNameContainer.html(userName);
-					userNameContainer.attr('href', '/public/fan/' + this.publisher.id);
-					
-					var date = this.created_time;
-					
-					date = new Date(date);
-	        		data = (date.getMonth() + 1) + '/' + date.getDate() + '/' + date.getFullYear();
-					
-					createdTime.find('.createdTime').html(data);
-					
-					spudComments.append(comment);
-					comment.show();
-				}
-			});
-			
-			loading.hide();
-		});
-		
-		response.fail(function() {
-			loading.hide();
-		});
-	}
-
-    $('[name="comment"]').click(function() {
-        var currentComments = $('.spud-container .comment');
-
-        if (!currentComments.length) {
-	        populateComments();
-        } else if (!currentComments.is(':visible')) {
-        	currentComments.show();
-        }
-    });
-    
-    function getLikes() {
-        var spudContainer = $('.spud-container:visible'),
-            spudId = spudContainer.attr('id'),
-            loadingLikes = spudContainer.find('.loading-likes'),
-            existingCounter = spudContainer.find('.like-counter');
-
-        var response = $.get('/spuds/getLikes', {
-            'spudId' : spudId,
-            'entityId' : getEntityIdFromURL()
-        });
-
-        if (existingCounter.length) {
-            existingCounter.hide();
-        }
-        loadingLikes.css('display', 'inline-block');
-
-        response.done(function(data) {
-            var parsed = JSON.parse(data),
-                counter = existingCounter.length ? existingCounter : $('<span class="like-counter"></span>');
-
-            counter.html(parsed.totalItems);
-
-            if (existingCounter.length == 0) {
-                spudContainer.find('.like').prepend(counter);
-            }
-
-            counter.show();
-            loadingLikes.hide();
-        });
-    }
-
 	$('.load-comments').click(function() {
-		var currentComments = $('.spud-container:visible .comment');
+		var spudContainer = $('.spud-container:visible'),
+			currentComments =  spudContainer.find('.comment'),
+			lastComment = spudContainer.find('.comment:last'),
+			loadMoreComments = spudContainer.find('.spud-comments .load-more');
 		
 		if (currentComments.is(':visible')) {
 			currentComments.hide();
+			loadMoreComments.hide();
+			lastComment.after(loadMoreComments);
 		} else {
+			if (loadMoreComments.attr('nextPage') != 'null') {
+				loadMoreComments.show();
+			}
 			currentComments.show();
+        	currentComments.animate({
+        		opacity: 1
+        	}, 2000);
+        	lastComment.after(loadMoreComments);
 		}
 	});
-
-    getLikes();
 
 	$('.btn.like').click(function() {
 		var spudContainer = $(this).parents('.spud-container'),
 			spudID = spudContainer.attr('id'),
 			loadingLikes = spudContainer.find('.loading-likes'),
-			counter = spudContainer.find('.like-counter');
+			counter = spudContainer.find('.like-container');
 			
 		var response = $.post('/spuds/toggleLike', {
 			'id' : spudID
@@ -184,6 +85,12 @@ $(document).ready(function() {
 			loadingLikes.hide();
             counter.html(parsed.totalItems);
 			counter.css('display', 'inline-block');
+		});
+		
+		response.fail(function(data) {
+			if (JSON.parse(data).statusCode == 401) {
+				document.location = '/accounts/loginOrRegister?next=' + document.location.pathname;
+			}
 		});
 	});
 

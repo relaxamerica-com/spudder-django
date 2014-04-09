@@ -37,16 +37,14 @@
 				
 				<div class="row-fluid">
 					<div class="span12">
-						<div class="btn btn-orange" id="load-more">
-							<i class="icon-spinner icon-spin"></i>Loading content
+						<div class="btn btn-orange" id="load-more" nextPage="1">
+							<span class="loading"><i class="icon-spinner icon-spin"></i> Loading content</span>
+							<span class="hasMore hidden">Load More</span>
 						</div>
 					</div>
 				</div>
 				
 				<div class="tab-content hidden" id="all">
-					<% spuds.forEach(function(spud) { %>
-						<%- spudContainer(spud, false, getValueOrEmpty, user, teams) %>
-					<% }) %>
 				</div>
 			</div>
 		</div>
@@ -66,10 +64,9 @@
 	      /*
 	      # init isotope, then insert all items from hidden alpha
 	      */
-	
 			container.isotope({
 				itemSelector: '.item'
-			}).isotope('insert', all.find('.item'));
+			});//.isotope('insert', all.find('.item'));
 			
 			$('#showAll').click(function() {
 	    		container.isotope({ filter: '.item' });
@@ -87,24 +84,98 @@
 	    		container.isotope({ filter: '.video' });
 	    	});
 	    	
-			
-			return $("#load-more").html("Load more").find("i").hide();
 	    });
 	    
 	    $(document).ready(function() {
+	    	var socialContainer = $('#social-container');
 	    	
-	    	$('.buttons-bottom .btn, .tag-buttons .btn').tooltip({
-				hide: {
-					effect: "explode",
-					delay: 2500
-				},
-				show: {
-					effect: "slideDown",
-					delay: 2500
-				}
-			});
+	    	$('#load-more').click(function() {
+	    		getSpuds();
+	    	});
+	    	
+	    	function getSpuds() {
+	    		var loadMore = $('#load-more'),
+	    			hasMore = $(loadMore).find('.hasMore'),
+	    			loading = $(loadMore).find('.loading'),
+	    			self = $(loadMore);
+	    		
+	    		loading.show();
+    			hasMore.addClass('hidden');
+	    		
+	    		var nextPage = parseInt($(loadMore).attr('nextPage'), 10),
+		    		response = $.get('/spuds/getSpuds', { 
+			    		page: nextPage
+		    		});
+		    	
+		    	response.done(function(data) {
+		    		var parsed = JSON.parse(data),
+		    			container = $('#social-container'),
+		    			all = $('#all');
+		    		
+		    		$.each(parsed.items, function() {
+		    			all.append($(this.toString()));
+		    		});
+		    		
+		    		container.isotope('insert', all.find('.item'));
+		    		
+		    		loading.hide();
+		    		if (parsed.hasMore) {
+		    			hasMore.removeClass('hidden');
+		    		} else {
+		    			loadMore.hide();
+		    		}
+		    		
+		    		activateTooltips();
+		    		
+		    		self.attr('nextPage', nextPage + 1);
+		    	});
+		    	
+		    	response.fail(function(error) {
+		    		console.log(error);
+		    	});
+	    	}
+	    	
+	    	getSpuds();
+	    	
+	    	function activateTooltips() {
+		    	$('.buttons-bottom .btn, .tag-buttons .btn').tooltip({
+					hide: {
+						effect: "explode",
+						delay: 2500
+					},
+					show: {
+						effect: "slideDown",
+						delay: 2500
+                    }
+				});
 
-            $('.btn.like').click(function() {
+                $('.buttons-bottom .btn.like').on('shown.bs.tooltip', function() {
+                	// var self = $(this);
+//                 	
+                	// if (!$(this).hasClass('alreadyLoaded')) {
+	                    // var tooltipContainer = $(this).parent().find('.tooltip'),
+	                        // self = $(this),
+	                        // response = $.get('/spuds/getLikes', {
+	                            // 'spudId' : self.parents('.spud-container').attr('id'),
+	                            // 'isCurrentUser' : true
+	                        // }, function(data) {
+	                        	// var parsed = JSON.parse(data);
+// 	                        	
+	                        	// self.addClass('alreadyLoaded');
+// 	                        	
+	                            // $.each(parsed.items, function() {
+	                                // var userContainer = $('<div class="userContainer"></div>'),
+	                                    // userLink = $('<a href="/public/fan/' + this.userId + '">' + this.username + '</a>');
+	                                // userContainer.html(userLink);
+	                                // tooltipContainer.append(userContainer);
+	                            // });
+	                        // });
+                	// }
+                });
+
+			}
+	
+            socialContainer.on('click', '.btn.like', function() {
                 var spudContainer = $(this).parents('.spud-container'),
                     spudID = spudContainer.attr('id'),
                     loadingLikes = spudContainer.find('.loading-likes'),
@@ -125,7 +196,7 @@
                 });
             });
 
-	    	$('.tag').click(function() {
+	    	socialContainer.on('click', '.tag', function() {
 	    		var spudContainer = $(this).parents('.spud-container'),
 					buttons = spudContainer.find('.tag-buttons'),
 					decodedTags = spudContainer.find('.decodedTags'),
@@ -139,6 +210,7 @@
 				
 				if (buttons.is(':visible')) {
 					buttons.hide();
+					spudContainer.find('.tag-inputs').hide();
 				} else {
 					buttons.show();
 				}
@@ -167,7 +239,7 @@
 		    				var tagDiv = $('<div class="tag"></div>'),
 		    					tagLink = $('<a href=""></a>');
 		    				
-		    				tagLink.attr('href', getEntityPublicViewURL(this.clazz, this.id));
+		    				tagLink.attr('href', getEntityPublicViewURL(this.clazz, this.id) + '?spudId=' + spudContainer.attr('id'));
 		    				tagLink.html(this.name);
 		    				tagDiv.html(tagLink);
 		    				
@@ -182,7 +254,7 @@
 				
 			});
 			
-			$('.tag-buttons .btn').click(function() {
+			socialContainer.on('click', '.tag-buttons .btn', function() {
 				var title = $(this).attr('data-original-title').toLowerCase(),
 					spudContainer = $(this).parents('.spud-container'),
 					inputs = spudContainer.find('.tag-' + title);
@@ -215,15 +287,20 @@
 				$('#social-container').isotope('reLayout');
 			}
 			
-			$('.load-comments, [name="comment"]').click(function() {
+			socialContainer.on('click', '.load-comments, [name="comment"]', function() {
 				var ids = [],
 					spudContainer = $(this).parents('.spud-container'),
 					loadingComments = spudContainer.find('.loading-comments'),
-					currentComments = spudContainer.find('.comment');
+					currentComments = spudContainer.find('.comment'),
+					loadMore = spudContainer.find('.spud-comments .load-more'),
+					currentPage = parseInt(loadMore.attr('nextPage'), 10);
+					
 					
 				if (currentComments.is(':visible') && $(this).hasClass('load-comments')) {
 					
 					currentComments.hide();
+					currentComments.css('opacity', '0');
+					loadMore.hide();
 					reLayout();
 					
 				} else if (!loadingComments.hasClass('alreadyLoaded')) { 
@@ -265,24 +342,50 @@
                                 }
 
                                 userNameContainer.html(userName);
-                                userNameContainer.attr('href', '/public/fan/' + value._id);
+                                userNameContainer.attr('href', '/public/fan/' + value.objectId + '?spudId=' + spudContainer.attr('id'));
                             });
 
 							loadingComments.addClass('alreadyLoaded');
-
                             loadingComments.hide();
-                            currentComments.show();
-                            reLayout();
+                            showComments(currentComments, currentPage, loadMore);
                         });
 
                     }
 				} else {
-					currentComments.show();
-                    reLayout();
+					showComments(currentComments, 1, loadMore);
 				}
+				
 			});
 			
-			$('.spud-container .add-comment').on('submit', function(e) {
+			function showComments(currentComments, currentPage, loadMore) {
+				var lastCommentIndex = currentPage * 5;
+				
+				currentComments.slice(lastCommentIndex - 5, lastCommentIndex).show();
+				currentComments.slice(lastCommentIndex - 5, lastCommentIndex).animate({
+                	opacity: 1
+                }, 2000);
+                
+                loadMore.attr('nextPage', currentPage + 1);
+                
+                if (lastCommentIndex < currentComments.length) {
+                	$(currentComments.get(lastCommentIndex - 1)).after(loadMore);
+                    loadMore.css('display', 'table');
+                } else {
+                	loadMore.hide();
+                }
+                reLayout();
+			}
+			
+			socialContainer.on('click', '.spud-comments .load-more', function() {
+				var currentPage = parseInt($(this).attr('nextPage'), 10),
+					spudContainer = $(this).parents('.spud-container'),
+					currentComments = spudContainer.find('.comment'),
+					loadMore = spudContainer.find('.spud-comments .load-more');
+				
+				showComments(currentComments, currentPage, loadMore);
+			});
+			
+			socialContainer.on('submit', '.spud-container .add-comment', function(e) {
 				e.preventDefault();
 				
 				var url = $(this).attr('action'),
@@ -305,6 +408,9 @@
 					$(self).after(comment);
 					
 					comment.show();
+					comment.animate({
+						opacity: 1
+					}, 2000);
 					
 					postingComment.hide();
 					
@@ -312,7 +418,7 @@
 				});
 			});
 			
-			$('.tagTeam').click(function(e) {
+			socialContainer.on('click', '.tagTeam', function(e) {
 				e.preventDefault();
 				
 				var nameFromInput = $(this).parent().find('input').val(),
@@ -335,7 +441,7 @@
 				
 			}); 
 			
-			$('.tagPlayer').click(function(e) {
+			socialContainer.on('click', '.tagPlayer', function(e) {
 				e.preventDefault();
 				
 				var selected = $(this).parent().find('select').find(':selected');
@@ -343,25 +449,21 @@
 				addTag('Player', selected.val(), selected.html(), $(this).find('.spud-container'));
 			});
 			
-			$('.tagCoach').click(function(e) {
+			socialContainer.on('click', '.tagCoach', function(e) {
 				e.preventDefault();
 				
 				var selected = $(this).parent().find('select').find(':selected');
 				
 				addTag('Coach', selected.val(), selected.html(), $(this).find('.spud-container'));
 			});
-		
-	    });
-	    
-	    // $('#load-more').click(function() {
-	      // var item1, item2, item3, items, tmp;
-	      // items = $container2.find('.social-entry');
-	      // item1 = $(items[Math.floor(Math.random() * items.length)]).clone();
-	      // item2 = $(items[Math.floor(Math.random() * items.length)]).clone();
-	      // item3 = $(items[Math.floor(Math.random() * items.length)]).clone();
-	      // tmp = $().add(item1).add(item2).add(item3);
-	      // return $container2.isotope('insert', tmp);
-	    // });
+			
+			socialContainer.on({ mouseenter : function() {
+                $(this).find('img').attr('src', '/media/img/ajax-loader-dark-grey.gif');
+            }, mouseleave : function() {
+                $(this).find('img').attr('src', '/media/img/ajax-loader.gif');
+            }
+            }, '.btn.like');
+    	});
 	</script>
 	
 <% include ../dashboard/parts/foot %>

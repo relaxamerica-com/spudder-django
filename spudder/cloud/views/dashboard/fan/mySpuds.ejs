@@ -75,9 +75,12 @@
 		        	</div>
 	        	</div>
           	</div>
+          	
           	<div id="image-preview" class="hidden">
           		<img src="" />
           	</div>
+
+			<img src="/media/img/ajax-loader-40-white.gif" class="loading-image" />
 	    	
 	    	<iframe id="video-preview" src="" frameborder="0" class="hidden"></iframe>
 	    	
@@ -424,7 +427,7 @@
 				tags.show();
 			}
 			
-			tagSpan.html( '@' + entityName );
+			tagSpan.html( entityName );
 			tags.append( tagSpan );
 			tagsInput.val( tagsInputValue + (tagsInputValue.length > 0 ? ' ' : '') + '@' + entityType + entityId );
 		}
@@ -444,15 +447,20 @@
 	        if (fileUploadControl.files.length > 0) {
 	            var file = fileUploadControl.files[0],
 	                name = file.name,
-	                validName = name.replace(/[\(\)]+/g, '');
+	                validName = name.replace(/[\(\)]+/g, ''),
+	            	imagePreview = $('#image-preview'),
+	            	loadingImage = $('#new-spuds-preview-container .loading-image');
+	            
+	            showPreview();
+	            imagePreview.addClass('hidden');
+	            loadingImage.css('display', 'table');
 	            
 	            var parseFile = new Parse.File(validName, file);
 	            parseFile.save().then(function(image) {
-	            	var imagePreview = $('#image-preview');
 	                imagePreview.find('img').attr('src', image.url());
 	                $('#imageURL').val(image.url());
+	                loadingImage.css('display', 'none');
 	                imagePreview.removeClass('hidden');
-                 	showPreview();
 	            }, function(error) {
 	                console.log(error);
 	            });

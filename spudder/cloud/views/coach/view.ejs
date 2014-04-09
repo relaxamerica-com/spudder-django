@@ -113,9 +113,14 @@
                 
                 <% if (user) { %>
                 	applyAddCommentListener(user);
+                	applyPopulateCommentsListener('Coach');
                 <% } else { %>
                 	overwriteListeners();
                 <% } %>
+            	getLikes('Coach');
+            	$('#spud-carousel').on('slid', function() {
+				    getLikes('Coach');
+				});
             });
         </script>
     </body>

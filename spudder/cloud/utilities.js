@@ -26,6 +26,10 @@ module.exports = function () {
         
         isOnList: function(list, element) {
 			return list.indexOf(element) >= 0;
+		},
+		
+		getValueOrEmpty: function(value) {
+			return value ? value : '';
 		}
     };
 };
