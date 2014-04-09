@@ -9,8 +9,6 @@ var currentAccessToken = null,
             return Parse.Promise.error(krowdioData);
     	}
     	
-    	console.log('setting')
-    	
         entity.set('krowdioAccessToken', krowdioData.access_token);
         entity.set('krowdioAccessTokenExpires', Math.round(new Date().getTime() / 1000) + krowdioData.expires_in);
         entity.set('krowdioUserId', krowdioData.user._id);
