@@ -21,7 +21,7 @@ $(document).ready(function() {
 		}
 	});
 	
-	$("#basic_info i").tooltip({
+	$("#basic_info .input-required").tooltip({
 		hide: {
 			effect: "explode",
 			delay: 2500
@@ -32,8 +32,6 @@ $(document).ready(function() {
 		}
 	});
 				
-	$('#form-field-date').datepicker();
-	
 	$('#profile-avatar-input').ace_file_input({
 		no_file:'No File ...',
 		btn_choose:'Choose',

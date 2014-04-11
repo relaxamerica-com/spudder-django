@@ -356,26 +356,28 @@ function getLikes(entityType) {
         loadingLikes = spudContainer.find('.loading-likes'),
         likeCounter = spudContainer.find('.like-container');
 
-    var response = $.get('/spuds/getLikes', {
-        'spudId' : spudId,
-        'entityId' : getEntityIdFromURL(),
-        'entityType' : entityType
-    });
-
-    response.done(function(data) {
-        var parsed = JSON.parse(data);
-
-        likeCounter.append(parsed.totalItems);
-
-        loadingLikes.hide();
-    });
-    
-    response.fail(function(error) {
-    	console.log(error);
-
-        likeCounter.html(0);
-    	
-    });
+	if (spudId.length) {
+	    var response = $.get('/spuds/getLikes', {
+	        'spudId' : spudId,
+	        'entityId' : getEntityIdFromURL(),
+	        'entityType' : entityType
+	    });
+	
+	    response.done(function(data) {
+	        var parsed = JSON.parse(data);
+	
+	        likeCounter.append(parsed.totalItems);
+	
+	        loadingLikes.hide();
+	    });
+	    
+	    response.fail(function(error) {
+	    	console.log(error);
+	
+	        likeCounter.html(0);
+	    	
+	    });
+	}
 }
 
 
