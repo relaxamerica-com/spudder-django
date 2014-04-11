@@ -1,5 +1,4 @@
 <div class="spud-container item <%- spud.type %>" id="<%- spud._id %>">
-
     <div class="content">
 		<div class="settings dropdown">
 			<a class="dropdown-toggle" data-toggle="dropdown">
@@ -53,15 +52,16 @@
     	</div>
 		
 		<div class="buttons-bottom row-fluid">
-			<div class="span8">
+			<div class="span12">
+				<div class="btn btn-small btn-black-outline like-container"><%- spud.likes.count %></div>
 				<div title="Like" class="btn btn-small btn-black-outline like"> 
-					<span class="like-counter"><%- spud.likes.count %></span>
                     <div class="loading-likes">
                         <img src="/media/img/ajax-loader.gif" height="13" width="13" />
                     </div>
 	    			<i class="icon-thumbs-up"> </i> 
 	    		</div>
-                <div title="Dislike" class="btn btn-small btn-black-outline">
+	    		<div class="btn btn-small btn-black-outline dislike-container">0</div>
+                <div title="Dislike" class="btn btn-small btn-black-outline dislike">
                     <i class="icon-thumbs-down"> </i>
                 </div>
 	    		<div title="Tag" class="btn btn-small btn-black-outline tag"> 
@@ -73,11 +73,6 @@
 	    		<div title="Share" class="btn btn-small btn-black-outline"> 
 	    			<i class="icon-share-alt"> </i>
 	    		</div> 
-    		</div>
-    		<div class="span4">
-    			<% if (spud.comments.count > 0) { %>
-					<a class="load-comments" href="#"><%- spud.comments.count %> comments</a>
-				<% } %>
     		</div>
     	</div>
     	<div class="tag-buttons">
@@ -135,18 +130,24 @@
     	</div>
 	</div>
 	<div class="spud-comments">
+		<div class="span12 comments-count">
+			<% if (spud.comments.count > 0) { %>
+				<a class="load-comments" href="#"><%- spud.comments.count %> comments</a>
+			<% } %>
+		</div>
 		<form role="form" action="/spuds/comment/<%- spud._id %>" method="post" class="add-comment">
         	<div class="form-group">
         		<input type="text" placeholder="Add a comment..." class="form-control" name="comment" /> <img class="posting-comment" src="/media/img/ajax-loader-posting-comment.gif" />
         	</div>
         </form>
-	<% if (spud.comments.count > 0) { %>
-		<div class="loading-comments">
-			<img src="/media/img/ajax-loader-posting-comment.gif"  /> Loading comments...
-		</div>
-	<% } %>
 		<% if (spud.comments.count > 0) { %>
-			<% spud.comments.data.sort(function(a, b) { return new Date(b.created_time) - new Date(a.created_time) }).forEach(function(comment) { %>
+			<div class="loading-comments">
+				<img src="/media/img/ajax-loader-posting-comment.gif"  /> Loading comments...
+			</div>
+			<% if (spud.comments.count > 5) { %>
+				<button class="load-more btn btn-small btn-orange" nextPage="1">Load More</button>
+			<% } %>
+			<% spud.comments.data.sort(function(a, b) { return new Date(b.created_time) - new Date(a.created_time) }).forEach(function(comment, i) { %>
 				<div class="comment" id="<%- comment._id %>" krowdioUserId="<%- comment.from._id %>">
 					<div class="clearfix">
 				  		<img width="50" height="50" src="/media/dashboard/avatars/no_avatar.png" class="social-avatar pull-left">

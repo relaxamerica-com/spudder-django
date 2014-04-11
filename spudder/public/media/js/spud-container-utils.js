@@ -275,10 +275,12 @@ function populateComments(page, entityType) {
 			comments = parsed.data;
 
         if (comments.length) {
-            spudContainer.find('.load-comments').html(parsed.totalItems + ' comments');
+        	var loadComments = spudContainer.find('.load-comments');
+            loadComments.html(parsed.totalItems + ' comments');
+            loadComments.parent().removeClass('hidden-important');
         }
         
-        // comments = comments.sort(function(a, b) { return new Date(a.created_time) - new Date(b.created_time); });
+        comments = comments.sort(function(a, b) { return new Date(a.created_time) - new Date(b.created_time); });
 
 		$.each(comments, function() {
 			if ($('#' + this._id).length == 0) {
@@ -323,7 +325,7 @@ function populateComments(page, entityType) {
 				
 				createdTime.find('.createdTime').html(data);
 				
-				loadMoreComments.after(comment);
+				loading.after(comment);
 				
 				comment.animate({
 					opacity: 1
@@ -352,34 +354,30 @@ function getLikes(entityType) {
     var spudContainer = $('.spud-container:visible'),
         spudId = spudContainer.attr('id'),
         loadingLikes = spudContainer.find('.loading-likes'),
-        existingCounter = spudContainer.find('.like-counter');
+        likeCounter = spudContainer.find('.like-container');
 
-	console.log(spudId);
-
-    var response = $.get('/spuds/getLikes', {
-        'spudId' : spudId,
-        'entityId' : getEntityIdFromURL(),
-        'entityType' : entityType
-    });
-
-    if (existingCounter.length) {
-        existingCounter.hide();
-    }
-    loadingLikes.css('display', 'inline-block');
-
-    response.done(function(data) {
-        var parsed = JSON.parse(data),
-            counter = existingCounter.length ? existingCounter : $('<span class="like-counter"></span>');
-
-        counter.html(parsed.totalItems);
-
-        if (existingCounter.length == 0) {
-            spudContainer.find('.like').prepend(counter);
-        }
-
-        counter.show();
-        loadingLikes.hide();
-    });
+	if (spudId.length) {
+	    var response = $.get('/spuds/getLikes', {
+	        'spudId' : spudId,
+	        'entityId' : getEntityIdFromURL(),
+	        'entityType' : entityType
+	    });
+	
+	    response.done(function(data) {
+	        var parsed = JSON.parse(data);
+	
+	        likeCounter.append(parsed.totalItems);
+	
+	        loadingLikes.hide();
+	    });
+	    
+	    response.fail(function(error) {
+	    	console.log(error);
+	
+	        likeCounter.html(0);
+	    	
+	    });
+	}
 }
 
 

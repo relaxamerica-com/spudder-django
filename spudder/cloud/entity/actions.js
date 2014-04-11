@@ -13,6 +13,8 @@ module.exports = function (keys) {
                 success: function (entity) {
                 	var _entity = entity;
                 	
+                	console.log(entity)
+                	
                     function _renderView(team) {
                         var path = 'https://' + keys.getAppName() + '.parseapp.com/public/' + entityType + '/' + id;
                         krowdio.krowdioGetUserMentionActivity(userAgent, _entity).then(function(spuds) {

@@ -221,13 +221,13 @@
                 <% if (user) { %>
                 	applyAddCommentListener(user);
                 	applyPopulateCommentsListener('Team');
-                	getLikes('Team');
-                	$('#spud-carousel').on('slid', function() {
-					    getLikes('Team');
-					});
                 <% } else { %>
                 	overwriteListeners();
                 <% } %>
+            	getLikes('Team');
+            	$('#spud-carousel').on('slid', function() {
+				    getLikes('Team');
+				});
             });
         </script>
     </body>

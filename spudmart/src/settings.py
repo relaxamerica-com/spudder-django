@@ -19,8 +19,8 @@ APP_NAME = 'spudder.com'
 
 AUTH_PROFILE_MODULE = 'accounts.UserProfile'
 
-AWS_ACCESS_KEY_ID = 'AKIAIV6G36242PJ4L7WQ'
-AWS_SECRET_KEY_ID = '5EIFJLrQB6RhtI4wOBLF7DPu4ZyTMbOrwXrneJZg'
+AWS_ACCESS_KEY_ID = 'AKIAIEUN2XKQF4ZU7UDA'
+AWS_SECRET_KEY_ID = 'CIwpNtDm6OBGUiOGxjZ+XqdOjMPhhaFgTi7c1Ah/'
 
 INSTALLED_APPS = (
     'django.contrib.admin',
@@ -30,9 +30,7 @@ INSTALLED_APPS = (
     'djangotoolbox',
     'autoload',
     'dbindexer',
-    'registration',
 	'boto', # Amazon Web Services Boto
-
     # djangoappengine should come last, so it can override a few manage.py commands
     'djangoappengine',
     'spudmart.home'

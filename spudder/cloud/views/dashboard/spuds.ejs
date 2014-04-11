@@ -129,6 +129,10 @@
 		    		
 		    		self.attr('nextPage', nextPage + 1);
 		    	});
+		    	
+		    	response.fail(function(error) {
+		    		console.log(error);
+		    	});
 	    	}
 	    	
 	    	getSpuds();
@@ -146,19 +150,27 @@
 				});
 
                 $('.buttons-bottom .btn.like').on('shown.bs.tooltip', function() {
-                    var tooltipContainer = $(this).parent().find('.tooltip'),
-                        self = $(this),
-                        response = $.get('/spuds/getLikes', {
-                            'spudId' : self.parents('.spud-container').attr('id'),
-                            'isCurrentUser' : true
-                        }, function(data) {
-                            $.each(data.items, function() {
-                                var userContainer = $('<div class="userContainer"></div>'),
-                                    userLink = $('<a href="/public/fan/' + this.userId + '">' + this.username + '</a>');
-                                userContainer.html(userLink);
-                                tooltipContainer.append(userContainer);
-                            });
-                        });
+                	// var self = $(this);
+//                 	
+                	// if (!$(this).hasClass('alreadyLoaded')) {
+	                    // var tooltipContainer = $(this).parent().find('.tooltip'),
+	                        // self = $(this),
+	                        // response = $.get('/spuds/getLikes', {
+	                            // 'spudId' : self.parents('.spud-container').attr('id'),
+	                            // 'isCurrentUser' : true
+	                        // }, function(data) {
+	                        	// var parsed = JSON.parse(data);
+// 	                        	
+	                        	// self.addClass('alreadyLoaded');
+// 	                        	
+	                            // $.each(parsed.items, function() {
+	                                // var userContainer = $('<div class="userContainer"></div>'),
+	                                    // userLink = $('<a href="/public/fan/' + this.userId + '">' + this.username + '</a>');
+	                                // userContainer.html(userLink);
+	                                // tooltipContainer.append(userContainer);
+	                            // });
+	                        // });
+                	// }
                 });
 
 			}
@@ -198,6 +210,7 @@
 				
 				if (buttons.is(':visible')) {
 					buttons.hide();
+					spudContainer.find('.tag-inputs').hide();
 				} else {
 					buttons.show();
 				}
@@ -278,11 +291,16 @@
 				var ids = [],
 					spudContainer = $(this).parents('.spud-container'),
 					loadingComments = spudContainer.find('.loading-comments'),
-					currentComments = spudContainer.find('.comment');
+					currentComments = spudContainer.find('.comment'),
+					loadMore = spudContainer.find('.spud-comments .load-more'),
+					currentPage = parseInt(loadMore.attr('nextPage'), 10);
+					
 					
 				if (currentComments.is(':visible') && $(this).hasClass('load-comments')) {
 					
 					currentComments.hide();
+					currentComments.css('opacity', '0');
+					loadMore.hide();
 					reLayout();
 					
 				} else if (!loadingComments.hasClass('alreadyLoaded')) { 
@@ -328,23 +346,43 @@
                             });
 
 							loadingComments.addClass('alreadyLoaded');
-
                             loadingComments.hide();
-                            currentComments.show();
-                            currentComments.animate({
-                            	opacity: 1
-                            }, 2000);
-                            reLayout();
+                            showComments(currentComments, currentPage, loadMore);
                         });
 
                     }
 				} else {
-					currentComments.show();
-					currentComments.animate({
-                    	opacity: 1
-                    }, 2000);
-                    reLayout();
+					showComments(currentComments, 1, loadMore);
 				}
+				
+			});
+			
+			function showComments(currentComments, currentPage, loadMore) {
+				var lastCommentIndex = currentPage * 5;
+				
+				currentComments.slice(lastCommentIndex - 5, lastCommentIndex).show();
+				currentComments.slice(lastCommentIndex - 5, lastCommentIndex).animate({
+                	opacity: 1
+                }, 2000);
+                
+                loadMore.attr('nextPage', currentPage + 1);
+                
+                if (lastCommentIndex < currentComments.length) {
+                	$(currentComments.get(lastCommentIndex - 1)).after(loadMore);
+                    loadMore.css('display', 'table');
+                } else {
+                	loadMore.hide();
+                }
+                reLayout();
+			}
+			
+			socialContainer.on('click', '.spud-comments .load-more', function() {
+				var currentPage = parseInt($(this).attr('nextPage'), 10),
+					spudContainer = $(this).parents('.spud-container'),
+					currentComments = spudContainer.find('.comment'),
+					loadMore = spudContainer.find('.spud-comments .load-more');
+				
+				showComments(currentComments, currentPage, loadMore);
 			});
 			
 			socialContainer.on('submit', '.spud-container .add-comment', function(e) {

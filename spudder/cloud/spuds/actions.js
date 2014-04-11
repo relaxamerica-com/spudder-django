@@ -180,16 +180,23 @@ module.exports = function (keys) {
                 krowdio.krowdioGetLikesForPost(userAgent, spudId, Parse.User.current()).then(function(likes) {
                     var updatedLikes = [],
                         query = new Parse.Query(Parse.User),
-                        allUsersFetchedPromise = new Parse.Promise();
+                        allUsersFetchedPromise = Parse.Promise.as();
 
-                    _.each(likes.data, function(like) {
+                    _.each(JSON.parse(likes).data, function(like) {
                         var id = like.username.replace('User', '');
-
-                        query = query.get(id).then(function(user) {
-                            updatedLikes.push({
-                                userId: user.id,
-                                username: user.get('username') || user.get('krowdioUserId')
-                            })
+                        
+                        allUsersFetchedPromise = allUsersFetchedPromise.then(function() {
+                        	var currentUserFetchedPromise = new Parse.Promise();
+                        	
+                        	query.get(id).then(function(user) {
+	                            updatedLikes.push({
+	                                userId: user.id,
+	                                username: user.get('username') || user.get('krowdioUserId')
+	                            });
+	                            currentUserFetchedPromise.resolve();
+                        	});
+                        	
+                        	return currentUserFetchedPromise;
                         });
                     });
 
@@ -265,7 +272,16 @@ module.exports = function (keys) {
 		            
 	            });
 			});
+        },
+        
+        deleteSpud: function(req, res) {
+        	var id = req.params.id,
+        		userAgent = req.headers['user-agent'];
+        	console.log('deleteSpud');
         	
+        	krowdio.krowdioDeletePost(Parse.User.current(), id, userAgent).then(function() {
+        		res.redirect('/dashboard');
+        	});
         }
 	};
 };

@@ -48,11 +48,13 @@ $(document).ready(function() {
 	$('.load-comments').click(function() {
 		var spudContainer = $('.spud-container:visible'),
 			currentComments =  spudContainer.find('.comment'),
+			lastComment = spudContainer.find('.comment:last'),
 			loadMoreComments = spudContainer.find('.spud-comments .load-more');
 		
 		if (currentComments.is(':visible')) {
 			currentComments.hide();
 			loadMoreComments.hide();
+			lastComment.after(loadMoreComments);
 		} else {
 			if (loadMoreComments.attr('nextPage') != 'null') {
 				loadMoreComments.show();
@@ -61,6 +63,7 @@ $(document).ready(function() {
         	currentComments.animate({
         		opacity: 1
         	}, 2000);
+        	lastComment.after(loadMoreComments);
 		}
 	});
 
@@ -68,7 +71,7 @@ $(document).ready(function() {
 		var spudContainer = $(this).parents('.spud-container'),
 			spudID = spudContainer.attr('id'),
 			loadingLikes = spudContainer.find('.loading-likes'),
-			counter = spudContainer.find('.like-counter');
+			counter = spudContainer.find('.like-container');
 			
 		var response = $.post('/spuds/toggleLike', {
 			'id' : spudID

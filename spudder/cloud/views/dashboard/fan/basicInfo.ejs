@@ -47,21 +47,16 @@
 			</div>
 		</div>
 		
-		<hr>
-		<div class="control-group">
-			<label class="control-label" for="form-field-date">Birth Date</label>
+		<h4 class="header orange bolder smaller">Details</h4>
 		
-			<span class="input-required">*required</span>
+		<div class="control-group">
+			<label class="control-label" for="form-field-date">
+				Birth Date <span class="input-required" title="You don't have to give this but won't be able to claim roles such as players or coaches if you don't.">*optional</span>
+				<span class="muted date-format">mm/dd/yyyy</span>
+			</label>
 		
 			<div class="controls">
-				<div class="input-append">
-					<input class="input-small date-picker" 
-					value="<%= getValueOrEmpty(user.get('dob')).split('-').reverse().join('-') %>" 
-					name="dateOfBirth" id="form-field-date" data-date-format="dd-mm-yyyy" placeholder="dd-mm-yyyy" type="text">
-					<span class="add-on">
-						<i class="icon-calendar" title="You don't have to give this but won't be able to claim roles such as players or coaches if you don't."></i>
-					</span>
-				</div>
+				<% include ../../commons/datePicker %>
 			</div>
 		</div>
 		
@@ -152,7 +147,7 @@
 
 <script src="/media/dashboard/js/jquery-ui-1.10.3.custom.min.js"></script>
 <script src="/media/dashboard/js/bootstrap-tag.min.js"></script>
-<script src="/media/dashboard/js/date-time/bootstrap-datepicker.min.js"></script>
+<script src="/media/js/datePickerWheel.js"></script>
 <script src="/media/js/parse.js"></script>
 <script type="text/javascript">
 	Parse.initialize('<%= keys.appId %>', '<%= keys.jsKey %>');
