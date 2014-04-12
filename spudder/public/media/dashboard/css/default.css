@@ -1343,7 +1343,7 @@ footer iframe {
 	height: 30px;
 	line-height: 15px;
 	font-size: 15px;
-	padding-right: 10px;
+	padding-right: 0px;
 	margin-bottom: 0px;
 }
 
@@ -1362,6 +1362,10 @@ footer iframe {
 	margin: auto;
 	display: table;
 	cursor: pointer;
+}
+
+.datePicker .control-group i:hover {
+	color: #F03C02;
 }
 
 .datePicker .control-label {
