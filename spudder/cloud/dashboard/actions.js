@@ -39,14 +39,15 @@ module.exports = function (keys) {
         	var breadcrumbs = [{ 'title' : 'Fans', 'href' : '/dashboard/fans/basicInfo' }, { 'title' : 'Basic Info', 'href' : '/dashboard/fans/basicInfo' }];
         	res.render('dashboard/fan/basicInfo', {
                 'breadcrumbs' : breadcrumbs,
-                'keys' : { 'jsKey' : keys.getJavaScriptKey(), 'appId' : keys.getApplicationID() }
+                'keys' : { 'jsKey' : keys.getJavaScriptKey(), 'appId' : keys.getApplicationID() },
+                'datePicker' : require('cloud/commons/datePicker')
             });
         },
         
         settings: function(req, res) {
         	var breadcrumbs = [{ 'title' : 'Fans', 'href' : '/dashboard/fans/settings' }, { 'title' : 'Settings', 'href' : '/dashboard/fans/settings' }];
         	res.render('dashboard/fan/settings', {
-                'breadcrumbs' : breadcrumbs,
+                'breadcrumbs' : breadcrumbs
             });
         }
         

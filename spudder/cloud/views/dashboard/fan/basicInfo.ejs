@@ -1,7 +1,6 @@
 <% include ../parts/head %>
 
 <link rel="stylesheet" href="/media/dashboard/css/chosen.css" />
-<link rel="stylesheet" href="/media/dashboard/css/datepicker.css" />
 
 <% include ../parts/bodyStart %>
 
@@ -56,7 +55,7 @@
 			</label>
 		
 			<div class="controls">
-				<% include ../../commons/datePicker %>
+				<%- datePicker('dateOfBirth', user.get('dob')) %>
 			</div>
 		</div>
 		
