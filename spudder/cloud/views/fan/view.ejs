@@ -50,20 +50,24 @@
 		            <% if (entity.get('profileImageThumb')) { %>
 		            	<img src="<%= entity.get('profileImageThumb') %>" class="entity-logo" />
 		            <% } else { %>
-		            	<i class="icon-male icon-128 no-padding"></i>
+		            	<i class="icon-male icon-128 no-padding"> </i>
 		            <% } %>
 	            </div>
 	            <div class="span9 user-social-buttons">
 	            	<% if (entity.get('facebook')) { %>
-	            		<a href="<%- entity.get('facebook') %>"><i class="icon-facebook-sign"></i></a>
+	            		<a href="<%- entity.get('facebook') %>"><i class="icon-facebook-sign"> </i></a>
 	            	<% } %>
 	            	
 	            	<% if (entity.get('twitter')) { %>
-	            		<a href="<%- entity.get('twitter') %>"><i class="icon-twitter-sign"></i></a>
+	            		<a href="<%- entity.get('twitter') %>"><i class="icon-twitter-sign"> </i></a>
 	            	<% } %>
 	            	
 	            	<% if (entity.get('googlePlus')) { %>
-	            		<a href="<%- entity.get('googlePlus') %>"><i class="icon-google-plus-sign"></i></a>
+	            		<a href="<%- entity.get('googlePlus') %>"><i class="icon-google-plus-sign"> </i></a>
+	            	<% } %>
+	            	
+	            	<% if (entity.get('instagram')) { %>
+	            		<a href="<%- entity.get('instagram') %>"><i class="icon-instagram"> </i></a>
 	            	<% } %>
 	            </div>
             </div>
