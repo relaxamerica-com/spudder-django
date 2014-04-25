@@ -33,7 +33,9 @@ INSTALLED_APPS = (
 	'boto', # Amazon Web Services Boto
     # djangoappengine should come last, so it can override a few manage.py commands
     'djangoappengine',
-    'spudmart.home'
+    'spudmart.home',
+    'spudmart.upload',
+    'spudmart.venues'
 )
 
 MIDDLEWARE_CLASSES = (
