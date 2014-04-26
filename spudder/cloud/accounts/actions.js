@@ -107,6 +107,12 @@ module.exports = function (keys) {
 
                             userQuery.first({
                                 success: function (_user) {
+                                    if (_user == undefined) {
+                                        params['error'] = 'No user registered with this Amazon account. <a href="/accounts/register">Please register first</a>';
+                                        res.render('accounts/login', params);
+                                        return;
+                                    }
+
                                     Parse.User.logIn(_user.get('email'), _user.get('passwordRaw'), {
                                         success: function () {
                                             res.redirect(params.returnURL ? params.returnURL : '/dashboard');
