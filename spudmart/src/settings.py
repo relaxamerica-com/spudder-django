@@ -33,7 +33,11 @@ INSTALLED_APPS = (
 	'boto', # Amazon Web Services Boto
     # djangoappengine should come last, so it can override a few manage.py commands
     'djangoappengine',
-    'spudmart.home'
+    'spudmart.home',
+    'spudmart.accounts',
+    'spudmart.donations',
+    'spudmart.recipients',
+    'spudmart.dashboard'
 )
 
 MIDDLEWARE_CLASSES = (
@@ -49,7 +53,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.contrib.auth.context_processors.auth',
     'django.core.context_processors.request',
     'django.core.context_processors.media',
-    'spudmart.context_processors.amazon'
+    'spudmart.amazon.context.amazon_client_id'
 )
 
 # This test runner captures stdout and associates tracebacks with their
