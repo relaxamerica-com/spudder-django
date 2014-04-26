@@ -40,3 +40,18 @@
 <script src="/media/js/custom.js"></script>
 <script src="/media/js/authentication.js"></script>
 <script src="/media/js/share/facebook.js"></script>
+<script>
+    $(document).ready(function () {
+        if (typeof amazon == undefined) return;
+
+        var $logoutBtn = $('#logout-button');
+
+        if ($logoutBtn.length) {
+            $logoutBtn.click(function (event) {
+                event.preventDefault();
+                amazon.Login.logout();
+                window.location = $logoutBtn.attr('href');
+            });
+        }
+    });
+</script>
