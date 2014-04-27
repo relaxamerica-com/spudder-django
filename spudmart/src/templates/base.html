@@ -6,6 +6,7 @@
 </head>
 
 <body>
+    {% include 'accounts/common/amazon-root.html' %}
     <div id="wrapper">
         <header>
             <div class="container">
@@ -15,10 +16,10 @@
                             <div class="headnav span4">
                                 <ul>
                                     {% if request.user.is_authenticated %}
-                                    <li><a href="/dashboard" data-toggle="modal"><i class="icon-user"></i>{{ user.username }}</a></li>
-                                    <li><a href="/accounts/logout" data-toggle="modal">Sign out</a></li>
+                                    <li><a href="/dashboard"><i class="icon-user"></i>{{ user.username }}</a></li>
+                                    <li><a href="/accounts/logout" id="logout-button">Sign out</a></li>
                                     {%  else  %}
-                                    <li><a href="/accounts/login" data-toggle="modal">Sign in</a></li>
+                                    <li><a href="/accounts/login">Sign in</a></li>
                                     {% endif %}
                                 </ul>
                             </div>

@@ -34,7 +34,10 @@ INSTALLED_APPS = (
     # djangoappengine should come last, so it can override a few manage.py commands
     'djangoappengine',
     'spudmart.home',
-    'spudmart.upload',
+    'spudmart.accounts',
+    'spudmart.donations',
+    'spudmart.recipients',
+    'spudmart.dashboard',
     'spudmart.venues'
 )
 
@@ -51,6 +54,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.contrib.auth.context_processors.auth',
     'django.core.context_processors.request',
     'django.core.context_processors.media',
+    'spudmart.amazon.context.amazon_client_id'
 )
 
 # This test runner captures stdout and associates tracebacks with their

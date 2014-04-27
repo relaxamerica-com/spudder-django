@@ -9,7 +9,7 @@
     <div class="accounts-form-body">
         <form class="form-horizontal" action="/accounts/login" id="registration-form" method="POST">
             <% if (typeof error != 'undefined') { %>
-            <div class="alert alert-error"><%= error %></div>
+            <div class="alert alert-error"><%- error %></div>
             <% } %>
 
             <div class="control-group">
@@ -50,6 +50,9 @@
                 </p>
             </div>
             <div class="control-group">
+                <p class="aligncenter margintop20">
+                    Don't have an account yet? <a href="/accounts/register">Sign up</a>
+                </p>
                 <p class="aligncenter margintop20">
                     Forgot password? <a href="#myReset" data-dismiss="modal" aria-hidden="true" data-toggle="modal">Reset</a>
                 </p>

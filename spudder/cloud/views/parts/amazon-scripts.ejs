@@ -1,0 +1,34 @@
+<script>
+    $(document).ready(function () {
+        if (typeof amazon == undefined) return;
+
+        var loginWithAmazon = document.getElementById('LoginWithAmazon'),
+            registerWithAmazon = document.getElementById('RegisterWithAmazon');
+
+        if (loginWithAmazon) {
+            loginWithAmazon.onclick = function () {
+                options = { scope: 'profile' };
+                amazon.Login.authorize(options, '<%= baseURL %>/accounts/amazon_login');
+                return false;
+            };
+        }
+
+        if (registerWithAmazon) {
+            registerWithAmazon.onclick = function () {
+                options = { scope: 'profile' };
+                amazon.Login.authorize(options, '<%= baseURL %>/accounts/amazon_register');
+                return false;
+            };
+        }
+
+        var $logoutBtn = $('#logout-button');
+
+        if ($logoutBtn.length) {
+            $logoutBtn.click(function (event) {
+                event.preventDefault();
+                amazon.Login.logout();
+                window.location = $logoutBtn.attr('href');
+            });
+        }
+    });
+</script>

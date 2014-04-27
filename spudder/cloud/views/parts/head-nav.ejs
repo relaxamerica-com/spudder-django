@@ -2,7 +2,7 @@
     <ul>
         <% if (user) { %>
         <li><a href="/dashboard" data-toggle="modal"><i class="icon-user"></i><%= user.getUsername() %></a></li>
-        <li><a href="/accounts/logout">Sign out</a></li>
+        <li><a href="/accounts/logout" id="logout-button">Sign out</a></li>
         <% } else { %>
         <li><a href="/accounts/register"><i class="icon-user"></i> Sign up</a></li>
         <li><a href="/accounts/login" data-toggle="modal">Sign in</a></li>

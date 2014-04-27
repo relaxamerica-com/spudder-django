@@ -1,5 +1,5 @@
 from django.http import HttpResponseRedirect
-from django.shortcuts import render_to_response, get_object_or_404
+from django.shortcuts import get_object_or_404, render
 from django.contrib.auth.decorators import login_required
 import settings
 from spudmart.donations.models import Donation, DonationState
@@ -19,7 +19,7 @@ def index(request, offer_id):
     )
     donation.save()
 
-    return render_to_response('dashboard/donations/index.html', {
+    return render(request, 'dashboard/donations/index.html', {
         'offer': offer,
         'cbui_url': get_donation_cbui_url(donation),
         'spudder_url': '%s/dashboard/teams' % settings.SPUDDER_BASE_URL
@@ -69,7 +69,7 @@ def thanks(request, donation_id):
         donation.offer.team.spudder_id,
         donation.offer.spudder_id)
 
-    return render_to_response('dashboard/donations/thanks.html', {
+    return render(request, 'dashboard/donations/thanks.html', {
         'spudder_url': url
     })
     
@@ -80,7 +80,7 @@ def error(request, donation_id):
     offer_id = donation.offer.spudder_id
     team_id = donation.offer.team.spudder_id
 
-    return render_to_response('dashboard/donations/error.html', {
+    return render(request, 'dashboard/donations/error.html', {
         'spudder_url': '%s/teams/%s/offers/%s' % (settings.SPUDDER_BASE_URL, team_id, offer_id),
         'status': status_message,
         'error_message': donation.error_message
