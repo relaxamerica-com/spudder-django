@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 import settings
 from spudmart.recipients.models import RecipientRegistrationState
 from spudmart.recipients.utils import get_or_create_recipient
-from spudmart.spudder.api import get_team, save_team_is_recipient
+from spudmart.spudder.objects import get_team, save_team_is_recipient
 from spudmart.amazon.models import AmazonActionStatus
 from spudmart.amazon.utils import get_recipient_cbui_url
 

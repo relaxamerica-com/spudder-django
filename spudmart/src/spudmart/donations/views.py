@@ -3,7 +3,7 @@ from django.shortcuts import get_object_or_404, render
 from django.contrib.auth.decorators import login_required
 import settings
 from spudmart.donations.models import Donation, DonationState
-from spudmart.spudder.api import get_offer
+from spudmart.spudder.objects import get_offer
 from spudmart.recipients.models import Recipient
 from spudmart.amazon.utils import get_donation_cbui_url, get_fps_connection
 from spudmart.amazon.models import AmazonActionStatus
