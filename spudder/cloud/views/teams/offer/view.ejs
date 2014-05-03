@@ -16,13 +16,9 @@
                                     </a>
                                 </h3>
                                 <h3 class="offer-title">
-                                    <% if (offer.get('website') != '') { %>
-                                    <a href="<%=offer.get('website') %>" target="_blank">
+                                    <a href="/teams/<%= team.id %>/offers">
                                         <%= offer.get('title') %>
                                     </a>
-                                    <% } else { %>
-                                    <%= offer.get('title') %>
-                                    <% } %>
                                 </h3>
                             </div>
                         <div class="top-wrapper">
