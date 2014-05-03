@@ -64,36 +64,23 @@ module.exports = function (keys) {
 
                             setLocationExternalLink(sponsorPage);
 
-                            var Donation = Parse.Object.extend('Donation'),
-                                query = new Parse.Query(Donation),
+                            var SponsoredTeams = Parse.Object.extend('SponsoredTeams'),
+                                query = new Parse.Query(SponsoredTeams),
                                 teams = [];
 
                             query.equalTo('sponsor', sponsor);
-                            query.descending('createdAt');
 
                             query.find().then(function (list) {
                                 var promise = Parse.Promise.as();
 
-                                _.each(list, function(donation) {
-                                    promise = promise.then(function() {
-                                        var findPromise = new Parse.Promise();
-
-                                        donation.get('team').fetch({
-                                            success: function (fetchedTeam) {
-                                                if (!isAlreadyAdded(teams, fetchedTeam)) teams.push(fetchedTeam);
-
-                                                findPromise.resolve();
-                                            }
-                                        });
-
-                                        return findPromise;
-                                    });
-                                });
+                                if (list.length) {
+                                    return list[0].relation('teams').query().find();
+                                }
 
                                 return promise;
+                            }).then(function (sponsored_teams) {
+                                teams = sponsored_teams ? sponsored_teams : [];
                             }).then(function () {
-                                    console.log('======================');
-                                    console.log(teams);
                                 res.render('sponsors/view', {
                                     'displayTeams' : require('cloud/commons/displayTeams'),
                                     'sponsor': sponsor,

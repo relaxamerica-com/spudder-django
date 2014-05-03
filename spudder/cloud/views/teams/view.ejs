@@ -157,12 +157,18 @@
                     <dd><%= team.get('contact') %></dd>
                     <dt>Team Profile:</dt>
                     <dd><%= team.get('profile') %></dd>
-                    <dt>Website:</dt>
-                    <dd><a href="<%= team.get('website') %>"><%= team.get('website') %></a></dd>
-                    <dt>Email:</dt>
-                    <dd><%= team.get('email') %></dd>
-                    <dt>Home Venue:</dt>
-                    <dd><%= team.get('homeVenue') %></dd>
+                    <% if (getValueOrEmpty(team.get("website")) != '') { %>
+                        <dt>Website:</dt>
+                        <dd><a href="<%= team.get('website') %>"><%= team.get('website') %></a></dd>
+                    <% } %>
+                    <% if (getValueOrEmpty(team.get("email")) != '') { %>
+                        <dt>Email:</dt>
+                        <dd><%= team.get('email') %></dd>
+                    <% } %>
+                    <% if (getValueOrEmpty(team.get("homeVenue")) != '') { %>
+                        <dt>Home Venue:</dt>
+                        <dd><%= team.get('homeVenue') %></dd>
+                    <% } %>
                 </dl>
             </div>
         </div>
@@ -211,23 +217,23 @@
                 $("#team-players-btn").click(function () {
                     $("#team-players").show();
                 });
-                
-                var user = {
-					'nickname' : '<%- getValueOrEmpty(user.get("nickname")) %>',
-					'krowdioUserId' : '<%- getValueOrEmpty(user.get("krowdioUserId")) %>',
-					'profileImageThumb' : '<%- getValueOrEmpty(user.get("profileImageThumb")) %>'
-				};
-                
+
                 <% if (user) { %>
-                	applyAddCommentListener(user);
-                	applyPopulateCommentsListener('Team');
+                    var user = {
+                        'nickname' : '<%- getValueOrEmpty(user.get("nickname")) %>',
+                        'krowdioUserId' : '<%- getValueOrEmpty(user.get("krowdioUserId")) %>',
+                        'profileImageThumb' : '<%- getValueOrEmpty(user.get("profileImageThumb")) %>'
+                    };
+
+                    applyAddCommentListener(user);
+                    applyPopulateCommentsListener('Team');
                 <% } else { %>
-                	overwriteListeners();
+                    overwriteListeners();
                 <% } %>
-            	getLikes('Team');
-            	$('#spud-carousel').on('slid', function() {
-				    getLikes('Team');
-				});
+                getLikes('Team');
+                $('#spud-carousel').on('slid', function() {
+                    getLikes('Team');
+                });
             });
         </script>
     </body>

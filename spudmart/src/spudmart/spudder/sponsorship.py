@@ -149,7 +149,7 @@ def create_or_update_team_offer_sponsors(team, offer, sponsor):
     connection = get_connection()
     sponsor_spudder_id = sponsor.get_profile().spudder_id
     team_pointer = {"__type": "Pointer", "className": "Team", "objectId": team.spudder_id}
-    team__offer_pointer = {"__type": "Pointer", "className": "Team", "objectId": offer.spudder_id}
+    team__offer_pointer = {"__type": "Pointer", "className": "TeamOffer", "objectId": offer.spudder_id}
 
     params = urllib.urlencode({"where": json.dumps({
         "teamOffer": team__offer_pointer

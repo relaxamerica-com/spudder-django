@@ -1,6 +1,6 @@
 module.exports = function (keys) {
-    var helpers = require('cloud/teams/helpers')();
-    var _ = require('underscore');
+    var helpers = require('cloud/teams/helpers')(),
+        _ = require('underscore');
 
     return {
         list: function (req, res) {
@@ -117,39 +117,39 @@ module.exports = function (keys) {
 
                     offerQuery.get(offerID,{
                         success: function(offer) {
-                            var _ = require('underscore');
-
-                            var Donation = Parse.Object.extend('Donation'),
-                                query = new Parse.Query(Donation),
+                            var TeamOfferSponsors = Parse.Object.extend('TeamOfferSponsors'),
+                                query = new Parse.Query(TeamOfferSponsors),
                                 sponsors = [];
 
                             query.equalTo('team', team);
-                            query.equalTo('offer', offer);
+                            query.equalTo('teamOffer', offer);
 
-                            query.find().then(function (list) {
+                            query.find().then(function (team_offer_sponsors) {
                                 var promise = Parse.Promise.as();
 
-                                _.each(list, function(donation) {
+                                if (team_offer_sponsors.length) {
+                                    return team_offer_sponsors[0].relation('sponsors').query().find();
+                                }
+
+                                return promise;
+                            }).then(function (sponsors_list) {
+                                var promise = Parse.Promise.as();
+
+                                _.each(sponsors_list, function(team_sponsor) {
                                     promise = promise.then(function() {
                                         var findPromise = new Parse.Promise();
 
-                                        var sponsor = donation.get('sponsor');
+                                        var SponsorPage = Parse.Object.extend('SponsorPage'),
+                                            sponsorPageQuery = new Parse.Query(SponsorPage);
 
-                                        sponsor.fetch({
-                                            success: function (fetchedSponsor) {
-                                                var SponsorPage = Parse.Object.extend('SponsorPage'),
-                                                    sponsorPageQuery = new Parse.Query(SponsorPage);
+                                        sponsorPageQuery.equalTo('sponsor', team_sponsor);
 
-                                                sponsorPageQuery.equalTo('sponsor', fetchedSponsor);
+                                        sponsorPageQuery.find({
+                                            success: function (results) {
+                                                team_sponsor.page = results.length ? results[0] : undefined;
+                                                sponsors.push(team_sponsor);
 
-                                                sponsorPageQuery.find({
-                                                    success: function (results) {
-                                                        fetchedSponsor.page = results.length ? results[0] : undefined;
-                                                        sponsors.push(fetchedSponsor);
-
-                                                        findPromise.resolve();
-                                                    }
-                                                });
+                                                findPromise.resolve();
                                             }
                                         });
 
