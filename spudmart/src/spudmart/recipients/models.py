@@ -15,8 +15,8 @@ class RecipientRegistrationState():
 class Recipient(models.Model):
     created_date = models.DateTimeField(auto_now_add=True)
     team = models.ForeignKey(Team)
-    recipient_token_id = models.CharField()
-    refund_token_id = models.CharField()
+    recipient_token_id = models.CharField(max_length=255)
+    refund_token_id = models.CharField(max_length=255)
     state = models.IntegerField(default=RecipientRegistrationState.NOT_STARTED)
-    status_code = models.CharField()
+    status_code = models.CharField(max_length=255)
     registered_by = models.ForeignKey(User)

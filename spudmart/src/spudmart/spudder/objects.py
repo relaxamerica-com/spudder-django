@@ -20,8 +20,9 @@ def save_team_is_recipient(team_id):
 
     params = json.dumps({"isRegisteredRecipient": True})
     connection.request('PUT', '/1/classes/Team/%s' % team_id, params, BASE_HEADERS)
+    response_status = connection.getresponse().status
 
-    return connection.getresponse().status == 200
+    return response_status == 200
 
 
 def get_offer(offer_id):

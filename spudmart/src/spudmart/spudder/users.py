@@ -1,6 +1,7 @@
 import json
 import urllib
-from spudmart.spudder.utils import get_connection, BASE_HEADERS
+from spudmart.spudder.exceptions import UserError, UserErrorCode
+from spudmart.spudder.utils import get_connection, BASE_HEADERS, API_RETRY_COUNT
 
 
 def get_user_data(user):
@@ -9,13 +10,16 @@ def get_user_data(user):
 
     params = urllib.urlencode({"where": json.dumps({"amazonID": user_profile.amazon_id})})
     retry = 0
-    while retry < 10:
+    results = []
+    while retry < API_RETRY_COUNT:
         try:
             connection.request('GET', '/1/users?%s' % params, '', BASE_HEADERS)
-            retry = 10
+            results = json.loads(connection.getresponse().read())['results']
+            retry = API_RETRY_COUNT
         except Exception:
             retry += 1
-    results = json.loads(connection.getresponse().read())['results']
+            if retry == API_RETRY_COUNT:
+                raise UserError(UserErrorCode.GET_USER_DATA_DEADLINE)
 
     return results[0] if len(results) else None
 
@@ -34,14 +38,16 @@ def signup_user(user):
     })
 
     retry = 0
-    while retry < 10:
+    json_data = None
+    while retry < API_RETRY_COUNT:
         try:
             connection.request('GET', '/1/users', params, BASE_HEADERS)
-            retry = 10
+            json_data = json.loads(connection.getresponse().read())
+            retry = API_RETRY_COUNT
         except Exception:
             retry += 1
-
-    json_data = json.loads(connection.getresponse().read())
+            if retry == API_RETRY_COUNT:
+                raise UserError(UserErrorCode.SIGNUP_USER_DEADLINE)
 
     return json_data['objectId']
 
@@ -52,8 +58,18 @@ def sign_in_user(user_data):
         "username": user_data['username'],
         "password": user_data['passwordRaw']
     })
-    connection.request('GET', '/1/login?%s' % params, '', BASE_HEADERS)
-    json_data = json.loads(connection.getresponse().read())
+
+    retry = 0
+    json_data = None
+    while retry < API_RETRY_COUNT:
+        try:
+            connection.request('GET', '/1/login?%s' % params, '', BASE_HEADERS)
+            json_data = json.loads(connection.getresponse().read())
+            retry = API_RETRY_COUNT
+        except Exception:
+            retry += 1
+            if retry == API_RETRY_COUNT:
+                raise UserError(UserErrorCode.SIGN_IN_USER_DEADLINE)
 
     return json_data['sessionToken']
 
@@ -65,4 +81,13 @@ def set_user_is_sponsor(spudder_id, session_token):
     headers = BASE_HEADERS
     headers['X-Parse-Session-Token'] = session_token
 
-    connection.request('PUT', '/1/users/%s' % spudder_id, params, headers)
+    retry = 0
+    while retry < API_RETRY_COUNT:
+        try:
+            connection.request('PUT', '/1/users/%s' % spudder_id, params, headers)
+            connection.getresponse()
+            retry = API_RETRY_COUNT
+        except Exception:
+            retry += 1
+            if retry == API_RETRY_COUNT:
+                raise UserError(UserErrorCode.SET_USER_IS_SPONSOR_DEADLINE)

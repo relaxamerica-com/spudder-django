@@ -7,6 +7,8 @@ from spudmart.spudder.objects import get_offer
 from spudmart.recipients.models import Recipient
 from spudmart.amazon.utils import get_donation_cbui_url, get_fps_connection
 from spudmart.amazon.models import AmazonActionStatus
+from spudmart.utils.app_identity import get_application_version
+from spudmart.utils.queues import trigger_backend_task
 
 
 @login_required
@@ -15,7 +17,8 @@ def index(request, offer_id):
     donation = Donation(
         offer=offer,
         donor=request.user,
-        donation=offer.donation
+        donation=offer.donation,
+        spudder_app=get_application_version()
     )
     donation.save()
 
@@ -43,7 +46,8 @@ def complete(request, donation_id):
                            MarketplaceVariableFee='5')
             
             donation.sender_token_id = request.GET.get('tokenID')
-            state = DonationState.PENDING
+            state = DonationState.FINISHED
+            trigger_backend_task('/spudder/synchronise_sponsorship_data_from_donation/%s' % donation.id)
             redirect_to = '/dashboard/donation/%s/thanks' % donation_id
         except Exception, e:
             state = DonationState.TERMINATED

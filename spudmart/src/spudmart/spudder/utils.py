@@ -7,6 +7,8 @@ BASE_HEADERS = {
     "Content-Type": "application/json"
 }
 
+API_RETRY_COUNT = 10
+
 
 def get_connection():
     connection = httplib.HTTPSConnection('api.parse.com', 443)

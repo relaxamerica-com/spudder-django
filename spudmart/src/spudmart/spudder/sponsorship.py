@@ -1,6 +1,7 @@
 import json
 import urllib
-from spudmart.spudder.utils import get_connection, BASE_HEADERS
+from spudmart.spudder.exceptions import SponsorshipSynchronizationError, SponsorshipSynchronizationErrorCode
+from spudmart.spudder.utils import get_connection, BASE_HEADERS, API_RETRY_COUNT
 
 
 def create_or_update_sponsored_teams(sponsor, team):
@@ -13,16 +14,21 @@ def create_or_update_sponsored_teams(sponsor, team):
     })})
 
     retry = 0
-    while retry < 10:
+    query_json_data = None
+    entity_spudder_id = None
+
+    while retry < API_RETRY_COUNT:
         try:
             connection.request('GET', '/1/classes/SponsoredTeams?%s' % params, '', BASE_HEADERS)
-            retry = 10
+            query_response = connection.getresponse()
+            query_json_data = json.loads(query_response.read())
+            retry = API_RETRY_COUNT
         except Exception:
             retry += 1
+            if retry == API_RETRY_COUNT:
+                raise SponsorshipSynchronizationError(SponsorshipSynchronizationErrorCode.ST_QUERY_DEADLINE)
 
-    json_data = json.loads(connection.getresponse().read())
-
-    if len(json_data['results']) < 1:
+    if len(query_json_data['results']) < 1:
         params = json.dumps({
             "sponsor": sponsor_pointer,
             "teams": {
@@ -32,15 +38,17 @@ def create_or_update_sponsored_teams(sponsor, team):
         })
 
         retry = 0
-        while retry < 10:
+        while retry < API_RETRY_COUNT:
             try:
                 connection.request('POST', '/1/classes/SponsoredTeams', params, BASE_HEADERS)
-                retry = 10
+                creation_response = connection.getresponse()
+                entity_spudder_id = json.loads(creation_response.read())['objectId']
+                retry = API_RETRY_COUNT
             except Exception:
-                retry += 1
-        entity_spudder_id = json.loads(connection.getresponse().read())['objectId']
+                if retry == API_RETRY_COUNT:
+                    raise SponsorshipSynchronizationError(SponsorshipSynchronizationErrorCode.ST_CREATION_DEADLINE)
     else:
-        entity_spudder_id = json.loads(connection.getresponse().read())['results'][0]['objectId']
+        entity_spudder_id = query_json_data['results'][0]['objectId']
 
     params = json.dumps({
         "teams": {
@@ -56,12 +64,15 @@ def create_or_update_sponsored_teams(sponsor, team):
     })
 
     retry = 0
-    while retry < 10:
+    while retry < API_RETRY_COUNT:
         try:
             connection.request('PUT', '/1/classes/SponsoredTeams/%s' % entity_spudder_id, params, BASE_HEADERS)
-            retry = 10
+            connection.getresponse()
+            retry = API_RETRY_COUNT
         except Exception:
             retry += 1
+            if retry == API_RETRY_COUNT:
+                raise SponsorshipSynchronizationError(SponsorshipSynchronizationErrorCode.ST_RELATION_ADD_DEADLINE)
 
 
 def create_or_update_team_sponsors(team, sponsor):
@@ -74,16 +85,20 @@ def create_or_update_team_sponsors(team, sponsor):
     })})
 
     retry = 0
-    while retry < 10:
+    query_json_data = None
+    while retry < API_RETRY_COUNT:
         try:
             connection.request('GET', '/1/classes/TeamSponsors?%s' % params, '', BASE_HEADERS)
-            retry = 10
-        except Exception:
+            query_response = connection.getresponse()
+            query_json_data = json.loads(query_response.read())
+            retry = API_RETRY_COUNT
+        except Exception, e:
             retry += 1
+            if retry == API_RETRY_COUNT:
+                raise SponsorshipSynchronizationError(SponsorshipSynchronizationErrorCode.TS_QUERY_DEADLINE)
 
-    json_data = json.loads(connection.getresponse().read())
-
-    if len(json_data['results']) < 1:
+    entity_spudder_id = None
+    if len(query_json_data['results']) < 1:
         params = json.dumps({
             "team": team_pointer,
             "sponsors": {
@@ -93,15 +108,18 @@ def create_or_update_team_sponsors(team, sponsor):
         })
 
         retry = 0
-        while retry < 10:
+        while retry < API_RETRY_COUNT:
             try:
                 connection.request('POST', '/1/classes/TeamSponsors', params, BASE_HEADERS)
-                retry = 10
+                creation_getresponse = connection.getresponse()
+                entity_spudder_id = json.loads(creation_getresponse.read())['objectId']
+                retry = API_RETRY_COUNT
             except Exception:
                 retry += 1
-        entity_spudder_id = json.loads(connection.getresponse().read())['objectId']
+                if retry == API_RETRY_COUNT:
+                    raise SponsorshipSynchronizationError(SponsorshipSynchronizationErrorCode.TS_CREATION_DEADLINE)
     else:
-        entity_spudder_id = json.loads(connection.getresponse().read())['results'][0]['objectId']
+        entity_spudder_id = query_json_data['results'][0]['objectId']
 
     params = json.dumps({
         "sponsors": {
@@ -115,19 +133,17 @@ def create_or_update_team_sponsors(team, sponsor):
             ]
         }
     })
-    from logging import error
-    error('Trying to update Team Sponsors...')
+
     retry = 0
-    while retry < 10:
+    while retry < API_RETRY_COUNT:
         try:
             connection.request('PUT', '/1/classes/TeamSponsors/%s' % entity_spudder_id, params, BASE_HEADERS)
-            error(connection.getresponse().read())
-            retry = 10
+            connection.getresponse()
+            retry = API_RETRY_COUNT
         except Exception:
             retry += 1
-            error('Retrying for %s time' % retry)
-            error(connection.getresponse().read())
-
+            if retry == API_RETRY_COUNT:
+                raise SponsorshipSynchronizationError(SponsorshipSynchronizationErrorCode.TS_RELATION_ADD_DEADLINE)
 
 def create_or_update_team_offer_sponsors(team, offer, sponsor):
     connection = get_connection()
@@ -140,16 +156,21 @@ def create_or_update_team_offer_sponsors(team, offer, sponsor):
     })})
 
     retry = 0
-    while retry < 10:
+    query_json_data = None
+    entity_spudder_id = None
+
+    while retry < API_RETRY_COUNT:
         try:
             connection.request('GET', '/1/classes/TeamOfferSponsors?%s' % params, '', BASE_HEADERS)
-            retry = 10
+            query_response = connection.getresponse()
+            query_json_data = json.loads(query_response.read())
+            retry = API_RETRY_COUNT
         except Exception:
             retry += 1
+            if retry == API_RETRY_COUNT:
+                raise SponsorshipSynchronizationError(SponsorshipSynchronizationErrorCode.TOS_QUERY_DEADLINE)
 
-    json_data = json.loads(connection.getresponse().read())
-
-    if len(json_data['results']) < 1:
+    if len(query_json_data['results']) < 1:
         params = json.dumps({
             "teamOffer": team__offer_pointer,
             "team": team_pointer,
@@ -160,15 +181,18 @@ def create_or_update_team_offer_sponsors(team, offer, sponsor):
         })
 
         retry = 0
-        while retry < 10:
+        while retry < API_RETRY_COUNT:
             try:
                 connection.request('POST', '/1/classes/TeamOfferSponsors', params, BASE_HEADERS)
-                retry = 10
+                entity_spudder_id = json.loads(connection.getresponse().read())['objectId']
+                retry = API_RETRY_COUNT
             except Exception:
                 retry += 1
-        entity_spudder_id = json.loads(connection.getresponse().read())['objectId']
+                if retry == API_RETRY_COUNT:
+                    raise SponsorshipSynchronizationError(SponsorshipSynchronizationErrorCode.TOS_CREATION_DEADLINE)
+
     else:
-        entity_spudder_id = json.loads(connection.getresponse().read())['results'][0]['objectId']
+        entity_spudder_id = query_json_data['results'][0]['objectId']
 
     params = json.dumps({
         "sponsors": {
@@ -183,15 +207,13 @@ def create_or_update_team_offer_sponsors(team, offer, sponsor):
         }
     })
 
-    from logging import error
-    error('Trying to update Team Offer Sponsors...')
     retry = 0
-    while retry < 10:
+    while retry < API_RETRY_COUNT:
         try:
             connection.request('PUT', '/1/classes/TeamOfferSponsors/%s' % entity_spudder_id, params, BASE_HEADERS)
-            error(connection.getresponse().read())
-            retry = 10
+            connection.getresponse()
+            retry = API_RETRY_COUNT
         except Exception:
             retry += 1
-            error('Retrying for %s time' % retry)
-            error(connection.getresponse().read())
+            if retry == API_RETRY_COUNT:
+                    raise SponsorshipSynchronizationError(SponsorshipSynchronizationErrorCode.TOS_RELATION_ADD_DEADLINE)

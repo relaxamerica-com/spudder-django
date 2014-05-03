@@ -2,8 +2,8 @@ from django.db import models
 
 
 class Team(models.Model):
-    spudder_id = models.CharField()
-    name = models.CharField()
+    spudder_id = models.CharField(max_length=255)
+    name = models.CharField(max_length=255)
 
     def update_from_json(self, json_data):
         self.name = json_data['name']
@@ -17,8 +17,8 @@ class Team(models.Model):
 
 
 class TeamOffer(models.Model):
-    spudder_id = models.CharField()
-    title = models.CharField()
+    spudder_id = models.CharField(max_length=255)
+    title = models.CharField(max_length=255)
     donation = models.FloatField(default=0)
     quantity = models.IntegerField(default=0)
     team = models.ForeignKey(Team)
