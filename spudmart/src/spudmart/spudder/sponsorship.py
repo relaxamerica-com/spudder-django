@@ -217,3 +217,20 @@ def create_or_update_team_offer_sponsors(team, offer, sponsor):
             retry += 1
             if retry == API_RETRY_COUNT:
                     raise SponsorshipSynchronizationError(SponsorshipSynchronizationErrorCode.TOS_RELATION_ADD_DEADLINE)
+
+
+def decrement_team_offer_available_quantity(offer):
+    connection = get_connection()
+    offer_id = offer.spudder_id
+
+    params = json.dumps({"quantityAvailable": {"__op": "Increment", "amount": -1}})
+    retry = 0
+    while retry < API_RETRY_COUNT:
+        try:
+            connection.request('PUT', '/1/classes/TeamOffer/%s' % offer_id, params, BASE_HEADERS)
+            connection.getresponse()
+            retry = API_RETRY_COUNT
+        except Exception:
+            retry += 1
+            if retry == API_RETRY_COUNT:
+                raise SponsorshipSynchronizationError(SponsorshipSynchronizationErrorCode.TO_AVAILABLE_QUANTITY_DECREMENT_DEADLINE)

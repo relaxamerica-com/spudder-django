@@ -5,7 +5,7 @@ from django.shortcuts import get_object_or_404
 from spudmart.donations.models import Donation
 from spudmart.spudder.exceptions import SpudderAPIError
 from spudmart.spudder.sponsorship import create_or_update_sponsored_teams, create_or_update_team_sponsors, \
-    create_or_update_team_offer_sponsors
+    create_or_update_team_offer_sponsors, decrement_team_offer_available_quantity
 from spudmart.spudder.users import signup_user, get_user_data, sign_in_user, set_user_is_sponsor
 import logging
 
@@ -15,7 +15,8 @@ def synchronise_sponsorship_data_from_donation(_, donation_id):
 
     donation = get_object_or_404(Donation, pk=donation_id)
     sponsor = donation.donor
-    team = donation.offer.team
+    offer = donation.offer
+    team = offer.team
     donor_profile = sponsor.get_profile()
     user_spudder_data = None
 
@@ -38,7 +39,8 @@ def synchronise_sponsorship_data_from_donation(_, donation_id):
 
         create_or_update_sponsored_teams(sponsor, team)
         create_or_update_team_sponsors(team, sponsor)
-        create_or_update_team_offer_sponsors(team, donation.offer, sponsor)
+        create_or_update_team_offer_sponsors(team, offer, sponsor)
+        decrement_team_offer_available_quantity(offer)
     except SpudderAPIError, e:
         logging.error('Sponsorship data synchronization error: %s' % e.code)
         logging.error('Donation ID: %s' % donation_id)

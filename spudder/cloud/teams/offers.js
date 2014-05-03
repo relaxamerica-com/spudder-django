@@ -23,7 +23,6 @@ module.exports = function (keys) {
 
                     offerQuery.find().then(function (offers) {
                         offersCount = offers.length;
-                        var promise = Parse.Promise.as();
 
                         _.each(offers, function(offer) {
                             var endDate = offer.get('endDate');
@@ -40,30 +39,12 @@ module.exports = function (keys) {
                             // Database end date format is YYYY-MM-DD, user format is DD-MM-YYYY
                             var revertedEndDate = helpers.revertDate(offer.get('endDate'));
                             offer.set('endDate', revertedEndDate);
+                            offer.set('isSoldOut', offer.get('quantityAvailable') == 0);
 
-                            promise = promise.then(function() {
-                                var findPromise = new Parse.Promise(),
-                                    Donation = Parse.Object.extend('Donation'),
-                                    donationQuery = new Parse.Query(Donation);
-
-                                donationQuery.equalTo('offer', offer);
-
-                                donationQuery.find().then(function (donations) {
-                                    offer.set('available', offer.get('quantity') - donations.length);
-                                    offer.set('isSoldOut', (offer.get('quantity') - donations.length) == 0);
-
-                                    if (endDate >= currentDateString) {
-                                        currentOffers.push(offer);
-                                    }
-
-                                    findPromise.resolve();
-                                });
-
-                                return findPromise;
-                            });
+                            if (endDate >= currentDateString) {
+                                currentOffers.push(offer);
+                            }
                         });
-
-                        return promise;
                     }).then(function () {
                         var findPromise = new Parse.Promise();
 
@@ -162,7 +143,7 @@ module.exports = function (keys) {
                                 // Database end date format is YYYY-MM-DD, user format is DD-MM-YYYY
                                 var path = 'https://' + keys.getAppName() + '.parseapp.com/teams/' + teamID + '/offers/' + offerID,
                                     endDate = helpers.revertDate(offer.get('endDate')),
-                                    isSoldOut = sponsors.length == offer.get('quantity'),
+                                    isSoldOut = offer.get('quantityAvailable') == 0,
                                     image = team.get('profileImageThumb') ? team.get('profileImageThumb') : (offer.get('images')[0] ? offer.get('images')[0] : ''),
                                     params = {
                                         'displaySponsors' : require('cloud/commons/displaySponsors'),
@@ -175,7 +156,7 @@ module.exports = function (keys) {
                                         'offer': offer,
                                         'spudmartBaseURL': keys.getSpudmartURL(),
                                         'isSoldOut': isSoldOut,
-                                        'quantity': isSoldOut ? 'Sold out!' : offer.get('quantity') - sponsors.length,
+                                        'quantity': isSoldOut ? 'Sold out!' : offer.get('quantityAvailable'),
                                         'sponsors': sponsors,
                                         'meta': {
                                             title: offer.get('title') + ' :: ' + team.get('name'),

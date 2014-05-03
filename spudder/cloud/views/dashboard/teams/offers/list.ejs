@@ -28,16 +28,13 @@
                 <tr>
                     <td><a href="/teams/<%= team.id %>/offers/<%= offer.id %>" target="_blank"><%= offer.get('title') %></a></td>
                     <td class="quantity">
-                        <%= offer.get('available') %> / <%= offer.get('quantity') %>
+                        <%= offer.get('quantityAvailable') %> / <%= offer.get('quantity') %>
                     </td>
                     <td class="amount">
-                        $<%= (offer.get('quantity') - offer.get('available')) * offer.get('donation') %>
+                        $<%= (offer.get('quantity') - offer.get('quantityAvailable')) * offer.get('donation') %>
                     </td>
                     <td class="end-date"><%= offer.get('endDate') %></td>
                     <td class="actions">
-                        <a class="btn btn-mini btn-lightgrey btn-action" href="/dashboard/teams/<%= team.id %>/offers/<%= offer.id %>/donations" title="Donations">
-                            <i class="icon-dollar"></i>
-                        </a>
                         <a class="btn btn-mini btn-lightgrey btn-action" href="/dashboard/teams/<%= team.id %>/offers/<%= offer.id %>/edit" title="Edit">
                             <i class="icon-edit"></i>
                         </a>

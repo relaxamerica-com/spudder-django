@@ -22,6 +22,9 @@ class SponsorshipSynchronizationErrorCode():
     TOS_CREATION_DEADLINE = 301
     TOS_RELATION_ADD_DEADLINE = 302
 
+    # TO - TEAM OFFER
+    TO_AVAILABLE_QUANTITY_DECREMENT_DEADLINE = 400
+
     error_messages = {
         ST_QUERY_DEADLINE: "queering for SponsoredTeam entity",
         ST_CREATION_DEADLINE: "trying to create SponsoredTeam entity",
@@ -31,7 +34,8 @@ class SponsorshipSynchronizationErrorCode():
         TS_RELATION_ADD_DEADLINE: "trying to add sponsor relation to TeamSponsors entity",
         TOS_QUERY_DEADLINE: "queering for TeamOfferSponsors entity",
         TOS_CREATION_DEADLINE: "trying to create TeamOfferSponsors entity",
-        TOS_RELATION_ADD_DEADLINE: "trying to add sponsor relation to TeamOfferSponsors entity"
+        TOS_RELATION_ADD_DEADLINE: "trying to add sponsor relation to TeamOfferSponsors entity",
+        TO_AVAILABLE_QUANTITY_DECREMENT_DEADLINE: "trying to decrement available quantity of TeamOffer entity"
     }
 
     @staticmethod

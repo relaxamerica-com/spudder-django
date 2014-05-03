@@ -28,7 +28,6 @@ module.exports = function (keys) {
 
                         offerQuery.find().then(function (offers) {
                             offersCount = offers.length;
-                            var promise = Parse.Promise.as();
 
                             _.each(offers, function(offer) {
                                 var endDate = offer.get('endDate');
@@ -46,31 +45,13 @@ module.exports = function (keys) {
                                 var revertedEndDate = helpers.revertDate(offer.get('endDate'));
                                 offer.set('endDate', revertedEndDate);
 
-                                promise = promise.then(function() {
-                                    var findPromise = new Parse.Promise(),
-                                        Donation = Parse.Object.extend('Donation'),
-                                        donationQuery = new Parse.Query(Donation);
-
-                                    donationQuery.equalTo('offer', offer);
-
-                                    donationQuery.find().then(function (donations) {
-                                        offer.set('available', offer.get('quantity') - donations.length);
-
-                                        if (endDate >= currentDateString) {
-                                            currentOffers.push(offer);
-                                        } else {
-                                            pastOffers.push(offer);
-                                        }
-
-                                        findPromise.resolve();
-                                    });
-
-                                    return findPromise;
-                                });
+                                if (endDate >= currentDateString) {
+                                    currentOffers.push(offer);
+                                } else {
+                                    pastOffers.push(offer);
+                                }
                             });
 
-                            return promise;
-                        }).then(function () {
                             res.render('dashboard/teams/offers/list', {
                                 'breadcrumbs' : [{ 'title' : 'Teams', 'href' : '/dashboard/teams' }, { 'title' : 'Offers', 'href' : 'javascript:void(0);' }],
                                 'team': team,
@@ -139,6 +120,7 @@ module.exports = function (keys) {
                         teamOffer.set('phone', req.body['phone']);
                         teamOffer.set('website', req.body['website']);
                         teamOffer.set('quantity', parseInt(req.body['quantity'], 10));
+                        teamOffer.set('quantityAvailable', parseInt(req.body['quantity'], 10));
                         teamOffer.set('endDate', revertedEndDate);
                         teamOffer.set('video', req.body['video']);
                         teamOffer.set('details', req.body['details']);
@@ -265,62 +247,6 @@ module.exports = function (keys) {
                 function (error) {
                     console.log(error);
                     res.redirect('/dashboard/teams/' + teamID + '/offers');
-                });
-            }
-        },
-
-        donations: {
-            get: function (req, res) {
-                var TeamOffer = Parse.Object.extend("TeamOffer"),
-                    offerQuery = new Parse.Query(TeamOffer),
-                    teamID = req.params.teamID,
-                    offerID = req.params.offerID;
-
-                offerQuery.get(offerID, {
-                    success: function(offer) {
-                        var Donation = Parse.Object.extend('Donation'),
-                            donationQuery = new Parse.Query(Donation),
-                            donations = [], totalAmount = 0;
-
-                        donationQuery.equalTo('offer', offer);
-
-                        donationQuery.find().then(function (list) {
-                            var promise = Parse.Promise.as();
-
-                            _.each(list, function(donation) {
-                                promise = promise.then(function() {
-                                    var findPromise = new Parse.Promise();
-
-                                    donation.get('sponsor').fetch({
-                                        success: function (fetchedSponsor) {
-                                            donations.push({
-                                                sponsor: fetchedSponsor,
-                                                date: donation.createdAt
-                                            });
-
-                                            findPromise.resolve();
-                                        }
-                                    });
-
-                                    return findPromise;
-                                });
-                            });
-
-                            return promise;
-                        }).then(function () {
-                            res.render('dashboard/teams/offers/donations', {
-                                'breadcrumbs' : [
-                                    { 'title' : 'Teams', 'href' : '/dashboard/teams' },
-                                    { 'title' : 'Offers', 'href' : '/dashboard/teams/' + teamID + '/offers' },
-                                    { 'title' : offer.get('title'), 'href' : '/dashboard/teams/' + teamID + '/offers/' + offerID },
-                                    { 'title' : 'Donations', 'href' : 'javascript:void(0);' }
-                                ],
-                                'offer': offer,
-                                'donations': donations,
-                                'totalAmount': totalAmount
-                            });
-                        });
-                    }
                 });
             }
         }
