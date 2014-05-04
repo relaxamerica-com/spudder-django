@@ -1,10 +1,33 @@
 from google.appengine.api import blobstore
 from google.appengine.ext.blobstore import BlobReader
-from website.upload.forms import UploadForm
+from spudmart.upload.forms import UploadForm
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect, HttpResponse
-from website.upload.models import UploadedFile
+from spudmart.upload.models import UploadedFile
 from spudmart.upload.utils import resize_image
+import logging
+from django.utils.datastructures import MultiValueDict
+import simplejson
+
+def get_upload_url(request):
+    return HttpResponse(blobstore.create_upload_url('/upload/upload_image_endpoint'))
+
+def upload_image_endpoint(request):
+    json_dict = { 'uploaded_files' : [] }
+    width = request.POST.get('width', 200)
+    height = request.POST.get('height', 300)
+    for i, _ in enumerate(request.FILES):
+        files_dict = {}
+        files_dict['file'] = [request.FILES['file-%s' % i]]
+        FILES = MultiValueDict(files_dict)
+        form = UploadForm(request.POST, FILES)
+        model = form.save(False)
+        model.file = resize_image(model.file.file, int(width), int(height))
+        model.user = request.user
+        model.content_type = FILES['file'].content_type
+        model.save()
+        json_dict['uploaded_files'].append('/file/serve/%s' % model.pk)
+    return HttpResponse(simplejson.dumps(json_dict))
 
 def upload_image(request):
     if request.method == 'POST':

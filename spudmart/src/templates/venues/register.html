@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container clearfix" id="venue-account">
+	<div class="well">
+		<p class="header">Sign Up as a <strong>Groundskeeper!</strong></p>
+		<form action="/venues/register" method="post">
+			{% if errors %}
+			<div class="control-group alert-error alert-block">
+				{% for error in errors %}
+					<div>{{ error }}</div>
+				{% endfor %}
+			</div>
+			{% endif %}
+			<div class="control-group">
+				<div class="control-label">
+					E-mail
+				</div>
+				<div class="controls">
+					<input type="text" name="email" />
+				</div>
+			</div>
+			<div class="control-group">
+				<div class="control-label">
+					Password
+				</div>
+				<div class="controls">
+					<input type="password" name="password1" />
+				</div>
+			</div>
+			<div class="control-group">
+				<div class="control-label">
+					Password (again)
+				</div>
+				<div class="controls">
+					<input type="password" name="password2" />
+				</div>
+			</div>
+			<div class="control-group">
+				<div class="controls">
+					<button class="btn btn-orange" type="submit">Sign Up</button>
+				</div>
+			</div>
+			
+		</form>
+	</div>
+</div>
+{% endblock content %}

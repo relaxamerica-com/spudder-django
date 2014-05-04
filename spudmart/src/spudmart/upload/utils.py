@@ -1,4 +1,5 @@
 from google.appengine.api import images, files
+import logging
 
 def resize_image(image_file, width, height):
     image = images.Image(blob_key=image_file.blobstore_info)

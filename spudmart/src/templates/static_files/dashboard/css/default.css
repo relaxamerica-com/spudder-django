@@ -856,7 +856,6 @@ form .input-required {
     width: 200px;
 }
 
-
 #venue-view .logo-placeholder {
 	text-align: center;
 	color: #000;
@@ -890,6 +889,7 @@ form .input-required {
 	line-height: 30px;
 	border-radius: 3px;
 	border: 1px solid red;
+	box-shadow: #696969 1px 1px;
 }
 
 #venue-view .buttons.no-border i {
@@ -905,6 +905,10 @@ form .input-required {
 	border-color: yellow;
 }
 
+#venue-view .buttons.no-border i.ready {
+	border-color: #a89b94;
+}
+
 #venue-view .buttons i.ready {
 	border-color: green;
 }
@@ -913,6 +917,92 @@ form .input-required {
 	display: none;
 }
 
+#venue-view .contents {
+	overflow: hidden;
+}
+
+#venue-view .saving {
+	width: 28px;
+}
+
+#venue-view .contents > div.content {
+	height: 100%;
+	display: none;
+	margin-left: -1000px;
+	width: 100%;
+	padding: 2px 5px;
+	-webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+	-moz-box-sizing: border-box;    /* Firefox, other Gecko */
+	box-sizing: border-box;         /* Opera/IE 8+ */
+}
+
+#venue-view .contents .row-fluid {
+	margin-bottom: 0px;
+}
+
+#venue-view .contents #map-canvas {
+	height: 320px;
+}
+
+#venue-view .playing-surface-details {
+	width: 200px;
+	margin: 10px auto;
+}
+
+#venue-view textarea {
+	height: 150px;
+	height: 200px;
+	margin-bottom: 10px;
+}
+
+#venue-view .contents > div.content.active {
+	margin-left: 0px;
+	display: block;
+}
+
+#venue-view .carousel img {
+	margin: auto;
+}
+
+#venue-view .ace-file-multiple {
+	width: 90%;
+}
+
+#venue-view .icon-remove {
+	margin: 0px;
+}
+
+#venue-index [class*="span"] {
+	height: 200px;
+}
+
+#venue-index [class*="span"] .btn {
+	margin-top: 20px;
+	display: table;
+	margin: auto;
+}
+
+#venue-index {
+	margin-top: 20px;
+}
+
+#venue-account .well {
+	width: 300px;
+	margin: 20px auto;
+}
+
+#venue-account .header {
+	margin-bottom: 30px;
+	margin-top: 10px;
+	text-align: center;
+}
+
+#venue-account .alert-block {
+	padding: 5px;
+	border-radius: 3px;
+}
+
+
 .social-network a:hover {
 	text-decoration: none;
 }
@@ -920,4 +1010,3 @@ form .input-required {
 .row-fluid.no-margin {
 	margin-bottom: 0px;
 }
-

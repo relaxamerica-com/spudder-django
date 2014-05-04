@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container clearfix" id="venue-index">
+	<div class="row">
+		<div class="span5">
+			<p class="text-center well">Don't have an account yet? Sign Up as a <strong>Groundskeeper!</strong></p>
+			<a href="/venues/register" class="btn btn-orange btn-large">Sign Up</a>
+		</div>
+		<div class="span5 offset2">
+			<p class="text-center well">Sign In as a <strong>Groundskeeper</strong> to create/manage venues!</p>
+			<a href="/venues/login" class="btn btn-orange btn-large">Sign In</a>
+		</div>
+	</div>
+</div>
+{% endblock content %}

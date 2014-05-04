@@ -1,6 +1,18 @@
-<div class="span2"><i class="icon-map-marker" title="Map"> </i></div>
-<div class="span2"><i class="icon-truck" title="Parking"> </i></div>
-<div class="span2"><i class="icon-camera-retro" title="Upto 3 pics"> </i></div>
-<div class="span2"><i class="icon-facetime-video" title="Video"> </i></div>
-<div class="span2"><i class="icon-eye-open" title="Playing surface"> </i></div>
-<div class="span2"><i class="icon-flag-alt" title="Flag content"> </i></div>
+<div class="span2" openTab="#map-canvas">
+	<i class="icon-map-marker {% if venue.coordinates %}ready{% endif %}" title="Map"> </i>
+</div>
+<div class="span2" openTab="#parking-details">
+	<i class="icon-truck {% if venue.parking_details and venue.parking_tips %}ready{% endif %}" title="Parking"> </i>
+</div>
+<div class="span2" openTab="#up-to-5-pics">
+	<i class="icon-camera-retro {% if venue.venue_pics %}ready{% endif %}" title="Upto 5 pics"> </i>
+</div>
+<div class="span2" openTab="#video">
+	<i class="icon-facetime-video {% if venue.video %}ready{% endif %}" title="Video"> </i>
+</div>
+<div class="span2" openTab="#playing-surface">
+	<i class="icon-eye-open {% if venue.playing_surface_pics and venue.playing_surface_details %}ready{% endif %}" title="Playing surface"> </i>
+</div>
+<div class="span2" openTab="#flag-content">
+	<i class="icon-flag-alt {% if venue.flag %}ready{% endif %}" title="Flag content"> </i>
+</div>
