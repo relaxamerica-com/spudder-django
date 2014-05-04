@@ -17,5 +17,4 @@ module.exports = function (app, keys) {
     app.get('/dashboard/teams/:teamID/offers/:offerID/edit', helpers.loginRequired, teamOffers.edit.get);
     app.post('/dashboard/teams/:teamID/offers/:offerID/edit', helpers.loginRequired, teamOffers.edit.post);
     app.get('/dashboard/teams/:teamID/offers/:offerID/remove', helpers.loginRequired, teamOffers.remove.get);
-    app.get('/dashboard/teams/:teamID/offers/:offerID/donations', helpers.loginRequired, teamOffers.donations.get);
 };

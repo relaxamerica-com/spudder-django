@@ -95,8 +95,8 @@
                             </li>
                             <li>
                                 <i class="icon-tasks"></i>
-                                <% if (offer.get('available')) { %>
-                                    <%= offer.get('available') %> / <%= offer.get('quantity') %>
+                                <% if (!offer.get('isSoldOut')) { %>
+                                    <%= offer.get('quantityAvailable') %> / <%= offer.get('quantity') %>
                                 <% } else { %>
                                     Sold out!
                                 <% } %>

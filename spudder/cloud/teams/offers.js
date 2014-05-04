@@ -1,6 +1,6 @@
 module.exports = function (keys) {
-    var helpers = require('cloud/teams/helpers')();
-    var _ = require('underscore');
+    var helpers = require('cloud/teams/helpers')(),
+        _ = require('underscore');
 
     return {
         list: function (req, res) {
@@ -23,7 +23,6 @@ module.exports = function (keys) {
 
                     offerQuery.find().then(function (offers) {
                         offersCount = offers.length;
-                        var promise = Parse.Promise.as();
 
                         _.each(offers, function(offer) {
                             var endDate = offer.get('endDate');
@@ -40,30 +39,12 @@ module.exports = function (keys) {
                             // Database end date format is YYYY-MM-DD, user format is DD-MM-YYYY
                             var revertedEndDate = helpers.revertDate(offer.get('endDate'));
                             offer.set('endDate', revertedEndDate);
+                            offer.set('isSoldOut', offer.get('quantityAvailable') == 0);
 
-                            promise = promise.then(function() {
-                                var findPromise = new Parse.Promise(),
-                                    Donation = Parse.Object.extend('Donation'),
-                                    donationQuery = new Parse.Query(Donation);
-
-                                donationQuery.equalTo('offer', offer);
-
-                                donationQuery.find().then(function (donations) {
-                                    offer.set('available', offer.get('quantity') - donations.length);
-                                    offer.set('isSoldOut', (offer.get('quantity') - donations.length) == 0);
-
-                                    if (endDate >= currentDateString) {
-                                        currentOffers.push(offer);
-                                    }
-
-                                    findPromise.resolve();
-                                });
-
-                                return findPromise;
-                            });
+                            if (endDate >= currentDateString) {
+                                currentOffers.push(offer);
+                            }
                         });
-
-                        return promise;
                     }).then(function () {
                         var findPromise = new Parse.Promise();
 
@@ -117,39 +98,39 @@ module.exports = function (keys) {
 
                     offerQuery.get(offerID,{
                         success: function(offer) {
-                            var _ = require('underscore');
-
-                            var Donation = Parse.Object.extend('Donation'),
-                                query = new Parse.Query(Donation),
+                            var TeamOfferSponsors = Parse.Object.extend('TeamOfferSponsors'),
+                                query = new Parse.Query(TeamOfferSponsors),
                                 sponsors = [];
 
                             query.equalTo('team', team);
-                            query.equalTo('offer', offer);
+                            query.equalTo('teamOffer', offer);
 
-                            query.find().then(function (list) {
+                            query.find().then(function (team_offer_sponsors) {
                                 var promise = Parse.Promise.as();
 
-                                _.each(list, function(donation) {
+                                if (team_offer_sponsors.length) {
+                                    return team_offer_sponsors[0].relation('sponsors').query().find();
+                                }
+
+                                return promise;
+                            }).then(function (sponsors_list) {
+                                var promise = Parse.Promise.as();
+
+                                _.each(sponsors_list, function(team_sponsor) {
                                     promise = promise.then(function() {
                                         var findPromise = new Parse.Promise();
 
-                                        var sponsor = donation.get('sponsor');
+                                        var SponsorPage = Parse.Object.extend('SponsorPage'),
+                                            sponsorPageQuery = new Parse.Query(SponsorPage);
 
-                                        sponsor.fetch({
-                                            success: function (fetchedSponsor) {
-                                                var SponsorPage = Parse.Object.extend('SponsorPage'),
-                                                    sponsorPageQuery = new Parse.Query(SponsorPage);
+                                        sponsorPageQuery.equalTo('sponsor', team_sponsor);
 
-                                                sponsorPageQuery.equalTo('sponsor', fetchedSponsor);
+                                        sponsorPageQuery.find({
+                                            success: function (results) {
+                                                team_sponsor.page = results.length ? results[0] : undefined;
+                                                sponsors.push(team_sponsor);
 
-                                                sponsorPageQuery.find({
-                                                    success: function (results) {
-                                                        fetchedSponsor.page = results.length ? results[0] : undefined;
-                                                        sponsors.push(fetchedSponsor);
-
-                                                        findPromise.resolve();
-                                                    }
-                                                });
+                                                findPromise.resolve();
                                             }
                                         });
 
@@ -162,7 +143,7 @@ module.exports = function (keys) {
                                 // Database end date format is YYYY-MM-DD, user format is DD-MM-YYYY
                                 var path = 'https://' + keys.getAppName() + '.parseapp.com/teams/' + teamID + '/offers/' + offerID,
                                     endDate = helpers.revertDate(offer.get('endDate')),
-                                    isSoldOut = sponsors.length == offer.get('quantity'),
+                                    isSoldOut = offer.get('quantityAvailable') == 0,
                                     image = team.get('profileImageThumb') ? team.get('profileImageThumb') : (offer.get('images')[0] ? offer.get('images')[0] : ''),
                                     params = {
                                         'displaySponsors' : require('cloud/commons/displaySponsors'),
@@ -175,7 +156,7 @@ module.exports = function (keys) {
                                         'offer': offer,
                                         'spudmartBaseURL': keys.getSpudmartURL(),
                                         'isSoldOut': isSoldOut,
-                                        'quantity': isSoldOut ? 'Sold out!' : offer.get('quantity') - sponsors.length,
+                                        'quantity': isSoldOut ? 'Sold out!' : offer.get('quantityAvailable'),
                                         'sponsors': sponsors,
                                         'meta': {
                                             title: offer.get('title') + ' :: ' + team.get('name'),

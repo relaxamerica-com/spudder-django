@@ -43,7 +43,6 @@
                             <% if (page != undefined) { %>value="<%= page.get('fax') %>"<% } %>>
                     <i class="icon-phone icon-flip-horizontal icon-right"></i>
                 </span>
-                <span class="input-required">*required</span>
             </div>
         </div>
         <div class="control-group">
@@ -305,7 +304,7 @@
                 name: "required",
                 speciality: "required",
                 phone: { required: true, phoneUS: true },
-                fax: { required: true, phoneUS: true },
+                fax: { phoneUS: true },
                 offerImageInput1: { extension: "gif|png|jpg|jpeg" },
                 offerImageInput2: { extension: "gif|png|jpg|jpeg" },
                 offerImageInput3: { extension: "gif|png|jpg|jpeg" }
