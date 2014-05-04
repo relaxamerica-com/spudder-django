@@ -383,6 +383,19 @@ textarea {
     display: none;
 }
 
+#entity-create .control-group.thumbnail-container {
+    padding-top: 20px;
+}
+
+#entity-create .control-group.thumbnail-container .controls {
+    padding-left: 100px;
+}
+
+#entity-create .control-group.thumbnail-container .controls img {
+    max-width: 200px;
+    max-height: 150px;
+}
+
 #entity-create .control-group .thumbnail {
     width: 100px;
     height: 140px;

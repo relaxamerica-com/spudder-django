@@ -1,0 +1,30 @@
+{% extends 'dashboard_base.html' %}
+
+{% block content %}
+
+    <div class="page-header">
+        <h1>
+            Dashboard <small><i class="icon-double-angle-right"></i> add image</small>
+        </h1>
+    </div>
+
+    <div class="content">
+        <div id="entity-create">
+            <form action="{{ upload_url }}" method="post" id="create-team-form" class="form-horizontal" enctype="multipart/form-data">
+                <div class="control-group">
+                    <label class="control-label" for="id_file">New image:</label>
+                    <div class="controls">
+                        {{ upload_form.file }}
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <div class="controls">
+                        <button type="submit" class="btn btn-danger">Upload</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+{% endblock content %}

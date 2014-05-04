@@ -41,7 +41,8 @@ MIDDLEWARE_CLASSES = (
     'autoload.middleware.AutoloadMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware'
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'spudmart.accounts.middleware.SponsorMiddleware'
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
@@ -123,3 +124,6 @@ SPUDDER_REST_API_KEY = shared_settings[app_version]['spudder_rest_api_key']
 SPUDDER_BASE_URL = shared_settings[app_version]['spudder_base_url']
 SPUDMART_BASE_URL = shared_settings[app_version]['spudmart_base_url']
 AMAZON_LOGIN_CLIENT_ID = shared_settings[app_version]['amazon_login_client_id']
+
+
+GOOGLE_PLACES_API_KEY = 'AIzaSyBY2lT_31eUX7yTH90gyPXxcJvM4pqSycs'
