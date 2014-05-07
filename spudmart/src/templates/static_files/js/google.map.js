@@ -2,7 +2,8 @@
 // prompted by your browser. If you see a blank space instead of the map, this
 // is probably because you have denied permission for location sharing.
 
-var map;
+window.map;
+
 function initialize(tryGeolocation) {
 	var mapOptions = {
 		zoom : 15
@@ -22,13 +23,6 @@ function initialize(tryGeolocation) {
 
 			map.setCenter(pos);
 			
-			var response = $.post('/venues/save_coordinates/' + window.venueId, {
-				'coordinates' : '' + position.coords.latitude + ',' + position.coords.longitude
-			});
-			
-			response.done(function() {
-				$('.buttons i.icon-map-marker').addClass('ready initialized');
-			});
 		}, function() {
 			handleNoGeolocation(true);
 		});

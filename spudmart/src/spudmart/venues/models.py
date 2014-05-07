@@ -27,5 +27,6 @@ class Venue(models.Model):
     phone = models.CharField(max_length = 200)
     email = models.CharField(max_length = 200)
     website = models.CharField(max_length = 200)
+    price = models.IntegerField(default = 0)
     fax = models.CharField(max_length = 200)
     

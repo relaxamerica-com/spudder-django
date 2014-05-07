@@ -1096,6 +1096,10 @@ footer {
 	height: 360px;
 }
 
+footer > div {
+	background: #e9e9e9;
+}
+
 .push {
 	height: 410px;
 }

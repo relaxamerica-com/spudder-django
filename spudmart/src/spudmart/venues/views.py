@@ -139,3 +139,9 @@ def save_handicap_details(request, venue_id):
     venue.handicap_details = request.POST['handicap_details']
     venue.save()
     return HttpResponse('OK')
+
+def save_price(request, venue_id):
+    venue = Venue.objects.get(pk = venue_id)
+    venue.price = int(request.POST['price'])
+    venue.save()
+    return HttpResponse('OK')
