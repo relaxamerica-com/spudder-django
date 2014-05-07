@@ -868,3 +868,196 @@ form .input-required {
 .dashboard-logo {
     width: 200px;
 }
+
+#venue-view .logo-placeholder {
+	text-align: center;
+	color: #000;
+	background-color: #F03C02;
+	font-size: 1.5em;
+	padding: 10px;
+	width: 75px;
+	height: 75px;
+}
+
+#venue-view .details-header {
+	display: inline-block;
+	font-size: 18px;
+}
+
+#venue-view .venue-header {
+	font-weight: bold;
+}
+
+#venue-view .buttons {
+	font-size: 20px;
+	margin: 5px 2px 25px;
+}
+
+#venue-view .buttons > div {
+	display: inline-block;
+}
+
+#venue-view .buttons i {
+	padding: 5px 10px;
+	background-color: #a89b94;
+	width: 30px;
+	height: 30px;
+	display: inline-block;
+	line-height: 30px;
+	border-radius: 3px;
+	border: 1px solid red;
+	box-shadow: #696969 1px 1px;
+	text-align: center;
+}
+
+@media(max-width: 480px) {
+	#venue-view .buttons i {
+		width: 15px;
+		margin-right: 4px;
+		font-size: 18px;
+		line-height: 30px;
+	}
+}
+
+@media(max-width: 320px) {
+	#venue-view .buttons i {
+		margin-right: 0px;
+	}
+}
+
+#venue-view .buttons.no-border i {
+	border: 1px solid #a89b94;
+}
+
+#venue-view .buttons i:hover {
+	cursor: pointer;
+	background-color: #BCAFA8;
+}
+
+#venue-view .buttons i.active {
+	border-color: yellow;
+}
+
+#venue-view .buttons.no-border i.ready {
+	border-color: #a89b94;
+}
+
+#venue-view .buttons i.ready {
+	border-color: green;
+}
+
+#venue-view .edit-mode {
+	display: none;
+}
+
+#venue-view .contents {
+	overflow: hidden;
+}
+
+#venue-view .saving {
+	width: 28px;
+}
+
+#venue-view .contents > div.content {
+	height: 100%;
+	display: none;
+	margin-left: -1000px;
+	width: 100%;
+	padding: 2px 5px;
+	-webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+	-moz-box-sizing: border-box;    /* Firefox, other Gecko */
+	box-sizing: border-box;         /* Opera/IE 8+ */
+}
+
+#venue-view .contents .row-fluid {
+	margin-bottom: 0px;
+}
+
+#venue-view .contents #map-canvas {
+	height: 320px;
+	margin-bottom: 10px;
+}
+
+#venue-view #prize-this-venue {
+	margin: 0px auto 5px;
+	display: table;
+}
+
+#venue-view .input-prepend {
+	margin: auto;
+	display: none;
+}
+
+#venue-view #current-price {
+	margin-top: 25px;
+	font-weight: bold;
+	text-align: center;
+	font-size: 16px;
+}
+
+#venue-view .playing-surface-details {
+	width: 200px;
+	margin: 10px auto;
+}
+
+#venue-view textarea {
+	height: 150px;
+	height: 200px;
+	margin-bottom: 10px;
+}
+
+#venue-view .contents > div.content.active {
+	margin-left: 0px;
+	display: block;
+}
+
+#venue-view .carousel img {
+	margin: auto;
+}
+
+#venue-view .ace-file-multiple {
+	width: 90%;
+}
+
+#venue-view .icon-remove {
+	margin: 0px;
+}
+
+#venue-index [class*="span"] {
+	height: 200px;
+}
+
+#venue-index [class*="span"] .btn {
+	margin-top: 20px;
+	display: table;
+	margin: auto;
+}
+
+#venue-index {
+	margin-top: 20px;
+}
+
+#venue-account .well {
+	width: 300px;
+	margin: 20px auto;
+}
+
+#venue-account .header {
+	margin-bottom: 30px;
+	margin-top: 10px;
+	text-align: center;
+}
+
+#venue-account .alert-block {
+	padding: 5px;
+	border-radius: 3px;
+}
+
+
+.social-network a:hover {
+	text-decoration: none;
+}
+
+.row-fluid.no-margin {
+	margin-bottom: 0px;
+}

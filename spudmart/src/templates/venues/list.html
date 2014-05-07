@@ -1,0 +1,37 @@
+{% extends 'dashboard_base.html' %}
+
+{% block content %}
+    <div class="page-header">
+        <h1>
+        	List of your Venues
+        </h1>
+    </div>
+
+    <div class="content">
+    	<a class="btn btn-orange margin-bottom5 btn-small" href="/venues/create">Create</a>
+    	<table class="table">
+    		<thead>
+	    		<tr>
+	    			<th>Id</th>
+	    			<th>Name</th>
+	    			<th>AKA Name</th>
+	    			<th>Actions</th>
+	    		</tr>
+    		</thead>
+    		<tbody>
+	    		{% for venue in venues %}
+		    		<tr>
+		    			<td>{{ venue.id }}</td>
+		    			<td>{{ venue.name }}</td>
+		    			<td>{{ venue.aka_name }}</td>
+		    			<td>
+	    					<a class="btn btn-mini btn-orange" href="/venues/view/{{ venue.id }}" title="Edit">
+	                        	<i class="icon-edit"> </i> 
+	                   		</a>
+	                    </td>
+		    		</tr>
+		    	{% endfor %}
+	    	</tbody>
+    	</table>
+    </div>
+{% endblock content %}

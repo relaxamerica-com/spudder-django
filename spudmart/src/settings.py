@@ -24,6 +24,7 @@ INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.sessions',
     'djangotoolbox',
+    'djangoappengine',
     'autoload',
     'dbindexer',
     'boto',
@@ -33,7 +34,8 @@ INSTALLED_APPS = (
     'spudmart.donations',
     'spudmart.recipients',
     'spudmart.dashboard',
-    'djangoappengine'
+    'spudmart.venues',
+    'spudmart.upload'
 )
 
 MIDDLEWARE_CLASSES = (

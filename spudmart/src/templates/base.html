@@ -85,10 +85,12 @@
 
         {% block content %}{% endblock content %}
 
+		<div class="push"> </div> <!-- sticky footer part -->
+
+    </div>
     {% include 'parts/footer.html' %}
 
     {% include 'parts/scripts.html' %}
     {% block scripts %}{% endblock scripts %}
-    </div>
 </body>
 </html>
