@@ -4,6 +4,20 @@
 
 window.map;
 
+function getDistance( $latitude1, $longitude1, $latitude2, $longitude2 )
+{  
+    $earth_radius = 6371;
+
+    $dLat = deg2rad( $latitude2 - $latitude1 );  
+    $dLon = deg2rad( $longitude2 - $longitude1 );  
+
+    $a = sin($dLat/2) * sin($dLat/2) + cos(deg2rad($latitude1)) * cos(deg2rad($latitude2)) * sin($dLon/2) * sin($dLon/2);  
+    $c = 2 * asin(sqrt($a));  
+    $d = $earth_radius * $c;  
+
+    return $d;  
+}
+
 function initialize(tryGeolocation) {
 	var mapOptions = {
 		zoom : 15
@@ -41,6 +55,22 @@ function initialize(tryGeolocation) {
 		
 		map.setCenter(pos);
 	}
+	
+	google.maps.event.addListener(map,'bounds_changed', function() {
+		var NE =  map.getBounds().getNorthEast(),
+			SW =  map.getBounds().getSouthWest();
+		
+		var response = $.get('/venues/get_venues_within_bounds', {
+			'latitude_range' : SW.lat() + '|' + NE.lat(),
+			'longitude_range' : SW.lng() + '|' + NE.lng()
+		});
+		
+		response.done(function(data) {
+			console.log(data);
+		});
+	});
+	
+	
 }
 
 function handleNoGeolocation(errorFlag) {

@@ -4,11 +4,14 @@ from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth import authenticate, login
 from spudmart.upload.models import UploadedFile
+import logging
+import simplejson
 
 def view(request, venue_id):
     venue = Venue.objects.get(pk = venue_id)
     return render(request, 'venues/view.html', { 
-                'venue' : venue
+                'venue' : venue,
+                'sports' : ['Football', 'Soccer'] 
                 })
 
 def create(request):
@@ -18,7 +21,7 @@ def create(request):
         return HttpResponseRedirect('/venues/view/%s' % venue.id)
     elif request.method == 'POST':
         return HttpResponseRedirect('/accounts/login?next=/venues/create')
-    return render(request, 'venues/create.html')
+    return render(request, 'venues/create.html', {'sports' : ['Football', 'Soccer'] })
 
 def index(request):
     return render(request, 'venues/index.html')
@@ -38,7 +41,7 @@ def login_view(request):
             errors.append('Wrong username/password')
         else:
             login(request, user)
-            return HttpResponseRedirect('/venues/create')
+            return HttpResponseRedirect('/venues/list')
     
     return render(request, 'venues/login.html', { 'errors' : errors })
 
@@ -53,7 +56,7 @@ def register(request):
         else:
             user = User.objects.create_user(username, username, password1)
             user.save()
-            return HttpResponseRedirect('/venues')
+            return HttpResponseRedirect('/venues/login')
     
     return render(request, 'venues/register.html', { 'errors' : errors })
 
@@ -61,7 +64,8 @@ def register(request):
 
 def save_coordinates(request, venue_id):
     venue = Venue.objects.get(pk = venue_id)
-    venue.coordinates = request.POST['coordinates']
+    venue.latitude = float(request.POST['latitude'])
+    venue.longitude = float(request.POST['longitude'])
     venue.save()
     return HttpResponse('OK')
 
@@ -87,6 +91,7 @@ def save_logo_and_name(request, venue_id):
         venue.logo = logo
     venue.name = request.POST['name']
     venue.aka_name = request.POST['aka_name']
+    venue.sport = request.POST['sport']
     venue.save()
     return HttpResponse('OK')
 
@@ -144,4 +149,36 @@ def save_price(request, venue_id):
     venue = Venue.objects.get(pk = venue_id)
     venue.price = int(request.POST['price'])
     venue.save()
+    return HttpResponse('OK')
+
+def get_venues_within_bounds(request):
+    latitude_range = [float(value) for value in request.GET['latitude_range'].split('|')]
+    longitude_range = [float(value) for value in request.GET['longitude_range'].split('|')]
+    
+    venues_in_latitude_range = Venue.objects.filter(latitude__range = latitude_range)
+    venues_in_longitude_range = Venue.objects.filter(longitude__range = longitude_range)
+    
+    venues = []
+    for venue in venues_in_latitude_range:
+        if venue in venues_in_longitude_range:
+            venues.append({
+                'id' : venue.id,
+                'name' : venue.name,
+                'aka_name' : venue.aka_name,
+                'latitude' : venue.latitude,
+                'longitude' : venue.longitude
+            })
+    
+    venues_dict = {
+        'venues' : venues
+    }
+    
+    return HttpResponse(simplejson.dumps(venues_dict))
+    
+def fix_venue_coordinates(request):
+    for venue in Venue.objects.all():
+        splitted = venue.coordinates.split(',')
+        venue.latitude = float(splitted[0])
+        venue.longitude = float(splitted[1])
+        venue.save()
     return HttpResponse('OK')

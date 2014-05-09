@@ -11,13 +11,13 @@
 	<div class="row">
 		<div class="span8">
 			<form method="post" enctype="multipart/form-data">
-				<h5 class="venue-header">Venue:
+				<h5 class="venue-header clearfix">Venue {% include 'venues/parts/select_sport.html' %}
 				{% if request.user and request.user.pk == venue.user.pk %}
 				<div class="pull-right">
 					<div class="btn btn-orange" id="edit">
 						Edit Mode
 					</div>
-				</div> {% endif %} </h5>
+				</div> {% endif %}</h5>
 
 				<div class="row-fluid view-mode">
 					<div class="span2">
@@ -50,15 +50,18 @@
 					</div>
 				</div>
 
-				<h4 class="view-mode"> {% if venue.aka_name %}
-				{{ venue.aka_name }}
-				{% else %}
-				AKA - Common Venue Name
-				{% endif %} </h4>
+				Common Venue Name:
+				<h4 class="view-mode">
+					{% if venue.aka_name %}
+						{{ venue.aka_name }}
+					{% else %}
+						Common Venue Name
+					{% endif %}
+				</h4>
 
 				<h4 class="edit-mode">
-				<input type="text" name="aka_name"
-				value="{% if venue.aka_name %}{{ venue.aka_name }}{% else %}AKA - Common Venue Name{% endif %}" />
+					<input type="text" name="aka_name"
+					value="{% if venue.aka_name %}{{ venue.aka_name }}{% else %}Common Venue Name{% endif %}" />
 				</h4>
 
 				<div class="edit-mode">
@@ -69,7 +72,7 @@
 			</form>
 
 			<div class="row-fluid buttons no-margin no-border">
-				{% include 'venues/util/buttons_top.html' %}
+				{% include 'venues/parts/buttons_top.html' %}
 			</div>
 
 			<div class="row-fluid">
@@ -84,7 +87,7 @@
 						<div id="map-canvas">
 
 						</div>
-						<a id="save-location" class="btn btn-orange">Save</a>
+						<a id="save-location" class="btn btn-orange edit-mode">Save</a>
 					</div>
 					<div id="parking-details" class="content">
 						<div class="row-fluid edit-mode">
@@ -359,7 +362,7 @@
 			</div>
 
 			<div class="row-fluid buttons no-border">
-				{% include 'venues/util/buttons_bottom.html' %}
+				{% include 'venues/parts/buttons_bottom.html' %}
 			</div>
 		</div>
 
@@ -486,6 +489,7 @@
 	window.coordinates = "{{ venue.coordinates }}";
 	window.preloadedOrange = $('<img src="/media/img/ajax-loader-orange.gif" />');
 	window.preloadedBlack = $('<img src="/media/img/ajax-loader-black.gif" />');
+	window.isEditMode = false;
 
 	$(document).ready(function() {
 		function checkReadyContentsCount() {
@@ -511,11 +515,13 @@
 				viewMode.show();
 				buttons.addClass('no-border');
 				$(this).html('Edit Mode');
+				window.isEditMode = false;
 			} else {
 				editMode.show();
 				viewMode.hide();
 				buttons.removeClass('no-border');
 				$(this).html('Show Mode');
+				window.isEditMode = true;
 			}
 		});
 
@@ -556,11 +562,7 @@
 			if ($(this).hasClass('icon-map-marker')) {
 
 				if (!$(this).hasClass('initialized')) {
-					{% if request.user and request.user.pk == venue.user.pk %}
-					initialize(true);
-					{% else %}
-					initialize(false);
-					{% endif %}
+					initialize(window.isEditMode);
 				}
 			}
 
@@ -644,7 +646,13 @@
 		});
 
 		$('#save-name').click(function() {
-			var form = $(this).parents('form'), files = $(form).serializeFiles(), filesList = $(form).find('input')[0].files, name = $(form).find('[name="name"]').val(), akaName = $(form).find('[name="aka_name"]').val(), dfd = saving($(this), $(form).find('.alert'), 'Logo, Name, AKA Name has been saved');
+			var form = $(this).parents('form'), 
+				files = $(form).serializeFiles(), 
+				filesList = $(form).find('input')[0].files, 
+				name = $(form).find('[name="name"]').val(), 
+				akaName = $(form).find('[name="aka_name"]').val(), 
+				dfd = saving($(this), $(form).find('.alert'), 'Venue basic information has been saved'),
+				sport = $('[name="sport"]').val();
 
 			$.get('/upload/get_upload_url', function(data) {
 				$.ajax({
@@ -660,7 +668,8 @@
 						var response = $.post('/venues/save_logo_and_name/{{ venue.id }}', {
 							'logo' : parsed['uploaded_files'],
 							'name' : name,
-							'aka_name' : akaName
+							'aka_name' : akaName,
+							'sport' : sport
 						});
 
 						response.done(function(data) {
@@ -802,7 +811,8 @@
 			var dfd = saving($(this), $('.contents .alert'), 'Location has been saved');
 
 			var response = $.post('/venues/save_coordinates/{{ venue.id }}', {
-				'coordinates' : '' + window.map.getCenter().lat() + ',' + window.map.getCenter().lng()
+				'latitude' : '' + window.map.getCenter().lat(),
+				'logitude' : '' +  window.map.getCenter().lng()
 			});
 
 			response.done(function() {
