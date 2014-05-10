@@ -4,18 +4,29 @@
 
 window.map;
 
-function getDistance( $latitude1, $longitude1, $latitude2, $longitude2 )
-{  
-    $earth_radius = 6371;
+function deg2rad(deg) {
+	return (deg * (Math.PI / 180))
+}
 
-    $dLat = deg2rad( $latitude2 - $latitude1 );  
-    $dLon = deg2rad( $longitude2 - $longitude1 );  
-
-    $a = sin($dLat/2) * sin($dLat/2) + cos(deg2rad($latitude1)) * cos(deg2rad($latitude2)) * sin($dLon/2) * sin($dLon/2);  
-    $c = 2 * asin(sqrt($a));  
-    $d = $earth_radius * $c;  
-
-    return $d;  
+function getDistance(latitude1, longitude1, latitude2, longitude2) {
+//	var earthRadius = 6378137;
+//
+//	var dLat = deg2rad(latitude2 - latitude1),
+//		dLon = deg2rad(longitude2 - longitude1);
+//
+//	var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(deg2rad(latitude1))
+//			* Math.cos(deg2rad(latitude2)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+//	var c = 2 * Math.asin(Math.sqrt(a));
+//	var d = earthRadius * c;
+//
+//	return d;
+	
+	console.log(arguments);
+	
+	var pos1 = new google.maps.LatLng(latitude1, longitude1),
+		pos2 = new google.maps.LatLng(latitude2, longitude2);
+	
+	return google.maps.geometry.spherical.computeDistanceBetween(pos1, pos2);
 }
 
 function initialize(tryGeolocation) {
@@ -34,6 +45,23 @@ function initialize(tryGeolocation) {
 				position : pos,
 				content : window.venueName
 			});
+			
+			google.maps.event.addListener(map, 'idle', function() {
+				getVenuesWithinBounds().done(function(data) {
+					var venues = JSON.parse(data).venues,
+					otherVenueInRange = null,
+					pos = position.coords;
+					
+					$.each(venues, function() {
+						console.log(getDistance(this.latitude, this.longitude, pos.latitude, pos.longitude));
+//				if (getDistance() <= )
+					});
+					
+					if (otherVenueInRange) {
+						console.log('');
+					}
+				});
+			});
 
 			map.setCenter(pos);
 			
@@ -44,8 +72,7 @@ function initialize(tryGeolocation) {
 		// Browser doesn't support Geolocation
 		handleNoGeolocation(false);
 	} else {
-		var coordinates = window.coordinates.split(','),
-			pos = new google.maps.LatLng(coordinates[0], coordinates[1]);
+		var	pos = new google.maps.LatLng(window.currentVenueLatitude, window.currentVenueLongitude);
 			
 		var infowindow = new google.maps.InfoWindow({
 			map : map,
@@ -57,20 +84,23 @@ function initialize(tryGeolocation) {
 	}
 	
 	google.maps.event.addListener(map,'bounds_changed', function() {
-		var NE =  map.getBounds().getNorthEast(),
-			SW =  map.getBounds().getSouthWest();
-		
-		var response = $.get('/venues/get_venues_within_bounds', {
-			'latitude_range' : SW.lat() + '|' + NE.lat(),
-			'longitude_range' : SW.lng() + '|' + NE.lng()
-		});
-		
-		response.done(function(data) {
+		getVenuesWithinBounds().done(function(data) {
 			console.log(data);
 		});
 	});
 	
 	
+	
+}
+
+function getVenuesWithinBounds() {
+	var NE =  map.getBounds().getNorthEast(),
+		SW =  map.getBounds().getSouthWest();
+	
+	return response = $.get('/venues/get_venues_within_bounds', {
+		'latitude_range' : SW.lat() + '|' + NE.lat(),
+		'longitude_range' : SW.lng() + '|' + NE.lng()
+	});
 }
 
 function handleNoGeolocation(errorFlag) {
