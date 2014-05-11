@@ -12,33 +12,36 @@
 		<div class="span8">
 			<form method="post" enctype="multipart/form-data">
 				<h5 class="venue-header clearfix">Venue {% include 'venues/parts/select_sport.html' %}
-				{% if request.user and request.user.pk == venue.user.pk %}
-				<div class="pull-right">
-					<div class="btn btn-orange" id="edit">
-						Edit Mode
-					</div>
-				</div> {% endif %}</h5>
+					{% if request.user and request.user.pk == venue.user.pk %}
+						<div class="pull-right">
+							<div class="btn btn-orange" id="edit">
+								Edit Mode
+							</div>
+						</div> 
+					{% endif %}
+				</h5>
 
 				<div class="row-fluid view-mode">
 					<div class="span2">
 						{% if venue.logo %}
-						<img src="/file/serve/{{ venue.logo.id }}" />
+							<img src="/file/serve/{{ venue.logo.id }}" id="venue-logo" />
 						{% else %}
-						<div class="logo-placeholder bigger">
-							Your Logo Here
-						</div>
+							<div class="logo-placeholder bigger">
+								Your Logo Here
+							</div>
 						{% endif %}
 					</div>
 					<div class="span10">
-						<h4> {% if venue.name %}
-						{{ venue.name }}
+						<h4 id="venue-name"> {% if venue.name %}
+							{{ venue.name }}
 						{% else %}
-						This could be Your company
-						{% endif %} </h4>
+							This could be Your company
+						{% endif %} 
+						</h4>
 					</div>
 				</div>
 
-				<div class="alert alert-success"></div>
+				<div class="alert"></div>
 
 				<div class="row-fluid edit-mode">
 					<div class="span4">
@@ -51,7 +54,7 @@
 				</div>
 
 				Common Venue Name:
-				<h4 class="view-mode">
+				<h4 class="view-mode" id="venue-aka-name">
 					{% if venue.aka_name %}
 						{{ venue.aka_name }}
 					{% else %}
@@ -77,7 +80,7 @@
 
 			<div class="row-fluid">
 				<div class="span12 contents">
-					<div class="alert alert-success"></div>
+					<div class="alert"></div>
 					<div id="venue-promo-video" class="active content">
 						<iframe width="560" height="315" src="//www.youtube.com/embed/H72B-GCMohs?rel=0"
 						frameborder="0"
@@ -87,7 +90,7 @@
 						<div id="map-canvas">
 
 						</div>
-						<a id="save-location" class="btn btn-orange edit-mode">Save</a>
+						<a id="save-location" class="btn btn-orange edit-mode hidden">Save</a>
 					</div>
 					<div id="parking-details" class="content">
 						<div class="row-fluid edit-mode">
@@ -110,7 +113,7 @@
 								<p>
 									Parking Details
 								</p>
-								<div class="well">
+								<div class="well" id="venue-parking-details">
 									{{ venue.parking_details }}
 								</div>
 							</div>
@@ -118,14 +121,14 @@
 								<p>
 									Local Parking Tips
 								</p>
-								<div class="well">
+								<div class="well" id="venue-parking-tips">
 									{{ venue.parking_tips }}
 								</div>
 							</div>
 						</div>
 					</div>
 					<div id="up-to-5-pics" class="content">
-						<div class="row-fluid edit-mode">
+						<div class="row-fluid edit-mode margin-bottom20">
 							<form method="post" enctype="multipart/form-data">
 								<div class="span6">
 									<p>
@@ -136,8 +139,8 @@
 								</div>
 							</form>
 						</div>
-						<div class="row-fluid view-mode">
-							<div class="carousel slide" id="venue-pics-carousel">
+						<div class="row-fluid">
+							<div class="{% if not venue.venue_pics %}hidden{% endif %} carousel slide" id="venue-pics-carousel">
 								<div class="carousel-inner">
 									{% for pic in venue.venue_pics %}
 									<div class="{% if forloop.counter == 1 %}active{% endif %} item">
@@ -147,21 +150,25 @@
 								</div>
 								<a href="#venue-pics-carousel" class="carousel-control left" data-slide="prev">&lsaquo;</a>
 								<a href="#venue-pics-carousel" class="carousel-control right" data-slide="next">&rsaquo;</a>
+								
+								<div class="btn btn-danger remove-pic edit-mode" id="venue_pics">Remove</div>
 							</div>
 						</div>
 					</div>
 					<div id="video" class="content">
 						<div class="row-fluid edit-mode">
 							<p>
-								Paste Youtube video URL here
+								Paste Youtube embed code here
 							</p>
 							<form method="post" class="form-horizontal">
-								<input type="text" name="video-url" placeholder="Youtube video's URL" value="{{ venue.video }}" />
-								<a id="save-video" class="btn btn-orange">Save</a>
+								<textarea name="video" placeholder="Youtube video's embed code">{{ venue.video }}</textarea>
+								<div>
+									<a id="save-video" class="btn btn-orange">Save</a>
+								</div>
 							</form>
 						</div>
-						<div class="row-fluid view-mode">
-							<iframe width="530" height="300" src="{{ venue.video }}" frameborder="0" allowfullscreen></iframe>
+						<div class="row-fluid view-mode" id="venue-video">
+							{{ venue.video|safe }}
 						</div>
 					</div>
 					<div id="playing-surface" class="content">
@@ -184,8 +191,8 @@
 								</div>
 							</form>
 						</div>
-						<div class="row-fluid view-mode">
-							<div class="carousel slide" id="playing-surface-carousel">
+						<div class="row-fluid">
+							<div class="carousel slide {% if not venue.playing_surface_pics %}hidden{% endif %}" id="playing-surface-carousel">
 								<div class="carousel-inner">
 									{% for pic in venue.playing_surface_pics %}
 									<div class="{% if forloop.counter == 1 %}active{% endif %} item">
@@ -195,8 +202,10 @@
 								</div>
 								<a href="#playing-surface-carousel" class="carousel-control left" data-slide="prev">&lsaquo;</a>
 								<a href="#playing-surface-carousel" class="carousel-control right" data-slide="next">&rsaquo;</a>
+								
+								<div class="btn btn-danger remove-pic edit-mode" id="playing_surface_pics">Remove</div>
 							</div>
-							<div class="playing-surface-details well">
+							<div class="playing-surface-details well" id="venue-playing-surface-details">
 								{{ venue.playing_surface_details }}
 							</div>
 						</div>
@@ -220,7 +229,7 @@
 								Restroom Details
 							</p>
 							<form method="post" class="form-horizontal">
-								<textarea placeholder="Enter restroom details" name="details"></textarea>
+								<textarea placeholder="Enter restroom details" name="details">{{ venue.restroom_details }}</textarea>
 								<div>
 									<a id="save-restroom-details" class="btn btn-orange">Save</a>
 								</div>
@@ -230,7 +239,7 @@
 							<p>
 								Restroom Details
 							</p>
-							<div class="well">
+							<div class="well span6 nomargin" id="venue-restroom-details">
 								{{ venue.restroom_details }}
 							</div>
 						</div>
@@ -241,7 +250,7 @@
 								Concession Details
 							</p>
 							<form method="post" class="form-horizontal">
-								<textarea placeholder="Enter concession details" name="details"></textarea>
+								<textarea placeholder="Enter concession details" name="details">{{ venue.concession_details }}</textarea>
 								<p>
 									<a id="save-concession-details" class="btn btn-orange">Save</a>
 								</p>
@@ -251,7 +260,7 @@
 							<p>
 								Concession Details
 							</p>
-							<div class="well">
+							<div class="well span6 nomargin" id="venue-concession-details">
 								{{ venue.concession_details }}
 							</div>
 						</div>
@@ -259,10 +268,10 @@
 					<div id="admission-details" class="content">
 						<div class="row-fluid edit-mode">
 							<p>
-								Admission &amp; Concession Details
+								Seating Details
 							</p>
 							<form method="post" class="form-horizontal">
-								<textarea placeholder="Enter admission and concession details" name="details"></textarea>
+								<textarea placeholder="Enter seating details" name="details">{{ venue.admission_details }}</textarea>
 								<p>
 									<a id="save-admission-details" class="btn btn-orange">Save</a>
 								</p>
@@ -272,7 +281,7 @@
 							<p>
 								Admission Details
 							</p>
-							<div class="well">
+							<div class="well span6 nomargin" id="venue-admission-details">
 								{{ venue.admission_details }}
 							</div>
 						</div>
@@ -283,7 +292,7 @@
 								Available Shelter Details
 							</p>
 							<form method="post" class="form-horizontal">
-								<textarea placeholder="Enter details about shelter and protection from elements" name="details"></textarea>
+								<textarea placeholder="Enter details about shelter and protection from elements" name="details">{{ venue.shelter_details }}</textarea>
 								<p>
 									<a id="save-shelter-details" class="btn btn-orange">Save</a>
 								</p>
@@ -293,7 +302,7 @@
 							<p>
 								Shelter Details
 							</p>
-							<div class="well">
+							<div class="well span6 nomargin" id="venue-shelter-details">
 								{{ venue.shelter_details }}
 							</div>
 						</div>
@@ -305,13 +314,22 @@
 									<p>
 										Available Medical Details
 									</p>
-									<textarea placeholder="Enter details about medical" name="details"></textarea>
+									<textarea placeholder="Enter details about medical" name="details">{{ venue.medical_details }}</textarea>
 								</div>
 								<div class="span6">
 									<p>
 										Address of nearby facility
 									</p>
-									<textarea placeholder="Map of medical facility" name="address"></textarea>
+									<label>Address</label>
+									<input type="text" placeholder="address" name="address" value="{{ medical_address.address }}"/>
+									<label>City</label>
+									<input type="text" placeholder="city" name="city" value="{{ medical_address.city }}" />
+									<label>State</label>
+									<select name="state">
+										<option>NY</option>
+									</select>
+									<label>Zip</label>
+									<input type="text" placeholder="zip" name="zip" value="{{ medical_address.zip }}" />
 								</div>
 								<p>
 									<a id="save-medical-details" class="btn btn-orange">Save</a>
@@ -323,7 +341,7 @@
 								<p>
 									Available Medical Details
 								</p>
-								<div class="well">
+								<div class="well" id="venue-medical-details">
 									{{ venue.medical_details }}
 								</div>
 							</div>
@@ -332,7 +350,9 @@
 									Address of nearby facility
 								</p>
 								<div class="well">
-									{{ venue.medical_address }}
+									<a href="http://maps.google.com/?q={{ venue.medical_address }}" target="_blank" id="venue-medical-address"> 
+						                {{ venue.medical_address }}
+						            </a>
 								</div>
 							</div>
 						</div>
@@ -343,7 +363,7 @@
 								Handicap Accessible
 							</p>
 							<form method="post" class="form-horizontal">
-								<textarea placeholder="Enter details about handicap accessible" name="details"></textarea>
+								<textarea placeholder="Enter details about handicap accessible" name="details">{{ venue.handicap_details }}</textarea>
 								<p>
 									<a id="save-handicap-details" class="btn btn-orange">Save</a>
 								</p>
@@ -353,7 +373,7 @@
 							<p>
 								Handicap Details
 							</p>
-							<div class="well">
+							<div class="well span6 nomargin" id="venue-handicap-details">
 								{{ venue.handicap_details }}
 							</div>
 						</div>
@@ -371,45 +391,41 @@
 				<div class="widget offer-widget">
 					<h5 class="widgetheading">
 					<div class="row-fluid no-margin">
-						<div class="span12">
-							{% if venue.name %}
+						<div class="span12" id="venue-name2">
 							{{ venue.name }}
-							{% else %}
-							This could be Your company
-							{% endif %}
 						</div>
 						<div class="span12">
-							<small> {% if venue.aka_name %}
+							<small id="venue-aka-name2"> 
 								{{ venue.aka_name }}
-								{% else %}
-								AKA - Common Venue Name
-								{% endif %} </small>
+							</small>
 						</div>
 					</div></h5>
 
 					<div class="row-fluid">
 						<div class="span6">
 							{% if venue.logo %}
-							<img src="/file/serve/{{ venue.logo.id }}" />
+								<img id="venue-logo2" src="/file/serve/{{ venue.logo.id }}" />
 							{% else %}
-							<div class="logo-placeholder">
-								Your Logo Here
-							</div>
+								<div class="logo-placeholder">
+									Your Logo Here
+								</div>
 							{% endif %}
 						</div>
 						<div class="span6 hidden" id="price-column">
 							{% if request.user == venue.user %}
 							<div class="btn btn-orange" id="prize-this-venue">
-								Prize this Venue
+								Price this Venue
 							</div>
 							<div class="input-prepend">
 								<span class="add-on">$</span>
 								<input name="price" id="price" type="text" class="input-small" value="{{ venue.price }}" />
 							</div>
-							<div class="alert alert-success"></div>
+							<div class="alert"></div>
 							{% endif %}
 							<div id="current-price">
+								Name and sponsor this field for:
 								${{ venue.price }}
+								annually
 							</div>
 						</div>
 					</div>
@@ -417,7 +433,7 @@
 					<div class="row-fluid">
 
 						<div class="span8 details-header">
-							Support Your Sponsors
+							Support Venue's Sponsor
 						</div>
 
 						<ul class="span4 social-network">
@@ -477,6 +493,7 @@
 {% endblock content %}
 
 {% block scripts %}
+<script type="text/javascript" src="/media/js/venues/utils.js"></script>
 <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=true&libraries=geometry"></script>
 <script type="text/javascript" src="/media/js/google.map.js"></script>
 <script type="text/javascript" src="/media/js/jquery.serialize.file.js"></script>
@@ -491,6 +508,7 @@
 	window.preloadedOrange = $('<img src="/media/img/ajax-loader-orange.gif" />');
 	window.preloadedBlack = $('<img src="/media/img/ajax-loader-black.gif" />');
 	window.isEditMode = false;
+	window.currentSelectedSport = '{{ venue.sport }}';
 
 	$(document).ready(function() {
 		function checkReadyContentsCount() {
@@ -570,7 +588,8 @@
 		});
 
 		$('#save-parking-details').click(function() {
-			var button = $(this), parkingDetails = $('[name="parking-details"]'), parkingTips = $('[name="parking-tips"]'), dfd = saving($(this), $('.contents').find('.alert'), 'Parking details has been saved');
+			var button = $(this), parkingDetails = $('[name="parking-details"]'), parkingTips = $('[name="parking-tips"]'), 
+				dfd = saving($(this), $('.contents').find('.alert'), 'Parking details has been saved');
 
 			var response = $.post('/venues/save_parking_details/{{ venue.id }}', {
 				'parking-details' : parkingDetails.val(),
@@ -579,8 +598,31 @@
 
 			response.done(function() {
 				$('.icon-truck').addClass('ready');
+				
+				$('#venue-parking-details').html(parkingDetails.val());
+				$('#venue-parking-tips').html(parkingTips.val());
+				
 				dfd.resolve();
 			});
+		});
+		
+		$('.remove-pic').click(function() {
+			var carousel = $(this).parent(),
+				listType = $(this).attr('id'),
+				active = carousel.find('.active'),
+				fileURL = active.find('img').attr('src');
+			
+			var response = $.post('/venues/remove_pic/{{ venue.id }}', {
+				'list_type' : listType,
+				'file_url' : fileURL
+			});
+			
+			carousel.carousel('next');
+			active.remove();
+			if (carousel.find('.item').length == 0) {
+				carousel.hide();
+			}
+			showAlert($('.contents .alert'), 'Image has been removed', 'success', true);
 		});
 
 		$('#up-to-5-pics input, #playing-surface input').ace_file_input({
@@ -639,12 +681,37 @@
 
 						response.done(function(data) {
 							dfd.resolve();
+							
+							var carousel = $('#up-to-5-pics .carousel');
+							
+							populateCarousel(parsed, carousel);
+							
 							$('.icon-camera-retro').addClass('ready');
 						});
 					}
 				});
 			});
 		});
+		
+		function populateCarousel(parsed, carousel) {
+			$.each(parsed['uploaded_files'], function() {
+				var item = $('<div class="item"></div>'),
+					img = $('<img />');
+				
+				img.attr('src', this);
+				if(carousel.find('.item').length == 0) {
+					item.addClass('active');
+				}
+				
+				item.append(img);
+				carousel.find('.carousel-inner').append(item);
+			});
+			
+			carousel.removeClass('hidden');
+			carousel.show();
+			carousel.carousel().removeData();
+			carousel.carousel({ interval: false });
+		}
 
 		$('#save-name').click(function() {
 			var form = $(this).parents('form'), 
@@ -674,6 +741,14 @@
 						});
 
 						response.done(function(data) {
+							window.currentSelectedSport;
+							
+							$('#venue-name, #venue-name2').html(name);
+							$('#venue-aka-name, #venue-aka-name2').html(akaName);
+							if (parsed['uploaded_files'].length > 0) {
+								$('#venue-logo, #venue-logo2').attr('src', parsed['uploaded_files'][0]);
+							}
+							
 							dfd.resolve();
 						});
 					}
@@ -682,7 +757,11 @@
 		});
 
 		$('#upload-playing-surface').click(function() {
-			var form = $(this).parents('form'), files = $(form).serializeFiles(), filesList = $(form).find('input')[0].files, dfd = saving($(this), $(form).find('.alert'), 'Playing surface pictures and details have been saved');
+			var form = $(this).parents('form'), 
+				files = $(form).serializeFiles(), 
+				filesList = $(form).find('input')[0].files, 
+				dfd = saving($(this), $('.contents').find('.alert'), 'Playing surface pictures and details have been saved'),
+				details = form.find('[name="details"]');
 
 			$.get('/upload/get_upload_url', function(data) {
 				$.ajax({
@@ -697,11 +776,13 @@
 
 						var response = $.post('/venues/save_playing_surface_pics/{{ venue.id }}', {
 							'playing_surface_pics' : parsed['uploaded_files'],
-							'playing_surface_details' : form.find('[name="details"]').val()
+							'playing_surface_details' : details.val()
 						});
 
 						response.done(function(data) {
 							dfd.resolve();
+							populateCarousel(parsed, $('#playing-surface-carousel'));
+							$('#venue-playing-surface-details').html(details.val());
 							$('.icon-eye-open').addClass('ready');
 						});
 					}
@@ -709,22 +790,17 @@
 			});
 		});
 
-		function getVideoURL(value) {
-			var parsedURI = parseUri(value), videoID = parsedURI.queryKey['v'];
-
-			return '//www.youtube.com/embed/' + videoID;
-		}
-
 
 		$('#save-video').click(function() {
-			var input = $('#video form input'), dfd = saving($(this), $('.contents .alert'), 'Youtube video URL has been saved');
+			var textarea = $('#video form textarea'), dfd = saving($(this), $('.contents .alert'), 'Youtube video has been saved');
 
-			var response = $.post('/venues/save_video_url/{{ venue.id }}', {
-				'video' : getVideoURL(input.val())
+			var response = $.post('/venues/save_video/{{ venue.id }}', {
+				'video' : textarea.val()
 			});
 
 			response.done(function() {
 				dfd.resolve();
+				$('#venue-video').html(textarea.val());
 				$('.icon-facetime-video').addClass('ready');
 			});
 		});
@@ -738,6 +814,7 @@
 
 			response.done(function() {
 				dfd.resolve();
+				$('#venue-restroom-details').html(textarea.val());
 				$('.icon-female').addClass('ready');
 			});
 		});
@@ -751,6 +828,7 @@
 
 			response.done(function() {
 				dfd.resolve();
+				$('#venue-concession-details').html(textarea.val());
 				$('.icon-food').addClass('ready');
 			});
 		});
@@ -764,6 +842,7 @@
 
 			response.done(function() {
 				dfd.resolve();
+				$('#venue-admission-details').html(textarea.val());
 				$('.icon-ticket').addClass('ready');
 			});
 		});
@@ -777,20 +856,30 @@
 
 			response.done(function() {
 				dfd.resolve();
+				$('#venue-shelter-details').html(textarea.val());
 				$('.icon-umbrella').addClass('ready');
 			});
 		});
 
 		$('#save-medical-details').click(function() {
-			var textareaDetails = $('#medical-details form textarea[name="details"]'), textareaAddress = $('#medical-details form textarea[name="address"]'), dfd = saving($(this), $('.contents .alert'), 'Medical details has been saved');
+			var textareaDetails = $('#medical-details form textarea[name="details"]'), 
+				address = $('#medical-details form input[name="address"]'), 
+				city = $('#medical-details form input[name="city"]'), 
+				state = $('#medical-details form select[name="state"]'), 
+				zip = $('#medical-details form input[name="zip"]'), 
+				dfd = saving($(this), $('.contents .alert'), 'Medical details has been saved');
+
+			var medicalAddress = address.val() + ', ' + city.val() + ', ' + state.val() + ', ' + zip.val();
 
 			var response = $.post('/venues/save_medical_details/{{ venue.id }}', {
 				'medical_details' : textareaDetails.val(),
-				'medical_address' : textareaAddress.val()
+				'medical_address' : medicalAddress
 			});
 
 			response.done(function() {
 				dfd.resolve();
+				$('#venue-medical-details').html(textareaDetails.val());
+				$('#venue-medical-address').html(medicalAddress);
 				$('.icon-medkit').addClass('ready');
 			});
 		});
@@ -804,6 +893,7 @@
 
 			response.done(function() {
 				dfd.resolve();
+				$('#venue-handicap-details').html(textarea.val());
 				$('.fa-wheelchair').addClass('ready');
 			});
 		});
@@ -835,7 +925,7 @@
 
 				response.done(function() {
 					dfd.resolve();
-					$(button).html('Prize this Venue');
+					$(button).html('Price this Venue');
 					currentPrice.show();
 					priceInput.parent().css('display', 'none');
 				});
@@ -845,39 +935,6 @@
 				$(this).html('Save');
 			}
 		});
-
-		function saving(btn, alert, msg) {
-			var dfd = new $.Deferred();
-
-			$(btn).html(window.preloadedBlack);
-			$(btn).on('mouseleave', function() {
-				$(btn).html(window.preloadedOrange);
-			});
-			$(btn).addClass('saving');
-
-			dfd.promise().then(function() {
-				$(btn).html('Save');
-				$(btn).removeClass('saving');
-				$(btn).off('mouseleave');
-				$(alert).html(msg);
-				$(alert).css({
-					'display' : 'block'
-				});
-
-				setTimeout(function() {
-					$(alert).animate({
-						'opacity' : '0'
-					}, 2000, function() {
-						$(alert).css({
-							'display' : 'none',
-							'opacity' : '1'
-						});
-					});
-				}, 2000);
-			});
-
-			return dfd;
-		}
 
 	}); 
 </script>

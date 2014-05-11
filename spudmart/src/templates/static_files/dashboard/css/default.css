@@ -1019,6 +1019,12 @@ form .input-required {
 	width: 90%;
 }
 
+#venue-view .remove-pic {
+	position: absolute;
+	right: 10px;
+	bottom: 10px;
+}
+
 #venue-view .icon-remove {
 	margin: 0px;
 }
@@ -1069,4 +1075,8 @@ p.head .add-button {
 
 .row-fluid.no-margin {
 	margin-bottom: 0px;
+}
+
+.margin-bottom20 {
+	margin-bottom: 20px !important;
 }

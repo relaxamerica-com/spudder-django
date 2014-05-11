@@ -4,14 +4,21 @@ from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth import authenticate, login
 from spudmart.upload.models import UploadedFile
-import logging
 import simplejson
 
 def view(request, venue_id):
     venue = Venue.objects.get(pk = venue_id)
+    splitted_address = venue.medical_address.split(',')
+    medical_address = {
+        'address' : splitted_address.pop(0) if splitted_address else '',
+        'city' : splitted_address.pop(0) if splitted_address else '',
+        'state' : splitted_address.pop(0) if splitted_address else '',
+        'zip' : splitted_address.pop(0) if splitted_address else ''
+    }
     return render(request, 'venues/view.html', { 
                 'venue' : venue,
-                'sports' : ['Football', 'Soccer'] 
+                'sports' : ['Football', 'Soccer'],
+                'medical_address' : medical_address
                 })
 
 def create(request):
@@ -78,7 +85,7 @@ def save_parking_details(request, venue_id):
 
 def save_venue_pics(request, venue_id):
     venue = Venue.objects.get(pk = venue_id)
-    venue.venue_pics = request.POST.getlist('venue_pics[]')
+    venue.venue_pics.extend(request.POST.getlist('venue_pics[]'))
     venue.save()
     return HttpResponse('OK')
 
@@ -97,12 +104,12 @@ def save_logo_and_name(request, venue_id):
 
 def save_playing_surface_pics(request, venue_id):
     venue = Venue.objects.get(pk = venue_id)
-    venue.playing_surface_pics = request.POST.getlist('playing_surface_pics[]')
+    venue.playing_surface_pics.extend(request.POST.getlist('playing_surface_pics[]'))
     venue.playing_surface_details = request.POST['playing_surface_details']
     venue.save()
     return HttpResponse('OK')
 
-def save_video_url(request, venue_id):
+def save_video(request, venue_id):
     venue = Venue.objects.get(pk = venue_id)
     venue.video = request.POST['video']
     venue.save()
@@ -152,8 +159,8 @@ def save_price(request, venue_id):
     return HttpResponse('OK')
 
 def get_venues_within_bounds(request):
-    latitude_range = [float(value) for value in request.GET['latitude_range'].split('|')]
-    longitude_range = [float(value) for value in request.GET['longitude_range'].split('|')]
+    latitude_range = [float(value) for value in request.GET.getlist('latitude_range[]')]
+    longitude_range = [float(value) for value in request.GET.getlist('longitude_range[]')]
     
     venues_in_latitude_range = Venue.objects.filter(latitude__range = latitude_range)
     venues_in_longitude_range = Venue.objects.filter(longitude__range = longitude_range)
@@ -166,7 +173,8 @@ def get_venues_within_bounds(request):
                 'name' : venue.name,
                 'aka_name' : venue.aka_name,
                 'latitude' : venue.latitude,
-                'longitude' : venue.longitude
+                'longitude' : venue.longitude,
+                'sport' : venue.sport
             })
     
     venues_dict = {
@@ -181,4 +189,26 @@ def fix_venue_coordinates(request):
         venue.latitude = float(splitted[0])
         venue.longitude = float(splitted[1])
         venue.save()
+    return HttpResponse('OK')
+
+def remove_pic(request, venue_id):
+    venue = Venue.objects.get(pk = venue_id)
+    list_type = request.POST['list_type']
+    file_url = request.POST['file_url']
+    
+    if list_type == 'venue_pics':
+        the_list = venue.venue_pics
+    else:
+        the_list = venue.playing_surface_pics
+        
+    if file_url in the_list:
+        the_list.remove(file_url)
+        
+    if list_type == 'venue_pics':
+        venue.venue_pics = the_list
+    else:
+        venue.playing_surface_pics = the_list
+    
+    venue.save() 
+        
     return HttpResponse('OK')

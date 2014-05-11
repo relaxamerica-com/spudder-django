@@ -5,7 +5,7 @@
 window.map;
 
 function deg2rad(deg) {
-	return (deg * (Math.PI / 180))
+	return (deg * (Math.PI / 180));
 }
 
 function getDistance(latitude1, longitude1, latitude2, longitude2) {
@@ -20,8 +20,6 @@ function getDistance(latitude1, longitude1, latitude2, longitude2) {
 //	var d = earthRadius * c;
 //
 //	return d;
-	
-	console.log(arguments);
 	
 	var pos1 = new google.maps.LatLng(latitude1, longitude1),
 		pos2 = new google.maps.LatLng(latitude2, longitude2);
@@ -49,16 +47,26 @@ function initialize(tryGeolocation) {
 			google.maps.event.addListener(map, 'idle', function() {
 				getVenuesWithinBounds().done(function(data) {
 					var venues = JSON.parse(data).venues,
-					otherVenueInRange = null,
-					pos = position.coords;
+						otherVenueInRange = null,
+						pos = position.coords;
 					
 					$.each(venues, function() {
-						console.log(getDistance(this.latitude, this.longitude, pos.latitude, pos.longitude));
-//				if (getDistance() <= )
+						if (getDistance(this.latitude, this.longitude, pos.latitude, pos.longitude) <= 250 
+							&& this.sport == window.currentSelectedSport) {
+							otherVenueInRange = this;
+							return false;
+						}
 					});
 					
 					if (otherVenueInRange) {
-						console.log('');
+						var venueLink = '<a href="/venues/view/' 
+										+ otherVenueInRange.id 
+										+ '">' 
+										+ otherVenueInRange.aka_name 
+										+ '</a>';
+						showAlert($('.contents .alert'), 'Venue already exists near your current location: ' + venueLink, 'warning', false);
+					} else {
+						$('#save-location').removeClass('hidden');
 					}
 				});
 			});
@@ -98,8 +106,8 @@ function getVenuesWithinBounds() {
 		SW =  map.getBounds().getSouthWest();
 	
 	return response = $.get('/venues/get_venues_within_bounds', {
-		'latitude_range' : SW.lat() + '|' + NE.lat(),
-		'longitude_range' : SW.lng() + '|' + NE.lng()
+		'latitude_range' : [SW.lat(), NE.lat()],
+		'longitude_range' : [SW.lng(), NE.lng()]
 	});
 }
 
