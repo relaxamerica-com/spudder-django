@@ -1,37 +1,63 @@
 {% extends 'dashboard_base.html' %}
 
-{% block content %}
-    <div class="page-header">
-        <h1>
-        	List of your Venues
-        </h1>
-    </div>
+{% block breadcrumbs %}
+	<div class="breadcrumbs" id="breadcrumbs"> 
+		<ul class="breadcrumb"> 
+			<li> 
+				<i class="icon-home home-icon"> </i> 
+				<a href="/venues"> 
+					Venues 
+				</a> 
+				<span class="divider">  
+					<i class="icon-angle-right arrow-icon"> </i>  
+				</span> 
+				<a href=""> 
+					My Venues 
+				</a> 
+			</li> 
+		</ul> 
+		<div class="nav-search" id="nav-search"> 
+			<form class="form-search"> 
+				<span class="input-icon"> 
+					<input type="text" placeholder="Search ..." class="input-small nav-search-input" id="nav-search-input" autocomplete="off"> 
+					<i class="icon-search nav-search-icon"> </i> 
+				</span> 
+			</form> 
+		</div><!--#nav-search--> 
+	</div>
+{% endblock breadcrumbs %}
 
-    <div class="content">
-    	<a class="btn btn-orange margin-bottom5 btn-small" href="/venues/create">Create</a>
-    	<table class="table">
-    		<thead>
+{% block content %}
+	
+    <p class="head clearfix"> 
+        <i class="icon-map-marker"> </i> My Venues 
+        <a class="btn btn-orange pull-left add-button" href="/venues/create" title="Add"> 
+        	<i class="icon icon-plus-sign icon-large"> </i> 
+        </a>
+    </p>
+    
+	<table class="table">
+		<thead>
+    		<tr>
+    			<th>Sport</th>
+    			<th>AKA Name</th>
+    			<th>Name</th>
+    			<th>Actions</th>
+    		</tr>
+		</thead>
+		<tbody>
+    		{% for venue in venues %}
 	    		<tr>
-	    			<th>Id</th>
-	    			<th>Name</th>
-	    			<th>AKA Name</th>
-	    			<th>Actions</th>
+	    			<td>{{ venue.sport }}</td>
+	    			<td><a href="/venues/view/{{ venue.id }}">{{ venue.aka_name }}</a></td>
+	    			<td>{{ venue.name }}</td>
+	    			<td>
+    					<a class="btn btn-mini btn-orange" href="/venues/view/{{ venue.id }}" title="Edit">
+                        	<i class="icon-edit"> </i> 
+                   		</a>
+                    </td>
 	    		</tr>
-    		</thead>
-    		<tbody>
-	    		{% for venue in venues %}
-		    		<tr>
-		    			<td>{{ venue.id }}</td>
-		    			<td>{{ venue.name }}</td>
-		    			<td>{{ venue.aka_name }}</td>
-		    			<td>
-	    					<a class="btn btn-mini btn-orange" href="/venues/view/{{ venue.id }}" title="Edit">
-	                        	<i class="icon-edit"> </i> 
-	                   		</a>
-	                    </td>
-		    		</tr>
-		    	{% endfor %}
-	    	</tbody>
-    	</table>
-    </div>
+	    	{% endfor %}
+    	</tbody>
+	</table>
 {% endblock content %}

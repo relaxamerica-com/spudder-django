@@ -5,7 +5,6 @@ from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect, HttpResponse
 from spudmart.upload.models import UploadedFile
 from spudmart.upload.utils import resize_image
-import logging
 from django.utils.datastructures import MultiValueDict
 import simplejson
 
@@ -14,15 +13,16 @@ def get_upload_url(request):
 
 def upload_image_endpoint(request):
     json_dict = { 'uploaded_files' : [] }
-    width = request.POST.get('width', 200)
-    height = request.POST.get('height', 300)
+    width = request.POST.get('width', False)
+    height = request.POST.get('height', False)
     for i, _ in enumerate(request.FILES):
         files_dict = {}
         files_dict['file'] = [request.FILES['file-%s' % i]]
         FILES = MultiValueDict(files_dict)
         form = UploadForm(request.POST, FILES)
         model = form.save(False)
-        model.file = resize_image(model.file.file, int(width), int(height))
+        if width and height:
+            model.file = resize_image(model.file.file, int(width), int(height))
         model.user = request.user
         model.content_type = FILES['file'].content_type
         model.save()

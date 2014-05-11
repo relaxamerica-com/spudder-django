@@ -1019,18 +1019,24 @@ form .input-required {
 	width: 90%;
 }
 
-#venue-view .icon-remove {
-	margin: 0px;
+#venue-view .remove-pic {
+	position: absolute;
+	right: 10px;
+	bottom: 10px;
 }
 
-#venue-index [class*="span"] {
-	height: 200px;
+#venue-view .icon-remove {
+	margin: 0px;
 }
 
 #venue-index [class*="span"] .btn {
 	margin-top: 20px;
 	display: table;
 	margin: auto;
+}
+
+#venue-index .row {
+	margin-bottom: 50px;
 }
 
 #venue-index {
@@ -1053,6 +1059,15 @@ form .input-required {
 	border-radius: 3px;
 }
 
+p.head {
+	font-size: 34px;
+	line-height: 40px;
+	margin-top: 10px;
+}
+
+p.head .add-button {
+	margin-right: 15px;
+}
 
 .social-network a:hover {
 	text-decoration: none;
@@ -1060,4 +1075,8 @@ form .input-required {
 
 .row-fluid.no-margin {
 	margin-bottom: 0px;
+}
+
+.margin-bottom20 {
+	margin-bottom: 20px !important;
 }

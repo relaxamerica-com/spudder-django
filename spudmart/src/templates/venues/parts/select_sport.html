@@ -1,0 +1,9 @@
+<span class="edit-mode">
+	<select name="sport" id="venue-sport">
+		{% for sport in sports %}
+			<option value="{{ sport }}" {% if venue.sport == sport %}selected{% endif %}>{{ sport }}</option>
+		{% endfor %}
+	</select>
+</span>
+
+<span class="view-mode">{% if venue.sport %}({{ venue.sport }}){% endif %}</span>
