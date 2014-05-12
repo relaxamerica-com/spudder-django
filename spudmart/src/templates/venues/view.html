@@ -268,7 +268,7 @@
 					<div id="admission-details" class="content">
 						<div class="row-fluid edit-mode">
 							<p>
-								Seating Details
+								Admission &amp; Seating Details
 							</p>
 							<form method="post" class="form-horizontal">
 								<textarea placeholder="Enter seating details" name="details">{{ venue.admission_details }}</textarea>
@@ -325,9 +325,7 @@
 									<label>City</label>
 									<input type="text" placeholder="city" name="city" value="{{ medical_address.city }}" />
 									<label>State</label>
-									<select name="state">
-										<option>NY</option>
-									</select>
+									{% include 'commons/select_state.html' %}
 									<label>Zip</label>
 									<input type="text" placeholder="zip" name="zip" value="{{ medical_address.zip }}" />
 								</div>
@@ -521,6 +519,8 @@
 		};
 		
 		var checked = checkReadyContentsCount();
+		
+		$('select[name="state"]').val('{{medical_address.state}}');
 
 		$('#venue-pics-carousel, #playing-surface-carousel').carousel({
 			interval : false
@@ -881,6 +881,7 @@
 				$('#venue-medical-details').html(textareaDetails.val());
 				$('#venue-medical-address').html(medicalAddress);
 				$('.icon-medkit').addClass('ready');
+				$('#venue-medical-address').attr('href', 'http://maps.google.com/?q=' + medicalAddress);
 			});
 		});
 

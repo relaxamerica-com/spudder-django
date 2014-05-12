@@ -8,7 +8,7 @@ import simplejson
 
 def view(request, venue_id):
     venue = Venue.objects.get(pk = venue_id)
-    splitted_address = venue.medical_address.split(',')
+    splitted_address = venue.medical_address.split(', ')
     medical_address = {
         'address' : splitted_address.pop(0) if splitted_address else '',
         'city' : splitted_address.pop(0) if splitted_address else '',
