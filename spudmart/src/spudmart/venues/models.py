@@ -32,6 +32,10 @@ class Venue(models.Model):
     website = models.CharField(max_length = 200)
     price = models.IntegerField(default = 0)
     fax = models.CharField(max_length = 200)
+
+    # Just to stay consistent with fcns created in campusrep.rep
+    rep = models.IntegerField()
+    level = models.IntegerField()
     
     def __eq__(self, other):
         return self.pk == other.pk
