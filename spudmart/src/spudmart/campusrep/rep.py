@@ -1,7 +1,6 @@
 from spudmart.campusrep.models import Student, School
 from spudmart.venues.models import Venue
 
-VENUE_TO_STUDENT_FRACTION = 0.3
 # Rep values for the following tasks:
 RECRUITED_HEAD = 30
 RECRUITED_NEW_MAX = 20
@@ -22,7 +21,7 @@ def add_venue_rep(venue, points):
     Also updates the rep of the venue's owner.'''
     venue.rep += points
     student = Student.objects.get(user = venue.user)
-    add_student_rep(student, points * VENUE_TO_STUDENT_FRACTION)
+    add_student_rep(student, points)
 
 def add_student_rep(student, points):
     '''Adds to (or subtracts from) the reputation score of a student.
@@ -44,24 +43,33 @@ def recruited_new_student(recruiter, recruited_school):
     if points < RECRUITED_NEW_MIN:
         points = RECRUITED_NEW_MIN
     add_student_rep(recruiter, points)
+    
+def get_head_student(school):
+    try:
+        stud = Student.objects.get(School=school, isHead=True)
+#     There's two exceptions that can occur, none found and more than one found
+    except Exception:
+        return None
+    else:
+        return stud
 
 def completed_page_info(pageholder):
     if isinstance(pageholder, Venue):
         add_venue_rep(pageholder, COMPLETE_PAGE)
     elif isinstance(pageholder, School):
-        add_student_rep(School.head_student, PAGE_LIKE)
+        add_student_rep(get_head_student(pageholder), COMPLETE_PAGE)
 
 def liked_page(pageholder):
     if isinstance(pageholder, Venue):
         add_venue_rep(pageholder, PAGE_LIKE)
     elif isinstance(pageholder, School):
-        add_student_rep(School.head_student, PAGE_LIKE)
+        add_student_rep(get_head_student(pageholder), PAGE_LIKE)
 
 def shared_page(pageholder):
     if isinstance(pageholder, Venue):
         add_venue_rep(pageholder, PAGE_SHARE)
     elif isinstance(pageholder, School):
-        add_student_rep(School.head_student, PAGE_SHARE)
+        add_student_rep(get_head_student(pageholder), PAGE_SHARE)
 
 def filtered_bad_post(venue):
     add_venue_rep(venue, FILTERED_OUT)
