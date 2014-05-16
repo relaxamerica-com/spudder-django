@@ -48,19 +48,19 @@ def recruited_new_student(recruiter, recruited_school):
 def completed_page_info(pageholder):
     if isinstance(pageholder, Venue):
         add_venue_rep(pageholder, COMPLETE_PAGE)
-    else if isinstance(pageholder, School):
+    elif isinstance(pageholder, School):
         add_student_rep(School.head_student, PAGE_LIKE)
 
 def liked_page(pageholder):
     if isinstance(pageholder, Venue):
         add_venue_rep(pageholder, PAGE_LIKE)
-    else if isinstance(pageholder, School):
+    elif isinstance(pageholder, School):
         add_student_rep(School.head_student, PAGE_LIKE)
 
 def shared_page(pageholder):
     if isinstance(pageholder, Venue):
         add_venue_rep(pageholder, PAGE_SHARE)
-    else if isinstance(pageholder, School):
+    elif isinstance(pageholder, School):
         add_student_rep(School.head_student, PAGE_SHARE)
 
 def filtered_bad_post(venue):
