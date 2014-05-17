@@ -54,6 +54,9 @@
 		            <% } %>
 	            </div>
 	            <div class="span9 user-social-buttons">
+	            	<% if (entity.get('instagram')) { %>
+	            		<a href="<%- entity.get('instagram') %>"><i class="icon-instagram"> </i></a>
+	            	<% } %>
 	            	<% if (entity.get('facebook')) { %>
 	            		<a href="<%- entity.get('facebook') %>"><i class="icon-facebook-sign"> </i></a>
 	            	<% } %>
@@ -64,10 +67,6 @@
 	            	
 	            	<% if (entity.get('googlePlus')) { %>
 	            		<a href="<%- entity.get('googlePlus') %>"><i class="icon-google-plus-sign"> </i></a>
-	            	<% } %>
-	            	
-	            	<% if (entity.get('instagram')) { %>
-	            		<a href="<%- entity.get('instagram') %>"><i class="icon-instagram"> </i></a>
 	            	<% } %>
 	            </div>
             </div>

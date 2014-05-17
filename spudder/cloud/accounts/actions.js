@@ -1,7 +1,8 @@
 module.exports = function (keys) {
     Parse.initialize(keys.getApplicationID(), keys.getJavaScriptKey());
 
-    var krowdio = require('cloud/krowdio');
+    var krowdio = require('cloud/krowdio'),
+    	utils = require('cloud/utilities')();
 
     function decodeReturnURL(returnURL) {
         return returnURL ? returnURL.replace(encodeURIComponent('#'), '#'): undefined;
@@ -269,9 +270,27 @@ module.exports = function (keys) {
             user.set('freeText', freeText);
             user.set('email', req.body.email);
             user.set('phone', req.body.phone);
-            user.set('facebook', req.body.facebook);
-            user.set('googlePlus', req.body.googlePlus);
-            user.set('twitter', req.body.twitter);
+            
+            if (utils.isWebsite(req.body.facebook)) {
+            	user.set('facebook', req.body.facebook);
+            } else {
+            	user.set('facebook', 'https://www.facebook.com/' + req.body.facebook);
+            }
+            if (utils.isWebsite(req.body.googlePlus)) {
+	            user.set('googlePlus', req.body.googlePlus);
+            } else {
+            	user.set('googlePlus', 'https://plus.google.com/u/0/' + req.body.googlePlus);
+            }
+            if (utils.isWebsite(req.body.twitter)) {
+	            user.set('twitter', req.body.twitter);
+            } else {
+            	user.set('twitter', 'http://www.twitter.com/' + req.body.twitter);
+            }
+            if (utils.isWebsite(req.body.instagram)) {
+	            user.set('instagram', req.body.instagram);
+            } else {
+	            user.set('instagram', 'http://instagram.com/' + req.body.instagram);
+            }
 
             var	dob = req.body.dateOfBirth.split('-').reverse().join('-');
 

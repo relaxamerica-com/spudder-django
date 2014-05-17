@@ -30,6 +30,12 @@ module.exports = function () {
 		
 		getValueOrEmpty: function(value) {
 			return value ? value : '';
-		}
+		},
+		
+		isWebsite: function(value) {
+        	return value.indexOf('http') == 0 ||
+	               value.indexOf('https') == 0 ||
+	               value.indexOf('www') == 0;
+        }
     };
 };
