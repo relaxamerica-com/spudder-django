@@ -116,7 +116,7 @@
             <label class="control-label" for="form-field-website">Website</label>
 
             <div class="controls">
-            <span class="input-icon input-icon-right">
+            <span class="input-icon input-icon-left">
                 <input tabindex="11" name="website" value="<%= getValueOrEmpty(entity.get('website')) %>" id="form-field-website" type="url" placeholder="http://www.website.com">
                 <i class="icon-bookmark icon-for-not-required-field"></i>
             </span>
@@ -126,7 +126,7 @@
             <label class="control-label" for="form-field-email">Email</label>
 
             <div class="controls">
-            <span class="input-icon input-icon-right">
+            <span class="input-icon input-icon-left">
                 <input tabindex="12" name="email" value="<%= getValueOrEmpty(entity.get('email')) %>" id="form-field-email"type="email" placeholder="me@website.com">
                 <i class="icon-envelope icon-for-not-required-field"></i>
             </span>
@@ -135,10 +135,21 @@
 
         <h4 class="header orange bolder smaller">Social</h4>
         <div class="control-group">
+            <label class="control-label" for="form-field-instagram">Instagram</label>
+
+            <div class="controls">
+                <span class="input-icon input-icon-left">
+                <input tabindex="13" name="instagram" value="<%= getValueOrEmpty(entity.get('instagram')) %>" id="form-field-instagram" type="url">
+                <i class="icon-instagram"></i>
+            </span>
+            </div>
+        </div>
+        
+        <div class="control-group">
             <label class="control-label" for="form-field-facebook">Facebook</label>
 
             <div class="controls">
-                <span class="input-icon">
+                <span class="input-icon input-icon-left">
                 <input tabindex="13" name="facebook" value="<%= getValueOrEmpty(entity.get('facebook')) %>" id="form-field-facebook" type="url">
                 <i class="icon-facebook"></i>
             </span>
@@ -149,7 +160,7 @@
             <label class="control-label" for="form-field-twitter">Twitter</label>
 
             <div class="controls">
-            <span class="input-icon">
+            <span class="input-icon input-icon-left">
                 <input tabindex="14" value="<%= getValueOrEmpty(entity.get('twitter')) %>" name="twitter" id="form-field-twitter" type="url">
                 <i class="icon-twitter"></i>
             </span>
@@ -160,7 +171,7 @@
             <label class="control-label" for="form-field-gplus">Google+</label>
 
             <div class="controls">
-            <span class="input-icon">
+            <span class="input-icon input-icon-left">
                 <input tabindex="15" value="<%= getValueOrEmpty(entity.get('googlePlus')) %>" name="googlePlus" id="form-field-gplus" type="url">
                 <i class="icon-google-plus"></i>
             </span>

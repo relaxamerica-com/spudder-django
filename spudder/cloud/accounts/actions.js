@@ -273,22 +273,22 @@ module.exports = function (keys) {
             
             if (utils.isWebsite(req.body.facebook)) {
             	user.set('facebook', req.body.facebook);
-            } else {
+            } else if (req.body.facebook) {
             	user.set('facebook', 'https://www.facebook.com/' + req.body.facebook);
             }
             if (utils.isWebsite(req.body.googlePlus)) {
 	            user.set('googlePlus', req.body.googlePlus);
-            } else {
+            } else if (req.body.googlePlus) {
             	user.set('googlePlus', 'https://plus.google.com/u/0/' + req.body.googlePlus);
             }
             if (utils.isWebsite(req.body.twitter)) {
 	            user.set('twitter', req.body.twitter);
-            } else {
+            } else if (req.body.twitter) {
             	user.set('twitter', 'http://www.twitter.com/' + req.body.twitter);
             }
             if (utils.isWebsite(req.body.instagram)) {
 	            user.set('instagram', req.body.instagram);
-            } else {
+            } else  if (req.body.instagram) {
 	            user.set('instagram', 'http://instagram.com/' + req.body.instagram);
             }
 

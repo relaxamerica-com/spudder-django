@@ -4594,8 +4594,7 @@ div[id^=donation-modal] .loading {
 }
 
 #entity-public .player-details {
-	margin-left: 10px;
-	display: inline-block;
+	margin-top: 10px;
 }
 
 #entity-public .entity-logo {

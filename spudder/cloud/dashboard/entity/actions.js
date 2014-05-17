@@ -287,9 +287,26 @@ module.exports = function (keys) {
                         entity.set('profileImageThumb', req.body.profileImageThumb);
                         entity.set('website', req.body.website);
                         entity.set('email', req.body.email);
-                        entity.set('facebook', req.body.facebook);
-                        entity.set('twitter', req.body.twitter);
-                        entity.set('googlePlus', req.body.googlePlus);
+                        if (utilities.isWebsite(req.body.facebook)) {
+			            	entity.set('facebook', req.body.facebook);
+			            } else if (req.body.facebook) {
+			            	entity.set('facebook', 'https://www.facebook.com/' + req.body.facebook);
+			            }
+			            if (utilities.isWebsite(req.body.googlePlus)) {
+				            entity.set('googlePlus', req.body.googlePlus);
+			            } else if (req.body.googlePlus) { 
+			            	entity.set('googlePlus', 'https://plus.google.com/u/0/' + req.body.googlePlus);
+			            }
+			            if (utilities.isWebsite(req.body.twitter)) {
+				            entity.set('twitter', req.body.twitter);
+			            } else if (req.body.twitter) {
+			            	entity.set('twitter', 'http://www.twitter.com/' + req.body.twitter);
+			            }
+			            if (utilities.isWebsite(req.body.instagram)) {
+				            entity.set('instagram', req.body.instagram);
+			            } else if (req.body.instagram) {
+				            entity.set('instagram', 'http://instagram.com/' + req.body.instagram);
+			            }
                         entity.set('isDisplayPublicly', isDisplayPublicly);
                         entity.set('publicName', req.body.publicName);
                         
