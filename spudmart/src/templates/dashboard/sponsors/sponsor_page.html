@@ -10,7 +10,7 @@
 
     <div class="content">
         <div id="entity-create">
-            <form action="{{ upload_url }}" method="post" id="create-team-form" class="form-horizontal" enctype="multipart/form-data">
+            <form action="" method="post" id="create-team-form" class="form-horizontal" enctype="multipart/form-data">
                 <div class="control-group">
                     <label class="control-label" for="name">Name:</label>
                     <div class="controls">
@@ -99,48 +99,48 @@
                     </div>
                 </div>
 
-                {% if page and page.thumbnail %}
-                    <div class="control-group thumbnail-container">
-                        <label class="control-label" for="id_file">Current thumbnail:</label>
-                        <div class="controls">
-                            <img src="/file/serve/{{ page.thumbnail.id }}">
-                        </div>
-                    </div>
-                {% endif %}
-
                 <div class="control-group">
                     <label class="control-label" for="id_file">Thumbnail:</label>
                     <div class="controls">
-                        {{ upload_form.file }}
+                        {% if page and page.thumbnail %}
+                            <div class="thumbnail" data-thumbnail-index="4">
+                                <img src="/file/serve/{{ page.thumbnail }}"/>
+                                <div class="remove-image-container">
+                                    <a href="javascript:void(0)" class="btn btn-small btn-danger">Remove</a>
+                                </div>
+                            </div>
+                        {% endif %}
+                        <input type="hidden" name="image4" />
+                        <input type="file" id="image-input4" name="image-input4" class="file-upload-input" accept="image/*" />
                     </div>
                 </div>
 
-                {% if page %}
-                    <div class="control-group">
-                        <label class="control-label" for="offer-image-input1">Images:</label>
-                        <div class="controls ace-files-container" name="offerImagesContainer">
-                            {% for image in page.images %}
-                                <div class="thumbnail"">
-                                    {% if image %}
-                                        <img src="/file/serve/{{ image }}"/>
-                                        <div class="remove-image-container">
-                                            <a href="/dashboard/sponsor/page/remove_image/{{ image }}" class="btn btn-small btn-danger">Remove</a>
-                                        </div>
-                                    {% else %}
-                                        <img src="/media/img/red_plus_sign.png"/>
-                                        <div class="remove-image-container">
-                                            <a href="/dashboard/sponsor/page/add_image" class="btn btn-small btn-danger">Add</a>
-                                        </div>
-                                    {% endif %}
-                                </div>
-                            {% endfor %}
-                        </div>
-                    </div>
-                {% endif %}
-
                 <div class="control-group">
-                    <div class="controls">
-                        <button type="submit" class="btn btn-danger">Save</button>
+                    <label class="control-label" for="offer-image-input1">Images:</label>
+                    <div class="controls ace-files-container" name="offerImagesContainer">
+                        {% for image in page.images %}
+                            {% if image %}
+                                <div class="thumbnail" data-thumbnail-index="{{ forloop.counter }}">
+                                    <img src="/file/serve/{{ image }}"/>
+                                    <div class="remove-image-container">
+                                        <a href="javascript:void(0)" class="btn btn-small btn-danger">Remove</a>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+
+                        <input type="hidden" name="image1" />
+                        <input type="file" id="image-input1" name="image-input1" class="file-upload-input" accept="image/*" />
+                        <input type="hidden" name="image2" />
+                        <input type="file" id="image-input2" name="image-input2" class="file-upload-input" accept="image/*" />
+                        <input type="hidden" name="image3" />
+                        <input type="file" id="image-input3" name="image-input3" class="file-upload-input" accept="image/*" />
+
+                        <div class="save-btn-container">
+                            <div class="save-btn-inner-container">
+                                <button class="btn btn-danger" type="submit">Save</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </form>
@@ -153,7 +153,9 @@
     <script src="/media/dashboard/js/jquery.validate.js"></script>
     <script src="/media/dashboard/js/additional-methods.min.js"></script>
     <script src="/media/dashboard/js/jquery.validate.spudder.rules.js"></script>
+    <script src="/media/dashboard/js/teams/helpers.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key={{ places_api_key }}&v=3.exp&sensor=false&libraries=places"></script>
+    <script type="text/javascript" src="/media/js/jquery.serialize.file.js"></script>
 
     <!-- Google Maps initialization and configuration -->
     <script>
@@ -266,7 +268,7 @@
         google.maps.event.addDomListener(window, 'load', initialize);
     </script>
 
-    <script>
+    <script type="text/javascript">
         $(document).ready(function () {
             var $form = $('form');
 
@@ -287,9 +289,170 @@
                     $formSubmit.text('Saving...');
                     $formSubmit.attr('disabled', 'disabled');
 
-                    form.submit();
+                    var offerImage1 = $(form).find('input[name="image1"]'),
+                        fileUploadControl1 = $("#image-input1")[0],
+                        $thumbnail1 = $(form).find('.thumbnail[data-thumbnail-index="1"]'),
+                        offerImage2 = $(form).find('input[name="image2"]'),
+                        fileUploadControl2 = $("#image-input2")[0],
+                        $thumbnail2 = $(form).find('.thumbnail[data-thumbnail-index="2"]'),
+                        offerImage3 = $(form).find('input[name="image3"]'),
+                        fileUploadControl3 = $("#image-input3")[0],
+                        $thumbnail3 = $(form).find('.thumbnail[data-thumbnail-index="3"]'),
+                        thumbnail = $(form).find('input[name="image4"]'),
+                        thumbnailControl = $("#image-input4")[0],
+                        $thumbnail4 = $(form).find('.thumbnail[data-thumbnail-index="4"]');
+
+                    var deffers = [ new jQuery.Deferred(), new jQuery.Deferred(), new jQuery.Deferred() ,new jQuery.Deferred()],
+                        promises =  [deffers[0].promise(), deffers[1].promise(), deffers[2].promise(), deffers[3].promise()];
+
+                    if ($thumbnail1.is(':visible')) {
+                        offerImage1.val($thumbnail1.find('img').attr('src'));
+                        deffers[0].resolve();
+                    } else if (fileUploadControl1.files.length > 0) {
+                        var files = $(fileUploadControl1).parent().serializeFiles();
+
+                        $.get('/upload/get_upload_url', function(data) {
+                            $.ajax({
+                                url : data,
+                                data : files,
+                                cache : false,
+                                contentType : false,
+                                processData : false,
+                                type : 'POST',
+                                success : function(data) {
+                                    var parsed = JSON.parse(data);
+                                    offerImage1.val(parsed['uploaded_files'][0]);
+                                    deffers[0].resolve();
+                                }
+                            });
+                        });
+                    } else {
+                        deffers[0].resolve();
+                    }
+
+                    $.when(promises[0]).then(function () {
+                        if ($thumbnail2.is(':visible')) {
+                            offerImage2.val($thumbnail2.find('img').attr('src'));
+                            deffers[1].resolve();
+                        } else if (fileUploadControl2.files.length > 0) {
+                            var files = $(fileUploadControl2).parent().serializeFiles();
+
+                            $.get('/upload/get_upload_url', function(data) {
+                                $.ajax({
+                                    url : data,
+                                    data : files,
+                                    cache : false,
+                                    contentType : false,
+                                    processData : false,
+                                    type : 'POST',
+                                    success : function(data) {
+                                        var parsed = JSON.parse(data);
+                                        offerImage2.val(parsed['uploaded_files'][0]);
+                                        deffers[1].resolve();
+                                    }
+                                });
+                            });
+                        } else {
+                            deffers[1].resolve();
+                        }
+                    });
+
+                    $.when(promises[1]).then(function () {
+                        if ($thumbnail3.is(':visible')) {
+                            offerImage3.val($thumbnail3.find('img').attr('src'));
+                            deffers[2].resolve();
+                        } else if (fileUploadControl3.files.length > 0) {
+                            var files = $(fileUploadControl3).parent().serializeFiles();
+
+                            $.get('/upload/get_upload_url', function(data) {
+                                $.ajax({
+                                    url : data,
+                                    data : files,
+                                    cache : false,
+                                    contentType : false,
+                                    processData : false,
+                                    type : 'POST',
+                                    success : function(data) {
+                                        var parsed = JSON.parse(data);
+                                        offerImage3.val(parsed['uploaded_files'][0]);
+                                        deffers[2].resolve();
+                                    }
+                                });
+                            });
+                        } else {
+                            deffers[2].resolve();
+                        }
+                    });
+
+                    $.when(promises[2]).then(function () {
+                        if ($thumbnail4.is(':visible')) {
+                            thumbnail.val($thumbnail4.find('img').attr('src'));
+                            deffers[3].resolve();
+                        } else if (thumbnailControl.files.length > 0) {
+                            var files = $(thumbnailControl).parent().serializeFiles();
+
+                            $.get('/upload/get_upload_url', function(data) {
+                                $.ajax({
+                                    url : data,
+                                    data : files,
+                                    cache : false,
+                                    contentType : false,
+                                    processData : false,
+                                    type : 'POST',
+                                    success : function(data) {
+                                        var parsed = JSON.parse(data);
+                                        thumbnail.val(parsed['uploaded_files'][0]);
+
+                                        deffers[3].resolve();
+                                    }
+                                });
+                            });
+                        } else {
+                            deffers[3].resolve();
+                        }
+                    });
+
+                    $.when(promises[3]).then(function () {
+                        form.submit();
+                    });
                 }
             });
         });
+
+        {% if page %}
+            $(window).load(function () {
+                $('.controls.ace-files-container').each(function () {
+                    if ($(this).find('.thumbnail:visible').length) {
+                        $(this).find('.ace-file-input, .save-btn-container').each(function () {
+                            $(this).addClass('below-thumbnail');
+                        });
+                    }
+                });
+
+                $('.thumbnail').each(function () {
+                    var $removeButton = $(this).find('a'),
+                        index = parseInt($(this).data('thumbnail-index'), 10),
+                        $aceFileInput = $('#image-input' + index).parent();
+
+                    $aceFileInput.hide();
+
+                    $removeButton.click(function () {
+                        var $self = $(this),
+                            $thumbnail = $self.parent().parent(),
+                            index = parseInt($thumbnail.data('thumbnail-index'), 10),
+                            $aceFileInput = $('#image-input' + index).parent();
+
+                        $thumbnail.hide();
+                        $aceFileInput.show();
+
+                        $('.controls.ace-files-container').each(function () {
+                            if ($(this).find('.thumbnail:visible').length == 0) {
+                                $(this).find('.ace-file-input, .save-btn-container').removeClass('below-thumbnail');
+                            }
+                        });
+                    });
+                });
+            });
+        {% endif %}
     </script>
 {% endblock scripts %}

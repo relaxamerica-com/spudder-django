@@ -35,7 +35,8 @@ INSTALLED_APPS = (
     'spudmart.recipients',
     'spudmart.dashboard',
     'spudmart.venues',
-    'spudmart.upload'
+    'spudmart.upload',
+    'spudmart.sponsors'
 )
 
 MIDDLEWARE_CLASSES = (

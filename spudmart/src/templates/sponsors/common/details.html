@@ -1,0 +1,64 @@
+{% load sponsors %}
+
+<div class="widget offer-widget">
+    <h5 class="widgetheading">
+        {% if page.thumbnail %}
+            <img src="/file/serve/{{ page.thumbnail }}" class="team-logo" />
+        {% else %}
+            <i class="icon-group"></i>
+        {% endif %}
+        <div>Support your Sponsors</div>
+    </h5>
+
+    <ul class="folio-detail offer-details">
+        <li>
+            <label>Speciality: </label> {{ page.speciality }}
+        </li>
+
+        {% if page.location %}
+            <li>
+                <label>Location: </label>
+                <a href="{{ page.map_info|location_external_link }}" target="_blank">
+                    {{ page.location }}
+                </a>
+            </li>
+        {% endif %}
+
+        {% if page.phone %}
+            <li>
+                <label>Phone: </label> {{ page.phone }}
+            </li>
+        {% endif %}
+
+        {% if page.email %}
+            <li>
+                <label>Email: </label>
+                <a href="mailto:{{ page.email }}">{{ page.email }}</a>
+            </li>
+        {% endif %}
+
+        {% if page.website %}
+        <li>
+            <label>Website: </label>
+            <a href="{{ page.website }}" target="_blank">{{ page.website }}</a>
+        </li>
+        {% endif %}
+
+        {% if page.video %}
+        <li>
+            <label>Video: </label>
+            <a href="{{ page.video }}" target="_blank">Our video</a>
+        </li>
+        {% endif %}
+
+        {% if page.fax %}
+        <li>
+            <label>Fax: </label> {{ page.fax }}
+        </li>
+        {% endif %}
+    </ul>
+
+    <h5 class="widgetheading">
+        Special Offers
+    </h5>
+</div>
