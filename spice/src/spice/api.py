@@ -4,6 +4,7 @@ from models import APIKeys
 import urllib2
 import json
 import spice_settings
+import spice_instagram
 
 """
 
@@ -21,10 +22,19 @@ Validate if API Key is valid
 """
 
 def validate_api_key(api_key) :
-    api_key = APIKeys.objects.filter(api_key = api_key, is_active = True)
+    auth_method = spice_settings.api_auth_method
 
-    if(len(api_key) > 0) :
-        return True
+    # Use static API key in the settings
+    if auth_method == "static" :
+        if api_key == spice_settings.static_api_key :
+            return True
+
+    # Use database API key
+    elif auth_method == "dynamic" :
+        api_key = APIKeys.objects.filter(api_key = api_key, is_active = True)
+
+        if(len(api_key) > 0) :
+            return True
 
     return False
 
@@ -70,7 +80,15 @@ def location(request) :
 
             if(validate_api_key(api_key)) :
                 # Perform the instagram query
-                instagram_request = urllib2.urlopen('https://api.instagram.com/v1/media/search?lat=%s&lng=%s&client_id=%s' % (latitude, longitude, spice_settings.instagram_client_key))
+                url_string = ""
+
+                if(spice_settings.instagram_auth_mode == "client_id") :
+                    url_string = 'https://api.instagram.com/v1/media/search?lat=%s&lng=%s&client_id=%s' % (latitude, longitude, spice_settings.instagram_client_id)
+                elif(spice_settings.instagram_auth_mode == "client_id") :
+                    spice_settings.instagram_access_token = spice_instagram.get_access_key(spice_settings.instagram_client_id)
+                    url_string = 'https://api.instagram.com/v1/media/search?lat=%s&lng=%s&access_token=%s' % (latitude, longitude, spice_settings.instagram_access_token)
+
+                instagram_request = urllib2.urlopen(url_string)
 
                 # Process the JSON returned document
                 instagram_response = json.load(instagram_request)
