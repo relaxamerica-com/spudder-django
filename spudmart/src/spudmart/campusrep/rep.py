@@ -47,22 +47,27 @@ def add_school_rep(school, points):
     school.rep += points
     school.save()
 
-def recuited_new_head_student(recruiter):
+def recruited_new_head_student(recruiter):
     add_student_rep(recruiter, RECRUITED_HEAD)
 
 def recruited_new_student(recruiter, recruited_school):
+    # To be called AFTER a new student is recruited -- once the student object has been saved.
+    
     # To get 20 points for the 2nd student, and so on down the line
     points = (RECRUITED_NEW_MAX + 2) - recruited_school.num_students
+    
+    # Ensure at least the minimum value for a new student is added
     if points < RECRUITED_NEW_MIN:
         points = RECRUITED_NEW_MIN
+        
     add_student_rep(recruiter, points)
     
 def get_head_student(school):
     try:
-        stud = Student.objects.get(School=school, isHead=True)
+        stud = Student.objects.get(school=school, isHead=True)
 #     There's two exceptions that can occur, none found and more than one found
-    except Exception:
-        return None
+    except Exception as e:
+        print e
     else:
         return stud
 
