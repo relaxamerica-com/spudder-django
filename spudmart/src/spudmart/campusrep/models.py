@@ -17,7 +17,6 @@ def get_max_triangle_num_less_than(num, n=1):
     
 
 class School(models.Model):
-    
     def level(self):
         return get_max_triangle_num_less_than(self.rep / SCHOOL_REP_LEVEL_MODIFIER)
     
@@ -25,11 +24,12 @@ class School(models.Model):
     # Rep could also be a DecimalField (needs max_digits and decimal_places specified)
     rep = models.IntegerField(default = 0)
     num_students = models.IntegerField(default = 0)
-    
-    def __init__(self, name, *args, **kwargs):
-            models.Model.__init__(self, *args, **kwargs)
-            self.name = name
 
+    def __str__(self, *args, **kwargs):
+        return self.name + ", " + str(self.num_students) + " students, " + str(self.rep) + " rep"
+    
+    def get_name(self):
+        return str(self.name)
 
 class Student(models.Model):
 
@@ -41,20 +41,26 @@ class Student(models.Model):
     isHead = models.BooleanField()
     
     referral_code = models.CharField(max_length=128, unique=True)
-    referred_by = models.ForeignKey(User, null=True, blank=True)
+    referred_by = models.ForeignKey(User, blank=True, null=True)
     
     rep = models.IntegerField(default = 0)
 
-    def __init__(self, user, school, referred_by = None, *args, **kwargs):
-        models.Model.__init__(self, *args, **kwargs)
-        self.user = user
-        self.school = school
-        self.referred_by = referred_by
-        
-        # This automatically creates a custom string of letters/numbers -- I thought it was 
-        #  the easiest way to make a custom "referral code" which can be used to link a 
-        #  registration to the referrer
-        self.referral_code = str(uuid.uuid4())
+    def save(self, force_insert=False, force_update=False, using=None):
+        if self.pk is None:
+            self.school.num_students += 1
+            self.referral_code = str(uuid.uuid4())
+        return models.Model.save(self, force_insert, force_update, using)
+
+
+    def __str__(self):
+        something = str(self.user.username)
+        if self.isHead:
+            something += ", Head at "
+        else:
+            something += ", at "
+        something += str(self.school.get_name()) + ", " + str(self.rep) + " rep points"
+        return something
+
 
     
     
