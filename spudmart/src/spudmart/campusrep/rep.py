@@ -20,19 +20,32 @@ def add_venue_rep(venue, points):
     '''Adds to (or subtracts from) the reputation score of a venue.
     Also updates the rep of the venue's owner.'''
     venue.rep += points
+    venue.save()
+
+    # Rep to student not working, probably because I have venues that are not saved to DB
     student = Student.objects.get(user = venue.user)
     add_student_rep(student, points)
 
 def add_student_rep(student, points):
     '''Adds to (or subtracts from) the reputation score of a student.
     Also updates the rep of the student's school.'''
+    print "adding %s points to %s"%(points, student)
     student.rep += points
+    student.save()
+    
+    # Give the referrer credit for what this student did
+    if student.referred_by:
+        referrer = Student.objects.get(user = student.referred_by)
+        add_student_rep(referrer, points)
+        
+    # Update the school's rep
     school = student.school
     add_school_rep(school, points)
 
 def add_school_rep(school, points):
     '''Adds to (or subtracts from) the reputation score of a school.'''
     school.rep += points
+    school.save()
 
 def recuited_new_head_student(recruiter):
     add_student_rep(recruiter, RECRUITED_HEAD)
