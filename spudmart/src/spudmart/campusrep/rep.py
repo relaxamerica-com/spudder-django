@@ -35,15 +35,6 @@ def add_student_rep(student, points):
     if student.referred_by:
         referrer = Student.objects.get(user = student.referred_by)
         add_student_rep(referrer, points)
-        
-    # Update the school's rep
-    school = student.school
-    add_school_rep(school, points)
-
-def add_school_rep(school, points):
-    '''Adds to (or subtracts from) the reputation score of a school.'''
-    school.rep += points
-    school.save()
 
 def recruited_new_head_student(recruiter):
     add_student_rep(recruiter, RECRUITED_HEAD)

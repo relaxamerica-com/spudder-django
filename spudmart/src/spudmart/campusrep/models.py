@@ -24,19 +24,20 @@ def get_max_triangle_num_less_than(num, n=1):
     
 
 class School(models.Model):
-    ''' A model for School objects that stores a string literal of the school name, the 
-        reputation level, and the number of students at the school.
+    ''' A model for School objects that stores a string literal of the school name and 
+        the number of students at the school.
+        Due to errors with saving/updating rep points, rep is now calculated via method 
+        which sums the rep points of all students associated with school. 
         Includes method which evaluates level based on reputation 
     ''' 
     name = models.CharField(max_length=64)
-    rep = models.IntegerField(default = 0)
     num_students = models.IntegerField(default = 0)
     
     def level(self):
         return get_max_triangle_num_less_than(self.rep / SCHOOL_REP_LEVEL_MODIFIER)
 
     def __str__(self, *args, **kwargs):
-        return self.name + ", " + str(self.num_students) + " students, " + str(self.rep) + " rep"
+        return self.name + ", " + str(self.num_students) + " students, " + str(self.get_rep()) + " rep"
     
     def __eq__(self, other):
         return self.pk == other.pk
@@ -45,6 +46,12 @@ class School(models.Model):
         for student in Student.objects.filter(school = self):
             student.school = self
         return models.Model.save(self, force_insert, force_update, using)
+    
+    def get_rep(self):
+        rep = 0
+        for student in Student.objects.filter(school = self):
+            rep += student.rep
+        return int(rep)
 
 
 class Student(models.Model):
