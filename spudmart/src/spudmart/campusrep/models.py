@@ -10,7 +10,67 @@ STUDENT_REP_LEVEL_MODIFIER = 1000
 # 100000 points to get from level 1 to 2 for schools (10x student requirement)
 SCHOOL_REP_LEVEL_MODIFIER = 100000
 
-DEFAULT_CHALLENGE_DURATION = timedelta(days = 7) 
+DEFAULT_CHALLENGE_DURATION = timedelta(days = 7)
+
+STATES = {
+        'AK': 'Alaska',
+        'AL': 'Alabama',
+        'AR': 'Arkansas',
+        'AS': 'American Samoa',
+        'AZ': 'Arizona',
+        'CA': 'California',
+        'CO': 'Colorado',
+        'CT': 'Connecticut',
+        'DC': 'District of Columbia',
+        'DE': 'Delaware',
+        'FL': 'Florida',
+        'GA': 'Georgia',
+        'GU': 'Guam',
+        'HI': 'Hawaii',
+        'IA': 'Iowa',
+        'ID': 'Idaho',
+        'IL': 'Illinois',
+        'IN': 'Indiana',
+        'KS': 'Kansas',
+        'KY': 'Kentucky',
+        'LA': 'Louisiana',
+        'MA': 'Massachusetts',
+        'MD': 'Maryland',
+        'ME': 'Maine',
+        'MI': 'Michigan',
+        'MN': 'Minnesota',
+        'MO': 'Missouri',
+        'MP': 'Northern Mariana Islands',
+        'MS': 'Mississippi',
+        'MT': 'Montana',
+        'NA': 'National',
+        'NC': 'North Carolina',
+        'ND': 'North Dakota',
+        'NE': 'Nebraska',
+        'NH': 'New Hampshire',
+        'NJ': 'New Jersey',
+        'NM': 'New Mexico',
+        'NV': 'Nevada',
+        'NY': 'New York',
+        'OH': 'Ohio',
+        'OK': 'Oklahoma',
+        'OR': 'Oregon',
+        'PA': 'Pennsylvania',
+        'PR': 'Puerto Rico',
+        'RI': 'Rhode Island',
+        'SC': 'South Carolina',
+        'SD': 'South Dakota',
+        'TN': 'Tennessee',
+        'TX': 'Texas',
+        'UT': 'Utah',
+        'VA': 'Virginia',
+        'VI': 'Virgin Islands',
+        'VT': 'Vermont',
+        'WA': 'Washington',
+        'WI': 'Wisconsin',
+        'WV': 'West Virginia',
+        'WY': 'Wyoming'
+}
 
 
 def get_max_triangle_num_less_than(num, n=1):
@@ -33,8 +93,9 @@ class School(models.Model):
         which sums the rep points of all students associated with school. 
         Includes method which evaluates level based on reputation 
     ''' 
-    name = models.CharField(max_length=64)
+    name = models.CharField(max_length=124)
     num_students = models.IntegerField(default = 0)
+    state = models.CharField(max_length = 2)
     
     def level(self):
         return get_max_triangle_num_less_than(self.rep / SCHOOL_REP_LEVEL_MODIFIER)
@@ -71,6 +132,9 @@ class School(models.Model):
     
     def get_head_student(self):
         return Student.objects.get(school = self, isHead = True)
+    
+    def verbose_state(self):
+        return STATES[self.state]
 
 
 class Student(models.Model):
