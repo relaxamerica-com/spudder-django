@@ -141,7 +141,7 @@ class Student(models.Model):
             Parameter challenge_duration must be a timedelta object. 
         '''
         if self.isHead:
-            challenge = Challenge(self.school, school, datetime.utcnow() + challenge_durration)
+            challenge = Challenge(challenger = self.school, challenged = school, challenge_end = datetime.utcnow() + challenge_durration)
             challenge.save()
             return challenge        
     
@@ -160,10 +160,27 @@ class Challenge(models.Model):
     challenge_end = models.DateTimeField()
 
     def determine_winner(self):
-        if self.challenger.rep > self.challenged.rep:
+        if self.challenger.get_rep() > self.challenged.get_rep():
             return self.challenger
-        elif self.challenged.rep > self.challenger.rep:
+        elif self.challenged.get_rep() > self.challenger.get_rep():
             return self.challenged
         else:
             # It's a tie, so no one won
             return None
+
+    def __str__(self, *args, **kwargs):
+        return "Issued by %s on %s; %s is in the lead." %(self.challenger.name, self.challenged.name, self.determine_winner().name)
+    
+    def am_winning(self, school):
+        ''' Convenience method to determine whether the supplied school is in the lead.
+            Returns True if the school is winning, False if the team is losing, and None
+            if the school is not in the challenge.
+        '''
+        winner = self.determine_winner()
+        if winner == school:
+            return True
+        elif school in [self.challenger, self.challenged]:
+            return False
+        else:
+            return None
+
