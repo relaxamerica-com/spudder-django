@@ -16,7 +16,7 @@ def get_max_triangle_num_less_than(num, n=1):
     Used to determine the level based on rep, after dividing by respective LEVEL_MODIFIER.
     '''
     tri = n*(n+1)/2
-    if num/tri > 1:
+    if num/tri >= 1:
         n += 1
         return get_max_triangle_num_less_than(num, n)
     else:
@@ -26,6 +26,7 @@ def get_max_triangle_num_less_than(num, n=1):
 class School(models.Model):
     ''' A model for School objects that stores a string literal of the school name, the 
         reputation level, and the number of students at the school.
+        Includes method which evaluates level based on reputation 
     ''' 
     name = models.CharField(max_length=64)
     rep = models.IntegerField(default = 0)
@@ -36,13 +37,22 @@ class School(models.Model):
 
     def __str__(self, *args, **kwargs):
         return self.name + ", " + str(self.num_students) + " students, " + str(self.rep) + " rep"
+    
+    def __eq__(self, other):
+        return self.pk == other.pk
+
+    def save(self, force_insert=False, force_update=False, using=None):
+        for student in Student.objects.filter(school = self):
+            student.school = self
+        return models.Model.save(self, force_insert, force_update, using)
+
 
 class Student(models.Model):
     ''' A model for Student objects (Groundskeepers), which stores the standard Django 
         User object associated with the student, the school, whether the student is the
         Head Student, referral information, and the student's reputation.
     '''    
-    user = models.ForeignKey(User, unique=True)
+    user = models.ForeignKey(User, primary_key = True)
     school = models.ForeignKey(School)
     isHead = models.BooleanField()
     
@@ -76,3 +86,5 @@ class Student(models.Model):
         self.school.num_students -= 1
         return models.Model.delete(self, using)
 
+    def __eq__(self, other):
+        return self.user == other.user

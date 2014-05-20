@@ -22,14 +22,12 @@ def add_venue_rep(venue, points):
     venue.rep += points
     venue.save()
 
-    # Rep to student not working, probably because I have venues that are not saved to DB
     student = Student.objects.get(user = venue.user)
     add_student_rep(student, points)
 
 def add_student_rep(student, points):
     '''Adds to (or subtracts from) the reputation score of a student.
     Also updates the rep of the student's school.'''
-    print "adding %s points to %s"%(points, student)
     student.rep += points
     student.save()
     
