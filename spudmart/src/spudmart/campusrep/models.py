@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from django.db import models
 import uuid
+from datetime import timedelta, datetime
 
 # 100 points to get from level 1 to 2 for venues
 VENUE_REP_LEVEL_MODIFIER = 100
@@ -8,6 +9,8 @@ VENUE_REP_LEVEL_MODIFIER = 100
 STUDENT_REP_LEVEL_MODIFIER = 1000
 # 100000 points to get from level 1 to 2 for schools (10x student requirement)
 SCHOOL_REP_LEVEL_MODIFIER = 100000
+
+DEFAULT_CHALLENGE_DURATION = timedelta(days = 7) 
 
 
 def get_max_triangle_num_less_than(num, n=1):
@@ -45,6 +48,10 @@ class School(models.Model):
     def save(self, force_insert=False, force_update=False, using=None):
         for student in Student.objects.filter(school = self):
             student.school = self
+        for challenge in Challenge.objects.filter(challenger = self):
+            challenge.challenger = self
+        for challenge in Challenge.objects.filter(challenged = self):
+            challenge.challenged = self
         return models.Model.save(self, force_insert, force_update, using)
     
     def get_rep(self):
@@ -52,6 +59,18 @@ class School(models.Model):
         for student in Student.objects.filter(school = self):
             rep += student.rep
         return int(rep)
+    
+    def get_student(self):
+        ''' Convenience method which returns a standard list of students associated with
+            the school.
+        '''
+        students = []
+        for stud in Student.objects.filter(school = self):
+            students.append(stud) 
+        return students
+    
+    def get_head_student(self):
+        return Student.objects.get(school = self, isHead = True)
 
 
 class Student(models.Model):
@@ -95,3 +114,56 @@ class Student(models.Model):
 
     def __eq__(self, other):
         return self.user == other.user
+    
+    def check_contest_head(self):
+        ''' Method to determine whether a given student can contest the current "head student".
+            Ensures that challenging student has more rep than head student.
+        '''
+        head_student = self.school.get_head_student()
+        if not self.isHead and self.rep > head_student.rep:
+            return True
+        else:
+            return False
+    
+    def replace_head(self):
+        ''' Replaces existing head student with current student. '''
+        head_student = self.school.get_head_student()
+        head_student.isHead = False
+        head_student.save()
+        
+        self.isHead = True
+        self.save()
+        
+    def issue_challenge(self, school, challenge_durration = DEFAULT_CHALLENGE_DURATION):
+        ''' Method used to issue a challenge to another school. 
+            Can only be invoked by a Head Student.
+            
+            Parameter challenge_duration must be a timedelta object. 
+        '''
+        if self.isHead:
+            challenge = Challenge(self.school, school, datetime.utcnow() + challenge_durration)
+            challenge.save()
+            return challenge        
+    
+    def level(self):
+        return get_max_triangle_num_less_than(self.rep / STUDENT_REP_LEVEL_MODIFIER)
+
+class Challenge(models.Model):
+    ''' Stores information about challenges between schools based purely on rep points. 
+        Stores the time when the challenge ends and the two schools involved.
+    '''
+    # The school issuing the challenge
+    challenger = models.ForeignKey(School)
+    # The school being challenged
+    challenged = models.ForeignKey(School)
+    
+    challenge_end = models.DateTimeField()
+
+    def determine_winner(self):
+        if self.challenger.rep > self.challenged.rep:
+            return self.challenger
+        elif self.challenged.rep > self.challenger.rep:
+            return self.challenged
+        else:
+            # It's a tie, so no one won
+            return None
