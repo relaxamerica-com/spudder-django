@@ -71,8 +71,8 @@ def location(request) :
     if request.method == 'GET':
 
         if ('lat' in request.GET and request.GET['lat'] != '') and  \
-            ('lat' in request.GET and request.GET['lat'] != '') and \
-            ('lat' in request.GET and request.GET['lat'] != '') :
+            ('lon' in request.GET and request.GET['lon'] != '') and \
+            ('key' in request.GET and request.GET['key'] != '') :
 
             latitude = request.GET["lat"]
             longitude = request.GET["lon"]
