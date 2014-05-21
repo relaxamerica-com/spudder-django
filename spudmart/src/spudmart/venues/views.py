@@ -5,6 +5,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth import authenticate, login
 from spudmart.upload.models import UploadedFile
 import simplejson
+from spudmart.campusrep.models import School, Student
 
 def view(request, venue_id):
     venue = Venue.objects.get(pk = venue_id)
@@ -66,6 +67,43 @@ def register(request):
             return HttpResponseRedirect('/venues/login')
     
     return render(request, 'venues/register.html', { 'errors' : errors })
+
+def register_school(request, state, school_name):
+    try:
+        school = School.objects.get(state = state.upper(), name = school_name.replace('_', ' '))
+    except:
+        # Later point to better error page
+        return HttpResponse("Error")
+    else:
+        errors = []
+        if request.method == 'POST':
+            username = request.POST['email']
+            password1 = request.POST['password1']
+            password2 = request.POST['password2']
+            if password1 != password2:
+                errors.append('Passwords did not match')
+            else:
+                # We should do checking to see if the user has already registered
+                user = User.objects.create_user(username, username, password1)
+                user.save()
+                
+                # Create the student
+                student = Student(user = user, school = school)
+                student.save()
+                
+                return HttpResponseRedirect('/venues/login')
+        
+        return render(request, 'venues/school_register.html', { 'errors' : errors , 'school': school })
+
+# School splash page
+def school(request, state, school_name):
+    try:
+        school = School.objects.get(state = state.upper(), name = school_name.replace('_', ' '))
+    except:
+        # Later point to better error page
+        return HttpResponse("Error")
+    else:
+        return render(request, 'venues/school_splash.html', { 'school': school })
 
 # VENUE ENDPOINTS
 
