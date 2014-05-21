@@ -98,7 +98,7 @@ class School(models.Model):
     state = models.CharField(max_length = 2)
     
     def level(self):
-        return get_max_triangle_num_less_than(self.rep / SCHOOL_REP_LEVEL_MODIFIER)
+        return get_max_triangle_num_less_than(self.get_rep() / SCHOOL_REP_LEVEL_MODIFIER)
 
     def __str__(self, *args, **kwargs):
         return self.name + ", " + str(self.num_students) + " students, " + str(self.get_rep()) + " rep"
