@@ -7,6 +7,7 @@ from spudmart.upload.models import UploadedFile
 import simplejson
 from spudmart.campusrep.models import School, Student, STATES
 from django.utils.datastructures import MultiValueDictKeyError
+from django.core.exceptions import ObjectDoesNotExist
 
 def view(request, venue_id):
     venue = Venue.objects.get(pk = venue_id)
@@ -109,6 +110,8 @@ def register_school(request, state, school_name, code = None):
                 
                 # Create the student
                 student = Student(user = user, school = school)
+                
+                # Add referral info if it exists
                 try:
                     code = request.POST['code']
                 except MultiValueDictKeyError:
@@ -116,6 +119,13 @@ def register_school(request, state, school_name, code = None):
                 else:
                     stud = Student.objects.get(referral_code = code)
                     student.referred_by = stud.user
+                    
+                # See if the school needs a head student, and if so assign this student
+                try:
+                    school.get_head_student()
+                except ObjectDoesNotExist:
+                    student.isHead = True
+                
                 student.save()
                 
                 return HttpResponseRedirect('/venues/login')
