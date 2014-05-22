@@ -145,7 +145,15 @@ def school(request, state, school_name):
         # Later point to better error page
         return HttpResponse("Error")
     else:
-        return render(request, 'venues/school_splash.html', { 'school': school })
+        try:
+            head = school.get_head_student()
+        except ObjectDoesNotExist:
+            return render(request, 'venues/school_splash.html', { 'school': school })
+        else:
+            return render(request, 'venues/school_splash.html', { 
+                                                                 'school': school,
+                                                                 'head' : head,
+                                                                  })
 
 # VENUE ENDPOINTS
 

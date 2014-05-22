@@ -11,8 +11,8 @@
     <div class="row">
         <div class="span8">
             <form method="post" enctype="multipart/form-data">
-                <h5 class="venue-header clearfix">
-                    {% if request.user and request.user.pk == venue.user.pk %}
+                <h5 class="venue-header clearfix"> {{ school.name }} 
+                    {% if request.user and head and request.user.pk == head.user.pk %}
                         <div class="pull-right">
                             <div class="btn btn-orange" id="edit">
                                 Edit Mode
@@ -20,14 +20,6 @@
                         </div> 
                     {% endif %}
                 </h5>
-
-                <div class="row-fluid view-mode">
-                    <div class="span10">
-                        <h4 id="venue-name"> 
-                            {{ school.name }} 
-                        </h4>
-                    </div>
-                </div>
 
                 <div class="alert"></div>
 
@@ -111,7 +103,7 @@
                         <li>
                             <label> Head Student: </label>
                                 {% if head %}
-                                    {{ head.username }}
+                                    {{ head.user }}
                                 {% else %}
                                     Register now to be Head Student!
                                 {% endif %}
