@@ -59,7 +59,7 @@ Key Authentication Error JSON String
 
 """
 
-def key_authentication_error(self) :
+def key_authentication_error() :
     return { "meta": { "error_type":"invalid_key_error", "code":002,"error_message":"Invalid API Key Specified" }}
 
 """
@@ -68,7 +68,7 @@ Missing Parameters Error JSON String
 
 """
 
-def missing_parameters_error(self) :
+def missing_parameters_error() :
     return { "meta": { "error_type":"missing_parameters", "code":003,"error_message":"API Parameters Missing" }}
 
 """
@@ -88,11 +88,13 @@ def location(request) :
 
         if ('lat' in request.GET and request.GET['lat'] != '') and  \
             ('lon' in request.GET and request.GET['lon'] != '') and \
+            ('venueid' in request.GET and request.GET['venueid'] != '') and \
             ('key' in request.GET and request.GET['key'] != '') :
 
             latitude = request.GET["lat"]
             longitude = request.GET["lon"]
             api_key = request.GET["key"]
+            venue_id = request.GET["venueid"]
 
             if(validate_api_key(api_key)) :
                 # Return a quick response with OK status
@@ -100,6 +102,8 @@ def location(request) :
 
                 for social_network in spice_settings.social_networks :
                     json_response.append( { social_network : getattr('socialnetworks.' + social_network, "location_data")(latitude, longitude)} )
+
+                json_response = { 'venue_id' : venue_id, 'data' : json_response }
 
                 # Return JSON document to SpudMart
                 spudmart.api.send_posts_for_venue(json_response)
