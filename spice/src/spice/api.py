@@ -1,11 +1,12 @@
 from threading import Thread
+import json
+
 from django.http import HttpResponse
 from models import APIKeys
-
-import socialnetworks
 import spice_settings
-import json
-import spudmart.api
+
+import spice.spudmart.api
+import spice.socialnetworks
 
 """
 
@@ -85,28 +86,29 @@ def location(request) :
 
     # Verify if HTTP GET
     if request.method == 'GET':
+        if(('key' in request.GET and request.GET['key'] != '')) :
 
-        if ('lat' in request.GET and request.GET['lat'] != '') and  \
-            ('lon' in request.GET and request.GET['lon'] != '') and \
-            ('venueid' in request.GET and request.GET['venueid'] != '') and \
-            ('key' in request.GET and request.GET['key'] != '') :
-
-            latitude = request.GET["lat"]
-            longitude = request.GET["lon"]
             api_key = request.GET["key"]
-            venue_id = request.GET["venueid"]
 
             if(validate_api_key(api_key)) :
                 # Return a quick response with OK status
-                yield HttpResponse(json.dumps({'status': 'ok'}), content_type='application/json')
+                yield HttpResponse(json.dumps({'status' : 'ok' }), content_type='application/json')
 
-                for social_network in spice_settings.social_networks :
-                    json_response.append( { social_network : getattr('socialnetworks.' + social_network, "location_data")(latitude, longitude)} )
+                venues_json = json.load(spice.spudmart.api.call_venues_api())
 
-                json_response = { 'venue_id' : venue_id, 'data' : json_response }
+                for venue in venues_json.venues :
 
-                # Return JSON document to SpudMart
-                spudmart.api.send_posts_for_venue(json_response)
+                    latitude = venue.lat
+                    longitude = venue.lon
+
+                    venue_social_network_json = []
+
+                    for social_network in spice_settings.social_networks :
+                        venue_social_network_json.append( { social_network : getattr('socialnetworks.' + social_network, "location_data")(latitude, longitude)} )
+
+                    json_response.append({ 'venue_id' : venue.venue_id, 'data' : venue_social_network_json })
+
+                spice.spudmart.api.send_posts_for_venue(json_response)
 
             else :
                 # Return a quick response with Error status
@@ -115,5 +117,3 @@ def location(request) :
         else :
             # Return a quick response with Error status
             yield HttpResponse(json.dumps({'status': 'error', 'error' : missing_parameters_error() }), content_type='application/json')
-
-

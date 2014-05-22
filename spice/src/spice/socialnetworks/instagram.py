@@ -1,6 +1,8 @@
-import instagram_settings
 import urllib2
 import json
+
+from spice.socialnetworks import instagram_settings
+
 
 """
 
