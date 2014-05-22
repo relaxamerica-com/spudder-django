@@ -91,7 +91,7 @@ class School(models.Model):
     ''' 
     name = models.CharField(max_length=124)
     num_students = models.IntegerField(default = 0)
-    state = models.CharField(max_length = 2)
+    state = models.CharField(max_length = 2, db_index = True)
     
     def level(self):
         return get_max_triangle_num_less_than(self.get_rep() / SCHOOL_REP_LEVEL_MODIFIER)

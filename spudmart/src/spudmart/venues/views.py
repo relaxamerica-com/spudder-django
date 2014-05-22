@@ -5,7 +5,8 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth import authenticate, login
 from spudmart.upload.models import UploadedFile
 import simplejson
-from spudmart.campusrep.models import School, Student
+from spudmart.campusrep.models import School, Student, STATES
+from django.utils.datastructures import MultiValueDictKeyError
 
 def view(request, venue_id):
     venue = Venue.objects.get(pk = venue_id)
@@ -53,20 +54,26 @@ def login_view(request):
     
     return render(request, 'venues/login.html', { 'errors' : errors })
 
-def register(request):
-    errors = []
-    if request.method == 'POST':
-        username = request.POST['email']
-        password1 = request.POST['password1']
-        password2 = request.POST['password2']
-        if password1 != password2:
-            errors.append('Passwords did not match')
-        else:
-            user = User.objects.create_user(username, username, password1)
-            user.save()
-            return HttpResponseRedirect('/venues/login')
+def register(request):    
+    sorted_states = sorted(STATES.items(), key = lambda x:x[1])
     
-    return render(request, 'venues/register.html', { 'errors' : errors })
+    if request.method == 'POST':
+        return register_with_state(request, state = request.POST['state'])    
+
+    return render(request, 'venues/register.html', { 'states' : sorted_states })
+
+def register_with_state(request, state):
+    try:
+        school = request.POST['school']
+    except MultiValueDictKeyError:
+        schools = []
+        for s in School.objects.filter(state = state):
+            schools.append(s)
+        schools = sorted(schools, key = lambda sch: sch.name)
+        return render(request, 'venues/register_state.html', { 'state' : STATES[state], 'abbr':state, 'schools':schools })
+    else:
+        return HttpResponseRedirect("%s/%s/register"%(state, school))
+        
 
 def register_school(request, state, school_name):
     try:
@@ -94,6 +101,9 @@ def register_school(request, state, school_name):
                 return HttpResponseRedirect('/venues/login')
         
         return render(request, 'venues/school_register.html', { 'errors' : errors , 'school': school })
+    
+def school_referral(request, state, school_name, code):
+    return HttpResponse(code)
 
 # School splash page
 def school(request, state, school_name):

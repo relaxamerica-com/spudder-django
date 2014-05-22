@@ -8,16 +8,22 @@
 		<form action="/venues/register" method="post">
 			<div class="control-group">
 				<div class="control-label">
-					State:
+					State: {{ state }}
 				</div>
+				
+				<div class="control-label">
+				    <a href="/venues/register">Click here to change state.</a>
+				</div>
+				<br>
+				
 				<div class="controls">
-					<select name="state">
-					   {% for abbr, full in states %}
-					       {% if state == abbr %}
-					           <option value="{{ abbr }}" selected>{{ full }}</option>
-					       {% else %}
-					           <option value="{{ abbr }}">{{ full }}</option>
-				           {% endif %}
+				    <input type="hidden" name="state" value="{{ abbr }}"> 
+				</div>
+				
+				<div class="controls">
+					<select name="school">
+					   {% for sch in schools %}
+					       <option value="{{ sch.name }}">{{ sch.name }}</option>
 					   {% endfor %}
 					</select>
 				</div>
@@ -25,7 +31,7 @@
 			
 			<div class="control-group">
 				<div class="controls">
-					<button class="btn btn-orange" type="submit">Select this State</button>
+					<button class="btn btn-orange" type="submit">Select this School</button>
 				</div>
 			</div>			
 		</form>
