@@ -1,6 +1,6 @@
-from django.contrib.auth.models import User
 from django.db import models
 import uuid
+from django.contrib.auth.models import User
 from datetime import timedelta, datetime
 
 # 100 points to get from level 1 to 2 for venues
@@ -87,11 +87,11 @@ class School(models.Model):
         the number of students at the school.
         Due to errors with saving/updating rep points, rep is now calculated via method 
         which sums the rep points of all students associated with school. 
-        Includes method which evaluates level based on reputation 
+        Includes method which evaluates level based on reputation. 
     ''' 
     name = models.CharField(max_length=124)
     num_students = models.IntegerField(default = 0)
-    state = models.CharField(max_length = 2, db_index = True)
+    state = models.CharField(max_length = 2)
     
     def level(self):
         return get_max_triangle_num_less_than(self.get_rep() / SCHOOL_REP_LEVEL_MODIFIER)
@@ -128,8 +128,10 @@ class Student(models.Model):
     ''' A model for Student objects (Groundskeepers), which stores the standard Django 
         User object associated with the student, the school, whether the student is the
         Head Student, referral information, and the student's reputation.
+        
+        The database is indexed on User since that's how the students are most often looked up.
     '''    
-    user = models.ForeignKey(User, unique = True)
+    user = models.ForeignKey(User, unique = True, db_index = True)
     school = models.ForeignKey(School)
     isHead = models.BooleanField()
     
