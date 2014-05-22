@@ -231,8 +231,8 @@ class Challenge(models.Model):
     
     def am_winning(self, school):
         ''' Convenience method to determine whether the supplied school is in the lead.
-            Returns True if the school is winning, False if the team is losing, and None
-            if the school is not in the challenge.
+            Returns True if the school is winning, False if the team is not, and None if
+            the school is not in the challenge.
         '''
         winner = self.determine_winner()
         if winner == school:
