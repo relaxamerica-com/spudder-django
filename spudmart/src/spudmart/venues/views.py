@@ -54,15 +54,18 @@ def login_view(request):
     
     return render(request, 'venues/login.html', { 'errors' : errors })
 
-def register(request):    
+def register(request, code = None):
     sorted_states = sorted(STATES.items(), key = lambda x:x[1])
     
     if request.method == 'POST':
-        return register_with_state(request, state = request.POST['state'])    
+        return register_with_state(request, state = request.POST['state'], code = code)    
 
-    return render(request, 'venues/register.html', { 'states' : sorted_states })
+    return render(request, 'venues/register.html', { 
+                                                    'states' : sorted_states, 
+                                                    'code' : code, 
+                                                    })
 
-def register_with_state(request, state):
+def register_with_state(request, state, code = None):
     try:
         school = request.POST['school']
     except MultiValueDictKeyError:
@@ -70,12 +73,22 @@ def register_with_state(request, state):
         for s in School.objects.filter(state = state):
             schools.append(s)
         schools = sorted(schools, key = lambda sch: sch.name)
-        return render(request, 'venues/register_state.html', { 'state' : STATES[state], 'abbr':state, 'schools':schools })
+        return render(request, 'venues/register_state.html', { 
+                                                              'state' : STATES[state], 
+                                                              'abbr' : state, 
+                                                              'schools' : schools,
+                                                              'code' : code,
+                                                              })
     else:
-        return HttpResponseRedirect("%s/%s/register"%(state, school))
+        if code:
+            return HttpResponseRedirect("/venues/%s/%s/register/%s"%(state, school, code))
+        return HttpResponseRedirect("/venues/%s/%s/register"%(state, school))
         
 
-def register_school(request, state, school_name):
+def register_school(request, state, school_name, code = None):
+    referrer = None
+    if code:
+        referrer = Student.objects.get(referral_code = code)
     try:
         school = School.objects.get(state = state.upper(), name = school_name.replace('_', ' '))
     except:
@@ -96,14 +109,23 @@ def register_school(request, state, school_name):
                 
                 # Create the student
                 student = Student(user = user, school = school)
+                try:
+                    code = request.POST['code']
+                except MultiValueDictKeyError:
+                    pass
+                else:
+                    stud = Student.objects.get(referral_code = code)
+                    student.referred_by = stud.user
                 student.save()
                 
                 return HttpResponseRedirect('/venues/login')
         
-        return render(request, 'venues/school_register.html', { 'errors' : errors , 'school': school })
-    
-def school_referral(request, state, school_name, code):
-    return HttpResponse(code)
+        return render(request, 'venues/school_register.html', { 
+                                                               'errors' : errors , 
+                                                               'school': school, 
+                                                               'referrer' : referrer, 
+                                                               'code' : code,
+                                                               })
 
 # School splash page
 def school(request, state, school_name):
