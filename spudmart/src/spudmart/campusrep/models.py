@@ -157,6 +157,7 @@ class Student(models.Model):
         '''
         if self.pk is None:
             self.school.num_students += 1
+            self.school.save()
             self.referral_code = str(uuid.uuid4())
         return models.Model.save(self, force_insert, force_update, using)
 
@@ -174,6 +175,7 @@ class Student(models.Model):
             school's count to reflect the loss of a student.
         '''
         self.school.num_students -= 1
+        self.school.save()
         return models.Model.delete(self, using)
 
     def __eq__(self, other):
