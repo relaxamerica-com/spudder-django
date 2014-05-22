@@ -105,15 +105,6 @@ class School(models.Model):
     
     def __eq__(self, other):
         return self.pk == other.pk
-
-    def save(self, force_insert=False, force_update=False, using=None):
-        for student in Student.objects.filter(school = self):
-            student.school = self
-        for challenge in Challenge.objects.filter(challenger = self):
-            challenge.challenger = self
-        for challenge in Challenge.objects.filter(challenged = self):
-            challenge.challenged = self
-        return models.Model.save(self, force_insert, force_update, using)
     
     def get_rep(self):
         rep = 0
@@ -142,7 +133,7 @@ class Student(models.Model):
         User object associated with the student, the school, whether the student is the
         Head Student, referral information, and the student's reputation.
     '''    
-    user = models.ForeignKey(User, primary_key = True)
+    user = models.ForeignKey(User, unique = True)
     school = models.ForeignKey(School)
     isHead = models.BooleanField()
     
@@ -150,6 +141,8 @@ class Student(models.Model):
     referred_by = models.ForeignKey(User, blank=True, null=True)
     
     rep = models.IntegerField(default = 0)
+    
+    
 
     def save(self, force_insert=False, force_update=False, using=None):
         ''' Default save method overwritten so that the School's student count is always
@@ -159,6 +152,7 @@ class Student(models.Model):
             self.school.num_students += 1
             self.school.save()
             self.referral_code = str(uuid.uuid4())
+            
         return models.Model.save(self, force_insert, force_update, using)
 
     def __str__(self):
