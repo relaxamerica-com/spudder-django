@@ -108,7 +108,7 @@ class School(models.Model):
             rep += student.rep
         return int(rep)
     
-    def get_student(self):
+    def get_students(self):
         ''' Convenience method which returns a standard list of students associated with
             the school.
         '''
