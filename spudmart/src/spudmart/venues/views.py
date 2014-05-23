@@ -83,8 +83,8 @@ def register_with_state(request, state, code = None):
                                                               })
     else:
         if code:
-            return HttpResponseRedirect("/venues/%s/%s/register/%s"%(state, school, code))
-        return HttpResponseRedirect("/venues/%s/%s/register"%(state, school))
+            return HttpResponseRedirect("/venues/%s/%s/%s"%(state, school, code))
+        return HttpResponseRedirect("/venues/%s/%s/"%(state, school))
         
 
 def register_school(request, state, school_name, code = None):
