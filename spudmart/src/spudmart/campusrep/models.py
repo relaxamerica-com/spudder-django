@@ -2,6 +2,7 @@ from django.db import models
 import uuid
 from django.contrib.auth.models import User
 from datetime import timedelta, datetime
+from spudmart.upload.models import UploadedFile
 
 # 100 points to get from level 1 to 2 for venues
 VENUE_REP_LEVEL_MODIFIER = 100
@@ -92,6 +93,8 @@ class School(models.Model):
     name = models.CharField(max_length=124)
     num_students = models.IntegerField(default = 0)
     state = models.CharField(max_length = 2)
+    mascot = models.CharField(max_length = 32, null = True)
+    logo = models.ForeignKey(UploadedFile, null = True)
     
     def level(self):
         return get_max_triangle_num_less_than(self.get_rep() / SCHOOL_REP_LEVEL_MODIFIER)
