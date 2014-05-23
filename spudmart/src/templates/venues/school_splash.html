@@ -9,32 +9,15 @@
 {% block content %}
 <div class="container clearfix" id="venue-view">
     <div class="row">
-        <div class="span8">
-            <form method="post" enctype="multipart/form-data">
-                <h5 class="venue-header clearfix"> {{ school.name }} 
-                    {% if request.user and head and request.user.pk == head.user.pk %}
-                        <div class="pull-right">
-                            <div class="btn btn-orange" id="edit">
-                                Edit Mode
-                            </div>
-                        </div> 
-                    {% endif %}
-                </h5>
-
-                <div class="alert"></div>
-
-                <div class="edit-mode">
-                    <div class="btn btn-orange" id="save-name">
-                        Save
-                    </div>
-                </div>
-            </form>
-
+        <div class="span7">
+            <h5 class="venue-header clearfix aligncenter"> {{ school.name }} </h5>
+            
             <div class="row-fluid">
                 <div class="span12 contents">
                     <div class="alert"></div>
                     <div id="venue-promo-video" class="active content">
                         <iframe width="560" height="315" src="//www.youtube.com/embed/H72B-GCMohs?rel=0"
+                        style="display:block;margin:0 auto;"
                         frameborder="0"
                         allowfullscreen></iframe>
                     </div>
@@ -42,30 +25,39 @@
             </div>
         </div>
 
-        <div class="span4">
+        <div class="span5">
             <aside class="right-sidebar">
                 <div class="widget offer-widget">
-                    <h5 class="widgetheading">
-                    <div class="row-fluid no-margin">
-                        <div class="span12" id="venue-name2">
-                            {{ venue.name }}
-                        </div>
-                        <div class="span12">
-                            <small id="venue-aka-name2"> 
-                                {{ venue.aka_name }}
-                            </small>
-                        </div>
-                    </div></h5>
-
+                    {% if request.user and head and request.user.pk == head.user.pk %}
                     <div class="row-fluid">
+                        <div class="span6">                    
+		                    <form method="post" enctype="multipart/form-data">
+		                        <div class="alert"></div>
+		                        <div class="edit-mode">
+		                            <div class="btn btn-orange" id="save-name">
+		                                Save
+		                            </div>
+		                        </div>
+		                    </form>
+                        </div>
+                        
                         <div class="span6">
+                            <div class="btn btn-orange pull-right" id="edit" style="margin:0 auto;">
+                                Edit Mode
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {% endif %}
+                    <div class="row-fluid">
+                        <div class="span12" >
                             {% if venue.logo %}
                                 <img id="venue-logo2" src="/file/serve/{{ venue.logo.id }}" />
                             {% else %}
-                                <div class="logo-placeholder">
+                                <div class="logo-placeholder" style="margin:0 auto;">
                                     Your Logo Here
                                 </div>
-                            {% endif %}
+                            {% endif %} 
                         </div>
                     </div>
 
@@ -110,7 +102,7 @@
                         </li>
                         
                         
-                          <p><label>Sign up now!</label></p>
+                          <p class="aligncenter"><label>Sign up now!</label></p>
                           <p>Joining with Amazon allows us to pay you for the work you with CERN. Plus, it's easier than remembering another account.</p>
                           <p>If you don't have an Amazon account, you can create one using this link. Simply select the "I am a new customer" option.</p>
                     </ul>
