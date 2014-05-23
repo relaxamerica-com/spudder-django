@@ -49,6 +49,8 @@
                     </div>
                     {% endif %}
                     
+                    <div class="alert"></div>
+                    
                     <div class="row-fluid edit-mode aligncenter">
                         <div class="span12">
                             <p>Show some school spirit and customize your page!</p>
@@ -237,94 +239,6 @@
             });
         }
 
-
-        icons.click(function() {
-            var currentTab = $(this).parent().attr('openTab');
-
-            $('.alert').hide();
-
-            $('.buttons i.active').removeClass('active');
-
-            hide($('.contents > div.content'));
-
-            $(this).addClass('active');
-
-            show(currentTab);
-
-            if ($(this).hasClass('icon-map-marker')) {
-
-                if (!$(this).hasClass('initialized')) {
-                    initialize(window.isEditMode);
-                }
-            }
-
-        });
-
-        $('#save-parking-details').click(function() {
-            var button = $(this), parkingDetails = $('[name="parking-details"]'), parkingTips = $('[name="parking-tips"]'), 
-                dfd = saving($(this), $('.contents').find('.alert'), 'Parking details has been saved');
-
-            var response = $.post('/venues/save_parking_details/{{ venue.id }}', {
-                'parking-details' : parkingDetails.val(),
-                'parking-tips' : parkingTips.val()
-            });
-
-            response.done(function() {
-                $('.icon-truck').addClass('ready');
-                
-                $('#venue-parking-details').html(parkingDetails.val());
-                $('#venue-parking-tips').html(parkingTips.val());
-                
-                dfd.resolve();
-            });
-        });
-        
-        $('.remove-pic').click(function() {
-            var carousel = $(this).parent(),
-                listType = $(this).attr('id'),
-                active = carousel.find('.active'),
-                fileURL = active.find('img').attr('src');
-            
-            var response = $.post('/venues/remove_pic/{{ venue.id }}', {
-                'list_type' : listType,
-                'file_url' : fileURL
-            });
-            
-            carousel.carousel('next');
-            active.remove();
-            if (carousel.find('.item').length == 0) {
-                carousel.hide();
-            }
-            showAlert($('.contents .alert'), 'Image has been removed', 'success', true);
-        });
-
-        $('#up-to-5-pics input, #playing-surface input').ace_file_input({
-            style : 'well',
-            btn_choose : 'Drop files here or click to choose',
-            btn_change : null,
-            no_icon : 'icon-cloud-upload',
-            droppable : true,
-            thumbnail : 'small'
-            //, icon_remove:null//set null, to hide remove/reset button
-            /**,before_change:function(files, dropped) {
-             //Check an example below
-             //or examples/file-upload.html
-             return true;
-             }*/
-            /**,before_remove : function() {
-             return true;
-             }*/
-            ,
-            preview_error : function(filename, error_code) {
-                //name of the file that failed
-                //error_code values
-                //1 = 'FILE_LOAD_FAILED',
-                //2 = 'IMAGE_LOAD_FAILED',
-                //3 = 'THUMBNAIL_FAILED'
-                //alert(error_code);
-            }
-        });
-
         $('#edit-logo').ace_file_input({
             no_file : 'No File ...',
             btn_choose : 'Choose',
@@ -334,65 +248,13 @@
             thumbnail : false
         });
 
-        $('#upload-up-to-5-pics').click(function() {
-            var form = $(this).parents('form'), files = $(form).serializeFiles(), filesList = $(form).find('input')[0].files, dfd = saving($(this), $('.contents').find('.alert'), 'Venue pictures has been uploaded');
-
-            $.get('/upload/get_upload_url', function(data) {
-                $.ajax({
-                    url : data,
-                    data : files,
-                    cache : false,
-                    contentType : false,
-                    processData : false,
-                    type : 'POST',
-                    success : function(data) {
-                        var parsed = JSON.parse(data);
-
-                        var response = $.post('/venues/save_venue_pics/{{ venue.id }}', {
-                            'venue_pics' : parsed['uploaded_files']
-                        });
-
-                        response.done(function(data) {
-                            dfd.resolve();
-                            
-                            var carousel = $('#up-to-5-pics .carousel');
-                            
-                            populateCarousel(parsed, carousel);
-                            
-                            $('.icon-camera-retro').addClass('ready');
-                        });
-                    }
-                });
-            });
-        });
-        
-        function populateCarousel(parsed, carousel) {
-            $.each(parsed['uploaded_files'], function() {
-                var item = $('<div class="item"></div>'),
-                    img = $('<img />');
-                
-                img.attr('src', this);
-                if(carousel.find('.item').length == 0) {
-                    item.addClass('active');
-                }
-                
-                item.append(img);
-                carousel.find('.carousel-inner').append(item);
-            });
-            
-            carousel.removeClass('hidden');
-            carousel.show();
-            carousel.carousel().removeData();
-            carousel.carousel({ interval: false });
-        }
-
         $('#save-name').click(function() {
             var form = $(this).parents('form'), 
                 files = $(form).serializeFiles(), 
                 filesList = $(form).find('input')[0].files, 
                 name = $(form).find('[name="name"]').val(), 
                 akaName = $(form).find('[name="aka_name"]').val(), 
-                dfd = saving($(this), $(form).find('.alert'), 'Venue basic information has been saved'),
+                dfd = saving($(this), $(form).find('.alert'), 'Customized page has been saved!'),
                 sport = $('[name="sport"]').val();
 
             $.get('/upload/get_upload_url', function(data) {
@@ -428,188 +290,6 @@
                 });
             });
         });
-
-        $('#upload-playing-surface').click(function() {
-            var form = $(this).parents('form'), 
-                files = $(form).serializeFiles(), 
-                filesList = $(form).find('input')[0].files, 
-                dfd = saving($(this), $('.contents').find('.alert'), 'Playing surface pictures and details have been saved'),
-                details = form.find('[name="details"]');
-
-            $.get('/upload/get_upload_url', function(data) {
-                $.ajax({
-                    url : data,
-                    data : files,
-                    cache : false,
-                    contentType : false,
-                    processData : false,
-                    type : 'POST',
-                    success : function(data) {
-                        var parsed = JSON.parse(data);
-
-                        var response = $.post('/venues/save_playing_surface_pics/{{ venue.id }}', {
-                            'playing_surface_pics' : parsed['uploaded_files'],
-                            'playing_surface_details' : details.val()
-                        });
-
-                        response.done(function(data) {
-                            dfd.resolve();
-                            populateCarousel(parsed, $('#playing-surface-carousel'));
-                            $('#venue-playing-surface-details').html(details.val());
-                            $('.icon-eye-open').addClass('ready');
-                        });
-                    }
-                });
-            });
-        });
-
-
-        $('#save-video').click(function() {
-            var textarea = $('#video form textarea'), dfd = saving($(this), $('.contents .alert'), 'Youtube video has been saved');
-
-            var response = $.post('/venues/save_video/{{ venue.id }}', {
-                'video' : textarea.val()
-            });
-
-            response.done(function() {
-                dfd.resolve();
-                $('#venue-video').html(textarea.val());
-                $('.icon-facetime-video').addClass('ready');
-            });
-        });
-
-        $('#save-restroom-details').click(function() {
-            var textarea = $('#restroom-details form textarea'), dfd = saving($(this), $('.contents .alert'), 'Restroom details has been saved');
-
-            var response = $.post('/venues/save_restroom_details/{{ venue.id }}', {
-                'restroom_details' : textarea.val()
-            });
-
-            response.done(function() {
-                dfd.resolve();
-                $('#venue-restroom-details').html(textarea.val());
-                $('.icon-female').addClass('ready');
-            });
-        });
-
-        $('#save-concession-details').click(function() {
-            var textarea = $('#concession-details form textarea'), dfd = saving($(this), $('.contents .alert'), 'Concession details has been saved');
-
-            var response = $.post('/venues/save_concession_details/{{ venue.id }}', {
-                'concession_details' : textarea.val()
-            });
-
-            response.done(function() {
-                dfd.resolve();
-                $('#venue-concession-details').html(textarea.val());
-                $('.icon-food').addClass('ready');
-            });
-        });
-
-        $('#save-admission-details').click(function() {
-            var textarea = $('#admission-details form textarea'), dfd = saving($(this), $('.contents .alert'), 'Admission details has been saved');
-
-            var response = $.post('/venues/save_admission_details/{{ venue.id }}', {
-                'admission_details' : textarea.val()
-            });
-
-            response.done(function() {
-                dfd.resolve();
-                $('#venue-admission-details').html(textarea.val());
-                $('.icon-ticket').addClass('ready');
-            });
-        });
-
-        $('#save-shelter-details').click(function() {
-            var textarea = $('#shelter-details form textarea'), dfd = saving($(this), $('.contents .alert'), 'Shelter details has been saved');
-
-            var response = $.post('/venues/save_shelter_details/{{ venue.id }}', {
-                'shelter_details' : textarea.val()
-            });
-
-            response.done(function() {
-                dfd.resolve();
-                $('#venue-shelter-details').html(textarea.val());
-                $('.icon-umbrella').addClass('ready');
-            });
-        });
-
-        $('#save-medical-details').click(function() {
-            var textareaDetails = $('#medical-details form textarea[name="details"]'), 
-                address = $('#medical-details form input[name="address"]'), 
-                city = $('#medical-details form input[name="city"]'), 
-                state = $('#medical-details form select[name="state"]'), 
-                zip = $('#medical-details form input[name="zip"]'), 
-                dfd = saving($(this), $('.contents .alert'), 'Medical details has been saved');
-
-            var medicalAddress = address.val() + ', ' + city.val() + ', ' + state.val() + ', ' + zip.val();
-
-            var response = $.post('/venues/save_medical_details/{{ venue.id }}', {
-                'medical_details' : textareaDetails.val(),
-                'medical_address' : medicalAddress
-            });
-
-            response.done(function() {
-                dfd.resolve();
-                $('#venue-medical-details').html(textareaDetails.val());
-                $('#venue-medical-address').html(medicalAddress);
-                $('.icon-medkit').addClass('ready');
-                $('#venue-medical-address').attr('href', 'http://maps.google.com/?q=' + medicalAddress);
-            });
-        });
-
-        $('#save-handicap-details').click(function() {
-            var textarea = $('#handicap-details form textarea'), dfd = saving($(this), $('.contents .alert'), 'Handicap details has been saved');
-
-            var response = $.post('/venues/save_handicap_details/{{ venue.id }}', {
-                'handicap_details' : textarea.val()
-            });
-
-            response.done(function() {
-                dfd.resolve();
-                $('#venue-handicap-details').html(textarea.val());
-                $('.fa-wheelchair').addClass('ready');
-            });
-        });
-
-        $('#save-location').click(function() {
-            var dfd = saving($(this), $('.contents .alert'), 'Location has been saved');
-
-            var response = $.post('/venues/save_coordinates/{{ venue.id }}', {
-                'latitude' : '' + window.map.getCenter().lat(),
-                'longitude' : '' +  window.map.getCenter().lng()
-            });
-
-            response.done(function() {
-                dfd.resolve();
-                $('.buttons i.icon-map-marker').addClass('ready initialized');
-            });
-        });
-
-        $('#prize-this-venue').click(function() {
-            var priceInput = $('#price'), button = $(this), currentPrice = $('#current-price');
-
-            currentPrice.hide();
-
-            if ($(this).html() == 'Save') {
-                var dfd = saving($(this), $(this).parent().find('.alert'), 'Price saved');
-                var response = $.post('/venues/save_price/{{ venue.id }}', {
-                    'price' : priceInput.val() ? priceInput.val() : '0'
-                });
-
-                response.done(function() {
-                    dfd.resolve();
-                    $(button).html('Price this Venue');
-                    currentPrice.show();
-                    priceInput.parent().css('display', 'none');
-                });
-
-            } else {
-                priceInput.parent().css('display', 'table');
-                $(this).html('Save');
-            }
-        });
-
     }); 
 </script>
 <script>
