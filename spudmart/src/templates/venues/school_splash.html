@@ -72,7 +72,7 @@
                     <div class="row-fluid">
 
                         <div class="span8 details-header">
-                            Join {{ school.name }}'s network of Student Groundskeepers
+                            Join {{ school.name }}'s Campus Entrepenuer Recruiting Network (CERN) Team! 
                         </div>
 
                         <ul class="span4 social-network">
@@ -93,7 +93,7 @@
 
                     <ul class="folio-detail offer-details">
                         <li>
-                            <label>Groundskeeper Network: </label> {{ school.num_students }} registered students 
+                            <label>Team Size: </label> {{ school.num_students }} registered students 
                         </li>
 
                         <li>
@@ -101,16 +101,25 @@
                         </li>
                         
                         <li>
-                            <label> Head Student: </label>
+                            <label>Team Captain: </label>
                                 {% if head %}
                                     {{ head.user }}
                                 {% else %}
-                                    Register now to be Head Student!
+                                    Register now to be Team Captain!
                                 {% endif %}
                         </li>
                         
                         <li>
-                            <label><a href="register">Click here to join {{ school.name }}'s network!</a></label>
+                            <p><label>Sign up now!</label></p>
+                            <p>Joining with Amazon allows us to pay you for the work you with CERN. Plus, it's easier than remembering another account.</p>
+                            <p>If you don't have an Amazon account, you can create one using this link. Simply select the "I am a new customer" option.</p> 
+                            <p class="aligncenter">
+			                    <a href="#" id="LoginWithAmazon">
+			                        <img border="0" alt="Login with Amazon"
+			                             src="https://images-na.ssl-images-amazon.com/images/G/01/lwa/btnLWA_gold_156x32.png"
+			                             width="156" height="32" />
+			                    </a>
+			                </p>
                         </li> 
                     </ul>
                 </div>
