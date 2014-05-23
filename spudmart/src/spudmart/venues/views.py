@@ -1,13 +1,14 @@
 from django.shortcuts import render
 from spudmart.venues.models import Venue
 from django.contrib.auth.models import User
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponse, HttpResponseNotAllowed
 from django.contrib.auth import authenticate, login
 from spudmart.upload.models import UploadedFile
 import simplejson
 from spudmart.campusrep.models import School, Student, STATES
 from django.utils.datastructures import MultiValueDictKeyError
 from django.core.exceptions import ObjectDoesNotExist
+from spudmart.campusrep.utils import import_schools
 
 def view(request, venue_id):
     venue = Venue.objects.get(pk = venue_id)
@@ -154,6 +155,12 @@ def school(request, state, school_name):
                                                                  'school': school,
                                                                  'head' : head,
                                                                   })
+
+def import_school_data(request):
+    if request.method == 'POST':
+        import_schools()
+    else:
+        return HttpResponseNotAllowed(['POST'])
 
 # VENUE ENDPOINTS
 
