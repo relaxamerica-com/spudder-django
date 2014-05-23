@@ -51,9 +51,14 @@
                     
                     <div class="row-fluid edit-mode aligncenter">
                         <div class="span12">
-                            <p>Show some school spirit and edit your page!</p>
+                            <p>Show some school spirit and customize your page!</p>
                             <form method="post" enctype="multipart/form-data">
-                                <label>Team Mascot: </label><input name="mascot" value="Your School Mascot">
+                                <label>Team Mascot: </label>
+                                {% if school.mascot %}
+                                    <input name="mascot" value="{{ school.mascot }}">
+                                {% else %}
+                                    <input name="mascot" value="Your School Mascot">
+                                {% endif %}
                             </form>
                         </div>
                         
@@ -61,8 +66,8 @@
                     
                     <div class="row-fluid">
                         <div class="span12" >
-                            {% if venue.logo %}
-                                <img id="venue-logo" src="/file/serve/{{ venue.logo.id }}" />
+                            {% if school.logo %}
+                                <img id="venue-logo" src="/file/serve/{{ school.logo.id }}" />
                             {% else %}
                                 <div class="logo-placeholder" style="margin:0 auto;">
                                     Your Logo Here
@@ -103,7 +108,12 @@
 
                     <ul class="folio-detail offer-details">
                         <li>
-                            <label>Team Size: </label> {{ school.num_students }} registered students 
+                            <label>Team Size: </label> {{ school.num_students }} registered 
+                            {% if school.mascot %}
+                                {{ school.mascot }}
+                            {% else %}
+                                students
+                            {% endif %} 
                         </li>
 
                         <li>
