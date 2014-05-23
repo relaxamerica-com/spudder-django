@@ -109,19 +109,32 @@
                                 {% endif %}
                         </li>
                         
-                        <li>
-                            <p><label>Sign up now!</label></p>
-                            <p>Joining with Amazon allows us to pay you for the work you with CERN. Plus, it's easier than remembering another account.</p>
-                            <p>If you don't have an Amazon account, you can create one using this link. Simply select the "I am a new customer" option.</p> 
-                            <p class="aligncenter">
-			                    <a href="#" id="LoginWithAmazon">
-			                        <img border="0" alt="Login with Amazon"
-			                             src="https://images-na.ssl-images-amazon.com/images/G/01/lwa/btnLWA_gold_156x32.png"
-			                             width="156" height="32" />
-			                    </a>
-			                </p>
-                        </li> 
+                        
+                          <p><label>Sign up now!</label></p>
+                          <p>Joining with Amazon allows us to pay you for the work you with CERN. Plus, it's easier than remembering another account.</p>
+                          <p>If you don't have an Amazon account, you can create one using this link. Simply select the "I am a new customer" option.</p>
                     </ul>
+                          
+    <div class="accounts-form-body">
+        <form class="form-horizontal" action="/accounts/login" id="registration-form" method="POST">
+            {% if error %}
+            <div class="alert alert-error"><%= error %></div>
+            {% endif %}
+
+            <input type="hidden" name="returnURL" {% if returnURL %}value="{{ returnURL }}"{% endif %}>
+
+            <div class="control-group">
+                <p class="aligncenter">
+                    <a href="#" id="LoginWithAmazon">
+                        <img border="0" alt="Login with Amazon"
+                             src="https://images-na.ssl-images-amazon.com/images/G/01/lwa/btnLWA_gold_156x32.png"
+                             width="156" height="32" />
+                    </a>
+                </p>
+            </div>
+        </form>
+    </div>
+	                
                 </div>
             </aside>
         </div>
@@ -578,5 +591,24 @@
         });
 
     }); 
+</script>
+<script>
+    function getURLParameter(name) {
+        return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search)||[,""])[1].replace(/\+/g, '%20'))||null
+    }
+
+    var loginWithAmazon = document.getElementById('LoginWithAmazon'),
+        next = getURLParameter('next'),
+        returnUrl = '{{ base_url }}/accounts/login/amazon';
+
+    if (next) returnUrl += '?next=' + next;
+
+    if (loginWithAmazon) {
+        loginWithAmazon.onclick = function() {
+            options = { scope : 'profile' };
+            amazon.Login.authorize(options, returnUrl);
+            return false;
+        };
+    }
 </script>
 {% endblock scripts %}
