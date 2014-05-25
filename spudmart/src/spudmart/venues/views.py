@@ -13,6 +13,7 @@ from spudmart.amazon.models import AmazonActionStatus
 import settings
 from spudmart.donations.models import RentVenue, DonationState
 from google.appengine.api import mail
+from django.contrib.auth.decorators import login_required
 
 def view(request, venue_id):
     venue = Venue.objects.get(pk = venue_id)
@@ -26,7 +27,7 @@ def view(request, venue_id):
     
     is_recipient = VenueRecipient.objects.filter(groundskeeper = request.user)
     rent_venue_url = False
-    can_edit = request.user.is_authenticated() and (request.user.pk == venue.user.pk or (venue.renter and request.user.pk == venue.renter.pk))
+#     can_edit = request.user.is_authenticated() and (request.user.pk == venue.user.pk or (venue.renter and request.user.pk == venue.renter.pk))
     
     if venue.price > 0.0 and request.user.is_authenticated() and request.user.pk != venue.user.pk:
         rent_venue_url = get_rent_venue_cbui_url(venue)
@@ -37,7 +38,7 @@ def view(request, venue_id):
                 'medical_address' : medical_address,
                 'is_recipient' : is_recipient,
                 'rent_venue_url' : rent_venue_url,
-                'can_edit' : can_edit
+                'can_edit' : True
                 })
 
 def create(request):
@@ -52,6 +53,7 @@ def create(request):
 def index(request):
     return render(request, 'venues/index.html')
 
+@login_required
 def list_view(request):
     return render(request, 'venues/list.html', { 'venues' : Venue.objects.filter(user = request.user) })
 
@@ -174,7 +176,10 @@ def save_handicap_details(request, venue_id):
 def send_message(request, venue_id):
     venue = Venue.objects.get(pk = venue_id)
     message = request.POST.get('message', '')
-    mail.send_mail(subject='Message from Spudmart about Venue: %s' % venue.name, body=message, sender=settings.DEFAULT_FROM_EMAIL, to=venue.user.email)
+    to = []
+    to.append('support@spudder.zendesk.com')
+    to.append(venue.user.email)
+    mail.send_mail(subject='Message from Spudmart about Venue: %s' % venue.name, body=message, sender='help@spudder.com', to=to)
     
     return HttpResponse('OK')
 
