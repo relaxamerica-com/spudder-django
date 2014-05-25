@@ -12,7 +12,7 @@
 		<div class="span8">
 			<form method="post" enctype="multipart/form-data">
 				<h5 class="venue-header clearfix">Venue {% include 'venues/parts/select_sport.html' %}
-					{% if request.user and request.user.pk == venue.user.pk %}
+					{% if can_edit %}
 						<div class="pull-right">
 							<div class="btn btn-orange" id="edit">
 								Edit Mode
@@ -409,6 +409,7 @@
 								</div>
 							{% endif %}
 						</div>
+						{% if not venue.renter %}
 						<div class="span6 hidden" id="price-column">
 							{% if request.user == venue.user %}
 							<div class="btn btn-orange" id="prize-this-venue">
@@ -419,13 +420,18 @@
 								<input name="price" id="price" type="text" class="input-small" value="{{ venue.price }}" />
 							</div>
 							<div class="alert"></div>
+							{% else %}
+								{% if venue.price > 0.0 %}
+									<a href="{{ rent_venue_url }}"><img src="/media/img/buttons/pay-with-amazon.png" /></a>
+								{% endif %}
 							{% endif %}
 							<div id="current-price">
 								Name and sponsor this field for:
-								${{ venue.price }}
+								<span>${{ venue.price }}</span>
 								annually
 							</div>
 						</div>
+						{% endif %}
 					</div>
 
 					<div class="row-fluid">
@@ -476,12 +482,6 @@
 						</li>
 
 					</ul>
-				</div>
-
-				<div class="widget donation-widget">
-
-					<a href="https://karol-dot-spudmart1.appspot.com/dashboard/donation/KR1ZOOCbOY"> <img src="/media/img/buttons/pay-with-amazon.png"> </a>
-
 				</div>
 			</aside>
 		</div>
@@ -914,6 +914,11 @@
 		});
 
 		$('#prize-this-venue').click(function() {
+			{% if not is_recipient %}
+				document.location = '/venues/recipient/{{ venue.id }}';
+				return;
+			{% endif %}
+			
 			var priceInput = $('#price'), button = $(this), currentPrice = $('#current-price');
 
 			currentPrice.hide();
@@ -928,6 +933,7 @@
 					dfd.resolve();
 					$(button).html('Price this Venue');
 					currentPrice.show();
+					currentPrice.find('span').html(priceInput.val());
 					priceInput.parent().css('display', 'none');
 				});
 
@@ -935,6 +941,21 @@
 				priceInput.parent().css('display', 'table');
 				$(this).html('Save');
 			}
+		});
+		
+		$('#send-message').click(function() {
+			var message = $('[name="message"]').val(),
+				dfd = saving($(this), $(this).parents('.contents').find('.alert'), 'Message has been sent');
+			
+			console.log(message)
+			
+			var response = $.post('/venues/send_message/{{ venue.id }}', {
+				'message' : message
+			});
+			
+			response.done(function() {
+				dfd.resolve();
+			});
 		});
 
 	}); 

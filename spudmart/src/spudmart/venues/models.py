@@ -5,6 +5,7 @@ from djangotoolbox.fields import ListField
 
 class Venue(models.Model):
     user = models.ForeignKey(User)
+    renter = models.ForeignKey(User, null= True)
     name = models.CharField(max_length = 200, default="This could be Your company")
     aka_name = models.CharField(max_length = 200, default="Common Venue Name")
     sport = models.CharField(max_length = 100)
@@ -30,7 +31,7 @@ class Venue(models.Model):
     phone = models.CharField(max_length = 200)
     email = models.CharField(max_length = 200)
     website = models.CharField(max_length = 200)
-    price = models.IntegerField(default = 0)
+    price = models.DecimalField(default = 0.0, decimal_places = 2, max_digits = 10)
     fax = models.CharField(max_length = 200)
     
     def __eq__(self, other):

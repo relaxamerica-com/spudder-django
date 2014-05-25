@@ -1,5 +1,5 @@
 <div class="" openTab="#map">
-	<i class="icon-map-marker {% if venue.coordinates %}ready{% endif %}" title="Map"> </i>
+	<i class="icon-map-marker {% if venue.longitude and venue.latitude %}ready{% endif %}" title="Map"> </i>
 </div>
 <div class="" openTab="#parking-details">
 	<i class="icon-truck {% if venue.parking_details and venue.parking_tips %}ready{% endif %}" title="Parking"> </i>

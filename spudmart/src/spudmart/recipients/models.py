@@ -11,12 +11,21 @@ class RecipientRegistrationState():
     FINISHED = 2
     TERMINATED = 3
 
-
-class Recipient(models.Model):
+class AmazonRecipient(models.Model):
     created_date = models.DateTimeField(auto_now_add=True)
-    team = models.ForeignKey(Team)
     recipient_token_id = models.CharField(max_length=255)
     refund_token_id = models.CharField(max_length=255)
     state = models.IntegerField(default=RecipientRegistrationState.NOT_STARTED)
     status_code = models.CharField(max_length=255)
+    
+    class Meta:
+        abstract = True
+
+class Recipient(AmazonRecipient):
     registered_by = models.ForeignKey(User)
+    team = models.ForeignKey(Team)
+    pass
+
+class VenueRecipient(AmazonRecipient):
+    groundskeeper = models.ForeignKey(User)
+    pass
