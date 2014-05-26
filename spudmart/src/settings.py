@@ -93,7 +93,7 @@ spudmart_settings = {
     'spudder_application_id': 'RwjN7ubrqVZSXcwd2AWaQtov6Mgsi7hAXZ510xTR',
     'spudder_rest_api_key': 'aY5jEVPGJadgWcd2gOecgnzMNKDS9Igx8d5DNU04',
     'spudder_base_url': 'https://spudmart.parseapp.com',
-    'spudmart_base_url': 'https://spudmart-dot-spudmart1.appspot.com',
+    'spudmart_base_url': 'https://spudmart1.appspot.com',
     'amazon_login_client_id': 'amzn1.application-oa2-client.f46864c6f8bb40d1bc2c3d211c514486'
 }
 
