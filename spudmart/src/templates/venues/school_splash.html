@@ -14,7 +14,6 @@
             
             <div class="row-fluid">
                 <div class="span12 contents">
-                    <div class="alert"></div>
                     <div id="venue-promo-video" class="active content">
                         <iframe width="560" height="315" src="//www.youtube.com/embed/H72B-GCMohs?rel=0"
                         style="display:block;margin:0 auto;"
@@ -32,7 +31,6 @@
                     <div class="row-fluid">
                         <div class="span6">                    
 		                    <form method="post" enctype="multipart/form-data">
-		                        <div class="alert"></div>
 		                        <div class="edit-mode">
 		                            <div class="btn btn-orange" id="save-name">
 		                                Save
@@ -47,29 +45,28 @@
                             </div>
                         </div>
                     </div>
-                    {% endif %}
                     
                     <div class="alert"></div>
                     
                     <div class="row-fluid edit-mode aligncenter">
                         <div class="span12">
                             <p>Show some school spirit and customize your page!</p>
-                            <form method="post" enctype="multipart/form-data">
+                            <form method="post" enctype="multipart/form-data" id="mascot-form">
                                 <label>Team Mascot: </label>
                                 {% if school.mascot %}
                                     <input name="mascot" value="{{ school.mascot }}">
                                 {% else %}
-                                    <input name="mascot" value="Your School Mascot">
+                                    <input name="mascot">
                                 {% endif %}
                             </form>
                         </div>
-                        
                     </div>
+                    {% endif %}
                     
                     <div class="row-fluid">
                         <div class="span12" >
                             {% if school.logo %}
-                                <img id="venue-logo" src="/file/serve/{{ school.logo.id }}" />
+                                <img style="margin:auto;display:block" id="logo" src="/file/serve/{{ school.logo.id }}"/>
                             {% else %}
                                 <div class="logo-placeholder" style="margin:0 auto;">
                                     Your Logo Here
@@ -81,7 +78,9 @@
                     <div class="row-fluid edit-mode">
                         <div class="span2"></div>
 	                    <div class="span8 aligncenter">
-	                        Upload a new logo: <input type="file" name="file" id="edit-logo" />
+	                       <form method="post" enctype="multipart/form-data" id="logo-form">
+	                            Upload a new logo: <input type="file" name="file" id="edit-logo" />
+	                       </form>
                         </div>
                         <div class="span2"></div>
                     </div>
@@ -110,12 +109,14 @@
 
                     <ul class="folio-detail offer-details">
                         <li>
-                            <label>Team Size: </label> {{ school.num_students }} registered 
-                            {% if school.mascot %}
-                                {{ school.mascot }}
-                            {% else %}
-                                students
-                            {% endif %} 
+                            <label>Team Size: </label> {{ school.num_students }} registered
+                            <span id="mascot">
+                                {% if school.mascot %}
+                                    {{ school.mascot }}
+                                {% else %}
+                                    students
+                                {% endif %}
+                            </span>
                         </li>
 
                         <li>
@@ -181,26 +182,8 @@
     window.preloadedOrange = $('<img src="/media/img/ajax-loader-orange.gif" />');
     window.preloadedBlack = $('<img src="/media/img/ajax-loader-black.gif" />');
     window.isEditMode = false;
-    window.currentSelectedSport = '{{ venue.sport }}';
 
     $(document).ready(function() {
-        function checkReadyContentsCount() {
-            return window.setInterval(function() {
-                if ($('.buttons .ready').length == 12) {
-                    $('#price-column').removeClass('hidden');
-                    window.clearInterval(checked);
-                }
-            }, 1000);
-        };
-        
-        var checked = checkReadyContentsCount();
-        
-        $('select[name="state"]').val('{{medical_address.state}}');
-
-        $('#venue-pics-carousel, #playing-surface-carousel').carousel({
-            interval : false
-        });
-
         var editMode = $('.edit-mode'), viewMode = $('.view-mode'), buttons = $('.buttons'), icons = buttons.find('i');
 
         $('#edit').click(function() {
@@ -218,8 +201,6 @@
                 window.isEditMode = true;
             }
         });
-
-        $(buttons).disableSelection();
 
         function show(element) {
             $('.contents > .active').removeClass('active');
@@ -249,13 +230,13 @@
         });
 
         $('#save-name').click(function() {
-            var form = $(this).parents('form'), 
-                files = $(form).serializeFiles(), 
-                filesList = $(form).find('input')[0].files, 
-                name = $(form).find('[name="name"]').val(), 
-                akaName = $(form).find('[name="aka_name"]').val(), 
-                dfd = saving($(this), $(form).find('.alert'), 'Customized page has been saved!'),
-                sport = $('[name="sport"]').val();
+        	var logo_form = $('#logo-form'),
+        	   files = $(logo_form).serializeFiles()
+        	   filesList = $(logo_form).find('input')[0].files,
+        	   mascot = $('#mascot-form').find('[name="mascot"]').val()
+               dfd = saving($(this), $('.alert'), 'Customized page has been saved!');
+            
+           
 
             $.get('/upload/get_upload_url', function(data) {
                 $.ajax({
@@ -268,20 +249,17 @@
                     success : function(data) {
                         var parsed = JSON.parse(data);
 
-                        var response = $.post('/venues/save_logo_and_name/{{ venue.id }}', {
+                        var response = $.post('/venues/{{ school.state }}/{{ school.name }}/save', {
                             'logo' : parsed['uploaded_files'],
-                            'name' : name,
-                            'aka_name' : akaName,
-                            'sport' : sport
+                            'mascot' : mascot,
                         });
 
                         response.done(function(data) {
-                            window.currentSelectedSport;
-                            
-                            $('#venue-name, #venue-name2').html(name);
-                            $('#venue-aka-name, #venue-aka-name2').html(akaName);
                             if (parsed['uploaded_files'].length > 0) {
-                                $('#venue-logo, #venue-logo2').attr('src', parsed['uploaded_files'][0]);
+                                $('#logo').attr('src', parsed['uploaded_files'][0]);
+                            }
+                            if (mascot !== ""){
+                            	$('#mascot').text(mascot)
                             }
                             
                             dfd.resolve();

@@ -155,6 +155,43 @@ def school(request, state, school_name):
                                                                  'school': school,
                                                                  'head' : head,
                                                                   })
+            
+# Customize school splash page
+def save_school(request, state, school_name):
+    """
+    Updates school mascot and logo.
+    
+    Args:
+        request: the HttpRequest object, should contain POST data including
+            the logo and mascot to be updated
+        state: the state in which the school is located, to find school in db 
+        school_name: the name of the school, to find school in db
+    Returns:
+        if POST request: A blank HttpResponse object (code 200)
+        if not: a HttpResponseNotAllowed object (code 405)
+    """
+    
+    if request.method == 'POST':
+        school = School.objects.get(state=state, name=school_name)
+        
+        # For logo
+        request_logo = request.POST.getlist('logo[]')
+        if len(request_logo):
+            logo_id = request_logo[0].split('/')[3]
+            logo = UploadedFile.objects.get(pk = logo_id)
+            school.logo = logo
+        
+        # For mascot
+        mascot = request.POST['mascot']
+        if mascot != '':
+            school.mascot = mascot
+            
+        school.save()
+        
+        return HttpResponse()
+    else:
+        return HttpResponseNotAllowed(['POST']) 
+    
 
 def import_school_data(request):
     if request.method == 'POST':
