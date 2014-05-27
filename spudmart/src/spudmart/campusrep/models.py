@@ -3,6 +3,8 @@ import uuid
 from django.contrib.auth.models import User
 from datetime import timedelta, datetime
 from spudmart.upload.models import UploadedFile
+from django.test import TestCase
+
 
 # 100 points to get from level 1 to 2 for venues
 VENUE_REP_LEVEL_MODIFIER = 100
@@ -208,6 +210,13 @@ class Student(models.Model):
     
     def level(self):
         return get_max_triangle_num_less_than(self.rep / STUDENT_REP_LEVEL_MODIFIER)
+    
+    def add_rep(self, points):
+        self.rep += points
+        self.save()
+        if self.referred_by:
+            referrer = Student.objects.get(user = self.referred_by)
+            referrer.add_rep(points)
 
 class Challenge(models.Model):
     ''' Stores information about challenges between schools based purely on rep points. 
@@ -244,4 +253,3 @@ class Challenge(models.Model):
             return False
         else:
             return None
-
