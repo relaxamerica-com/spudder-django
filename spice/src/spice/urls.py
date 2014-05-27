@@ -8,7 +8,7 @@ from spice.api import *
 
 urlpatterns = patterns('',
                        # Home page
-                       url(r'^$', 'spice.views.home', name='home'),
+                       # url(r'^$', 'spice.views.home', name='home'),
 
                        # API handlers
                        url(r'^api/location', location),

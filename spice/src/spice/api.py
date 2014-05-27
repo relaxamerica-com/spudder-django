@@ -2,11 +2,12 @@ from threading import Thread
 import json
 
 from django.http import HttpResponse
-from models import APIKeys
 import spice_settings
 
 import spice.spudmart.api
 import spice.socialnetworks
+
+import logging
 
 """
 
@@ -53,13 +54,6 @@ def validate_api_key(api_key):
         if api_key == spice_settings.static_api_key:
             return True
 
-    # Use database API key
-    elif auth_method == "dynamic":
-        api_key = APIKeys.objects.filter(api_key=api_key, is_active=True)
-
-        if len(api_key) > 0:
-            return True
-
     return False
 
 
@@ -94,6 +88,8 @@ Perform a social media query
 
 @async
 def location(request):
+    logging.debug("SPICE: api/locations stated")
+
     # Begin processing
     # Response object
     json_response = []
@@ -125,6 +121,8 @@ def location(request):
                     json_response.append({'venue_id': venue.venue_id, 'data': venue_social_network_json})
 
                 spice.spudmart.api.send_posts_for_venue(json_response)
+
+                logging.debug("SPICE: api/locations finished")
 
             else:
                 # Return a quick response with Error status
