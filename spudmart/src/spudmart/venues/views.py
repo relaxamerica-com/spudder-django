@@ -14,6 +14,8 @@ import settings
 from spudmart.donations.models import RentVenue, DonationState
 from google.appengine.api import mail
 from django.contrib.auth.decorators import login_required
+from spudmart.campusrep.models import School, Student, STATES
+from django.core.exceptions import ObjectDoesNotExist
 
 def view(request, venue_id):
     venue = Venue.objects.get(pk = venue_id)
