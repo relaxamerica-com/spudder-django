@@ -2,6 +2,7 @@ from django.contrib.auth.models import User
 from django.db import models
 from spudmart.upload.models import UploadedFile
 from djangotoolbox.fields import ListField
+from spudmart.campusrep.models import get_max_triangle_num_less_than, VENUE_REP_LEVEL_MODIFIER
 
 class Venue(models.Model):
     user = models.ForeignKey(User)
@@ -33,6 +34,14 @@ class Venue(models.Model):
     website = models.CharField(max_length = 200)
     price = models.DecimalField(default = 0.0, decimal_places = 2, max_digits = 10)
     fax = models.CharField(max_length = 200)
+
+    # Just to stay consistent with fcns created in campusrep.rep
+    rep = models.IntegerField(default=0)
+    
+    def level(self):
+        return get_max_triangle_num_less_than(self.rep / VENUE_REP_LEVEL_MODIFIER)
+    
+    
     
     def __eq__(self, other):
         return self.pk == other.pk

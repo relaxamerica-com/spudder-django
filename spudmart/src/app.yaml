@@ -1,4 +1,4 @@
-application: spudmart1
+application: spudmart
 version: spudmart
 runtime: python27
 api_version: 1
@@ -21,6 +21,10 @@ handlers:
 
 - url: /media
   static_dir: templates/static_files
+
+- url: /admin/.*
+  script: $PYTHON_LIB/google/appengine/ext/admin
+  login: admin
 
 - url: /.*
   script: djangoappengine/main/main.py

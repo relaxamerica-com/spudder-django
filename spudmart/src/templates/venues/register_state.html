@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container clearfix" id="venue-account">
+	<div class="well">
+		<p class="header">Join Your Team!</p>
+		<p> Now, you have to select your school.</p>
+		{% if code %}
+		<p> CODE</p>
+		<form action="/venues/register/{{ code }}" method = post>
+		{% else %}
+		<form action="/venues/register" method="post">
+		{% endif %}
+			<div class="control-group">
+				<div class="control-label">
+					State: {{ state }}
+				</div>
+				
+				<div class="control-label">
+				    <a href="/venues/register">Click here to change state.</a>
+				</div>
+				<br>
+				
+				<div class="controls">
+				    <input type="hidden" name="state" value="{{ abbr }}"> 
+				</div>
+				
+				<div class="controls">
+					<select name="school">
+					   {% for sch in schools %}
+					       <option value="{{ sch.name }}">{{ sch.name }}</option>
+					   {% endfor %}
+					</select>
+				</div>
+			</div>
+			
+			<div class="control-group">
+				<div class="controls">
+					<button class="btn btn-orange" type="submit">Select this School</button>
+				</div>
+			</div>			
+		</form>
+	</div>
+</div>
+{% endblock content %}
