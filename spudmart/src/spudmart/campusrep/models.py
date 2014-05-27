@@ -134,12 +134,12 @@ class Student(models.Model):
         
         The database is indexed on User since that's how the students are most often looked up.
     '''    
-    user = models.ForeignKey(User, unique = True, db_index = True)
+    user = models.ForeignKey(User, unique = True, db_index = True, related_name="student_user")
     school = models.ForeignKey(School)
     isHead = models.BooleanField()
     
     referral_code = models.CharField(max_length=128, unique=True)
-    referred_by = models.ForeignKey(User, blank=True, null=True)
+    referred_by = models.ForeignKey(User, blank=True, null=True, related_name="referred_by_user")
     
     rep = models.IntegerField(default = 0)
     
@@ -214,9 +214,9 @@ class Challenge(models.Model):
         Stores the time when the challenge ends and the two schools involved.
     '''
     # The school issuing the challenge
-    challenger = models.ForeignKey(School)
+    challenger = models.ForeignKey(School, related_name="challenging_school")
     # The school being challenged
-    challenged = models.ForeignKey(School)
+    challenged = models.ForeignKey(School, related_name="challenged_school")
     
     challenge_end = models.DateTimeField()
 
