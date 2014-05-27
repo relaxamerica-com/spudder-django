@@ -5,8 +5,8 @@ from djangotoolbox.fields import ListField
 from spudmart.campusrep.models import get_max_triangle_num_less_than, VENUE_REP_LEVEL_MODIFIER
 
 class Venue(models.Model):
-    user = models.ForeignKey(User)
-    renter = models.ForeignKey(User, null= True)
+    user = models.ForeignKey(User, related_name="owner_user")
+    renter = models.ForeignKey(User, null= True, related_name="renter_user")
     name = models.CharField(max_length = 200, default="This could be Your company")
     aka_name = models.CharField(max_length = 200, default="Common Venue Name")
     sport = models.CharField(max_length = 100)
