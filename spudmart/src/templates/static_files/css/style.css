@@ -205,6 +205,11 @@ img.img-polaroid {
   top: 0;
   
 }
+#header-logo {
+	position: absolute;
+	right: 28px;
+	top: 0;
+}
 #header-hidden-link a.toggle-link,
 #header-hidden-link a.top-link {
 	outline:0;
