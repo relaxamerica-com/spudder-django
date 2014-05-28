@@ -37,6 +37,7 @@ INSTALLED_APPS = (
     'spudmart.venues',
     'spudmart.upload',
     'spudmart.sponsors',
+    'spudmart.api',
     'spudmart.campusrep',
 )
 
@@ -114,13 +115,23 @@ karol_settings = {
     'amazon_login_client_id': 'amzn1.application-oa2-client.d8fccc9c77624577898dca9ff517eff3'
 }
 
+ahmed_settings = {
+    'spudder_application_id': '',
+    'spudder_rest_api_key': '',
+    'spudder_base_url': 'https://karol.parseapp.com',
+    'spudmart_base_url': 'https://ahmed-dot-spudmart1.appspot.com',
+    'amazon_login_client_id': 'amzn1.application-oa2-client.d8fccc9c77624577898dca9ff517eff3'
+}
+
 shared_settings = {
     'spudmart': spudmart_settings,
     'paymentsspudmart': spudmart_settings,  # backend
     'lukasz': lukasz_settings,
     'paymentslukasz': lukasz_settings,  # backend
     'karol': karol_settings,
-    'paymentskarol': karol_settings  # backend
+    'paymentskarol': karol_settings,  # backend,
+    'ahmed': ahmed_settings,
+    'paymentsahmed': ahmed_settings  # backend
 }
 
 SPUDDER_APPLICATION_ID = shared_settings[app_version]['spudder_application_id']
