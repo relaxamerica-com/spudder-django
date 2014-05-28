@@ -53,31 +53,41 @@
                         </div>
                     </div>
 
-                    <!-- logo and social -->
-                    <div class="row">
-                        {% block logo %}{% endblock%}
+                    {% block sharing %}
+                    <div class="span12">
                         <div class="span8">
-                            <div class="social-links pull-right">
+                            <div class="social-links pull-left">
                                 <table>
                                     <tr>
                                         <td class="twitter-cell">
-{#                                            <%- twitterShareButton('Checkout this great entity!') %>#}
-                                        </td>
+	                                        <a href="https://twitter.com/share" class="twitter-share-button" data-text="<%= tweet_text %>" data-size="large" data-related="spudderdotcom" data-dnt="true">Tweet</a>
+                                            <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>                                        </td>
                                         <td class="google-plus-cell">
-{#                                            <%- googlePlusShareButton() %>#}
+                                            <div class="g-plus" data-action="share" data-annotation="bubble" data-height="24"></div>
+                                            <script type="text/javascript">
+                                            (function() {
+                                                var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+                                                po.src = 'https://apis.google.com/js/platform.js';
+                                                var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+                                            })();
+                                            </script>
                                         </td>
                                         <td class="facebook-cell">
-{#                                            <%- facebookShareButton() %>#}
+                                            <div id="fb-root"> </div>
+                                            <div class="fb-share-button" data-type="button_count"> </div>
                                         </td>
                                         <td class="email-cell">
-{#                                            <%- emailShareButton(meta.url) %>#}
+                                            <a href="mailto:?subject=I wanted you to see this site&amp;body=Check out this site {{ request.build_absolute_uri }}." 
+                                                title="Share by Email">
+                                                <span class="icon-envelope icon-64" style="align: bottom;"></span>
+                                            </a>
                                         </td>
                                     </tr>
                                 </table>
                             </div>
                         </div>
                     </div>
-                    <!-- end of logo and social -->
+                    {% endblock %}
                 </div>
             </div>
 

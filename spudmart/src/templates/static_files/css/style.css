@@ -4737,3 +4737,8 @@ div[id^=donation-modal] .loading {
 .accounts-form-container .accounts-form-header h4 {
     text-align: center;
 }
+
+#description-input {
+	width:100%;
+    font-size: 18px;
+}

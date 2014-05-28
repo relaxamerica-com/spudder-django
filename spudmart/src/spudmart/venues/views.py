@@ -1,7 +1,8 @@
 from django.shortcuts import render, get_object_or_404
 from spudmart.venues.models import Venue
 from django.contrib.auth.models import User
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponse, \
+    HttpResponseNotAllowed
 from django.contrib.auth import authenticate, login
 from spudmart.upload.models import UploadedFile
 import simplejson
@@ -17,6 +18,7 @@ from django.contrib.auth.decorators import login_required
 from spudmart.campusrep.models import School, Student, STATES
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils.datastructures import MultiValueDictKeyError
+from spudmart.campusrep.utils import import_schools
 
 def view(request, venue_id):
     venue = Venue.objects.get(pk = venue_id)
@@ -205,6 +207,10 @@ def save_school(request, state, school_name):
         mascot = request.POST['mascot']
         if mascot != '':
             school.mascot = mascot
+            
+        description = request.POST['description']
+        print description
+        school.description = description
             
         school.save()
         

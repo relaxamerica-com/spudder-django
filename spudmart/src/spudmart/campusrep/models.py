@@ -95,6 +95,7 @@ class School(models.Model):
     state = models.CharField(max_length = 2)
     mascot = models.CharField(max_length = 32, null = True)
     logo = models.ForeignKey(UploadedFile, null = True)
+    description = models.TextField()
     
     def level(self):
         return get_max_triangle_num_less_than(self.get_rep() / SCHOOL_REP_LEVEL_MODIFIER)

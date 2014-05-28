@@ -1,7 +1,9 @@
-<a href="mailto:?subject=I wanted you to see this site&amp;body=Check out this site <%= path %>." 
-	title="Share by Email">
-	<img src="http://png-2.findicons.com/files/icons/573/must_have/48/mail.png"/>
-</a>
+<div>
+	<a href="mailto:?subject=I wanted you to see this site&amp;body=Check out this site {{ request.build_absolute_uri }}." 
+	    title="Share by Email">
+	    <span class="icon-envelope"></span>
+	</a>
+</div>
 <div id="fb-root"> </div>
 <div class="fb-share-button" data-type="button_count"> </div>
 <!-- Place this tag where you want the share button to render. -->
