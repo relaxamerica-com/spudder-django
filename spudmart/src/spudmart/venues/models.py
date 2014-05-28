@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from django.db import models
 from spudmart.upload.models import UploadedFile
 from djangotoolbox.fields import ListField
-from spudmart.campusrep.models import get_max_triangle_num_less_than, VENUE_REP_LEVEL_MODIFIER
+from spudmart.CERN.models import get_max_triangle_num_less_than, VENUE_REP_LEVEL_MODIFIER
 
 class Venue(models.Model):
     user = models.ForeignKey(User, related_name="owner_user")

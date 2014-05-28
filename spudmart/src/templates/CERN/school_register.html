@@ -8,7 +8,7 @@
     <div class="well">
         <p class="header">Sign Up as a <strong>Groundskeeper!</strong></p>
 
-        <form action="/venues/{{ school.state }}/{{ school.name }}/register/" method="post">
+        <form action="/CERN/{{ school.state }}/{{ school.name }}/register/" method="post">
             {% if referrer %}
               <p class="header"> You were referred by: {{ referrer.user.username }}</p>
               <input type="hidden" name="code" value="{{ code }}">

@@ -1,4 +1,4 @@
-from spudmart.campusrep.models import Student, School
+from spudmart.CERN.models import Student, School
 from spudmart.venues.models import Venue
 
 # Rep values for the following tasks:

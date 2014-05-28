@@ -200,9 +200,6 @@
 <script type="text/javascript" src="/media/dashboard/js/jquery-ui-1.10.3.custom.min.js"></script>
 <script type="text/javascript" src="/media/js/parseUri.js"></script>
 <script type="text/javascript">
-    window.venueName = "{{ venue.name }}";
-    window.currentVenueLongitude = "{{ venue.longitude }}";
-    window.currentVenueLatitude = "{{ venue.latitude }}";
     window.preloadedOrange = $('<img src="/media/img/ajax-loader-orange.gif" />');
     window.preloadedBlack = $('<img src="/media/img/ajax-loader-black.gif" />');
     window.isEditMode = false;
@@ -290,7 +287,7 @@
                     success : function(data) {
                         var parsed = JSON.parse(data);
 
-                        var response = $.post('/venues/{{ school.state }}/{{ school.name }}/save', {
+                        var response = $.post('/CERN/{{ school.state }}/{{ school.name }}/save', {
                             'logo' : parsed['uploaded_files'],
                             'mascot' : mascot,
                             'description' : description,

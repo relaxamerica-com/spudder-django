@@ -1,5 +1,5 @@
 from django.utils import unittest
-from spudmart.campusrep.models import School, Student#, STATES
+from spudmart.CERN.models import School, Student#, STATES
 from django.contrib.auth.models import User
 from django.test import TestCase
 import random

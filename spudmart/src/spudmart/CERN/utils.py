@@ -1,4 +1,4 @@
-from spudmart.campusrep.models import School
+from spudmart.CERN.models import School
 import csv
 from django.conf import settings
 import os
@@ -7,7 +7,7 @@ def import_schools():
     # First, remove all existing schools:
     School.objects.all().delete()
     
-    path_to_file = os.path.join(settings.PROJECT_ROOT, 'spudmart', 'campusrep', 'schools.csv')
+    path_to_file = os.path.join(settings.PROJECT_ROOT, 'spudmart', 'CERN', 'schools.csv')
     with open(path_to_file, 'rb') as csvfile:
         schools = csv.reader(csvfile, delimiter = '|')
         

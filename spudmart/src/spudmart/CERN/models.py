@@ -3,7 +3,6 @@ import uuid
 from django.contrib.auth.models import User
 from datetime import timedelta, datetime
 from spudmart.upload.models import UploadedFile
-from django.test import TestCase
 
 
 # 100 points to get from level 1 to 2 for venues
