@@ -3,7 +3,8 @@ import uuid
 from django.contrib.auth.models import User
 from datetime import timedelta, datetime
 from spudmart.upload.models import UploadedFile
-
+from djangotoolbox.fields import ListField
+from django.db.models.fields import CharField
 
 # 100 points to get from level 1 to 2 for venues
 VENUE_REP_LEVEL_MODIFIER = 100
@@ -251,3 +252,10 @@ class Challenge(models.Model):
             return False
         else:
             return None
+
+class MailingList(models.Model):
+    emails = ListField()
+    project = CharField()
+
+    def __str__(self):
+        return "%s, %s"%(self.project, self.emails)

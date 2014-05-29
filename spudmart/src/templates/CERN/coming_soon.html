@@ -1,0 +1,31 @@
+{% extends 'CERN/dashboard.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="span10">
+        <br>
+        <br>
+        <br>
+        <h3>Sorry, this feature is still in development.</h3>
+        <h4>If you would like to be contacted when {{ project }} becomes available, simply click the button below.</h4>
+        <h4>We'll send you an email, at the email address used for this account, when this feature is available.</h4>
+        {% if joined %}
+        <button class="btn btn-large" id="join">You have already joined the mailing list.</button>
+        {% else %}
+        <button class="btn btn-large btn-orange" id="join">Join {{ project }} mailing list</button>
+        {% endif %}
+    </div>
+</div>
+
+<script type="text/javascript">
+ $('#join').click(function(){
+     if ($(this).text() == "Join {{ project }} mailing list"){
+    	 $(this).removeClass('btn-orange');
+    	 $(this).text("Mailing list joined.");
+         $.post('/CERN/add_email_alert/', 
+        		{ 'email' : "{{ request.user.email }}",
+        	      'project' : "{{ project }}", });
+     }
+ });
+</script>
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends 'CERN/dashboard.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="span5">
+        <h6>Use this link to refer students at your school:</h6>
+        <p><input value="{{ request.META.HTTP_HOST }}{{ same_referral_url }}" readonly> <button class="btn btn-small btn-orange" onclick="document.location='{{ same_referral_url }}'">Visit</button></p>
+        <div>
+           Share to common sites: &nbsp;&nbsp;&nbsp;
+           <a href="JavaScript:newPopup('http://www.facebook.com/sharer/sharer.php?u=http://{{ request.META.HTTP_HOST }}{{ same_referral_url }}')"><i class="icon-facebook icon-square"></i></a>
+           <a href="JavaScript:newPopup('http://www.linkedin.com/shareArticle?mini=true&url=http://{{ request.META.HTTP_HOST }}{{ same_referral_url }}')"><i class="icon-linkedin icon-square"></i></a>
+           <a href="JavaScript:newPopup('http://twitter.com/intent/tweet?text=Join%20my%20CERN%20team:%20http://{{ request.META.HTTP_HOST|urlencode }}{{ same_referral_url|urlencode }}')"><i class="icon-twitter icon-square"></i></a>
+           <a href="JavaScript:newPopup('https://plus.google.com/share?url=http://{{ request.META.HTTP_HOST }}{{ same_referral_url }}')"><i class="icon-google-plus icon-square"></i></a>
+        </div>
+        
+        <br>
+        
+        <h6>Use this link to refer students at another school:</h6>
+        <p><input value="{{ request.META.HTTP_HOST }}{{ referral_url }}" readonly> <button class="btn btn-small btn-orange" onclick="document.location='{{ referral_url }}'">Visit</button></p>
+        <div>
+           Share to common sites: &nbsp;&nbsp;&nbsp;
+           <a href="JavaScript:newPopup('http://www.facebook.com/sharer/sharer.php?u=http://{{ request.META.HTTP_HOST }}{{ referral_url }}')"><i class="icon-facebook icon-square"></i></a>
+           <a href="JavaScript:newPopup('http://www.linkedin.com/shareArticle?mini=true&url=http://{{ request.META.HTTP_HOST }}{{ referral_url }}')"><i class="icon-linkedin icon-square"></i></a>
+           <a href="JavaScript:newPopup('http://twitter.com/intent/tweet?text=Join%20my%20CERN%20team:%20http://{{ request.META.HTTP_HOST|urlencode }}{{ referral_url|urlencode }}')"><i class="icon-twitter icon-square"></i></a>
+           <a href="JavaScript:newPopup('https://plus.google.com/share?url=http://{{ request.META.HTTP_HOST }}{{ referral_url }}')"><i class="icon-google-plus icon-square"></i></a>
+        </div>
+    </div>
+    
+    <div class="span5">
+        <div id="analytics">
+            <p>You have referred {{ num_referred }} CERN members!</p>
+        </div>
+    </div>
+</div>
+        <script type="text/javascript">
+          function newPopup(url){
+              window.open(url, 'popup', 'height=500, width=500, left=100, top-10, scrollbars=yes,toolbar=no,menubar=no')
+          }
+        </script>
+        <script src="https://apis.google.com/js/plusone.js"></script>
+{% endblock %}

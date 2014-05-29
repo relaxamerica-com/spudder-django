@@ -3,10 +3,11 @@ from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect, HttpResponse, \
     HttpResponseNotAllowed
 from spudmart.upload.models import UploadedFile
-from spudmart.CERN.models import School, Student, STATES
+from spudmart.CERN.models import School, Student, STATES, MailingList
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils.datastructures import MultiValueDictKeyError
 from spudmart.CERN.utils import import_schools
+from django.contrib.auth.decorators import login_required
 
 def register(request, code = None):
     sorted_states = sorted(STATES.items(), key = lambda x:x[1])
@@ -91,7 +92,7 @@ def register_school(request, state, school_name, code = None):
                                                                })
 
 # School splash page
-def school(request, state, school_name):
+def school(request, state, school_name, code=None):
     try:
         school = School.objects.get(state = state.upper(), name = school_name.replace('_', ' '))
     except:
@@ -155,3 +156,96 @@ def import_school_data(request):
     else:
         return HttpResponseNotAllowed(['POST'])
 
+@login_required
+def dashboard(request):
+    return render(request, 'CERN/dashboard.html')
+
+@login_required
+def social_media(request):
+    student = Student.objects.get(user = request.user )
+    num_referred = len(Student.objects.filter(referred_by = request.user))
+    referral_url = '/CERN/register/%s'%student.referral_code
+    same_referral_url = '/CERN/%s/%s/register/%s'%(student.school.state, 
+                                                            student.school.name, 
+                                                            student.referral_code)
+    return render(request, 'CERN/social_media.html', 
+                  { 'num_referred' : num_referred,
+                    'referral_url' : referral_url,
+                    'same_referral_url' : same_referral_url,
+                  })
+@login_required
+def content(request):
+    project = 'Blogging'
+    joined = None
+    try:
+        mailing = MailingList.objects.get(project = project)
+    except:
+        pass
+    else:
+        if request.user.email in mailing.emails:
+            joined = True
+        else:
+            joined = False
+    return render(request, 'CERN/coming_soon.html',
+                  { 'project' : project, 'joined' : joined, })
+
+@login_required
+def design(request):
+    project = 'Sponsor Page Design'
+    joined = None
+    try:
+        mailing = MailingList.objects.get(project = project)
+    except:
+        pass
+    else:
+        if request.user.email in mailing.emails:
+            joined = True
+        else:
+            joined = False
+    return render(request, 'CERN/coming_soon.html',
+                  { 'project' : project, 'joined' : joined, })
+
+@login_required
+def testing(request):
+    project = 'Quality Assurance Testing'
+    joined = None
+    try:
+        mailing = MailingList.objects.get(project = project)
+    except:
+        pass
+    else:
+        if request.user.email in mailing.emails:
+            joined = True
+        else:
+            joined = False
+    return render(request, 'CERN/coming_soon.html',
+                  { 'project' : project, 'joined' : joined, })
+
+@login_required
+def mobile(request):
+    project = 'Mobile App'
+    joined = None
+    try:
+        mailing = MailingList.objects.get(project = project)
+    except:
+        pass
+    else:
+        if request.user.email in mailing.emails:
+            joined = True
+        else:
+            joined = False
+    return render(request, 'CERN/coming_soon.html',
+                  { 'project' : project, 'joined' : joined, })
+    
+def add_email_alert(request):
+    if request.method == 'POST':
+        try:
+            mailinglist = MailingList.objects.get(project = request.POST['project'])
+        except ObjectDoesNotExist:
+            mailinglist = MailingList(emails = [], project = request.POST['project'])
+        
+        mailinglist.emails.append(request.POST['email'])
+        mailinglist.save()
+        return HttpResponse("Added user to list.")
+    else:
+        return HttpResponseNotAllowed(['POST'])

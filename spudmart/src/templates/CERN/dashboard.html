@@ -3,6 +3,7 @@
 <head>
     {% include 'dashboard/parts/meta.html' %}
     {% block meta %}{% endblock %}
+    {% include 'parts/scripts.html' %}
 </head>
 
 <body class="skin-3">
@@ -300,7 +301,7 @@
                     </div>
                 </div><!--#sidebar-shortcuts-->
 
-                {% include 'dashboard/parts/leftSideNav.html' %}
+                {% include 'CERN/parts/sideNav.html' %}
 
                 <div class="sidebar-collapse" id="sidebar-collapse">
                     <i class="icon-double-angle-left"></i>
@@ -310,7 +311,9 @@
             <div class="main-content">
                 {% block breadcrumbs %} {% endblock breadcrumbs %}
                 <div class="page-content">
-                    {% block content %} {% endblock content %}
+                    {% block content %} 
+                        {% include 'CERN/parts/grid.html' %} 
+                    {% endblock content %}
                 </div>
 
             </div><!--/.main-content-->
