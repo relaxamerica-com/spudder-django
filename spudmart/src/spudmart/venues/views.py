@@ -71,7 +71,7 @@ def login_view(request):
             login(request, user)
             return HttpResponseRedirect('/venues/list')
     
-    return render(request, 'venues/login.html', { 'errors' : errors }
+    return render(request, 'venues/login.html', { 'errors' : errors, })
 # VENUE ENDPOINTS
 
 def save_coordinates(request, venue_id):
