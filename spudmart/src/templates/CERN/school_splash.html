@@ -7,10 +7,34 @@
 {% endblock meta %}
 
 {% block content %}
+    
 <div class="container clearfix" id="venue-view">
+    <br>
     <div class="row">
         <div class="span7">
-            <h5 class="venue-header clearfix aligncenter"> {{ school.name }} </h5>
+            <h5 class="venue-header clearfix aligncenter"> {{ school.name }} CERN Team </h5>
+            
+            
+                          
+		    <div class="accounts-form-body">
+		        <form class="form-horizontal" action="/accounts/login" id="registration-form" method="POST">
+		            {% if error %}
+		            <div class="alert alert-error"><%= error %></div>
+		            {% endif %}
+		
+		            <input type="hidden" name="returnURL" {% if returnURL %}value="{{ returnURL }}"{% endif %}>
+		
+		            <div class="control-group">
+		                <p class="aligncenter">
+		                    <a href="#" id="LoginWithAmazon">
+		                        <img border="0" alt="Login with Amazon"
+		                             src="https://images-na.ssl-images-amazon.com/images/G/01/lwa/btnLWA_gold_156x32.png"
+		                             width="156" height="32" />
+		                    </a>
+		                </p>
+		            </div>
+		        </form>
+		    </div>
             
             <div class="row-fluid">
                 <div class="span12 contents">
@@ -72,7 +96,7 @@
                         <div class="span6">                    
 		                    <form method="post" enctype="multipart/form-data">
 		                        <div class="edit-mode">
-		                            <div class="btn btn-orange" id="save">
+		                            <div class="btn btn-orange" id="save-right">
 		                                Save
 		                            </div>
 		                        </div>
@@ -80,13 +104,14 @@
                         </div>
                         
                         <div class="span6">
-                            <div class="btn btn-orange pull-right" id="edit" style="margin:0 auto;">
+                            <div class="btn btn-orange pull-right" id="edit-right" style="margin:0 auto;">
                                 Edit Mode
                             </div>
                         </div>
                     </div>
                     
                     <div class="alert"></div>
+                    <h6 class="aligncenter">School Profile</h6>
                     
                     <div class="row-fluid edit-mode aligncenter">
                         <div class="span12">
@@ -104,7 +129,7 @@
                     {% endif %}
                     
                     <div class="row-fluid">
-                        <div class="span12" >
+                        <div class="span12 view-mode" >
                             {% if school.logo %}
                                 <img style="margin:auto;display:block" id="logo" src="/file/serve/{{ school.logo.id }}"/>
                             {% else %}
@@ -113,20 +138,24 @@
                                 </div>
                             {% endif %} 
                         </div>
+                        <div class="span12 edit-mode aligncenter">
+                            <p><label>Upload a custom Logo:</label></p>
+                            <p>Don't use your school's logo or anything else that has a trademark. Create something new instead!</p>
+                        </div>
                     </div>
                     
                     <div class="row-fluid edit-mode">
                         <div class="span2"></div>
 	                    <div class="span8 aligncenter">
 	                       <form method="post" enctype="multipart/form-data" id="logo-form">
-	                            Upload a new logo: <input type="file" name="file" id="edit-logo" />
+	                            <input type="file" name="file" id="edit-logo" />
 	                       </form>
                         </div>
                         <div class="span2"></div>
                     </div>
 
                     <div class="row-fluid">
-                        <div class="span8 details-header">
+                        <div class="span12 details-header aligncenter">
                             Join {{ school.name }}'s Campus Entrepenuer Recruiting Network (CERN) Team! 
                         </div>
                     </div>
@@ -160,28 +189,7 @@
                           <p class="aligncenter"><label>Sign up now!</label></p>
                           <p>Joining with Amazon allows us to <a href="https://payments.amazon.com/personal/money?ld=EL-www.amazon.comPA">pay you for the work you do</a> with CERN. Plus, it's easier than remembering another account.</p>
                           <p>If you don't have an Amazon account, you can create one using this link. <a class="icon-question-sign" href="#" title="Learn More"></a></p>
-                    </ul>
-                          
-    <div class="accounts-form-body">
-        <form class="form-horizontal" action="/accounts/login" id="registration-form" method="POST">
-            {% if error %}
-            <div class="alert alert-error"><%= error %></div>
-            {% endif %}
-
-            <input type="hidden" name="returnURL" {% if returnURL %}value="{{ returnURL }}"{% endif %}>
-
-            <div class="control-group">
-                <p class="aligncenter">
-                    <a href="#" id="LoginWithAmazon">
-                        <img border="0" alt="Login with Amazon"
-                             src="https://images-na.ssl-images-amazon.com/images/G/01/lwa/btnLWA_gold_156x32.png"
-                             width="156" height="32" />
-                    </a>
-                </p>
-            </div>
-        </form>
-    </div>
-	                
+                    </ul>	                
                 </div>
             </aside>
         </div>
@@ -266,7 +274,7 @@
             thumbnail : false
         });
 
-        $('#save').click(function() {
+        function onsave() {
         	var logo_form = $('#logo-form'),
         	   files = $(logo_form).serializeFiles()
         	   filesList = $(logo_form).find('input')[0].files,
@@ -308,6 +316,8 @@
                 });
             });
         });
+    
+    
     }); 
 </script>
 <script>

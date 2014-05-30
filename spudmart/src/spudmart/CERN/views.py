@@ -107,6 +107,7 @@ def school(request, state, school_name, code=None):
             return render(request, 'CERN/school_splash.html', { 
                                                                  'school': school,
                                                                  'head' : head,
+                                                                 'code' : code,
                                                                   })
             
 # Customize school splash page
