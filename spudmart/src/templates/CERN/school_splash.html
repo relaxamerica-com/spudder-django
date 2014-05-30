@@ -274,7 +274,7 @@
             thumbnail : false
         });
 
-        function onsave() {
+        $('#save').click(function() {
         	var logo_form = $('#logo-form'),
         	   files = $(logo_form).serializeFiles()
         	   filesList = $(logo_form).find('input')[0].files,
