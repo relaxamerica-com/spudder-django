@@ -1,5 +1,4 @@
 from spudmart.donations.models import Donation, DonationState
-from spudmart.utils.app_identity import get_application_version
 from django.core.cache import cache
 from spudmart.utils.cache import get_key
 
@@ -16,10 +15,8 @@ class SponsorMiddleware(object):
         is_sponsor = cache.get(cache_key)
 
         if is_sponsor is None:
-            app_version = get_application_version()
             donations = Donation.objects.filter(
                 donor=request.user,
-                spudder_app=app_version,
                 state=DonationState.FINISHED
             )
 

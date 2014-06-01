@@ -13,6 +13,7 @@ class DonationState():
     FINISHED = 3
     TERMINATED = 4
 
+
 class AmazonPayment(models.Model):
     created_date = models.DateTimeField(auto_now_add=True)
     donor = models.ForeignKey(User)
@@ -21,14 +22,15 @@ class AmazonPayment(models.Model):
     sender_token_id = models.CharField(max_length=255)
     status_code = models.CharField(max_length=255)
     error_message = models.CharField(default='', max_length=255)
-    spudder_app = models.CharField(max_length=255)
-    
+
     class Meta:
         abstract = True
+
 
 class Donation(AmazonPayment):
     offer = models.ForeignKey(TeamOffer, related_name='donation_offer')
     
+
 class RentVenue(AmazonPayment):
     venue = models.ForeignKey(Venue)
     

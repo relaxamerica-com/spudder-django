@@ -1,7 +1,7 @@
 import os
 import mimetypes
 from djangoappengine.settings_base import *
-from spudmart.utils.app_identity import get_application_version
+from spudmart.utils.app_identity import get_spudmart_app_name
 
 # Activate django-dbindexer for the default database
 
@@ -9,14 +9,11 @@ DATABASES['native'] = DATABASES['default']
 DATABASES['default'] = {'ENGINE': 'dbindexer', 'TARGET': 'native', 'HIGH_REPLICATION' : True}
 AUTOLOAD_SITECONF = 'indexes'
 
-DEBUG=True
+DEBUG = True
 
 APP_NAME = 'Spudmart'
 
 AUTH_PROFILE_MODULE = 'accounts.UserProfile'
-
-AWS_ACCESS_KEY_ID = 'AKIAIEUN2XKQF4ZU7UDA'
-AWS_SECRET_KEY_ID = 'CIwpNtDm6OBGUiOGxjZ+XqdOjMPhhaFgTi7c1Ah/'
 
 INSTALLED_APPS = (
     'django.contrib.admin',
@@ -88,57 +85,46 @@ ACCOUNT_ACTIVATION_DAYS = 5
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = '8lu*6g0lg)9z!ba+a$ehk)xt)x%rxgb$i1&amp;022shmi1jcgihb*'
 
-app_version = get_application_version()
-# app_version = 'spudmart'
-
-spudmart_settings = {
-    'spudder_application_id': 'RwjN7ubrqVZSXcwd2AWaQtov6Mgsi7hAXZ510xTR',
-    'spudder_rest_api_key': 'aY5jEVPGJadgWcd2gOecgnzMNKDS9Igx8d5DNU04',
-    'spudder_base_url': 'https://spudmart.parseapp.com',
-    'spudmart_base_url': 'https://spudmart1.appspot.com',
-    'amazon_login_client_id': 'amzn1.application-oa2-client.f46864c6f8bb40d1bc2c3d211c514486'
-}
-
-lukasz_settings = {
-    'spudder_application_id': 'QZjpmUJQEwBE6Wc0YfKEMRwv2C5Aeb4qQbopyIg9',
-    'spudder_rest_api_key': 'S47GCWTSehKpwwJ2y8iXVnoYLWqOoPyydKiyWYYb',
-    'spudder_base_url': 'https://spudmartlukasz.parseapp.com',
-    'spudmart_base_url': 'https://lukasz-dot-spudmart1.appspot.com',
-    'amazon_login_client_id': 'amzn1.application-oa2-client.de78cbafe055444aa00e07a445644d16'
-}
-
-karol_settings = {
-    'spudder_application_id': 'YU4g6sCW8Dvl6khJsVYgXhr20Pu5zaaLcIQ4oRON',
-    'spudder_rest_api_key': 'AbvJ682IvzXdWMMi1CbdONZHZhdJH4gFEyTWo4k9',
-    'spudder_base_url': 'https://karol.parseapp.com',
-    'spudmart_base_url': 'https://karol-dot-spudmart1.appspot.com',
-    'amazon_login_client_id': 'amzn1.application-oa2-client.d8fccc9c77624577898dca9ff517eff3'
-}
-
-ahmed_settings = {
-    'spudder_application_id': '',
-    'spudder_rest_api_key': '',
-    'spudder_base_url': 'https://karol.parseapp.com',
-    'spudmart_base_url': 'https://ahmed-dot-spudmart1.appspot.com',
-    'amazon_login_client_id': 'amzn1.application-oa2-client.d8fccc9c77624577898dca9ff517eff3'
-}
+app_name = get_spudmart_app_name()
 
 shared_settings = {
-    'spudmart': spudmart_settings,
-    'paymentsspudmart': spudmart_settings,  # backend
-    'lukasz': lukasz_settings,
-    'paymentslukasz': lukasz_settings,  # backend
-    'karol': karol_settings,
-    'paymentskarol': karol_settings,  # backend,
-    'ahmed': ahmed_settings,
-    'paymentsahmed': ahmed_settings  # backend
+    'spudmart1': {  # main testing environment
+        'spudder_application_id': 'RwjN7ubrqVZSXcwd2AWaQtov6Mgsi7hAXZ510xTR',
+        'spudder_rest_api_key': 'aY5jEVPGJadgWcd2gOecgnzMNKDS9Igx8d5DNU04',
+        'spudder_base_url': 'https://spudmart.parseapp.com',
+        'spudmart_base_url': 'https://spudmart1.appspot.com',
+        'amazon_login_client_id': 'amzn1.application-oa2-client.f46864c6f8bb40d1bc2c3d211c514486'
+    },
+    'sharp-avatar-587': {  # Lukasz@spudder.com
+        'spudder_application_id': 'QZjpmUJQEwBE6Wc0YfKEMRwv2C5Aeb4qQbopyIg9',
+        'spudder_rest_api_key': 'S47GCWTSehKpwwJ2y8iXVnoYLWqOoPyydKiyWYYb',
+        'spudder_base_url': 'https://spudmartlukasz.parseapp.com',
+        'spudmart_base_url': 'https://sharp-avatar-587.appspot.com',
+        'amazon_login_client_id': 'amzn1.application-oa2-client.de78cbafe055444aa00e07a445644d16'
+    },
+    'essential-hawk-597': {  # Karol@spudder.com
+        'spudder_application_id': 'YU4g6sCW8Dvl6khJsVYgXhr20Pu5zaaLcIQ4oRON',
+        'spudder_rest_api_key': 'AbvJ682IvzXdWMMi1CbdONZHZhdJH4gFEyTWo4k9',
+        'spudder_base_url': 'https://karol.parseapp.com',
+        'spudmart_base_url': 'https://karol-dot-spudmart1.appspot.com',
+        'amazon_login_client_id': 'amzn1.application-oa2-client.d8fccc9c77624577898dca9ff517eff3'
+    },
+    'ahmed': {
+        'spudder_application_id': '',
+        'spudder_rest_api_key': '',
+        'spudder_base_url': 'https://karol.parseapp.com',
+        'spudmart_base_url': 'https://ahmed-dot-spudmart1.appspot.com',
+        'amazon_login_client_id': 'amzn1.application-oa2-client.d8fccc9c77624577898dca9ff517eff3'
+    }
 }
 
-SPUDDER_APPLICATION_ID = shared_settings[app_version]['spudder_application_id']
-SPUDDER_REST_API_KEY = shared_settings[app_version]['spudder_rest_api_key']
-SPUDDER_BASE_URL = shared_settings[app_version]['spudder_base_url']
-SPUDMART_BASE_URL = shared_settings[app_version]['spudmart_base_url']
-AMAZON_LOGIN_CLIENT_ID = shared_settings[app_version]['amazon_login_client_id']
+SPUDDER_APPLICATION_ID = shared_settings[app_name]['spudder_application_id']
+SPUDDER_REST_API_KEY = shared_settings[app_name]['spudder_rest_api_key']
+SPUDDER_BASE_URL = shared_settings[app_name]['spudder_base_url']
+SPUDMART_BASE_URL = shared_settings[app_name]['spudmart_base_url']
+AMAZON_LOGIN_CLIENT_ID = shared_settings[app_name]['amazon_login_client_id']
 
-
+# Configuration shared across all applications
+AWS_ACCESS_KEY_ID = 'AKIAIEUN2XKQF4ZU7UDA'
+AWS_SECRET_KEY_ID = 'CIwpNtDm6OBGUiOGxjZ+XqdOjMPhhaFgTi7c1Ah/'
 GOOGLE_PLACES_API_KEY = 'AIzaSyBY2lT_31eUX7yTH90gyPXxcJvM4pqSycs'

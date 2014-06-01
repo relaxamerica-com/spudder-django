@@ -7,7 +7,6 @@ from spudmart.spudder.objects import get_offer
 from spudmart.recipients.models import Recipient
 from spudmart.amazon.utils import get_donation_cbui_url, get_fps_connection
 from spudmart.amazon.models import AmazonActionStatus
-from spudmart.utils.app_identity import get_application_version
 from spudmart.utils.queues import trigger_backend_task
 
 
@@ -17,8 +16,7 @@ def index(request, offer_id):
     donation = Donation(
         offer=offer,
         donor=request.user,
-        donation=offer.donation,
-        spudder_app=get_application_version()
+        donation=offer.donation
     )
     donation.save()
 

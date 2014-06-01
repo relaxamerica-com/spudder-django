@@ -1,14 +1,12 @@
 import os
 import traceback
+from google.appengine.api.app_identity import get_application_id
 
 
-def get_application_version():
+def get_spudmart_app_name():
     try:
-        # CURRENT_VERSION_ID has <version>.<random_number> format
-        version = os.environ['CURRENT_VERSION_ID']
-        if version.find('.') != -1:  # function called in frontend
-            version = version.split('.')[0]
+        app_name = get_application_id()
     except Exception:
-        version = 'spudmart'
+        app_name = 'spudmart'
 
-    return version
+    return app_name

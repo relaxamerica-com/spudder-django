@@ -1,29 +1,45 @@
 module.exports = function () {
-    var versions = {
-            'spudmart': 0,
-            'lukasz': 1,
-            'karol': 2
+    var sharedSettings = {
+        'spudmart': {
+            applicationId: 'RwjN7ubrqVZSXcwd2AWaQtov6Mgsi7hAXZ510xTR',
+            javascriptKey: 'zDk1PxddnEJwnLKxrnypGuM4pIq9Z7adAi4rprgH',
+            appName: 'spudmart',
+            loginWithAmazonClientID: 'amzn1.application-oa2-client.788a2a4986a7412d98417564d8351dc1',
+            baseURL: 'https://spudmart.parseapp.com',
+            spudmartURL: 'https://spudmart1.appspot.com'
         },
-        applicationIds = ['RwjN7ubrqVZSXcwd2AWaQtov6Mgsi7hAXZ510xTR', 'QZjpmUJQEwBE6Wc0YfKEMRwv2C5Aeb4qQbopyIg9', 'YU4g6sCW8Dvl6khJsVYgXhr20Pu5zaaLcIQ4oRON'],
-        javascriptKeys = ['zDk1PxddnEJwnLKxrnypGuM4pIq9Z7adAi4rprgH', 'UygLrj7cUKeLSxDWOd7Ch4bEyLfBxQglf2VkGc6Q', 'JRu7BtIEuRDl3QaYNRLguV4a1pFjES02wHfRP5Al'],
-        appNames = ['spudmart', 'spudmartlukasz', 'karol'], version = 'spudmart',
-        loginWithAmazonClientID = ['amzn1.application-oa2-client.788a2a4986a7412d98417564d8351dc1', 'amzn1.application-oa2-client.46cdd53e23404279b1148162f5f1c0e3', 'amzn1.application-oa2-client.f98d88c846394e5394f6130c0e33941b'],
-        baseURLs = ['https://spudmart.parseapp.com', 'https://spudmartlukasz.parseapp.com', 'https://karol.parseapp.com'],
-        spudmartURLs = ['https://spudmart1.appspot.com', 'https://lukasz-dot-spudmart1.appspot.com', 'https://karol-dot-spudmart1.appspot.com'];
+        'lukasz': {
+            applicationId: 'QZjpmUJQEwBE6Wc0YfKEMRwv2C5Aeb4qQbopyIg9',
+            javascriptKey: 'UygLrj7cUKeLSxDWOd7Ch4bEyLfBxQglf2VkGc6Q',
+            appName: 'spudmartlukasz',
+            loginWithAmazonClientID: 'amzn1.application-oa2-client.46cdd53e23404279b1148162f5f1c0e3',
+            baseURL: 'https://spudmartlukasz.parseapp.com',
+            spudmartURL: 'https://sharp-avatar-587.appspot.com'
+        },
+        'karol': {
+            applicationId: 'YU4g6sCW8Dvl6khJsVYgXhr20Pu5zaaLcIQ4oRON',
+            javascriptKey: 'JRu7BtIEuRDl3QaYNRLguV4a1pFjES02wHfRP5Al',
+            appName: 'karol',
+            loginWithAmazonClientID: 'amzn1.application-oa2-client.f98d88c846394e5394f6130c0e33941b',
+            baseURL: 'https://karol.parseapp.com',
+            spudmartURL: 'https://essential-hawk-597.appspot.com'
+        }
+    },
+        version = 'spudmart';
 
     try {
         version = require('cloud/private-key.js')();
     } catch (_) {
-        // There is no .key.js file which means that main app should be loaded
+        // There is no private-key.key.js file which means that main app should be loaded
     }
 
     return {
         getJavaScriptKey: function () {
-            return javascriptKeys[versions[version]];
+            return sharedSettings[version].javascriptKey;
         },
 
         getApplicationID: function () {
-            return applicationIds[versions[version]];
+            return sharedSettings[version].applicationId;
         },
 
         getGooglePlacesAPIKey: function () {
@@ -31,19 +47,19 @@ module.exports = function () {
         },
 
         getAppName: function () {
-            return appNames[versions[version]];
+            return sharedSettings[version].appName;
         },
 
         getLoginWithAmazonClientID: function () {
-            return loginWithAmazonClientID[versions[version]];
+            return sharedSettings[version].loginWithAmazonClientID;
         },
 
         getBaseURL: function () {
-            return baseURLs[versions[version]];
+            return sharedSettings[version].baseURL;
         },
 
         getSpudmartURL: function () {
-            return spudmartURLs[versions[version]];
+            return sharedSettings[version].spudmartURL;
         },
 
         AWS_ACCESS_KEY_ID: 'AKIAIV6G36242PJ4L7WQ',

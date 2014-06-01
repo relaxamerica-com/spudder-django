@@ -4,6 +4,7 @@ from spudmart.upload.models import UploadedFile
 from djangotoolbox.fields import ListField
 from spudmart.CERN.models import get_max_triangle_num_less_than, VENUE_REP_LEVEL_MODIFIER
 
+
 class Venue(models.Model):
     user = models.ForeignKey(User, related_name="owner_user")
     renter = models.ForeignKey(User, null= True, related_name="renter_user")
@@ -41,8 +42,5 @@ class Venue(models.Model):
     def level(self):
         return get_max_triangle_num_less_than(self.rep / VENUE_REP_LEVEL_MODIFIER)
     
-    
-    
     def __eq__(self, other):
         return self.pk == other.pk
-    
