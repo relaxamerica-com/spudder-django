@@ -1,4 +1,4 @@
-application: spudmart
+application: spudmart1
 version: spudmart
 runtime: python27
 api_version: 1
