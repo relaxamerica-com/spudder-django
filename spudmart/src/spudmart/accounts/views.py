@@ -1,9 +1,10 @@
 import urllib, urllib2
 import django
+from django.core.exceptions import ObjectDoesNotExist
 import settings
 import json
 from django.contrib.auth import authenticate
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
 from spudmart.accounts.models import UserProfile
 from spudmart.utils.url import get_return_url
@@ -54,21 +55,28 @@ def amazon_login(request):
         if profile_request.getcode() == 200:
             amazon_user_id = profile_json_data['user_id']
             amazon_user_name = profile_json_data['name']
+            amazon_user_email = profile_json_data['email']
 
-            user_not_exists = len(UserProfile.objects.filter(amazon_id=amazon_user_id)) == 0
-            if user_not_exists:
-                user = User.objects.create_user(amazon_user_name, profile_json_data['email'], amazon_user_id)
-                user.save()
+            user_profile_not_exists = UserProfile.objects.filter(amazon_id=amazon_user_id).count() == 0
+            if user_profile_not_exists:
+                users_with_email = User.objects.filter(email=amazon_user_email)
+
+                if len(users_with_email) == 0:
+                    user = User.objects.create_user(amazon_user_email, amazon_user_email, amazon_user_id)
+                    user.save()
+                else:  # User exists, but for some reason it's profile wasn't created
+                    user = users_with_email[0]
 
                 user_profile = UserProfile(user=user)
                 user_profile.amazon_id = amazon_user_id
                 user_profile.amazon_access_token = access_token
+                user_profile.username = amazon_user_name
                 user_profile.save()
 
-            user = authenticate(username=amazon_user_name, password=amazon_user_id)
+            user = authenticate(username=amazon_user_email, password=amazon_user_id)
+            profile = user.get_profile()
 
-            if not user_not_exists:
-                profile = user.get_profile()
+            if not profile.amazon_access_token:
                 profile.amazon_access_token = access_token
                 profile.save()
 
@@ -86,3 +94,20 @@ def logout(request):
     django.contrib.auth.logout(request)
 
     return HttpResponseRedirect(return_url)
+
+
+def fix_accounts(request):
+    users = User.objects.all()
+
+    for user in users:
+        try:
+            profile = user.get_profile()
+            profile.username = user.username
+            profile.save()
+
+            user.username = user.email
+            user.save()
+        except ObjectDoesNotExist:
+            pass
+
+    return HttpResponse('Done...')

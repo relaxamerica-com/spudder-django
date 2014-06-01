@@ -1,3 +1,5 @@
+{% load accounts %}
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -16,7 +18,7 @@
                             <div class="headnav span4">
                                 <ul>
                                     {% if request.user.is_authenticated %}
-                                    <li><a href="/dashboard"><i class="icon-user"></i>{{ user.username }}</a></li>
+                                    <li><a href="/dashboard"><i class="icon-user"></i>{% user_name user %}</a></li>
                                     <li><a href="/accounts/logout" id="logout-button">Sign out</a></li>
                                     {%  else  %}
                                     <li><a href="/accounts/login">Sign in</a></li>
