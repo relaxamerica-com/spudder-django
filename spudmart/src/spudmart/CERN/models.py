@@ -139,6 +139,9 @@ class Student(models.Model):
     school = models.ForeignKey(School)
     isHead = models.BooleanField()
     
+    referral_url = models.CharField()
+    same_school_referral_url = models.CharField()
+    
     referral_code = models.CharField(max_length=128, unique=True)
     referred_by = models.ForeignKey(User, blank=True, null=True, related_name="referred_by_user")
     

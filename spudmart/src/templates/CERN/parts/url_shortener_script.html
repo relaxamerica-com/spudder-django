@@ -1,0 +1,24 @@
+<script>
+  function appendResults(text) {
+    var results = document.getElementById('results');
+    results.appendChild(document.createElement('P'));
+    results.appendChild(document.createTextNode(text));
+  }
+
+  function makeRequest(shortUrl) {
+    var request = gapi.client.urlshortener.url.get({
+      'shortUrl' : shortUrl,
+      'projection' : 'ANALYTICS_CLICKS'
+    });
+    request.execute(function(response) {
+      appendResults(response.longUrl);
+      appendResults(response.analytics.allTime.shortUrlClicks);
+    });
+  }
+
+  function load() {
+    gapi.client.setApiKey('AIzaSyDDSFnHOspc8Xx-RKMS6qiVASBMk-4ehRk');
+    /* gapi.client.load('urlshortener', 'v1', makeRequest); */
+  }
+</script>
+<script src="https://apis.google.com/js/client.js?onload=load"></script>

@@ -9,6 +9,7 @@ urlpatterns = patterns('spudmart.CERN.views',
     (r'^testing/$', 'testing'),
     (r'^mobile/$', 'mobile'),
     (r'^add_email_alert/$', 'add_email_alert'),
+    (r'^save_my_short_urls/$', 'save_my_short_urls'),
     
     
     # Registration & school pages

@@ -165,14 +165,27 @@ def dashboard(request):
 def social_media(request):
     student = Student.objects.get(user = request.user )
     num_referred = len(Student.objects.filter(referred_by = request.user))
-    referral_url = '/CERN/register/%s'%student.referral_code
-    same_referral_url = '/CERN/%s/%s/register/%s'%(student.school.state, 
-                                                            student.school.name, 
-                                                            student.referral_code)
+    need_saving = False
+    
+    if student.same_school_referral_url and student.referral_url:
+        referral_url = student.referral_url
+        same_referral_url = student.same_school_referral_url
+    else:
+        referral_url = ('http://' + request.META['HTTP_HOST'] + 
+                       '/CERN/register/%s'%student.referral_code)
+        same_referral_url = ('http://' + request.META['HTTP_HOST'] + 
+                             '/CERN/%s/%s/register/%s'%(student.school.state, 
+                                                        student.school.name, 
+                                                        student.referral_code))
+        need_saving = True
+        
     return render(request, 'CERN/social_media.html', 
-                  { 'num_referred' : num_referred,
-                    'referral_url' : referral_url,
-                    'same_referral_url' : same_referral_url,
+                  {
+                   'num_referred' : num_referred,
+                   'referral_url' : referral_url,
+                   'same_referral_url' : same_referral_url,
+                   'student' : student,
+                   'need_saving' : need_saving,
                   })
 @login_required
 def content(request):
@@ -248,5 +261,15 @@ def add_email_alert(request):
         mailinglist.emails.append(request.POST['email'])
         mailinglist.save()
         return HttpResponse("Added user to list.")
+    else:
+        return HttpResponseNotAllowed(['POST'])
+    
+def save_my_short_urls(request):
+    if request.method == 'POST':
+        student = Student.objects.get(user = request.user)
+        student.same_school_referral_url = request.POST['same_school_referral_url']
+        student.referral_url = request.POST['referral_url']
+        student.save()
+        return HttpResponse("Success.")
     else:
         return HttpResponseNotAllowed(['POST'])
