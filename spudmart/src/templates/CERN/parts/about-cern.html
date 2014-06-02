@@ -1,0 +1,26 @@
+<div class="row">
+	<div class="span1"></div>
+	<div class="span8 about-cern alert alert-info">
+		<h3>What is CERN?</h3>
+		<h5><em>CERN</em> stands for Campus Entrepreneur Recruiting Network. CERN is made up of students at accredited colleges and universities in the United States.</h5>
+		<h3>What do these students do?</h3>
+		<h5>Members of CERN participate in all sorts of projects! Our five main projects are <a href="/venues/list">Marketing</a>, <a href="/CERN/social_media/">Social Media PR</a>, <a href="/CERN/content/">Content Management</a> (Blogging), <a href="/CERN/design/">Design</a>, and <a href="/CERN/testing/">Quality Assurance</a> (Bug Testing). Scroll down to learn a little more about the projects.</h5>
+		<h3>How do I get started on a project?</h3>
+		<h5>All you have to do to begin is click on the page for that project. You can either use the toolbar to the left or scroll down and click on the button that says "Start this project!" below.</h5>
+		<button class="btn btn-orage pull-right" onclick="close_alert()">Hide for now</button><button id="submit" class="btn btn-orange pull-right" onclick="clear_first()">Hide Forever</button>
+	</div>
+	<div class="span1"></div>
+</div>
+<script src="/media/js/alerts.js"></script>
+<script type="text/javascript">
+$().alert();
+function close_alert(){
+    alert = $('.alert');
+    alert.addClass('fade');
+    alert.alert('close');
+}
+function clear_first(){
+    close_alert();
+    $.post('/CERN/toggle_show/', { 'toggle' : 'CERN'});
+}
+</script>

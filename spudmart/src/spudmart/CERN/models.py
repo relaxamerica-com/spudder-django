@@ -8,7 +8,7 @@ from django.db.models.fields import CharField
 
 # 100 points to get from level 1 to 2 for venues
 VENUE_REP_LEVEL_MODIFIER = 100
-# 1000 points to get from level 1 to 2 for students/groundskeepers 
+# 1000 points to get from level 1 to 2 for students/groundskeepers h
 #(10x venue requirement)
 STUDENT_REP_LEVEL_MODIFIER = 1000
 # 100000 points to get from level 1 to 2 for schools
@@ -165,6 +165,10 @@ class Student(models.Model):
     design_points = models.IntegerField(default = 0)
     testing_points = models.IntegerField(default = 0)
     
+    show_CERN = models.BooleanField(default = True)
+    show_social_media = models.BooleanField(default = True)
+    show_content = models.BooleanField(default = True)
+    show_testing = models.BooleanField(default = True)
     
 
     def save(self, force_insert=False, force_update=False, using=None):
@@ -244,6 +248,24 @@ class Student(models.Model):
                   self.content_points + self.design_points + 
                   self.testing_points)
         return points
+    
+    def top_project(self):
+        max_points = max(self.marketing_points, self.social_media_points,
+                         self.content_points, self.design_points, 
+                         self.testing_points)
+        if max_points != 0:
+            if max_points == self.marketing_points:
+                return 'Marketing: %s pts'%max_points
+            elif max_points == self.social_media_points:
+                return 'Social Media: %s pts'%max_points
+            elif max_points == self.content_points:
+                return 'Content: %s pts'%max_points
+            elif max_points == self.design_points:
+                return 'Design: %s pts'%max_points
+            elif max_points == self.testing_points:
+                return 'Testing: %s pts'%max_points
+        
+        return 'No Project Started (0pts)'
 
 class Challenge(models.Model):
     ''' Stores information about challenges between schools based purely on rep points. 
@@ -283,7 +305,7 @@ class Challenge(models.Model):
 
 class MailingList(models.Model):
     emails = ListField()
-    project = CharField(max_length=200)
+    project = CharField(max_length = 200)
 
     def __str__(self):
         return "%s, %s"%(self.project, self.emails)

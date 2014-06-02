@@ -175,7 +175,8 @@ def import_school_data(request):
 
 @login_required
 def dashboard(request):
-    return render(request, 'CERN/dashboard.html')
+    student = Student.objects.get(user = request.user)
+    return render(request, 'CERN/dashboard.html', { 'student' : student })
 
 @login_required
 def social_media(request):
@@ -361,3 +362,13 @@ def amazon_login(request):
             return _handle_amazon_conn_error(request, profile_json_data)
     else:
         return _handle_amazon_conn_error(request, json_data)
+    
+def toggle_show(request):
+    student = Student.objects.get(user = request.user)
+    toggle = request.POST['toggle']
+    print toggle
+    if toggle == 'CERN':
+        student.show_CERN = False
+    elif toggle == 'social media':
+        student.show_social_media = False
+    student.save()

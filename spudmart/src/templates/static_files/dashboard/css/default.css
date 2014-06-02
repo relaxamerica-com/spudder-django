@@ -1089,3 +1089,13 @@ p.head .add-button {
 .margin-bottom20 {
 	margin-bottom: 20px !important;
 }
+
+.about-cern {
+    background-color: #BBB;
+    margin-bottom: 20px;
+    padding: 10px;
+}
+
+.about-cern a{
+	color: #F03C02; 
+}
