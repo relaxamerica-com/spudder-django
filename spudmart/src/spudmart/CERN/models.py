@@ -8,9 +8,11 @@ from django.db.models.fields import CharField
 
 # 100 points to get from level 1 to 2 for venues
 VENUE_REP_LEVEL_MODIFIER = 100
-# 1000 points to get from level 1 to 2 for students/groundskeepers (10x venue requirement)
+# 1000 points to get from level 1 to 2 for students/groundskeepers 
+#(10x venue requirement)
 STUDENT_REP_LEVEL_MODIFIER = 1000
-# 100000 points to get from level 1 to 2 for schools (10x student requirement)
+# 100000 points to get from level 1 to 2 for schools
+#(10x student requirement)
 SCHOOL_REP_LEVEL_MODIFIER = 100000
 
 DEFAULT_CHALLENGE_DURATION = timedelta(days = 7)
@@ -71,10 +73,20 @@ STATES = {
 
 
 def get_max_triangle_num_less_than(num, n=1):
-    '''Calculates the largest "triangle number" less than the @param num supplied.
-    "Triangle numbers" are 1, 3, 6, 10, etc. (add 1, add 2, add 3, etc.)
-    Used to determine the level based on rep, after dividing by respective LEVEL_MODIFIER.
-    '''
+    """ Calculates the largest triangle number less than num.
+    
+    "Triangle numbers" are 1, 3, 6, 10,... (add 1, then 2, then 3, etc)
+    Used to determine level based on rep points, after dividing by the
+        respective LEVEL_MODIFIER constant
+      
+    Args:
+        num: an integer
+        n: also an integer, the order of the "triangle number"
+            1st order: 1, 2nd order: 3, 3rd order: 6,...
+    Returns:
+        the greatest order of triangle number less than num
+        denotes the "level" of reputation
+    """
     tri = n*(n+1)/2
     if num/tri >= 1:
         n += 1
@@ -108,8 +120,8 @@ class School(models.Model):
     
     def get_rep(self):
         rep = 0
-        for student in Student.objects.filter(school = self):
-            rep += student.rep
+        for student in self.get_students():
+            rep += student.rep()
         return int(rep)
     
     def get_students(self):
@@ -135,7 +147,8 @@ class Student(models.Model):
         
         The database is indexed on User since that's how the students are most often looked up.
     '''    
-    user = models.ForeignKey(User, unique = True, db_index = True, related_name="student_user")
+    user = models.ForeignKey(User, unique = True, db_index = True, 
+                             related_name="student_user")
     school = models.ForeignKey(School)
     isHead = models.BooleanField()
     
@@ -143,15 +156,21 @@ class Student(models.Model):
     same_school_referral_url = models.CharField()
     
     referral_code = models.CharField(max_length=128, unique=True)
-    referred_by = models.ForeignKey(User, blank=True, null=True, related_name="referred_by_user")
+    referred_by = models.ForeignKey(User, blank=True, null=True, 
+                                    related_name="referred_by_user")
     
-    rep = models.IntegerField(default = 0)
+    marketing_points = models.IntegerField(default = 0)
+    social_media_points = models.IntegerField(default = 0)
+    content_points = models.IntegerField(default = 0)
+    design_points = models.IntegerField(default = 0)
+    testing_points = models.IntegerField(default = 0)
     
     
 
     def save(self, force_insert=False, force_update=False, using=None):
-        ''' Default save method overwritten so that the School's student count is always
-            accurate, and the student's referral_code is only assigned once.
+        ''' Default save method overwritten so that the School's 
+            student count is always accurate, and the student's 
+            referral_code is only assigned once.
         '''
         if self.pk is None:
             self.school.num_students += 1
@@ -163,10 +182,10 @@ class Student(models.Model):
     def __str__(self):
         something = str(self.user.username)
         if self.isHead:
-            something += ", Head at "
+            something += ", Team Captain for "
         else:
             something += ", at "
-        something += str(self.school.name) + ", " + str(self.rep) + " rep points"
+        something += str(self.school.name)
         return something
 
     def delete(self, using=None):
@@ -185,7 +204,7 @@ class Student(models.Model):
             Ensures that challenging student has more rep than head student.
         '''
         head_student = self.school.get_head_student()
-        if not self.isHead and self.rep > head_student.rep:
+        if not self.isHead and self.rep() > head_student.rep():
             return True
         else:
             return False
@@ -211,14 +230,20 @@ class Student(models.Model):
             return challenge        
     
     def level(self):
-        return get_max_triangle_num_less_than(self.rep / STUDENT_REP_LEVEL_MODIFIER)
+        return get_max_triangle_num_less_than(self.rep() / STUDENT_REP_LEVEL_MODIFIER)
     
-    def add_rep(self, points):
-        self.rep += points
-        self.save()
-        if self.referred_by:
-            referrer = Student.objects.get(user = self.referred_by)
-            referrer.add_rep(points)
+#     def add_rep(self, points):
+#         self.rep += points
+#         self.save()
+#         if self.referred_by:
+#             referrer = Student.objects.get(user = self.referred_by)
+#             referrer.add_rep(points)
+
+    def rep(self):
+        points = (self.marketing_points + self.social_media_points +
+                  self.content_points + self.design_points + 
+                  self.testing_points)
+        return points
 
 class Challenge(models.Model):
     ''' Stores information about challenges between schools based purely on rep points. 

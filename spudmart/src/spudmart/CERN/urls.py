@@ -21,4 +21,5 @@ urlpatterns = patterns('spudmart.CERN.views',
     (r'^register/(?P<code>[\w\d\-]+)$', 'register'),
     (r'^register/$', 'register'),
     (r'^import_schools', 'import_school_data'),
+    (r'^amazon_login/$', 'amazon_login'),
 )

@@ -8,6 +8,14 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.utils.datastructures import MultiValueDictKeyError
 from spudmart.CERN.utils import import_schools
 from django.contrib.auth.decorators import login_required
+from spudmart.utils.url import get_return_url, get_request_param
+import urllib, urllib2
+import settings
+import json
+from django.contrib.auth import authenticate, login
+from spudmart.accounts.models import UserProfile
+from spudmart.accounts.views import _handle_amazon_conn_error
+
 
 def register(request, code = None):
     sorted_states = sorted(STATES.items(), key = lambda x:x[1])
@@ -46,9 +54,10 @@ def register_school(request, state, school_name, code = None):
         referrer = Student.objects.get(referral_code = code)
     try:
         school = School.objects.get(state = state.upper(), name = school_name.replace('_', ' '))
-    except:
+    except Exception as e:
         # Later point to better error page
-        return HttpResponse("Error")
+#         return HttpResponse("Error")
+        raise e
     else:
         errors = []
         if request.method == 'POST':
@@ -93,22 +102,29 @@ def register_school(request, state, school_name, code = None):
 
 # School splash page
 def school(request, state, school_name, code=None):
+    referrer = None
+    if code:
+        referrer = Student.objects.get(referral_code = code)
     try:
-        school = School.objects.get(state = state.upper(), name = school_name.replace('_', ' '))
-    except:
+        school = School.objects.get(state = state.upper(), 
+                                    name = school_name.replace('_', ' '))
+    except Exception as e:
         # Later point to better error page
-        return HttpResponse("Error")
+#         return HttpResponse("Error")
+        raise e
     else:
         try:
             head = school.get_head_student()
         except ObjectDoesNotExist:
-            return render(request, 'CERN/school_splash.html', { 'school': school })
+            return render(request, 'CERN/school_splash.html', 
+                          { 'school': school })
         else:
-            return render(request, 'CERN/school_splash.html', { 
-                                                                 'school': school,
-                                                                 'head' : head,
-                                                                 'code' : code,
-                                                                  })
+            return render(request, 'CERN/school_splash.html', 
+                          { 
+                            'school': school,
+                            'head' : head,
+                            'referrer' : referrer,
+                          })
             
 # Customize school splash page
 def save_school(request, state, school_name):
@@ -273,3 +289,75 @@ def save_my_short_urls(request):
         return HttpResponse("Success.")
     else:
         return HttpResponseNotAllowed(['POST'])
+
+def amazon_login(request):
+    error = request.GET.get('error', None)
+    return_url = get_return_url(request)
+    
+    state = get_request_param(request, 'state')
+    name = get_request_param(request, 'school')
+
+    if error is not None:
+        error_message = request.GET.get('error_description') + '<br><a href="' + request.GET.get('error_uri') + '">Learn more</a>'
+        return render(request, 'accounts/login.html', {
+            'next': return_url,
+            'error': error_message
+        })
+
+    access_token = request.GET.get('access_token')
+    query_parameters = urllib.urlencode({'access_token': access_token})
+
+    token_request = urllib2.urlopen('https://api.amazon.com/auth/O2/tokeninfo?%s' % query_parameters)
+    json_data = json.load(token_request)
+    if token_request.getcode() == 200:
+        is_verified = json_data['aud'] == settings.AMAZON_LOGIN_CLIENT_ID
+        if not is_verified:
+            return render(request, 'accounts/login.html', {
+                'next': return_url,
+                'error': 'Verification failed! Please contact administrators'
+            })
+
+        profile_request = urllib2.urlopen('https://api.amazon.com/user/profile?%s' % query_parameters)
+        profile_json_data = json.load(profile_request)
+        if profile_request.getcode() == 200:
+            amazon_user_id = profile_json_data['user_id']
+            amazon_user_name = profile_json_data['name']
+            amazon_user_email = profile_json_data['email']
+
+            user_profile_not_exists = UserProfile.objects.filter(amazon_id=amazon_user_id).count() == 0
+            if user_profile_not_exists:
+                users_with_email = User.objects.filter(email=amazon_user_email)
+
+                if len(users_with_email) == 0:
+                    user = User.objects.create_user(amazon_user_email, amazon_user_email, amazon_user_id)
+                    user.save()
+                else:  # User exists, but for some reason it's profile wasn't created
+                    user = users_with_email[0]
+
+                user_profile = UserProfile(user=user)
+                user_profile.amazon_id = amazon_user_id
+                user_profile.amazon_access_token = access_token
+                user_profile.username = amazon_user_name
+                user_profile.save()
+
+                # Set up Student object
+                school = School.objects.get(name = name, state = state)
+                student = Student(user = user, school = school)
+                if school.num_students == 0:
+                    student.isHead = True
+                student.save()
+
+            user = authenticate(username=amazon_user_email, password=amazon_user_id)
+            profile = user.get_profile()
+
+            if not profile.amazon_access_token:
+                profile.amazon_access_token = access_token
+                profile.save()
+
+            login(request, user)
+
+            return HttpResponseRedirect(return_url)
+        else:
+            return _handle_amazon_conn_error(request, profile_json_data)
+    else:
+        return _handle_amazon_conn_error(request, json_data)
