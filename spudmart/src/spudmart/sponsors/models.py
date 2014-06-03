@@ -16,4 +16,8 @@ class SponsorPage(models.Model):
     location = models.CharField(max_length=255, blank=True)
     map_info = models.CharField(max_length=255, blank=True)
     thumbnail = models.CharField(max_length=255, blank=True)
+    facebook = models.CharField(max_length=255, blank=True)
+    twitter = models.CharField(max_length=255, blank=True)
+    google_plus = models.CharField(max_length=255, blank=True)
+    instagram = models.CharField(max_length=255, blank=True)
     images = ListField()

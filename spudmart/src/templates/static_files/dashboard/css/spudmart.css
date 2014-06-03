@@ -121,9 +121,12 @@ border: 1px solid #e6e6e6;
     letter-spacing:-1px;
 }
 .pricing-box-alt .pricing-heading h3 {
-    font-size:32px;
-    font-weight:300;
-    letter-spacing:-1px;
+    font-size: 28px;
+	font-weight: 300;
+	letter-spacing: -1px;
+	text-align: center;
+	height: 100px;
+	text-shadow: 1px 1px #cfcfcf;
 }
 
 .pricing-box-alt .pricing-terms {

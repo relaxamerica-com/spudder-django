@@ -1,138 +1,21 @@
 
 <ul class="nav nav-list">
 	<li>
-		<a class="dropdown-toggle" href="#">
-			<i class="icon-male"></i>
-			<span class="menu-text"> Fans </span>
-
-			<b class="arrow icon-angle-down"></b>
-		</a>
-		<ul class="submenu">
-            <li>
-                <a href="/dashboard/fans/spuds">
-                    <i class="icon-microphone"></i>
-                    My Spuds
-                </a>
-            </li>
-            <li>
-                <a href="/dashboard/fans/favorites">
-                    <i class="icon-check"></i>
-                    My Favorites
-                </a>
-            </li>
-		</ul>
-	</li>
-
-	<li>
-		<a class="dropdown-toggle" href="#">
-			<i class="icon-user"></i>
-			<span class="menu-text"> Players </span>
-
-			<b class="arrow icon-angle-down"></b>
-		</a>
-		<ul class="submenu">
-            <li>
-                <a href="/dashboard/listEntities/Player">
-                    <i class="icon-user"></i>
-                    My Players
-                </a>
-            </li>
-
-            <li>
-                <a href="javascript:alert('coming soon')">
-                    <i class="icon-check"></i>
-                    Favorites
-                </a>
-            </li>
-		</ul>
-	</li>
-
-	<li>
-		<a class="dropdown-toggle" href="#">
-			<i class="icon-bullhorn"></i>
-			<span class="menu-text"> Coaches </span>
-
-			<b class="arrow icon-angle-down"></b>
-		</a>
-		<ul class="submenu">
-            <li>
-                <a href="/dashboard/listEntities/Coach">
-                    <i class="icon-bullhorn"></i>
-                    My Coaches
-                </a>
-            </li>
-            <li>
-                <a href="javascript:alert('coming soon')">
-                    <i class="icon-check"></i>
-                    Favorites
-                </a>
-            </li>
-		</ul>
-	</li>
-
-	<li>
-		<a class="dropdown-toggle" href="#">
-			<i class="icon-group"></i>
-			<span class="menu-text"> Teams </span>
-
-			<b class="arrow icon-angle-down"></b>
-		</a>
-		<ul class="submenu">
-            <li>
-                <a href="/dashboard/teams">
-                    <i class="icon-group"></i>
-                    My Teams
-                </a>
-            </li>
-
-            <li>
-                <a href="javascript:alert('coming soon')">
-                    <i class="icon-check"></i>
-                    Favorites
-                </a>
-            </li>
-		</ul>
-	</li>
-
-	<li>
-		<a href="javascript:alert('coming soon')">
-			<i class="icon-sitemap"></i>
-			<span class="menu-text"> Leagues </span>
-		</a>
-	</li>
-
-	<li>
-		<a href="gallery.html">
-			<i class="icon-trophy"></i>
-			<span class="menu-text"> Tournaments </span>
+		<a href="/dashboard/sponsor/page">
+			<i class="icon-money"></i>
+			<span class="menu-text"> My Page </span>
 		</a>
 	</li>
 	<li>
 		<a href="/venues/list">
 			<i class="icon-map-marker"></i>
-			<span class="menu-text"> Venues </span>
+			<span class="menu-text"> My Venues </span>
 		</a>
 	</li>
-    {% if request.user.is_sponsor %}
 	<li>
-		<a class="dropdown-toggle" href="#">
-			<i class="icon-money"></i>
-
-			<span class="menu-text">
-				Sponsors
-			</span>
-
-			<b class="arrow icon-angle-down"></b>
+		<a href="javascript:alert('coming soon')">
+			<i class="icon-group"></i>
+			<span class="menu-text"> My Teams </span>
 		</a>
-
-		<ul class="submenu">
-            <li>
-                <a href="/dashboard/sponsor/page">
-                    <i class="icon-double-angle-right"></i>
-                    Sponsor page
-                </a>
-            </li>
-		</ul>
 	</li>
-    {% endif %}
 </ul>

@@ -52,7 +52,8 @@ function initialize(tryGeolocation) {
 					
 					$.each(venues, function() {
 						if (getDistance(this.latitude, this.longitude, pos.latitude, pos.longitude) <= 250 
-							&& this.sport == window.currentSelectedSport) {
+							&& this.sport == window.currentSelectedSport
+							&& this.id != parseInt(window.currentVenueId, 10)) {
 							otherVenueInRange = this;
 							return false;
 						}

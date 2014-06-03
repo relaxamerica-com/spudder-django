@@ -14,14 +14,14 @@
                 <div class="control-group">
                     <label class="control-label" for="name">Name:</label>
                     <div class="controls">
-                        <input tabindex="1" name="name" id="name"  value="{{form.name.value|default:"" }}"/>
+                        <input  name="name" id="name"  value="{{form.name.value|default:"" }}"/>
                         <span class="input-required">*required</span>
                     </div>
                 </div>
                 <div class="control-group">
                     <label class="control-label" for="speciality">Speciality:</label>
                     <div class="controls">
-                        <input tabindex="2" name="speciality" id="speciality" value="{{form.speciality.value|default:"" }}" />
+                        <input  name="speciality" id="speciality" value="{{form.speciality.value|default:"" }}" />
                         <span class="input-required">*required</span>
                     </div>
                 </div>
@@ -29,7 +29,7 @@
                     <label class="control-label" for="form-field-phone">Phone:</label>
                     <div class="controls">
                         <span class="input-icon input-icon-right">
-                            <input tabindex="3" class="input-medium input-mask-phone" name="phone"
+                            <input  class="input-medium input-mask-phone" name="phone"
                                    id="form-field-phone" type="text" value="{{form.phone.value|default:"" }}" />
                             <i class="icon-phone icon-flip-horizontal icon-right"></i>
                         </span>
@@ -40,7 +40,7 @@
                     <label class="control-label" for="form-field-fax">Fax:</label>
                     <div class="controls">
                         <span class="input-icon input-icon-right">
-                            <input tabindex="4" class="input-medium input-mask-phone" name="fax"
+                            <input  class="input-medium input-mask-phone" name="fax"
                                    id="form-field-fax" type="text" value="{{form.fax.value|default:"" }}" />
                             <i class="icon-phone icon-flip-horizontal icon-right"></i>
                         </span>
@@ -50,7 +50,7 @@
                     <label class="control-label" for="email">Email:</label>
                     <div class="controls">
                         <span class="input-icon input-icon-right">
-                            <input tabindex="5" class="input-medium input-mask-email" id="email"
+                            <input  class="input-medium input-mask-email" id="email"
                                    name="email" type="email" placeholder="me@website.com"
                                    value="{{form.email.value|default:"" }}" />
                             <i class="icon-envelope"></i>
@@ -61,7 +61,7 @@
                     <label class="control-label" for="form-field-website">Website:</label>
                     <div class="controls">
                         <span class="input-icon input-icon-right">
-                            <input tabindex="6" class="input-medium input-mask-website" name="website"
+                            <input  class="input-medium input-mask-website" name="website"
                                    id="form-field-website" type="url" placeholder="http://www.website.com"
                                    value="{{form.website.value|default:"" }}" />
                             <i class="icon-bookmark icon-flip-horizontal icon-for-not-required-field"></i>
@@ -69,10 +69,54 @@
                     </div>
                 </div>
                 <div class="control-group">
+                    <label class="control-label" for="form-field-website">Instagram:</label>
+                    <div class="controls">
+                        <span class="input-icon input-icon-right">
+                            <input  class="input-medium input-mask-website" name="instagram"
+                                   id="form-field-instagram" type="url" placeholder="http://instagram.com/your.name"
+                                   value="{{form.instagram.value|default:"" }}" />
+                            <i class="icon-instagram icon-for-not-required-field"></i>
+                        </span>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="form-field-facebook">Facebook:</label>
+                    <div class="controls">
+                        <span class="input-icon input-icon-right">
+                            <input  class="input-medium input-mask-website" name="facebook"
+                                   id="form-field-facebook" type="url" placeholder="https://www.facebook.com/your.name"
+                                   value="{{form.facebook.value|default:"" }}" />
+                            <i class="icon-facebook icon-for-not-required-field"></i>
+                        </span>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="form-field-twitter">Twitter:</label>
+                    <div class="controls">
+                        <span class="input-icon input-icon-right">
+                            <input  class="input-medium input-mask-website" name="twitter"
+                                   id="form-field-twitter" type="url" placeholder="http://www.twitter.com/your.name"
+                                   value="{{form.twitter.value|default:"" }}" />
+                            <i class="icon-twitter icon-for-not-required-field"></i>
+                        </span>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="form-field-google">Google+:</label>
+                    <div class="controls">
+                        <span class="input-icon input-icon-right">
+                            <input  class="input-medium input-mask-website" name="google_plus"
+                                   id="form-field-google" type="url" placeholder="https://plus.google.com/u/0/your.id"
+                                   value="{{form.google_plus.value|default:"" }}" />
+                            <i class="icon-google-plus icon-for-not-required-field"></i>
+                        </span>
+                    </div>
+                </div>
+                <div class="control-group">
                     <label class="control-label" for="form-field-video">Video:</label>
                     <div class="controls">
                         <span class="input-icon input-icon-right">
-                            <input tabindex="7" class="input-medium input-mask-website" name="video"
+                            <input  class="input-medium input-mask-website" name="video"
                                    id="form-field-video" type="url" value="{{form.video.value|default:"" }}" />
                             <i class="icon-facetime-video icon-for-not-required-field"></i>
                         </span>

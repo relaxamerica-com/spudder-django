@@ -1,4 +1,4 @@
-from spudmart.donations.models import Donation, DonationState
+from spudmart.donations.models import Donation, DonationState, RentVenue
 from django.core.cache import cache
 from spudmart.utils.cache import get_key
 
@@ -19,8 +19,12 @@ class SponsorMiddleware(object):
                 donor=request.user,
                 state=DonationState.FINISHED
             )
+            rents = RentVenue.objects.filter(
+                donor=request.user,
+                state=DonationState.FINISHED
+            )
 
-            is_sponsor = len(donations) > 0
+            is_sponsor = len(donations) > 0 or len(rents) > 0
             cache.set(cache_key, is_sponsor, CACHE_TIME)
 
         request.user.is_sponsor = is_sponsor

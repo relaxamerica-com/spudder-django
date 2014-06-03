@@ -14,6 +14,7 @@ import settings
 from spudmart.donations.models import RentVenue, DonationState
 from google.appengine.api import mail
 from django.contrib.auth.decorators import login_required
+from spudmart.sponsors.models import SponsorPage
 
 def view(request, venue_id):
     venue = Venue.objects.get(pk = venue_id)
@@ -27,10 +28,12 @@ def view(request, venue_id):
     
     is_recipient = VenueRecipient.objects.filter(groundskeeper = request.user)
     rent_venue_url = False
-#     can_edit = request.user.is_authenticated() and (request.user.pk == venue.user.pk or (venue.renter and request.user.pk == venue.renter.pk))
+    can_edit = request.user.is_authenticated() and (request.user.pk == venue.user.pk or (venue.renter and request.user.pk == venue.renter.pk))
     
     if venue.price > 0.0 and request.user.is_authenticated() and request.user.pk != venue.user.pk:
         rent_venue_url = get_rent_venue_cbui_url(venue)
+    
+    sponsor = SponsorPage.objects.filter(sponsor = venue.renter)
     
     return render(request, 'venues/view.html', { 
                 'venue' : venue,
@@ -38,7 +41,9 @@ def view(request, venue_id):
                 'medical_address' : medical_address,
                 'is_recipient' : is_recipient,
                 'rent_venue_url' : rent_venue_url,
-                'can_edit' : True
+                'can_edit' : can_edit,
+                'sponsor' : sponsor[0] if len(sponsor) else None,
+                'is_sponsor' : len(sponsor) and sponsor[0].sponsor == request.user
                 })
 
 def create(request):
@@ -55,7 +60,14 @@ def index(request):
 
 @login_required
 def list_view(request):
-    return render(request, 'venues/list.html', { 'venues' : Venue.objects.filter(user = request.user) })
+    venues = []
+    if request.user.is_sponsor:
+        venues.extend(Venue.objects.filter(renter = request.user))
+        template = 'venues/list_sponsor.html'
+    else:
+        venues.extend(Venue.objects.filter(user = request.user))
+        template = 'venues/list.html'
+    return render(request, template, { 'venues' : venues })
 
 # VENUE ACCOUNTS
 
@@ -71,7 +83,8 @@ def login_view(request):
             login(request, user)
             return HttpResponseRedirect('/venues/list')
     
-    return render(request, 'venues/login.html', { 'errors' : errors, })
+    return render(request, 'venues/login.html', { 'errors' : errors })
+
 # VENUE ENDPOINTS
 
 def save_coordinates(request, venue_id):
@@ -123,6 +136,7 @@ def save_video(request, venue_id):
 def save_restroom_details(request, venue_id):
     venue = Venue.objects.get(pk = venue_id)
     venue.restroom_details = request.POST['restroom_details']
+    venue.restroom_pics.extend(request.POST.getlist('restroom_pics[]'))
     venue.save()
     return HttpResponse('OK')
 
@@ -169,13 +183,16 @@ def send_message(request, venue_id):
 
 def save_price(request, venue_id):
     venue = Venue.objects.get(pk = venue_id)
-    venue.price = int(request.POST['price'])
+    venue.price = float(request.POST['price'])
     venue.save()
     return HttpResponse('OK')
 
 def get_venues_within_bounds(request):
     latitude_range = [float(value) for value in request.GET.getlist('latitude_range[]')]
     longitude_range = [float(value) for value in request.GET.getlist('longitude_range[]')]
+    
+    if longitude_range[0] < 0 and longitude_range[1] < 0:
+        longitude_range.reverse()
     
     venues_in_latitude_range = Venue.objects.filter(latitude__range = latitude_range)
     venues_in_longitude_range = Venue.objects.filter(longitude__range = longitude_range)
@@ -211,18 +228,12 @@ def remove_pic(request, venue_id):
     list_type = request.POST['list_type']
     file_url = request.POST['file_url']
     
-    if list_type == 'venue_pics':
-        the_list = venue.venue_pics
-    else:
-        the_list = venue.playing_surface_pics
+    the_list = getattr(venue, list_type)
         
     if file_url in the_list:
         the_list.remove(file_url)
-        
-    if list_type == 'venue_pics':
-        venue.venue_pics = the_list
-    else:
-        venue.playing_surface_pics = the_list
+     
+    setattr(venue, list_type, the_list)
     
     venue.save() 
         
@@ -275,7 +286,7 @@ def error(request, venue_id):
     
 def rent_complete(request, venue_id):
     venue = get_object_or_404(Venue, pk = venue_id)
-    rent_venue, _ = RentVenue.objects.get_or_create(venue=venue, donor=request.user)
+    rent_venue, _ = RentVenue.objects.get_or_create(venue=venue, donor=request.use)
     rent_venue.status_code = AmazonActionStatus.get_from_code(request.GET.get('status'))
     
     if rent_venue.status_code is AmazonActionStatus.SUCCESS:
@@ -312,9 +323,8 @@ def rent_complete(request, venue_id):
 
 def rent_thanks(request, venue_id):
 
-    url = '%s/venues/view/%s' % (
-        settings.SPUDMART_BASE_URL,
-        venue_id)
+    url = '%s/dashboard/sponsor/page' % (
+        settings.SPUDMART_BASE_URL)
 
     return render(request, 'venues/rent_venue/thanks.html', {
         'spudder_url': url

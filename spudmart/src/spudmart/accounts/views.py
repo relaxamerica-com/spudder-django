@@ -9,6 +9,8 @@ from django.shortcuts import render
 from spudmart.accounts.models import UserProfile
 from spudmart.utils.url import get_return_url
 from django.contrib.auth.models import User
+from spudmart.accounts.utils import is_sponsor
+import logging
 
 
 def login(request):
@@ -81,6 +83,17 @@ def amazon_login(request):
                 profile.save()
 
             django.contrib.auth.login(request, user)
+            
+            has_next_in_url = request.POST.get('next', False)
+            
+            logging.info(has_next_in_url)
+            logging.info(request.user.is_authenticated())
+            logging.info(is_sponsor(request.user))
+            
+            if request.user.is_authenticated() and is_sponsor(request.user) and not has_next_in_url:
+                return_url = '/dashboard'
+            elif not has_next_in_url:
+                return_url = '/CERN'
 
             return HttpResponseRedirect(return_url)
         else:

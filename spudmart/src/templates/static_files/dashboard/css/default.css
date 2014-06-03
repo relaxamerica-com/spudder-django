@@ -301,6 +301,7 @@ textarea {
 }
 #entity-create .input-icon.input-icon-right > [class*="icon-"] {
     right: 5px;
+    margin-right: 0px;
 }
 #entity-create div.input-append {
     margin-bottom: 0;
@@ -993,6 +994,14 @@ form .input-required {
 	font-weight: bold;
 	text-align: center;
 	font-size: 16px;
+}
+
+#venue-view .progress {
+	display: none;
+	width: 150px;
+	margin-bottom: 0px;
+	float: left;
+	margin-left: 10px;
 }
 
 #venue-view .playing-surface-details {

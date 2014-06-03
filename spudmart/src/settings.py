@@ -34,6 +34,7 @@ INSTALLED_APPS = (
     'spudmart.venues',
     'spudmart.upload',
     'spudmart.sponsors',
+    'spudmart.hospitals',
     'spudmart.api',
     'spudmart.CERN',
 )
@@ -105,8 +106,8 @@ shared_settings = {
     'essential-hawk-597': {  # Karol@spudder.com
         'spudder_application_id': 'YU4g6sCW8Dvl6khJsVYgXhr20Pu5zaaLcIQ4oRON',
         'spudder_rest_api_key': 'AbvJ682IvzXdWMMi1CbdONZHZhdJH4gFEyTWo4k9',
-        'spudder_base_url': 'https://karol.parseapp.com',
-        'spudmart_base_url': 'https://karol-dot-spudmart1.appspot.com',
+        'spudder_base_url': 'https://spudmartkarol.parseapp.com',
+        'spudmart_base_url': 'https://essential-hawk-597.appspot.com',
         'amazon_login_client_id': 'amzn1.application-oa2-client.d8fccc9c77624577898dca9ff517eff3'
     },
     'ahmed': {
