@@ -15,6 +15,7 @@ from spudmart.donations.models import RentVenue, DonationState
 from google.appengine.api import mail
 from django.contrib.auth.decorators import login_required
 from spudmart.sponsors.models import SponsorPage
+from spudmart.accounts.utils import is_sponsor
 
 def view(request, venue_id):
     venue = Venue.objects.get(pk = venue_id)
@@ -61,7 +62,7 @@ def index(request):
 @login_required
 def list_view(request):
     venues = []
-    if request.user.is_sponsor:
+    if is_sponsor(request.user):
         venues.extend(Venue.objects.filter(renter = request.user))
         template = 'venues/list_sponsor.html'
     else:
