@@ -30,10 +30,4 @@ urlpatterns = patterns('spudmart.venues.views',
     (r'^fix_venue_coordinates$', 'fix_venue_coordinates'),
     (r'^create$', 'create'),
     (r'^list', 'list_view'),
-    (r'^login$', 'login_view'),
-    (r'^(?P<state>\w{2})/(?P<school_name>[\w\ &-]+)/register/(?P<code>[\w\d\-]+)$', 'register_school'),
-    (r'^(?P<state>\w{2})/(?P<school_name>[\w\ &-]+)/register/$', 'register_school'),
-    (r'^(?P<state>\w{2})/(?P<school_name>[\w\ &-]+)/save$', 'save_school'),
-    (r'^(?P<state>\w{2})/(?P<school_name>[\w\ &-]+)/$', 'school'),
-    (r'^import_schools', 'import_school_data')
 )

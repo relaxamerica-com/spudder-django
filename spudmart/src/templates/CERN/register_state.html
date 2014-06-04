@@ -6,7 +6,6 @@
 		<p class="header">Join Your Team!</p>
 		<p> Now, you have to select your school.</p>
 		{% if code %}
-		<p> CODE</p>
 		<form action="/CERN/register/{{ code }}" method = post>
 		{% else %}
 		<form action="/CERN/register/" method="post">

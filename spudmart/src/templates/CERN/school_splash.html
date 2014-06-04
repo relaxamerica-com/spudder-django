@@ -15,20 +15,19 @@
             <h5 class="venue-header clearfix aligncenter"> {{ school.name }} CERN Team </h5>
             
             
-                          
+            {% if not request.user.is_authenticated %}
+
+            {% if referrer %}
+            <div class="aligncenter">
+              <p>You were referred by:</p>
+              <p><label>{{ referrer }}</label></p>
+            </div>
+            {% endif %}
+
 		    <div class="accounts-form-body">
 		        <form class="form-horizontal" action="/accounts/login" id="registration-form" method="POST">
 		            {% if error %}
 		            <div class="alert alert-error"><%= error %></div>
-		            {% endif %}
-		
-		            <input type="hidden" name="returnURL" {% if returnURL %}value="{{ returnURL }}"{% endif %}>
-		            
-		            {% if referrer %}
-		            <div class="aligncenter">
-		              <p>You were referred by:</p>
-		              <p><label>{{ referrer }}</label></p>  
-		            </div>
 		            {% endif %}
 		
 		            <div class="control-group">
@@ -42,6 +41,7 @@
 		            </div>
 		        </form>
 		    </div>
+            {% endif %}
             
             <div class="row-fluid">
                 <div class="span12 contents">
@@ -195,7 +195,7 @@
                         
                           <p class="aligncenter"><label>Sign up now!</label></p>
                           <p>Joining with Amazon allows us to <a href="https://payments.amazon.com/personal/money?ld=EL-www.amazon.comPA">pay you for the work you do</a> with CERN. Plus, it's easier than remembering another account.</p>
-                          <p>If you don't have an Amazon account, you can create one using this link. <a class="icon-question-sign" href="#" title="Learn More"></a></p>
+                          <p>If you don't have an Amazon account, you can create one using the "Login with Amazon" button to the left. <a class="icon-question-sign" href="#" title="Learn More"></a></p>
                     </ul>	                
                 </div>
             </aside>
@@ -338,6 +338,10 @@
 
     if (next) returnUrl += '?next=' + next;
     returnUrl += '?state=' + '{{ school.state }}' + '&school=' + '{{ school.name }}';
+    {% if referrer %}
+        returnUrl += '&referrer=' + {{ referrer.id }}
+    {% endif %}
+
 
     if (loginWithAmazon) {
         loginWithAmazon.onclick = function() {

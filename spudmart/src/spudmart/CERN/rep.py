@@ -17,27 +17,32 @@ MEDIUM_DELAY = -10
 IGNORED = -15
 
 def add_venue_rep(venue, points):
-    '''Adds to (or subtracts from) the reputation score of a venue.
-    Also updates the rep of the venue's owner.'''
+    """
+    Adds to (or subtracts from) the reputation score of a venue.
+
+    :param venue: the venue whose rep is to be changed
+    :param points: the amount rep changes
+        can be positive or negative
+    """
     venue.rep += points
     venue.save()
 
-    student = Student.objects.get(user = venue.user)
-    add_student_rep(student, points)
+    student = Student.objects.get(user=venue.user)
+    add_marketing_points(student, points)
 
-def add_student_rep(student, points):
-    '''Adds to (or subtracts from) the reputation score of a student.
-    Also updates the rep of the student's school.'''
-    student.rep += points
-    student.save()
-    
-    # Give the referrer credit for what this student did
-    if student.referred_by:
-        referrer = Student.objects.get(user = student.referred_by)
-        add_student_rep(referrer, points)
+def add_marketing_points(student, points):
+    """
+    Adds to (or subtracts from) the marketing points of a student.
 
-def recruited_new_head_student(recruiter):
-    add_student_rep(recruiter, RECRUITED_HEAD)
+    :param student: the student who owns the venue
+    :param points: the amount rep changes
+        can be positive or negative
+    """
+
+    student.marketing_points += points
+
+# def recruited_new_head_student(recruiter):
+#     add_student_rep(recruiter, RECRUITED_HEAD)
 
 def recruited_new_student(recruiter, recruited_school):
     # To be called AFTER a new student is recruited -- once the student object has been saved.

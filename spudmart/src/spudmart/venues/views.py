@@ -69,22 +69,6 @@ def list_view(request):
         template = 'venues/list.html'
     return render(request, template, { 'venues' : venues })
 
-# VENUE ACCOUNTS
-
-def login_view(request):
-    errors = []
-    if request.method == 'POST':
-        username = request.POST['email']
-        password = request.POST['password']
-        user = authenticate(username=username, password=password)
-        if not user:
-            errors.append('Wrong username/password')
-        else:
-            login(request, user)
-            return HttpResponseRedirect('/venues/list')
-    
-    return render(request, 'venues/login.html', { 'errors' : errors })
-
 # VENUE ENDPOINTS
 
 def save_coordinates(request, venue_id):
