@@ -286,7 +286,7 @@ def error(request, venue_id):
     
 def rent_complete(request, venue_id):
     venue = get_object_or_404(Venue, pk = venue_id)
-    rent_venue, _ = RentVenue.objects.get_or_create(venue=venue, donor=request.use)
+    rent_venue, _ = RentVenue.objects.get_or_create(venue=venue, donor=request.user)
     rent_venue.status_code = AmazonActionStatus.get_from_code(request.GET.get('status'))
     
     if rent_venue.status_code is AmazonActionStatus.SUCCESS:

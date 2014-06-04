@@ -10,3 +10,5 @@ def user_name(user):
         return profile.username
     except SiteProfileNotAvailable:
         return user.username
+    except Exception:
+        return ''

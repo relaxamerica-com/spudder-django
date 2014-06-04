@@ -578,9 +578,9 @@
 <script type="text/javascript" src="/media/js/parseUri.js"></script>
 <script type="text/javascript">
 	window.venueName = "{{ venue.name }}";
-	window.currentVenueLongitude = "{{ venue.longitude }}";
+	window.currentVenueLongitude = "{{ venue.longitude|length }}";
 	window.currentVenueId = "{{ venue.id }}";
-	window.currentVenueLatitude = "{{ venue.latitude }}";
+	window.currentVenueLatitude = "{{ venue.latitude|length }}";
 	window.preloadedOrange = $('<img src="/media/img/ajax-loader-orange.gif" />');
 	window.preloadedBlack = $('<img src="/media/img/ajax-loader-black.gif" />');
 	window.isEditMode = false;
@@ -1113,7 +1113,7 @@
 		});
 		
 		function setNearestHospitals(hospitalSelect) {
-			if (!hospitalSelect.hasClass('loaded')) {
+			if (!hospitalSelect.hasClass('loaded') && window.currentVenueLongitude.length && window.currentVenueLatitude.length) {
 				var lng = parseFloat(window.currentVenueLongitude).toFixed(6),
 					ltd = parseFloat(window.currentVenueLatitude).toFixed(6);
 	
@@ -1122,7 +1122,7 @@
 				loading.removeClass('hidden');
 	
 				$.get('/hospitals/get_hospitals_within_bounds', { 
-						'longitude_range' : [lng - 1.0, lng + 1.0], 'latitude_range' : [ltd - 1.0, ltd + 1.0] 
+						'longitude_range' : [lng - 0.15, lng + 0.15], 'latitude_range' : [ltd - 0.15, ltd + 0.15] 
 					}, function(data) {
 						var parsed = JSON.parse(data).hospitals;
 						
