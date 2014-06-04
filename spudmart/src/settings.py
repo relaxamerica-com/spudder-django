@@ -116,6 +116,13 @@ shared_settings = {
         'spudder_base_url': 'https://karol.parseapp.com',
         'spudmart_base_url': 'https://ahmed-dot-spudmart1.appspot.com',
         'amazon_login_client_id': 'amzn1.application-oa2-client.d8fccc9c77624577898dca9ff517eff3'
+    },
+    'genial-union-587': { #lucy@spudder.com
+        'spudder_application_id': '',
+        'spudder_rest_api_key': '',
+        'spudder_base_url': 'https://spudmart.parseapp.com',
+        'spudmart_base_url': 'https://genial-union-587.appspot.com',
+        'amazon_login_client_id': 'amzn1.application-oa2-client.b1404a35a0484c64a0fdf150a8a7a6f2'
     }
 }
 
