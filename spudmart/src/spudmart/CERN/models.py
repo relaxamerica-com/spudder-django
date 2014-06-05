@@ -250,15 +250,15 @@ class Student(models.Model):
                          self.testing_points)
         if max_points != 0:
             if max_points == self.marketing_points:
-                return 'Marketing: %s pts'%max_points
+                return 'Marketing'
             elif max_points == self.social_media_points:
-                return 'Social Media: %s pts'%max_points
+                return 'Social Media'
             elif max_points == self.content_points:
-                return 'Content: %s pts'%max_points
+                return 'Content'
             elif max_points == self.design_points:
-                return 'Design: %s pts'%max_points
+                return 'Design'
             elif max_points == self.testing_points:
-                return 'Testing: %s pts'%max_points
+                return 'Testing'
         
         return 'No Project Started (0pts)'
 

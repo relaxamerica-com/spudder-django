@@ -1,4 +1,7 @@
 {% extends 'CERN/dashboard.html' %}
+{% block meta %}
+<title>Social Media PR | CERN on Spudder</title>
+{% endblock %}
 
 {% block content %}
 {% if need_saving %}
@@ -23,7 +26,7 @@
   }
   
   function load() {
-    /* gapi.client.setApiKey('AIzaSyDDSFnHOspc8Xx-RKMS6qiVASBMk-4ehRk'); */
+    gapi.client.setApiKey('AIzaSyDDSFnHOspc8Xx-RKMS6qiVASBMk-4ehRk');
     gapi.client.load('urlshortener', 'v1', createUrls);
   }
 </script>
@@ -53,7 +56,6 @@
       newPopup('https://plus.google.com/share?url=' + url);
   }
 </script>
-<script src="https://apis.google.com/js/plusone.js"></script>
 <script src="https://apis.google.com/js/client.js?onload=load"></script>
 
 {% if student.show_social_media %}
@@ -70,7 +72,7 @@
             <a href="JavaScript:linkedinPopup('same-referral-url')"><i class="icon-linkedin icon-square icon-32"></i></a>
             <a href="JavaScript:twitterPopup('same-referral-url')"><i class="icon-twitter icon-square icon-32"></i></a>
             <a href="JavaScript:googlePopup('same-referral-url')"><i class="icon-google-plus icon-square icon-32"></i></a>
-            <a href="mailto:?subject=Join my CERN team!?body='I want you to join me in CERN on Spudder. Click on this link to sign up: {{ same_referral_url|escape }}"><i class="icon-envelope icon-square icon-32"></i></i></a>
+            <a href="mailto:?subject=Join my CERN team!&body=I want you to join me in CERN on Spudder. Click on this link to sign up: {{ same_referral_url|escape }}"><i class="icon-envelope icon-square icon-32"></i></i></a>
         </p>
 
         <h4>For students at other schools:</h4>
@@ -80,7 +82,7 @@
             <a href="JavaScript:linkedinPopup('referral-url')"><i class="icon-linkedin icon-square icon-32"></i></a>
             <a href="JavaScript:twitterPopup('referral-url')"><i class="icon-twitter icon-square icon-32"></i></a>
             <a href="JavaScript:googlePopup('referral-url')"><i class="icon-google-plus icon-square icon-32"></i></a>
-            <a href="mailto:?subject=Join my CERN team!?body='I want you to join me in CERN on Spudder. Click on this link to sign up: {{ referral_url|escape }}"><i class="icon-envelope icon-square icon-32"></i></i></a>
+            <a href="mailto:?subject=Join my CERN team!&body='I want you to join me in CERN on Spudder. Click on this link to sign up: {{ referral_url|escape }}"><i class="icon-envelope icon-square icon-32"></i></i></a>
         </p>
     </div>
     

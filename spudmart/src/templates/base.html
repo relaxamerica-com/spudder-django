@@ -4,8 +4,49 @@
 <html>
 <head>
 	{% include 'parts/meta.html' %}
-	{% block meta %}{% endblock %}
+	{% block meta %}
+        <title>Spudmart | Spudder - Sports Updates Made Simple</title>
+    {% endblock %}
 </head>
+
+<script type="text/javascript">
+  var url = 'http://{{ request.META.HTTP_HOST }}{{ request.get_full_path }}'
+
+  function sendRequest(){
+      var request = gapi.client.urlshortener.url.insert({
+          'resource': {'longUrl':url,},
+      })
+      request.execute(function(response){
+          this.url = response.id;
+      })
+  }
+
+  function load() {
+    gapi.client.setApiKey('AIzaSyDDSFnHOspc8Xx-RKMS6qiVASBMk-4ehRk');
+    gapi.client.load('urlshortener', 'v1', sendRequest);
+  }
+
+  function newPopup(url){
+      window.open(url, 'popup', 'height=500, width=500, left=100, top-10, scrollbars=yes,toolbar=no,menubar=no');
+  }
+
+  function facebookPopup(){
+	  newPopup('http://www.facebook.com/sharer/sharer.php?u=' + url);
+  }
+
+  function linkedinPopup(){
+	  newPopup('http://www.linkedin.com/shareArticle?mini=true&url=' + url);
+  }
+
+  function twitterPopup(){
+      newPopup('http://twitter.com/intent/tweet?text=Check%20out%20this%20page%20' + url);
+  }
+
+  function googlePopup(){
+      newPopup('https://plus.google.com/share?url=' + url);
+  }
+</script>
+<script src="https://apis.google.com/js/client.js?onload=load"></script>
 
 <body>
     {% include 'accounts/common/amazon-root.html' %}
@@ -13,83 +54,51 @@
         <header>
             <div class="container">
                 <div class="row nomargin">
-                    <div class="span12">
-                        <div class="row">
-                            <div class="headnav span4">
-                                <ul>
-                                    {% if request.user.is_authenticated %}
-                                    <li><a href="/dashboard"><i class="icon-user"></i>{% user_name user %}</a></li>
-                                    <li><a href="/accounts/logout" id="logout-button">Sign out</a></li>
-                                    {%  else  %}
-                                    <li><a href="/accounts/login">Sign in</a></li>
-                                    {% endif %}
-                                </ul>
-                            </div>
+                    <div class="span8 social-network">
+                        <p>Share:
+                            <a href="JavaScript:facebookPopup()"><i class="icon-facebook icon-square icon-32"></i></a>
+                            <a href="javascript:twitterPopup()"><i class="icon-twitter icon-square icon-32"></i></a>
+                            <a href="javascript:googlePopup()"><i class="icon-google-plus icon-square icon-32"></i></a>
+                            <a href="mailto:?subject=Check out this Spudder page!&body=Check out this cool page I saw on Spudder: {{ request.META.HTTP_HOST }}{{ request.get_full_path }}"><i class="icon-envelope icon-square icon-32"></i></a>
+                        </p>
+                    </div>
+                    <div class="headnav span4">
+                        <ul>
+                            {% if request.user.is_authenticated %}
+                            <li><a href="/dashboard"><i class="icon-user"></i>{% user_name user %}</a></li>
+                            <li><a href="/accounts/logout" id="logout-button">Sign out</a></li>
+                            {%  else  %}
+                            <li><a href="/accounts/login">Sign in</a></li>
+                            {% endif %}
+                        </ul>
+                    </div>
 
-                            <div class="hidden-top span8 download-buttons-wrapper">
-                                <div class="row-fluid" id="download-buttons">
-                                    <a href="http://www.spudder.com/mobile" class="span3 btn btn-primary btn-large" title="App Store" style="color:black">
-                                        <img src="/media/img/app_store_logo.png" />
-                                        Our iOS Apps                                        
-                                    </a>
-                                    <a href="http://www.spudder.com/mobile" class="span3 btn btn-primary btn-large" title="Google Play" style="color:black">
-                                        <img src="/media/img/google_play_logo.png" class="pull-left"/>
-                                        Our Android Apps
-                                    </a>
-                                    <a href="http://www.spudder.com/mobile" class="span3 btn btn-primary btn-large amazon" title="Amazon App" style="color:black">
-                                        <img src="/media/img/amazon_apps_logo.png" />
-                                    </a>
-                                    <a href="http://www.spudder.com/mobile" class="span3 btn btn-primary btn-large" title="Flag" style="color:black">
-                                        <span class="icon-flag icon-circled icon-64 active pull-left" style="margin-left: 0"></span>
-                                        Flag content
-                                    </a>
-                                </div>
-                            </div>
-
-                            <div id="header-hidden-link">
-                                <a href="#" class="toggle-link" title="Click me you'll get a surprise" data-target=".hidden-top"><i></i>Open</a>
-                            </div>
-                            <div id="header-logo">
-                                <a href="/"><img src="/media/ico/favicon.png"></a>
-                            </div>
+                    <div class="hidden-top span8 download-buttons-wrapper">
+                        <div class="row-fluid" id="download-buttons">
+                            <a href="http://www.spudder.com/mobile" class="span3 btn btn-primary btn-large" title="App Store" style="color:black">
+                                <img src="/media/img/app_store_logo.png" />
+                                Our iOS Apps
+                            </a>
+                            <a href="http://www.spudder.com/mobile" class="span3 btn btn-primary btn-large" title="Google Play" style="color:black">
+                                <img src="/media/img/google_play_logo.png" class="pull-left"/>
+                                Our Android Apps
+                            </a>
+                            <a href="http://www.spudder.com/mobile" class="span3 btn btn-primary btn-large amazon" title="Amazon App" style="color:black">
+                                <img src="/media/img/amazon_apps_logo.png" />
+                            </a>
+                            <a href="http://www.spudder.com/mobile" class="span3 btn btn-primary btn-large" title="Flag" style="color:black">
+                                <span class="icon-flag icon-circled icon-64 active pull-left" style="margin-left: 0"></span>
+                                Flag content
+                            </a>
                         </div>
                     </div>
 
-                    {% block sharing %}
-                    <div class="span12">
-                        <div class="span8">
-                            <div class="social-links pull-left">
-                                <table>
-                                    <tr>
-                                        <td class="twitter-cell">
-	                                        <a href="https://twitter.com/share" class="twitter-share-button" data-text="<%= tweet_text %>" data-size="large" data-related="spudderdotcom" data-dnt="true">Tweet</a>
-                                            <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>                                        </td>
-                                        <td class="google-plus-cell">
-                                            <div class="g-plus" data-action="share" data-annotation="bubble" data-height="24"></div>
-                                            <script type="text/javascript">
-                                            (function() {
-                                                var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
-                                                po.src = 'https://apis.google.com/js/platform.js';
-                                                var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
-                                            })();
-                                            </script>
-                                        </td>
-                                        <td class="facebook-cell">
-                                            <div id="fb-root"> </div>
-                                            <div class="fb-share-button" data-type="button_count"> </div>
-                                        </td>
-                                        <td class="email-cell">
-                                            <a href="mailto:?subject=I wanted you to see this site&amp;body=Check out this site {{ request.build_absolute_uri }}." 
-                                                title="Share by Email">
-                                                <span class="icon-envelope icon-64" style="align: bottom;"></span>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </div>
-                        </div>
+                    <div id="header-hidden-link">
+                        <a href="#" class="toggle-link" title="Click me you'll get a surprise" data-target=".hidden-top"><i></i>Open</a>
                     </div>
-                    {% endblock %}
+                    <div id="header-logo">
+                        <a href="/"><img src="/media/ico/favicon.png"></a>
+                    </div>
                 </div>
             </div>
 

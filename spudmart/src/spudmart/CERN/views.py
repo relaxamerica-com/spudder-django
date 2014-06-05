@@ -9,40 +9,60 @@ from django.utils.datastructures import MultiValueDictKeyError
 from spudmart.CERN.utils import import_schools
 from django.contrib.auth.decorators import login_required
 from spudmart.utils.url import get_return_url, get_request_param
-import urllib, urllib2
+import urllib
+import urllib2
 import settings
 import json
 from django.contrib.auth import authenticate, login
 from spudmart.accounts.models import UserProfile
 from spudmart.accounts.views import _handle_amazon_conn_error
+from spudmart.CERN.rep import recruited_new_student
 
 
-def register(request, code = None):
-    sorted_states = sorted(STATES.items(), key = lambda x:x[1])
+def register(request, code=None):
+    """
+    Allows users to select a state from a dropdown list, to find school
+
+    :param request: the request to render page
+    :param code: optional param which indicates a referral
+    :return: page where users can select state from a dropwdown list
+    """
+    sorted_states = sorted(STATES.items(), key=lambda x: x[1])
     
     if request.method == 'POST':
-        return register_with_state(request, state = request.POST['state'], code = code)
+        return register_with_state(request, state=request.POST['state'],
+                                   code=code)
 
     return render(request, 'CERN/register.html',
                   {
-                    'states' : sorted_states,
-                    'code' : code,
+                  'states': sorted_states,
+                  'code': code,
                   })
 
-def register_with_state(request, state, code = None):
+
+def register_with_state(request, state, code=None):
+    """
+    Allows users to select a school (in state) from dropdown list
+
+    :param request: request to render page
+    :param state: the standard state abbreviation, capitalized
+    :param code: optional param which indicates a referral
+    :return: page which allows user to select school from dropwdown
+        OR redirect to a school page
+    """
     try:
         school = request.POST['school']
     except MultiValueDictKeyError:
         schools = []
-        for s in School.objects.filter(state = state):
+        for s in School.objects.filter(state=state):
             schools.append(s)
-        schools = sorted(schools, key = lambda sch: sch.name)
+        schools = sorted(schools, key=lambda sch: sch.name)
         return render(request, 'CERN/register_state.html',
                       {
-                        'state' : STATES[state],
-                        'abbr' : state,
-                        'schools' : schools,
-                        'code' : code,
+                      'state': STATES[state],
+                      'abbr': state,
+                      'schools': schools,
+                      'code': code,
                       })
     else:
         if code:
@@ -51,65 +71,88 @@ def register_with_state(request, state, code = None):
         return HttpResponseRedirect("/CERN/%s/%s/" % (state, school))
 
 
-# School splash page
 def school(request, state, school_name, code=None):
+    """
+    Displays the school splash page
+
+    :param request: request to render page
+    :param state: standard state abbreviation of where school is
+    :param school_name: name of school
+        spaces may be replaced by _ in this param
+    :param code: optional param which indicates a referral
+    :return: rendering of school page or error page if no School with
+        name and state combination can be found
+    """
     referrer = None
+
     if code:
         try:
             referrer = Student.objects.get(referral_code=code)
         except ObjectDoesNotExist:
-            pass
+            return HttpResponseRedirect('/CERN/%s/%s/' % (state, school_name))
+
     try:
         school = School.objects.get(state=state.upper(),
                                     name=school_name.replace('_', ' '))
-    except Exception as e:
-        render(request, 'CERN/no-school.html')
+    except ObjectDoesNotExist:
+        return render(request, 'CERN/no-school.html')
     else:
         try:
             head = school.get_head_student()
         except ObjectDoesNotExist:
-            return render(request, 'CERN/school_splash.html',
-                          {'school': school})
-        else:
-            return render(request, 'CERN/school_splash.html',
-                          {
-                          'school': school,
-                          'head' : head,
-                          'referrer' : referrer,
-                          })
+            head = None
+        return render(request, 'CERN/school_splash.html',
+                      {
+                      'school': school,
+                      'head': head,
+                      'referrer': referrer,
+                      })
 
-# Customize school splash page
+
+def save_school_logo(request, state, school_name):
+    """
+    Associates a recently-uploaded logo with a school
+
+    :param request: POST request with uploaded image data
+    :param state: standard state abbreviation for location of school
+    :param school_name: name of school
+    :return: a blank HttpResponse object if success on POST request
+        OR an HttpResponseNotAllowed object (code 405)
+    """
+    if request.method == 'POST':
+        school = School.objects.get(state=state, name=school_name)
+
+        request_logo = request.POST.getlist('logo[]')
+        logo_id = request_logo[0].split('/')[3]
+        logo = UploadedFile.objects.get(pk=logo_id)
+        school.logo = logo
+
+        school.save()
+
+        return HttpResponse()
+    else:
+        return HttpResponseNotAllowed(['POST'])
+
+
 def save_school(request, state, school_name):
     """
-    Updates school mascot and logo.
+    Updates school mascot and description
 
-    Args:
-        request: the HttpRequest object, should contain POST data including
-            the logo and mascot to be updated
-        state: the state in which the school is located, to find school in db
-        school_name: the name of the school, to find school in db
-    Returns:
-        if POST request: A blank HttpResponse object (code 200)
-        if not: a HttpResponseNotAllowed object (code 405)
+    :param request: POST request with mascot and description
+    :param state: standard state abbreviation for location of school
+    :param school_name: name of school
+    :return: a blank HttpResponse if success on POST request
+        OR an HttpResponseNotAllowed object (code 405)
     """
 
     if request.method == 'POST':
         school = School.objects.get(state=state, name=school_name)
 
-        # For logo
-        request_logo = request.POST.getlist('logo[]')
-        if len(request_logo):
-            logo_id = request_logo[0].split('/')[3]
-            logo = UploadedFile.objects.get(pk = logo_id)
-            school.logo = logo
-
-        # For mascot
         mascot = request.POST['mascot']
         if mascot != '':
             school.mascot = mascot
 
         description = request.POST['description']
-        print description
         school.description = description
 
         school.save()
@@ -120,14 +163,30 @@ def save_school(request, state, school_name):
 
 
 def import_school_data(request):
+    """
+    (Re)loads all schools from schools.csv into database
+
+    Should only be used in the queue
+
+    :param request: request to run import script
+    :return: HttpResponseNotAllowed (code 405) if not POST request
+    """
     if request.method == 'POST':
         import_schools()
     else:
         return HttpResponseNotAllowed(['POST'])
 
+
+#todo: (after 6/20 release) prevent non-students from seeing page
 @login_required
 def dashboard(request):
-    student = Student.objects.get(user = request.user)
+    """
+    Displays the CERN dashboard/scoreboard
+
+    :param request: request to render page
+    :return: dashboard customized for logged in student
+    """
+    student = Student.objects.get(user=request.user)
 
     content = design = qa = True
 
@@ -140,7 +199,7 @@ def dashboard(request):
             content = False
 
     try:
-        design_list = MailingList.objects.get(project = 'Sponsor Page Design')
+        design_list = MailingList.objects.get(project='Sponsor Page Design')
     except ObjectDoesNotExist:
         pass
     else:
@@ -149,7 +208,7 @@ def dashboard(request):
 
     try:
         qa_list = MailingList.objects.get(
-            project = 'Quality Assurance Testing')
+            project='Quality Assurance Testing')
     except ObjectDoesNotExist:
         pass
     else:
@@ -159,14 +218,22 @@ def dashboard(request):
 
     return render(request, 'CERN/dashboard.html',
                   {
-                    'student' : student,
-                    'content' : content,
-                    'design' : design,
-                    'qa' : qa,
+                  'student': student,
+                  'content': content,
+                  'design': design,
+                  'qa': qa,
                   })
+
 
 @login_required
 def social_media(request):
+    """
+    Displays social media page with referral links and basic info
+
+    :param request: request to render page
+    :return: social media page customized for currently logged in
+        student (with custom links and info on top 5 referred users)
+    """
     student = Student.objects.get(user=request.user)
 
     referrals = sorted(student.referrals(), key=lambda s: s.rep())
@@ -178,11 +245,11 @@ def social_media(request):
         same_referral_url = student.same_school_referral_url
     else:
         referral_url = ('http://' + request.META['HTTP_HOST'] +
-                       '/CERN/register/%s'%student.referral_code)
+                        '/CERN/register/%s' % student.referral_code)
         same_referral_url = ('http://' + request.META['HTTP_HOST'] +
-                             '/CERN/%s/%s/%s'%(student.school.state,
-                                               student.school.name,
-                                               student.referral_code))
+                             '/CERN/%s/%s/%s' % (student.school.state,
+                                                 student.school.name,
+                                                 student.referral_code))
         need_saving = True
 
     referred1 = referred2 = referred3 = referred4 = referred5 = None
@@ -214,40 +281,56 @@ def social_media(request):
 
     return render(request, 'CERN/social_media.html',
                   {
-                   'num_referred' : num_referred,
-                   'referral_url' : referral_url,
-                   'same_referral_url' : same_referral_url,
-                   'student' : student,
-                   'need_saving' : need_saving,
-                   'referred1' : referred1,
-                   'referred2' : referred2,
-                   'referred3' : referred3,
-                   'referred4' : referred4,
-                   'referred5' : referred5,
+                  'num_referred': num_referred,
+                  'referral_url': referral_url,
+                  'same_referral_url': same_referral_url,
+                  'student': student,
+                  'need_saving': need_saving,
+                  'referred1': referred1,
+                  'referred2': referred2,
+                  'referred3': referred3,
+                  'referred4': referred4,
+                  'referred5': referred5,
                   })
+
+
 @login_required
 def content(request):
+    """
+    Displays content (blogging) page
+
+    :param request: request to render page
+    :return: 'Coming Soon' page customized for content management
+    """
     project = 'Blogging'
-    joined = None
+    joined = False
     try:
-        mailing = MailingList.objects.get(project = project)
-    except:
+        mailing = MailingList.objects.get(project=project)
+    except ObjectDoesNotExist:
         pass
     else:
         if request.user.email in mailing.emails:
             joined = True
-        else:
-            joined = False
     return render(request, 'CERN/coming_soon.html',
-                  { 'project' : project, 'joined' : joined, })
+                  {
+                  'project': project,
+                  'joined': joined,
+                  })
+
 
 @login_required
 def design(request):
+    """
+    Displays design page
+
+    :param request: request to render page
+    :return: 'Coming Soon' page customized for design
+    """
     project = 'Sponsor Page Design'
     joined = None
     try:
-        mailing = MailingList.objects.get(project = project)
-    except:
+        mailing = MailingList.objects.get(project=project)
+    except ObjectDoesNotExist:
         pass
     else:
         if request.user.email in mailing.emails:
@@ -255,15 +338,25 @@ def design(request):
         else:
             joined = False
     return render(request, 'CERN/coming_soon.html',
-                  { 'project' : project, 'joined' : joined, })
+                  {
+                  'project': project,
+                  'joined': joined,
+                  })
+
 
 @login_required
 def testing(request):
+    """
+    Displays QA testing page
+
+    :param request: request to render page
+    :return: 'Coming Soon' page customized for QA testing
+    """
     project = 'Quality Assurance Testing'
     joined = None
     try:
-        mailing = MailingList.objects.get(project = project)
-    except:
+        mailing = MailingList.objects.get(project=project)
+    except ObjectDoesNotExist:
         pass
     else:
         if request.user.email in mailing.emails:
@@ -271,15 +364,25 @@ def testing(request):
         else:
             joined = False
     return render(request, 'CERN/coming_soon.html',
-                  { 'project' : project, 'joined' : joined, })
+                  {
+                  'project': project,
+                  'joined': joined,
+                  })
+
 
 @login_required
 def mobile(request):
+    """
+    Displays Mobile page
+
+    :param request: request to render page
+    :return: 'Coming Soon' page customized for Mobile
+    """
     project = 'Mobile App'
     joined = None
     try:
-        mailing = MailingList.objects.get(project = project)
-    except:
+        mailing = MailingList.objects.get(project=project)
+    except ObjectDoesNotExist:
         pass
     else:
         if request.user.email in mailing.emails:
@@ -287,25 +390,47 @@ def mobile(request):
         else:
             joined = False
     return render(request, 'CERN/coming_soon.html',
-                  { 'project' : project, 'joined' : joined, })
-    
+                  {
+                  'project': project,
+                  'joined': joined,
+                  })
+
+
 def add_email_alert(request):
+    """
+    Adds an email address to a MailingList for a give project
+
+    :param request: HttpRequest that should include 'project' and
+        'email' in POST data
+    :return: Blank HttpResponse on success
+        OR HttpReponseNotAllowed (code 405) if not POST request
+    """
     if request.method == 'POST':
+        project = request.POST['project']
+
         try:
-            mailinglist = MailingList.objects.get(project = request.POST['project'])
+            mailinglist = MailingList.objects.get(project=project)
         except ObjectDoesNotExist:
-            mailinglist = MailingList(emails = [], project = request.POST['project'])
+            mailinglist = MailingList(emails=[], project=project)
         
         mailinglist.emails.append(request.POST['email'])
         mailinglist.save()
-        return HttpResponse("Added user to list.")
+        return HttpResponse()
     else:
         return HttpResponseNotAllowed(['POST'])
-    
+
+
 def save_short_url(request):
-    print request.POST
+    """
+    Saves goo.gl shortened URL of referral in Student object
+
+    :param request: HttpRequest object that should include
+        'referral-url' or 'same-referral-url' in POST data
+    :return: Empty HttpResponse object on success
+        OR HttpResponseNotAllowed object (code 405) if not POST request
+    """
     if request.method == 'POST':
-        student = Student.objects.get(user = request.user)
+        student = Student.objects.get(user=request.user)
         try:
             referral = request.POST['same-referral-url']
         except MultiValueDictKeyError:
@@ -318,11 +443,22 @@ def save_short_url(request):
         else:
             student.same_school_referral_url = referral
         student.save()
-        return HttpResponse("Success.")
+        return HttpResponse()
     else:
         return HttpResponseNotAllowed(['POST'])
 
+
 def amazon_login(request):
+    """
+    Either logs in student from Amazon or creates new Student object
+
+    Slightly customized from accounts.views.amazon_login to add Student
+        object creation (and hard-redirect to CERN dashboard)
+
+    :param request: response from Amazon on successful login
+        Should also include 'state' and 'school' params in GET
+    :return: redirect to CERN dashboard or standard login page w/errors
+    """
     error = request.GET.get('error', None)
     return_url = get_return_url(request)
     
@@ -380,14 +516,21 @@ def amazon_login(request):
                 user_profile.save()
 
                 # Set up Student object
-                school = School.objects.get(name = name, state = state)
-                student = Student(user = user, school = school)
+                school = School.objects.get(name=name, state=state)
+                student = Student(user=user, school=school)
                 if school.num_students == 0:
                     student.isHead = True
-                if referrer_id is not None:
-                    referrer = Student.objects.get(id=referrer_id).user
-                    student.referred_by = referrer
+
                 student.save()
+
+                # Referral points have to come after save, so put all
+                 # the referral stuff together
+                if referrer_id is not '':
+                    referrer = Student.objects.get(id=referrer_id)
+                    student.referred_by = referrer.user
+                    student.save()
+
+                    recruited_new_student(referrer, school)
 
             user = authenticate(username=amazon_user_email, password=amazon_user_id)
             profile = user.get_profile()
@@ -403,13 +546,22 @@ def amazon_login(request):
             return _handle_amazon_conn_error(request, profile_json_data)
     else:
         return _handle_amazon_conn_error(request, json_data)
-    
-def toggle_show(request):
-    student = Student.objects.get(user = request.user)
-    toggle = request.POST['toggle']
-    print toggle
-    if toggle == 'CERN':
+
+
+def disable_about(request):
+    """
+    Disables 'about X' part of given page for given student
+
+    :param request: request to disable about, should include 'about'
+        param which specifies which 'about' to hide
+    :return: a blank HttpResponse on success
+    """
+    student = Student.objects.get(user=request.user)
+    about = request.POST['about']
+    if about == 'CERN':
         student.show_CERN = False
-    elif toggle == 'social media':
+    elif about == 'social media':
         student.show_social_media = False
     student.save()
+
+    return HttpResponse()

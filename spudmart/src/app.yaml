@@ -12,6 +12,10 @@ inbound_services:
 - warmup
 
 handlers:
+- url: /CERN/import_schools
+  script: djangoappengine/main/main.py
+  login: admin
+
 - url: /_ah/queue/deferred
   script: djangoappengine/deferred/handler.py
   login: admin
