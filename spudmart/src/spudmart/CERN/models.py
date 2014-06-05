@@ -15,7 +15,7 @@ STUDENT_REP_LEVEL_MODIFIER = 1000
 #(10x student requirement)
 SCHOOL_REP_LEVEL_MODIFIER = 100000
 
-DEFAULT_CHALLENGE_DURATION = timedelta(days = 7)
+DEFAULT_CHALLENGE_DURATION = timedelta(days=7)
 
 STATES = {
         'AK': 'Alaska',
@@ -147,28 +147,26 @@ class Student(models.Model):
         
         The database is indexed on User since that's how the students are most often looked up.
     '''    
-    user = models.ForeignKey(User, unique = True, db_index = True, 
+    user = models.ForeignKey(User, unique=True, db_index=True,
                              related_name="student_user")
     school = models.ForeignKey(School)
     isHead = models.BooleanField()
     
-    referral_url = models.CharField()
-    same_school_referral_url = models.CharField()
+    referral_url = models.CharField(max_length=200, null=True)
+    same_school_referral_url = models.CharField(max_length=200, null=True)
     
     referral_code = models.CharField(max_length=128, unique=True)
     referred_by = models.ForeignKey(User, blank=True, null=True, 
                                     related_name="referred_by_user")
     
-    marketing_points = models.IntegerField(default = 0)
-    social_media_points = models.IntegerField(default = 0)
-    content_points = models.IntegerField(default = 0)
-    design_points = models.IntegerField(default = 0)
-    testing_points = models.IntegerField(default = 0)
+    marketing_points = models.IntegerField(default=0)
+    social_media_points = models.IntegerField(default=0)
+    content_points = models.IntegerField(default=0)
+    design_points = models.IntegerField(default=0)
+    testing_points = models.IntegerField(default=0)
     
-    show_CERN = models.BooleanField(default = True)
-    show_social_media = models.BooleanField(default = True)
-    show_content = models.BooleanField(default = True)
-    show_testing = models.BooleanField(default = True)
+    show_CERN = models.BooleanField(default=True)
+    show_social_media = models.BooleanField(default=True)
     
 
     def save(self, force_insert=False, force_update=False, using=None):
@@ -188,7 +186,7 @@ class Student(models.Model):
         if self.isHead:
             something += ", Team Captain for "
         else:
-            something += ", at "
+            something += ", "
         something += str(self.school.name)
         return something
 
@@ -229,19 +227,16 @@ class Student(models.Model):
             Parameter challenge_duration must be a timedelta object. 
         '''
         if self.isHead:
-            challenge = Challenge(challenger = self.school, challenged = school, challenge_end = datetime.utcnow() + challenge_durration)
+            challenge = Challenge(challenger=self.school,
+                                  challenged=school,
+                                  challenge_end=datetime.utcnow() +
+                                                challenge_durration)
             challenge.save()
             return challenge        
     
     def level(self):
-        return get_max_triangle_num_less_than(self.rep() / STUDENT_REP_LEVEL_MODIFIER)
-    
-#     def add_rep(self, points):
-#         self.rep += points
-#         self.save()
-#         if self.referred_by:
-#             referrer = Student.objects.get(user = self.referred_by)
-#             referrer.add_rep(points)
+        return get_max_triangle_num_less_than(self.rep() /
+                                              STUDENT_REP_LEVEL_MODIFIER)
 
     def rep(self):
         points = (self.marketing_points + self.social_media_points +
@@ -266,6 +261,12 @@ class Student(models.Model):
                 return 'Testing: %s pts'%max_points
         
         return 'No Project Started (0pts)'
+
+    def referrals(self):
+        students = []
+        for s in Student.objects.filter(referred_by = self.user):
+            students.append(s)
+        return students
 
 class Challenge(models.Model):
     ''' Stores information about challenges between schools based purely on rep points. 

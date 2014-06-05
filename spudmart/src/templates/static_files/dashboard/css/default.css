@@ -301,7 +301,6 @@ textarea {
 }
 #entity-create .input-icon.input-icon-right > [class*="icon-"] {
     right: 5px;
-    margin-right: 0px;
 }
 #entity-create div.input-append {
     margin-bottom: 0;
@@ -996,14 +995,6 @@ form .input-required {
 	font-size: 16px;
 }
 
-#venue-view .progress {
-	display: none;
-	width: 150px;
-	margin-bottom: 0px;
-	float: left;
-	margin-left: 10px;
-}
-
 #venue-view .playing-surface-details {
 	width: 200px;
 	margin: 10px auto;
@@ -1090,12 +1081,34 @@ p.head .add-button {
 	margin-bottom: 20px !important;
 }
 
-.about-cern {
-    background-color: #BBB;
+.about-cern.alert{
+	display: inherit;
     margin-bottom: 20px;
     padding: 10px;
 }
 
 .about-cern a{
 	color: #F03C02; 
+}
+
+.about-cern h3{
+	text-align: center;
+}
+
+.cern-header{
+	padding: 20px;
+	display: block;
+	background-color: #fff;
+}
+
+.nav-list{
+	margin: auto 0;
+}
+
+.pricing-terms h3{
+	color: #e9e9e9;
+}
+
+#social-media table{
+    border: solid 1px black;
 }

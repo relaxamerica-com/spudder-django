@@ -4,8 +4,7 @@
 {% if need_saving %}
 <script>
   function appendResults(text, elementid) {
-    $("#" + elementid).val(text)
-    console.log(text)
+    $("#" + elementid).attr('href', text)
   }
 
   function sendRequest(longUrl, elementId){
@@ -13,7 +12,7 @@
           'resource': {'longUrl':longUrl,},
       })
       request.execute(function(response){
-          console.log(response)
+          $.post('/CERN/save_short_url/', { elementId : response.id })
           appendResults(response.id, elementId)
       })
   }
@@ -28,41 +27,69 @@
     gapi.client.load('urlshortener', 'v1', createUrls);
   }
 </script>
+{% endif %}
+<script type="text/javascript">
+  function newPopup(url){
+      window.open(url, 'popup', 'height=500, width=500, left=100, top-10, scrollbars=yes,toolbar=no,menubar=no');
+  }
+
+  function facebookPopup(id){
+	  var url = $('#' + id).attr('href');
+	  newPopup('http://www.facebook.com/sharer/sharer.php?u=' + url);
+  }
+
+  function linkedinPopup(id){
+	  var url = $('#' + id).attr('href');
+	  newPopup('http://www.linkedin.com/shareArticle?mini=true&url=' + url);
+  }
+
+  function twitterPopup(id){
+	  var url = escape($('#' + id).attr('href'));
+      newPopup('http://twitter.com/intent/tweet?text=Join%20my%20CERN%20team:%20' + url);
+  }
+
+  function googlePopup(id){
+      var url = $('#' + id).attr('href');
+      newPopup('https://plus.google.com/share?url=' + url);
+  }
+</script>
+<script src="https://apis.google.com/js/plusone.js"></script>
+<script src="https://apis.google.com/js/client.js?onload=load"></script>
 
 {% if student.show_social_media %}
     {% include 'CERN/parts/about-social-media.html' %}
 {% endif %}
 
 <div class="row">
-    <div class="span5 aligncenter">
-        <h4>Use this link to refer students at your school:</h4>
-        <p><input value="{{ same_referral_url }}" id="same-referral-url" readonly> <button class="btn btn-small btn-orange" onclick="document.location='{{ same_referral_url }}'">Visit</button></p>
-        <div>
-           <h5>Share to common sites: &nbsp;&nbsp;</h5>
-           <a class="pull-right" href="JavaScript:facebookPopup('same-referral-url')"><i class="icon-facebook icon-square"></i></a>
-           <a href="JavaScript:linkedinPopup('same-referral-url')"><i class="icon-linkedin icon-square pull-right"></i></a>
-           <a href="JavaScript:twitterPopup('same-referral-url')"><i class="icon-twitter icon-square pull-right"></i></a>
-           <a href="JavaScript:googlePopup('same-referral-url')"><i class="icon-google-plus icon-square pull-right"></i></a>
-        </div>
-        
-        <br>
-        
-        <h4>Use this link to refer students at another school:</h4>
-        <p><input value="{{ referral_url }}" id="referral-url" readonly> <button class="btn btn-small btn-orange" onclick="document.location='{{ referral_url }}'">Visit</button></p>
-        <div>
-           <h5>Share to common sites: </h5>
-           <a href="JavaScript:facebookPopup('referral-url')"><i class="icon-facebook icon-square pull-right"></i></a>
-           <a href="JavaScript:linkedinPopup('referral-url')"><i class="icon-linkedin icon-square pull-right"></i></a>
-           <a href="JavaScript:twitterPopup('referral-url')"><i class="icon-twitter icon-square pull-right"></i></a>
-           <a href="JavaScript:googlePopup('referral-url')"><i class="icon-google-plus icon-square"></i></a>
-        </div>
+    <div class="span5 align-center">
+        <h3>Refer new CERN members!</h3>
+        <h4>For students at your school:</h4>
+        <p>
+            <a href="{{ same_referral_url|escape }}" id="same-referral-url"><i class="icon-link icon-square icon-32"></i></a>
+            <a href="JavaScript:facebookPopup('same-referral-url')"><i class="icon-facebook icon-square icon-32"></i></a>
+            <a href="JavaScript:linkedinPopup('same-referral-url')"><i class="icon-linkedin icon-square icon-32"></i></a>
+            <a href="JavaScript:twitterPopup('same-referral-url')"><i class="icon-twitter icon-square icon-32"></i></a>
+            <a href="JavaScript:googlePopup('same-referral-url')"><i class="icon-google-plus icon-square icon-32"></i></a>
+            <a href="mailto:?subject=Join my CERN team!?body='I want you to join me in CERN on Spudder. Click on this link to sign up: {{ same_referral_url|escape }}"><i class="icon-envelope icon-square icon-32"></i></i></a>
+        </p>
+
+        <h4>For students at other schools:</h4>
+        <p>
+            <a href="{{ referral_url|escape }}" id="referral-url"><i class="icon-link icon-square icon-32"></i></a>
+            <a href="JavaScript:facebookPopup('referral-url')"><i class="icon-facebook icon-square icon-32"></i></a>
+            <a href="JavaScript:linkedinPopup('referral-url')"><i class="icon-linkedin icon-square icon-32"></i></a>
+            <a href="JavaScript:twitterPopup('referral-url')"><i class="icon-twitter icon-square icon-32"></i></a>
+            <a href="JavaScript:googlePopup('referral-url')"><i class="icon-google-plus icon-square icon-32"></i></a>
+            <a href="mailto:?subject=Join my CERN team!?body='I want you to join me in CERN on Spudder. Click on this link to sign up: {{ referral_url|escape }}"><i class="icon-envelope icon-square icon-32"></i></i></a>
+        </p>
     </div>
     
     <div class="span5">
         <h3 class="align-center">You have referred {{ num_referred }} CERN members!</h3>
-        <div id="analytics">
+        {% if num_referred > 0 %}
+        <div id="analytics" class="align-center">
             <h5>Your Referred Students</h5>
-            <table>
+            <table class="social-media">
                 <tr>
                     <th>Rank</th>
                     <th>Email</th>
@@ -78,84 +105,52 @@
                         <td>{{ referred1.top_project }}</td>
                         <td>{{ referred1.school.name }}</td>
                     </tr>
-	                {% if referred2 %}
-	                    <tr>
-	                        <td>#2</td>
-	                        <td>{{ referred2.user }}</td>
-	                        <td>{{ referred2.rep }}</td>
-	                        <td>{{ referred2.top_project }}</td>
-	                        <td>{{ referred2.school.name }}</td>
-	                    </tr>
-	                {% endif %}
-	                
-	                {% if referred3 %}
-	                    <tr>
-	                        <td>#3</td>
-	                        <td>{{ referred3.user }}</td>
-	                        <td>{{ referred3.rep }}</td>
-	                        <td>{{ referred3.top_project }}</td>
-	                        <td>{{ referred3.school.name }}</td>
-	                    </tr>
-	                {% endif %}
-	                
-	                {% if referred4 %}
-	                    <tr>
-	                        <td>#4</td>
-	                        <td>{{ referred4.user }}</td>
-	                        <td>{{ referred4.rep }}</td>
-	                        <td>{{ referred4.top_project }}</td>
-	                        <td>{{ referred4.school.name }}</td>
-	                    </tr>
-	                {% endif %}
-	                
-	                {% if referred5 %}
-	                    <tr>
-	                        <td>#5</td>
-	                        <td>{{ referred5.user }}</td>
-	                        <td>{{ referred5.rep }}</td>
-	                        <td>{{ referred5.top_project }}</td>
-	                        <td>{{ referred5.school.name }}</td>
-	                    </tr>
-	                {% endif %}
-	            {% else %}
-	            <tr>
-	               <td>You haven't referred any students yet.</td>
-	            </tr>
-
                 {% endif %}
-                
 
-                
+                {% if referred2 %}
+                    <tr>
+                        <td>#2</td>
+                        <td>{{ referred2.user }}</td>
+                        <td>{{ referred2.rep }}</td>
+                        <td>{{ referred2.top_project }}</td>
+                        <td>{{ referred2.school.name }}</td>
+                    </tr>
+                {% endif %}
+
+                {% if referred3 %}
+                    <tr>
+                        <td>#3</td>
+                        <td>{{ referred3.user }}</td>
+                        <td>{{ referred3.rep }}</td>
+                        <td>{{ referred3.top_project }}</td>
+                        <td>{{ referred3.school.name }}</td>
+                    </tr>
+                {% endif %}
+
+                {% if referred4 %}
+                    <tr>
+                        <td>#4</td>
+                        <td>{{ referred4.user }}</td>
+                        <td>{{ referred4.rep }}</td>
+                        <td>{{ referred4.top_project }}</td>
+                        <td>{{ referred4.school.name }}</td>
+                    </tr>
+                {% endif %}
+
+                {% if referred5 %}
+                    <tr>
+                        <td>#5</td>
+                        <td>{{ referred5.user }}</td>
+                        <td>{{ referred5.rep }}</td>
+                        <td>{{ referred5.top_project }}</td>
+                        <td>{{ referred5.school.name }}</td>
+                    </tr>
+                {% endif %}
             </table>
         </div>
+        {% else %}
+        <p>You haven't referred any students yet! Use the links to the left to get started. You'll be able to see a little about the top students you've referred here.</p>
+        {% endif %}
     </div>
 </div>
-{% endif %}
-<script type="text/javascript">
-  function newPopup(url){
-      window.open(url, 'popup', 'height=500, width=500, left=100, top-10, scrollbars=yes,toolbar=no,menubar=no');
-  }
-  
-  function facebookPopup(id){
-	  var url = $('#' + id).val();
-	  newPopup('http://www.facebook.com/sharer/sharer.php?u=' + url);
-  }
-  
-  function linkedinPopup(id){
-	  var url = $('#' + id).val();
-	  newPopup('http://www.linkedin.com/shareArticle?mini=true&url=' + url);
-  }
-  
-  function twitterPopup(id){
-	  var url = escape($('#' + id).val());
-      newPopup('http://twitter.com/intent/tweet?text=Join%20my%20CERN%20team:%20' + url);
-  }
-  
-  function googlePopup(id){
-      var url = $('#' + id).val();
-      newPopup('https://plus.google.com/share?url=' + url);
-  }
-</script>
-<script src="https://apis.google.com/js/plusone.js"></script>
-<script src="https://apis.google.com/js/client.js?onload=load"></script>
 {% endblock %}
