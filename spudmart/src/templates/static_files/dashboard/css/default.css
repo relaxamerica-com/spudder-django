@@ -869,6 +869,11 @@ form .input-required {
     width: 200px;
 }
 
+#create-venue #map-canvas {
+	width: 320px;
+	height: 200px;	
+}
+
 #venue-view .logo-placeholder {
 	text-align: center;
 	color: #000;
@@ -977,6 +982,8 @@ form .input-required {
 	height: 320px;
 	margin-bottom: 10px;
 }
+
+
 
 #venue-view #prize-this-venue {
 	margin: 0px auto 5px;

@@ -6,7 +6,7 @@ from django.contrib.auth import authenticate, login
 from spudmart.upload.models import UploadedFile
 import simplejson
 from spudmart.recipients.models import VenueRecipient,\
-    RecipientRegistrationState, Recipient
+    RecipientRegistrationState
 from spudmart.amazon.utils import get_venue_recipient_cbui_url,\
     get_rent_venue_cbui_url, get_fps_connection
 from spudmart.amazon.models import AmazonActionStatus
@@ -16,6 +16,22 @@ from google.appengine.api import mail
 from django.contrib.auth.decorators import login_required
 from spudmart.sponsors.models import SponsorPage
 from spudmart.accounts.utils import is_sponsor
+
+# DO NOT REMOVE, PLEASE! It's needed for testing purpose
+# 
+# def login_view(request):
+#     errors = []
+#     if request.method == 'POST':
+#         username = request.POST['email']
+#         password = request.POST['password']
+#         user = authenticate(username=username, password=password)
+#         if not user:
+#             errors.append('Wrong username/password')
+#         else:
+#             login(request, user)
+#             return HttpResponseRedirect('/venues/list')
+#     
+#     return render(request, 'venues/login.html', { 'errors' : errors })
 
 def view(request, venue_id):
     venue = Venue.objects.get(pk = venue_id)

@@ -11,7 +11,7 @@
 	<div class="row">
 		<div class="span8">
 			<form method="post" enctype="multipart/form-data">
-				<h5 class="venue-header clearfix">Venue {% include 'venues/parts/select_sport.html' %}
+				<h5 class="venue-header clearfix">Venue ({{ venue.sport }})
 					{% if can_edit %}
 						<div class="pull-right">
 							<div class="btn btn-orange" id="edit">
@@ -654,7 +654,13 @@
 			if ($(this).hasClass('icon-map-marker')) {
 
 				if (!$(this).hasClass('initialized')) {
-					initialize(window.isEditMode);
+					initialize(window.isEditMode, $('.contents .alert'), function(venue) {
+						return 
+							venue.sport == window.currentSelectedSport
+							&& venue.id != parseInt(window.currentVenueId, 10);
+					}, function() {
+						$('#save-location').removeClass('hidden');
+					});
 				}
 			} else if ($(this).hasClass('icon-medkit')) {
 				setNearestHospitals(hospitalSelect);
@@ -662,6 +668,8 @@
 				setRemoveButtonPosition('venue-pics-carousel');
 			} else if ($(this).hasClass('icon-eye-open')) {
 				setRemoveButtonPosition('playing-surface-carousel');
+			} else if ($(this).hasClass('icon-female')) {
+				setRemoveButtonPosition('restroom-carousel');
 			}
 
 		});

@@ -4,30 +4,14 @@
 
 window.map;
 
-function deg2rad(deg) {
-	return (deg * (Math.PI / 180));
-}
-
 function getDistance(latitude1, longitude1, latitude2, longitude2) {
-//	var earthRadius = 6378137;
-//
-//	var dLat = deg2rad(latitude2 - latitude1),
-//		dLon = deg2rad(longitude2 - longitude1);
-//
-//	var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(deg2rad(latitude1))
-//			* Math.cos(deg2rad(latitude2)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
-//	var c = 2 * Math.asin(Math.sqrt(a));
-//	var d = earthRadius * c;
-//
-//	return d;
-	
 	var pos1 = new google.maps.LatLng(latitude1, longitude1),
 		pos2 = new google.maps.LatLng(latitude2, longitude2);
 	
 	return google.maps.geometry.spherical.computeDistanceBetween(pos1, pos2);
 }
 
-function initialize(tryGeolocation) {
+function initialize(tryGeolocation, alertContainer, filter, successHandler) {
 	var mapOptions = {
 		zoom : 15
 	};
@@ -41,19 +25,19 @@ function initialize(tryGeolocation) {
 			var infowindow = new google.maps.InfoWindow({
 				map : map,
 				position : pos,
-				content : window.venueName
+				content : 'Your Location' // window.venueName
 			});
 			
 			google.maps.event.addListener(map, 'idle', function() {
 				getVenuesWithinBounds().done(function(data) {
+					
 					var venues = JSON.parse(data).venues,
 						otherVenueInRange = null,
 						pos = position.coords;
 					
 					$.each(venues, function() {
 						if (getDistance(this.latitude, this.longitude, pos.latitude, pos.longitude) <= 250 
-							&& this.sport == window.currentSelectedSport
-							&& this.id != parseInt(window.currentVenueId, 10)) {
+							&& filter(this)) {
 							otherVenueInRange = this;
 							return false;
 						}
@@ -65,9 +49,9 @@ function initialize(tryGeolocation) {
 										+ '">' 
 										+ otherVenueInRange.aka_name 
 										+ '</a>';
-						showAlert($('.contents .alert'), 'Venue already exists near your current location: ' + venueLink, 'warning', false);
+						showAlert(alertContainer, 'Venue already exists near your current location: ' + venueLink, 'warning', false);
 					} else {
-						$('#save-location').removeClass('hidden');
+						successHandler();
 					}
 				});
 			});
@@ -94,11 +78,9 @@ function initialize(tryGeolocation) {
 	
 	google.maps.event.addListener(map,'bounds_changed', function() {
 		getVenuesWithinBounds().done(function(data) {
-			console.log(data);
+			// console.log(data);
 		});
 	});
-	
-	
 	
 }
 
