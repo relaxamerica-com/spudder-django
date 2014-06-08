@@ -4,6 +4,7 @@ from django.shortcuts import render, get_object_or_404
 import settings
 from spudmart.sponsors.forms import SponsorPageForm
 from spudmart.sponsors.models import SponsorPage
+from spudmart.accounts.utils import is_sponsor
 
 
 def _get_map_info(post_data):
@@ -34,7 +35,7 @@ def _get_images_from_post(post_data):
 
 
 @login_required
-@user_passes_test(lambda user: user.is_sponsor)
+@user_passes_test(lambda user: is_sponsor(user))
 def sponsor_page(request):
     sponsor_page_instances = SponsorPage.objects.filter(sponsor=request.user)
     lat = None
