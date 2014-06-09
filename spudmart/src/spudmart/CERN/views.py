@@ -1,22 +1,12 @@
 from django.shortcuts import render
-from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect, HttpResponse, \
     HttpResponseNotAllowed
 from spudmart.upload.models import UploadedFile
 from spudmart.CERN.models import School, Student, STATES, MailingList
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils.datastructures import MultiValueDictKeyError
-from spudmart.CERN.utils import import_schools
+from spudmart.CERN.utils import import_schools, strip_invalid_chars
 from django.contrib.auth.decorators import login_required
-from spudmart.utils.url import get_return_url, get_request_param
-import urllib
-import urllib2
-import settings
-import json
-from django.contrib.auth import authenticate, login
-from spudmart.accounts.models import UserProfile
-from spudmart.accounts.views import _handle_amazon_conn_error
-from spudmart.CERN.rep import recruited_new_student
 
 
 def register(request, code=None):
@@ -51,7 +41,7 @@ def register_with_state(request, state, code=None):
         OR redirect to a school page
     """
     try:
-        school = request.POST['school']
+        school_id = request.POST['school']
     except MultiValueDictKeyError:
         schools = []
         for s in School.objects.filter(state=state):
@@ -66,18 +56,19 @@ def register_with_state(request, state, code=None):
                       })
     else:
         if code:
-            return HttpResponseRedirect("/CERN/%s/%s/%s"
-                                        % (state, school, code))
-        return HttpResponseRedirect("/CERN/%s/%s/" % (state, school))
+            return HttpResponseRedirect("/CERN/%s/register/%s" %
+                                        (school_id, code))
+        return HttpResponseRedirect("/CERN/%s/register/" % school_id)
 
 
-def school(request, state, school_name, code=None):
+def school(request, state, school_id, name, code=None):
     """
     Displays the school splash page
 
     :param request: request to render page
     :param state: standard state abbreviation of where school is
-    :param school_name: name of school
+    :param id: the
+    :param name: name of school
         spaces may be replaced by _ in this param
     :param code: optional param which indicates a referral
     :return: rendering of school page or error page if no School with
@@ -89,14 +80,18 @@ def school(request, state, school_name, code=None):
         try:
             referrer = Student.objects.get(referral_code=code)
         except ObjectDoesNotExist:
-            return HttpResponseRedirect('/CERN/%s/%s/' % (state, school_name))
+            return HttpResponseRedirect('/CERN/%s/%s/%s/' % (state, school_id,
+                                                             name))
 
     try:
-        school = School.objects.get(state=state.upper(),
-                                    name=school_name.replace('_', ' '))
+        school = School.objects.get(id=school_id)
     except ObjectDoesNotExist:
         return render(request, 'CERN/no-school.html')
     else:
+        stripped_name = strip_invalid_chars(school.name)
+        if strip_invalid_chars(school.name) != name:
+            return HttpResponseRedirect('/CERN/%s/%s/%s' % (state, school_id,
+                                                            stripped_name))
         try:
             head = school.get_head_student()
         except ObjectDoesNotExist:
@@ -109,7 +104,7 @@ def school(request, state, school_name, code=None):
                       })
 
 
-def save_school_logo(request, state, school_name):
+def save_school_logo(request, school_id):
     """
     Associates a recently-uploaded logo with a school
 
@@ -120,7 +115,7 @@ def save_school_logo(request, state, school_name):
         OR an HttpResponseNotAllowed object (code 405)
     """
     if request.method == 'POST':
-        school = School.objects.get(state=state, name=school_name)
+        school = School.objects.get(id=school_id)
 
         request_logo = request.POST.getlist('logo[]')
         logo_id = request_logo[0].split('/')[3]
@@ -134,7 +129,7 @@ def save_school_logo(request, state, school_name):
         return HttpResponseNotAllowed(['POST'])
 
 
-def save_school(request, state, school_name):
+def save_school(request, school_id):
     """
     Updates school mascot and description
 
@@ -146,7 +141,7 @@ def save_school(request, state, school_name):
     """
 
     if request.method == 'POST':
-        school = School.objects.get(state=state, name=school_name)
+        school = School.objects.get(id=school_id)
 
         mascot = request.POST['mascot']
         if mascot != '':
@@ -166,7 +161,7 @@ def import_school_data(request):
     """
     (Re)loads all schools from schools.csv into database
 
-    Should only be used in the queue
+    Should only be used in the queue (it's protected anyway)
 
     :param request: request to run import script
     :return: HttpResponseNotAllowed (code 405) if not POST request
@@ -177,11 +172,35 @@ def import_school_data(request):
         return HttpResponseNotAllowed(['POST'])
 
 
-#todo: (after 6/20 release) prevent non-students from seeing page
+def display_cern(request):
+    """
+    Displays either the CERN dashboard or a splash page about CERN.
+
+    :param request: the request to render page
+    :return: the dashboard if a student is logged in OR a splash page
+        about CERN
+    """
+    if request.user.is_authenticated():
+        try:
+            Student.objects.get(user=request.user)
+        except ObjectDoesNotExist:
+            # In the future, we can create a custom "join CERN" page
+            #  for existing users
+            return cern_splash(request)
+        else:
+            return dashboard(request)
+    else:
+        return cern_splash(request)
+
+
+def cern_splash(request):
+    return render(request, 'CERN/splash.html')
+
+
 @login_required
 def dashboard(request):
     """
-    Displays the CERN dashboard/scoreboard
+    Displays the CERN dashboard/scoreboard,
 
     :param request: request to render page
     :return: dashboard customized for logged in student
@@ -448,106 +467,6 @@ def save_short_url(request):
         return HttpResponseNotAllowed(['POST'])
 
 
-def amazon_login(request):
-    """
-    Either logs in student from Amazon or creates new Student object
-
-    Slightly customized from accounts.views.amazon_login to add Student
-        object creation (and hard-redirect to CERN dashboard)
-
-    :param request: response from Amazon on successful login
-        Should also include 'state' and 'school' params in GET
-    :return: redirect to CERN dashboard or standard login page w/errors
-    """
-    error = request.GET.get('error', None)
-    return_url = get_return_url(request)
-    
-    state = get_request_param(request, 'state')
-    name = get_request_param(request, 'school')
-
-    referrer_id = get_request_param(request, 'referrer')
-
-    if error is not None:
-        error_message = (request.GET.get('error_description') +
-                         '<br><a href="' + request.GET.get('error_uri') +
-                         '">Learn more</a>')
-        return render(request, 'accounts/login.html', {
-            'next': return_url,
-            'error': error_message
-        })
-
-    access_token = request.GET.get('access_token')
-    query_parameters = urllib.urlencode({'access_token': access_token})
-
-    token_request = urllib2.urlopen('https://api.amazon.com/auth/O2/tokeninfo?%s'
-                                    % query_parameters)
-    json_data = json.load(token_request)
-    if token_request.getcode() == 200:
-        is_verified = json_data['aud'] == settings.AMAZON_LOGIN_CLIENT_ID
-        if not is_verified:
-            return render(request, 'accounts/login.html', {
-                'next': return_url,
-                'error': 'Verification failed! Please contact administrators'
-            })
-
-        profile_request = urllib2.urlopen(
-            'https://api.amazon.com/user/profile?%s' % query_parameters)
-        profile_json_data = json.load(profile_request)
-        if profile_request.getcode() == 200:
-            amazon_user_id = profile_json_data['user_id']
-            amazon_user_name = profile_json_data['name']
-            amazon_user_email = profile_json_data['email']
-
-            user_profiles = UserProfile.objects.filter(amazon_id=amazon_user_id)
-            if user_profiles.count() == 0:
-                users_with_email = User.objects.filter(email=amazon_user_email)
-
-                if len(users_with_email) == 0:
-                    user = User.objects.create_user(amazon_user_email,
-                                                    amazon_user_email, amazon_user_id)
-                    user.save()
-                else:  # User exists, but for some reason it's profile wasn't created
-                    user = users_with_email[0]
-
-                user_profile = UserProfile(user=user)
-                user_profile.amazon_id = amazon_user_id
-                user_profile.amazon_access_token = access_token
-                user_profile.username = amazon_user_name
-                user_profile.save()
-
-                # Set up Student object
-                school = School.objects.get(name=name, state=state)
-                student = Student(user=user, school=school)
-                if school.num_students == 0:
-                    student.isHead = True
-
-                student.save()
-
-                # Referral points have to come after save, so put all
-                 # the referral stuff together
-                if referrer_id is not '':
-                    referrer = Student.objects.get(id=referrer_id)
-                    student.referred_by = referrer.user
-                    student.save()
-
-                    recruited_new_student(referrer, school)
-
-            user = authenticate(username=amazon_user_email, password=amazon_user_id)
-            profile = user.get_profile()
-
-            if not profile.amazon_access_token:
-                profile.amazon_access_token = access_token
-                profile.save()
-
-            login(request, user)
-
-            return HttpResponseRedirect('/CERN/')
-        else:
-            return _handle_amazon_conn_error(request, profile_json_data)
-    else:
-        return _handle_amazon_conn_error(request, json_data)
-
-
 def disable_about(request):
     """
     Disables 'about X' part of given page for given student
@@ -565,3 +484,32 @@ def disable_about(request):
     student.save()
 
     return HttpResponse()
+
+
+def register_school(request, school_id, code=None):
+    """
+    Renders the signup page for a new student at a certain school
+
+    :param request: request to render page
+    :param school_id: the ID of the school which the student will
+        register with
+    :param code: an optional param which indicates a referral by
+        another student
+    :return: a simple login page with the Amazon Login button
+    """
+    try:
+        school = School.objects.get(id=school_id)
+    except ObjectDoesNotExist:
+        return HttpResponseRedirect('/CERN/register/')
+        # pass
+    else:
+        referrer = None
+        try:
+            referrer = Student.objects.get(referral_code=code)
+        except ObjectDoesNotExist:
+            pass
+        return render(request, 'CERN/school-login.html',
+                      {
+                      'school': school,
+                      'referrer': referrer,
+                      })

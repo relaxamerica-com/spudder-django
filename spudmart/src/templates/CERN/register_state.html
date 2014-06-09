@@ -1,9 +1,9 @@
-{% extends 'base.html' %}
+{% extends 'CERN/base.html' %}
 
 {% block content %}
 <div class="container clearfix" id="venue-account">
 	<div class="well">
-		<p class="header">Join Your Team!</p>
+		<h4 class="aligncenter">Join Your Team!</h4>
 		<p> Now, you have to select your school.</p>
 		{% if code %}
 		<form action="/CERN/register/{{ code }}" method = post>
@@ -27,7 +27,7 @@
 				<div class="controls">
 					<select name="school">
 					   {% for sch in schools %}
-					       <option value="{{ sch.name }}">{{ sch.name }}</option>
+					       <option value="{{ sch.id }}">{{ sch.name }}</option>
 					   {% endfor %}
 					</select>
 				</div>

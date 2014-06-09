@@ -1,0 +1,77 @@
+{% extends 'CERN/base.html' %}
+
+{% load accounts %}
+{% load CERN %}
+
+{% block meta %}
+    <title>Register: {{ school.name }} - CERN | Spudder - Sports Updates Made Simple</title>
+{% endblock %}
+
+{% block content %}
+<div class="container clearfix" id="venue-account">
+	<div class="well">
+		<h4 class="aligncenter">Join CERN Team for
+            {% if referrer %}
+            <a href="/CERN/{{ school.state }}/{{ school.id }}/{% strip_school_name school %}/{{ referrer.referral_code }}">{{ school.name }}</a>
+            {% else %}
+            <a href="/CERN/{{ school.state }}/{{ school.id }}/{% strip_school_name school %}">{{ school.name }}</a>
+            {% endif %}
+        </h4>
+        <h6>Simply use the button below to join this CERN team.</h6>
+        <p>If you do not already have an Amazon account, you can also use this button to sign up.</p>
+
+        {% if referrer %}
+            <p>You were referred by:</p>
+            <p><label>
+                {% user_name referrer.user %},
+                {% if referrer.isHead %}
+                Team Captain for
+                {% else %}
+                on the team for
+                {% endif %}
+                {{ referrer.school.name }}
+                </label></p>
+        {% endif %}
+
+        <div class="accounts-form-body">
+            <form class="form-horizontal" action="/accounts/login" id="registration-form" method="POST">
+                {% if error %}
+                <div class="alert alert-error"><%= error %></div>
+                {% endif %}
+
+                <div class="control-group">
+                    <p class="aligncenter">
+                        <a href="#" id="LoginWithAmazon">
+                            <img border="0" alt="Login with Amazon"
+                                 src="https://images-na.ssl-images-amazon.com/images/G/01/lwa/btnLWA_gold_156x32.png"
+                                 width="156" height="32" />
+                        </a>
+                    </p>
+                </div>
+            </form>
+        </div>
+        <p>Not your team? Click <a href="/CERN/register/">here</a>.</p>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    var loginWithAmazon = document.getElementById('LoginWithAmazon'),
+        returnUrl = '{{ request.META_HEADER.HTTP_HOST }}/accounts/login/amazon';
+
+    returnUrl += '?school_id={{ school.id }}&next=/CERN/{{ school.state }}/{{ school.id }}/{% strip_school_name school %}/';
+    {% if referrer %}
+        returnUrl += '&referrer=' + {{ referrer.id }};
+    {% endif %}
+
+
+    if (loginWithAmazon) {
+        loginWithAmazon.onclick = function() {
+            options = { scope : 'profile' };
+            amazon.Login.authorize(options, returnUrl);
+            return false;
+        };
+    }
+</script>
+{% endblock %}

@@ -4725,8 +4725,8 @@ div[id^=donation-modal] .loading {
 .accounts-form-container .alert {
     display: block;
     padding-right: 15px;
-    margin-left: 40px;
-    margin-right: 50px;
+    margin-left: 20px;
+    margin-right: 20px;
     text-align: center;
 }
 
@@ -4743,11 +4743,6 @@ div[id^=donation-modal] .loading {
     font-size: 18px;
 }
 
-.social-shares{
-    padding: 2px;
-    margin: 2px;
-}
-
-.social-shares a: hover{
-    font-decoration: none;
+.cern-logo{
+    height: 32px;
 }

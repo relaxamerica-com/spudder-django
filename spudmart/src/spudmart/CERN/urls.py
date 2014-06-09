@@ -2,7 +2,7 @@ from django.conf.urls.defaults import patterns
 
 
 urlpatterns = patterns('spudmart.CERN.views',
-    (r'^$', 'dashboard'),
+    (r'^$', 'display_cern'),
     (r'^social_media/$', 'social_media'),
     (r'^content/$', 'content'),
     (r'^design/$', 'design'),
@@ -14,13 +14,14 @@ urlpatterns = patterns('spudmart.CERN.views',
     
     
     # Registration & school pages
-    (r'^(?P<state>\w{2})/(?P<school_name>[\w\ &-]+)/save_logo$',
-        'save_school_logo'),
-    (r'^(?P<state>\w{2})/(?P<school_name>[\w\ &-]+)/save$',
-        'save_school'),
-    (r'^(?P<state>\w{2})/(?P<school_name>[\w\ &-]+)/(?P<code>.+)$',
+    (r'^(?P<school_id>\d+)/save_logo$', 'save_school_logo'),
+    (r'^(?P<school_id>\d+)/save$', 'save_school'),
+    (r'^(?P<school_id>\d+)/register/(?P<code>.+)$', 'register_school',
+        {'SSL': True}),
+    (r'^(?P<school_id>\d+)/register/$', 'register_school', {'SSL': True}),
+    (r'^(?P<state>\w{2})/(?P<school_id>\d+)/(?P<name>[^/]+)/(?P<code>.+)$',
         'school', {'SSL_unauthenticated': True}),
-    (r'^(?P<state>\w{2})/(?P<school_name>[\w\ &-]+)/$',
+    (r'^(?P<state>\w{2})/(?P<school_id>\d+)/(?P<name>[^/]+)/$',
         'school', {'SSL_unauthenticated': True}),
     (r'^register/(?P<code>[\w\d\-]+)$', 'register'),
     (r'^register/$', 'register'),

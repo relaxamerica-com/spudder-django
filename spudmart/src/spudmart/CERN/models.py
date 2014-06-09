@@ -129,15 +129,68 @@ class School(models.Model):
             the school.
         '''
         students = []
-        for stud in Student.objects.filter(school = self):
+        for stud in Student.objects.filter(school=self):
             students.append(stud) 
         return students
     
     def get_head_student(self):
-        return Student.objects.get(school = self, isHead = True)
+        return Student.objects.get(school=self, isHead=True)
     
     def verbose_state(self):
         return STATES[self.state]
+
+    def marketing_points(self):
+        points = 0
+        for s in self.get_students():
+            points += s.marketing_points
+        return points
+
+    def social_media_points(self):
+        points = 0
+        for s in self.get_students():
+            points += s.social_media_points
+        return points
+
+    def content_points(self):
+        points = 0
+        for s in self.get_students():
+            points += s.content_points
+        return points
+
+    def design_points(self):
+        points = 0
+        for s in self.get_students():
+            points += s.design_points
+        return points
+
+    def testing_points(self):
+        points = 0
+        for s in self.get_students():
+            points += s.testing_points
+        return points
+
+    def most_popular_project(self):
+        marketing = self.marketing_points()
+        social_media = self.social_media_points()
+        content = self.content_points()
+        design = self.design_points(),
+        testing = self.testing_points()
+        max_points = max(marketing, social_media, content, design, testing)
+
+        if max_points != 0:
+            if max_points == marketing:
+                return 'Marketing: %s team pts' % max_points
+            elif max_points == social_media:
+                return 'Social Media PR: %s team pts' % max_points
+            elif max_points == content:
+                return 'Content Management: %s team pts' % max_points
+            elif max_points == design:
+                return 'Design: %s team pts' % max_points
+            elif max_points == testing:
+                return 'QA Testing: %s team pts' % max_points
+
+        return 'No one has started a project yet! (0 team pts)'
+
 
 
 class Student(models.Model):
@@ -260,7 +313,7 @@ class Student(models.Model):
             elif max_points == self.testing_points:
                 return 'Testing'
         
-        return 'No Project Started (0pts)'
+        return 'No Project Started'
 
     def referrals(self):
         students = []
