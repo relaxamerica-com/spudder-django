@@ -65,7 +65,9 @@ def view(request, venue_id):
 
 def create(request):
     if request.method == 'POST' and isinstance(request.user, User):
-        venue = Venue(user = request.user)
+        venue = Venue(user = request.user, sport = request.POST['sport'])
+        venue.latitude = float(request.POST['latitude'])
+        venue.longitude = float(request.POST['longitude'])
         venue.save()
         return HttpResponseRedirect('/venues/view/%s' % venue.id)
     elif request.method == 'POST':
@@ -117,7 +119,6 @@ def save_logo_and_name(request, venue_id):
         venue.logo = logo
     venue.name = request.POST['name']
     venue.aka_name = request.POST['aka_name']
-    venue.sport = request.POST['sport']
     venue.save()
     return HttpResponse('OK')
 

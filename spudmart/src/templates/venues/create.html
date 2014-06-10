@@ -35,7 +35,9 @@
 		$(document).ready(function() {
 			initialize(true, $('.alert'), function(venue) {
 				return venue.sport == $('#venue-sport').val();
-			}, function() {
+			}, function(latitude, longitude) {
+				$('[name="longitude"]').val(longitude);
+				$('[name="latitude"]').val(latitude);
 				$('#save').removeClass('hidden');
 			});
 		});
@@ -62,6 +64,8 @@
             <div class="control-group">
                 <label class="control-label" for="location">Venue Location:</label>
                 <div class="controls">
+                	<input name="longitude" type="hidden" />
+                	<input name="latitude" type="hidden" />
 	                <div class="" id="map">
 						<div id="map-canvas">
 	

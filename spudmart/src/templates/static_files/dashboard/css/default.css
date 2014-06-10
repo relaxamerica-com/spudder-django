@@ -865,6 +865,10 @@ form .input-required {
 	margin-top: 15px;
 }
 
+.container .social-network i {
+	width: 20px;
+}
+
 .dashboard-logo {
     width: 200px;
 }
@@ -872,6 +876,13 @@ form .input-required {
 #create-venue #map-canvas {
 	width: 320px;
 	height: 200px;	
+}
+
+#venue-view .progress {
+	display: none;
+	width: 200px;
+	margin-left: 10px;
+	height: 30px;
 }
 
 #venue-view .logo-placeholder {
