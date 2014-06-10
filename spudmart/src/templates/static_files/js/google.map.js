@@ -51,7 +51,7 @@ function initialize(tryGeolocation, alertContainer, filter, successHandler) {
 										+ '</a>';
 						showAlert(alertContainer, 'Venue already exists near your current location: ' + venueLink, 'warning', false);
 					} else {
-						successHandler();
+						successHandler(pos.latitude, pos.longitude);
 					}
 				});
 			});
