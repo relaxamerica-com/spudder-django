@@ -109,11 +109,11 @@ def recruited_new_student(recruiter, recruited_school):
     """
 
     # To get X points for the 2nd student, add 2 to max points
-    num_students = recruited_school.num_students
+    num_students = recruited_school.num_students()
     if num_students == 1:
         recruited_new_head_student(recruiter)
     else:
-        points = (RECRUITED_NEW_MAX + 2) - recruited_school.num_students
+        points = (RECRUITED_NEW_MAX + 2) - num_students
     
         if points < RECRUITED_NEW_MIN:
             points = RECRUITED_NEW_MIN

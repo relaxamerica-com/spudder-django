@@ -42,7 +42,7 @@ def create_student(user, school, referrer_id):
     """
 
     student = Student(user=user, school=school)
-    if school.num_students == 0:
+    if school.num_students() == 0:
         student.isHead = True
     student.save()
 

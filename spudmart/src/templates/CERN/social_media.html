@@ -1,4 +1,5 @@
 {% extends 'CERN/dashboard.html' %}
+{% load accounts %}
 {% block meta %}
 <title>Social Media PR | CERN on Spudder</title>
 {% endblock %}
@@ -87,68 +88,15 @@
     </div>
     
     <div class="span5">
-        <h3 class="align-center">You have referred {{ num_referred }} CERN members!</h3>
         {% if num_referred > 0 %}
-        <div id="analytics" class="align-center">
-            <h5>Your Referred Students</h5>
-            <table class="social-media">
-                <tr>
-                    <th>Rank</th>
-                    <th>Email</th>
-                    <th>Total Points</th>
-                    <th>Top Project</th>
-                    <th>School</th>
-                </tr>
-                {% if referred1 %}
-                    <tr>
-                        <td>#1</td>
-                        <td>{{ referred1.user }}</td>
-                        <td>{{ referred1.rep }}</td>
-                        <td>{{ referred1.top_project }}</td>
-                        <td>{{ referred1.school.name }}</td>
-                    </tr>
-                {% endif %}
-
-                {% if referred2 %}
-                    <tr>
-                        <td>#2</td>
-                        <td>{{ referred2.user }}</td>
-                        <td>{{ referred2.rep }}</td>
-                        <td>{{ referred2.top_project }}</td>
-                        <td>{{ referred2.school.name }}</td>
-                    </tr>
-                {% endif %}
-
-                {% if referred3 %}
-                    <tr>
-                        <td>#3</td>
-                        <td>{{ referred3.user }}</td>
-                        <td>{{ referred3.rep }}</td>
-                        <td>{{ referred3.top_project }}</td>
-                        <td>{{ referred3.school.name }}</td>
-                    </tr>
-                {% endif %}
-
-                {% if referred4 %}
-                    <tr>
-                        <td>#4</td>
-                        <td>{{ referred4.user }}</td>
-                        <td>{{ referred4.rep }}</td>
-                        <td>{{ referred4.top_project }}</td>
-                        <td>{{ referred4.school.name }}</td>
-                    </tr>
-                {% endif %}
-
-                {% if referred5 %}
-                    <tr>
-                        <td>#5</td>
-                        <td>{{ referred5.user }}</td>
-                        <td>{{ referred5.rep }}</td>
-                        <td>{{ referred5.top_project }}</td>
-                        <td>{{ referred5.school.name }}</td>
-                    </tr>
-                {% endif %}
-            </table>
+        <h3 class="align-center">You have referred {{ num_referred }} CERN members!</h3>
+        <div id="analytics">
+            <h5 class="align-center">Your Referred Students</h5>
+            <ol>
+                {% for referred in referrals %}
+                <li>{% user_name referred.user %}, {{ referred.rep }} points - {{ referred.school.name }}</li>
+                {% endfor %}
+            </ol>
         </div>
         {% else %}
         <p>You haven't referred any students yet! Use the links to the left to get started. You'll be able to see a little about the top students you've referred here.</p>

@@ -4746,3 +4746,12 @@ div[id^=donation-modal] .loading {
 .cern-logo{
     height: 32px;
 }
+
+
+.top-students h4{
+    font-size: 22px;
+}
+
+.remaining-students h4{
+    font-size: 18px;
+}

@@ -28,17 +28,6 @@
                 </p>
             {% endif %}
             
-            <div class="row-fluid">
-                <div class="span12 contents">
-                    <div id="venue-promo-video" class="active content">
-                        <iframe width="560" height="315" src="//www.youtube.com/embed/H72B-GCMohs?rel=0"
-                        style="display:block;margin:0 auto;"
-                        frameborder="0"
-                        allowfullscreen></iframe>
-                    </div>
-                </div>
-            </div>
-            
             {% if head and request.user.pk == head.user.pk %}
             <div class="row-fluid">
                 <div class="span6">                    
@@ -69,8 +58,8 @@
                 </div>
                 <div class="span1"></div>
             </div>
-            
             {% endif %}
+
             <div class="row-fluid view-mode details-header">
                 <div class="span1"></div>
                 <div class="span10">
@@ -78,6 +67,33 @@
                 </div>
                 <div class="span1"></div>
             </div>
+
+            {% if top_students %}
+            <div class="row-fluid">
+                <div class="span1"></div>
+                <div class="span10 top-students">
+                    <h4 class="aligncenter">Top students at at {{ school.name }}:</h4>
+                    <ol>
+                        {% for student in top_students %}
+                        <li>{% user_name student.user %}: {{ student.rep }} total points - Top project: {{ student.top_project_verbose }}</li>
+                        {% endfor %}
+                    </ol>
+                </div>
+                <div class="span1"></div>
+            </div>
+            {% if remaining_students %}
+            <div class="row-fluid">
+                <div class="span1"></div>
+                <div class="span10 remaining-students">
+                    <h4>More students at {{ school.name }}:</h4>
+                        {% for student in remaining_students %}
+                        <p>{% user_name student.user %}: {{ student.rep }} total points - Top project: {{ student.top_project_verbose }}</p>
+                        {% endfor %}
+                </div>
+                <div class="span1"></div>
+            </div>
+            {% endif %}
+            {% endif %}
         </div>
 
         <div class="span5">

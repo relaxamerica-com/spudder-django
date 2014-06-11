@@ -1,3 +1,4 @@
+{% load CERN %}
 <div class="sidebar" id="sidebar">
 	<ul class="nav nav-list">
 	    <li>
@@ -5,6 +6,15 @@
 	           <i class="icon-bar-chart"></i>
 	           <span class="menu-text"> Scoreboard </span>
            </a>
+        </li>
+
+	    <li>
+	       <a class="dropwdown-toggle" href="{% my_school_link request.user %}">
+	           <i class="icon-group"></i>
+	           <span class="menu-text"> School Page </span>
+           </a>
+        </li>
+
 		<li>
 			<a class="dropdown-toggle" href="/venues/list">
 				<i class="icon-thumbs-up"></i>
@@ -41,7 +51,7 @@
 		</li>
 	
 		<li>
-			<a class="dropdown-toggle" href="/cern/mobile/">
+			<a class="dropdown-toggle" href="/CERN/mobile/">
 				<i class="icon-mobile-phone"></i>
 				<span class="menu-text"> Mobile App </span>
 			</a>

@@ -103,17 +103,16 @@ class School(models.Model):
         Includes method which evaluates level based on reputation. 
     ''' 
     name = models.CharField(max_length=124)
-    num_students = models.IntegerField(default = 0)
-    state = models.CharField(max_length = 2)
-    mascot = models.CharField(max_length = 32, null = True)
-    logo = models.ForeignKey(UploadedFile, null = True)
-    description = models.TextField()
+    state = models.CharField(max_length=2)
+    mascot = models.CharField(max_length=32, null=True)
+    logo = models.ForeignKey(UploadedFile, null=True)
+    description = models.TextField(default='')
     
     def level(self):
         return get_max_triangle_num_less_than(self.get_rep() / SCHOOL_REP_LEVEL_MODIFIER)
 
     def __str__(self, *args, **kwargs):
-        return self.name + ", " + str(self.num_students) + " students, " + str(self.get_rep()) + " rep"
+        return self.name + ", " + str(self.num_students()) + " students, " + str(self.get_rep()) + " rep"
     
     def __eq__(self, other):
         return self.pk == other.pk
@@ -191,6 +190,8 @@ class School(models.Model):
 
         return 'No one has started a project yet! (0 team pts)'
 
+    def num_students(self):
+        return len(self.get_students())
 
 
 class Student(models.Model):
@@ -227,8 +228,6 @@ class Student(models.Model):
             referral_code is only assigned once.
         '''
         if self.pk is None:
-            self.school.num_students += 1
-            self.school.save()
             self.referral_code = str(uuid.uuid4())
             
         return models.Model.save(self, force_insert, force_update, using)
@@ -241,14 +240,6 @@ class Student(models.Model):
             something += ", "
         something += str(self.school.name)
         return something
-
-    def delete(self, using=None):
-        ''' Default delete method overwritten so that deleting a student updates the
-            school's count to reflect the loss of a student.
-        '''
-        self.school.num_students -= 1
-        self.school.save()
-        return models.Model.delete(self, using)
 
     def __eq__(self, other):
         return self.user == other.user
@@ -298,7 +289,7 @@ class Student(models.Model):
     
     def top_project(self):
         max_points = max(self.marketing_points, self.social_media_points,
-                         self.content_points, self.design_points, 
+                         self.content_points, self.design_points,
                          self.testing_points)
         if max_points != 0:
             if max_points == self.marketing_points:
@@ -311,14 +302,33 @@ class Student(models.Model):
                 return 'Design'
             elif max_points == self.testing_points:
                 return 'Testing'
-        
+
         return 'No Project Started'
 
     def referrals(self):
         students = []
-        for s in Student.objects.filter(referred_by = self.user):
+        for s in Student.objects.filter(referred_by=self.user):
             students.append(s)
         return students
+
+    def top_project_verbose(self):
+        max_points = max(self.marketing_points, self.social_media_points,
+                         self.content_points, self.design_points,
+                         self.testing_points)
+        if max_points != 0:
+            if max_points == self.marketing_points:
+                return 'Marketing (%s pts)' % max_points
+            elif max_points == self.social_media_points:
+                return 'Social Media (%s pts)' % max_points
+            elif max_points == self.content_points:
+                return 'Content (%s pts)' % max_points
+            elif max_points == self.design_points:
+                return 'Design (%s pts)' % max_points
+            elif max_points == self.testing_points:
+                return 'Testing (%s pts)' % max_points
+
+        return 'No Project Started (0 pts)'
+
 
 class Challenge(models.Model):
     ''' Stores information about challenges between schools based purely on rep points. 
@@ -355,6 +365,7 @@ class Challenge(models.Model):
             return False
         else:
             return None
+
 
 class MailingList(models.Model):
     emails = ListField()

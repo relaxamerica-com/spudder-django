@@ -104,23 +104,38 @@ def school(request, state, school_id, name, referral_id=None):
                                                              name))
 
     try:
-        school = School.objects.get(id=school_id)
+        sch = School.objects.get(id=school_id)
     except ObjectDoesNotExist:
         return render(request, 'CERN/no-school.html')
     else:
-        stripped_name = strip_invalid_chars(school.name)
-        if strip_invalid_chars(school.name) != name:
+        stripped_name = strip_invalid_chars(sch.name)
+        if strip_invalid_chars(sch.name) != name:
             return HttpResponseRedirect('/cern/%s/%s/%s' % (state, school_id,
                                                             stripped_name))
         try:
-            head = school.get_head_student()
+            head = sch.get_head_student()
         except ObjectDoesNotExist:
             head = None
+
+        ranked_students = sorted(sch.get_students(), key=lambda s: s.rep(),
+                                 reverse=True)
+        if len(ranked_students) == 0:
+            top_students = None
+            remaining_students = None
+        elif len(ranked_students) <= 5:
+            top_students = ranked_students
+            remaining_students = None
+        else:
+            top_students = ranked_students[:5]
+            remaining_students = ranked_students[5:]
+
         return render(request, 'CERN/school_splash.html',
                       {
-                      'school': school,
+                      'school': sch,
                       'head': head,
                       'referrer': referrer,
+                      'top_students': top_students,
+                      'remaining_students': remaining_students,
                       })
 
 
@@ -277,8 +292,16 @@ def social_media(request):
     """
     student = Student.objects.get(user=request.user)
 
-    referrals = sorted(student.referrals(), key=lambda s: s.rep())
-    num_referred = len(referrals)
+    all_referrals = sorted(student.referrals(), key=lambda s: s.rep(),
+                       reverse=True)
+    num_referred = len(all_referrals)
+    if num_referred == 0:
+        referrals = None
+    elif num_referred <= 5:
+        referrals = all_referrals
+    else:
+        referrals = all_referrals[:5]
+
     need_saving = False
 
     if student.same_school_referral_url and student.referral_url:
@@ -293,33 +316,6 @@ def social_media(request):
                              student.id))
         need_saving = True
 
-    referred1 = referred2 = referred3 = referred4 = referred5 = None
-
-    try:
-        referred1 = referrals[0]
-    except IndexError:
-        pass
-    else:
-        try:
-            referred2 = referrals[1]
-        except IndexError:
-            pass
-        else:
-            try:
-                referred3 = referrals[2]
-            except IndexError:
-                pass
-            else:
-                try:
-                    referred4 = referrals[3]
-                except IndexError:
-                    pass
-                else:
-                    try:
-                        referred5 = referrals[4]
-                    except IndexError:
-                        pass
-
     return render(request, 'CERN/social_media.html',
                   {
                   'num_referred': num_referred,
@@ -327,11 +323,7 @@ def social_media(request):
                   'same_referral_url': same_referral_url,
                   'student': student,
                   'need_saving': need_saving,
-                  'referred1': referred1,
-                  'referred2': referred2,
-                  'referred3': referred3,
-                  'referred4': referred4,
-                  'referred5': referred5,
+                  'referrals': referrals,
                   })
 
 
@@ -562,7 +554,7 @@ def join_school(request, school_id, referral_id=None):
     sch = School.objects.get(id=school_id)
     stu = Student(user=request.user, school=sch)
 
-    if sch.num_students == 0:
+    if sch.num_students() == 0:
         stu.isHead = True
 
     stu.save()
