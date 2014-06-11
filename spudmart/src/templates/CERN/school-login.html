@@ -12,7 +12,7 @@
 	<div class="well">
 		<h4 class="aligncenter">Join CERN Team for
             {% if referrer %}
-            <a href="/cern/{{ school.state }}/{{ school.id }}/{% strip_school_name school %}/{{ referrer.referral_code }}">{{ school.name }}</a>
+            <a href="/cern/{{ school.state }}/{{ school.id }}/{% strip_school_name school %}/{{ referrer.id }}">{{ school.name }}</a>
             {% else %}
             <a href="/cern/{{ school.state }}/{{ school.id }}/{% strip_school_name school %}">{{ school.name }}</a>
             {% endif %}
@@ -59,7 +59,13 @@
                 </form>
 
         {% endif %}
-        <p>Not your team? Click <a href="/cern/register/">here</a>.</p>
+        <p>Not your team? Click
+            {% if referrer %}
+            <a href="/cern/register/{{ referrer.id }}">here</a>
+            {% else %}
+            <a href="/cern/register/">here</a>
+            {% endif %}
+        .</p>
       </div>
     </div>
 </div>

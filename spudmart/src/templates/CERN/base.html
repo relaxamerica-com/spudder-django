@@ -1,5 +1,3 @@
-{% load accounts %}
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -8,7 +6,6 @@
         <title>CERN | Spudder - Sports Updates Made Simple</title>
     {% endblock %}
 </head>
-
 <script type="text/javascript">
   var url = 'http://{{ request.META.HTTP_HOST }}{{ request.get_full_path }}'
 
@@ -47,7 +44,6 @@
   }
 </script>
 <script src="https://apis.google.com/js/client.js?onload=load"></script>
-
 <body>
     {% include 'accounts/common/amazon-root.html' %}
     <div id="wrapper">
@@ -63,11 +59,20 @@
                         </ul>
                     </div>
                     {% block login %}
-                    <div class="headnav span1">
-                        <ul>
-                            <li><a href="/cern/">Dashboard</a>
-                        </ul>
-                    </div>
+                    {% if request.user.is_authenticated %}
+                        <div class="headnav span1">
+                            <ul>
+                                <li><a href="/cern/">Dashboard</a>
+                            </ul>
+                        </div>
+                    {% else %}
+                        <div class="headnav span2">
+                            <ul>
+                                <li><a href="/cern/register/">Register</a></li>
+                                <li><a href="/cern/login/">Login</a></li>
+                            </ul>
+                        </div>
+                    {% endif %}
                     {% endblock %}
                 </div>
             </div>

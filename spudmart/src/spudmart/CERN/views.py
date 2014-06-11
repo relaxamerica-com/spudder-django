@@ -8,6 +8,8 @@ from django.utils.datastructures import MultiValueDictKeyError
 from spudmart.CERN.utils import import_schools, strip_invalid_chars
 from django.contrib.auth.decorators import login_required, user_passes_test
 from spudmart.CERN.rep import recruited_new_student
+from spudmart.utils.url import get_return_url
+import settings
 
 
 def user_is_student(user):
@@ -27,7 +29,7 @@ def user_is_student(user):
         return True
 
 
-def register(request, code=None):
+def register(request, referral_id=None):
     """
     Allows users to select a state from a dropdown list, to find school
 
@@ -39,16 +41,16 @@ def register(request, code=None):
     
     if request.method == 'POST':
         return register_with_state(request, state=request.POST['state'],
-                                   code=code)
+                                   referral_id=referral_id)
 
     return render(request, 'CERN/register.html',
                   {
                   'states': sorted_states,
-                  'code': code,
+                  'referral_id': referral_id,
                   })
 
 
-def register_with_state(request, state, code=None):
+def register_with_state(request, state, referral_id=None):
     """
     Allows users to select a school (in state) from dropdown list
 
@@ -70,16 +72,16 @@ def register_with_state(request, state, code=None):
                       'state': STATES[state],
                       'abbr': state,
                       'schools': schools,
-                      'code': code,
+                      'referral_id': referral_id,
                       })
     else:
-        if code:
+        if referral_id:
             return HttpResponseRedirect("/cern/%s/register/%s" %
-                                        (school_id, code))
+                                        (school_id, referral_id))
         return HttpResponseRedirect("/cern/%s/register/" % school_id)
 
 
-def school(request, state, school_id, name, code=None):
+def school(request, state, school_id, name, referral_id=None):
     """
     Displays the school splash page
 
@@ -94,9 +96,9 @@ def school(request, state, school_id, name, code=None):
     """
     referrer = None
 
-    if code:
+    if referral_id:
         try:
-            referrer = Student.objects.get(referral_code=code)
+            referrer = Student.objects.get(id=referral_id)
         except ObjectDoesNotExist:
             return HttpResponseRedirect('/cern/%s/%s/%s/' % (state, school_id,
                                                              name))
@@ -284,11 +286,11 @@ def social_media(request):
         same_referral_url = student.same_school_referral_url
     else:
         referral_url = ('http://' + request.META['HTTP_HOST'] +
-                        '/cern/register/%s' % student.referral_code)
+                        '/cern/register/%s' % student.id)
         same_referral_url = ('http://' + request.META['HTTP_HOST'] +
                              '/cern/%s/register/%s' %
                              (student.school.id,
-                             student.referral_code))
+                             student.id))
         need_saving = True
 
     referred1 = referred2 = referred3 = referred4 = referred5 = None
@@ -510,7 +512,7 @@ def disable_about(request):
     return HttpResponse()
 
 
-def register_school(request, school_id, code=None):
+def register_school(request, school_id, referral_id=None):
     """
     Renders the signup page for a new student at a certain school
 
@@ -525,13 +527,13 @@ def register_school(request, school_id, code=None):
         school = School.objects.get(id=school_id)
     except ObjectDoesNotExist:
         return HttpResponseRedirect('/cern/register/')
-        # pass
     else:
         referrer = None
-        try:
-            referrer = Student.objects.get(referral_code=code)
-        except ObjectDoesNotExist:
-            pass
+        if referral_id:
+            try:
+                referrer = Student.objects.get(id=referral_id)
+            except ObjectDoesNotExist:
+                pass
         return render(request, 'CERN/school-login.html',
                       {
                       'school': school,
@@ -560,7 +562,7 @@ def join_school(request, school_id, referral_id=None):
     sch = School.objects.get(id=school_id)
     stu = Student(user=request.user, school=sch)
 
-    if school.num_students == 0:
+    if sch.num_students == 0:
         stu.isHead = True
 
     stu.save()
@@ -572,3 +574,13 @@ def join_school(request, school_id, referral_id=None):
         stu.referred_by = referrer.user
         stu.save()
         recruited_new_student(referrer, sch)
+
+    return HttpResponseRedirect('/cern/')
+
+
+def login(request):
+    return render(request, 'CERN/login.html', {
+                           'client_id': settings.AMAZON_LOGIN_CLIENT_ID,
+                           'base_url': settings.SPUDMART_BASE_URL,
+                           'returnURL': get_return_url(request)
+    })

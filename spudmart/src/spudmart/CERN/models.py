@@ -208,8 +208,7 @@ class Student(models.Model):
     referral_url = models.CharField(max_length=200, null=True)
     same_school_referral_url = models.CharField(max_length=200, null=True)
     
-    referral_code = models.CharField(max_length=128, unique=True)
-    referred_by = models.ForeignKey(User, blank=True, null=True, 
+    referred_by = models.ForeignKey(User, blank=True, null=True,
                                     related_name="referred_by_user")
     
     marketing_points = models.IntegerField(default=0)

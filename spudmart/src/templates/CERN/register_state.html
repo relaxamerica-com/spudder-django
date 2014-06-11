@@ -5,8 +5,8 @@
 	<div class="well">
 		<h4 class="aligncenter">Join Your Team!</h4>
 		<p> Now, you have to select your school.</p>
-		{% if code %}
-		<form action="/cern/register/{{ code }}" method = post>
+		{% if referral_id %}
+		<form action="/cern/register/{{ referral_id }}" method = post>
 		{% else %}
 		<form action="/cern/register/" method="post">
 		{% endif %}

@@ -16,23 +16,25 @@ urlpatterns = patterns('spudmart.CERN.views',
     # Registration & school pages
     (r'^(?P<school_id>\d+)/save_logo$', 'save_school_logo'),
     (r'^(?P<school_id>\d+)/save$', 'save_school'),
-    (r'^(?P<school_id>\d+)/register/(?P<code>.+)$', 'register_school',
+    (r'^(?P<school_id>\d+)/register/(?P<referral_id>.+)$', 'register_school',
         {'SSL_unauthenticated': True}),
     (r'^(?P<school_id>\d+)/register/$', 'register_school',
         {'SSL_unauthenticated': True}),
-    (r'^(?P<state>\w{2})/(?P<school_id>\d+)/(?P<name>[^/]+)/(?P<code>.+)$',
+    (r'^(?P<state>\w{2})/(?P<school_id>\d+)/(?P<name>[^/]+)/(?P<referral_id>.+)$',
         'school'),
     (r'^(?P<state>\w{2})/(?P<school_id>\d+)/(?P<name>[^/]+)/$',
         'school'),
-    (r'^register/(?P<code>[\w\d\-]+)$', 'register'),
+    (r'^register/(?P<referral_id>[\w\d\-]+)$', 'register'),
     (r'^register/$', 'register'),
     (r'^amazon_login/$', 'amazon_login'),
-    (r'join_school/(P?<school_id>\d+)/(P?<referral_id>.+)$', 'join_school'),
-    (r'join_school/(P?<school_id>\d+)/$', 'join_school'),
+    (r'^join_school/(?P<school_id>\d+)/(?P<referral_id>\d+)$', 'join_school'),
+    (r'^join_school/(?P<school_id>\d+)/$', 'join_school'),
+
+    (r'login/$', 'login', {'SSL': True}),
 
     # Link for queue (it's protected)
     (r'^import_schools', 'import_school_data'),
 
     # Link for decorator error page
-    (r'non-student/$', 'user_not_student_error_page')
+    (r'^non-student/$', 'user_not_student_error_page')
 )

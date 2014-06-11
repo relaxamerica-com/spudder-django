@@ -1,0 +1,57 @@
+{% extends "CERN/base.html" %}
+
+{% block content %}
+
+
+<div id="registration" class="aligncenter">
+    <div class="accounts-form-header">
+        <h4 id="mySignupModalLabel">Login to your <strong>account</strong></h4>
+    </div>
+    <div class="row-fluid">
+        <div class="span2"></div>
+        <div class="span4">
+            <p>If you have not already signed up for Spudder, use the button below to get started:</p>
+            <p><a href="/CERN/register/" class="btn btn-orange">Register as a Student</a></p>
+        </div>
+
+        <div class="accounts-form-body span4">
+            <form class="form-horizontal" action="/accounts/login" id="registration-form" method="POST">
+                {% if error %}
+                <div class="alert alert-error"><%= error %></div>
+                {% endif %}
+
+                <div class="control-group">
+                    <p class="aligncenter">
+                        Use this button to login if you have already signed up with Spudder:
+                    </p>
+
+                    <p class="aligncenter">
+                        <a href="#" id="LoginWithAmazon">
+                            <img border="0" alt="Login with Amazon"
+                                 src="https://images-na.ssl-images-amazon.com/images/G/01/lwa/btnLWA_gold_156x32.png"
+                                 width="156" height="32" />
+                        </a>
+                    </p>
+                </div>
+            </form>
+        </div>
+        <div class="span2"></div>
+    </div>
+</div>
+
+{% endblock content %}
+
+{% block scripts %}
+<script>
+    var loginWithAmazon = document.getElementById('LoginWithAmazon'),
+        returnUrl = '{{ request. }}/accounts/login/just_login';
+
+    if (loginWithAmazon) {
+        loginWithAmazon.onclick = function() {
+            options = { scope : 'profile' };
+            amazon.Login.authorize(options, returnUrl);
+            return false;
+        };
+    }
+</script>
+{% endblock scripts %}

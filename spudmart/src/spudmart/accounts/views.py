@@ -117,7 +117,9 @@ def amazon_login(request):
 
                 try:
                     sch = School.objects.get(id=school_id)
-                except ObjectDoesNotExist or ValueError:
+                except ObjectDoesNotExist:
+                    pass
+                except ValueError:
                     pass
                 else:
                     create_student(user, sch, referrer)
@@ -142,9 +144,60 @@ def amazon_login(request):
                 if is_sponsor(request.user):
                     return_url = '/dashboard'
                 elif is_student(request.user):
-                    return_url = '/CERN/'
+                    return_url = '/cern/'
 
             return HttpResponseRedirect(return_url)
+        else:
+            return _handle_amazon_conn_error(request, profile_json_data)
+    else:
+        return _handle_amazon_conn_error(request, json_data)
+
+
+def just_login(request):
+    error = get_request_param(request, 'error', None)
+
+    if error is not None:
+        error_message = request.GET.get('error_description') + \
+                        '<br><a href="' + request.GET.get('error_uri') + \
+                        '">Learn more</a>'
+        return render(request, 'cern/login.html', {
+            'error': error_message
+        })
+
+    access_token = get_request_param(request, 'access_token')
+    query_parameters = urllib.urlencode({'access_token': access_token})
+
+    token_request = urllib2.urlopen(
+        'https://api.amazon.com/auth/O2/tokeninfo?%s' % query_parameters)
+    json_data = json.load(token_request)
+    if token_request.getcode() == 200:
+        is_verified = json_data['aud'] == settings.AMAZON_LOGIN_CLIENT_ID
+        if not is_verified:
+            return render(request, 'cern/login.html', {
+                'error': 'Verification failed! Please contact administrators'
+            })
+
+        profile_request = urllib2.urlopen(
+            'https://api.amazon.com/user/profile?%s' % query_parameters)
+        profile_json_data = json.load(profile_request)
+
+        if profile_request.getcode() == 200:
+            amazon_user_id = profile_json_data['user_id']
+            amazon_user_email = profile_json_data['email']
+
+            try:
+                user = authenticate(username=amazon_user_email,
+                                    password=amazon_user_id)
+                django.contrib.auth.login(request, user)
+            except AttributeError:
+                return HttpResponseRedirect('/cern/register/')
+            else:
+                try:
+                    Student.objects.get(user=user)
+                except ObjectDoesNotExist:
+                    return HttpResponseRedirect('/cern/register')
+                else:
+                    return HttpResponseRedirect('/cern/')
         else:
             return _handle_amazon_conn_error(request, profile_json_data)
     else:

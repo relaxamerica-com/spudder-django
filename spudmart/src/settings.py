@@ -95,7 +95,7 @@ shared_settings = {
         'spudder_rest_api_key': 'aY5jEVPGJadgWcd2gOecgnzMNKDS9Igx8d5DNU04',
         'spudder_base_url': 'https://spudmart.parseapp.com',
         'spudmart_base_url': 'https://spudmart1.appspot.com',
-        'amazon_login_client_id': 'amzn1.application-oa2-client.f46864c6f8bb40d1bc2c3d211c514486'
+        'amazon_login_client_id': 'amzn1.application-oa2-client.4637978bf71a44fdb057225c55e78d12'
     },
     'sharp-avatar-587': {  # Lukasz@spudder.com
         'spudder_application_id': 'QZjpmUJQEwBE6Wc0YfKEMRwv2C5Aeb4qQbopyIg9',
