@@ -6,9 +6,9 @@
 		<h4 class="aligncenter">Join Your Team!</h4>
 		<p> Now, you have to select your school.</p>
 		{% if code %}
-		<form action="/CERN/register/{{ code }}" method = post>
+		<form action="/cern/register/{{ code }}" method = post>
 		{% else %}
-		<form action="/CERN/register/" method="post">
+		<form action="/cern/register/" method="post">
 		{% endif %}
 			<div class="control-group">
 				<div class="control-label">
@@ -16,7 +16,7 @@
 				</div>
 				
 				<div class="control-label">
-				    <a href="/CERN/register">Click here to change state.</a>
+				    <a href="/cern/register">Click here to change state.</a>
 				</div>
 				<br>
 				

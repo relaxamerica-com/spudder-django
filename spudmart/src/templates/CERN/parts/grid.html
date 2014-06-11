@@ -38,7 +38,7 @@
                     <li>Earn points based on the number of people you bring to CERN</li>
                     <li>Redeem these points for cash and other great prizes</li>
                     <li>
-                        <a class="btn btn-orange" href="/CERN/social_media/">
+                        <a class="btn btn-orange" href="/cern/social_media/">
                             {% if student.social_media_points > 0 %}
                                 Go to this project
                             {% else %}
@@ -121,7 +121,7 @@
 </div>
 <script type="text/javascript">
     function join_list(project){
-        $.post('/CERN/add_email_alert/',
+        $.post('/cern/add_email_alert/',
             { 'email' : "{{ request.user.email }}",
               'project' : project, });
     }

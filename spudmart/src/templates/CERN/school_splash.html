@@ -21,9 +21,9 @@
             {% if not request.user.is_authenticated %}
                 <p class="aligncenter">
                 {% if referrer %}
-                <a href="/CERN/{{ school.id }}/register/{{ referrer.referral_code }}" class="btn btn-orange">Join this Team</a>
+                <a href="/cern/{{ school.id }}/register/{{ referrer.referral_code }}" class="btn btn-orange">Join this Team</a>
                 {% else %}
-                <a href="/CERN/{{ school.id }}/register/" class="btn btn-orange">Join this Team</a>
+                <a href="/cern/{{ school.id }}/register/" class="btn btn-orange">Join this Team</a>
                 {% endif %}
                 </p>
             {% endif %}
@@ -287,7 +287,7 @@
                         success : function(data) {
                             var parsed = JSON.parse(data);
 
-                            var response = $.post('/CERN/{{ school.id }}/save_logo', {
+                            var response = $.post('/cern/{{ school.id }}/save_logo', {
                                 'logo' : parsed['uploaded_files'],
                             });
 
@@ -304,7 +304,7 @@
                }
 
 
-                var response = $.post('/CERN/{{ school.id }}/save', {
+                var response = $.post('/cern/{{ school.id }}/save', {
                     'mascot' : mascot,
                     'description' : description,
                 });

@@ -63,49 +63,14 @@
                         </ul>
                     </div>
                     {% block login %}
-                    <div class="headnav span4">
+                    <div class="headnav span1">
                         <ul>
-                            {% if request.user.is_authenticated %}
-                            <li><a href="/dashboard"><i class="icon-user"></i>{% user_name user %}</a></li>
-                            <li><a href="/accounts/logout" id="logout-button">Sign out</a></li>
-                            {%  else  %}
-                            <li><a href="/accounts/login">Sign in</a></li>
-                            {% endif %}
+                            <li><a href="/cern/">Dashboard</a>
                         </ul>
                     </div>
                     {% endblock %}
-
-                    <div class="hidden-top span8 download-buttons-wrapper">
-                        <div class="row-fluid" id="download-buttons">
-                            <a href="http://www.spudder.com/mobile" class="span3 btn btn-primary btn-large" title="App Store" style="color:black">
-                                <img src="/media/img/app_store_logo.png" />
-                                Our iOS Apps
-                            </a>
-                            <a href="http://www.spudder.com/mobile" class="span3 btn btn-primary btn-large" title="Google Play" style="color:black">
-                                <img src="/media/img/google_play_logo.png" class="pull-left"/>
-                                Our Android Apps
-                            </a>
-                            <a href="http://www.spudder.com/mobile" class="span3 btn btn-primary btn-large amazon" title="Amazon App" style="color:black">
-                                <img src="/media/img/amazon_apps_logo.png" />
-                            </a>
-                            <a href="http://www.spudder.com/mobile" class="span3 btn btn-primary btn-large" title="Flag" style="color:black">
-                                <span class="icon-flag icon-circled icon-64 active pull-left" style="margin-left: 0"></span>
-                                Flag content
-                            </a>
-                        </div>
-                    </div>
-
-                    <div id="header-hidden-link">
-                        <a href="#" class="toggle-link" title="Click me you'll get a surprise" data-target=".hidden-top"><i></i>Open</a>
-                    </div>
-                    <div id="header-logo">
-                        <a href="/CERN/"><img src="/media/ico/cern-small.png" class="cern-logo"></a>
-                    </div>
                 </div>
             </div>
-
-            {% include 'CERN/parts/modals.html' %}
-
         </header>
 
         {% block content %}{% endblock content %}

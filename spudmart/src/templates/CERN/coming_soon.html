@@ -26,7 +26,7 @@
      if ($(this).text() == "Join {{ project }} mailing list"){
     	 $(this).removeClass('btn-orange');
     	 $(this).text("Mailing list joined.");
-         $.post('/CERN/add_email_alert/', 
+         $.post('/cern/add_email_alert/',
         		{ 'email' : "{{ request.user.email }}",
         	      'project' : "{{ project }}", });
      }

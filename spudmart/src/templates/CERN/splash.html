@@ -1,24 +1,29 @@
 {% extends 'CERN/base.html' %}
 
-<!--{% load displays %}-->
-
 {% block content %}
 
-<div class="row-fluid">
-    <div class="span2"></div>
-    <div class="span8 aligncenter">
-        <img src="/media/img/logo-cern-medium.png">
-        <h2>Welcome to CERN!</h2>
-        <h4>What is "CERN"?</h4>
-        <p><em>CERN</em> stands for Campus Entrepreneur Recruiting Network. CERN Teams are made up of students currently attending accredited colleges and universities in the United States.</p>
-		<h4>What do these students do?</h4>
-		<p>As a member of a CERN Team, you can participate in a number of projects related to entrepreneurial fields. Currently, we have projects for <em>Marketing</em> and <em>Social Media PR</em>, with more coming soon!</p>
-        <h4>What do I get out of joining a CERN Team?</h4>
-        <p>In addition to getting valuable experience in real-world projects, you'll actually get paid for the work you do on a CERN Team! Different projects earn different kinds of rewards – sign up to learn more!</p>
-        <h4>Sounds great! Where do I sign up?</h4>
-        <a class="btn btn-orange" href="/CERN/register/">Go to Registration Page</a>
+<div class="container">
+    <div class="row-fluid">
+        <div class="span2"></div>
+        <div class="span8 aligncenter">
+            <img src="/media/img/logo-cern-medium.png">
+            <h2>Welcome to CERN!</h2>
+            <h4>What is "CERN"?</h4>
+            <p><em>CERN</em> stands for Campus Entrepreneur Recruiting Network. CERN Teams are made up of students currently attending accredited colleges and universities in the United States.</p>
+            <h4>What do these students do?</h4>
+            <p>As a member of a CERN Team, you can participate in a number of projects related to entrepreneurial fields. Currently, we have projects for <em>Marketing</em> and <em>Social Media PR</em>, with more coming soon!</p>
+            <h4>What do I get out of joining a CERN Team?</h4>
+            <p>In addition to getting valuable experience in real-world projects, you'll actually get paid for the work you do on a CERN Team! Different projects earn different kinds of rewards – sign up to learn more!</p>
+            <h4>Sounds great! Where do I sign up?</h4>
+            <a class="btn btn-orange" href="/cern/register/">Go to Registration Page</a>
+        </div>
+        <div class="span2"></div>
     </div>
-    <div class="span2"></div>
 </div>
 
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript">
+</script>
 {% endblock %}

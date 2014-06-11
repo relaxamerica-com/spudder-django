@@ -12,13 +12,12 @@
 	<div class="well">
 		<h4 class="aligncenter">Join CERN Team for
             {% if referrer %}
-            <a href="/CERN/{{ school.state }}/{{ school.id }}/{% strip_school_name school %}/{{ referrer.referral_code }}">{{ school.name }}</a>
+            <a href="/cern/{{ school.state }}/{{ school.id }}/{% strip_school_name school %}/{{ referrer.referral_code }}">{{ school.name }}</a>
             {% else %}
-            <a href="/CERN/{{ school.state }}/{{ school.id }}/{% strip_school_name school %}">{{ school.name }}</a>
+            <a href="/cern/{{ school.state }}/{{ school.id }}/{% strip_school_name school %}">{{ school.name }}</a>
             {% endif %}
         </h4>
         <h6>Simply use the button below to join this CERN team.</h6>
-        <p>If you do not already have an Amazon account, you can also use this button to sign up.</p>
 
         {% if referrer %}
             <p>You were referred by:</p>
@@ -33,24 +32,35 @@
                 </label></p>
         {% endif %}
 
-        <div class="accounts-form-body">
-            <form class="form-horizontal" action="/accounts/login" id="registration-form" method="POST">
-                {% if error %}
-                <div class="alert alert-error"><%= error %></div>
-                {% endif %}
+        {% if request.user.is_authenticated %}
+            {% if request.user|is_student %}
+                <p>Uhoh! You've already joined a CERN team - you can only be on one team!</p>
+            {% else %}
+            <p><a href="/cern/join_school/{{ school.id }}/{{ referrer.id }}" class="btn btn-orange aligncenter">Join team with Existing Account</a></p>
+            {% endif %}
+        {% else %}
+            <p>If you do not already have an Amazon account, you can also use this button to sign in.</p>
 
-                <div class="control-group">
-                    <p class="aligncenter">
-                        <a href="#" id="LoginWithAmazon">
-                            <img border="0" alt="Login with Amazon"
-                                 src="https://images-na.ssl-images-amazon.com/images/G/01/lwa/btnLWA_gold_156x32.png"
-                                 width="156" height="32" />
-                        </a>
-                    </p>
-                </div>
-            </form>
-        </div>
-        <p>Not your team? Click <a href="/CERN/register/">here</a>.</p>
+            <div class="accounts-form-body">
+                <form class="form-horizontal" action="/accounts/login" id="registration-form" method="POST">
+                    {% if error %}
+                    <div class="alert alert-error"><%= error %></div>
+                    {% endif %}
+
+                    <div class="control-group">
+                        <p class="aligncenter">
+                            <a href="#" id="LoginWithAmazon">
+                                <img border="0" alt="Login with Amazon"
+                                     src="https://images-na.ssl-images-amazon.com/images/G/01/lwa/btnLWA_gold_156x32.png"
+                                     width="156" height="32" />
+                            </a>
+                        </p>
+                    </div>
+                </form>
+
+        {% endif %}
+        <p>Not your team? Click <a href="/cern/register/">here</a>.</p>
+      </div>
     </div>
 </div>
 {% endblock %}
@@ -60,7 +70,7 @@
     var loginWithAmazon = document.getElementById('LoginWithAmazon'),
         returnUrl = '{{ request.META_HEADER.HTTP_HOST }}/accounts/login/amazon';
 
-    returnUrl += '?school_id={{ school.id }}&next=/CERN/{{ school.state }}/{{ school.id }}/{% strip_school_name school %}/';
+    returnUrl += '?school_id={{ school.id }}&next=/cern/{{ school.state }}/{{ school.id }}/{% strip_school_name school %}/';
     {% if referrer %}
         returnUrl += '&referrer=' + {{ referrer.id }};
     {% endif %}

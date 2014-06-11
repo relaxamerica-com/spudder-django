@@ -20,5 +20,5 @@ urlpatterns = patterns('',
     (r'^sponsor/', include('spudmart.sponsors.public_urls')),
     (r'^file/serve/(?P<file_id>\d+)$', 'spudmart.upload.views.serve_uploaded_file'),
     (r'^api/1/', include('spudmart.api.urls')),
-    (r'^CERN/', include('spudmart.CERN.urls')),
+    (r'^cern/', include('spudmart.CERN.urls')),
 )
