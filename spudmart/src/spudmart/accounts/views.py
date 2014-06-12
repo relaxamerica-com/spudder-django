@@ -45,6 +45,7 @@ def create_student(user, school, referrer_id):
     if school.num_students() == 0:
         student.isHead = True
     student.save()
+    school.save()
 
     # Referral points happen only after student has been saved to db,
     #  so put all referral stuff together
@@ -60,6 +61,8 @@ def amazon_login(request):
     return_url = get_return_url(request)
 
     if error is not None:
+        if error == 'access_denied':
+            return HttpResponseRedirect('/accounts/amazon_required/')
         error_message = request.GET.get('error_description') + \
                         '<br><a href="' + request.GET.get('error_uri') + \
                         '">Learn more</a>'
@@ -183,21 +186,45 @@ def just_login(request):
 
         if profile_request.getcode() == 200:
             amazon_user_id = profile_json_data['user_id']
+            amazon_user_name = profile_json_data['name']
             amazon_user_email = profile_json_data['email']
 
-            try:
-                user = authenticate(username=amazon_user_email,
-                                    password=amazon_user_id)
-                django.contrib.auth.login(request, user)
-            except AttributeError:
-                return HttpResponseRedirect('/cern/register/')
-            else:
-                try:
-                    Student.objects.get(user=user)
-                except ObjectDoesNotExist:
-                    return HttpResponseRedirect('/cern/register')
-                else:
+            profiles = UserProfile.objects.filter(amazon_id=amazon_user_id)
+            if profiles.count() == 0:
+                users_with_email = User.objects.filter(
+                    email=amazon_user_email)
+
+                if len(users_with_email) == 0:
                     return HttpResponseRedirect('/cern/')
+                else:  # User exists, but for some reason it's profile
+                    # wasn't created
+                    user = users_with_email[0]
+
+                user_profile = UserProfile(user=user)
+                user_profile.amazon_id = amazon_user_id
+                user_profile.amazon_access_token = access_token
+                user_profile.username = amazon_user_name
+                user_profile.save()
+
+            user = authenticate(username=amazon_user_email,
+                                password=amazon_user_id)
+            profile = user.get_profile()
+
+            if not profile.amazon_access_token:
+                profile.amazon_access_token = access_token
+                profile.save()
+
+            try:
+                Student.objects.get(user=user)
+            except ObjectDoesNotExist:
+                return HttpResponseRedirect('/cern/register')
+
+            django.contrib.auth.login(request, user)
+
+            logging.info(request.user.is_authenticated())
+            logging.info(is_sponsor(request.user))
+
+            return HttpResponseRedirect('/cern/')
         else:
             return _handle_amazon_conn_error(request, profile_json_data)
     else:
@@ -226,3 +253,14 @@ def fix_accounts(request):
             pass
 
     return HttpResponse('Done...')
+
+
+def amazon_required(request):
+    """
+    Displays a clear error page when user does not share info w/Spudder
+
+    :param request: request to render error page
+    :return: Simple error page explaining that Spudder/CERN requires
+        the user to share information from Amazon
+    """
+    return render(request, 'CERN/need-amazon-account.html')

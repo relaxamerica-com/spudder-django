@@ -121,6 +121,22 @@ def recruited_new_student(recruiter, recruited_school):
         add_social_media_points(recruiter, points)
 
 
+def signed_up(new_student):
+    """
+    Rewards students with Social Media Points for signing up
+
+    The student gets the same number of points as a recruiter would
+     for recruiting the nth student at the new student's school
+
+    If the student was recruited by someone, the recruiter does not get
+     extra points for this action, as it is performed before that link
+     has been created
+
+    :param new_student: A new student which has already been saved
+    """
+    recruited_new_student(new_student, new_student.school)
+
+
 def completed_page_info(pageholder):
     """
     Adds points for completing a venue/school page

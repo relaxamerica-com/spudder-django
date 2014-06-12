@@ -7,6 +7,8 @@ urlpatterns = patterns('spudmart.accounts.views',
     (r'^login/amazon$', 'amazon_login'),
     (r'^login/just_login$', 'just_login'),
 
+    (r'^amazon_required/$', 'amazon_required'),
+
     (r'^logout/$', 'logout'),
     (r'^fix_accounts$', 'fix_accounts'),
 )
