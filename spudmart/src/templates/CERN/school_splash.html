@@ -309,8 +309,8 @@
 
                             response.done(function(data) {
                                 if (parsed['uploaded_files'].length > 0) {
-                                    $('#logo').attr('src', parsed['uploaded_files'][0]);
                                     $('.logo-placeholder').text('Refresh to see logo');
+                                    $('#logo').attr('src', parsed['uploaded_files'][0]);
                                 }
                                 //dfd.resolve();
                             });

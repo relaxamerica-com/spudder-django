@@ -220,17 +220,6 @@ class Student(models.Model):
     
     show_CERN = models.BooleanField(default=True)
     show_social_media = models.BooleanField(default=True)
-    
-
-    def save(self, force_insert=False, force_update=False, using=None):
-        ''' Default save method overwritten so that the School's 
-            student count is always accurate, and the student's 
-            referral_code is only assigned once.
-        '''
-        if self.pk is None:
-            self.referral_code = str(uuid.uuid4())
-            
-        return models.Model.save(self, force_insert, force_update, using)
 
     def __str__(self):
         something = str(self.user.username)

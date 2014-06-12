@@ -32,4 +32,5 @@ urlpatterns = patterns('spudmart.venues.views',
     (r'^fix_venue_coordinates$', 'fix_venue_coordinates'),
     (r'^create$', 'create'),
     (r'^list', 'list_view'),
+    (r'^delete/(?P<venue_id>\d+)$', 'delete_venue'),
 )

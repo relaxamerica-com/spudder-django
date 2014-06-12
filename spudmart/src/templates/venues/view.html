@@ -15,7 +15,7 @@
 					{% if can_edit %}
 						<div class="pull-right">
 							<div class="btn btn-orange" id="edit">
-								Edit Mode
+                                Edit Mode
 							</div>
 						</div> 
 					{% endif %}
@@ -26,7 +26,7 @@
 						{% if venue.logo %}
 							<img id="venue-logo" src="/file/serve/{{ venue.logo.id }}" />
 						{% else %}
-							<div class="logo-placeholder bigger">
+							<div class="logo-placeholder bigger" id="placeholder1">
 								Your Logo Here
 							</div>
 						{% endif %}
@@ -88,7 +88,10 @@
 						allowfullscreen></iframe>
 					</div>
 					<div class="content" id="map">
-						
+						<div id="map-canvas">
+
+						</div>
+						<!--<a id="save-location" class="btn btn-orange edit-mode hidden">Save</a>-->
 					</div>
 					<div id="parking-details" class="content">
 						<div class="row-fluid edit-mode">
@@ -209,7 +212,7 @@
 								
 								<div class="btn btn-danger remove-pic edit-mode" id="playing_surface_pics">Remove</div>
 							</div>
-							<div class="span6 nomargin well" id="venue-playing-surface-details">
+							<div class="span6 nomargin well view-mode" id="venue-playing-surface-details">
 								{{ venue.playing_surface_details }}
 							</div>
 						</div>
@@ -264,12 +267,14 @@
 								
 								<div class="btn btn-danger remove-pic edit-mode" id="restroom_pics">Remove</div>
 							</div>
-							<p>
-								Restroom Details
-							</p>
-							<div class="well span6 nomargin" id="venue-restroom-details">
-								{{ venue.restroom_details }}
-							</div>
+                            <div class="view-mode">
+                                <p>
+                                    Restroom Details
+                                </p>
+                                <div class="well span6 nomargin" id="venue-restroom-details">
+                                    {{ venue.restroom_details }}
+                                </div>
+                            </div>
 						</div>
 					</div>
 					<div id="concession-details" class="content">
@@ -437,38 +442,38 @@
 								{% if venue.logo %}
 									<img id="venue-logo2" src="/file/serve/{{ venue.logo.id }}" />
 								{% else %}
-									<div class="logo-placeholder">
+									<div class="logo-placeholder" id="placeholder2">
 										Your Logo Here
 									</div>
 								{% endif %}
 							{% endif %}
 						</div>
-						{% if venue.is_available %}
-                            <div class="span6" id="price-column">
-                                {% if request.user == venue.user %}
-                                    <div class="btn btn-orange" id="prize-this-venue">
-                                        Price this Venue
-                                    </div>
-                                    <div class="input-prepend">
-                                        <span class="add-on">$</span>
-                                        <input name="price" id="price" type="text" class="input-small" value="{{ venue.price }}" />
-                                    </div>
-                                    <div class="alert"></div>
-                                {% else %}
-                                    {% if venue.price > 0.0 %}
-                                        {% if rent_venue_url %}
-                                            <a href="{{ rent_venue_url }}"><img src="/media/img/buttons/pay-with-amazon.png" /></a>
-                                        {% else %}
-                                            <a href="/accounts/login?next={{ request.get_full_path }}"><img src="/media/img/buttons/pay-with-amazon.png" /></a>
-                                        {% endif %}
-                                    {% endif %}
-                                {% endif %}
-                                <div id="current-price">
-                                    Name and sponsor this field for:
-                                    <span>${{ venue.price }}</span>
-                                    annually
-                                </div>
-                            </div>
+						{% if not venue.renter %}
+						<div class="span6" id="price-column">
+							{% if request.user == venue.user %}
+							<div class="btn btn-orange" id="prize-this-venue">
+								Price this Venue
+							</div>
+							<div class="input-prepend">
+								<span class="add-on">$</span>
+								<input name="price" id="price" type="text" class="input-small" value="{{ venue.price }}" />
+							</div>
+							<div class="alert"></div>
+							{% else %}
+								{% if venue.price > 0.0 %}
+									{% if rent_venue_url %}
+										<a href="{{ rent_venue_url }}"><img src="/media/img/buttons/pay-with-amazon.png" /></a>
+									{% else %}
+										<a href="/accounts/login?next={{ rent_venue_url }}"><img src="/media/img/buttons/pay-with-amazon.png" /></a>
+									{% endif %}
+								{% endif %}
+							{% endif %}
+							<div id="current-price">
+								Name and sponsor this field for:
+								<span>${{ venue.price }}</span>
+								annually
+							</div>
+						</div>
 						{% endif %}
 					</div>
 
@@ -593,7 +598,7 @@
 			interval : false
 		});
 
-		var editMode = $('{% if is_sponsor %}.edit-mode-sponsor{% else %}.edit-mode{% endif %}'), 
+		var editMode = $('{% if is_sponsor %}.edit-mode-sponsor{% else %}.edit-mode{% endif %}'),
 			viewMode = $('.view-mode'), 
 			buttons = $('.buttons'), 
 			icons = buttons.find('i');
@@ -649,8 +654,15 @@
 			show(currentTab);
 
 			if ($(this).hasClass('icon-map-marker')) {
+
 				if (!$(this).hasClass('initialized')) {
-					initialize(false, $('.contents .alert'), function() {}, function() {});
+					initialize(window.isEditMode, $('.contents .alert'), function(venue) {
+						return 
+							venue.sport == window.currentSelectedSport
+							&& venue.id != parseInt(window.currentVenueId, 10);
+					}, function() {
+						//$('#save-location').removeClass('hidden');
+					});
 				}
 			} else if ($(this).hasClass('icon-medkit')) {
 				setNearestHospitals(hospitalSelect);
@@ -712,21 +724,20 @@
 
 		$('#up-to-5-pics input, #playing-surface input, #restroom-details input').ace_file_input({
 			style : 'well',
-			btn_choose : 'Drop files here or click to choose',
+			btn_choose : 'Click to add images',//'Drop files here or click to choose',
 			btn_change : null,
 			no_icon : 'icon-cloud-upload',
-			droppable : true,
-			thumbnail : 'small'
-			//, icon_remove:null//set null, to hide remove/reset button
-			/**,before_change:function(files, dropped) {
+			//droppable : true,
+			thumbnail : 'small',
+			//icon_remove:null,//set null, to hide remove/reset button
+			/**before_change: function(files, dropped) {
 			 //Check an example below
 			 //or examples/file-upload.html
 			 return true;
-			 }*/
+			 },*/
 			/**,before_remove : function() {
 			 return true;
-			 }*/
-			,
+			 },*/
 			preview_error : function(filename, error_code) {
 				//name of the file that failed
 				//error_code values
@@ -734,7 +745,7 @@
 				//2 = 'IMAGE_LOAD_FAILED',
 				//3 = 'THUMBNAIL_FAILED'
 				//alert(error_code);
-			}
+			},
 		});
 
 		$('#edit-logo').ace_file_input({
@@ -797,11 +808,13 @@
 
 						response.done(function(data) {
 							dfd.resolve();
+							$('.remove').trigger('click')
 							
 							var carousel = $('#up-to-5-pics .carousel');
 							
 							populateCarousel(parsed, carousel);
 							progressBar.hide();
+							progressBar.children().css('width', '1%');
 							
 							$('.icon-camera-retro').addClass('ready');
 						});
@@ -865,9 +878,12 @@
 							$('#venue-aka-name, #venue-aka-name2').html(akaName);
 							if (parsed['uploaded_files'].length > 0) {
 								$('#venue-logo, #venue-logo2').attr('src', parsed['uploaded_files'][0]);
+								$('#placeholder1').text('Refresh to see logo')
+								$().text('Refresh to see logo')
 							}
 							
 							dfd.resolve();
+							$('.remove').click()
 						});
 					}
 				});
@@ -890,6 +906,11 @@
 
 			$.get('/upload/get_upload_url', function(data) {
 				$.ajax({
+					xhr: function() {
+                 		var xhr = showProgress(progressBar);
+
+                 		return xhr;
+                 	},
 					url : data,
 					data : files,
 					cache : false,
@@ -906,11 +927,13 @@
 
 						response.done(function(data) {
 							dfd.resolve();
+							$('.remove').click()
 							populateCarousel(parsed, $('#playing-surface-carousel'));
 							$('#venue-playing-surface-details').html(details.val());
 							$('.icon-eye-open').addClass('ready');
 							
 							progressBar.hide();
+							progressBar.children().css('width', '0%');
 						});
 					}
 				});
@@ -926,7 +949,7 @@
 			});
 
 			response.done(function() {
-				dfd.resolve();
+                $('.remove').click()
 				$('#venue-video').html(textarea.val());
 				$('.icon-facetime-video').addClass('ready');
 			});
@@ -941,13 +964,18 @@
 				showAlert(alert, 'You are trying to upload more pics than is available.', 'warning', true);
 				return;
 			}
-			
+
 			var dfd = saving($(this), $('.contents').find('.alert'), 'Restroom pictures and details have been saved'),
 				details = form.find('[name="details"]'),
 				progressBar = form.find('.progress');
 
 			$.get('/upload/get_upload_url', function(data) {
 				$.ajax({
+					xhr: function() {
+                 		var xhr = showProgress(progressBar);
+
+                 		return xhr;
+                 	},
 					url : data,
 					data : files,
 					cache : false,
@@ -964,10 +992,12 @@
 
 						response.done(function(data) {
 							dfd.resolve();
+							$('.remove').click()
 							$('#venue-restroom-details').html(details.val());
 							$('.icon-female').addClass('ready');
-							populateCarousel(parsed, $('#playing-surface-carousel'));
+							populateCarousel(parsed, $('#restroom-carousel'));
 							progressBar.hide();
+							progressBar.children().css('width', '0%');
 						});
 					}
 				});
@@ -1052,6 +1082,20 @@
 				$('.fa-wheelchair').addClass('ready');
 			});
 		});
+
+		/**$('#save-location').click(function() {
+			var dfd = saving($(this), $('.contents .alert'), 'Location has been saved');
+
+			var response = $.post('/venues/save_coordinates/{{ venue.id }}', {
+				'latitude' : '' + window.map.getCenter().lat(),
+				'longitude' : '' +  window.map.getCenter().lng()
+			});
+
+			response.done(function() {
+				dfd.resolve();
+				$('.buttons i.icon-map-marker').addClass('ready initialized');
+			});
+		});*/
 
 		$('#prize-this-venue').click(function() {
 			{% if not is_recipient %}
