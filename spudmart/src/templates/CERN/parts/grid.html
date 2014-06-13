@@ -1,146 +1,70 @@
-<div class="row">
-    <div class="span2">
-        <div class="pricing-box-alt" id="marketing">
-            <div class="pricing-heading">
-                <h3>Marketing</h3>
+<div id="wrapper">
+
+        <!-- Sidebar -->
+        <div id="sidebar-wrapper">
+            <ul class="sidebar-nav">
+                <li class="sidebar-brand"><a href="#">Start Bootstrap</a>
+                </li>
+                <li><a href="#">Dashboard</a>
+                </li>
+                <li><a href="#">Shortcuts</a>
+                </li>
+                <li><a href="#">Overview</a>
+                </li>
+                <li><a href="#">Events</a>
+                </li>
+                <li><a href="#">About</a>
+                </li>
+                <li><a href="#">Services</a>
+                </li>
+                <li><a href="#">Contact</a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Page content -->
+        <div id="page-content-wrapper">
+            <div class="content-header">
+                <h1>
+                    <a id="menu-toggle" href="#" class="btn btn-default"><i class="icon-reorder"></i></a>
+                    Simple Sidebar
+                </h1>
             </div>
-            <div class="pricing-terms">
-                <h3>{{ student.marketing_points }} pts</h3>
-            </div>
-            <div class="pricing-content">
-                <ul>
-                    <li>Learn proven techniques to drive traffic to your Venue page</li>
-                    <li>Earn a percentage of your venue's sponsorship</li>
-                    <li>
-                        <a class="btn btn-orange" href="/venues/list">
-                            {% if student.marketing_points > 0 %}
-                                Go to this project
-                            {% else %}
-                                Start this project!
-                            {% endif %}
-                        </a>
-                    </li>
-                </ul>
+            <!-- Keep all page content within the page-content inset div! -->
+            <div class="page-content inset">
+                <div class="row">
+                    <div class="col-md-12">
+                        <p class="lead">This simple sidebar template has a hint of JavaScript to make the template responsive. It also includes Font Awesome icon fonts.</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p class="well">The template still uses the default Bootstrap rows and columns.</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p class="well">But the full-width layout means that you wont be using containers.</p>
+                    </div>
+                    <div class="col-md-4">
+                        <p class="well">Three Column Example</p>
+                    </div>
+                    <div class="col-md-4">
+                        <p class="well">Three Column Example</p>
+                    </div>
+                    <div class="col-md-4">
+                        <p class="well">You get the idea! Do whatever you want in the page content area!</p>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-    
-    <div class="span2">
-        <div class="pricing-box-alt" id="social-media">
-            <div class="pricing-heading">
-                <h3>Social Media PR</h3>
-            </div>
-            <div class="pricing-terms">
-                <h3>{{ student.social_media_points }} pts</h3>
-            </div>
-            <div class="pricing-content">
-                <ul>
-                    <li>Earn points based on the number of people you bring to CERN</li>
-                    <li>Redeem these points for cash and other great prizes</li>
-                    <li>
-                        <a class="btn btn-orange" href="/cern/social_media/">
-                            {% if student.social_media_points > 0 %}
-                                Go to this project
-                            {% else %}
-                                Start this project!
-                            {% endif %}
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-        
-    </div>
-    
-    <div class="span2">
-        <div class="pricing-box-alt" id="blogging">
-            <div class="pricing-heading">
-                <h3>Content Management</h3>
-            </div>
-            <div class="pricing-terms">
-                <h3>{{ student.content_points }} pts</h3>
-            </div>
-            <div class="pricing-content">
-                <ul>
-                    <li>Manage a blog and even earn a featured column on Spudder's main site</li>
-                    <li>This feature isn't ready yet. Sign up below to be alerted when it is.</li>
-                    {% if content %}
-                    <li><button class="btn btn-orange" id='content'>Join mailing list</button></li>
-                    {% else %}
-                    <li><button class="btn">You're on the list</button></li>
-                    {% endif %}
-                </ul>
-            </div>
-        </div>
+
     </div>
 
-    <div class="span2">
-        <div class="pricing-box-alt" id="design">
-            <div class="pricing-heading">
-                <h3>Design UX/UI</h3>
-            </div>
-            <div class="pricing-terms">
-                <h3>{{ student.design_points }} pts</h3>
-            </div>
-            <div class="pricing-content">
-                <ul>
-                    <li>Help sponsors (small businesses) manage their Spudder pages</li>
-                    <li>This feature isn't ready yet. Sign up below to be alerted when it is.</li>
-                    {% if design %}
-                    <li><button class="btn btn-orange" id='design-btn'>Join mailing list</button></li>
-                    {% else %}
-                    <li><button class="btn">You're on the list</button></li>
-                    {% endif %}
-                </ul>
-            </div>
-        </div>
-    </div>
+    <!-- JavaScript -->
+    <script src="js/jquery-1.10.2.js"></script>
+    <script src="js/bootstrap.js"></script>
 
-    <div class="span2">
-        <div class="pricing-box-alt" id="quality-assurance">
-            <div class="pricing-heading">
-                <h3>Quality Assurance</h3>
-            </div>
-            <div class="pricing-terms">
-                <h3>{{ student.testing_points }} pts</h3>
-            </div>
-            <div class="pricing-content">
-                <ul>
-                    <li>Beta applications and get advanced access prior to release</li>
-                    <li>This feature isn't ready yet. Sign up below to be alerted when it is.</li>
-                    {% if qa %}
-                    <li><button class="btn btn-orange" id="qa">Join mailing list</button></li>
-                    {% else %}
-                    <li><button class="btn">You're on the list</button></li>
-                    {% endif %}
-                </ul>
-            </div>
-        </div> 
-    </div>
-    </div>
-</div>
-<script type="text/javascript">
-    function join_list(project){
-        $.post('/cern/add_email_alert/',
-            { 'email' : "{{ request.user.email }}",
-              'project' : project, });
-    }
-
-    $('#content').click(function(){
-        $(this).removeClass('btn-orange');
-        $(this).text("You're on the list");
-        join_list('Blogging');
+    <!-- Custom JavaScript for the Menu Toggle -->
+    <script>
+    $("#menu-toggle").click(function(e) {
+        e.preventDefault();
+        $("#wrapper").toggleClass("active");
     });
-
-    $('#design-btn').click(function(){
-        $(this).removeClass('btn-orange');
-        $(this).text("You're on the list");
-        join_list('Sponsor Page Design');
-    });
-
-    $('#qa').click(function(){
-        $(this).removeClass('btn-orange');
-        $(this).text("You're on the list");
-        join_list('Quality Assurance Testing');
-    });
-</script>
+    </script>

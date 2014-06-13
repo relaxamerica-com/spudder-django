@@ -11,7 +11,7 @@ from spudmart.utils.url import get_return_url, get_request_param
 from django.contrib.auth.models import User
 from spudmart.accounts.utils import is_sponsor, is_student
 import logging
-from spudmart.CERN.rep import recruited_new_student
+from spudmart.CERN.rep import recruited_new_student, signed_up
 from spudmart.CERN.models import Student, School
 
 
@@ -46,6 +46,8 @@ def create_student(user, school, referrer_id):
         student.isHead = True
     student.save()
     school.save()
+
+    signed_up(student)
 
     # Referral points happen only after student has been saved to db,
     #  so put all referral stuff together
