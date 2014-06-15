@@ -443,32 +443,32 @@
 								{% endif %}
 							{% endif %}
 						</div>
-						{% if not venue.renter %}
-						<div class="span6" id="price-column">
-							{% if request.user == venue.user %}
-							<div class="btn btn-orange" id="prize-this-venue">
-								Price this Venue
-							</div>
-							<div class="input-prepend">
-								<span class="add-on">$</span>
-								<input name="price" id="price" type="text" class="input-small" value="{{ venue.price }}" />
-							</div>
-							<div class="alert"></div>
-							{% else %}
-								{% if venue.price > 0.0 %}
-									{% if rent_venue_url %}
-										<a href="{{ rent_venue_url }}"><img src="/media/img/buttons/pay-with-amazon.png" /></a>
-									{% else %}
-										<a href="/accounts/login?next={{ rent_venue_url }}"><img src="/media/img/buttons/pay-with-amazon.png" /></a>
-									{% endif %}
-								{% endif %}
-							{% endif %}
-							<div id="current-price">
-								Name and sponsor this field for:
-								<span>${{ venue.price }}</span>
-								annually
-							</div>
-						</div>
+						{% if venue.is_available %}
+                            <div class="span6" id="price-column">
+                                {% if request.user == venue.user %}
+                                    <div class="btn btn-orange" id="prize-this-venue">
+                                        Price this Venue
+                                    </div>
+                                    <div class="input-prepend">
+                                        <span class="add-on">$</span>
+                                        <input name="price" id="price" type="text" class="input-small" value="{{ venue.price }}" />
+                                    </div>
+                                    <div class="alert"></div>
+                                {% else %}
+                                    {% if venue.price > 0.0 %}
+                                        {% if rent_venue_url %}
+                                            <a href="{{ rent_venue_url }}"><img src="/media/img/buttons/pay-with-amazon.png" /></a>
+                                        {% else %}
+                                            <a href="/accounts/login?next={{ request.get_full_path }}"><img src="/media/img/buttons/pay-with-amazon.png" /></a>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endif %}
+                                <div id="current-price">
+                                    Name and sponsor this field for:
+                                    <span>${{ venue.price }}</span>
+                                    annually
+                                </div>
+                            </div>
 						{% endif %}
 					</div>
 

@@ -1,5 +1,7 @@
+import datetime
 from boto.fps.connection import FPSConnection
 import settings
+from spudmart.amazon.models import TransactionProgressStatus
 from spudmart.recipients.models import Recipient, VenueRecipient
 
 
@@ -54,8 +56,19 @@ def get_rent_venue_cbui_url(venue):
                                recipientTokenList=recipientTokenId,
                                amountType='Exact',
                                currencyCode='USD')
-    
-    
-    
-    
-    
+
+
+def get_rent_venue_ipn_url(venue, user):
+    return '%s/venues/rent_venue/%s/notification/%s' % (settings.SPUDMART_BASE_URL, venue.id, user.id)
+
+
+def parse_ipn_notification_request(request):
+    progress_status = TransactionProgressStatus()
+
+    progress_status.transactionDate = datetime.datetime.fromtimestamp(long(request.POST['transactionDate']))
+
+    for key, value in request.POST.iteritems():
+        if not getattr(progress_status, key):
+            setattr(progress_status, key, value)
+
+    return progress_status

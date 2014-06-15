@@ -1,3 +1,7 @@
+from django.contrib.auth.models import User
+from django.db import models
+
+
 class AmazonActionStatus():
     def __init__(self):
         pass
@@ -52,3 +56,38 @@ class AmazonActionStatus():
             return 'System error'
 
         return 'Success'
+
+
+class IPNTransactionStatus():
+    def __init__(self):
+        pass
+
+    CANCELLED = 'CANCELLED'
+    FAILURE = 'FAILURE'
+    PENDING = 'PENDING'
+    RESERVED = 'RESERVED'
+    SUCCESS = 'SUCCESS'
+
+
+class TransactionProgressStatus(models.Model):
+    operation = models.CharField(max_length=255, default='')
+    transactionDate = models.DateTimeField()
+    notificationType = models.CharField(max_length=255, default='')
+    certificateUrl = models.CharField(max_length=255, default='')
+    recipientEmail = models.CharField(max_length=255, default='')
+    signatureMethod = models.CharField(max_length=255, default='')
+    signatureVersion = models.CharField(max_length=255, default='')
+    callerReference = models.CharField(max_length=255, default='')
+    buyerName = models.CharField(max_length=255, default='')
+    signature = models.CharField(max_length=255, default='')
+    recipientName = models.CharField(max_length=255, default='')
+    transactionId = models.CharField(max_length=255, default='')
+    transactionStatus = models.CharField(max_length=255, default='')
+    paymentMethod = models.CharField(max_length=255, default='')
+    transactionAmount = models.CharField(max_length=255, default='')
+    statusMessage = models.CharField(max_length=255, default='')
+    statusCode = models.CharField(max_length=255, default='')
+
+    transaction_type = models.CharField(max_length=255, default='')
+    transaction_entity_id = models.CharField(max_length=255, default='')
+    transaction_user = models.ForeignKey(User, null=True, blank=True)

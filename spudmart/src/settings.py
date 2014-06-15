@@ -22,6 +22,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'djangotoolbox',
     'djangoappengine',
+    'django_nose',
     'autoload',
     'dbindexer',
     'boto',
@@ -37,6 +38,8 @@ INSTALLED_APPS = (
     'spudmart.hospitals',
     'spudmart.api',
     'spudmart.CERN',
+    'spudmart.amazon',
+    'spudmart.utils',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -46,7 +49,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     # 'spudmart.accounts.middleware.SponsorMiddleware',
-    'SSL_Middleware.SSLRedirect',
+    'spudmart.ssl_middleware.SSLRedirect',
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
@@ -56,9 +59,6 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'spudmart.amazon.context.amazon_client_id'
 )
 
-# This test runner captures stdout and associates tracebacks with their
-# corresponding output. Helps a lot with print-debugging.
-TEST_RUNNER = 'djangotoolbox.test.CapturingTestSuiteRunner'
 
 ADMIN_MEDIA_PREFIX = '/media/admin/'
 PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
@@ -83,6 +83,10 @@ mimetypes.add_type("application/x-font-woff", ".woff")
 
 LOGIN_REDIRECT_URL = '/'
 ACCOUNT_ACTIVATION_DAYS = 5
+
+TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
+NOSE_ARGS = ['--with-xunit', '--xunit-file=spudmart/test-reports/xunit.xml', '-v']
+NOSE_PLUGINS = ['nose_plugins.noseplugins.TestDiscoveryPlugin']
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = '8lu*6g0lg)9z!ba+a$ehk)xt)x%rxgb$i1&amp;022shmi1jcgihb*'
