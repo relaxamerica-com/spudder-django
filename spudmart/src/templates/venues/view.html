@@ -88,10 +88,7 @@
 						allowfullscreen></iframe>
 					</div>
 					<div class="content" id="map">
-						<div id="map-canvas">
-
-						</div>
-						<a id="save-location" class="btn btn-orange edit-mode hidden">Save</a>
+						
 					</div>
 					<div id="parking-details" class="content">
 						<div class="row-fluid edit-mode">
@@ -652,15 +649,8 @@
 			show(currentTab);
 
 			if ($(this).hasClass('icon-map-marker')) {
-
 				if (!$(this).hasClass('initialized')) {
-					initialize(window.isEditMode, $('.contents .alert'), function(venue) {
-						return 
-							venue.sport == window.currentSelectedSport
-							&& venue.id != parseInt(window.currentVenueId, 10);
-					}, function() {
-						$('#save-location').removeClass('hidden');
-					});
+					initialize(false, $('.contents .alert'), function() {}, function() {});
 				}
 			} else if ($(this).hasClass('icon-medkit')) {
 				setNearestHospitals(hospitalSelect);
@@ -1060,20 +1050,6 @@
 				dfd.resolve();
 				$('#venue-handicap-details').html(textarea.val());
 				$('.fa-wheelchair').addClass('ready');
-			});
-		});
-
-		$('#save-location').click(function() {
-			var dfd = saving($(this), $('.contents .alert'), 'Location has been saved');
-
-			var response = $.post('/venues/save_coordinates/{{ venue.id }}', {
-				'latitude' : '' + window.map.getCenter().lat(),
-				'longitude' : '' +  window.map.getCenter().lng()
-			});
-
-			response.done(function() {
-				dfd.resolve();
-				$('.buttons i.icon-map-marker').addClass('ready initialized');
 			});
 		});
 

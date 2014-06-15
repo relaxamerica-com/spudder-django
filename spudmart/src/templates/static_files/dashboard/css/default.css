@@ -873,6 +873,20 @@ form .input-required {
     width: 200px;
 }
 
+#create-venue .alert-block {
+	display: block;
+	text-align: center;
+}
+
+#create-venue .alert-block h4 {
+	margin-bottom: 10px;
+}
+
+#create-venue .content {
+	width: 500px;
+	margin: auto;
+}
+
 #create-venue #map-canvas {
 	width: 320px;
 	height: 200px;	
