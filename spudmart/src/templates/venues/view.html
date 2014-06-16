@@ -1,9 +1,25 @@
-{% extends 'base.html' %}
+{% extends 'CERN/base.html' %}
 
 {% load displays %}
 
 {% block meta %}
 <link rel="stylesheet" href="/media/dashboard/css/ace-file-input.css" />
+<title>{{ venue.name }} ({{ venue.sport }}) | Spudder - Sports Updates Made Simple</title>
+
+<!--Facebook meta tags-->
+{% if venue.aka_name and venue.sport %}
+<meta property="og:title" content="{{ venue.aka_name }} ({{ venue.sport }}) | Spudder - Sports Updates Made Simple">
+<meta property="og:description" content="See details about this field on Spudder.">
+{% endif %}
+<meta property="og:url" content="http://{{ request.META.HTTP_HOST }}{{ request.path }}">
+<meta property="og:site_name" content="Spudder - Sports Updates Made Simple">
+{% if venue.logo %}<meta property="og:image" content="http://{{ request.META.HTTP_HOST }}/file/serve/{{ venue.logo.id }}">
+    {% else %}<meta property="og:image" content="http://{{ request.META.HTTP_HOST }}/ico/favicon.png">
+{% endif %}
+<meta propety="og:type" content="website">
+<!--Twitter meta tags-->
+<meta property="twitter:card" content="summary">
+<meta property="twitter:site" content="@spudder_com">
 {% endblock meta %}
 
 {% block content %}
@@ -17,7 +33,7 @@
 							<div class="btn btn-orange" id="edit">
                                 Edit Mode
 							</div>
-						</div> 
+						</div>
 					{% endif %}
 				</h5>
 
@@ -32,7 +48,7 @@
 						{% endif %}
 					</div>
 					<div class="span10">
-						<h4 id="venue-name"> 
+						<h4 id="venue-name">
 						{% if sponsor %}
 							{{ sponsor.name }}
 						{% else %}
@@ -154,7 +170,7 @@
 								</div>
 								<a href="#venue-pics-carousel" class="carousel-control left" data-slide="prev">&lsaquo;</a>
 								<a href="#venue-pics-carousel" class="carousel-control right" data-slide="next">&rsaquo;</a>
-								
+
 								<div class="btn btn-danger remove-pic edit-mode" id="venue_pics">Remove</div>
 							</div>
 						</div>
@@ -209,7 +225,7 @@
 								</div>
 								<a href="#playing-surface-carousel" class="carousel-control left" data-slide="prev">&lsaquo;</a>
 								<a href="#playing-surface-carousel" class="carousel-control right" data-slide="next">&rsaquo;</a>
-								
+
 								<div class="btn btn-danger remove-pic edit-mode" id="playing_surface_pics">Remove</div>
 							</div>
 							<div class="span6 nomargin well view-mode" id="venue-playing-surface-details">
@@ -264,7 +280,7 @@
 								</div>
 								<a href="#restroom-carousel" class="carousel-control left" data-slide="prev">&lsaquo;</a>
 								<a href="#restroom-carousel" class="carousel-control right" data-slide="next">&rsaquo;</a>
-								
+
 								<div class="btn btn-danger remove-pic edit-mode" id="restroom_pics">Remove</div>
 							</div>
                             <div class="view-mode">
@@ -377,7 +393,7 @@
 									Address of nearby facility
 								</p>
 								<div class="well">
-									<a href="http://maps.google.com/?q={{ venue.medical_address }}" target="_blank" id="venue-medical-address"> 
+									<a href="http://maps.google.com/?q={{ venue.medical_address }}" target="_blank" id="venue-medical-address">
 						                {{ venue.medical_address }}
 						            </a>
 								</div>
@@ -426,7 +442,7 @@
 							{% endif %}
 						</div>
 						<div class="span12">
-							<small id="venue-aka-name2"> 
+							<small id="venue-aka-name2">
 								{{ venue.aka_name }}
 							</small>
 						</div>
@@ -481,30 +497,30 @@
 						<div class="span7 details-header">
 							Support Venue's Sponsor
 						</div>
-						
+
 						<ul class="span5 social-network">
 							<li>
-								<a href="/sponsor/{{ sponsor.id }}" target="_blank" data-placement="bottom" title="" 
+								<a href="/sponsor/{{ sponsor.id }}" target="_blank" data-placement="bottom" title=""
 								data-original-title="Sponsor Public profile"> <i class="icon-microphone icon-square"> </i> </a>
 							</li>
-							
+
 							<li>
-								<a href="{{ sponsor.instagram }}" target="_blank" data-placement="bottom" title="" 
+								<a href="{{ sponsor.instagram }}" target="_blank" data-placement="bottom" title=""
 								data-original-title="Sponsor Instagram profile"> <i class="icon-instagram icon-square"> </i> </a>
 							</li>
-							
+
 							<li>
-								<a href="{{ sponsor.facebook }}" target="_blank" data-placement="bottom" title="" 
+								<a href="{{ sponsor.facebook }}" target="_blank" data-placement="bottom" title=""
 								data-original-title="Sponsor Facebook profile"> <i class="icon-facebook icon-square"> </i> </a>
 							</li>
 
 							<li>
-								<a href="{{ sponsor.twitter }}" target="_blank" data-placement="bottom" title="" 
+								<a href="{{ sponsor.twitter }}" target="_blank" data-placement="bottom" title=""
 								data-original-title="Sponsor Twitter profile"> <i class="icon-twitter icon-square"> </i> </a>
 							</li>
 
 							<li>
-								<a href="{{ sponsor.google_plus }}" target="_blank" rel="publisher" data-placement="bottom" title="" 
+								<a href="{{ sponsor.google_plus }}" target="_blank" rel="publisher" data-placement="bottom" title=""
 								data-original-title="Sponsor Google+ profile"> <i class="icon-google-plus icon-square"> </i> </a>
 							</li>
 						</ul>
@@ -515,23 +531,23 @@
 							<li>
 								<label>Speciality: </label> {{ sponsor.speciality }}
 							</li>
-	
+
 							<li>
 								<label>Location: </label> {{ sponsor.location }}
 							</li>
-	
+
 							<li>
 								<label>Phone: </label> {{ sponsor.phone }}
 							</li>
-	
+
 							<li>
 								<label>E-mail: </label> {{ sponsor.email }}
 							</li>
-	
+
 							<li>
 								<label>Website: </label> {{ sponsor.website }}
 							</li>
-	
+
 							<li>
 								<label>Fax: </label> {{ sponsor.fax }}
 							</li>
@@ -539,23 +555,23 @@
 							<li>
 								<label>Speciality: </label> Your company's info
 							</li>
-	
+
 							<li>
 								<label>Location: </label> Your company's location
 							</li>
-	
+
 							<li>
 								<label>Phone: </label> Your company's phone
 							</li>
-	
+
 							<li>
 								<label>E-mail: </label> Your company's e-mail
 							</li>
-	
+
 							<li>
 								<label>Website: </label> Your company's website
 							</li>
-	
+
 							<li>
 								<label>Fax: </label> Your company's fax
 							</li>
@@ -591,7 +607,7 @@
 	$(document).ready(function() {
 		var hospitalSelect = $('[name="hospital"]'),
 			hospitals = {};
-		
+
 		$('select[name="state"]').val('{{medical_address.state}}');
 
 		$('#venue-pics-carousel, #playing-surface-carousel').carousel({
@@ -599,8 +615,8 @@
 		});
 
 		var editMode = $('{% if is_sponsor %}.edit-mode-sponsor{% else %}.edit-mode{% endif %}'),
-			viewMode = $('.view-mode'), 
-			buttons = $('.buttons'), 
+			viewMode = $('.view-mode'),
+			buttons = $('.buttons'),
 			icons = buttons.find('i');
 
 		$('#edit').click(function() {
@@ -657,7 +673,7 @@
 
 				if (!$(this).hasClass('initialized')) {
 					initialize(window.isEditMode, $('.contents .alert'), function(venue) {
-						return 
+						return
 							venue.sport == window.currentSelectedSport
 							&& venue.id != parseInt(window.currentVenueId, 10);
 					}, function() {
@@ -677,7 +693,7 @@
 		});
 
 		$('#save-parking-details').click(function() {
-			var button = $(this), parkingDetails = $('[name="parking-details"]'), parkingTips = $('[name="parking-tips"]'), 
+			var button = $(this), parkingDetails = $('[name="parking-details"]'), parkingTips = $('[name="parking-tips"]'),
 				dfd = saving($(this), $('.contents').find('.alert'), 'Parking details has been saved');
 
 			var response = $.post('/venues/save_parking_details/{{ venue.id }}', {
@@ -687,32 +703,32 @@
 
 			response.done(function() {
 				$('.icon-truck').addClass('ready');
-				
+
 				$('#venue-parking-details').html(parkingDetails.val());
 				$('#venue-parking-tips').html(parkingTips.val());
-				
+
 				dfd.resolve();
 			});
 		});
-		
+
 		function setRemoveButtonPosition(carousel_ID) {
 			var active = $('#' + carousel_ID + ' .item.active img');
 			$('#' + carousel_ID + ' .remove-pic').css('right', 10 + parseInt(active.css('marginRight'), 10) + 'px');
 		}
-		
+
 		$('.remove-pic').click(function() {
 			var carousel = $(this).parent(),
 				listType = $(this).attr('id'),
 				active = carousel.find('.active'),
 				fileURL = active.find('img').attr('src');
-				
+
 			$(this).hide();
-			
+
 			var response = $.post('/venues/remove_pic/{{ venue.id }}', {
 				'list_type' : listType,
 				'file_url' : fileURL
 			});
-			
+
 			carousel.carousel('next');
 			active.remove();
 			if (carousel.find('.item').length == 0) {
@@ -756,41 +772,41 @@
 			onchange : null,
 			thumbnail : false
 		});
-		
+
 		function showProgress(progressBar) {
 			var xhr = new window.XMLHttpRequest();
          	progressBar.css('display', 'inline-block');
 
      		xhr.upload.addEventListener('progress', function(evt){
      			 var percentComplete = evt.loaded / evt.total;
-     			 
+
                  percentComplete = parseInt(percentComplete * 100);
-                 
+
                  progressBar.children().css('width', percentComplete + '%');
      		});
-     		
+
      		return xhr;
 		}
 
 		$('#upload-up-to-5-pics').click(function() {
-			var form = $(this).parents('form'), 
-				files = $(form).serializeFiles(), 
-				filesList = $(form).find('input')[0].files, 
+			var form = $(this).parents('form'),
+				files = $(form).serializeFiles(),
+				filesList = $(form).find('input')[0].files,
 				alert = $('.contents').find('.alert');
 
 			if (filesList.length > 5 || (parseInt('{{ venue.venue_pics|length }}', 10) + filesList.length) > 5) {
 				showAlert(alert, 'You are trying to upload more pics than is available.', 'warning', true);
 				return;
 			}
-			
+
 			var dfd = saving($(this), alert, 'Venue pictures has been uploaded'),
 				progressBar = form.find('.progress');
-			
+
 			$.get('/upload/get_upload_url', function(data) {
 				$.ajax({
 					xhr: function() {
                  		var xhr = showProgress(progressBar);
-                 		
+
                  		return xhr;
                  	},
 					url : data,
@@ -809,34 +825,34 @@
 						response.done(function(data) {
 							dfd.resolve();
 							$('.remove').trigger('click')
-							
+
 							var carousel = $('#up-to-5-pics .carousel');
-							
+
 							populateCarousel(parsed, carousel);
 							progressBar.hide();
 							progressBar.children().css('width', '1%');
-							
+
 							$('.icon-camera-retro').addClass('ready');
 						});
 					}
 				});
 			});
 		});
-		
+
 		function populateCarousel(parsed, carousel) {
 			$.each(parsed['uploaded_files'], function() {
 				var item = $('<div class="item"></div>'),
 					img = $('<img />');
-				
+
 				img.attr('src', this);
 				if(carousel.find('.item').length == 0) {
 					item.addClass('active');
 				}
-				
+
 				item.append(img);
 				carousel.find('.carousel-inner').append(item);
 			});
-			
+
 			carousel.removeClass('hidden');
 			carousel.show();
 			carousel.carousel().removeData();
@@ -844,11 +860,11 @@
 		}
 
 		$('#save-name').click(function() {
-			var form = $(this).parents('form'), 
-				files = $(form).serializeFiles(), 
-				filesList = $(form).find('input')[0].files, 
-				name = $(form).find('[name="name"]').val(), 
-				akaName = $(form).find('[name="aka_name"]').val(), 
+			var form = $(this).parents('form'),
+				files = $(form).serializeFiles(),
+				filesList = $(form).find('input')[0].files,
+				name = $(form).find('[name="name"]').val(),
+				akaName = $(form).find('[name="aka_name"]').val(),
 				dfd = saving($(this), $(form).find('.alert'), 'Venue basic information has been saved'),
 				sport = $('[name="sport"]').val();
 
@@ -873,7 +889,7 @@
 						response.done(function(data) {
 							window.currentSelectedSport;
 							window.venueName = name;
-							
+
 							$('#venue-name, #venue-name2').html(name);
 							$('#venue-aka-name, #venue-aka-name2').html(akaName);
 							if (parsed['uploaded_files'].length > 0) {
@@ -881,7 +897,7 @@
 								$('#placeholder1').text('Refresh to see logo')
 								$().text('Refresh to see logo')
 							}
-							
+
 							dfd.resolve();
 							$('.remove').click()
 						});
@@ -891,15 +907,15 @@
 		});
 
 		$('#upload-playing-surface').click(function() {
-			var form = $(this).parents('form'), 
-				files = $(form).serializeFiles(), 
-				filesList = $(form).find('input')[0].files; 
+			var form = $(this).parents('form'),
+				files = $(form).serializeFiles(),
+				filesList = $(form).find('input')[0].files;
 
 			if (filesList.length > 5 || (parseInt('{{ venue.playing_surface_pics|length }}', 10) + filesList.length) > 5) {
 				showAlert(alert, 'You are trying to upload more pics than is available.', 'warning', true);
 				return;
 			}
-			
+
 			var dfd = saving($(this), $('.contents').find('.alert'), 'Playing surface pictures and details have been saved'),
 				details = form.find('[name="details"]'),
 				progressBar = form.find('.progress');
@@ -931,7 +947,7 @@
 							populateCarousel(parsed, $('#playing-surface-carousel'));
 							$('#venue-playing-surface-details').html(details.val());
 							$('.icon-eye-open').addClass('ready');
-							
+
 							progressBar.hide();
 							progressBar.children().css('width', '0%');
 						});
@@ -956,9 +972,9 @@
 		});
 
 		$('#save-restroom-details').click(function() {
-			var form = $(this).parents('form'), 
-				files = $(form).serializeFiles(), 
-				filesList = $(form).find('input')[0].files; 
+			var form = $(this).parents('form'),
+				files = $(form).serializeFiles(),
+				filesList = $(form).find('input')[0].files;
 
 			if (filesList.length > 5 || (parseInt('{{ venue.restroom_pics|length }}', 10) + filesList.length) > 5) {
 				showAlert(alert, 'You are trying to upload more pics than is available.', 'warning', true);
@@ -1047,10 +1063,10 @@
 		});
 
 		$('#save-medical-details').click(function() {
-			var address = $('#medical-details form input[name="address"]'), 
-				city = $('#medical-details form input[name="city"]'), 
-				state = $('#medical-details form select[name="state"]'), 
-				zip = $('#medical-details form input[name="zip"]'), 
+			var address = $('#medical-details form input[name="address"]'),
+				city = $('#medical-details form input[name="city"]'),
+				state = $('#medical-details form select[name="state"]'),
+				zip = $('#medical-details form input[name="zip"]'),
 				details = $('#medical-details [name="details"]'),
 				dfd = saving($(this), $('.contents .alert'), 'Medical details has been saved');
 

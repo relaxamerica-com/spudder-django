@@ -6,6 +6,7 @@
         <title>CERN | Spudder - Sports Updates Made Simple</title>
     {% endblock %}
 </head>
+<!--<script type="text/javascript" src="platform.twitter.com/widgets.js"></script>-->
 <script type="text/javascript">
   var url = 'http://{{ request.META.HTTP_HOST }}{{ request.get_full_path }}'
 
@@ -36,7 +37,7 @@
   }
 
   function twitterPopup(){
-      newPopup('http://twitter.com/intent/tweet?text=Check%20out%20this%20page%20' + url);
+      newPopup('https://twitter.com/intent/tweet?url=' + url);
   }
 
   function googlePopup(){
@@ -53,7 +54,8 @@
                     <div class="span8 social-network">
                         <ul class="social-network">
                             <li><a data-original-title="Share on Facebook" data-placement="bottom" href="JavaScript:facebookPopup()"><i class="icon-facebook icon-square icon-32"></i></a></li>
-                            <li><a data-original-title="Share on Twitter" data-placement="bottom" href="javascript:twitterPopup()"><i class="icon-twitter icon-square icon-32"></i></a></li>
+                            <li><a data-original-title="Share on Twitter" data-placement="bottom" href="javascript:twitterPopup()" id="twitter"><i class="icon-twitter icon-square icon-32"></i></a></li>
+                            <li><a data-original-title="Share on LinkedIn" data-placement="bottom" href="JavaScript:linkedinPopup()"><i class="icon-linkedin icon-square icon-32"></i></a></li>
                             <li><a data-original-title="Share on Google+" data-placement="bottom" href="javascript:googlePopup()"><i class="icon-google-plus icon-square icon-32"></i></a></li>
                             <li><a data-original-title="Share via Email" data-placement="bottom" href="mailto:?subject=Check out this Spudder page!&body=Check out this cool page I saw on Spudder: {{ request.META.HTTP_HOST }}{{ request.get_full_path }}"><i class="icon-envelope icon-square icon-32"></i></a></li>
                         </ul>
