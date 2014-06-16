@@ -33,7 +33,8 @@ urlpatterns = patterns('spudmart.CERN.views',
     (r'login/$', 'login', {'SSL': True}),
 
     # Link for queue (it's protected)
-    (r'^import_schools', 'import_school_data'),
+    (r'^import_schools$', 'import_school_data'),
+    (r'^import_schools_async$', 'import_school_data_async'),
 
     # Link for decorator error page
     (r'^non-student/$', 'user_not_student_error_page')

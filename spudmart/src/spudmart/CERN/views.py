@@ -8,6 +8,7 @@ from django.utils.datastructures import MultiValueDictKeyError
 from spudmart.CERN.utils import import_schools, strip_invalid_chars
 from django.contrib.auth.decorators import login_required, user_passes_test
 from spudmart.CERN.rep import recruited_new_student
+from spudmart.utils.queues import trigger_backend_task
 from spudmart.utils.url import get_return_url
 import settings
 
@@ -192,19 +193,27 @@ def save_school(request, school_id):
         return HttpResponseNotAllowed(['POST'])
 
 
+@login_required
+@user_passes_test(lambda u: u.is_superuser, '/')
 def import_school_data(request):
+    trigger_backend_task('/cern/import_schools_async')
+
+    return HttpResponse('Schools are being imported in the background')
+
+
+def import_school_data_async(request):
     """
     (Re)loads all schools from schools.csv into database
-
-    Should only be used in the queue (it's protected anyway)
 
     :param request: request to run import script
     :return: HttpResponseNotAllowed (code 405) if not POST request
     """
-    if request.method == 'POST':
-        import_schools()
-    else:
+    if request.method != 'POST':
         return HttpResponseNotAllowed(['POST'])
+
+    import_schools()
+
+    return HttpResponse('OK')
 
 
 def display_cern(request):
