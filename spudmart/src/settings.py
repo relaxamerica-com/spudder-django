@@ -49,7 +49,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     # 'spudmart.accounts.middleware.SponsorMiddleware',
-    'spudmart.ssl_middleware.SSLRedirect',
+    'spudmart.SSL_Middleware.SSLRedirect',
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
