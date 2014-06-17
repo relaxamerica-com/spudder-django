@@ -4,6 +4,11 @@ from spudmart.upload.models import UploadedFile
 from djangotoolbox.fields import ListField
 from spudmart.CERN.models import get_max_triangle_num_less_than, VENUE_REP_LEVEL_MODIFIER
 
+SPORTS = ['Baseball', 'Basketball', 'Field Hockey', 'Football',
+          'Ice Hockey', 'Lacrosse', 'Rugby', 'Soccer', 'Softball',
+          'Swimming', 'Tennis', 'Track and Field', 'Volleyball',
+          'Waterpolo', 'Wrestling'],
+
 
 class VenueRentStatus():
     def __init__(self):

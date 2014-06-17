@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from django.template.loader import render_to_string
 from spudmart.utils.system_messages import add_system_message
-from spudmart.venues.models import Venue, VenueRentStatus
+from spudmart.venues.models import Venue, VenueRentStatus, SPORTS
 from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect, HttpResponse, HttpResponseNotAllowed
 from django.contrib.auth import authenticate, login
@@ -56,10 +56,7 @@ def view(request, venue_id):
     
     return render(request, 'venues/view.html', {
         'venue': venue,
-        'sports': ['Baseball', 'Basketball', 'Field Hockey', 'Football',
-                   'Ice Hockey', 'Lacrosse', 'Rugby', 'Soccer', 'Softball',
-                   'Swimming', 'Tennis', 'Track and Field', 'Volleyball',
-                   'Waterpolo', 'Wrestling'],
+        'sports': SPORTS,
         'medical_address': medical_address,
         'is_recipient': is_recipient,
         'rent_venue_url': rent_venue_url,
@@ -77,7 +74,9 @@ def create(request):
         return HttpResponseRedirect('/venues/view/%s' % venue.id)
     elif request.method == 'POST':
         return HttpResponseRedirect('/accounts/login?next=/venues/create')
-    return render(request, 'venues/create.html', {'sports' : ['Football', 'Soccer'] })
+    return render(request, 'venues/create.html',
+                  {'sports': SPORTS,
+                   })
 
 def index(request):
     return render(request, 'venues/index.html')
