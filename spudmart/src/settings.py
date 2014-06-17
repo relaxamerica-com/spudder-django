@@ -128,6 +128,13 @@ shared_settings = {
         'spudder_base_url': 'https://spudmart.parseapp.com',
         'spudmart_base_url': 'https://genial-union-587.appspot.com',
         'amazon_login_client_id': 'amzn1.application-oa2-client.b1404a35a0484c64a0fdf150a8a7a6f2'
+    },
+    'spudmartmatt': { #mg@metalayer.com
+        'spudder_application_id': '',
+        'spudder_rest_api_key': '',
+        'spudder_base_url': 'https://spudmart.parseapp.com',
+        'spudmart_base_url': 'https://spudmartmatt.appspot.com',
+        'amazon_login_client_id': 'amzn1.application-oa2-client.ee0b298ab0ce4be99ef0527da3c4820'
     }
 }
 
