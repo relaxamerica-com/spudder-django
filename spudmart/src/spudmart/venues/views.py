@@ -408,3 +408,16 @@ def rent_notification(request, venue_id, user_id):
         add_system_message(body=message_body, user=user)
 
     return HttpResponse('OK')
+
+
+def delete_venue(request, venue_id):
+    """
+    Deletes a venue
+
+    :param request: request to delete venue
+    :param venue_id: venue to be deleted
+    :return: redirect to venues list
+    """
+    venue = Venue.objects.get(id=venue_id)
+    venue.delete()
+    return HttpResponseRedirect('/venues/list')
