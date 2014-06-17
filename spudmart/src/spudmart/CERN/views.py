@@ -303,10 +303,8 @@ def social_media(request):
     num_referred = len(all_referrals)
     if num_referred == 0:
         referrals = None
-    elif num_referred <= 5:
-        referrals = all_referrals
     else:
-        referrals = all_referrals[:5]
+        referrals = all_referrals
 
     need_saving = False
 

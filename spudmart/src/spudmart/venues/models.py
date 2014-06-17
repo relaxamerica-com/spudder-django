@@ -7,7 +7,7 @@ from spudmart.CERN.models import get_max_triangle_num_less_than, VENUE_REP_LEVEL
 SPORTS = ['Baseball', 'Basketball', 'Field Hockey', 'Football',
           'Ice Hockey', 'Lacrosse', 'Rugby', 'Soccer', 'Softball',
           'Swimming', 'Tennis', 'Track and Field', 'Volleyball',
-          'Waterpolo', 'Wrestling'],
+          'Waterpolo', 'Wrestling']
 
 
 class VenueRentStatus():
