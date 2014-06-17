@@ -56,7 +56,10 @@ def view(request, venue_id):
     
     return render(request, 'venues/view.html', {
         'venue': venue,
-        'sports': ['Football', 'Soccer'],
+        'sports': ['Baseball', 'Basketball', 'Field Hockey', 'Football',
+                   'Ice Hockey', 'Lacrosse', 'Rugby', 'Soccer', 'Softball',
+                   'Swimming', 'Tennis', 'Track and Field', 'Volleyball',
+                   'Waterpolo', 'Wrestling'],
         'medical_address': medical_address,
         'is_recipient': is_recipient,
         'rent_venue_url': rent_venue_url,
