@@ -107,7 +107,6 @@
 						<div id="map-canvas">
 
 						</div>
-						<!--<a id="save-location" class="btn btn-orange edit-mode hidden">Save</a>-->
 					</div>
 					<div id="parking-details" class="content">
 						<div class="row-fluid edit-mode">
@@ -672,7 +671,7 @@
 			if ($(this).hasClass('icon-map-marker')) {
 
 				if (!$(this).hasClass('initialized')) {
-					initialize(window.isEditMode, $('.contents .alert'), function(venue) {
+					initialize(false, $('.contents .alert'), function(venue) {
 						return
 							venue.sport == window.currentSelectedSport
 							&& venue.id != parseInt(window.currentVenueId, 10);
