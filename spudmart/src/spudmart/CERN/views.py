@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse, \
     HttpResponseNotAllowed
+from django.template import RequestContext
+from django.views.generic.simple import redirect_to
 from spudmart.upload.models import UploadedFile
 from spudmart.CERN.models import School, Student, STATES, MailingList
 from django.core.exceptions import ObjectDoesNotExist
@@ -34,21 +36,16 @@ def register(request, referral_id=None):
     """
     Allows users to select a state from a dropdown list, to find school
 
+    :param referral_id: The referral if this is a referral from marketing activity
     :param request: the request to render page
-    :param code: optional param which indicates a referral
     :return: page where users can select state from a dropwdown list
     """
-    sorted_states = sorted(STATES.items(), key=lambda x: x[1])
-    
     if request.method == 'POST':
-        return register_with_state(request, state=request.POST['state'],
-                                   referral_id=referral_id)
-
-    return render(request, 'CERN/register.html',
-                  {
-                  'states': sorted_states,
-                  'referral_id': referral_id,
-                  })
+        return register_with_state(
+            request, state=request.POST['state'], referral_id=referral_id)
+    sorted_states = sorted(STATES.items(), key=lambda x: x[1])
+    return render(
+        request, 'CERN/pages/register_choose_state.html', {'states': sorted_states, 'referral_id': referral_id})
 
 
 def register_with_state(request, state, referral_id=None):
@@ -68,7 +65,7 @@ def register_with_state(request, state, referral_id=None):
         for s in School.objects.filter(state=state):
             schools.append(s)
         schools = sorted(schools, key=lambda sch: sch.name)
-        return render(request, 'CERN/register_state.html',
+        return render(request, 'CERN/pages/register_choose_school.html',
                       {
                       'state': STATES[state],
                       'abbr': state,
@@ -238,7 +235,7 @@ def display_cern(request):
 
 
 def cern_splash(request):
-    return render(request, 'CERN/splash.html')
+    return render(request, 'CERN/pages/splash.html')
 
 
 @login_required
@@ -535,7 +532,7 @@ def register_school(request, school_id, referral_id=None):
                 referrer = Student.objects.get(id=referral_id)
             except ObjectDoesNotExist:
                 pass
-        return render(request, 'CERN/school-login.html',
+        return render(request, 'CERN/pages/register_login_with_amazon.html',
                       {
                       'school': school,
                       'referrer': referrer,

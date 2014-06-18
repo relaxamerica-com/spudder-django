@@ -134,7 +134,7 @@ shared_settings = {
         'spudder_rest_api_key': '',
         'spudder_base_url': 'https://spudmart.parseapp.com',
         'spudmart_base_url': 'https://spudmartmatt.appspot.com',
-        'amazon_login_client_id': 'amzn1.application-oa2-client.ee0b298ab0ce4be99ef0527da3c4820'
+        'amazon_login_client_id': 'amzn1.application-oa2-client.ee0b298ab0ce4be99ef0527da3c4820a'
     }
 }
 

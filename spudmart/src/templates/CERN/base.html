@@ -34,99 +34,102 @@
     <link rel="apple-touch-icon-precomposed" href="/media/ico/apple-touch-icon-57-precomposed.png" />
     <link rel="shortcut icon" href="/media/ico/favicon.png" />
 
-    {% block meta %}
-        <title>CERN | Spudder - Sports Updates Made Simple</title>
-    {% endblock %}
+    <title>{% block title %}CERN | Spudder - Sports Updates Made Simple{% endblock %}</title>
 </head>
 <body>
     {% include 'accounts/common/amazon-root.html' %}
-    <header id="header">
-        <div class="container">
-            <ul class="social-network">
-                <li><a data-original-title="Share on Facebook" data-placement="bottom" href="JavaScript:facebookPopup()"><i class="icon-facebook icon-square icon-32"></i></a></li>
-                <li><a data-original-title="Share on Twitter" data-placement="bottom" href="javascript:twitterPopup()" id="twitter"><i class="icon-twitter icon-square icon-32"></i></a></li>
-                <li><a data-original-title="Share on LinkedIn" data-placement="bottom" href="JavaScript:linkedinPopup()"><i class="icon-linkedin icon-square icon-32"></i></a></li>
-                <li><a data-original-title="Share on Google+" data-placement="bottom" href="javascript:googlePopup()"><i class="icon-google-plus icon-square icon-32"></i></a></li>
-                <li><a data-original-title="Share via Email" data-placement="bottom" href="mailto:?subject=Check out this Spudder page!&body=Check out this cool page I saw on Spudder: {{ request.META.HTTP_HOST }}{{ request.get_full_path }}"><i class="icon-envelope icon-square icon-32"></i></a></li>
-            </ul>
-            {% block login %}
-                <div class="headnav">
-                    <ul>
-                        {% if request.user.is_authenticated %}
-                            <li><a href="/cern/">Dashboard</a>
-                        {% else %}
-                            <li><a href="/cern/register/">Register</a></li>
-                            <li><a href="/cern/login/">Login</a></li>
-                        {% endif %}
-                    </ul>
-                </div>
-            {% endblock %}
-        </div>
-    </header>
+    {% block header %}
+        <header id="header">
+            <div class="container">
+                <ul class="social-network">
+                    <li><a data-original-title="Share on Facebook" data-placement="bottom" href="JavaScript:facebookPopup()"><i class="icon-facebook icon-square icon-32"></i></a></li>
+                    <li><a data-original-title="Share on Twitter" data-placement="bottom" href="javascript:twitterPopup()" id="twitter"><i class="icon-twitter icon-square icon-32"></i></a></li>
+                    <li><a data-original-title="Share on LinkedIn" data-placement="bottom" href="JavaScript:linkedinPopup()"><i class="icon-linkedin icon-square icon-32"></i></a></li>
+                    <li><a data-original-title="Share on Google+" data-placement="bottom" href="javascript:googlePopup()"><i class="icon-google-plus icon-square icon-32"></i></a></li>
+                    <li><a data-original-title="Share via Email" data-placement="bottom" href="mailto:?subject=Check out this Spudder page!&body=Check out this cool page I saw on Spudder: {{ request.META.HTTP_HOST }}{{ request.get_full_path }}"><i class="icon-envelope icon-square icon-32"></i></a></li>
+                </ul>
+                {% block login %}
+                    <div class="headnav">
+                        <ul>
+                            {% if request.user.is_authenticated %}
+                                <li><a href="/cern/">Dashboard</a>
+                            {% else %}
+                                <li><a href="/cern/register/">Register</a></li>
+                                <li><a href="/cern/login/">Login</a></li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                {% endblock %}
+            </div>
+        </header>
+    {% endblock %}
 
     {% block content %}{% endblock content %}
 
-    <footer>
-        <div class="container">
-            <div class="row visible-desktop">
-                <div class="span3">
-                    <div class="widget">
-                        <h5 class="widgetheading">Features</h5>
-                        <ul class="link-list">
-                            <li><a href="http://info.spudder.com/fundraising/">Fundraising</a></li>
-                            <li><a href="http://info.spudder.com/sports-updates/">Sports Updates</a></li>
-                            <li><a href="http://info.spudder.com/communications/">Safe Communications</a></li>
-                            <li><a href="http://info.spudder.com/community-metrics/">Community Metrics</a></li>
-                            <li><a href="http://info.spudder.com/parental-controls">Parental Controls</a></li>
-                        </ul>
+    {% block footer %}
+        <footer>
+            <div class="container">
+                <div class="row visible-desktop">
+                    <div class="span3">
+                        <div class="widget">
+                            <h5 class="widgetheading">Features</h5>
+                            <ul class="link-list">
+                                <li><a href="http://info.spudder.com/fundraising/">Fundraising</a></li>
+                                <li><a href="http://info.spudder.com/sports-updates/">Sports Updates</a></li>
+                                <li><a href="http://info.spudder.com/communications/">Safe Communications</a></li>
+                                <li><a href="http://info.spudder.com/community-metrics/">Community Metrics</a></li>
+                                <li><a href="http://info.spudder.com/parental-controls">Parental Controls</a></li>
+                            </ul>
+                        </div>
                     </div>
-                </div>
-                <div class="span2">
-                    <div class="widget">
-                        <h5 class="widgetheading">About Spudder</h5>
-                        <ul class="link-list">
-                            <li><a href="http://spudder.zendesk.com/hc/en-us">Support</a></li>
-                            <li><a href="http://info.spudder.com/contact">Contact Us</a></li>
-                            <li><a href="http://info.spudder.com/meet-our-team/">Meet our team</a></li>
-                            <li><a href="http://info.spudder.com/Students">College Reps</a></li>
-                            <li><a href="http://info.spudder.com/partner">Partners</a></li>
-                        </ul>
+                    <div class="span2">
+                        <div class="widget">
+                            <h5 class="widgetheading">About Spudder</h5>
+                            <ul class="link-list">
+                                <li><a href="http://spudder.zendesk.com/hc/en-us">Support</a></li>
+                                <li><a href="http://info.spudder.com/contact">Contact Us</a></li>
+                                <li><a href="http://info.spudder.com/meet-our-team/">Meet our team</a></li>
+                                <li><a href="http://info.spudder.com/Students">College Reps</a></li>
+                                <li><a href="http://info.spudder.com/partner">Partners</a></li>
+                            </ul>
+                        </div>
                     </div>
-                </div>
-                <div class="span4">
-                    <div class="widget">
-                        <iframe width="300" height="200" src="//www.youtube.com/embed/Fde3tYVcuGc?rel=0" frameborder="0" allowfullscreen></iframe>
-                        <div class="clear">
+                    <div class="span4">
+                        <div class="widget">
+                            <iframe width="300" height="200" src="//www.youtube.com/embed/Fde3tYVcuGc?rel=0" frameborder="0" allowfullscreen></iframe>
+                            <div class="clear">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="span3">
+                        <div class="widget">
+                            <h5 class="widgetheading">Sports Updates Made Simple</h5>
+                            <address>
+                                Our patent pending system gives more than just the score, it gives amateur sports leagues a platform to connect, promote, fund and grow their local communities with about 50% the effort.
+                            </address>
+                            <p>
+                            </p>
                         </div>
                     </div>
                 </div>
-                <div class="span3">
-                    <div class="widget">
-                        <h5 class="widgetheading">Sports Updates Made Simple</h5>
-                        <address>
-                            Our patent pending system gives more than just the score, it gives amateur sports leagues a platform to connect, promote, fund and grow their local communities with about 50% the effort.
-                        </address>
+                <div class="clearfix row">
+                    <ul class="social-network pull-right">
+                        <li><a data-original-title="Facebook" href="http://www.facebook.com/spudderdotcom" target="_blank" data-placement="bottom" title=""><i class="icon-facebook icon-square"></i></a></li>
+                        <li><a data-original-title="Twitter" href="https://twitter.com/spudder_com" target="_blank" data-placement="bottom" title=""><i class="icon-twitter icon-square"></i></a></li>
+                        <!-- <li><a href="#" data-placement="bottom" title="Linkedin"><i class="icon-linkedin icon-square"></i></a></li> -->
+                        <li><a data-original-title="Pinterest" href="http://pinterest.com/spudderdotcom/" target="_blank" data-placement="bottom" title=""><i class="icon-pinterest icon-square"></i></a></li>
+                        <li><a data-original-title="Google plus" href="https://plus.google.com/113968251038874482620" target="_blank" rel="publisher" data-placement="bottom" title=""><i class="icon-google-plus icon-square"></i></a></li>
+                    </ul>
+                    <div class="copyright">
                         <p>
+                            <span>&copy; Spudder LLC 2013 All right reserved.</span>
                         </p>
                     </div>
                 </div>
             </div>
-            <div class="clearfix row">
-                <ul class="social-network pull-right">
-                    <li><a data-original-title="Facebook" href="http://www.facebook.com/spudderdotcom" target="_blank" data-placement="bottom" title=""><i class="icon-facebook icon-square"></i></a></li>
-                    <li><a data-original-title="Twitter" href="https://twitter.com/spudder_com" target="_blank" data-placement="bottom" title=""><i class="icon-twitter icon-square"></i></a></li>
-                    <!-- <li><a href="#" data-placement="bottom" title="Linkedin"><i class="icon-linkedin icon-square"></i></a></li> -->
-                    <li><a data-original-title="Pinterest" href="http://pinterest.com/spudderdotcom/" target="_blank" data-placement="bottom" title=""><i class="icon-pinterest icon-square"></i></a></li>
-                    <li><a data-original-title="Google plus" href="https://plus.google.com/113968251038874482620" target="_blank" rel="publisher" data-placement="bottom" title=""><i class="icon-google-plus icon-square"></i></a></li>
-                </ul>
-                <div class="copyright">
-                    <p>
-                        <span>&copy; Spudder LLC 2013 All right reserved.</span>
-                    </p>
-                </div>
-            </div>
-        </div>
-    </footer>
+        </footer>
+    {% endblock %}
+
     <script type="text/javascript">
       var url = 'http://{{ request.META.HTTP_HOST }}{{ request.get_full_path }}'
 
@@ -189,7 +192,24 @@
     <script src="/media/js/share/facebook.js"></script>
     <script src="/media/js/amazon.js"></script>
     <script type="text/javascript">
+
+        function fix_footer_position(){
+            var $footer = $('footer');
+            if ($(document).height() > $(window).height())
+                $footer.css({top: ''});
+            else
+                $footer.css({top: $(window).height() - $footer.outerHeight()});
+        }
+
         $(document).ready(function() {
+
+            // Fix the footer position and ensure it is fixed on window resize
+            fix_footer_position();
+            $(window).on('resize', function(){
+                fix_footer_position();
+            });
+
+
             var logo = $('header .logo'),
                 buttons = $('header #download-buttons'),
                 hiddenTop = $('header .hidden-top');

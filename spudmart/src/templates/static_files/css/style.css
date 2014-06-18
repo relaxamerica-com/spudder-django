@@ -1969,10 +1969,13 @@ ul.time-post li.time{
 16. Footer
 ================================ */
 
-footer{
+footer {
 	background: #E9E9E9;
 	padding:50px 0 0 0;
+    margin-top: 30px;
 	color: #353535;
+    position: absolute;
+    width: 100%;
 }
 
 footer h1, footer h2, footer h3, footer h4, footer h5, footer h6{
@@ -4789,4 +4792,9 @@ div[id^=donation-modal] .loading {
     font-size:80px;
     margin-right: 40px;
     color: #468847
+}
+
+/****** CERN Single Well Pages ******/
+.single-well-container {
+    margin-top: 5%;
 }

@@ -1,0 +1,30 @@
+{% extends 'CERN/single_well_base.html' %}
+
+{% block title %}Register for CERN | Spudder - Sports Updates Made Simple{% endblock %}
+
+{% block well_content %}
+    <h4 class="aligncenter">Join Your Team!</h4>
+    <p>Now, you have to select your school.</p>
+    <form action="/cern/register/{{ referral_id|default_if_none:"" }}" method = post>
+        <input type="hidden" name="state" value="{{ abbr }}">
+        <div class="alert alert-success">
+            <p>Showing schools in: <b>{{ state }}</b></p>
+            <p><a href="/cern/register">Click here to change</a></p>
+        </div>
+        <div class="control-group">
+            <label for="schools">Schools:</label>
+            <div class="controls">
+                <select name="school" id="schools" class="span12">
+                   {% for sch in schools %}
+                       <option value="{{ sch.id }}">{{ sch.name }}</option>
+                   {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="control-group">
+            <div class="controls">
+                <button class="btn btn-orange" type="submit">Select this School</button>
+            </div>
+        </div>
+    </form>
+{% endblock %}

@@ -27,8 +27,9 @@ class SSLRedirect:
             secure = False
 
             if 'SSL_unauthenticated' in view_kwargs:
-                if not request.user.is_authenticated():
-                    secure = True
+                if view_kwargs['SSL_unauthenticated']:
+                    if not request.user.is_authenticated():
+                        secure = True
                 del view_kwargs['SSL_unauthenticated']
 
         if not secure == self._is_secure(request):
