@@ -358,13 +358,7 @@
 					<div id="medical-details" class="content">
 						<div class="row-fluid edit-mode">
 							<form method="post" class="form-horizontal">
-								<div class="span6">
-									<p>
-										Available Medical Details
-									</p>
-									<textarea placeholder="Enter details about medical" name="details">{{ venue.medical_details }}</textarea>
-								</div>
-								<div class="span6">
+								<div class="span12">
 									<p>
 										Address of nearby facility
 									</p>
@@ -1066,14 +1060,12 @@
 				city = $('#medical-details form input[name="city"]'),
 				state = $('#medical-details form select[name="state"]'),
 				zip = $('#medical-details form input[name="zip"]'),
-				details = $('#medical-details [name="details"]'),
-				dfd = saving($(this), $('.contents .alert'), 'Medical details has been saved');
+				dfd = saving($(this), $('.contents .alert'), 'Medical address has been saved');
 
 			var medicalAddress = address.val() + ', ' + city.val() + ', ' + state.val() + ', ' + zip.val();
 
 			var response = $.post('/venues/save_medical_details/{{ venue.id }}', {
 				'medical_address' : medicalAddress,
-				'medical_details' : details.val()
 			});
 
 			response.done(function() {
@@ -1117,7 +1109,7 @@
 				document.location = '/venues/recipient/{{ venue.id }}';
 				return;
 			{% endif %}
-			
+
 			var priceInput = $('#price'), button = $(this), currentPrice = $('#current-price');
 
 			currentPrice.hide();
@@ -1141,62 +1133,62 @@
 				$(this).html('Save');
 			}
 		});
-		
+
 		$('#send-message').click(function() {
 			var message = $('[name="message"]').val(),
 				dfd = saving($(this), $(this).parents('.contents').find('.alert'), 'Message has been sent');
-			
+
 			var response = $.post('/venues/send_message/{{ venue.id }}', {
 				'message' : message
 			});
-			
+
 			response.done(function() {
 				dfd.resolve();
 			});
 		});
-		
+
 		function setNearestHospitals(hospitalSelect) {
 			if (!hospitalSelect.hasClass('loaded')) {
 				var lng = window.currentVenueLongitude,
 					ltd = window.currentVenueLatitude;
-	
+
 				var loading = $('#loading-nearest');
-				
+
 				loading.removeClass('hidden');
-	
-				$.get('/hospitals/get_hospitals_within_bounds', { 
-						'longitude_range' : [lng - 0.15, lng + 0.15], 'latitude_range' : [ltd - 0.15, ltd + 0.15] 
+
+				$.get('/hospitals/get_hospitals_within_bounds', {
+						'longitude_range' : [lng - 0.15, lng + 0.15], 'latitude_range' : [ltd - 0.15, ltd + 0.15]
 					}, function(data) {
 						var parsed = JSON.parse(data).hospitals;
-						
+
 						loading.addClass('hidden');
-						
+
 						$.each(parsed, function() {
 							var option = $('<option></option>');
-							
+
 							option.html(this.name);
 							option.val(this.id);
 							hospitalSelect.append(option);
-							
+
 							hospitals[this.id] = this;
 						});
 						hospitalSelect.addClass('loaded');
 				});
 			}
 		}
-		
+
 		hospitalSelect.change(function() {
 			if (hospitalSelect.hasClass('loaded')) {
 				var id = $(this).val(),
 					isPresent = id in hospitals;
-					
+
 				if (isPresent) {
-					var address = $('#medical-details form input[name="address"]'), 
-						city = $('#medical-details form input[name="city"]'), 
-						state = $('#medical-details form select[name="state"]'), 
+					var address = $('#medical-details form input[name="address"]'),
+						city = $('#medical-details form input[name="city"]'),
+						state = $('#medical-details form select[name="state"]'),
 						zip = $('#medical-details form input[name="zip"]'),
 						hospital = hospitals[id];
-						
+
 					address.val(hospital.address);
 					city.val(hospital.city);
 					state.val(hospital.state);
@@ -1204,7 +1196,7 @@
 				}
 			}
 		});
-		
+
 		$('.carousel').on('slide', function() {
 			if (window.isEditMode) {
 				$(this).find('.remove-pic').hide();
@@ -1217,7 +1209,7 @@
 				setRemoveButtonPosition($(this).attr('id'));
 			}
 		});
-		
-	}); 
+
+	});
 </script>
 {% endblock scripts %}

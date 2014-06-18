@@ -19,7 +19,7 @@ from django.contrib.auth.decorators import login_required
 from spudmart.sponsors.models import SponsorPage
 from spudmart.accounts.utils import is_sponsor
 from spudmart.CERN.rep import added_basic_info, added_photos, added_logo, \
-                            added_video
+                            added_video, created_venue
 from spudmart.CERN.models import Student
 
 # DO NOT REMOVE, PLEASE! It's needed for testing purpose
@@ -74,6 +74,10 @@ def create(request):
         venue.latitude = float(request.POST['latitude'])
         venue.longitude = float(request.POST['longitude'])
         venue.save()
+
+        # Reward the student for creating the venue
+        owner = Student.objects.get(user=request.user)
+        created_venue(owner)
         return HttpResponseRedirect('/venues/view/%s' % venue.id)
     elif request.method == 'POST':
         return HttpResponseRedirect('/accounts/login?next=/venues/create')
@@ -256,16 +260,14 @@ def save_shelter_details(request, venue_id):
 
 def save_medical_details(request, venue_id):
     venue = Venue.objects.get(pk = venue_id)
-    medical_details = request.POST['medical_details']
     medical_address = request.POST['medical_address']
 
-    # If everything is filled in for the first time, add points
-    if venue.medical_details == '' or venue.medical_address == '':
-        if medical_details and medical_address:
+    # If this is filled in for the first time, add points
+    if venue.medical_address == '':
+        if medical_address:
             added_basic_info(venue)
 
     # Update and save medical details
-    venue.medical_details = medical_details
     venue.medical_address = medical_address
     venue.save()
     return HttpResponse('OK')
