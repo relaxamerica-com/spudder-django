@@ -292,29 +292,44 @@ header .logo h1 {
 
 /* --- headnav menu : signup & signin --- */
 
-.headnav {
-	float:right;
-	margin:5px 0 0 0;
+#header {
+    min-height: 40px;
+}
+
+#header .social-network {
+    position: absolute;
+    top: 5px;
+    left: 15px;
+}
+
+#header .headnav {
+    position: absolute;
+    top: 5px;
+    right: 15px;
 	border-bottom:1px dotted #e6e6e6;
 }
 
-.headnav ul {
-	margin-left:0;
+#header .headnav ul {
+	margin:0;
+    padding: 0 5px;
 	list-style:none;
 }
 
-.headnav ul li {
+#header .headnav ul li {
 	display:inline;
-	margin-left:10px;
+	margin:0 10px;
 }
-.headnav ul li a {
-	outline:0;
+#header .headnav ul li a {
 	font-size:12px;
-	font-weight:600;
+	font-weight:bold;
+    opacity: 0.7;
+    text-decoration: none;
 }
 
-.headnav ul li a:hover,.headnav ul li a:focus,.headnav ul li a:active {
-	outline:0;
+#header .headnav ul li a:hover,
+#header .headnav ul li a:focus,
+#header .headnav ul li a:active {
+	opacity: 1;
 }
 
 /* --- menu --- */
@@ -1095,10 +1110,6 @@ ul.link-list li{
 
 footer ul.link-list li a{
 	color:#fff;
-}
-
-footer {
-	height: 360px;
 }
 
 footer > div {
@@ -1985,32 +1996,9 @@ ul.social-network li {
 	display:inline;
 }
 
-#sub-footer{
-	background: #E9E9E9;
-	color: #353535;
-	text-shadow:none;
-	padding:0;
-	padding-top:30px;
-	margin:20px 0 0 0;
-	border-top: 1px solid #fff;
-}
-
-#sub-footer p{
-	margin:0;
-	padding:0;
-}
-
-#sub-footer span{
-	color: #5D5D5D;
-}
-
 .copyright {
 	text-align:left;
 	font-size:12px;
-}
-
-#sub-footer ul.social-network {
-	float:right;
 }
 
 footer ul.link-list li,
@@ -4754,4 +4742,51 @@ div[id^=donation-modal] .loading {
 
 .remaining-students h4{
     font-size: 18px;
+}
+
+/****** CERN Splash Page ******/
+
+#questions-container {
+    margin-top: 30px;
+}
+.question {
+    position:relative;
+    margin-bottom: 50px;
+}
+.question .alert {
+    position:relative;
+    border-radius: 15px;
+    padding: 30px;
+}
+.question.left {
+    text-align: left;
+}
+.question.left .alert .icon-caret-down {
+    font-size: 30px;
+    position:absolute;
+    left: 40px;
+    bottom: -20px;
+    color: #BCE8F1
+}
+.question.left .icon-question {
+    display: none;
+    font-size:80px;
+    margin-left: 25px;
+    color: #3A87AD
+}
+.question.right {
+    text-align: right;
+}
+.question.right .alert .icon-caret-down {
+    font-size: 30px;
+    position:absolute;
+    right: 40px;
+    bottom: -20px;
+    color: #D6E9C6;
+}
+.question.right .icon-question {
+    display: none;
+    font-size:80px;
+    margin-right: 40px;
+    color: #468847
 }
