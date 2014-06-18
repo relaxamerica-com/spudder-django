@@ -24,7 +24,7 @@ class Venue(models.Model):
     user = models.ForeignKey(User, related_name="owner_user")
     renter = models.ForeignKey(User, null= True, related_name="renter_user")
     renting_status = models.IntegerField(default=VenueRentStatus.FREE)
-    name = models.CharField(max_length = 200, default="This could be Your company")
+    name = models.CharField(max_length = 200, default="Sponsor's Name for Venue")
     aka_name = models.CharField(max_length = 200, default="Common Venue Name")
     sport = models.CharField(max_length = 100)
     logo = models.ForeignKey(UploadedFile, null = True)
@@ -52,7 +52,7 @@ class Venue(models.Model):
     price = models.DecimalField(default = 0.0, decimal_places = 2, max_digits = 10)
     fax = models.CharField(max_length = 200)
 
-    # Just to stay consistent with fcns created in campusrep.rep
+    # Just to stay consistent with fcns created in CERN.rep
     rep = models.IntegerField(default=0)
     
     def level(self):
