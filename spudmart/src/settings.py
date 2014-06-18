@@ -135,7 +135,14 @@ shared_settings = {
         'spudder_base_url': 'https://spudmart.parseapp.com',
         'spudmart_base_url': 'https://spudmartmatt.appspot.com',
         'amazon_login_client_id': 'amzn1.application-oa2-client.ee0b298ab0ce4be99ef0527da3c4820a'
-    }
+    },
+    'spudder-live': { #mg@metalayer.com
+        'spudder_application_id': '',
+        'spudder_rest_api_key': '',
+        'spudder_base_url': 'https://spudmart.parseapp.com',
+        'spudmart_base_url': 'https://spudder-live.appspot.com',
+        'amazon_login_client_id': 'amzn1.application-oa2-client.47892dcda29f4d3d8c437b7c44f1b6e6'
+    },
 }
 
 SPUDDER_APPLICATION_ID = shared_settings[app_name]['spudder_application_id']

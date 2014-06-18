@@ -190,8 +190,8 @@ def save_school(request, school_id):
         return HttpResponseNotAllowed(['POST'])
 
 
-@login_required
-@user_passes_test(lambda u: u.is_superuser, '/')
+# @login_required
+# @user_passes_test(lambda u: u.is_superuser, '/')
 def import_school_data(request):
     trigger_backend_task('/cern/import_schools_async')
 

@@ -12,8 +12,10 @@ def import_schools():
 
     with open(path_to_file, 'rb') as csvfile:
         schools = csv.reader(csvfile, delimiter='|')
-        
+        x = 0
         for school in schools:
+            if x > 100:
+                break
             try:
                 school_obj = School(name=school[0], state=school[1])
                 school_obj.save()
