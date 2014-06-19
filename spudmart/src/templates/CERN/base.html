@@ -1,91 +1,238 @@
 <!DOCTYPE html>
 <html>
 <head>
-	{% include 'CERN/parts/meta.html' %}
-	{% block meta %}
-        <title>CERN | Spudder - Sports Updates Made Simple</title>
-    {% endblock %}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="" />
+    <meta name="author" content="help@spudder.com" />
+
+    <link href="/media/css/bootstrap.css" rel="stylesheet" />
+    <link href="/media/css/bootstrap-responsive.css" rel="stylesheet" />
+    <link href="/media/css/fancybox/jquery.fancybox.css" rel="stylesheet">
+    <link href="/media/css/jcarousel.css" rel="stylesheet" />
+    <link href="/media/css/flexslider.css" rel="stylesheet" />
+    <link href="/media/css/style.css" rel="stylesheet" />
+    <link href="/media/dashboard/css/default.css" rel="stylesheet">
+    <link href="/media/dashboard/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/media/dashboard/css/jquery-ui-1.10.3.custom.min.css" rel="stylesheet" />
+    <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+
+    <!-- Theme skin -->
+    <link id="t-colors" href="/media/skins/default.css" rel="stylesheet" />
+
+    <!-- boxed bg -->
+    <link id="bodybg" href="/media/bodybg/custom_bg.css" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+          <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/media/ico/apple-touch-icon-144-precomposed.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/media/ico/apple-touch-icon-114-precomposed.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/media/ico/apple-touch-icon-72-precomposed.png" />
+    <link rel="apple-touch-icon-precomposed" href="/media/ico/apple-touch-icon-57-precomposed.png" />
+    <link rel="shortcut icon" href="/media/ico/favicon.png" />
+
+    <title>{% block title %}CERN | Spudder - Sports Updates Made Simple{% endblock %}</title>
 </head>
-<script type="text/javascript">
-  var url = 'http://{{ request.META.HTTP_HOST }}{{ request.get_full_path }}'
-
-  function sendRequest(){
-      var request = gapi.client.urlshortener.url.insert({
-          'resource': {'longUrl':url,},
-      })
-      request.execute(function(response){
-          this.url = response.id;
-      })
-  }
-
-  function load() {
-    gapi.client.setApiKey('AIzaSyDDSFnHOspc8Xx-RKMS6qiVASBMk-4ehRk');
-    gapi.client.load('urlshortener', 'v1', sendRequest);
-  }
-
-  function newPopup(url){
-      window.open(url, 'popup', 'height=500, width=500, left=100, top-10, scrollbars=yes,toolbar=no,menubar=no');
-  }
-
-  function facebookPopup(){
-	  newPopup('http://www.facebook.com/sharer/sharer.php?u=' + url);
-  }
-
-  function linkedinPopup(){
-	  newPopup('http://www.linkedin.com/shareArticle?mini=true&url=' + url);
-  }
-
-  function twitterPopup(){
-      newPopup('http://twitter.com/intent/tweet?text=Check%20out%20this%20page%20' + url);
-  }
-
-  function googlePopup(){
-      newPopup('https://plus.google.com/share?url=' + url);
-  }
-</script>
-<script src="https://apis.google.com/js/client.js?onload=load"></script>
 <body>
     {% include 'accounts/common/amazon-root.html' %}
-    <div id="wrapper">
-        <header>
+    {% block header %}
+        <header id="header">
             <div class="container">
-                <div class="row nomargin">
-                    <div class="span8 social-network">
-                        <ul class="social-network">
-                            <li><a data-original-title="Share on Facebook" data-placement="bottom" href="JavaScript:facebookPopup()"><i class="icon-facebook icon-square icon-32"></i></a></li>
-                            <li><a data-original-title="Share on Twitter" data-placement="bottom" href="javascript:twitterPopup()"><i class="icon-twitter icon-square icon-32"></i></a></li>
-                            <li><a data-original-title="Share on Google+" data-placement="bottom" href="javascript:googlePopup()"><i class="icon-google-plus icon-square icon-32"></i></a></li>
-                            <li><a data-original-title="Share via Email" data-placement="bottom" href="mailto:?subject=Check out this Spudder page!&body=Check out this cool page I saw on Spudder: {{ request.META.HTTP_HOST }}{{ request.get_full_path }}"><i class="icon-envelope icon-square icon-32"></i></a></li>
-                        </ul>
-                    </div>
-                    {% block login %}
-                    {% if request.user.is_authenticated %}
-                        <div class="headnav span1">
-                            <ul>
+                <ul class="social-network">
+                    <li><a data-original-title="Share on Facebook" data-placement="bottom" href="JavaScript:facebookPopup()"><i class="icon-facebook icon-square icon-32"></i></a></li>
+                    <li><a data-original-title="Share on Twitter" data-placement="bottom" href="javascript:twitterPopup()" id="twitter"><i class="icon-twitter icon-square icon-32"></i></a></li>
+                    <li><a data-original-title="Share on LinkedIn" data-placement="bottom" href="JavaScript:linkedinPopup()"><i class="icon-linkedin icon-square icon-32"></i></a></li>
+                    <li><a data-original-title="Share on Google+" data-placement="bottom" href="javascript:googlePopup()"><i class="icon-google-plus icon-square icon-32"></i></a></li>
+                    <li><a data-original-title="Share via Email" data-placement="bottom" href="mailto:?subject=Check out this Spudder page!&body=Check out this cool page I saw on Spudder: {{ request.META.HTTP_HOST }}{{ request.get_full_path }}"><i class="icon-envelope icon-square icon-32"></i></a></li>
+                </ul>
+                {% block login %}
+                    <div class="headnav">
+                        <ul>
+                            {% if request.user.is_authenticated %}
                                 <li><a href="/cern/">Dashboard</a>
-                            </ul>
-                        </div>
-                    {% else %}
-                        <div class="headnav span2">
-                            <ul>
+                            {% else %}
                                 <li><a href="/cern/register/">Register</a></li>
                                 <li><a href="/cern/login/">Login</a></li>
-                            </ul>
-                        </div>
-                    {% endif %}
-                    {% endblock %}
-                </div>
+                            {% endif %}
+                        </ul>
+                    </div>
+                {% endblock %}
             </div>
         </header>
+    {% endblock %}
 
-        {% block content %}{% endblock content %}
+    {% block content %}{% endblock content %}
 
-		<div class="push"> </div> <!-- sticky footer part -->
+    {% block footer %}
+        <footer>
+            <div class="container">
+                <div class="row visible-desktop">
+                    <div class="span3">
+                        <div class="widget">
+                            <h5 class="widgetheading">Features</h5>
+                            <ul class="link-list">
+                                <li><a href="http://info.spudder.com/fundraising/">Fundraising</a></li>
+                                <li><a href="http://info.spudder.com/sports-updates/">Sports Updates</a></li>
+                                <li><a href="http://info.spudder.com/communications/">Safe Communications</a></li>
+                                <li><a href="http://info.spudder.com/community-metrics/">Community Metrics</a></li>
+                                <li><a href="http://info.spudder.com/parental-controls">Parental Controls</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="span2">
+                        <div class="widget">
+                            <h5 class="widgetheading">About Spudder</h5>
+                            <ul class="link-list">
+                                <li><a href="http://spudder.zendesk.com/hc/en-us">Support</a></li>
+                                <li><a href="http://info.spudder.com/contact">Contact Us</a></li>
+                                <li><a href="http://info.spudder.com/meet-our-team/">Meet our team</a></li>
+                                <li><a href="http://info.spudder.com/Students">College Reps</a></li>
+                                <li><a href="http://info.spudder.com/partner">Partners</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="span4">
+                        <div class="widget">
+                            <iframe width="300" height="200" src="//www.youtube.com/embed/Fde3tYVcuGc?rel=0" frameborder="0" allowfullscreen></iframe>
+                            <div class="clear">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="span3">
+                        <div class="widget">
+                            <h5 class="widgetheading">Sports Updates Made Simple</h5>
+                            <address>
+                                Our patent pending system gives more than just the score, it gives amateur sports leagues a platform to connect, promote, fund and grow their local communities with about 50% the effort.
+                            </address>
+                            <p>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="clearfix row">
+                    <ul class="social-network pull-right">
+                        <li><a data-original-title="Facebook" href="http://www.facebook.com/spudderdotcom" target="_blank" data-placement="bottom" title=""><i class="icon-facebook icon-square"></i></a></li>
+                        <li><a data-original-title="Twitter" href="https://twitter.com/spudder_com" target="_blank" data-placement="bottom" title=""><i class="icon-twitter icon-square"></i></a></li>
+                        <!-- <li><a href="#" data-placement="bottom" title="Linkedin"><i class="icon-linkedin icon-square"></i></a></li> -->
+                        <li><a data-original-title="Pinterest" href="http://pinterest.com/spudderdotcom/" target="_blank" data-placement="bottom" title=""><i class="icon-pinterest icon-square"></i></a></li>
+                        <li><a data-original-title="Google plus" href="https://plus.google.com/113968251038874482620" target="_blank" rel="publisher" data-placement="bottom" title=""><i class="icon-google-plus icon-square"></i></a></li>
+                    </ul>
+                    <div class="copyright">
+                        <p>
+                            <span>&copy; Spudder LLC 2013 All right reserved.</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    {% endblock %}
 
-    </div>
-    {% include 'CERN/parts/footer.html' %}
+    <script type="text/javascript">
+      var url = 'http://{{ request.META.HTTP_HOST }}{{ request.get_full_path }}'
 
-    {% include 'CERN/parts/scripts.html' %}
+      function sendRequest(){
+          var request = gapi.client.urlshortener.url.insert({
+              'resource': {'longUrl':url,},
+          })
+          request.execute(function(response){
+              this.url = response.id;
+          })
+      }
+
+      function load() {
+        gapi.client.setApiKey('AIzaSyDDSFnHOspc8Xx-RKMS6qiVASBMk-4ehRk');
+        gapi.client.load('urlshortener', 'v1', sendRequest);
+      }
+
+      function newPopup(url){
+          window.open(url, 'popup', 'height=500, width=500, left=100, top-10, scrollbars=yes,toolbar=no,menubar=no');
+      }
+
+      function facebookPopup(){
+          newPopup('http://www.facebook.com/sharer/sharer.php?u=' + url);
+      }
+
+      function linkedinPopup(){
+          newPopup('http://www.linkedin.com/shareArticle?mini=true&url=' + url);
+      }
+
+      function twitterPopup(){
+          newPopup('https://twitter.com/intent/tweet?url=' + url);
+      }
+
+      function googlePopup(){
+          newPopup('https://plus.google.com/share?url=' + url);
+      }
+    </script>
+    <script src="https://apis.google.com/js/client.js?onload=load"></script>
+    <script src="/media/js/jquery.js"></script>
+    <script src="/media/js/jquery.easing.1.3.js"></script>
+    <script src="/media/js/bootstrap.js"></script>
+    <script src="/media/js/jcarousel/jquery.jcarousel.min.js"></script>
+    <script src="/media/js/jquery.fancybox.pack.js"></script>
+    <script src="/media/js/jquery.fancybox-media.js"></script>
+    <script src="/media/js/google-code-prettify/prettify.js"></script>
+    <script src="/media/js/portfolio/jquery.quicksand.js"></script>
+    <script src="/media/js/portfolio/setting.js"></script>
+    <script src="/media/js/tweet/jquery.tweet.js"></script>
+    <script src="/media/js/jquery.flexslider.js"></script>
+    <script src="/media/js/jquery.nivo.slider.js"></script>
+    <script src="/media/js/modernizr.custom.79639.js"></script>
+    <script src="/media/js/jquery.ba-cond.min.js"></script>
+    <script src="/media/js/jquery.slitslider.js"></script>
+    <script src="/media/js/animate.js"></script>
+    <script src="/media/dashboard/js/jquery.slimscroll.min.js"></script>
+    <script src="/media/js/parse.js"></script>
+    <script src="/media/js/purl.js"></script>
+    <script src="/media/js/custom.js"></script>
+    <script src="/media/js/authentication.js"></script>
+    <script src="/media/js/share/facebook.js"></script>
+    <script src="/media/js/amazon.js"></script>
+    <script type="text/javascript">
+
+        function fix_footer_position(){
+            var $footer = $('footer');
+            if ($(document).height() > $(window).height())
+                $footer.css({top: ''});
+            else
+                $footer.css({top: $(window).height() - $footer.outerHeight()});
+        }
+
+        $(document).ready(function() {
+
+            // Fix the footer position and ensure it is fixed on window resize
+            fix_footer_position();
+            $(window).on('resize', function(){
+                fix_footer_position();
+            });
+
+
+            var logo = $('header .logo'),
+                buttons = $('header #download-buttons'),
+                hiddenTop = $('header .hidden-top');
+
+            $('#header-hidden-link').find('.toggle-link').toggle(function(e) {
+                e.preventDefault();
+                buttons.css({
+                    'display' : 'table',
+                    'margin' : 'auto'
+                });
+                hiddenTop.css('margin-top', '0px');
+                logo.css('margin-top', '5px');
+            }, function() {
+                hiddenTop.css('margin-top', '-5px');
+                logo.css('margin-top', '-10px');
+            });
+
+            $('#logout-button').click(function() {
+                amazon.Login.logout();
+            });
+        });
+    </script>
+{#    <script type="text/javascript" src="//platform.twitter.com/widgets.js"></script>    #}
     {% block scripts %}{% endblock scripts %}
 </body>
 </html>

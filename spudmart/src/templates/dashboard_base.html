@@ -1,4 +1,6 @@
 {% load accounts %}
+{% load system_messages %}
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -7,6 +9,7 @@
 </head>
 
 <body class="skin-3">
+    {% display_messages_for_user request.user %}
     {% include 'accounts/common/amazon-root.html' %}
 		<div class="navbar">
 			<div class="navbar-inner">

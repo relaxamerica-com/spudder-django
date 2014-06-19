@@ -22,6 +22,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'djangotoolbox',
     'djangoappengine',
+    'django_nose',
     'autoload',
     'dbindexer',
     'boto',
@@ -37,6 +38,8 @@ INSTALLED_APPS = (
     'spudmart.hospitals',
     'spudmart.api',
     'spudmart.CERN',
+    'spudmart.amazon',
+    'spudmart.utils',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -46,7 +49,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     # 'spudmart.accounts.middleware.SponsorMiddleware',
-    'SSL_Middleware.SSLRedirect',
+    'spudmart.SSL_Middleware.SSLRedirect',
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
@@ -56,9 +59,6 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'spudmart.amazon.context.amazon_client_id'
 )
 
-# This test runner captures stdout and associates tracebacks with their
-# corresponding output. Helps a lot with print-debugging.
-TEST_RUNNER = 'djangotoolbox.test.CapturingTestSuiteRunner'
 
 ADMIN_MEDIA_PREFIX = '/media/admin/'
 PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
@@ -83,6 +83,10 @@ mimetypes.add_type("application/x-font-woff", ".woff")
 
 LOGIN_REDIRECT_URL = '/'
 ACCOUNT_ACTIVATION_DAYS = 5
+
+TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
+NOSE_ARGS = ['--with-xunit', '--xunit-file=spudmart/test-reports/xunit.xml', '-v']
+NOSE_PLUGINS = ['nose_plugins.noseplugins.TestDiscoveryPlugin']
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = '8lu*6g0lg)9z!ba+a$ehk)xt)x%rxgb$i1&amp;022shmi1jcgihb*'
@@ -124,7 +128,21 @@ shared_settings = {
         'spudder_base_url': 'https://spudmart.parseapp.com',
         'spudmart_base_url': 'https://genial-union-587.appspot.com',
         'amazon_login_client_id': 'amzn1.application-oa2-client.b1404a35a0484c64a0fdf150a8a7a6f2'
-    }
+    },
+    'spudmartmatt': { #mg@metalayer.com
+        'spudder_application_id': '',
+        'spudder_rest_api_key': '',
+        'spudder_base_url': 'https://spudmart.parseapp.com',
+        'spudmart_base_url': 'https://spudmartmatt.appspot.com',
+        'amazon_login_client_id': 'amzn1.application-oa2-client.ee0b298ab0ce4be99ef0527da3c4820a'
+    },
+    'spudder-live': { #mg@metalayer.com
+        'spudder_application_id': '',
+        'spudder_rest_api_key': '',
+        'spudder_base_url': 'https://spudmart.parseapp.com',
+        'spudmart_base_url': 'https://spudder-live.appspot.com',
+        'amazon_login_client_id': 'amzn1.application-oa2-client.47892dcda29f4d3d8c437b7c44f1b6e6'
+    },
 }
 
 SPUDDER_APPLICATION_ID = shared_settings[app_name]['spudder_application_id']

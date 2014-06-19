@@ -1,3 +1,4 @@
+import os
 from django.conf.urls.defaults import patterns
 
 
@@ -17,9 +18,9 @@ urlpatterns = patterns('spudmart.CERN.views',
     (r'^(?P<school_id>\d+)/save_logo$', 'save_school_logo'),
     (r'^(?P<school_id>\d+)/save$', 'save_school'),
     (r'^(?P<school_id>\d+)/register/(?P<referral_id>.+)$', 'register_school',
-        {'SSL_unauthenticated': True}),
+        {'SSL_unauthenticated': False if os.environ['SERVER_SOFTWARE'].startswith('Development') else True}),
     (r'^(?P<school_id>\d+)/register/$', 'register_school',
-        {'SSL_unauthenticated': True}),
+        {'SSL_unauthenticated': False if os.environ['SERVER_SOFTWARE'].startswith('Development') else True}),
     (r'^(?P<state>\w{2})/(?P<school_id>\d+)/(?P<name>[^/]+)/(?P<referral_id>.+)$',
         'school'),
     (r'^(?P<state>\w{2})/(?P<school_id>\d+)/(?P<name>[^/]+)/$',
@@ -33,7 +34,8 @@ urlpatterns = patterns('spudmart.CERN.views',
     (r'login/$', 'login', {'SSL': True}),
 
     # Link for queue (it's protected)
-    (r'^import_schools', 'import_school_data'),
+    (r'^import_schools$', 'import_school_data'),
+    (r'^import_schools_async$', 'import_school_data_async'),
 
     # Link for decorator error page
     (r'^non-student/$', 'user_not_student_error_page')

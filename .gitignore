@@ -8,3 +8,4 @@ spudmart/src/.gaedata
 spudmart/src/test-reports
 spudmart/.idea
 .idea
+xunit.xml

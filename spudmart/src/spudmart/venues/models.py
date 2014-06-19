@@ -4,11 +4,27 @@ from spudmart.upload.models import UploadedFile
 from djangotoolbox.fields import ListField
 from spudmart.CERN.models import get_max_triangle_num_less_than, VENUE_REP_LEVEL_MODIFIER
 
+SPORTS = ['Baseball', 'Basketball', 'Field Hockey', 'Football',
+          'Ice Hockey', 'Lacrosse', 'Rugby', 'Soccer', 'Softball',
+          'Swimming', 'Tennis', 'Track and Field', 'Volleyball',
+          'Waterpolo', 'Wrestling']
+
+
+class VenueRentStatus():
+    def __init__(self):
+        pass
+
+    FREE = 1
+    RESERVED = 2
+    RENTED = 3
+
+
 class Venue(models.Model):
     created_date = models.DateTimeField(auto_now_add=True, null=True)
     user = models.ForeignKey(User, related_name="owner_user")
     renter = models.ForeignKey(User, null= True, related_name="renter_user")
-    name = models.CharField(max_length = 200, default="This could be Your company")
+    renting_status = models.IntegerField(default=VenueRentStatus.FREE)
+    name = models.CharField(max_length = 200, default="Sponsor's Name for Venue")
     aka_name = models.CharField(max_length = 200, default="Common Venue Name")
     sport = models.CharField(max_length = 100)
     logo = models.ForeignKey(UploadedFile, null = True)
@@ -36,14 +52,14 @@ class Venue(models.Model):
     price = models.DecimalField(default = 0.0, decimal_places = 2, max_digits = 10)
     fax = models.CharField(max_length = 200)
 
-    # Just to stay consistent with fcns created in campusrep.rep
+    # Just to stay consistent with fcns created in CERN.rep
     rep = models.IntegerField(default=0)
     
     def level(self):
         return get_max_triangle_num_less_than(self.rep / VENUE_REP_LEVEL_MODIFIER)
     
-    
-    
     def __eq__(self, other):
         return self.pk == other.pk
-    
+
+    def is_available(self):
+        return self.renting_status == VenueRentStatus.FREE

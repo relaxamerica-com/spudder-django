@@ -1,11 +1,13 @@
 from spudmart.CERN.models import Student, School
 from spudmart.venues.models import Venue
 
-# Rep values for the following tasks:
+# Rep values for various tasks, grouped like the methods
 RECRUITED_HEAD = 30
 RECRUITED_NEW_MAX = 20
 RECRUITED_NEW_MIN = 2
-COMPLETE_PAGE = 10
+
+REFERRAL_MODIFIER = 5
+
 PAGE_LIKE = 2
 PAGE_SHARE = 3
 FILTERED_OUT = 5
@@ -16,8 +18,14 @@ SHORT_DELAY = -5
 MEDIUM_DELAY = -10
 IGNORED = -15
 
-REFERRAL_MODIFIER = 2
+CREATED_VENUE = 5
+BASIC_INFO = 1
+VIDEO = 10
+PHOTOS = 3
+LOGO = 2
 
+
+#Basic rep modifying methods
 
 def add_venue_rep(venue, points):
     """
@@ -84,6 +92,8 @@ def add_referral_points(referrer, points):
     add_social_media_points(referrer, points / REFERRAL_MODIFIER)
 
 
+# Recruiting/signup rep modifiers
+
 def recruited_new_head_student(recruiter):
     """
     Adds points for recruiting new head student.
@@ -121,41 +131,46 @@ def recruited_new_student(recruiter, recruited_school):
         add_social_media_points(recruiter, points)
 
 
-def completed_page_info(pageholder):
+def signed_up(new_student):
     """
-    Adds points for completing a venue/school page
+    Rewards students with Social Media Points for signing up
 
-    :param pageholder: the Venue or School whose splash page has been
-        edited by the owner or head student, respectively
+    The student gets the same number of points as a recruiter would
+     for recruiting the nth student at the new student's school
+
+    If the student was recruited by someone, the recruiter does not get
+     extra points for this action, as it is performed before that link
+     has been created
+
+    :param new_student: A new student which has already been saved
     """
-    if isinstance(pageholder, Venue):
-        add_venue_rep(pageholder, COMPLETE_PAGE)
-    elif isinstance(pageholder, School):
-        add_social_media_points(pageholder.get_head_student(), COMPLETE_PAGE)
+    if new_student.isHead:
+        add_social_media_points(new_student, RECRUITED_HEAD)
+    else:
+        num_students = new_student.school.num_students()
+        points = (RECRUITED_NEW_MAX + 2) - num_students
+        points = max(RECRUITED_NEW_MIN, points)
+        add_social_media_points(new_student, points)
 
 
-def liked_page(pageholder):
+# Venue rep methods
+
+def liked_page(venue):
     """
-    Adds points for someone liking a venue/school page
+    Rewards venue (owner) when anyone likes venue page
 
-    :param pageholder: the Venue or School whose page has been liked
+    :param venue: the Venue whose page has been liked
     """
-    if isinstance(pageholder, Venue):
-        add_venue_rep(pageholder, PAGE_LIKE)
-    elif isinstance(pageholder, School):
-        add_social_media_points(pageholder.get_head_student(), PAGE_LIKE)
+    add_venue_rep(venue, PAGE_LIKE)
 
 
-def shared_page(pageholder):
+def shared_page(venue):
     """
-    Adds points for a venue/school page being shared
+    Reward venue (owner) when anyone shares venue page
 
-    :param pageholder: the Venue or School whose page has been shared
+    :param venue: the Venue whose page has been shared
     """
-    if isinstance(pageholder, Venue):
-        add_venue_rep(pageholder, PAGE_SHARE)
-    elif isinstance(pageholder, School):
-        add_social_media_points(pageholder.get_head_student(), PAGE_SHARE)
+    add_venue_rep(venue, PAGE_SHARE)
 
 
 def filtered_bad_post(venue):
@@ -219,3 +234,53 @@ def ignored_post(venue):
     :param venue: the venue where a post was ignored
     """
     add_venue_rep(venue, IGNORED)
+
+
+def created_venue(student):
+    """
+    Rewards a student for creating a venue.
+
+    :param student: the student who created the venue
+    """
+    add_marketing_points(student, CREATED_VENUE)
+
+
+def added_basic_info(venue):
+    """
+    Rewards a venue (and owner) when owner adds basic info to page.
+
+    This method is used when the owner adds a common or sponsor name,
+        or adds details about parking, playing surface, restrooms,
+        concessions, admissions/seating, shelters, nearby medical
+        centers, or accessibility.
+
+    :param venue: the venue whose info was added
+    """
+    add_venue_rep(venue, BASIC_INFO)
+
+
+def added_video(venue):
+    """
+    Rewards a venue (and owner) when owner adds a video to page.
+
+    :param venue: the venue that received a video
+    """
+    add_venue_rep(venue, VIDEO)
+
+
+def added_photos(venue):
+    """
+    Rewards a venue (and owner) when owner adds initial photos to page.
+
+    :param venue: the venue that received image(s)
+    """
+    add_venue_rep(venue, PHOTOS)
+
+
+def added_logo(venue):
+    """
+    Rewards a venue (and owner) when owner adds a custom logo to page.
+
+    :param venue: the venue that got the logo
+    """
+    add_venue_rep(venue, LOGO)

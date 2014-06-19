@@ -1,16 +1,25 @@
+import re
+
 __license__ = "Python"
 __copyright__ = "Copyright (C) 2007, Stephen Zabel"
 __author__ = "Stephen Zabel - sjzabel@gmail.com"
 __contributors__ = "Jay Parlar - parlar@gmail.com"
 
 from django.conf import settings
-from django.http import HttpResponseRedirect, HttpResponsePermanentRedirect, get_host
+from django.http import HttpResponsePermanentRedirect, get_host
 
 SSL = 'SSL'
+SKIPPED_URLS = re.compile('(^/file.*|^/venues/rent_venue/\d+/notification/\d+)')
+
 
 class SSLRedirect:
-    
+    def __init__(self):
+        pass
+
     def process_view(self, request, view_func, view_args, view_kwargs):
+        if SKIPPED_URLS.match(request.path):
+            return None
+
         if SSL in view_kwargs:
             secure = view_kwargs[SSL]
             del view_kwargs[SSL]
@@ -18,8 +27,9 @@ class SSLRedirect:
             secure = False
 
             if 'SSL_unauthenticated' in view_kwargs:
-                if not request.user.is_authenticated():
-                    secure = True
+                if view_kwargs['SSL_unauthenticated']:
+                    if not request.user.is_authenticated():
+                        secure = True
                 del view_kwargs['SSL_unauthenticated']
 
         if not secure == self._is_secure(request):
@@ -27,7 +37,7 @@ class SSLRedirect:
 
     def _is_secure(self, request):
         if request.is_secure():
-	    return True
+            return True
 
         #Handle the Webfaction case until this gets resolved in the request.is_secure()
         if 'HTTP_X_FORWARDED_SSL' in request.META:

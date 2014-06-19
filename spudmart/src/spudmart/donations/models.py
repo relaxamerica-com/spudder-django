@@ -33,4 +33,3 @@ class Donation(AmazonPayment):
 
 class RentVenue(AmazonPayment):
     venue = models.ForeignKey(Venue)
-    

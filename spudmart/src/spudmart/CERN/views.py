@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse, \
     HttpResponseNotAllowed
+from django.template import RequestContext
+from django.views.generic.simple import redirect_to
 from spudmart.upload.models import UploadedFile
 from spudmart.CERN.models import School, Student, STATES, MailingList
 from django.core.exceptions import ObjectDoesNotExist
@@ -8,6 +10,7 @@ from django.utils.datastructures import MultiValueDictKeyError
 from spudmart.CERN.utils import import_schools, strip_invalid_chars
 from django.contrib.auth.decorators import login_required, user_passes_test
 from spudmart.CERN.rep import recruited_new_student
+from spudmart.utils.queues import trigger_backend_task
 from spudmart.utils.url import get_return_url
 import settings
 
@@ -33,21 +36,16 @@ def register(request, referral_id=None):
     """
     Allows users to select a state from a dropdown list, to find school
 
+    :param referral_id: The referral if this is a referral from marketing activity
     :param request: the request to render page
-    :param code: optional param which indicates a referral
     :return: page where users can select state from a dropwdown list
     """
-    sorted_states = sorted(STATES.items(), key=lambda x: x[1])
-    
     if request.method == 'POST':
-        return register_with_state(request, state=request.POST['state'],
-                                   referral_id=referral_id)
-
-    return render(request, 'CERN/register.html',
-                  {
-                  'states': sorted_states,
-                  'referral_id': referral_id,
-                  })
+        return register_with_state(
+            request, state=request.POST['state'], referral_id=referral_id)
+    sorted_states = sorted(STATES.items(), key=lambda x: x[1])
+    return render(
+        request, 'CERN/pages/register_choose_state.html', {'states': sorted_states, 'referral_id': referral_id})
 
 
 def register_with_state(request, state, referral_id=None):
@@ -67,7 +65,7 @@ def register_with_state(request, state, referral_id=None):
         for s in School.objects.filter(state=state):
             schools.append(s)
         schools = sorted(schools, key=lambda sch: sch.name)
-        return render(request, 'CERN/register_state.html',
+        return render(request, 'CERN/pages/register_choose_school.html',
                       {
                       'state': STATES[state],
                       'abbr': state,
@@ -192,19 +190,27 @@ def save_school(request, school_id):
         return HttpResponseNotAllowed(['POST'])
 
 
+# @login_required
+# @user_passes_test(lambda u: u.is_superuser, '/')
 def import_school_data(request):
+    trigger_backend_task('/cern/import_schools_async')
+
+    return HttpResponse('Schools are being imported in the background')
+
+
+def import_school_data_async(request):
     """
     (Re)loads all schools from schools.csv into database
-
-    Should only be used in the queue (it's protected anyway)
 
     :param request: request to run import script
     :return: HttpResponseNotAllowed (code 405) if not POST request
     """
-    if request.method == 'POST':
-        import_schools()
-    else:
+    if request.method != 'POST':
         return HttpResponseNotAllowed(['POST'])
+
+    import_schools()
+
+    return HttpResponse('OK')
 
 
 def display_cern(request):
@@ -229,7 +235,7 @@ def display_cern(request):
 
 
 def cern_splash(request):
-    return render(request, 'CERN/splash.html')
+    return render(request, 'CERN/pages/splash.html')
 
 
 @login_required
@@ -297,10 +303,8 @@ def social_media(request):
     num_referred = len(all_referrals)
     if num_referred == 0:
         referrals = None
-    elif num_referred <= 5:
-        referrals = all_referrals
     else:
-        referrals = all_referrals[:5]
+        referrals = all_referrals
 
     need_saving = False
 
@@ -526,7 +530,7 @@ def register_school(request, school_id, referral_id=None):
                 referrer = Student.objects.get(id=referral_id)
             except ObjectDoesNotExist:
                 pass
-        return render(request, 'CERN/school-login.html',
+        return render(request, 'CERN/pages/register_login_with_amazon.html',
                       {
                       'school': school,
                       'referrer': referrer,

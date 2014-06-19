@@ -1,8 +1,26 @@
-{% extends 'base.html' %}
+{% extends 'CERN/base.html' %}
 
 {% load displays %}
 
 {% block meta %}
+
+<link rel="stylesheet" href="/media/dashboard/css/ace-file-input.css" />
+<title>{{ venue.name }} ({{ venue.sport }}) | Spudder - Sports Updates Made Simple</title>
+
+<!--Facebook meta tags-->
+{% if venue.aka_name and venue.sport %}
+<meta property="og:title" content="{{ venue.aka_name }} ({{ venue.sport }}) | Spudder - Sports Updates Made Simple">
+<meta property="og:description" content="See details about this field on Spudder.">
+{% endif %}
+<meta property="og:url" content="http://{{ request.META.HTTP_HOST }}{{ request.path }}">
+<meta property="og:site_name" content="Spudder - Sports Updates Made Simple">
+{% if venue.logo %}<meta property="og:image" content="http://{{ request.META.HTTP_HOST }}/file/serve/{{ venue.logo.id }}">
+    {% else %}<meta property="og:image" content="http://{{ request.META.HTTP_HOST }}/ico/favicon.png">
+{% endif %}
+<meta propety="og:type" content="website">
+<!--Twitter meta tags-->
+<meta property="twitter:card" content="summary">
+<meta property="twitter:site" content="@spudder_com">
 
 {% endblock meta %}
 
@@ -14,9 +32,9 @@
 					{% if can_edit %}
 						<div class="pull-right">
 							<div class="btn btn-orange" id="edit">
-								Edit Mode
+                                Edit Mode
 							</div>
-						</div> 
+						</div>
 					{% endif %}
 
 
@@ -25,14 +43,17 @@
 						{% if venue.logo %}
 							<img id="venue-logo" src="/file/serve/{{ venue.logo.id }}" />
 						{% else %}
+
 							<div class="logo-placeholder bigger" style=
-							"line-height: 175%;">
+							"line-height: 175%;" id="placeholder1">
+
 								Your Logo Here
 							</div>
 						{% endif %}
 					</div>
 					<div style="display: inline-block; text-align: center; width: 75%; margin-top:10px;">
 						<h3 style="margin-bottom: 0px; font-weight: bold;" id="venue-name"> 
+
 						{% if sponsor %}
 							{{ sponsor.name }}
 						{% else %}
@@ -89,12 +110,14 @@
 						<div id="map-canvas">
 
 						</div>
+
 						<a id="save-location" class="btn btn-orange edit-mode hidden">Save</a>
 						<div class="buttons" id="flagcontent" style="float:right;">
 							<i class="map-icon-embassy" title="FlagContent" style="width: 80%; font-size: 10pt; height: 13px;line-height: 13px;"> 
 								FLAG THIS 
 							</i>
 						</div>
+
 					</div>
 					<div id="parking-details" class="content">
 						<div class="row-fluid edit-mode">
@@ -157,7 +180,7 @@
 								</div>
 								<a href="#venue-pics-carousel" class="carousel-control left" data-slide="prev">&lsaquo;</a>
 								<a href="#venue-pics-carousel" class="carousel-control right" data-slide="next">&rsaquo;</a>
-								
+
 								<div class="btn btn-danger remove-pic edit-mode" id="venue_pics">Remove</div>
 							</div>
 						</div>
@@ -212,9 +235,10 @@
 								</div>
 								<a href="#playing-surface-carousel" class="carousel-control left" data-slide="prev">&lsaquo;</a>
 								<a href="#playing-surface-carousel" class="carousel-control right" data-slide="next">&rsaquo;</a>
-								
+
 								<div class="btn btn-danger remove-pic edit-mode" id="playing_surface_pics">Remove</div>
 							</div>
+
 							<div class="span6 well" id="venue-playing-surface-details" style="width: 95%; margin: 0 auto; float: none;">
 								{{ venue.playing_surface_details }}
 							</div>
@@ -267,7 +291,7 @@
 								</div>
 								<a href="#restroom-carousel" class="carousel-control left" data-slide="prev">&lsaquo;</a>
 								<a href="#restroom-carousel" class="carousel-control right" data-slide="next">&rsaquo;</a>
-								
+
 								<div class="btn btn-danger remove-pic edit-mode" id="restroom_pics">Remove</div>
 							</div>
 							<p>
@@ -422,6 +446,24 @@
 					<h5 class="widgetheading">
 					<div class="row-fluid no-margin">
 					<div class="span6" style="float:left; width: 120px; font-size:10pt;">
+<!--
+						<div class="span12" id="venue-name2">
+							{% if sponsor %}
+								{{ sponsor.name }}
+							{% else %}
+								{{ venue.name }}
+							{% endif %}
+						</div>
+						<div class="span12">
+							<small id="venue-aka-name2">
+								{{ venue.aka_name }}
+							</small>
+						</div>
+					</div></h5>
+
+					<div class="row-fluid">
+						<div class="span6">
+-->
 							{% if sponsor and sponsor.thumbnail %}
 								<a href="/sponsor/{{ sponsor.id }}" target="_blank">
 									<img id="venue-logo2" src="/file/serve/{{ sponsor.thumbnail }}" />
@@ -430,7 +472,7 @@
 								{% if venue.logo %}
 									<img id="venue-logo2" src="/file/serve/{{ venue.logo.id }}" />
 								{% else %}
-									<div class="logo-placeholder" style="width:45%; font-size: 1.5em;">
+									<div class="logo-placeholder" style="width:45%; font-size: 1.5em;" id="placeholder2">
 										Your Logo Here
 									</div>
 								{% endif %}
@@ -481,18 +523,18 @@
 						<div class="span7 details-header">
 							Support Venue's Sponsor
 						</div>
-						
+
 						<ul class="span5 social-network">
 							<li>
 								<a href="/sponsor/{{ sponsor.id }}" target="_blank" data-placement="bottom" title="" 
 								data-original-title="Sponsor Public profile"> <i class="icon-spudder-rounded" style="font-size:1.65em;"> </i> </a>
 							</li>
-							
+
 							<li>
 								<a href="{{ sponsor.instagram }}" target="_blank" data-placement="bottom" title="" 
 								data-original-title="Sponsor Instagram profile"> <i class="fa fa-instagram fa-2x"> </i> </a>
 							</li>
-							
+
 							<li>
 								<a href="{{ sponsor.facebook }}" target="_blank" data-placement="bottom" title="" 
 								data-original-title="Sponsor Facebook profile"> <i class="fa fa-facebook-square fa-2x"> </i> </a>
@@ -515,23 +557,23 @@
 							<li>
 								<label>Speciality: </label> {{ sponsor.speciality }}
 							</li>
-	
+
 							<li>
 								<label>Location: </label> {{ sponsor.location }}
 							</li>
-	
+
 							<li>
 								<label>Phone: </label> {{ sponsor.phone }}
 							</li>
-	
+
 							<li>
 								<label>E-mail: </label> {{ sponsor.email }}
 							</li>
-	
+
 							<li>
 								<label>Website: </label> {{ sponsor.website }}
 							</li>
-	
+
 							<li>
 								<label>Fax: </label> {{ sponsor.fax }}
 							</li>
@@ -539,23 +581,23 @@
 							<li>
 								<label>Speciality: </label> Your company's info
 							</li>
-	
+
 							<li>
 								<label>Location: </label> Your company's location
 							</li>
-	
+
 							<li>
 								<label>Phone: </label> Your company's phone
 							</li>
-	
+
 							<li>
 								<label>E-mail: </label> Your company's e-mail
 							</li>
-	
+
 							<li>
 								<label>Website: </label> Your company's website
 							</li>
-	
+
 							<li>
 								<label>Fax: </label> Your company's fax
 							</li>
@@ -591,16 +633,16 @@
 	$(document).ready(function() {
 		var hospitalSelect = $('[name="hospital"]'),
 			hospitals = {};
-		
+
 		$('select[name="state"]').val('{{medical_address.state}}');
 
 		$('#venue-pics-carousel, #playing-surface-carousel').carousel({
 			interval : false
 		});
 
-		var editMode = $('{% if is_sponsor %}.edit-mode-sponsor{% else %}.edit-mode{% endif %}'), 
-			viewMode = $('.view-mode'), 
-			buttons = $('.buttons'), 
+		var editMode = $('{% if is_sponsor %}.edit-mode-sponsor{% else %}.edit-mode{% endif %}'),
+			viewMode = $('.view-mode'),
+			buttons = $('.buttons'),
 			icons = buttons.find('i');
 
 		$('#edit').click(function() {
@@ -661,12 +703,12 @@
 			if ($(this).hasClass('map-icon-postal-code')) {
 
 				if (!$(this).hasClass('initialized')) {
-					initialize(window.isEditMode, $('.contents .alert'), function(venue) {
-						return 
+					initialize(false, $('.contents .alert'), function(venue) {
+						return
 							venue.sport == window.currentSelectedSport
 							&& venue.id != parseInt(window.currentVenueId, 10);
 					}, function() {
-						$('#save-location').removeClass('hidden');
+						//$('#save-location').removeClass('hidden');
 					});
 				}
 			} else if ($(this).hasClass('map-icon-health')) {
@@ -682,7 +724,7 @@
 		});
 
 		$('#save-parking-details').click(function() {
-			var button = $(this), parkingDetails = $('[name="parking-details"]'), parkingTips = $('[name="parking-tips"]'), 
+			var button = $(this), parkingDetails = $('[name="parking-details"]'), parkingTips = $('[name="parking-tips"]'),
 				dfd = saving($(this), $('.contents').find('.alert'), 'Parking details has been saved');
 
 			var response = $.post('/venues/save_parking_details/{{ venue.id }}', {
@@ -695,29 +737,29 @@
 				
 				$('#venue-parking-details').html(parkingDetails.val());
 				$('#venue-parking-tips').html(parkingTips.val());
-				
+
 				dfd.resolve();
 			});
 		});
-		
+
 		function setRemoveButtonPosition(carousel_ID) {
 			var active = $('#' + carousel_ID + ' .item.active img');
 			$('#' + carousel_ID + ' .remove-pic').css('right', 10 + parseInt(active.css('marginRight'), 10) + 'px');
 		}
-		
+
 		$('.remove-pic').click(function() {
 			var carousel = $(this).parent(),
 				listType = $(this).attr('id'),
 				active = carousel.find('.active'),
 				fileURL = active.find('img').attr('src');
-				
+
 			$(this).hide();
-			
+
 			var response = $.post('/venues/remove_pic/{{ venue.id }}', {
 				'list_type' : listType,
 				'file_url' : fileURL
 			});
-			
+
 			carousel.carousel('next');
 			active.remove();
 			if (carousel.find('.item').length == 0) {
@@ -729,21 +771,20 @@
 
 		$('#up-to-5-pics input, #playing-surface input, #restroom-details input').ace_file_input({
 			style : 'well',
-			btn_choose : 'Drop files here or click to choose',
+			btn_choose : 'Click to add images',//'Drop files here or click to choose',
 			btn_change : null,
 			no_icon : 'icon-cloud-upload',
-			droppable : true,
-			thumbnail : 'small'
-			//, icon_remove:null//set null, to hide remove/reset button
-			/**,before_change:function(files, dropped) {
+			//droppable : true,
+			thumbnail : 'small',
+			//icon_remove:null,//set null, to hide remove/reset button
+			/**before_change: function(files, dropped) {
 			 //Check an example below
 			 //or examples/file-upload.html
 			 return true;
-			 }*/
+			 },*/
 			/**,before_remove : function() {
 			 return true;
-			 }*/
-			,
+			 },*/
 			preview_error : function(filename, error_code) {
 				//name of the file that failed
 				//error_code values
@@ -751,7 +792,7 @@
 				//2 = 'IMAGE_LOAD_FAILED',
 				//3 = 'THUMBNAIL_FAILED'
 				//alert(error_code);
-			}
+			},
 		});
 
 		$('#edit-logo').ace_file_input({
@@ -762,41 +803,41 @@
 			onchange : null,
 			thumbnail : false
 		});
-		
+
 		function showProgress(progressBar) {
 			var xhr = new window.XMLHttpRequest();
          	progressBar.css('display', 'inline-block');
 
      		xhr.upload.addEventListener('progress', function(evt){
      			 var percentComplete = evt.loaded / evt.total;
-     			 
+
                  percentComplete = parseInt(percentComplete * 100);
-                 
+
                  progressBar.children().css('width', percentComplete + '%');
      		});
-     		
+
      		return xhr;
 		}
 
 		$('#upload-up-to-5-pics').click(function() {
-			var form = $(this).parents('form'), 
-				files = $(form).serializeFiles(), 
-				filesList = $(form).find('input')[0].files, 
+			var form = $(this).parents('form'),
+				files = $(form).serializeFiles(),
+				filesList = $(form).find('input')[0].files,
 				alert = $('.contents').find('.alert');
 
 			if (filesList.length > 5 || (parseInt('{{ venue.venue_pics|length }}', 10) + filesList.length) > 5) {
 				showAlert(alert, 'You are trying to upload more pics than is available.', 'warning', true);
 				return;
 			}
-			
+
 			var dfd = saving($(this), alert, 'Venue pictures has been uploaded'),
 				progressBar = form.find('.progress');
-			
+
 			$.get('/upload/get_upload_url', function(data) {
 				$.ajax({
 					xhr: function() {
                  		var xhr = showProgress(progressBar);
-                 		
+
                  		return xhr;
                  	},
 					url : data,
@@ -814,33 +855,35 @@
 
 						response.done(function(data) {
 							dfd.resolve();
-							
+							$('.remove').trigger('click')
+
 							var carousel = $('#up-to-5-pics .carousel');
-							
+
 							populateCarousel(parsed, carousel);
 							progressBar.hide();
-							
+							progressBar.children().css('width', '1%');
 							$('.map-icon-point-of-interest').addClass('ready');
+
 						});
 					}
 				});
 			});
 		});
-		
+
 		function populateCarousel(parsed, carousel) {
 			$.each(parsed['uploaded_files'], function() {
 				var item = $('<div class="item"></div>'),
 					img = $('<img />');
-				
+
 				img.attr('src', this);
 				if(carousel.find('.item').length == 0) {
 					item.addClass('active');
 				}
-				
+
 				item.append(img);
 				carousel.find('.carousel-inner').append(item);
 			});
-			
+
 			carousel.removeClass('hidden');
 			carousel.show();
 			carousel.carousel().removeData();
@@ -848,11 +891,11 @@
 		}
 
 		$('#save-name').click(function() {
-			var form = $(this).parents('form'), 
-				files = $(form).serializeFiles(), 
-				filesList = $(form).find('input')[0].files, 
-				name = $(form).find('[name="name"]').val(), 
-				akaName = $(form).find('[name="aka_name"]').val(), 
+			var form = $(this).parents('form'),
+				files = $(form).serializeFiles(),
+				filesList = $(form).find('input')[0].files,
+				name = $(form).find('[name="name"]').val(),
+				akaName = $(form).find('[name="aka_name"]').val(),
 				dfd = saving($(this), $(form).find('.alert'), 'Venue basic information has been saved'),
 				sport = $('[name="sport"]').val();
 
@@ -877,14 +920,17 @@
 						response.done(function(data) {
 							window.currentSelectedSport;
 							window.venueName = name;
-							
+
 							$('#venue-name, #venue-name2').html(name);
 							$('#venue-aka-name, #venue-aka-name2').html(akaName);
 							if (parsed['uploaded_files'].length > 0) {
 								$('#venue-logo, #venue-logo2').attr('src', parsed['uploaded_files'][0]);
+								$('#placeholder1').text('Refresh to see logo')
+								$().text('Refresh to see logo')
 							}
-							
+
 							dfd.resolve();
+							$('.remove').click()
 						});
 					}
 				});
@@ -892,21 +938,26 @@
 		});
 
 		$('#upload-playing-surface').click(function() {
-			var form = $(this).parents('form'), 
-				files = $(form).serializeFiles(), 
-				filesList = $(form).find('input')[0].files; 
+			var form = $(this).parents('form'),
+				files = $(form).serializeFiles(),
+				filesList = $(form).find('input')[0].files;
 
 			if (filesList.length > 5 || (parseInt('{{ venue.playing_surface_pics|length }}', 10) + filesList.length) > 5) {
 				showAlert(alert, 'You are trying to upload more pics than is available.', 'warning', true);
 				return;
 			}
-			
+
 			var dfd = saving($(this), $('.contents').find('.alert'), 'Playing surface pictures and details have been saved'),
 				details = form.find('[name="details"]'),
 				progressBar = form.find('.progress');
 
 			$.get('/upload/get_upload_url', function(data) {
 				$.ajax({
+					xhr: function() {
+                 		var xhr = showProgress(progressBar);
+
+                 		return xhr;
+                 	},
 					url : data,
 					data : files,
 					cache : false,
@@ -923,11 +974,13 @@
 
 						response.done(function(data) {
 							dfd.resolve();
+							$('.remove').click()
 							populateCarousel(parsed, $('#playing-surface-carousel'));
 							$('#venue-playing-surface-details').html(details.val());
 							$('.icon-seat').addClass('ready');
 							
 							progressBar.hide();
+							progressBar.children().css('width', '0%');
 						});
 					}
 				});
@@ -943,28 +996,33 @@
 			});
 
 			response.done(function() {
-				dfd.resolve();
+                $('.remove').click()
 				$('#venue-video').html(textarea.val());
 				$('.fa fa-youtube-play').addClass('ready');
 			});
 		});
 
 		$('#save-restroom-details').click(function() {
-			var form = $(this).parents('form'), 
-				files = $(form).serializeFiles(), 
-				filesList = $(form).find('input')[0].files; 
+			var form = $(this).parents('form'),
+				files = $(form).serializeFiles(),
+				filesList = $(form).find('input')[0].files;
 
 			if (filesList.length > 5 || (parseInt('{{ venue.restroom_pics|length }}', 10) + filesList.length) > 5) {
 				showAlert(alert, 'You are trying to upload more pics than is available.', 'warning', true);
 				return;
 			}
-			
+
 			var dfd = saving($(this), $('.contents').find('.alert'), 'Restroom pictures and details have been saved'),
 				details = form.find('[name="details"]'),
 				progressBar = form.find('.progress');
 
 			$.get('/upload/get_upload_url', function(data) {
 				$.ajax({
+					xhr: function() {
+                 		var xhr = showProgress(progressBar);
+
+                 		return xhr;
+                 	},
 					url : data,
 					data : files,
 					cache : false,
@@ -981,10 +1039,12 @@
 
 						response.done(function(data) {
 							dfd.resolve();
+							$('.remove').click()
 							$('#venue-restroom-details').html(details.val());
 							$('.map-icon-toilet').addClass('ready');
 							populateCarousel(parsed, $('#playing-surface-carousel'));
 							progressBar.hide();
+							progressBar.children().css('width', '0%');
 						});
 					}
 				});
@@ -1034,18 +1094,16 @@
 		});
 
 		$('#save-medical-details').click(function() {
-			var address = $('#medical-details form input[name="address"]'), 
-				city = $('#medical-details form input[name="city"]'), 
-				state = $('#medical-details form select[name="state"]'), 
-				zip = $('#medical-details form input[name="zip"]'), 
-				details = $('#medical-details [name="details"]'),
-				dfd = saving($(this), $('.contents .alert'), 'Medical details has been saved');
+			var address = $('#medical-details form input[name="address"]'),
+				city = $('#medical-details form input[name="city"]'),
+				state = $('#medical-details form select[name="state"]'),
+				zip = $('#medical-details form input[name="zip"]'),
+				dfd = saving($(this), $('.contents .alert'), 'Medical address has been saved');
 
 			var medicalAddress = address.val() + ', ' + city.val() + ', ' + state.val() + ', ' + zip.val();
 
 			var response = $.post('/venues/save_medical_details/{{ venue.id }}', {
 				'medical_address' : medicalAddress,
-				'medical_details' : details.val()
 			});
 
 			response.done(function() {
@@ -1070,7 +1128,7 @@
 			});
 		});
 
-		$('#save-location').click(function() {
+		/**$('#save-location').click(function() {
 			var dfd = saving($(this), $('.contents .alert'), 'Location has been saved');
 
 			var response = $.post('/venues/save_coordinates/{{ venue.id }}', {
@@ -1082,14 +1140,14 @@
 				dfd.resolve();
 				$('.buttons i.map-icon-postal-code').addClass('ready initialized');
 			});
-		});
+		});*/
 
 		$('#prize-this-venue').click(function() {
 			{% if not is_recipient %}
 				document.location = '/venues/recipient/{{ venue.id }}';
 				return;
 			{% endif %}
-			
+
 			var priceInput = $('#price'), button = $(this), currentPrice = $('#current-price');
 
 			currentPrice.hide();
@@ -1113,62 +1171,62 @@
 				$(this).html('Save');
 			}
 		});
-		
+
 		$('#send-message').click(function() {
 			var message = $('[name="message"]').val(),
 				dfd = saving($(this), $(this).parents('.contents').find('.alert'), 'Message has been sent');
-			
+
 			var response = $.post('/venues/send_message/{{ venue.id }}', {
 				'message' : message
 			});
-			
+
 			response.done(function() {
 				dfd.resolve();
 			});
 		});
-		
+
 		function setNearestHospitals(hospitalSelect) {
 			if (!hospitalSelect.hasClass('loaded')) {
 				var lng = window.currentVenueLongitude,
 					ltd = window.currentVenueLatitude;
-	
+
 				var loading = $('#loading-nearest');
-				
+
 				loading.removeClass('hidden');
-	
-				$.get('/hospitals/get_hospitals_within_bounds', { 
-						'longitude_range' : [lng - 0.15, lng + 0.15], 'latitude_range' : [ltd - 0.15, ltd + 0.15] 
+
+				$.get('/hospitals/get_hospitals_within_bounds', {
+						'longitude_range' : [lng - 0.15, lng + 0.15], 'latitude_range' : [ltd - 0.15, ltd + 0.15]
 					}, function(data) {
 						var parsed = JSON.parse(data).hospitals;
-						
+
 						loading.addClass('hidden');
-						
+
 						$.each(parsed, function() {
 							var option = $('<option></option>');
-							
+
 							option.html(this.name);
 							option.val(this.id);
 							hospitalSelect.append(option);
-							
+
 							hospitals[this.id] = this;
 						});
 						hospitalSelect.addClass('loaded');
 				});
 			}
 		}
-		
+
 		hospitalSelect.change(function() {
 			if (hospitalSelect.hasClass('loaded')) {
 				var id = $(this).val(),
 					isPresent = id in hospitals;
-					
+
 				if (isPresent) {
-					var address = $('#medical-details form input[name="address"]'), 
-						city = $('#medical-details form input[name="city"]'), 
-						state = $('#medical-details form select[name="state"]'), 
+					var address = $('#medical-details form input[name="address"]'),
+						city = $('#medical-details form input[name="city"]'),
+						state = $('#medical-details form select[name="state"]'),
 						zip = $('#medical-details form input[name="zip"]'),
 						hospital = hospitals[id];
-						
+
 					address.val(hospital.address);
 					city.val(hospital.city);
 					state.val(hospital.state);
@@ -1176,7 +1234,7 @@
 				}
 			}
 		});
-		
+
 		$('.carousel').on('slide', function() {
 			if (window.isEditMode) {
 				$(this).find('.remove-pic').hide();
@@ -1189,7 +1247,7 @@
 				setRemoveButtonPosition($(this).attr('id'));
 			}
 		});
-		
-	}); 
+
+	});
 </script>
 {% endblock scripts %}

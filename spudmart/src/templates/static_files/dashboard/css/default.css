@@ -184,21 +184,18 @@ textarea {
 .spud-container [class^="icon-"], [class*=" icon-"] {
     margin-right: 0;
 }
-.btn-orange {
-    background-color: #F03C02 !important;
-    border-color: #F03C02;
-}
-.btn-orange:hover {
-    background-color: #000000 !important;
-}
-.btn-orange.btn-noborder {
-    background-color: #F03C02 !important;
-    border: 0 none;
-}
-.btn-orange.btn-noborder:hover {
-    background-color: #000000 !important;
-    border: 0 none;
-}
+/*.btn-orange {*/
+    /*background-color: #F03C02 !important;*/
+    /*border-color: #F03C02;*/
+/*}*/
+/*.btn-orange.btn-noborder {*/
+    /*background-color: #F03C02 !important;*/
+    /*border: 0 none;*/
+/*}*/
+/*.btn-orange.btn-noborder:hover {*/
+    /*background-color: #000000 !important;*/
+    /*border: 0 none;*/
+/*}*/
 .btn-darkgrey {
     background-color: #A89B94 !important;
     border-color: #A89B94;
@@ -555,10 +552,6 @@ form .input-required {
 	margin-top: 10px;
 }
 
-.alert {
-	display: none;
-}
-
 #invites li a.btn.btn-small {
 	border-radius: 3px;
     font-size: 12px;
@@ -873,6 +866,20 @@ form .input-required {
 
 .dashboard-logo {
     width: 200px;
+}
+
+#create-venue .alert-block {
+	display: block;
+	text-align: center;
+}
+
+#create-venue .alert-block h4 {
+	margin-bottom: 10px;
+}
+
+#create-venue .content {
+	width: 500px;
+	margin: auto;
 }
 
 #create-venue #map-canvas {
