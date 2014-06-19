@@ -1,0 +1,49 @@
+@font-face {
+	font-family: 'icomoon';
+	src:url('../fonts/icomoon.eot?wegkil');
+	src:url('../fonts/icomoon.eot?#iefixwegkil') format('embedded-opentype'),
+		url('../fonts/icomoon.woff?wegkil') format('woff'),
+		url('../fonts/icomoon.ttf?wegkil') format('truetype'),
+		url('../fonts/icomoon.svg?wegkil#icomoon') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+
+[class^="icon-"], [class*=" icon-"] {
+	font-family: 'icomoon';
+	speak: none;
+	font-style: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	line-height: 1;
+
+	/* Better Font Rendering =========== */
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+.icon-field-inverse-full:before {
+	content: "\e603";
+}
+.icon-field-inverse:before {
+	content: "\e607";
+}
+.icon-spudder-rounded:before {
+	content: "\e606";
+}
+.icon-spudder-square:before {
+	content: "\e604";
+}
+.icon-spudder-circle:before {
+	content: "\e605";
+}
+.icon-field:before {
+	content: "\e602";
+}
+.icon-seat:before {
+	content: "\e601";
+}
+.icon-grass:before {
+	content: "\e600";
+}

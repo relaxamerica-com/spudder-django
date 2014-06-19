@@ -55,12 +55,47 @@
             <div class="container">
                 <div class="row nomargin">
                     <div class="span8 social-network">
-                        <p>Share:
-                            <a href="JavaScript:facebookPopup()"><i class="icon-facebook icon-square icon-32"></i></a>
-                            <a href="javascript:twitterPopup()"><i class="icon-twitter icon-square icon-32"></i></a>
-                            <a href="javascript:googlePopup()"><i class="icon-google-plus icon-square icon-32"></i></a>
-                            <a href="mailto:?subject=Check out this Spudder page!&body=Check out this cool page I saw on Spudder: {{ request.META.HTTP_HOST }}{{ request.get_full_path }}"><i class="icon-envelope icon-square icon-32"></i></a>
-                        </p>
+                        Share:
+							<ul class="social-network" style="display: inline-block;">
+							<li>
+                            <a data-original-title="Share on Facebook" data-placement="bottom" href="JavaScript:facebookPopup()">
+								<i class="fa fa-facebook-square fa-2x"></i>
+								<!--<span class="fa-stack fa-lg">
+									<i class="fa fa-square fa-stack-2x"></i>
+									<i style="text-align:right;" class="fa fa-facebook fa-stack-1x fa-inverse"></i>
+								</span>-->
+							</a>
+							</li>
+							<li>
+                            <a data-original-title="Share on Twitter" data-placement="bottom" href="javascript:twitterPopup()">
+								<i class="fa fa-twitter-square fa-2x"></i>
+								<!--<span class="fa-stack fa-lg">
+									<i class="fa fa-square fa-stack-2x"></i>
+									<i style="text-align:right;" class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+								</span>-->
+							</a>
+							</li>
+							<li>
+							<a data-original-title="Share on LinkedIn" data-placement="bottom"href="Javascript:linkedinPopup()">
+								<i class="fa fa-linkedin-square fa-2x"></i>
+							</a>
+							</li>
+							<li>
+                            <a data-original-title="Share on Google+" data-placement="bottom" href="javascript:googlePopup()">
+								<i class="fa fa-google-plus-square fa-2x"></i>
+								<!--<span class="fa-stack fa-lg">
+									<i class="fa fa-square fa-stack-2x"></i>
+									<i style="text-align:right;" class="fa fa-facebook fa-stack-1x fa-inverse"></i>
+								</span>-->
+							</a>
+							</li>
+							<li>
+                            <a data-original-title="Share via Email" data-placement="bottom" href="mailto:?subject=Check out this Spudder page!&body=Check out this cool page I saw on Spudder: {{ request.META.HTTP_HOST }}{{ request.get_full_path }}">
+							<i class="fa fa-envelope-square fa-2x"></i>
+							</a>
+							</li>
+							</ul>
+                        
                     </div>
                     <div class="headnav span4">
                         <ul>

@@ -1,18 +1,40 @@
+<div class="row-fluid buttons no-margin no-border">
+<div class="venue-button" openTab="#map">
+	<i class="map-icon-postal-code {% if venue.longitude and venue.latitude %}ready{% endif %}" title="Map"> </i>
+</div>
+<div class="" openTab="#parking-details">
+	<i class="map-icon-parking {% if venue.parking_details and venue.parking_tips %}ready{% endif %}" title="Parking"> </i>
+</div>
+<div class="" openTab="#up-to-5-pics">
+	<i class="map-icon-point-of-interest {% if venue.venue_pics %}ready{% endif %}" title="Upto 5 pics"> </i>
+</div>
+<div class="" style="vertical-align:bottom;" openTab="#video">
+	<i class="fa fa-youtube-play {% if venue.video %}ready{% endif %}" title="Video"> </i>
+</div>
+<div class="" style="vertical-align:bottom; width:52px;" openTab="#playing-surface">
+	<i class="icon-field-inverse-full {% if venue.playing_surface_pics and venue.playing_surface_details %}ready{% endif %}" title="Playing surface"> </i>
+</div>
+<div class="" openTab="#flag-content">
+	<i class="map-icon-post-office ready" title="Flag content"> </i>
+</div>
+</div>
+<div class="row-fluid buttons no-margin no-border">
 <div class="" openTab="#restroom-details">
-	<i class="icon-female {% if venue.restroom_details %}ready{% endif %}" title="Restrooms"> </i>
+	<i class="map-icon-toilet {% if venue.restroom_details %}ready{% endif %}" title="Restrooms"> </i>
 </div>
 <div class="" openTab="#concession-details">
-	<i class="icon-food {% if venue.concession_details %}ready{% endif %}"  title="Concessions"> </i>
+	<i class="map-icon-food {% if venue.concession_details %}ready{% endif %}"  title="Concessions"> </i>
 </div>
-<div class="" openTab="#admission-details">
-	<i class="icon-ticket {% if venue.admission_details %}ready{% endif %}" title="Seating"> </i>
+<div class="" style="vertical-align:bottom;" openTab="#admission-details">
+	<i style="margin-right:0px;"class="icon-seat {% if venue.admission_details %}ready{% endif %}" title="Seating"> </i>
 </div>
-<div class="" openTab="#shelter-details">
-	<i class="icon-umbrella {% if venue.shelter_details %}ready{% endif %}" title="Shelter"> </i>
+<div class="" style="vertical-align:bottom;" openTab="#shelter-details">
+	<i class="map-icon-roofing-contractor {% if venue.shelter_details %}ready{% endif %}" title="Shelter"> </i>
 </div>
 <div class="" openTab="#medical-details">
-	<i class="icon-medkit {% if venue.medical_address %}ready{% endif %}" title="Medical"> </i>
+	<i class="map-icon-health {% if venue.medical_address %}ready{% endif %}" title="Medical"> </i>
 </div>
 <div class="" openTab="#handicap-details">
-	<i class="fa fa-wheelchair {% if venue.handicap_details %}ready{% endif %}" title="Handicap"> </i>
+	<i class="map-icon-wheelchair {% if venue.handicap_details %}ready{% endif %}" title="Handicap"> </i>
+</div>
 </div>
