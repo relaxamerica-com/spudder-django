@@ -35,7 +35,7 @@
 		$(document).ready(function() {
             $('.alert').each(function(i, alert) {
                var $alert = $(alert);
-               if ($alert.html() == "")
+               if ($alert.html().trim() == "")
                    $alert.hide();
             });
 

@@ -2,10 +2,11 @@
 
 {% load displays %}
 
+{% block title %}{{ venue.name }} ({{ venue.sport }}) | Spudder - Sports Updates Made Simple{% endblock %}
+
 {% block meta %}
 
 <link rel="stylesheet" href="/media/dashboard/css/ace-file-input.css" />
-<title>{{ venue.name }} ({{ venue.sport }}) | Spudder - Sports Updates Made Simple</title>
 
 <!--Facebook meta tags-->
 {% if venue.aka_name and venue.sport %}
@@ -21,6 +22,8 @@
 <!--Twitter meta tags-->
 <meta property="twitter:card" content="summary">
 <meta property="twitter:site" content="@spudder_com">
+
+
 
 {% endblock meta %}
 
