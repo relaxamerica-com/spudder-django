@@ -621,7 +621,7 @@
 <script type="text/javascript" src="/media/dashboard/js/jquery-ui-1.10.3.custom.min.js"></script>
 <script type="text/javascript" src="/media/js/parseUri.js"></script>
 <script type="text/javascript">
-	window.venueName = "{{ venue.name }}";
+    window.venueName = "{{ venue.name }}";
 	window.currentVenueLongitude = parseFloat("{{ venue.longitude }}");
 	window.currentVenueId = "{{ venue.id }}";
 	window.currentVenueLatitude = parseFloat("{{ venue.latitude }}");
@@ -631,6 +631,12 @@
 	window.currentSelectedSport = '{{ venue.sport }}';
 
 	$(document).ready(function() {
+        $('.alert').each(function(i, alert) {
+           var $alert = $(alert);
+           if ($alert.html() == "")
+               $alert.hide();
+        });
+
 		var hospitalSelect = $('[name="hospital"]'),
 			hospitals = {};
 

@@ -203,6 +203,12 @@
 
         $(document).ready(function() {
 
+            $('.alert').each(function(i, alert) {
+               var $alert = $(alert);
+               if ($alert.html() == "")
+                   $alert.hide();
+            });
+
             // Fix the footer position and ensure it is fixed on window resize
             fix_footer_position();
             $(window).on('resize', function(){
@@ -230,6 +236,10 @@
             $('#logout-button').click(function() {
                 amazon.Login.logout();
             });
+
+
+
+
         });
     </script>
 {#    <script type="text/javascript" src="//platform.twitter.com/widgets.js"></script>    #}

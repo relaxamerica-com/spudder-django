@@ -33,6 +33,12 @@
 	<script type="text/javascript" src="/media/js/google.map.js"></script>
 	<script type="text/javascript">
 		$(document).ready(function() {
+            $('.alert').each(function(i, alert) {
+               var $alert = $(alert);
+               if ($alert.html() == "")
+                   $alert.hide();
+            });
+
 			initialize(true, $('#alert-location'), function(venue) {
 				return venue.sport == $('#venue-sport').val();
 			}, function(latitude, longitude) {
@@ -61,6 +67,7 @@
 				<p>The location of venues is very important to the way that Spudder and CERN Teams work.</p>
 				<p>You must physically <b>be</b> at the venue you are trying to create.</p>
 				<p>Once created, you can not change a venue's location.</p>
+                <p>If your location isn't correct, try enabling GPS on your device and reloading the page.</p>
 			</div>
 			
 			<form action="/venues/create" method="post" id="create-team-form" class="form-horizontal" enctype="multipart/form-data">
