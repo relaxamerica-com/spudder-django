@@ -20,4 +20,5 @@ class SponsorPage(models.Model):
     twitter = models.CharField(max_length=255, blank=True)
     google_plus = models.CharField(max_length=255, blank=True)
     instagram = models.CharField(max_length=255, blank=True)
+    linkedin = models.CharField(max_length=255, blank=True)
     images = ListField()

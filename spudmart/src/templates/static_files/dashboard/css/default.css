@@ -1150,3 +1150,9 @@ p.head .add-button {
 #logout-button{
     margin: 0 20px;
 }
+
+#venue-view .pin-pic {
+	position: absolute;
+	right: 10px;
+	bottom: 10px;
+}

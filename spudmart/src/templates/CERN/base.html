@@ -198,6 +198,11 @@
           newPopup('https://plus.google.com/share?url=' + url);
       }
 
+      function pinterestPopup(paramImage){
+        image = paramImage || {% if venue %} "http://{{ request.META.HTTP_HOST }}/file/serve/{{ venue.logo.id }}" {% else %} {% if school %} "http://{{ request.META.HTTP_HOST }}/file/serve/{{ school.logo.id }}" {% else %} '' {% endif %}{% endif %}
+        newPopup('http://pinterest.com/pin/create/button/?url=' + url + '&media=' + image);
+      }
+
         function clear_info_message(el, about){
             $(el).parents('.question').remove();
             $.post('/cern/disable_about/', {about: about});
