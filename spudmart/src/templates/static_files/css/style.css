@@ -269,10 +269,12 @@ img.img-polaroid {
 
 /* --- header -- */
 header {
-	background: #fff;
+	background-color: #F2F2F2;
+    border-bottom: 1px solid #CCCCCC;
 	margin:0;
 	padding:0;
 	position:relative;
+    min-height: 40px;
 }
 
 header .logo {
@@ -288,47 +290,42 @@ header .logo h1 {
 	font-size:14px;
 	margin:0;
 }
-
-
-/* --- headnav menu : signup & signin --- */
-
-#header {
-    min-height: 40px;
-}
-
-#header .social-network {
+header .social-network {
     position: absolute;
     top: 5px;
     left: 15px;
 }
-
-#header .headnav {
+header .social-network i {
+    color: #989B93;
+    margin: 2px;
+    width: 20px;
+}
+header .headnav {
     position: absolute;
-    top: 5px;
+    top: 7px;
     right: 15px;
-	border-bottom:1px dotted #e6e6e6;
 }
 
-#header .headnav ul {
+header .headnav ul {
 	margin:0;
     padding: 0 5px;
 	list-style:none;
 }
 
-#header .headnav ul li {
+header .headnav ul li {
 	display:inline;
 	margin:0 10px;
 }
-#header .headnav ul li a {
+header .headnav ul li a {
 	font-size:12px;
 	font-weight:bold;
     opacity: 0.7;
     text-decoration: none;
 }
 
-#header .headnav ul li a:hover,
-#header .headnav ul li a:focus,
-#header .headnav ul li a:active {
+header .headnav ul li a:hover,
+header .headnav ul li a:focus,
+header .headnav ul li a:active {
 	opacity: 1;
 }
 
@@ -1110,10 +1107,6 @@ ul.link-list li{
 
 footer ul.link-list li a{
 	color:#fff;
-}
-
-footer > div {
-	background: #e9e9e9;
 }
 
 .push {
@@ -1970,7 +1963,8 @@ ul.time-post li.time{
 ================================ */
 
 footer {
-	background: #E9E9E9;
+	background: #F2F2F2; /*#E9E9E9;*/
+    border-top: 1px solid #CCCCCC;
 	padding:50px 0 0 0;
     margin-top: 30px;
 	color: #353535;
@@ -4797,4 +4791,25 @@ div[id^=donation-modal] .loading {
 /****** CERN Single Well Pages ******/
 .single-well-container {
     margin-top: 5%;
+}
+
+/****** menu-toggler overrides ****/
+.menu-toggler {
+    left: 0;
+    background-color: #CCC;
+}
+.nav-list li.active > a {
+    color: #F37421;
+}
+.nav-list li.active > a:after {
+    border-right-color: #F37421;
+}
+.nav-list li.active > a:before {
+    border-right-color: #F37421;
+}
+.nav-list > li > a:hover {
+    color: #F37421;
+}
+.nav-list > li.active > a:hover {
+    color: #F37421;
 }

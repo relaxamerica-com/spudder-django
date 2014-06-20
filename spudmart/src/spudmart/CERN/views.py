@@ -320,7 +320,7 @@ def social_media(request):
                              student.id))
         need_saving = True
 
-    return render(request, 'CERN/social_media.html',
+    return render(request, 'CERN/pages/social_media.html',
                   {
                   'num_referred': num_referred,
                   'referral_url': referral_url,
@@ -349,10 +349,11 @@ def content(request):
     else:
         if request.user.email in mailing.emails:
             joined = True
-    return render(request, 'CERN/coming_soon.html',
+    return render(request, 'CERN/pages/coming_soon.html',
                   {
                   'project': project,
                   'joined': joined,
+                  'menu_context': 'content'
                   })
 
 
@@ -376,10 +377,11 @@ def design(request):
             joined = True
         else:
             joined = False
-    return render(request, 'CERN/coming_soon.html',
+    return render(request, 'CERN/pages/coming_soon.html',
                   {
                   'project': project,
                   'joined': joined,
+                  'menu_context': 'design'
                   })
 
 
@@ -403,10 +405,11 @@ def testing(request):
             joined = True
         else:
             joined = False
-    return render(request, 'CERN/coming_soon.html',
+    return render(request, 'CERN/pages/coming_soon.html',
                   {
                   'project': project,
                   'joined': joined,
+                  'menu_context': 'testing'
                   })
 
 
@@ -430,10 +433,11 @@ def mobile(request):
             joined = True
         else:
             joined = False
-    return render(request, 'CERN/coming_soon.html',
+    return render(request, 'CERN/pages/coming_soon.html',
                   {
                   'project': project,
                   'joined': joined,
+                  'menu_context': 'mobile'
                   })
 
 

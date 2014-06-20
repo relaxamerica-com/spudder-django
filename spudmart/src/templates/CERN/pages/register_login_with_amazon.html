@@ -39,7 +39,7 @@
         {% else %}
 
             <div class="alert alert-info">
-                <h4><i class="icon-question-sign"></i> Why Amazon</h4>
+                <h4><i class="fa fa-question"></i> Why Amazon</h4>
                 <p>CERN aims to get you <b>paid</b>!</p>
                 <p>For this to happen, you need to have an amazon account.</p>
                 <p><small>Don't have an Amazon account? You can create one when you click the "Login with Amazon" button</small></p>
@@ -48,7 +48,7 @@
             {% if running_locally %}
 
                 <div class="alert alert-danger">
-                    <h4><i class="icon-warning-sign"></i> Running locally</h4>
+                    <h4><i class="fa fa-warning"></i> Running locally</h4>
                     <p>You are currently running a local copy of this application (as in, it is not running from appengine.</p>
                     <p>The following signin control will allow you to access pages that normally require amazon login.</p>
                     <p>
@@ -59,7 +59,7 @@
                 </div>
 
                 <a class="btn btn-orange btn-large" href="/accounts/login_fake?school_id={{ school.id }}&next=/cern/{{ school.state }}/{{ school.id }}/{% strip_school_name school %}/">
-                    <i class="icon-signin"></i> Login with fake account
+                    <i class="fa fa-sign-in"></i> Login with fake account
                 </a>
 
             {% else %}

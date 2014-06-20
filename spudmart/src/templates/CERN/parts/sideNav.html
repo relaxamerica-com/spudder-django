@@ -1,63 +1,60 @@
 {% load CERN %}
 <div class="sidebar" id="sidebar">
 	<ul class="nav nav-list">
-	    <li>
+	    <li {% if active == "scoreboard" %}class="active"{% endif %}>
 	       <a class="dropwdown-toggle" href="/cern/">
-	           <i class="icon-bar-chart"></i>
+	           <i class="fa fa-fw fa-bar-chart-o"></i>
 	           <span class="menu-text"> Scoreboard </span>
            </a>
         </li>
 
 	    <li>
 	       <a class="dropwdown-toggle" href="{% my_school_link request.user %}">
-	           <i class="icon-group"></i>
+	           <i class="fa fa-fw fa-users"></i>
 	           <span class="menu-text"> School Page </span>
            </a>
         </li>
 
-		<li>
+		<li {% if active == "venues" %}class="active"{% endif %}>
 			<a class="dropdown-toggle" href="/venues/list">
-				<i class="icon-thumbs-up"></i>
-				<span class="menu-text"> Marketing </span>
+				<i class="fa fa-fw fa-map-marker"></i>
+				<span class="menu-text"> Venues </span>
 			</a>
 		</li>
 	
-		<li>
+		<li {% if active == "social" %}class="active"{% endif %}>
 			<a class="dropdown-toggle" href="/cern/social_media/">
-				<i class="icon-rss"></i>
+				<i class="fa fa-fw fa-rss"></i>
 				<span class="menu-text"> Social Media </span>
 			</a>
 		</li>
 	
-		<li>
+		<li {% if active == "content" %}class="active"{% endif %}>
 			<a class="dropdown-toggle" href="/cern/content/">
-				<i class="icon-edit"></i>
+				<i class="fa fa-fw fa-edit"></i>
 				<span class="menu-text"> Content </span>
 			</a>
 		</li>
 	
-		<li>
+		<li {% if active == "design" %}class="active"{% endif %}>
 			<a class="dropdown-toggle" href="/cern/design/">
-				<i class="icon-pencil"></i>
+				<i class="fa fa-fw fa-pencil"></i>
 				<span class="menu-text"> Design </span>
 			</a>
 		</li>
 	
-		<li>
+		<li {% if active == "testing" %}class="active"{% endif %}>
 			<a class="dropdown-toggle" href="/cern/testing/">
-				<i class="icon-cogs"></i>
+				<i class="fa fa-fw fa-cogs"></i>
 				<span class="menu-text"> QA Testing </span>
 			</a>
 		</li>
 	
-		<li>
+		<li {% if active == "mobile" %}class="active"{% endif %}>
 			<a class="dropdown-toggle" href="/cern/mobile/">
-				<i class="icon-mobile-phone"></i>
+				<i class="fa fa-fw fa-mobile-phone"></i>
 				<span class="menu-text"> Mobile App </span>
 			</a>
 		</li>
 	</ul>
-    <div class="sidebar-collapse" id="sidebar-collapse">
-        <i class="icon-double-angle-left"></i>
-    </div>
 </div>

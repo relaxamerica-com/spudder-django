@@ -17,24 +17,34 @@
     {% endif %}
 
     <!-- css -->
+    <!-- Bootstrap 2.3.0 -->
     <link href="/media/css/bootstrap.css" rel="stylesheet" />
     <link href="/media/css/bootstrap-responsive.css" rel="stylesheet" />
+    <!-- fonts and icons -->
+    <link rel="stylesheet" href="/media/css/libs/font-awesome.css"/>
+    <link rel="stylesheet" href="/media/dashboard/css/map-icons.css" />
+    <!-- Ace theme and skin -->
+    <link rel="stylesheet" href="/media/dashboard/css/ace.min.css" />
+    <link rel="stylesheet" href="/media/dashboard/css/ace-responsive.min.css" />
+    <link rel="stylesheet" href="/media/dashboard/css/ace-skins.min.css" />
+    <link rel="stylesheet" href="/media/dashboard/css/ace-file-input.css" />
+    <link rel="stylesheet" href="/media/skins/default.css" />
+
+
     <link href="/media/css/fancybox/jquery.fancybox.css" rel="stylesheet">
     <link href="/media/css/jcarousel.css" rel="stylesheet" />
     <link href="/media/css/flexslider.css" rel="stylesheet" />
     <link href="/media/css/style.css" rel="stylesheet" />
+
+
     <link href="/media/dashboard/css/default.css" rel="stylesheet">
+    <link href="/media/css/overwrite.css" rel="stylesheet" />
 
-    <link rel="stylesheet" href="/media/dashboard/css/font-awesome.min.css" />
-    <link rel="stylesheet" href="/media/css/font-awesome.css" />
 
-    <link href="/media/dashboard/css/jquery-ui-1.10.3.custom.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="/media/dashboard/css/ace-file-input.css" />
-    <link rel="stylesheet" href="/media/dashboard/css/map-icons.css" />
+{#    <link href="/media/dashboard/css/jquery-ui-1.10.3.custom.min.css" rel="stylesheet" />#}
+
     <link href="/media/dashboard/css/style.css" rel="stylesheet">
 
-    <!-- Theme skin -->
-    <link id="t-colors" href="/media/skins/default.css" rel="stylesheet" />
 
     <!-- boxed bg -->
     <link id="bodybg" href="/media/bodybg/custom_bg.css" rel="stylesheet" type="text/css" />
@@ -58,27 +68,27 @@
     {% include 'accounts/common/amazon-root.html' %}
     {% block header %}
         <header id="header">
-            <div class="container">
-                <ul class="social-network">
-                    <li><a data-original-title="Share on Facebook" data-placement="bottom" href="JavaScript:facebookPopup()"><i class="fa fa-facebook-square fa-2x"></i></a></li>
-                    <li><a data-original-title="Share on Twitter" data-placement="bottom" href="javascript:twitterPopup()" id="twitter"><i class="fa fa-twitter-square fa-2x"></i></a></li>
-                    <li><a data-original-title="Share on LinkedIn" data-placement="bottom" href="JavaScript:linkedinPopup()"><i class="fa fa-linkedin-square fa-2x"></i></a></li>
-                    <li><a data-original-title="Share on Google+" data-placement="bottom" href="javascript:googlePopup()"><i class="fa fa-google-plus-square fa-2x "></i></a></li>
-                    <li><a data-original-title="Share via Email" data-placement="bottom" href="mailto:?subject=Check out this Spudder page!&body=Check out this cool page I saw on Spudder: {{ request.META.HTTP_HOST }}{{ request.get_full_path }}"><i class="fa fa-envelope-square fa-2x"></i></a></li>
-                </ul>
-                {% block login %}
-                    <div class="headnav">
-                        <ul>
-                            {% if request.user.is_authenticated %}
-                                <li><a href="/cern/">Dashboard</a>
-                            {% else %}
-                                <li><a href="/cern/register/">Register</a></li>
-                                <li><a href="/cern/login/">Login</a></li>
-                            {% endif %}
-                        </ul>
-                    </div>
-                {% endblock %}
-            </div>
+            <a class="menu-toggler" id="menu-toggler" href="#">
+                <span class="menu-text"></span>
+            </a>
+            <ul class="social-network">
+                <li><a data-original-title="Share on Facebook" data-placement="bottom" href="JavaScript:facebookPopup()"><i class="fa fa-facebook-square fa-2x"></i></a></li>
+                <li><a data-original-title="Share on Twitter" data-placement="bottom" href="javascript:twitterPopup()" id="twitter"><i class="fa fa-twitter-square fa-2x"></i></a></li>
+                <li><a data-original-title="Share on LinkedIn" data-placement="bottom" href="JavaScript:linkedinPopup()"><i class="fa fa-linkedin-square fa-2x"></i></a></li>
+                <li><a data-original-title="Share on Google+" data-placement="bottom" href="javascript:googlePopup()"><i class="fa fa-google-plus-square fa-2x "></i></a></li>
+            </ul>
+            {% block login %}
+                <div class="headnav">
+                    <ul>
+                        {% if request.user.is_authenticated %}
+                            <li><a href="/cern/">Dashboard</a>
+                        {% else %}
+                            <li><a href="/cern/register/">Register</a></li>
+                            <li><a href="/cern/login/">Login</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+            {% endblock %}
         </header>
     {% endblock %}
 
@@ -132,12 +142,10 @@
                 </div>
                 <div class="clearfix row">
                     <ul class="social-network pull-right">
-                        <li><a data-original-title="Facebook" href="http://www.facebook.com/spudderdotcom" target="_blank" data-placement="bottom" title=""><i class="icon-facebook icon-square"></i></a></li>
-                        <li><a data-original-title="Twitter" href="https://twitter.com/spudder_com" target="_blank" data-placement="bottom" title=""><i class="icon-twitter icon-square"></i></a></li>
-                        <!-- <li><a href="#" data-placement="bottom" title="Linkedin"><i class="icon-linkedin icon-square"></i></a></li> -->
-                        <li><a data-original-title="Pinterest" href="http://pinterest.com/spudderdotcom/" target="_blank" data-placement="bottom" title=""><i class="icon-pinterest icon-square"></i></a></li>
-                        <li><a data-original-title="Google plus" href="https://plus.google.com/113968251038874482620" target="_blank" rel="publisher" data-placement="bottom" title=""><i class="icon-google-plus icon-square"></i></a></li>
-                    </ul>
+<li><a data-original-title="Share on Facebook" data-placement="bottom" href="JavaScript:facebookPopup()"><i class="fa fa-facebook-square fa-2x"></i></a></li>
+                    <li><a data-original-title="Share on Twitter" data-placement="bottom" href="javascript:twitterPopup()" id="twitter"><i class="fa fa-twitter-square fa-2x"></i></a></li>
+                    <li><a data-original-title="Share on LinkedIn" data-placement="bottom" href="JavaScript:linkedinPopup()"><i class="fa fa-linkedin-square fa-2x"></i></a></li>
+                    <li><a data-original-title="Share on Google+" data-placement="bottom" href="javascript:googlePopup()"><i class="fa fa-google-plus-square fa-2x "></i></a></li>                    </ul>
                     <div class="copyright">
                         <p>
                             <span>&copy; Spudder LLC 2013 All right reserved.</span>
@@ -219,8 +227,16 @@
                 $footer.css({top: $(window).height() - $footer.outerHeight()});
         }
 
+        function fix_header_social_networks_position() {
+            if ($('#menu-toggler').is(":visible"))
+                $('header .social-network').css({left: "95px"});
+            else
+                $('header .social-network').css({left: "15px"});
+        }
+
         $(document).ready(function() {
 
+            // Hide any empty alerts
             $('.alert').each(function(i, alert) {
                var $alert = $(alert);
                if ($alert.html() == "")
@@ -231,6 +247,12 @@
             fix_footer_position();
             $(window).on('resize', function(){
                 fix_footer_position();
+            });
+
+            // If the menu hidden button is visible (mobile)
+            fix_header_social_networks_position();
+            $(window).on('resize', function(){
+                fix_header_social_networks_position();
             });
 
 
@@ -260,7 +282,6 @@
 
         });
     </script>
-{#    <script type="text/javascript" src="//platform.twitter.com/widgets.js"></script>    #}
     {% block scripts %}{% endblock scripts %}
 </body>
 </html>
