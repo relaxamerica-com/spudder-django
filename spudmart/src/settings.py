@@ -56,7 +56,8 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.contrib.auth.context_processors.auth',
     'django.core.context_processors.request',
     'django.core.context_processors.media',
-    'spudmart.amazon.context.amazon_client_id'
+    'spudmart.amazon.context.amazon_client_id',
+    'spudmart.contextprocessors.appenginhelpers.context_running_locally',
 )
 
 

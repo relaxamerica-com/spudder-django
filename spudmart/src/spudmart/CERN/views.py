@@ -277,7 +277,7 @@ def dashboard(request):
             qa = False
 
 
-    return render(request, 'CERN/dashboard.html',
+    return render(request, 'CERN/pages/dashboard.html',
                   {
                   'student': student,
                   'content': content,

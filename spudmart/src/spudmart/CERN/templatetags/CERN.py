@@ -13,6 +13,7 @@ def strip_school_name(school):
     """
     return strip_invalid_chars(school.name)
 
+
 @register.simple_tag
 def my_school_link(user):
     """
