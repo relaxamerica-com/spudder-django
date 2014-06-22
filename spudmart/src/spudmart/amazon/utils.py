@@ -44,7 +44,7 @@ def get_donation_cbui_url(donation):
 def get_venue_recipient_cbui_url(venue):
     return _get_recipient_cbui_url(
         return_url='%s/venues/recipient/%s/complete' % (settings.SPUDMART_BASE_URL, venue.id),
-        max_variable_fee='50'
+        max_variable_fee='90'
     )
 
 
