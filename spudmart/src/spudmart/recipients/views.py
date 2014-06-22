@@ -24,6 +24,7 @@ def complete(request, team_id):
     team = get_team(team_id)
     recipient = get_or_create_recipient(team, request.user)
     recipient.status_code = AmazonActionStatus.get_from_code(request.GET.get('status'))
+    recipient.max_fee = 10
 
     if recipient.status_code is AmazonActionStatus.SUCCESS:
         result = save_team_is_recipient(team_id)

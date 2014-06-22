@@ -514,7 +514,7 @@
 									{% if rent_venue_url %}
 										<a href="{{ rent_venue_url }}"><img src="/media/img/buttons/pay-with-amazon.png" /></a>
 									{% else %}
-										<a href="/accounts/login?next={{ rent_venue_url }}" style="float: right;"><img src="/media/img/buttons/pay-with-amazon.png" /></a>
+										<a href="/accounts/login?next={{ request.get_full_path }}" style="float: right;"><img src="/media/img/buttons/pay-with-amazon.png" /></a>
 									{% endif %}
 								{% endif %}
 							{% endif %}							

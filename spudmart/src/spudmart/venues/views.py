@@ -358,27 +358,29 @@ def remove_pic(request, venue_id):
 
 def recipient(request, venue_id):
     venue = Venue.objects.get(pk = venue_id)
+
     return render(request, 'venues/recipient/recipient.html', {
-                    'cbui_url' : get_venue_recipient_cbui_url(venue)
-                  })
+        'cbui_url': get_venue_recipient_cbui_url(venue)
+    })
     
     
 def complete(request, venue_id):
-    venue = Venue.objects.get(pk = venue_id)
-    recipient, _ = VenueRecipient.objects.get_or_create(groundskeeper = venue.user)
-    recipient.status_code = AmazonActionStatus.get_from_code(request.GET.get('status'))
+    venue = Venue.objects.get(pk=venue_id)
+    venue_recipient, _ = VenueRecipient.objects.get_or_create(groundskeeper = venue.user)
+    venue_recipient.status_code = AmazonActionStatus.get_from_code(request.GET.get('status'))
+    venue_recipient.max_fee = 50
 
-    if recipient.status_code is AmazonActionStatus.SUCCESS:
+    if venue_recipient.status_code is AmazonActionStatus.SUCCESS:
         state = RecipientRegistrationState.FINISHED
-        recipient.recipient_token_id=request.GET.get('tokenID')
-        recipient.refund_token_id=request.GET.get('refundTokenID')
+        venue_recipient.recipient_token_id=request.GET.get('tokenID')
+        venue_recipient.refund_token_id=request.GET.get('refundTokenID')
         redirect_to = '/venues/recipient/%s/thanks' % venue_id
     else:
         state = RecipientRegistrationState.TERMINATED
         redirect_to = '/venues/recipient/%s/error' % venue_id
 
-    recipient.state = state
-    recipient.save()
+    venue_recipient.state = state
+    venue_recipient.save()
 
     return HttpResponseRedirect(redirect_to)
 
@@ -418,7 +420,7 @@ def rent_complete(request, venue_id):
                 TransactionAmount=transaction_amount,
                 SenderTokenId=request.GET.get('tokenID'),
                 ChargeFeeTo='Caller',
-                MarketplaceVariableFee='5',
+                MarketplaceVariableFee='50',
                 OverrideIPNURL=venue_ipn_url
             )
             
