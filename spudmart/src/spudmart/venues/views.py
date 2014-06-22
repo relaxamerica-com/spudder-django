@@ -1,10 +1,9 @@
 from django.shortcuts import render, get_object_or_404
 from django.template.loader import render_to_string
-from spudmart.utils.system_messages import add_system_message
-from spudmart.venues.models import Venue, VenueRentStatus, SPORTS
+from spudmart.utils.emails import send_email
+from spudmart.venues.models import Venue, SPORTS
 from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect, HttpResponse, HttpResponseNotAllowed
-from django.contrib.auth import authenticate, login
 from spudmart.upload.models import UploadedFile
 import simplejson
 from spudmart.recipients.models import VenueRecipient,\
@@ -425,9 +424,8 @@ def rent_complete(request, venue_id):
             )
             
             rent_venue.sender_token_id = request.GET.get('tokenID')
-            state = DonationState.PENDING
-
-            venue.renting_status = VenueRentStatus.RESERVED
+            state = DonationState.FINISHED
+            venue.renter = request.user
             venue.save()
 
             redirect_to = '/venues/rent_venue/%s/thanks' % venue.pk
@@ -435,10 +433,6 @@ def rent_complete(request, venue_id):
             state = DonationState.TERMINATED
             rent_venue.status_code = AmazonActionStatus.SE
             rent_venue.error_message = e
-
-            venue.renting_status = VenueRentStatus.FREE
-            venue.save()
-
             redirect_to = '/venues/rent_venue/%s/error' % venue.pk
     else:
         state = DonationState.TERMINATED
@@ -453,7 +447,8 @@ def rent_complete(request, venue_id):
 
 def rent_thanks(request, venue_id):
     return render(request, 'venues/rent_venue/thanks.html', {
-        'spudder_url': '%s/venues/view/%s' % (settings.SPUDMART_BASE_URL, venue_id)
+        'spudder_url': '%s/dashboard/sponsor/page' % settings.SPUDMART_BASE_URL,
+        'venue_url': '%s/venues/view/%s' % (settings.SPUDMART_BASE_URL, venue_id)
     })
     
 
@@ -483,30 +478,13 @@ def rent_notification(request, venue_id, user_id):
     parsed_status.transaction_user = user
     parsed_status.save()
 
-    if IPNTransactionStatus.SUCCESS == parsed_status.transactionStatus:
-        rent_venue.state = DonationState.FINISHED
-        rent_venue.status_code = AmazonActionStatus.SUCCESS
-        rent_venue.save()
-
-        venue.renter = user
-        venue.renting_status = VenueRentStatus.RENTED
-        venue.save()
-
-        message_body = render_to_string('venues/rent_venue/rent_successful.html', {
-            'venue': venue,
-            'venue_url': '%s/venues/view/%s' % (settings.SPUDMART_BASE_URL, venue.id),
-            'sponsor_page_url': '%s/dashboard/sponsor/page' % settings.SPUDMART_BASE_URL
-        })
-
-        add_system_message(body=message_body, user=user)
-
-    elif IPNTransactionStatus.PENDING != parsed_status.transactionStatus:  # ERROR
+    if parsed_status.transactionStatus not in [IPNTransactionStatus.SUCCESS, IPNTransactionStatus.PENDING]:  # ERROR
         rent_venue.state = DonationState.TERMINATED
         rent_venue.status_code = AmazonActionStatus.PE
         rent_venue.error_message = parsed_status.statusMessage
         rent_venue.save()
 
-        venue.renting_status = VenueRentStatus.FREE
+        venue.renter = None
         venue.save()
 
         message_body = render_to_string('venues/rent_venue/rent_error.html', {
@@ -515,7 +493,7 @@ def rent_notification(request, venue_id, user_id):
             'venue_url': '%s/venues/view/%s' % (settings.SPUDMART_BASE_URL, venue.id)
         })
 
-        add_system_message(body=message_body, user=user)
+        send_email(settings.SERVER_EMAIL, user.email, 'Venue renting payment error', message_body)
 
     return HttpResponse('OK')
 

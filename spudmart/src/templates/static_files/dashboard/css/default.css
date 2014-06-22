@@ -181,6 +181,11 @@ textarea {
     display: table;
     margin: auto;
 }
+
+.centered + .centered {
+    margin-top: 10px;
+}
+
 .spud-container [class^="icon-"], [class*=" icon-"] {
     margin-right: 0;
 }
@@ -1100,9 +1105,11 @@ form .input-required {
 }
 
 #venue-account .header {
-	margin-bottom: 30px;
+	margin-bottom: 10px;
 	margin-top: 10px;
 	text-align: center;
+    font-weight: bold;
+    font-size: x-large;
 }
 
 #venue-account .alert-block {
