@@ -17,10 +17,16 @@ def temp_redirect_view(request):
     :return: HttpResponseRedirect object
     """
     redirect_url = "http://info.spudder.com"
-    url_parts = request.META['HTTP_HOST'].split('.')
-    if len(url_parts) > 1:
-        if url_parts[0] == "cern":
-            redirect_url = "/cern/"
+
+    if hasattr(request, 'META'):
+        try:
+            url_parts = request.META['HTTP_HOST'].split('.')
+            if len(url_parts) > 1:
+                if url_parts[0] == "cern":
+                    redirect_url = "/cern/"
+        except KeyError:
+            pass  # request META dict doesn't have HTTP_HOST key (f.i. in tests)
+
     return HttpResponseRedirect(redirect_url)
 
 urlpatterns = patterns(

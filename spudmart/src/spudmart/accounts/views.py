@@ -130,8 +130,7 @@ def amazon_login(request):
                 else:
                     create_student(user, sch, referrer)
 
-            user = authenticate(username=amazon_user_email,
-                                password=amazon_user_id)
+            user = authenticate(username=amazon_user_email, password=amazon_user_id)
             profile = user.get_profile()
 
             if not profile.amazon_access_token:
@@ -140,13 +139,7 @@ def amazon_login(request):
 
             django.contrib.auth.login(request, user)
             
-            has_next_in_url = (return_url != '/')
-            
-            logging.info(has_next_in_url)
-            logging.info(request.user.is_authenticated())
-            logging.info(is_sponsor(request.user))
-            
-            if request.user.is_authenticated() and not has_next_in_url:
+            if request.user.is_authenticated() and not (return_url != '/'):
                 if is_sponsor(request.user):
                     return_url = '/dashboard'
                 elif is_student(request.user):

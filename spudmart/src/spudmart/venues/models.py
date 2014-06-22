@@ -52,4 +52,23 @@ class Venue(models.Model):
         return self.pk == other.pk
 
     def is_available(self):
-        return hasattr(self, 'renter')
+        if self.price <= 0.0:
+            return False
+
+        if PendingVenueRental.objects.filter(venue=self).count() > 0:
+            return False
+
+        return self.renter is None
+
+    def is_renter(self, user):
+        if self.renter is None:
+            return False
+
+        return self.renter.id == user.id
+
+    def is_groundskeeper(self, user):
+        return self.user.id == user.id
+
+
+class PendingVenueRental(models.Model):
+    venue = models.ForeignKey(Venue)
