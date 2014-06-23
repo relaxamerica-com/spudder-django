@@ -2,7 +2,8 @@
     <div class="span2">
         <div class="pricing-box-alt" id="marketing">
             <div class="pricing-heading">
-                <h3>Marketing</h3>
+                <i class="fa fa-fw fa-map-marker"></i>
+                <h3>Marketing <br/>(Venues)</h3>
             </div>
             <div class="pricing-terms">
                 <h3>{{ student.marketing_points }} pts</h3>
@@ -28,6 +29,7 @@
     <div class="span2">
         <div class="pricing-box-alt" id="social-media">
             <div class="pricing-heading">
+                <i class="fa fa-fw fa-rss"></i>
                 <h3>Social Media PR</h3>
             </div>
             <div class="pricing-terms">
@@ -55,6 +57,7 @@
     <div class="span2">
         <div class="pricing-box-alt" id="blogging">
             <div class="pricing-heading">
+                <i class="fa fa-fw fa-edit"></i>
                 <h3>Content Management</h3>
             </div>
             <div class="pricing-terms">
@@ -65,7 +68,7 @@
                     <li>Manage a blog and even earn a featured column on Spudder's main site</li>
                     <li>This feature isn't ready yet. Sign up below to be alerted when it is.</li>
                     {% if content %}
-                    <li><button class="btn btn-orange" id='content'>Join mailing list</button></li>
+                    <li><button class="btn btn-orange" id='content-btn'>Join mailing list</button></li>
                     {% else %}
                     <li><button class="btn">You're on the list</button></li>
                     {% endif %}
@@ -77,6 +80,7 @@
     <div class="span2">
         <div class="pricing-box-alt" id="design">
             <div class="pricing-heading">
+                <i class="fa fa-fw fa-pencil"></i>
                 <h3>Design UX/UI</h3>
             </div>
             <div class="pricing-terms">
@@ -99,6 +103,7 @@
     <div class="span2">
         <div class="pricing-box-alt" id="quality-assurance">
             <div class="pricing-heading">
+                <i class="fa fa-fw fa-cogs"></i>
                 <h3>Quality Assurance</h3>
             </div>
             <div class="pricing-terms">
@@ -126,21 +131,23 @@
               'project' : project, });
     }
 
-    $('#content').click(function(){
-        $(this).removeClass('btn-orange');
-        $(this).text("You're on the list");
-        join_list('Blogging');
-    });
+    $(document).ready(function(){
+        $('#content-btn').click(function(){
+            $(this).removeClass('btn-orange');
+            $(this).text("You're on the list");
+            join_list('Blogging');
+        });
 
-    $('#design-btn').click(function(){
-        $(this).removeClass('btn-orange');
-        $(this).text("You're on the list");
-        join_list('Sponsor Page Design');
-    });
+        $('#design-btn').click(function(){
+            $(this).removeClass('btn-orange');
+            $(this).text("You're on the list");
+            join_list('Sponsor Page Design');
+        });
 
-    $('#qa').click(function(){
-        $(this).removeClass('btn-orange');
-        $(this).text("You're on the list");
-        join_list('Quality Assurance Testing');
+        $('#qa').click(function(){
+            $(this).removeClass('btn-orange');
+            $(this).text("You're on the list");
+            join_list('Quality Assurance Testing');
+        });
     });
 </script>

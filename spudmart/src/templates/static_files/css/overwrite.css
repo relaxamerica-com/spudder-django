@@ -730,7 +730,7 @@ font-size: 10px;
 }
 
 .btn-orange {
-    border: none;
+    border: 3px solid #F37421;
     color:#fff;
     background: #F37421 !important;
     border-radius: 1px;

@@ -1139,30 +1139,6 @@ p.head .add-button {
 	margin-bottom: 20px !important;
 }
 
-.about-cern.alert{
-	display: inherit;
-    margin-bottom: 20px;
-    padding: 10px;
-}
-
-.about-cern a{
-	color: #F03C02; 
-}
-
-.about-cern h3{
-	text-align: center;
-}
-
-.cern-header{
-
-	display: block;
-	background-color: #fff;
-}
-
-.pricing-terms h3{
-	color: #e9e9e9;
-}
-
 #social-media table{
     border: solid 1px black;
 }

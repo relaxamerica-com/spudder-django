@@ -2,8 +2,11 @@ import os
 from django.conf.urls.defaults import patterns
 
 
-urlpatterns = patterns('spudmart.CERN.views',
+urlpatterns = patterns(
+    'spudmart.CERN.views',
     (r'^$', 'display_cern'),
+    (r'^venues/$', 'venues'),
+    (r'^venues/new/$', 'venues_new'),
     (r'^social_media/$', 'social_media'),
     (r'^content/$', 'content'),
     (r'^design/$', 'design'),

@@ -17,23 +17,15 @@ class SSLRedirect:
         pass
 
     def process_view(self, request, view_func, view_args, view_kwargs):
-        if SKIPPED_URLS.match(request.path):
+        # We need to pop the potential args and kwargs even if we are skipping this processing. MG: 20140623
+        secure = view_kwargs.pop(SSL, False)
+        secure_unauthenticated = view_kwargs.pop('SSL_unauthenticated', False)
+
+        if SKIPPED_URLS.match(request.path) or request.META['SERVER_NAME'] in ['localhost', 'testserver']:
             return None
 
-        if request.META['SERVER_NAME'] in ['localhost', 'testserver']:
-            return None
-
-        if SSL in view_kwargs:
-            secure = view_kwargs[SSL]
-            del view_kwargs[SSL]
-        else:
-            secure = False
-
-            if 'SSL_unauthenticated' in view_kwargs:
-                if view_kwargs['SSL_unauthenticated']:
-                    if not request.user.is_authenticated():
-                        secure = True
-                del view_kwargs['SSL_unauthenticated']
+        if not secure and secure_unauthenticated and not request.user.is_authenticated():
+            secure = True
 
         if not secure == self._is_secure(request):
             return self._redirect(request, secure)

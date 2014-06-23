@@ -24,7 +24,8 @@
             </div>
 
             <script type="text/javascript">
-                 $('#join').click(function(){
+                $(document).ready(function(){
+                    $('#join').click(function(){
                      if ($(this).text() == "Join {{ project }} mailing list"){
                          $(this).removeClass('btn-orange');
                          $(this).text("Mailing list joined.");
@@ -32,7 +33,8 @@
                                 { 'email' : "{{ request.user.email }}",
                                   'project' : "{{ project }}", });
                      }
-                 });
+                    });
+                });
             </script>
             {% include 'dashboard/parts/scripts.html' %}
         </div>

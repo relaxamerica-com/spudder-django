@@ -1360,6 +1360,7 @@ color:#353535;
 	list-style:none;
 	padding:15px 0 15px 0;
 	margin:0 0 0 0;
+    min-height: 70px;
 }
 
 .pricing-action{
@@ -1393,8 +1394,16 @@ border: 1px solid #e6e6e6;
 .pricing-box-alt .pricing-heading {
 	background: #fcfcfc;
 	text-align: center;
-	padding:40px 0 0px 0;
+	padding:30px 0 0px 0;
+    min-height: 80px;
 	display:block;
+    position:relative;
+}
+.pricing-box-alt .pricing-heading > i{ 
+    position:absolute;
+    font-size:70px;
+    left: 30px;
+    color: rgba(0,0,0,0.05) 
 }
 .pricing-box-alt.special .pricing-heading {
 	background: #fcfcfc;
@@ -1407,21 +1416,18 @@ border: 1px solid #e6e6e6;
 .pricing-box-alt.special .pricing-heading h3 {
 	color:#fff;
 }
-
-.pricing-box-alt .pricing-heading h3 strong {
-	font-size:32px;
-	font-weight:700;
-	letter-spacing:-1px;
-}
 .pricing-box-alt .pricing-heading h3 {
-	font-size:32px;
+	font-size:20px;
 	font-weight:300;
 	letter-spacing:-1px;
+}
+.pricing-box-alt .pricing-heading h3 strong {
+	font-weight:700;
 }
 
 .pricing-box-alt .pricing-terms {
 	text-align: center;
-	background:#333;
+	background:#F37421;
 	display:block;
 	overflow:hidden;
 	padding:30px 0 20px;
@@ -1431,7 +1437,6 @@ border: 1px solid #e6e6e6;
 	font-style:italic;
 	margin-top:10px;
 	color:#fff;
-	
 	font-family:'Noto Serif', serif;
 }
 
@@ -4755,37 +4760,35 @@ div[id^=donation-modal] .loading {
     border-radius: 15px;
     padding: 30px;
 }
+.question .button-cern {
+    font-size:80px;
+    display: block;
+}
 .question.left {
     text-align: left;
 }
-.question.left .alert .icon-caret-down {
+.question.left .alert .fa-caret-down {
     font-size: 30px;
     position:absolute;
     left: 40px;
     bottom: -20px;
     color: #BCE8F1
 }
-.question.left .icon-question {
-    display: none;
-    font-size:80px;
+.question.left .button-cern {
     margin-left: 25px;
-    color: #3A87AD
 }
 .question.right {
     text-align: right;
 }
-.question.right .alert .icon-caret-down {
+.question.right .alert .fa-caret-down {
     font-size: 30px;
     position:absolute;
-    right: 40px;
+    right: 25px;
     bottom: -20px;
     color: #D6E9C6;
 }
-.question.right .icon-question {
-    display: none;
-    font-size:80px;
+.question.right .button-cern {
     margin-right: 40px;
-    color: #468847
 }
 
 /****** CERN Single Well Pages ******/
@@ -4812,4 +4815,45 @@ div[id^=donation-modal] .loading {
 }
 .nav-list > li.active > a:hover {
     color: #F37421;
+}
+
+/***** CERN Dashboard Pages *****/
+.about-cern.alert{
+	display: inherit;
+    margin-bottom: 20px;
+    padding: 10px;
+}
+
+.about-cern a{
+	color: #F03C02;
+}
+
+.about-cern h3{
+	text-align: center;
+}
+
+.cern-header{
+
+	display: block;
+	background-color: #fff;
+}
+
+.pricing-terms h3{
+	color: #e9e9e9;
+}
+
+/**** CERN PAGES ****/
+.main-content-header {
+    border-bottom: 1px solid  #CCC;
+    margin-bottom: 15px;
+}
+.main-content-header h1 {
+    margin-bottom: 0;
+    font-size: 40px;
+}
+.main-content-header h2 { 
+    font-size: 14px;
+    color: #F03C02;
+    padding-left: 10px;
+    margin-bottom: 5px;
 }

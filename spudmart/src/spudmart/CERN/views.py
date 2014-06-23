@@ -1,3 +1,5 @@
+import os
+from boto.s3.user import User
 from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse, \
     HttpResponseNotAllowed
@@ -9,10 +11,11 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.utils.datastructures import MultiValueDictKeyError
 from spudmart.CERN.utils import import_schools, strip_invalid_chars
 from django.contrib.auth.decorators import login_required, user_passes_test
-from spudmart.CERN.rep import recruited_new_student
+from spudmart.CERN.rep import recruited_new_student, created_venue
 from spudmart.utils.queues import trigger_backend_task
 from spudmart.utils.url import get_return_url
 import settings
+from spudmart.venues.models import Venue, SPORTS
 
 
 def user_is_student(user):
@@ -44,8 +47,13 @@ def register(request, referral_id=None):
         return register_with_state(
             request, state=request.POST['state'], referral_id=referral_id)
     sorted_states = sorted(STATES.items(), key=lambda x: x[1])
+    template_data = {'states': sorted_states, 'referral_id': referral_id}
+
+    # If we are in dev then print a list of states that have schools in the db. MG: 20140623
+    if bool(os.environ['SERVER_SOFTWARE'].startswith('Development')):
+        template_data['in_dev_states_with_schools'] = [s.state for s in School.objects.all()]
     return render(
-        request, 'CERN/pages/register_choose_state.html', {'states': sorted_states, 'referral_id': referral_id})
+        request, 'CERN/pages/register_choose_state.html', template_data)
 
 
 def register_with_state(request, state, referral_id=None):
@@ -439,6 +447,31 @@ def mobile(request):
                   'joined': joined,
                   'menu_context': 'mobile'
                   })
+
+
+@login_required
+@user_passes_test(user_is_student, '/cern/non-student/')
+def venues(request):
+    template_data = {'venues': Venue.objects.filter(user=request.user)}
+    return render(request, 'CERN/pages/venues.html', template_data)
+
+
+@login_required
+@user_passes_test(user_is_student, '/cern/non-student/')
+def venues_new(request):
+    if request.method == 'POST':
+        venue = Venue(user=request.user, sport=request.POST['sport'])
+        venue.latitude = float(request.POST['latitude'])
+        venue.longitude = float(request.POST['longitude'])
+        venue.save()
+
+        # Reward the student for creating the venue
+        owner = Student.objects.get(user=request.user)
+        created_venue(owner)
+
+        return redirect_to('/venues/view/%s' % venue.id)
+    template_data = {'sports': SPORTS}
+    return render(request, 'CERN/pages/venues_new.html', template_data)
 
 
 def add_email_alert(request):
