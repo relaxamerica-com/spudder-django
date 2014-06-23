@@ -26,6 +26,7 @@ def finalize_pending_rentals(pending_rentals, user):
             venue.save()
 
             rent_venue = RentVenue.objects.get(venue=venue)
+            rent_venue.donor = user
             rent_venue.state = DonationState.FINISHED
             rent_venue.save()
 

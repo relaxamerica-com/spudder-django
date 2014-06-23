@@ -29,6 +29,7 @@ class FinalizePendingRentals(FormattedOutputTestCase):
         venue = Venue.objects.get(pk=100)
         rent_venue = RentVenue.objects.get(pk=101)
         self.assertEquals(venue.renter, self.renter)
+        self.assertEquals(rent_venue.donor, self.renter)
         self.assertEquals(rent_venue.state, DonationState.FINISHED)
 
         self.assertEquals(0, PendingVenueRental.objects.filter(venue=venue).count())
@@ -41,11 +42,13 @@ class FinalizePendingRentals(FormattedOutputTestCase):
         venue = Venue.objects.get(pk=100)
         rent_venue = RentVenue.objects.get(pk=101)
         self.assertEquals(venue.renter, self.renter)
+        self.assertEquals(rent_venue.donor, self.renter)
         self.assertEquals(rent_venue.state, DonationState.FINISHED)
 
         venue = Venue.objects.get(pk=102)
         rent_venue = RentVenue.objects.get(pk=103)
         self.assertEquals(venue.renter, self.renter)
         self.assertEquals(rent_venue.state, DonationState.FINISHED)
+        self.assertEquals(rent_venue.donor, self.renter)
 
         self.assertEquals(0, PendingVenueRental.objects.all().count())
