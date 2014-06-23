@@ -941,7 +941,7 @@ form .input-required {
 	display: inline-block;
 	line-height: 30px;
 	border-radius: 3px;
-	border: 1px solid red;
+	border: 1px solid #a89b94;
 	box-shadow: #696969 1px 1px;
 	text-align: center;
 	-moz-box-shadow:inset 0px 1px 0px 0px #fce2c1;
@@ -987,7 +987,7 @@ form .input-required {
 }
 
 #venue-view .buttons i.active {
-	border-color: yellow;
+	/**border-color: yellow;*/
 	background-color: #fb9e25;
 }
 

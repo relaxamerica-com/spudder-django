@@ -666,13 +666,11 @@
 			if ($(this).html() == 'Show Mode') {
 				editMode.hide();
 				viewMode.show();
-				buttons.addClass('no-border');
 				$(this).html('Edit Mode');
 				window.isEditMode = false;
 			} else {
 				editMode.show();
 				viewMode.hide();
-				buttons.removeClass('no-border');
 				$(this).html('Show Mode');
 				window.isEditMode = true;
 			}
@@ -1171,7 +1169,7 @@
 
 			response.done(function() {
 				dfd.resolve();
-				$('.buttons i.map-icon-postal-code').addClass('ready initialized');
+				$('.buttons i.map-icon-postal-code').addClass('initialized');
 			});
 		});*/
 
