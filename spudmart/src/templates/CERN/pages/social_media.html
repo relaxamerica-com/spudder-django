@@ -1,6 +1,8 @@
 {% extends 'CERN/base.html' %}
 {% load accounts %}
 
+{% block title %}Social Media Projects on CERN{% endblock %}
+
 {% block content %}
 
     <div class="container-fluid main-container">
@@ -8,6 +10,11 @@
 
         <div class="main-content">
             <div class="page-content">
+                <div class="main-content-header">
+                    <h1><i class="fa fa-fw fa-rss"></i> Social Media</h1>
+                    <h2>Promote your CERN team and earn cred and real buseinss experience! </h2>
+                </div>
+
             {% if need_saving %}
             <script>
               function appendResults(text, elementid) {
@@ -63,7 +70,7 @@
             <script src="https://apis.google.com/js/client.js?onload=load"></script>
 
             {% if student.show_social_media %}
-                {% include 'CERN/parts/about-social-media.html' %}
+                {% include 'CERN/quote_messages/quote_social_media_instructions.html' %}
             {% endif %}
 
             <div class="row">

@@ -474,6 +474,20 @@ def venues_new(request):
     return render(request, 'CERN/pages/venues_new.html', template_data)
 
 
+@login_required
+@user_passes_test(user_is_student, '/cern/non-student/')
+def delete_venue(request, venue_id):
+    """
+    Deletes a venue
+
+    :param request: request to delete venue
+    :param venue_id: venue to be deleted
+    :return: redirect to venues list
+    """
+    venue = Venue.objects.get(id=venue_id)
+    venue.delete()
+    return HttpResponseRedirect('/cern/venues/')
+
 def add_email_alert(request):
     """
     Adds an email address to a MailingList for a give project

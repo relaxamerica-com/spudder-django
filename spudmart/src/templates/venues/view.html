@@ -1,30 +1,26 @@
-{% extends 'CERN/base.html' %}
-
+{% extends 'CERN/base_no_side_nav.html' %}
 {% load displays %}
 
-{% block title %}{{ venue.name }} ({{ venue.sport }}) | Spudder - Sports Updates Made Simple{% endblock %}
+{% block title %}{{ venue.name }} ({{ venue.sport }}){% endblock %}
 
 {% block meta %}
 
-<link rel="stylesheet" href="/media/dashboard/css/ace-file-input.css" />
+    <link rel="stylesheet" href="/media/dashboard/css/ace-file-input.css" />
 
-<!--Facebook meta tags-->
-{% if venue.aka_name and venue.sport %}
-<meta property="og:title" content="{{ venue.aka_name }} ({{ venue.sport }}) | Spudder - Sports Updates Made Simple">
-<meta property="og:description" content="See details about this field on Spudder.">
-{% endif %}
-<meta property="og:url" content="http://{{ request.META.HTTP_HOST }}{{ request.path }}">
-<meta property="og:site_name" content="Spudder - Sports Updates Made Simple">
-{% if venue.logo %}<meta property="og:image" content="http://{{ request.META.HTTP_HOST }}/file/serve/{{ venue.logo.id }}">
-    {% else %}<meta property="og:image" content="http://{{ request.META.HTTP_HOST }}/ico/favicon.png">
-{% endif %}
-<meta propety="og:type" content="website">
-<!--Twitter meta tags-->
-<meta property="twitter:card" content="summary">
-<meta property="twitter:site" content="@spudder_com">
-
-
-
+    <!--Facebook meta tags-->
+    {% if venue.aka_name and venue.sport %}
+    <meta property="og:title" content="{{ venue.aka_name }} ({{ venue.sport }}) | Spudder - Sports Updates Made Simple">
+    <meta property="og:description" content="See details about this field on Spudder.">
+    {% endif %}
+    <meta property="og:url" content="http://{{ request.META.HTTP_HOST }}{{ request.path }}">
+    <meta property="og:site_name" content="Spudder - Sports Updates Made Simple">
+    {% if venue.logo %}<meta property="og:image" content="http://{{ request.META.HTTP_HOST }}/file/serve/{{ venue.logo.id }}">
+        {% else %}<meta property="og:image" content="http://{{ request.META.HTTP_HOST }}/ico/favicon.png">
+    {% endif %}
+    <meta propety="og:type" content="website">
+    <!--Twitter meta tags-->
+    <meta property="twitter:card" content="summary">
+    <meta property="twitter:site" content="@spudder_com">
 {% endblock meta %}
 
 {% block content %}

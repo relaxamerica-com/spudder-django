@@ -1,5 +1,7 @@
 {% extends 'CERN/base.html' %}
 
+{% block title %}Marketing Projects (Venues) on CERN{% endblock %}
+
 {% block content %}
 
     <div class="container-fluid main-container">
@@ -54,28 +56,21 @@
                         </tbody>
                     </table>
                 {% else %}
-                    <div class="question left">
-                        <div class="alert alert-info about-cern" style="display:inline-block">
-                            <h4>You have not claimed any venues yet!</h4>
-                            <p>Once you have created some venues, you can manage them here.</p>
-                            <p>
-                                <b>You should know:</b><br/>
-                                Venues need to have a physical location, you must be in the actual venue to claim it. <br/>
-                                If you are not, please visit this page on your mobile browser while at the venue.
-                            </p>
-                            <a class="btn btn-orange" style="margin: 30px;" href="/cern/venues/new/">
-                                Claim your first Venue
-                            </a>
-                            <i class="fa fa-caret-down"></i>
-                        </div>
-                        <img src="/media/img/button-cern-small.png" class="button-cern" />
-                    </div>
+                    {% include 'CERN/quote_messages/venues_empty_list.html' %}
+
                 {% endif %}
 
             </div>
 
         </div>
     </div>
+    <script type="text/javascript">
+        function deleteVenue(id){
+            if (confirm('This will permanently delete the venue!')){
+                window.location.href="/cern/venues/delete/" + id
+            }
+        }
+    </script>
 
     {% include 'dashboard/parts/scripts.html' %}
 
