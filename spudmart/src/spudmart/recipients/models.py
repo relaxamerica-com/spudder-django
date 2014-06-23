@@ -18,6 +18,7 @@ class AmazonRecipient(models.Model):
     refund_token_id = models.CharField(max_length=255)
     state = models.IntegerField(default=RecipientRegistrationState.NOT_STARTED)
     status_code = models.CharField(max_length=255)
+    max_fee = models.IntegerField(default=10)
     
     class Meta:
         abstract = True

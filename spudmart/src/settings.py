@@ -96,20 +96,23 @@ app_name = get_spudmart_app_name()
 
 shared_settings = {
     'spudmart1': {  # main testing environment
+        'server_email': 'help@spuder.com',
         'spudder_application_id': 'RwjN7ubrqVZSXcwd2AWaQtov6Mgsi7hAXZ510xTR',
         'spudder_rest_api_key': 'aY5jEVPGJadgWcd2gOecgnzMNKDS9Igx8d5DNU04',
         'spudder_base_url': 'https://spudmart.parseapp.com',
         'spudmart_base_url': 'https://spudmart1.appspot.com',
         'amazon_login_client_id': 'amzn1.application-oa2-client.4637978bf71a44fdb057225c55e78d12'
     },
-    'sharp-avatar-587': {  # Lukasz@spudder.com
+    'sharp-avatar-587': {  # lukasz@spuder.com
+        'server_email': 'lukasz@spuder.com',
         'spudder_application_id': 'QZjpmUJQEwBE6Wc0YfKEMRwv2C5Aeb4qQbopyIg9',
         'spudder_rest_api_key': 'S47GCWTSehKpwwJ2y8iXVnoYLWqOoPyydKiyWYYb',
         'spudder_base_url': 'https://spudmartlukasz.parseapp.com',
         'spudmart_base_url': 'https://sharp-avatar-587.appspot.com',
         'amazon_login_client_id': 'amzn1.application-oa2-client.de78cbafe055444aa00e07a445644d16'
     },
-    'essential-hawk-597': {  # Karol@spudder.com
+    'essential-hawk-597': {  # karol@spudder.com
+        'server_email': 'karol@spuder.com',
         'spudder_application_id': 'YU4g6sCW8Dvl6khJsVYgXhr20Pu5zaaLcIQ4oRON',
         'spudder_rest_api_key': 'AbvJ682IvzXdWMMi1CbdONZHZhdJH4gFEyTWo4k9',
         'spudder_base_url': 'https://spudmartkarol.parseapp.com',
@@ -117,27 +120,31 @@ shared_settings = {
         'amazon_login_client_id': 'amzn1.application-oa2-client.d8fccc9c77624577898dca9ff517eff3'
     },
     'ahmed': {
+        'server_email': 'help@spuder.com',
         'spudder_application_id': '',
         'spudder_rest_api_key': '',
         'spudder_base_url': 'https://karol.parseapp.com',
         'spudmart_base_url': 'https://ahmed-dot-spudmart1.appspot.com',
         'amazon_login_client_id': 'amzn1.application-oa2-client.d8fccc9c77624577898dca9ff517eff3'
     },
-    'genial-union-587': { #lucy@spudder.com
+    'genial-union-587': {  # lucy@spudder.com
+        'server_email': 'lucy@spuder.com',
         'spudder_application_id': '',
         'spudder_rest_api_key': '',
         'spudder_base_url': 'https://spudmart.parseapp.com',
         'spudmart_base_url': 'https://genial-union-587.appspot.com',
         'amazon_login_client_id': 'amzn1.application-oa2-client.b1404a35a0484c64a0fdf150a8a7a6f2'
     },
-    'spudmartmatt': { #mg@metalayer.com
+    'spudmartmatt': {  # mg@metalayer.com
+        'server_email': 'mg@metalayer.com',
         'spudder_application_id': '',
         'spudder_rest_api_key': '',
         'spudder_base_url': 'https://spudmart.parseapp.com',
         'spudmart_base_url': 'https://spudmartmatt.appspot.com',
         'amazon_login_client_id': 'amzn1.application-oa2-client.ee0b298ab0ce4be99ef0527da3c4820a'
     },
-    'spudder-live': { #mg@metalayer.com
+    'spudder-live': {  #mg@metalayer.com
+        'server_email': 'help@spuder.com',
         'spudder_application_id': '',
         'spudder_rest_api_key': '',
         'spudder_base_url': 'https://spudmart.parseapp.com',
@@ -151,6 +158,7 @@ SPUDDER_REST_API_KEY = shared_settings[app_name]['spudder_rest_api_key']
 SPUDDER_BASE_URL = shared_settings[app_name]['spudder_base_url']
 SPUDMART_BASE_URL = shared_settings[app_name]['spudmart_base_url']
 AMAZON_LOGIN_CLIENT_ID = shared_settings[app_name]['amazon_login_client_id']
+SERVER_EMAIL = shared_settings[app_name]['server_email']
 
 # Configuration shared across all applications
 AWS_ACCESS_KEY_ID = 'AKIAIEUN2XKQF4ZU7UDA'

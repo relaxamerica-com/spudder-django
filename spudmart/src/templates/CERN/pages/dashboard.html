@@ -1,21 +1,39 @@
-{% extends 'CERN/base.html' %}
+<!DOCTYPE html>
+<html>
+<head>
+    {% include 'CERN/parts/dashboard-meta.html' %}
+    {% block meta %}
+        <title>Dashboard | CERN on Spudder</title>
+    {% endblock %}
+    {% include 'parts/scripts.html' %}
+</head>
 
-{% block content %}
+<body class="skin-3">
+    {% include 'accounts/common/amazon-root.html' %}
+    {% include 'CERN/parts/header.html' %}
 
-    <div class="container-fluid main-container">
-        {% include 'CERN/parts/sideNav.html' with active="scoreboard" %}
+    <div class="main-container container-fluid">
+        <a class="menu-toggler orange" id="menu-toggler" href="#">
+            <span class="menu-text"></span>
+        </a>
+
+        {% include 'CERN/parts/sideNav.html' %}
 
         <div class="main-content">
+            {% block breadcrumbs %} {% endblock breadcrumbs %}
             <div class="page-content">
-                {% if student.show_CERN %}
-                    {% include 'CERN/parts/about-cern.html' %}
-                {% endif %}
-                {% include 'CERN/parts/grid.html' %}
+                {% block content %}
+                    {% if student.show_CERN %}
+                        {% include 'CERN/parts/about-cern.html' %}
+                    {% endif %}
+                    {% include 'CERN/parts/grid.html' %}
+                {% endblock content %}
             </div>
 
         </div>
     </div>
 
     {% include 'dashboard/parts/scripts.html' %}
-
-{% endblock %}
+    {% block scripts %}{% endblock scripts %}
+</body>
+</html>

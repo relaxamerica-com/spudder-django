@@ -10,12 +10,14 @@ def get_fps_connection():
     # Reference: https://groups.google.com/forum/#!topic/boto-users/lzOKsZFKTM8
     return FPSConnection(settings.AWS_ACCESS_KEY_ID, settings.AWS_SECRET_KEY_ID, validate_certs=False)
 
-def _get_recipient_cbui_url(returnURL):
+
+def _get_recipient_cbui_url(return_url, max_variable_fee='10'):
     connection = get_fps_connection()
 
-    return connection.cbui_url(returnURL=returnURL,
+    return connection.cbui_url(returnURL=return_url,
                                pipelineName='Recipient',
-                               recipientPaysFee=False, maxVariableFee='10')
+                               recipientPaysFee=False, maxVariableFee=max_variable_fee)
+
 
 def get_recipient_cbui_url(team_id):
     return _get_recipient_cbui_url('%s/dashboard/recipient/%s/complete' % (settings.SPUDMART_BASE_URL, team_id))
@@ -37,25 +39,32 @@ def get_donation_cbui_url(donation):
                                recipientTokenList=recipientTokenId,
                                amountType='Exact',
                                currencyCode='USD')
-    
+
+
 def get_venue_recipient_cbui_url(venue):
-    return _get_recipient_cbui_url('%s/venues/recipient/%s/complete' % (settings.SPUDMART_BASE_URL, venue.id))
+    return _get_recipient_cbui_url(
+        return_url='%s/venues/recipient/%s/complete' % (settings.SPUDMART_BASE_URL, venue.id),
+        max_variable_fee='90'
+    )
+
 
 def get_rent_venue_cbui_url(venue):
     connection = get_fps_connection()
+
+    recipients = VenueRecipient.objects.filter(groundskeeper=venue.user)
+    recipient_token_id = recipients[0].recipient_token_id
     
-    recipients = VenueRecipient.objects.filter(groundskeeper = venue.user)
-    recipientTokenId = recipients[0].recipient_token_id
-    
-    return connection.cbui_url(returnURL='%s/venues/rent_venue/%s/complete' % (settings.SPUDMART_BASE_URL, venue.id),
-                               pipelineName='MultiUse',
-                               transactionAmount=venue.price,
-                               paymentReason='Renting Venue: %s' % venue.name,
-                               globalAmountLimit=venue.price,
-                               isRecipientCobranding='True',
-                               recipientTokenList=recipientTokenId,
-                               amountType='Exact',
-                               currencyCode='USD')
+    return connection.cbui_url(
+        returnURL='%s/venues/rent_venue/%s/complete' % (settings.SPUDMART_BASE_URL, venue.id),
+        pipelineName='MultiUse',
+        transactionAmount=venue.price,
+        paymentReason='Renting Venue: %s' % venue.name,
+        globalAmountLimit=venue.price,
+        isRecipientCobranding='True',
+        recipientTokenList=recipient_token_id,
+        amountType='Exact',
+        currencyCode='USD'
+    )
 
 
 def get_rent_venue_ipn_url(venue, user):

@@ -1,10 +1,9 @@
 from django.shortcuts import render, get_object_or_404
 from django.template.loader import render_to_string
-from spudmart.utils.system_messages import add_system_message
-from spudmart.venues.models import Venue, VenueRentStatus, SPORTS
+from spudmart.utils.emails import send_email
+from spudmart.venues.models import Venue, SPORTS, PendingVenueRental
 from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect, HttpResponse, HttpResponseNotAllowed
-from django.contrib.auth import authenticate, login
 from spudmart.upload.models import UploadedFile
 import simplejson
 from spudmart.recipients.models import VenueRecipient,\
@@ -23,7 +22,7 @@ from spudmart.CERN.rep import added_basic_info, added_photos, added_logo, \
 from spudmart.CERN.models import Student
 
 # DO NOT REMOVE, PLEASE! It's needed for testing purpose
-# 
+#
 # def login_view(request):
 #     errors = []
 #     if request.method == 'POST':
@@ -35,11 +34,14 @@ from spudmart.CERN.models import Student
 #         else:
 #             login(request, user)
 #             return HttpResponseRedirect('/venues/list')
-#     
+#
 #     return render(request, 'venues/login.html', { 'errors' : errors })
+from spudmart.venues.utils import finalize_pending_rentals
+
 
 def view(request, venue_id):
     venue = Venue.objects.get(pk = venue_id)
+    user = request.user
     splitted_address = venue.medical_address.split(', ')
     medical_address = {
         'address': splitted_address.pop(0) if splitted_address else '',
@@ -47,16 +49,16 @@ def view(request, venue_id):
         'state': splitted_address.pop(0) if splitted_address else '',
         'zip': splitted_address.pop(0) if splitted_address else ''
     }
-    
-    is_recipient = VenueRecipient.objects.filter(groundskeeper = request.user)
+
+    is_recipient = VenueRecipient.objects.filter(groundskeeper=user)
     rent_venue_url = False
-    can_edit = request.user.is_authenticated() and (request.user.pk == venue.user.pk or (venue.renter and request.user.pk == venue.renter.pk))
-    
-    if venue.price > 0.0 and request.user.is_authenticated() and request.user.pk != venue.user.pk:
+    can_edit = user.is_authenticated() and (venue.is_groundskeeper(user) or venue.is_renter(user))
+
+    if venue.is_available() and not venue.is_renter(user):
         rent_venue_url = get_rent_venue_cbui_url(venue)
-    
+
     sponsor = SponsorPage.objects.filter(sponsor=venue.renter)
-    
+
     return render(request, 'venues/view.html', {
         'venue': venue,
         'sports': SPORTS,
@@ -65,7 +67,7 @@ def view(request, venue_id):
         'rent_venue_url': rent_venue_url,
         'can_edit': can_edit,
         'sponsor': sponsor[0] if len(sponsor) else None,
-        'is_sponsor': len(sponsor) and sponsor[0].sponsor == request.user
+        'is_sponsor': venue.renter == user
     })
 
 def create(request):
@@ -358,27 +360,29 @@ def remove_pic(request, venue_id):
 
 def recipient(request, venue_id):
     venue = Venue.objects.get(pk = venue_id)
+
     return render(request, 'venues/recipient/recipient.html', {
-                    'cbui_url' : get_venue_recipient_cbui_url(venue)
-                  })
+        'cbui_url': get_venue_recipient_cbui_url(venue)
+    })
     
     
 def complete(request, venue_id):
-    venue = Venue.objects.get(pk = venue_id)
-    recipient, _ = VenueRecipient.objects.get_or_create(groundskeeper = venue.user)
-    recipient.status_code = AmazonActionStatus.get_from_code(request.GET.get('status'))
+    venue = Venue.objects.get(pk=venue_id)
+    venue_recipient, _ = VenueRecipient.objects.get_or_create(groundskeeper = venue.user)
+    venue_recipient.status_code = AmazonActionStatus.get_from_code(request.GET.get('status'))
+    venue_recipient.max_fee = 50
 
-    if recipient.status_code is AmazonActionStatus.SUCCESS:
+    if venue_recipient.status_code is AmazonActionStatus.SUCCESS:
         state = RecipientRegistrationState.FINISHED
-        recipient.recipient_token_id=request.GET.get('tokenID')
-        recipient.refund_token_id=request.GET.get('refundTokenID')
+        venue_recipient.recipient_token_id=request.GET.get('tokenID')
+        venue_recipient.refund_token_id=request.GET.get('refundTokenID')
         redirect_to = '/venues/recipient/%s/thanks' % venue_id
     else:
         state = RecipientRegistrationState.TERMINATED
         redirect_to = '/venues/recipient/%s/error' % venue_id
 
-    recipient.state = state
-    recipient.save()
+    venue_recipient.state = state
+    venue_recipient.save()
 
     return HttpResponseRedirect(redirect_to)
 
@@ -398,15 +402,17 @@ def error(request, venue_id):
         'spudder_url': '%s/venues/view/%s' % (settings.SPUDMART_BASE_URL, venue_id),
         'status': status_message
     })
-    
+
+
 def rent_complete(request, venue_id):
     venue = get_object_or_404(Venue, pk = venue_id)
-    rent_venue, _ = RentVenue.objects.get_or_create(venue=venue, donor=request.user)
+
+    rent_venue, _ = RentVenue.objects.get_or_create(venue=venue)
     rent_venue.status_code = AmazonActionStatus.get_from_code(request.GET.get('status'))
     
     if rent_venue.status_code is AmazonActionStatus.SUCCESS:
         recipients = VenueRecipient.objects.filter(groundskeeper=venue.user)
-        recipientTokenId = recipients[0].recipient_token_id
+        recipient_token_id = recipients[0].recipient_token_id
         
         try:
             connection = get_fps_connection()
@@ -414,29 +420,41 @@ def rent_complete(request, venue_id):
             venue_ipn_url = get_rent_venue_ipn_url(venue, request.user)
 
             connection.pay(
-                RecipientTokenId=recipientTokenId,
+                RecipientTokenId=recipient_token_id,
                 TransactionAmount=transaction_amount,
                 SenderTokenId=request.GET.get('tokenID'),
                 ChargeFeeTo='Caller',
-                MarketplaceVariableFee='5',
+                MarketplaceVariableFee='50',
                 OverrideIPNURL=venue_ipn_url
             )
             
             rent_venue.sender_token_id = request.GET.get('tokenID')
-            state = DonationState.PENDING
 
-            venue.renting_status = VenueRentStatus.RESERVED
+            if not request.user.is_authenticated():
+                pending_rental = PendingVenueRental(venue=venue)
+                pending_rental.save()
+
+                try:
+                    pending_session_venues = request.session['pending_venues_rental']
+                    pending_session_venues += ',' + str(pending_rental.id)
+                except KeyError:
+                    pending_session_venues = str(pending_rental.id)
+
+                request.session['pending_venues_rental'] = pending_session_venues
+
+                state = DonationState.PENDING
+                redirect_to = '/venues/rent_venue/sign_in'
+            else:
+                state = DonationState.FINISHED
+                venue.renter = request.user
+                redirect_to = '/venues/rent_venue/%s/thanks' % venue.pk
+
             venue.save()
 
-            redirect_to = '/venues/rent_venue/%s/thanks' % venue.pk
         except Exception, e:
             state = DonationState.TERMINATED
             rent_venue.status_code = AmazonActionStatus.SE
             rent_venue.error_message = e
-
-            venue.renting_status = VenueRentStatus.FREE
-            venue.save()
-
             redirect_to = '/venues/rent_venue/%s/error' % venue.pk
     else:
         state = DonationState.TERMINATED
@@ -449,9 +467,33 @@ def rent_complete(request, venue_id):
     return HttpResponseRedirect(redirect_to)
 
 
+def rent_sign_in(request):
+    return render(request, 'venues/rent_venue/sign_in.html', {
+        'client_id': settings.AMAZON_LOGIN_CLIENT_ID,
+        'base_url': settings.SPUDMART_BASE_URL
+    })
+
+
+def rent_sign_in_complete(request):
+    try:
+        pending_session_venues = request.session['pending_venues_rental']
+    except KeyError:
+        # No pending venue rentals in session, move forward
+        return HttpResponseRedirect('/')
+
+    # direct import so that testing framework can properly mock function
+    from spudmart.venues.utils import finalize_pending_rentals as finalize
+    finalize(pending_session_venues, request.user)
+
+    del request.session['pending_venues_rental']
+
+    return HttpResponseRedirect('/dashboard/sponsor/page')
+
+
 def rent_thanks(request, venue_id):
     return render(request, 'venues/rent_venue/thanks.html', {
-        'spudder_url': '%s/venues/view/%s' % (settings.SPUDMART_BASE_URL, venue_id)
+        'spudder_url': '%s/dashboard/sponsor/page' % settings.SPUDMART_BASE_URL,
+        'venue_url': '%s/venues/view/%s' % (settings.SPUDMART_BASE_URL, venue_id)
     })
     
 
@@ -481,30 +523,13 @@ def rent_notification(request, venue_id, user_id):
     parsed_status.transaction_user = user
     parsed_status.save()
 
-    if IPNTransactionStatus.SUCCESS == parsed_status.transactionStatus:
-        rent_venue.state = DonationState.FINISHED
-        rent_venue.status_code = AmazonActionStatus.SUCCESS
-        rent_venue.save()
-
-        venue.renter = user
-        venue.renting_status = VenueRentStatus.RENTED
-        venue.save()
-
-        message_body = render_to_string('venues/rent_venue/rent_successful.html', {
-            'venue': venue,
-            'venue_url': '%s/venues/view/%s' % (settings.SPUDMART_BASE_URL, venue.id),
-            'sponsor_page_url': '%s/dashboard/sponsor/page' % settings.SPUDMART_BASE_URL
-        })
-
-        add_system_message(body=message_body, user=user)
-
-    elif IPNTransactionStatus.PENDING != parsed_status.transactionStatus:  # ERROR
+    if parsed_status.transactionStatus not in [IPNTransactionStatus.SUCCESS, IPNTransactionStatus.PENDING]:  # ERROR
         rent_venue.state = DonationState.TERMINATED
         rent_venue.status_code = AmazonActionStatus.PE
         rent_venue.error_message = parsed_status.statusMessage
         rent_venue.save()
 
-        venue.renting_status = VenueRentStatus.FREE
+        venue.renter = None
         venue.save()
 
         message_body = render_to_string('venues/rent_venue/rent_error.html', {
@@ -513,7 +538,7 @@ def rent_notification(request, venue_id, user_id):
             'venue_url': '%s/venues/view/%s' % (settings.SPUDMART_BASE_URL, venue.id)
         })
 
-        add_system_message(body=message_body, user=user)
+        send_email(settings.SERVER_EMAIL, user.email, 'Venue renting payment error', message_body)
 
     return HttpResponse('OK')
 

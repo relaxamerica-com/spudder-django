@@ -16,7 +16,8 @@ class DonationState():
 
 class AmazonPayment(models.Model):
     created_date = models.DateTimeField(auto_now_add=True)
-    donor = models.ForeignKey(User)
+    # Donor  field is nullable for situations where user is not authenticated but he purchased something via Amazon
+    donor = models.ForeignKey(User, null=True)
     donation = models.FloatField(default=0)
     state = models.IntegerField(default=DonationState.NOT_STARTED)
     sender_token_id = models.CharField(max_length=255)
