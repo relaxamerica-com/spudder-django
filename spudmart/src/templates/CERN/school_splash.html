@@ -1,204 +1,198 @@
-{% extends 'CERN/base.html' %}
-
+{% extends 'CERN/base_no_side_nav.html' %}
 {% load accounts %}
 {% load CERN %}
 
-{% block meta %}
-<link rel="stylesheet" href="/media/dashboard/css/ace-file-input.css" />
-<title>{{ school.name }} | CERN on Spudder</title>
-{% endblock meta %}
+{% block title %}{{ school.name }} on CERN{% endblock %}
 
 {% block content %}
 
-    
-<div class="container clearfix" id="venue-view">
-    <br>
-    <div class="row">
-        <div class="span7">
-            <h5 class="venue-header clearfix aligncenter"> {{ school.name }} CERN Team </h5>
-            
-            {% if not request.user.is_authenticated %}
-                <p class="aligncenter">
-                {% if referrer %}
-                <a href="/cern/{{ school.id }}/register/{{ referrer.referral_code }}" class="btn btn-orange">Join this Team</a>
-                {% else %}
-                <a href="/cern/{{ school.id }}/register/" class="btn btn-orange">Join this Team</a>
-                {% endif %}
-                </p>
-            {% endif %}
-            
-            {% if head and request.user.pk == head.user.pk %}
-            <div class="row-fluid">
-                <div class="span6">                    
-                    <form method="post" enctype="multipart/form-data">
-                        <div class="edit-mode">
-                            <div class="btn btn-orange" id="save-description">
-                                Save
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                
-                <div class="span6">
-                    <div class="btn btn-orange pull-right" id="edit-description" style="margin:0 auto;">
-                        Edit Mode
-                    </div>
-                </div>
-            </div>
-            
-            <div class="alert"></div>
-            
-            <div class="row-fluid edit-mode">
-                <div class="span1"></div>
-                <div class="span10">
-                    <form method="post" enctype="multipart/form-data" id="description-form">
-                    <textarea id="description-input" placeholder="You can put a quick message for people viewing your school's page here.">{{ school.description }}</textarea>
-                </form>    
-                </div>
-                <div class="span1"></div>
-            </div>
-            {% endif %}
+    <div class="container clearfix" id="venue-view">
+        <br>
+        <div class="row">
+            <div class="span7">
+                <h5 class="venue-header clearfix aligncenter"> {{ school.name }} CERN Team </h5>
 
-            <div class="row-fluid view-mode details-header">
-                <div class="span1"></div>
-                <div class="span10">
-                    <p id="description"> {{ school.description }} </p>
-                </div>
-                <div class="span1"></div>
-            </div>
-
-            {% if top_students %}
-            <div class="row-fluid">
-                <div class="span1"></div>
-                <div class="span10 top-students">
-                    <h4 class="aligncenter">Top students at at {{ school.name }}:</h4>
-                    <ol>
-                        {% for student in top_students %}
-                        <li>{% user_name student.user %}: {{ student.rep }} total points - Top project: {{ student.top_project_verbose }}</li>
-                        {% endfor %}
-                    </ol>
-                </div>
-                <div class="span1"></div>
-            </div>
-            {% if remaining_students %}
-            <div class="row-fluid">
-                <div class="span1"></div>
-                <div class="span10 remaining-students">
-                    <h4>More students at {{ school.name }}:</h4>
-                        {% for student in remaining_students %}
-                        <p>{% user_name student.user %}: {{ student.rep }} total points - Top project: {{ student.top_project_verbose }}</p>
-                        {% endfor %}
-                </div>
-                <div class="span1"></div>
-            </div>
-            {% endif %}
-            {% endif %}
-        </div>
-
-        <div class="span5">
-            <aside class="right-sidebar">
-                <div class="widget offer-widget">
-                    {% if request.user and head and request.user.pk == head.user.pk %}
-                    <div class="row-fluid">
-                        <div class="span6">                    
-		                    <form method="post" enctype="multipart/form-data">
-		                        <div class="edit-mode">
-		                            <div class="btn btn-orange" id="save-right">
-		                                Save
-		                            </div>
-		                        </div>
-		                    </form>
-                        </div>
-                        
-                        <div class="span6">
-                            <div class="btn btn-orange pull-right" id="edit-right" style="margin:0 auto;">
-                                Edit Mode
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="alert"></div>
-                    
-                    <div class="row-fluid edit-mode aligncenter">
-                        <div class="span12">
-                            <p>Show some school spirit and customize your page!</p>
-                            <form method="post" enctype="multipart/form-data" id="mascot-form">
-                                <label>Team Mascot: </label>
-                                {% if school.mascot %}
-                                    <input name="mascot" value="{{ school.mascot }}">
-                                {% else %}
-                                    <input name="mascot">
-                                {% endif %}
-                            </form>
-                        </div>
-                    </div>
+                {% if not request.user.is_authenticated %}
+                    <p class="aligncenter">
+                    {% if referrer %}
+                    <a href="/cern/{{ school.id }}/register/{{ referrer.referral_code }}" class="btn btn-orange">Join this Team</a>
+                    {% else %}
+                    <a href="/cern/{{ school.id }}/register/" class="btn btn-orange">Join this Team</a>
                     {% endif %}
+                    </p>
+                {% endif %}
 
-                    <h6 class="aligncenter">School Profile</h6>
-                    
-                    <div class="row-fluid">
-                        <div class="span12 view-mode" >
-                            {% if school.logo %}
-                                <img style="margin:auto;display:block" id="logo" src="/file/serve/{{ school.logo.id }}"/>
-                            {% else %}
-                                <div class="logo-placeholder" style="margin:0 auto;">
-                                    Your Logo Here
+                {% if head and request.user.pk == head.user.pk %}
+                <div class="row-fluid">
+                    <div class="span6">
+                        <form method="post" enctype="multipart/form-data">
+                            <div class="edit-mode">
+                                <div class="btn btn-orange" id="save-description">
+                                    Save
                                 </div>
-                            {% endif %} 
-                        </div>
-                        <div class="span12 edit-mode aligncenter">
-                            <p><label>Upload a custom Logo:</label></p>
-                            <p>Don't use your school's logo or anything else that has a trademark. Create something new instead!</p>
-                        </div>
-                    </div>
-                    
-                    <div class="row-fluid edit-mode">
-                        <div class="span2"></div>
-	                    <div class="span8 aligncenter">
-	                       <form method="post" enctype="multipart/form-data" id="logo-form">
-	                            <input type="file" name="file" id="edit-logo" />
-	                       </form>
-                        </div>
-                        <div class="span2"></div>
+                            </div>
+                        </form>
                     </div>
 
-                    <div class="row-fluid">
-                        <div class="span12 details-header aligncenter">
-                            See stats for {{ school.name }}'s CERN Team:
+                    <div class="span6">
+                        <div class="btn btn-orange pull-right" id="edit-description" style="margin:0 auto;">
+                            Edit Mode
                         </div>
                     </div>
-
-                    <ul class="folio-detail offer-details">
-                        <li>
-                            <label>Team Size: </label> {{ school.num_students }} registered
-                            <span id="mascot">
-                                {% if school.mascot %}
-                                    {{ school.mascot }}
-                                {% else %}
-                                    students
-                                {% endif %}
-                            </span>
-                        </li>
-
-                        <li>
-                            <label>School Reputation: </label> {{ school.get_rep }} points, Level {{ school.level }} 
-                        </li>
-                        
-                        <li>
-                            <label>Team Captain: </label>
-                                {% if head %}
-                                    {% user_name head.user %}
-                                {% else %}
-                                    Register now to be Team Captain!
-                                {% endif %}
-                        </li>
-                    </ul>
                 </div>
-            </aside>
+
+                <div class="alert"></div>
+
+                <div class="row-fluid edit-mode">
+                    <div class="span1"></div>
+                    <div class="span10">
+                        <form method="post" enctype="multipart/form-data" id="description-form">
+                        <textarea id="description-input" placeholder="You can put a quick message for people viewing your school's page here.">{{ school.description }}</textarea>
+                    </form>
+                    </div>
+                    <div class="span1"></div>
+                </div>
+                {% endif %}
+
+                <div class="row-fluid view-mode details-header">
+                    <div class="span1"></div>
+                    <div class="span10">
+                        <p id="description"> {{ school.description }} </p>
+                    </div>
+                    <div class="span1"></div>
+                </div>
+
+                {% if top_students %}
+                <div class="row-fluid">
+                    <div class="span1"></div>
+                    <div class="span10 top-students">
+                        <h4 class="aligncenter">Top students at at {{ school.name }}:</h4>
+                        <ol>
+                            {% for student in top_students %}
+                            <li>{% user_name student.user %}: {{ student.rep }} total points - Top project: {{ student.top_project_verbose }}</li>
+                            {% endfor %}
+                        </ol>
+                    </div>
+                    <div class="span1"></div>
+                </div>
+                {% if remaining_students %}
+                <div class="row-fluid">
+                    <div class="span1"></div>
+                    <div class="span10 remaining-students">
+                        <h4>More students at {{ school.name }}:</h4>
+                            {% for student in remaining_students %}
+                            <p>{% user_name student.user %}: {{ student.rep }} total points - Top project: {{ student.top_project_verbose }}</p>
+                            {% endfor %}
+                    </div>
+                    <div class="span1"></div>
+                </div>
+                {% endif %}
+                {% endif %}
+            </div>
+
+            <div class="span5">
+                <aside class="right-sidebar">
+                    <div class="widget offer-widget">
+                        {% if request.user and head and request.user.pk == head.user.pk %}
+                        <div class="row-fluid">
+                            <div class="span6">
+                                <form method="post" enctype="multipart/form-data">
+                                    <div class="edit-mode">
+                                        <div class="btn btn-orange" id="save-right">
+                                            Save
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <div class="span6">
+                                <div class="btn btn-orange pull-right" id="edit-right" style="margin:0 auto;">
+                                    Edit Mode
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="alert"></div>
+
+                        <div class="row-fluid edit-mode aligncenter">
+                            <div class="span12">
+                                <p>Show some school spirit and customize your page!</p>
+                                <form method="post" enctype="multipart/form-data" id="mascot-form">
+                                    <label>Team Mascot: </label>
+                                    {% if school.mascot %}
+                                        <input name="mascot" value="{{ school.mascot }}">
+                                    {% else %}
+                                        <input name="mascot">
+                                    {% endif %}
+                                </form>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        <h6 class="aligncenter">School Profile</h6>
+
+                        <div class="row-fluid">
+                            <div class="span12 view-mode" >
+                                {% if school.logo %}
+                                    <img style="margin:auto;display:block" id="logo" src="/file/serve/{{ school.logo.id }}"/>
+                                {% else %}
+                                    <div class="logo-placeholder" style="margin:0 auto;">
+                                        Your Logo Here
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="span12 edit-mode aligncenter">
+                                <p><label>Upload a custom Logo:</label></p>
+                                <p>Don't use your school's logo or anything else that has a trademark. Create something new instead!</p>
+                            </div>
+                        </div>
+
+                        <div class="row-fluid edit-mode">
+                            <div class="span2"></div>
+                            <div class="span8 aligncenter">
+                               <form method="post" enctype="multipart/form-data" id="logo-form">
+                                    <input type="file" name="file" id="edit-logo" />
+                               </form>
+                            </div>
+                            <div class="span2"></div>
+                        </div>
+
+                        <div class="row-fluid">
+                            <div class="span12 details-header aligncenter">
+                                See stats for {{ school.name }}'s CERN Team:
+                            </div>
+                        </div>
+
+                        <ul class="folio-detail offer-details">
+                            <li>
+                                <label>Team Size: </label> {{ school.num_students }} registered
+                                <span id="mascot">
+                                    {% if school.mascot %}
+                                        {{ school.mascot }}
+                                    {% else %}
+                                        students
+                                    {% endif %}
+                                </span>
+                            </li>
+
+                            <li>
+                                <label>School Reputation: </label> {{ school.get_rep }} points, Level {{ school.level }}
+                            </li>
+
+                            <li>
+                                <label>Team Captain: </label>
+                                    {% if head %}
+                                        {% user_name head.user %}
+                                    {% else %}
+                                        Register now to be Team Captain!
+                                    {% endif %}
+                            </li>
+                        </ul>
+                    </div>
+                </aside>
+            </div>
         </div>
     </div>
-
-</div>
 {% endblock content %}
 
 {% block scripts %}
