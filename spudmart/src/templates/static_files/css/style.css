@@ -2935,7 +2935,7 @@ input[type=checkbox].ace-switch.ace-switch-2+.lbl::before {
 
 input[type="checkbox"],input[type="radio"] {
 	height: 18px;
-	opacity: 0;
+	opacity: 100;
 	position: absolute;
 	width: 18px;
 	z-index: 12;
@@ -4852,4 +4852,13 @@ div[id^=donation-modal] .loading {
     color: #F03C02;
     padding-left: 10px;
     margin-bottom: 5px;
+}
+
+// Makes checkboxes visible
+.checkbox-visible{
+    opacity: 100;
+}
+
+.checkbox-label{
+    margin-left: 20px;
 }

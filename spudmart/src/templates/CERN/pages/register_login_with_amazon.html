@@ -70,6 +70,8 @@
                         <div class="alert alert-error"><%= error %></div>
                         {% endif %}
 
+                        <input type="checkbox" class="checkbox-visible" id="accepted-terms-and-conditions"><label class="checkbox-label">I have accepted the <a href="https://docs.google.com/document/d/1z1O8dbfsKidDVfcEjZCX17v7sq07RV2Qfy5ykCrUAgE/view">terms and conditions</a>.</label>
+
                         <div class="control-group">
                             <p class="aligncenter">
                                 <a href="#" id="LoginWithAmazon">
@@ -103,9 +105,13 @@
 
         if (loginWithAmazon) {
             loginWithAmazon.onclick = function() {
-                options = { scope : 'profile' };
-                amazon.Login.authorize(options, returnUrl);
-                return false;
+                if ($('#accepted-terms-and-conditions').prop('checked')){
+                    options = { scope : 'profile' };
+                    amazon.Login.authorize(options, returnUrl);
+                    return false;
+                } else{
+                    alert('You must accept the terms and conditions to register!');
+                }
             };
         }
     </script>
