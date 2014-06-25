@@ -122,6 +122,27 @@
             </div>
         </div>
     </div>
+    <div class="span2">
+        <div class="pricing-box-alt" id="linkedin-sharing">
+            <div class="pricing-heading">
+                <i class="fa fa-fw fa-linkedin"></i>
+                <h3>Share Points on LinkedIn</h3>
+            </div>
+            <div class="pricing-terms">
+                {% if student.linkedin_token %}
+                <p>Your account is authorized.</p>
+                {% else %}
+                <a href="https://www.linkedin.com/uas/oauth2/authorization?response_type=code&client_id={{ key }}&scope=rw_nus&state=aowj3p5ro8a0f9jq23lk4jqlwkejADSE$SDSDFGJJaw&redirect_uri=http://{{ request.META.HTTP_HOST }}/cern/save_linkedin">Authorize Posts on LinkedIn</a>
+                {% endif %}
+            </div>
+            {% if student.linkedin_token %}
+            <div class="pricing-content">
+                <ul>
+                    {% if student.marketing_points > 0 %}<li><a id="share-marketing">Share Marketing Points</a></li>{% endif %}
+                    {% if student.social_media_points > 0 %}<li><a id="share-social-media">Share Social Media Points</a></li>{% endif %}
+                </ul>
+            </div>
+            {% endif %}
     </div>
 </div>
 <script type="text/javascript">
@@ -149,5 +170,25 @@
             $(this).text("You're on the list");
             join_list('Quality Assurance Testing');
         });
+    });
+
+    $('#share-marketing').click(function(){
+        if (confirm('This will send a post to your LinkedIn network.')){
+            $.post('/cern/share_points',
+                   {
+                   project: 'Marketing',
+                   points: '{{ student.marketing_points }}',
+                   });
+        }
+    });
+
+    $('#share-social-media').click(function(){
+        if (confirm('This will send a post to your LinkedIn network.')){
+            $.post('/cern/share_points',
+                   {
+                   project: 'Social Media',
+                   points: '{{ student.social_media_points }}',
+                   });
+        }
     });
 </script>

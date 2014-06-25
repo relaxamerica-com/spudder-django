@@ -13,10 +13,13 @@ urlpatterns = patterns(
     (r'^design/$', 'design'),
     (r'^testing/$', 'testing'),
     (r'^mobile/$', 'mobile'),
+
+    # Functional URLs
     (r'^add_email_alert/$', 'add_email_alert'),
     (r'^save_short_url/$', 'save_short_url'),
     (r'^disable_about/$', 'disable_about'),
-    
+    (r'^save_linkedin$', 'save_linkedin'),
+    (r'^share_points$', 'share_points'),
     
     # Registration & school pages
     (r'^(?P<school_id>\d+)/save_logo$', 'save_school_logo'),

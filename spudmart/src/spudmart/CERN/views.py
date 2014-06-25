@@ -1,4 +1,6 @@
 import os
+from urllib2 import urlopen, Request
+from urllib import urlencode
 from boto.s3.user import User
 from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse, \
@@ -13,9 +15,11 @@ from spudmart.CERN.utils import import_schools, strip_invalid_chars
 from django.contrib.auth.decorators import login_required, user_passes_test
 from spudmart.CERN.rep import recruited_new_student, created_venue
 from spudmart.utils.queues import trigger_backend_task
-from spudmart.utils.url import get_return_url
+from spudmart.utils.url import get_return_url, get_request_param
 import settings
 from spudmart.venues.models import Venue, SPORTS
+from datetime import timedelta, datetime
+from json import loads, dumps
 
 
 def user_is_student(user):
@@ -284,6 +288,7 @@ def dashboard(request):
         if student.user.email in qa_list.emails:
             qa = False
 
+    linkedin_key = settings.LINKEDIN_API_KEY
 
     return render(request, 'CERN/pages/dashboard.html',
                   {
@@ -291,6 +296,7 @@ def dashboard(request):
                   'content': content,
                   'design': design,
                   'qa': qa,
+                  'key': linkedin_key,
                   })
 
 
@@ -504,7 +510,7 @@ def add_email_alert(request):
             mailinglist = MailingList.objects.get(project=project)
         except ObjectDoesNotExist:
             mailinglist = MailingList(emails=[], project=project)
-        
+
         mailinglist.emails.append(request.POST['email'])
         mailinglist.save()
         return HttpResponse()
@@ -631,3 +637,67 @@ def login(request):
                            'base_url': settings.SPUDMART_BASE_URL,
                            'returnURL': get_return_url(request)
     })
+
+
+def save_linkedin(request):
+    """
+    Saves linkedin details.
+
+    :param request:
+    :return: redirect to CERN dashboard
+    """
+    state = 'aowj3p5ro8a0f9jq23lk4jqlwkejADSE$SDSDFGJJaw'
+    if get_request_param(request, 'state') == state:
+        # Handle case when user does not authorize
+        if get_request_param(request, 'error') == 'access_denied':
+            pass
+        code = get_request_param(request, 'code')
+
+        response = urlopen('https://www.linkedin.com/uas/oauth2/accessToken' +
+                           '?grant_type=authorization_code' +
+                           '&code=' + code +
+                           '&redirect_uri=http://' + request.META['HTTP_HOST'] +
+                            '/cern/save_linkedin' +
+                            '&client_id=' + settings.LINKEDIN_API_KEY +
+                            '&client_secret=' + settings.LINKEDIN_SECRET_KEY,
+                            data=" ")
+
+        json = loads(response.read())
+        seconds_remaining = int(json['expires_in']) - 86400*2
+        expires = datetime.utcnow() + timedelta(seconds=seconds_remaining)
+        token = json['access_token']
+
+        student = Student.objects.get(user=request.user)
+        student.linkedin_token = token
+        student.linkedin_expires = expires
+        student.save()
+
+        return HttpResponseRedirect('/cern/')
+
+
+def share_points(request):
+    """
+    Automatically shares points for given project on LinkedIn
+
+    :param request: a POST request containing 'project' and 'points',
+        where 'project' is the name of the project and 'points'
+        is the number of points the student has in the project
+    :return: the response from the LinkedIn Share API
+    """
+    student = Student.objects.get(user=request.user)
+    points = request.POST['points']
+    project = request.POST['project']
+
+    data = ("<?xml version='1.0' encoding='UTF-8'?>" +
+            "<share><comment>I've earned " + points +
+            " points for the " + project + " project on " +
+            " Spudder.</comment><visibility><code>" +
+            "connections-only</code></visibility></share>")
+
+    request = Request('https://api.linkedin.com/v1/people/~/shares' +
+                      '?oauth2_access_token=' + student.linkedin_token)
+    request.add_header('Content-Type', 'application/xml')
+    request.add_data(data)
+
+    response = urlopen(request)
+    return HttpResponse(response.read())
