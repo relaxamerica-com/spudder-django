@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from django.db import models
 from spudmart.upload.models import UploadedFile
 from djangotoolbox.fields import ListField
-from spudmart.CERN.models import get_max_triangle_num_less_than, VENUE_REP_LEVEL_MODIFIER
+from spudmart.CERN.rep import deleted_venue
 
 SPORTS = ['Baseball', 'Basketball', 'Field Hockey', 'Football',
           'Ice Hockey', 'Lacrosse', 'Rugby', 'Soccer', 'Softball',
@@ -45,9 +45,7 @@ class Venue(models.Model):
     # Just to stay consistent with fcns created in CERN.rep
     rep = models.IntegerField(default=0)
     
-    def level(self):
-        return get_max_triangle_num_less_than(self.rep / VENUE_REP_LEVEL_MODIFIER)
-    
+
     def __eq__(self, other):
         return self.pk == other.pk
 
@@ -68,6 +66,16 @@ class Venue(models.Model):
 
     def is_groundskeeper(self, user):
         return self.user.id == user.id
+
+    def delete(self, using=None):
+        """
+        Deleting a venue punishes the owner for deleting it.
+
+        This removes all of the points that the user has owned for the
+            venue, before deleting the venue.
+        """
+        deleted_venue(self)
+        super(Venue, self).delete(using)
 
 
 class PendingVenueRental(models.Model):

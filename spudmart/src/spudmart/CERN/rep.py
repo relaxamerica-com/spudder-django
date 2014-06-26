@@ -1,5 +1,4 @@
-from spudmart.CERN.models import Student, School
-from spudmart.venues.models import Venue
+from spudmart.CERN.models import Student
 
 # Rep values for various tasks, grouped like the methods
 RECRUITED_HEAD = 30
@@ -307,3 +306,15 @@ def added_logo(venue):
     :param venue: the venue that got the logo
     """
     add_venue_rep(venue, LOGO)
+
+
+def deleted_venue(venue):
+    """
+    Punishes a user for deleting a venue.
+
+    This removes all the points that the student has earned from
+        managing the venue.
+    :param venue: The venue about to be deleted.
+    """
+    stu = Student.objects.get(user=venue.user)
+    add_marketing_points(stu, -venue.rep)
