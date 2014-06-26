@@ -7,7 +7,7 @@ urlpatterns = patterns(
     (r'^$', 'display_cern'),
     (r'^venues/$', 'venues'),
     (r'^venues/new/$', 'venues_new'),
-    (r'^venues/delete/(?P<venue_id>\d+)$', 'venues_delete'),
+    (r'^venues/delete/(?P<venue_id>\d+)$', 'delete_venue'),
     (r'^social_media/$', 'social_media'),
     (r'^content/$', 'content'),
     (r'^design/$', 'design'),

@@ -256,14 +256,15 @@ def display_cern(request):
             return cern_splash(request)
         else:
             # check LinkedIn access token
-            if student.linkedin_expires < datetime.utcnow():
-                urlopen('https://www.linkedin.com/uas/oauth2/authorization' +
-                        '?response_type=code' +
-                        '&client_id=' + settings.LINKEDIN_API_KEY +
-                        '&scope=rw_nus' +
-                        '&state=aowj3p5ro8a0f9jq23lk4jqlwkejADSE$SDSDFGJJaw' +
-                        '&redirect_uri=http://' + request.META['HTTP_HOST'] +
-                        '/cern/save_linkedin')
+            if student.linkedin_token:
+                if student.linkedin_expires < datetime.utcnow():
+                    urlopen('https://www.linkedin.com/uas/oauth2/authorization' +
+                            '?response_type=code' +
+                            '&client_id=' + settings.LINKEDIN_API_KEY +
+                            '&scope=rw_nus' +
+                            '&state=aowj3p5ro8a0f9jq23lk4jqlwkejADSE$SDSDFGJJaw' +
+                            '&redirect_uri=http://' + request.META['HTTP_HOST'] +
+                            '/cern/save_linkedin')
             return dashboard(request)
     else:
         return cern_splash(request)
@@ -525,7 +526,7 @@ def add_email_alert(request):
     :param request: HttpRequest that should include 'project' and
         'email' in POST data
     :return: Blank HttpResponse on success
-        OR HttpReponseNotAllowed (code 405) if not POST request
+        OR HttpReponseNotAllowed (code 405) if not POfST request
     """
     if request.method == 'POST':
         project = request.POST['project']
