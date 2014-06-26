@@ -209,16 +209,16 @@
 
     marketing.click(function(){
         if (marketing.prop('checked')){
-            if (confirm('This will stop auto-sharing your Marketing points every 100 points!')){
-                $.post('/cern/auto_share/marketing');
-            } else{
-                marketing.prop('checked', true);
-            }
-        } else{
             if (confirm('This will start auto-sharing your Marketing points every 100 points!\nThis will NOT make a post to LinkedIn right now.')){
                 $.post('/cern/auto_share/marketing');
             } else{
                 marketing.prop('checked', false);
+            }
+        } else{
+            if (confirm('This will stop auto-sharing your Marketing points every 100 points!')){
+                $.post('/cern/auto_share/marketing');
+            } else{
+                marketing.prop('checked', true);
             }
         }
     });
@@ -238,16 +238,16 @@
 
     socialMedia.click(function(){
         if (socialMedia.prop('checked')){
-            if (confirm('This will stop auto-sharing your Social Media PR points every 100 points!')){
-                $.post('/cern/auto_share/social_media');
-            } else{
-                socialMedia.prop('checked', true);
-            }
-        } else{
             if (confirm('This will start auto-sharing your Social Media PR points every 100 points!\nThis will NOT make a post to LinkedIn right now.')){
                 $.post('/cern/auto_share/social_media');
             } else{
                 socialMedia.prop('checked', false);
+            }
+        } else{
+            if (confirm('This will stop auto-sharing your Social Media PR points every 100 points!')){
+                $.post('/cern/auto_share/social_media');
+            } else{
+                socialMedia.prop('checked', true);
             }
         }
     });
@@ -270,16 +270,16 @@
 
     marketingLevel.click(function(){
         if (marketingLevel.prop('checked')){
-            if (confirm('This will stop auto-sharing your Marketing level every time you level up!')){
-                $.post('/cern/auto_share/marketing_level');
-            } else {
-                marketingLevel.prop('checked', true);
-            }
-        } else{
             if (confirm('This will start auto-sharing your Marketing level every time you level up.\nThis will NOT make a post to LinkedIn right now.')){
                 $.post('/cern/auto_share/marketing_level');
             } else {
                 marketingLevel.prop('checked', false);
+            }
+        } else{
+            if (confirm('This will stop auto-sharing your Marketing level every time you level up!')){
+                $.post('/cern/auto_share/marketing_level');
+            } else {
+                marketingLevel.prop('checked', true);
             }
         }
     });
@@ -301,16 +301,16 @@
 
     socialMediaLevel.click(function(){
         if (socialMediaLevel.prop('checked')){
-            if (confirm('This will stop auto-sharing your Social Media PR level every time you level up!')){
-                $.post('/cern/auto_share/social_media_level');
-            } else {
-                socialMediaLevel.prop('checked', true);
-            }
-        } else{
-             if (confirm('This will start auto-sharing your Social Media PR level every time you level up.\nThis will NOT make a post to LinkedIn right now.')){
+            if (confirm('This will start auto-sharing your Social Media PR level every time you level up.\nThis will NOT make a post to LinkedIn right now.')){
                 $.post('/cern/auto_share/social_media_level');
             } else {
                 socialMediaLevel.prop('checked', false);
+            }
+        } else{
+             if (confirm('This will stop auto-sharing your Social Media PR level every time you level up!')){
+                $.post('/cern/auto_share/social_media_level');
+            } else {
+                socialMediaLevel.prop('checked', true);
             }
         }
     });
