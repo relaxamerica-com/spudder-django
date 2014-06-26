@@ -1,5 +1,5 @@
-<div class="question {% block alignment %}left{% endblock %}" data-id="{{ info_message_id }}">
-    <div class="alert alert-info about-cern" style="{% block alert_style %}{% endblock %}">
+<div class="question" data-id="{{ info_message_id }}">
+    <div class="alert {% block alert_type %}alert-info{% endblock %}" style="{% block alert_style %}{% endblock %}">
         {% block content %}
         {% endblock %}
         <i class="fa fa-caret-down"></i>

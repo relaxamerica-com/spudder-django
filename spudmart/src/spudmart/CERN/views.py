@@ -1,3 +1,4 @@
+import json
 import os
 from urllib2 import urlopen, Request
 from urllib import urlencode
@@ -14,8 +15,10 @@ from django.utils.datastructures import MultiValueDictKeyError
 from spudmart.CERN.utils import import_schools, strip_invalid_chars
 from django.contrib.auth.decorators import login_required, user_passes_test
 from spudmart.CERN.rep import recruited_new_student, created_venue
+from spudmart.upload.views import upload_image_endpoint
 from spudmart.utils.queues import trigger_backend_task
 from spudmart.utils.url import get_return_url, get_request_param
+import logging
 import settings
 from spudmart.venues.models import Venue, SPORTS
 from datetime import timedelta, datetime
@@ -130,6 +133,8 @@ def school(request, state, school_id, name, referral_id=None):
         student = Student.objects.get(user=request.user)
     except Student.DoesNotExist:
         student = False
+    except TypeError:
+        student = False
 
     ranked_students = sorted(sch.get_students(), key=lambda s: s.rep(), reverse=True)
     if len(ranked_students) == 0:
@@ -141,6 +146,11 @@ def school(request, state, school_id, name, referral_id=None):
     else:
         top_students = ranked_students[:5]
         remaining_students = ranked_students[5:]
+
+    if request.method == 'POST':
+        sch.description = request.POST.get('description', '')
+        sch.mascot = request.POST.get('mascot', '')
+        sch.save()
 
     return render(
         request,

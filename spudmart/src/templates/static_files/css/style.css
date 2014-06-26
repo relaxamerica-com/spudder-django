@@ -4750,41 +4750,27 @@ div[id^=donation-modal] .loading {
 .question {
     position:relative;
     margin-bottom: 50px;
+    text-align: left;
+}
+.question .button-cern {
+    font-size:80px;
+    display: block;
+    margin-left: 25px;
 }
 .question .alert {
     position:relative;
     border-radius: 15px;
     padding: 30px;
 }
-.question .button-cern {
-    font-size:80px;
-    display: block;
-}
-.question.left {
-    text-align: left;
-}
-.question.left .alert .fa-caret-down {
+.question .alert .fa-caret-down {
     font-size: 30px;
     position:absolute;
     left: 40px;
     bottom: -20px;
     color: #BCE8F1
 }
-.question.left .button-cern {
-    margin-left: 25px;
-}
-.question.right {
-    text-align: right;
-}
-.question.right .alert .fa-caret-down {
-    font-size: 30px;
-    position:absolute;
-    right: 25px;
-    bottom: -20px;
+.question .alert.alert-success .fa-caret-down {
     color: #D6E9C6;
-}
-.question.right .button-cern {
-    margin-right: 40px;
 }
 
 /****** CERN Single Well Pages ******/
@@ -4962,7 +4948,6 @@ div[id^=donation-modal] .loading {
 #venue-view .buttons.no-border i {
 	border: 1px solid #a89b94;
 }
-
 #venue-view .buttons i:hover {
 	cursor: pointer;
 	background-color: #fb810b;
@@ -5065,4 +5050,66 @@ div[id^=donation-modal] .loading {
 
 #venue-view .icon-remove {
 	margin: 0px;
+}
+
+/****** CERN SCHOOL *****/
+#venue-view .school-header {
+    border-bottom: 1px solid #CCCCCC;
+    margin-bottom: 15px;
+}
+
+#venue-view .school-header h1 {
+    font-size: 30px;
+    margin-bottom: 0;
+}
+
+#venue-view .school-header .btn {
+    margin-top: 7px;
+}
+
+
+/* School Form */
+#school-form .edit-control {
+    display: none;
+}
+#school-form .view-control {
+    display: block;
+}
+#school-form .view-control.inline {
+    display: inline-block;
+}
+/* School Form - in edit mode */
+#school-form.in-edit-mode .edit-control {
+    display: block;
+}
+#school-form.in-edit-mode .view-control {
+    display: none;
+}
+#school-form.in-edit-mode .view-control.inline {
+    display: none;
+}
+
+#school-student-points {
+    border-top: 1px solid #CCC;
+    margin-top: 50px;
+    padding-top: 50px;
+}
+
+#school-sidebar {
+    border-left: 1px solid #CCC;
+}
+
+#school-sidebar #school-logo-container {
+    text-align: center;
+}
+#school-sidebar #school-logo-container img {
+    display: block;
+    margin: 10px auto;
+}
+#school-details {
+    padding: 40px 20px;
+}
+#school-details label {
+    display: inline-block;
+    width: 150px;
 }

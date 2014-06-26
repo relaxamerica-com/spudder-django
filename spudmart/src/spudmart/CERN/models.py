@@ -221,6 +221,8 @@ class Student(models.Model):
     show_CERN = models.BooleanField(default=True)
     show_social_media = models.BooleanField(default=True)
 
+    info_messages_dismissed = models.TextField(blank=True, null=True)
+
     def __str__(self):
         something = str(self.user.username)
         if self.isHead:
@@ -317,6 +319,12 @@ class Student(models.Model):
                 return 'Testing (%s pts)' % max_points
 
         return 'No Project Started (0 pts)'
+
+    def hidden_info_messages(self):
+        return (self.info_messages_dismissed or '').split(',')
+
+    def dismiss_info_message(self, message_id):
+        self.info_messages_dismissed = "%s,%s" % (self.info_messages_dismissed or '', message_id)
 
 
 class Challenge(models.Model):
