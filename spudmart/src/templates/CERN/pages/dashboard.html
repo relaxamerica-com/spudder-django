@@ -13,8 +13,8 @@
                     <h1><i class="fa fa-fw fa-bar-chart-o"></i> Dashboard</h1>
                     <h2>Keep up to date with how you are accruing points!</h2>
                 </div>
-                {% if student.show_CERN %}
-                    {% include 'CERN/quote_messages/quote_dashboard_instructions.html' %}
+                {% if 'dashbaord' not in student.hidden_info_messages %}
+                    {% include 'CERN/quote_messages/quote_dashboard_instructions.html' with info_message_id="dashbaord" %}
                 {% endif %}
                 {% include 'CERN/parts/grid.html' %}
             </div>

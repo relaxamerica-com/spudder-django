@@ -8,50 +8,68 @@
 
     <div class="container clearfix" id="venue-view">
         <br>
-        <div class="row">
+        <div class="row-fluid">
             <div class="span7">
-                <h5 class="venue-header clearfix aligncenter"> {{ school.name }} CERN Team </h5>
-
-                {% if not request.user.is_authenticated %}
-                    <p class="aligncenter">
-                    {% if referrer %}
-                    <a href="/cern/{{ school.id }}/register/{{ referrer.referral_code }}" class="btn btn-orange">Join this Team</a>
-                    {% else %}
-                    <a href="/cern/{{ school.id }}/register/" class="btn btn-orange">Join this Team</a>
-                    {% endif %}
-                    </p>
-                {% endif %}
-
-                {% if head and request.user.pk == head.user.pk %}
-                <div class="row-fluid">
-                    <div class="span6">
-                        <form method="post" enctype="multipart/form-data">
-                            <div class="edit-mode">
-                                <div class="btn btn-orange" id="save-description">
-                                    Save
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-
-                    <div class="span6">
-                        <div class="btn btn-orange pull-right" id="edit-description" style="margin:0 auto;">
-                            Edit Mode
+                <div class="venue-header">
+                    <div class="row-fluid">
+                        <div class="span10">
+                            <h1><i class="fa fa-users"></i> {{ school.name }} CERN Team</h1>
+                        </div>
+                        <div class="span2">
+                            {% if user_is_head or running_locally %}
+                                <button class="btn-orange btn btn-block" id="edit-description">
+                                    <i class="fa fa-cog"></i> Edit
+                                </button>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
 
-                <div class="alert"></div>
+                {% if user_is_head or running_locally %}
+                    {% with info_message_id="cern_team_welcome_head" %}
+                        {% if info_message_id not in student.hidden_info_messages %}
+                            {% include 'CERN/quote_messages/quote_cern_team_welcome_head.html' %}
+                        {% endif %}
+                    {% endwith %}
+                {% endif %}
 
-                <div class="row-fluid edit-mode">
-                    <div class="span1"></div>
-                    <div class="span10">
-                        <form method="post" enctype="multipart/form-data" id="description-form">
-                        <textarea id="description-input" placeholder="You can put a quick message for people viewing your school's page here.">{{ school.description }}</textarea>
-                    </form>
+                {% if user_is_team_member or running_locally %}
+                    {% with info_message_id="cern_team_welcome_member" %}
+                        {% if info_message_id not in student.hidden_info_messages %}
+                            {% include 'CERN/quote_messages/quote_cern_team_welcome_member.html' %}
+                        {% endif %}
+                    {% endwith %}
+                {% endif %}
+
+                {% if not request.user.is_authenticated %}
+                    {% include 'CERN/quote_messages/quote_join_this_team.html' %}
+                {% endif %}
+
+                {% if user_is_head or running_locally%}
+                    <div class="row-fluid">
+                        <div class="span6">
+                            <form method="post" enctype="multipart/form-data">
+                                <div class="edit-mode">
+                                    <div class="btn btn-orange" id="save-description">
+                                        Save
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
                     </div>
-                    <div class="span1"></div>
-                </div>
+
+                    <div class="alert"></div>
+
+                    <div class="row-fluid edit-mode">
+                        <div class="span1"></div>
+                        <div class="span10">
+                            <form method="post" enctype="multipart/form-data" id="description-form">
+                            <textarea id="description-input" placeholder="You can put a quick message for people viewing your school's page here.">{{ school.description }}</textarea>
+                        </form>
+                        </div>
+                        <div class="span1"></div>
+                    </div>
                 {% endif %}
 
                 <div class="row-fluid view-mode details-header">
@@ -66,7 +84,7 @@
                 <div class="row-fluid">
                     <div class="span1"></div>
                     <div class="span10 top-students">
-                        <h4 class="aligncenter">Top students at at {{ school.name }}:</h4>
+                        <h4 class="aligncenter">Top students at {{ school.name }}:</h4>
                         <ol>
                             {% for student in top_students %}
                             <li>{% user_name student.user %}: {{ student.rep }} total points - Top project: {{ student.top_project_verbose }}</li>
@@ -93,7 +111,7 @@
             <div class="span5">
                 <aside class="right-sidebar">
                     <div class="widget offer-widget">
-                        {% if request.user and head and request.user.pk == head.user.pk %}
+                        {% if user_is_head %}
                         <div class="row-fluid">
                             <div class="span6">
                                 <form method="post" enctype="multipart/form-data">
@@ -205,7 +223,7 @@
 <script type="text/javascript" src="/media/dashboard/js/jquery-ui-1.10.3.custom.min.js"></script>
 <script type="text/javascript" src="/media/js/parseUri.js"></script>
 <script type="text/javascript">
-    $('.alert').hide();
+{#    $('.alert').hide();#}
     window.preloadedOrange = $('<img src="/media/img/ajax-loader-orange.gif" />');
     window.preloadedBlack = $('<img src="/media/img/ajax-loader-black.gif" />');
     window.isEditMode = false;
@@ -214,19 +232,17 @@
         var editMode = $('.edit-mode'), viewMode = $('.view-mode'), buttons = $('.buttons'), icons = buttons.find('i');
 
         $('#edit-description').click(function() {
-            if ($(this).html() == 'Show Mode') {
+            if (window.isEditMode === true) {
+                save();
                 editMode.hide();
                 viewMode.show();
-                buttons.addClass('no-border');
-                $(this).html('Edit Mode');
-                $('#edit-right').html('Edit Mode');
+                $(this).html($(this).data('old_html'));
                 window.isEditMode = false;
             } else {
                 editMode.show();
                 viewMode.hide();
-                buttons.removeClass('no-border');
-                $(this).html('Show Mode');
-                $('#edit-right').html('Show Mode');
+                $(this).data('old_html', $(this).html());
+                $(this).html('<i class="fa fa-save"></i> save');
                 window.isEditMode = true;
             }
         });

@@ -1,4 +1,5 @@
 from django.db import models
+import uuid
 from django.contrib.auth.models import User
 from datetime import timedelta, datetime
 from spudmart.upload.models import UploadedFile
@@ -219,9 +220,6 @@ class Student(models.Model):
     
     show_CERN = models.BooleanField(default=True)
     show_social_media = models.BooleanField(default=True)
-
-    linkedin_token = models.CharField(max_length=200, blank=True, null=True)
-    linkedin_expires = models.DateTimeField(blank=True, null=True)
 
     def __str__(self):
         something = str(self.user.username)

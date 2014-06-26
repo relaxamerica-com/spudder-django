@@ -1,0 +1,10 @@
+{% extends 'CERN/quote_messages/base_quote_message.html' %}
+
+{% block content %}
+    <h4>Join this team</h4>
+    <p>Are you a student at this school? or are you affiliated with this CERN Team?.</p>
+    <p>If so, click here <i class="fa fa-hand-o-down"></i> to join this team!</p>
+    <a href="/cern/{{ school.id }}/register/{{ referrer.referral_code|default_if_none:"" }}" class="btn btn-orange" style="margin:30px;">
+        Join this Team
+    </a>
+{% endblock %}

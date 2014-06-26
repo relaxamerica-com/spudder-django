@@ -274,6 +274,17 @@
             });
 
 
+            //Attach to the dismissable notification
+            $('.dismiss-for-now-button').on('click', function(){
+                $(this).parents('.question').remove();
+            });
+            $('.dismiss-for-good-button').on('click', function(){
+                var $container = $(this).parents('.question');
+                $container.remove();
+                $.post('/cern/disable_about/', {message_id: $container.data('id')});
+            });
+
+
             var logo = $('header .logo'),
                 buttons = $('header #download-buttons'),
                 hiddenTop = $('header .hidden-top');

@@ -110,43 +110,49 @@ def school(request, state, school_id, name, referral_id=None):
         try:
             referrer = Student.objects.get(id=referral_id)
         except ObjectDoesNotExist:
-            return HttpResponseRedirect('/cern/%s/%s/%s/' % (state, school_id,
-                                                             name))
+            return HttpResponseRedirect('/cern/%s/%s/%s/' % (state, school_id, name))
 
     try:
         sch = School.objects.get(id=school_id)
     except ObjectDoesNotExist:
         return render(request, 'CERN/no-school.html')
+
+    stripped_name = strip_invalid_chars(sch.name)
+    if strip_invalid_chars(sch.name) != name:
+        return HttpResponseRedirect('/cern/%s/%s/%s' % (state, school_id, stripped_name))
+
+    try:
+        head = sch.get_head_student()
+    except ObjectDoesNotExist:
+        head = None
+
+    try:
+        student = Student.objects.get(user=request.user)
+    except Student.DoesNotExist:
+        student = False
+
+    ranked_students = sorted(sch.get_students(), key=lambda s: s.rep(), reverse=True)
+    if len(ranked_students) == 0:
+        top_students = None
+        remaining_students = None
+    elif len(ranked_students) <= 5:
+        top_students = ranked_students
+        remaining_students = None
     else:
-        stripped_name = strip_invalid_chars(sch.name)
-        if strip_invalid_chars(sch.name) != name:
-            return HttpResponseRedirect('/cern/%s/%s/%s' % (state, school_id,
-                                                            stripped_name))
-        try:
-            head = sch.get_head_student()
-        except ObjectDoesNotExist:
-            head = None
+        top_students = ranked_students[:5]
+        remaining_students = ranked_students[5:]
 
-        ranked_students = sorted(sch.get_students(), key=lambda s: s.rep(),
-                                 reverse=True)
-        if len(ranked_students) == 0:
-            top_students = None
-            remaining_students = None
-        elif len(ranked_students) <= 5:
-            top_students = ranked_students
-            remaining_students = None
-        else:
-            top_students = ranked_students[:5]
-            remaining_students = ranked_students[5:]
-
-        return render(request, 'CERN/school_splash.html',
-                      {
-                      'school': sch,
-                      'head': head,
-                      'referrer': referrer,
-                      'top_students': top_students,
-                      'remaining_students': remaining_students,
-                      })
+    return render(
+        request,
+        'CERN/school_splash.html', {
+            'school': sch,
+            'student': student,
+            'head': head,
+            'user_is_head': bool(head and head.user == request.user),
+            'user_is_team_member': bool(request.user in ranked_students),
+            'referrer': referrer,
+            'top_students': top_students,
+            'remaining_students': remaining_students})
 
 
 def save_school_logo(request, school_id):
@@ -555,14 +561,10 @@ def disable_about(request):
     :return: a blank HttpResponse on success
     """
     student = Student.objects.get(user=request.user)
-    about = request.POST['about']
-    if about == 'CERN':
-        student.show_CERN = False
-    elif about == 'social media':
-        student.show_social_media = False
-    student.save()
-
-    return HttpResponse()
+    message_id = request.POST.get('message_id')
+    if message_id:
+        student.dismiss_info_message(message_id)
+    return HttpResponse(student.info_messages_dismissed)
 
 
 def register_school(request, school_id, referral_id=None):

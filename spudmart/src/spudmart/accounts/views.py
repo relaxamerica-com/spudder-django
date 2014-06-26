@@ -2,6 +2,8 @@ import os
 import urllib, urllib2
 import django
 from django.core.exceptions import ObjectDoesNotExist
+from django.utils.log import logger
+from django.views.generic.simple import redirect_to
 import settings
 import json
 from django.contrib.auth import authenticate
@@ -267,58 +269,32 @@ def login_fake(request):
     if not bool(os.environ['SERVER_SOFTWARE'].startswith('Development')):
         raise Http404
 
+    # Delete all users and profiles and students
+    [u.delete() for u in User.objects.all()]
+    [p.delete() for p in UserProfile.objects.all()]
+    [s.delete() for s in Student.objects.all()]
+
     amazon_user_id = "somemadeupid"
     amazon_user_name = "Test"
     amazon_user_email = "test@test.com"
     access_token = "someaccesstoken"
 
-    profiles = UserProfile.objects.filter(amazon_id=amazon_user_id)
-    if profiles.count() == 0:
-        users_with_email = User.objects.filter(
-            email=amazon_user_email)
+    user = User.objects.create_user(amazon_user_email, amazon_user_email, amazon_user_id)
+    user.save()
 
-        if len(users_with_email) == 0:
-            user = User.objects.create_user(amazon_user_email,
-                                            amazon_user_email,
-                                            amazon_user_id)
-            user.save()
-        else:  # User exists, but for some reason it's profile
-               #  wasn't created
-            user = users_with_email[0]
+    user_profile = UserProfile(user=user)
+    user_profile.amazon_id = amazon_user_id
+    user_profile.amazon_access_token = access_token
+    user_profile.username = amazon_user_name
+    user_profile.save()
 
-        user_profile = UserProfile(user=user)
-        user_profile.amazon_id = amazon_user_id
-        user_profile.amazon_access_token = access_token
-        user_profile.username = amazon_user_name
-        user_profile.save()
+    # Scrub the request for data to create a student
+    school_id = get_request_param(request, 'school_id')
+    referrer = get_request_param(request, 'referrer')
 
-        # Scrub the request for data to create a student
-        school_id = get_request_param(request, 'school_id')
-        referrer = get_request_param(request, 'referrer')
+    sch = School.objects.get(id=school_id)
+    create_student(user, sch, referrer)
 
-        try:
-            sch = School.objects.get(id=school_id)
-        except ObjectDoesNotExist:
-            pass
-        except ValueError:
-            pass
-        else:
-            create_student(user, sch, referrer)
-
-    user = authenticate(username=amazon_user_email,
-                        password=amazon_user_id)
-    profile = user.get_profile()
-
-    if not profile.amazon_access_token:
-        profile.amazon_access_token = access_token
-        profile.save()
-
+    user = authenticate(username=amazon_user_email, password=amazon_user_id)
     django.contrib.auth.login(request, user)
-
-    if request.user.is_authenticated():
-        if is_sponsor(request.user):
-            return_url = '/dashboard'
-        elif is_student(request.user):
-            return_url = '/cern/'
-
-    return HttpResponseRedirect(return_url)
+    return redirect_to(request, '/cern/')

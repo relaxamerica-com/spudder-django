@@ -1,0 +1,12 @@
+{% extends 'CERN/quote_messages/base_quote_message.html' %}
+
+{% block content %}
+    <h4>Sorry, this feature is still in development.</h4>
+    <p>If you would like to be contacted when {{ project }} becomes available, simply click the button below.</p>
+    <p>We'll send you an email, at the email address used for this account, when this feature is available.</p>
+    {% if joined %}
+        <button class="btn" id="join">You have already joined the mailing list.</button>
+    {% else %}
+        <button class="btn btn-orange" id="join">Join {{ project }} mailing list</button>
+    {% endif %}
+{% endblock %}
