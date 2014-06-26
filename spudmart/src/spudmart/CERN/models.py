@@ -1,3 +1,4 @@
+from urllib2 import Request, urlopen
 from django.db import models
 import uuid
 from django.contrib.auth.models import User
@@ -93,7 +94,7 @@ def get_max_triangle_num_less_than(num, n=1):
         return get_max_triangle_num_less_than(num, n)
     else:
         return n
-    
+
 
 class School(models.Model):
     ''' A model for School objects that stores a string literal of the school name and 
@@ -221,6 +222,13 @@ class Student(models.Model):
     show_CERN = models.BooleanField(default=True)
     show_social_media = models.BooleanField(default=True)
 
+    linkedin_token = models.CharField(max_length=200, blank=True, null=True)
+    linkedin_expires = models.DateTimeField(blank=True, null=True)
+    auto_brag_marketing = models.BooleanField(default=False)
+    auto_brag_social_media = models.BooleanField(default=False)
+    level_brag_marketing = models.BooleanField(default=False)
+    level_brag_social_media = models.BooleanField(default=False)
+
     info_messages_dismissed = models.TextField(blank=True, null=True)
 
     def __str__(self):
@@ -325,6 +333,101 @@ class Student(models.Model):
 
     def dismiss_info_message(self, message_id):
         self.info_messages_dismissed = "%s,%s" % (self.info_messages_dismissed or '', message_id)
+
+    def brag(self, comment):
+        """
+        Makes a post to LinkedIn with the supplied comment.
+
+        :param comment: a string version of the HTML for the post
+        :return: the response from the LinkedIn API
+        """
+        data = ("<?xml version='1.0' encoding='UTF-8'?>" +
+                "<share><comment>" + comment +
+                "</comment><visibility><code>anyone" +
+                "</code></visibility></share>")
+
+        request = Request('https://api.linkedin.com/v1/people/~/shares' +
+                          '?oauth2_access_token=%s' % self.linkedin_token)
+        request.add_header('Content-Type', 'application/xml')
+        request.add_data(data)
+
+        return urlopen(request).read()
+
+    def brag_marketing(self):
+        """
+        Posts the student's current marketing score to LinkedIn.
+
+        :return: the response from the LinkedIn API
+        """
+        points = self.marketing_points
+        return self.brag("My score for the Marketing project as a part of " +
+                         "CERN on Spudder is now %s points." % points)
+
+    def brag_social_media(self):
+        """
+        Post the student's current social media score to LinkedIn.
+
+        :return: the response from the LinkedIn API
+        """
+        points = self.social_media_points
+        return self.brag("My score for the Social Media PR project as a " +
+                         "part of CERN on Spudder is now %s points." % points)
+
+    def marketing_level(self):
+        """
+        Determines the marketing level of the student.
+
+        Levelling occurs at 1050, 2050, 3050, etc.
+        Students start at Level 1 in any project where they have at
+            least 1 point. 0 points = Level 0
+
+        :return: an integer representing the level.
+        """
+        points = self.marketing_points
+        if points < 50:
+            if points == 0:
+                return 0
+            else:
+                return 1
+        else:
+            return ((points - 50) / 1000) + 1
+
+    def social_media_level(self):
+        """
+        Determines the social media level of the student.
+
+        Levelling occurs at 1050, 2050, 3050, etc.
+        Students start at Level 1 in any project where they have at
+            least 1 point. 0 points = Level 0
+
+        :return: an integer representing the level.
+        """
+        points = self.social_media_points
+        if points < 50:
+            if points == 0:
+                return 0
+            else:
+                return 1
+        else:
+            return ((points - 50) / 1000) + 1
+
+    def brag_marketing_level(self):
+        """
+        Sends a post to LinkedIn about the new Marketing level.
+
+        :return: the response from the LinkedIn Share API
+        """
+        return self.brag("I just reached Level " + self.marketing_level() +
+                         " in Marketing for CERN on Spudder.")
+
+    def brag_social_media_level(self):
+        """
+        Sends a post to LinkedIn about the new Social Media level.
+
+        :return: the response from the LinkedIn Share API
+        """
+        return self.brag("I just reached Level " + self.social_media_level() +
+                         "in Social Media PR for CERN on Spudder.")
 
 
 class Challenge(models.Model):

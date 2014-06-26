@@ -170,8 +170,7 @@ def save_school_logo(request, school_id):
     Associates a recently-uploaded logo with a school
 
     :param request: POST request with uploaded image data
-    :param state: standard state abbreviation for location of school
-    :param school_name: name of school
+    :param school_id: the id of the school
     :return: a blank HttpResponse object if success on POST request
         OR an HttpResponseNotAllowed object (code 405)
     """
@@ -696,30 +695,92 @@ def save_linkedin(request):
         return HttpResponseRedirect('/cern/')
 
 
-def share_points(request):
+def share_marketing_points(request):
     """
-    Automatically shares points for given project on LinkedIn
+    Automatically shares marketing points for current user on LinkedIn
 
-    :param request: a POST request containing 'project' and 'points',
-        where 'project' is the name of the project and 'points'
-        is the number of points the student has in the project
+    :param request: a POST request from a user with LinkedIn credentials
     :return: the response from the LinkedIn Share API
     """
     student = Student.objects.get(user=request.user)
+    return HttpResponse(student.brag_marketing())
 
-    points = request.POST['points']
-    project = request.POST['project']
 
-    data = ("<?xml version='1.0' encoding='UTF-8'?>" +
-            "<share><comment>I've earned " + points +
-            " points for the " + project + " project on " +
-            " Spudder.</comment><visibility><code>" +
-            "connections-only</code></visibility></share>")
+def share_social_media_points(request):
+    """
+    Automatically shares social media points for current user on LinkedIn
 
-    request = Request('https://api.linkedin.com/v1/people/~/shares' +
-                      '?oauth2_access_token=' + student.linkedin_token)
-    request.add_header('Content-Type', 'application/xml')
-    request.add_data(data)
+    :param request: a POST request from a user with LinkedIn credentials
+    :return: the response from the LinkedIn Share API
+    """
+    student = Student.objects.get(user=request.user)
+    return HttpResponse(student.brag_social_media())
 
-    response = urlopen(request)
-    return HttpResponse(response.read())
+
+def auto_share_marketing(request):
+    """
+    Toggles whether to auto-share marketing points for current student.
+
+    :param request: request to toggle marketing auto-share
+    :return: an HttpResponse with the new state of the auto-sharing
+    """
+    student = Student.objects.get(user=request.user)
+    if student.auto_brag_marketing:
+        student.auto_brag_marketing = False
+    else:
+        student.auto_brag_marketing = True
+
+    student.save()
+    return HttpResponse(str(student.auto_brag_marketing))
+
+
+def auto_share_social_media(request):
+    """
+    Toggles whether to auto-share social media points for current student.
+
+    :param request: request to toggle social media auto-share
+    :return: an HttpResponse with the new state of auto-sharing
+    """
+    student = Student.objects.get(user=request.user)
+    if student.auto_brag_social_media:
+        student.auto_brag_social_media = False
+    else:
+        student.auto_brag_social_media = True
+
+    student.save()
+    return HttpResponse(str(student.auto_brag_social_media))
+
+
+def auto_share_marketing_level(request):
+    """
+    Toggles whether to share Marketing level ups for current student.
+
+    :param request: request to toggle, linked to a user
+    :return: an HttpResponse with the new state of level-sharing
+    """
+    student = Student.objects.get(user=request.user)
+    if student.level_brag_marketing:
+        student.level_brag_marketing = False
+    else:
+        student.level_brag_marketing = True
+
+    student.save()
+    return HttpResponse(str(student.level_brag_marketing))
+
+
+def auto_share_social_media_level(request):
+    """
+    Toggles whether to share Social Media level ups for current student.
+
+    :param request: request to toggle, linked to a user
+    :return: an HttpResponse with the new state of level-sharing
+    """
+    student = Student.objects.get(user=request.user)
+    if student.level_brag_social_media:
+        student.level_brag_social_media = False
+    else:
+        student.level_brag_social_media = True
+
+    student.save()
+    return HttpResponse(str(student.level_brag_social_media))
+

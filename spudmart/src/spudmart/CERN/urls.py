@@ -19,7 +19,14 @@ urlpatterns = patterns(
     (r'^save_short_url/$', 'save_short_url'),
     (r'^disable_about/$', 'disable_about'),
     (r'^save_linkedin$', 'save_linkedin'),
-    (r'^share_points$', 'share_points'),
+
+    (r'^share/marketing_points$', 'share_marketing_points'),
+    (r'^share/social_media_points$', 'share_social_media_points'),
+
+    (r'^auto_share/marketing$', 'auto_share_marketing'),
+    (r'^auto_share/social_media$', 'auto_share_social_media'),
+    (r'^auto_share/marketing_level$', 'auto_share_marketing_level'),
+    (r'^auto_share/social_media_level$', 'auto_share_social_media_level'),
     
     # Registration & school pages
     (r'^(?P<school_id>\d+)/save_logo$', 'save_school_logo'),

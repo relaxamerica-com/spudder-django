@@ -46,13 +46,14 @@ def add_marketing_points(student, points):
     """
     Adds to (or subtracts from) the marketing points of a student.
 
-    If student was referred by someone, adds points to referrer
+    If student was referred by someone, adds points to referrer.
+    Also checks if the student is due for an "auto-brag".
 
     :param student: the student who owns the venue
     :param points: the amount points change
         can be positive or negative
     """
-
+    old_level = student.marketing_level()
     student.marketing_points += points
     student.save()
 
@@ -60,23 +61,45 @@ def add_marketing_points(student, points):
         referrer = Student.objects.get(user=student.referred_by)
         add_referral_points(referrer, points)
 
+    # Check if student should auto-brag
+    if student.auto_brag_marketing:
+            if student.marketing_points % 100 < points:
+                student.brag_marketing()
+
+    # Check level bragging
+    if student.level_brag_marketing:
+        if old_level < student.marketing_level():
+            student.brag_marketing_level()
+
 
 def add_social_media_points(student, points):
     """
     Adds to (or subtracts from) the social media points of a student.
 
-    If student was referred by someone, adds points to referrer
+    If student was referred by someone, adds points to referrer.
+    Also checks if the student is due for an "auto-brag".
 
     :param student: the student who performed the action
     :param points: the amount points change
         can be positive or negative
     """
+    old_level = student.social_media_level()
     student.social_media_points += points
     student.save()
 
     if student.referred_by is not None:
         referrer = Student.objects.get(user=student.referred_by)
         add_referral_points(referrer, points)
+
+    # Check if student should auto-brag
+    if student.auto_brag_social_media:
+        if student.social_media_points % 100 < points:
+            student.brag_social_media()
+
+    # Check level bragging
+    if student.level_brag_social_media:
+        if old_level < student.social_media_level():
+            student.brag_social_media_level()
 
 
 def add_referral_points(referrer, points):
