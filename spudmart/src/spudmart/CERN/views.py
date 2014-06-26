@@ -1,11 +1,10 @@
-import json
 import os
-from urllib2 import urlopen, Request
+from urllib2 import urlopen
 from urllib import urlencode
 from boto.s3.user import User
 from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse, \
-    HttpResponseNotAllowed
+    HttpResponseNotAllowed, HttpResponseForbidden
 from django.template import RequestContext
 from django.views.generic.simple import redirect_to
 from spudmart.upload.models import UploadedFile
@@ -22,7 +21,7 @@ import logging
 import settings
 from spudmart.venues.models import Venue, SPORTS
 from datetime import timedelta, datetime
-from json import loads, dumps
+from json import loads
 
 
 def user_is_student(user):
@@ -518,6 +517,7 @@ def delete_venue(request, venue_id):
     venue.delete()
     return HttpResponseRedirect('/cern/venues/')
 
+
 def add_email_alert(request):
     """
     Adds an email address to a MailingList for a give project
@@ -578,11 +578,14 @@ def disable_about(request):
         param which specifies which 'about' to hide
     :return: a blank HttpResponse on success
     """
-    student = Student.objects.get(user=request.user)
-    message_id = request.POST.get('message_id')
-    if message_id:
-        student.dismiss_info_message(message_id)
-    return HttpResponse(student.info_messages_dismissed)
+    if request.method == 'POST':
+        student = Student.objects.get(user=request.user)
+        message_id = request.POST.get('message_id')
+        if message_id:
+            student.dismiss_info_message(message_id)
+        return HttpResponse(student.info_messages_dismissed)
+    else:
+        return HttpResponseNotAllowed(['POST'])
 
 
 def register_school(request, school_id, referral_id=None):
@@ -661,38 +664,46 @@ def login(request):
 
 def save_linkedin(request):
     """
-    Saves linkedin details.
+    Saves linkedin details so that CERN can post to LinkedIn.
 
-    :param request:
+    :param request: response from LinkedIn
     :return: redirect to CERN dashboard
     """
-    state = 'aowj3p5ro8a0f9jq23lk4jqlwkejADSE$SDSDFGJJaw'
-    if get_request_param(request, 'state') == state:
-        # Handle case when user does not authorize
-        if get_request_param(request, 'error') == 'access_denied':
+    if request.method == 'GET':
+        state = 'aowj3p5ro8a0f9jq23lk4jqlwkejADSE$SDSDFGJJaw'
+        returned_state = get_request_param(request, 'state')
+        if returned_state == state:
+            # Handle case when user does not authorize
+            if get_request_param(request, 'error') == 'access_denied':
+                pass
+            code = get_request_param(request, 'code')
+
+            response = urlopen('https://www.linkedin.com/uas/oauth2/accessToken' +
+                               '?grant_type=authorization_code' +
+                               '&code=' + code +
+                               '&redirect_uri=http://' + request.META['HTTP_HOST'] +
+                                '/cern/save_linkedin' +
+                                '&client_id=' + settings.LINKEDIN_API_KEY +
+                                '&client_secret=' + settings.LINKEDIN_SECRET_KEY,
+                                data=" ")
+
+            json = loads(response.read())
+            seconds_remaining = int(json['expires_in']) - 86400*3
+            expires = datetime.utcnow() + timedelta(seconds=seconds_remaining)
+            token = json['access_token']
+
+            student = Student.objects.get(user=request.user)
+            student.linkedin_token = token
+            student.linkedin_expires = expires
+            student.save()
+
+            return HttpResponseRedirect('/cern/')
+        elif returned_state == '':
+            # the request does not come from the LinkedIn API
+            return HttpResponseForbidden()
+        else:
+            # there was a CSRF error, do something else
             pass
-        code = get_request_param(request, 'code')
-
-        response = urlopen('https://www.linkedin.com/uas/oauth2/accessToken' +
-                           '?grant_type=authorization_code' +
-                           '&code=' + code +
-                           '&redirect_uri=http://' + request.META['HTTP_HOST'] +
-                            '/cern/save_linkedin' +
-                            '&client_id=' + settings.LINKEDIN_API_KEY +
-                            '&client_secret=' + settings.LINKEDIN_SECRET_KEY,
-                            data=" ")
-
-        json = loads(response.read())
-        seconds_remaining = int(json['expires_in']) - 86400*3
-        expires = datetime.utcnow() + timedelta(seconds=seconds_remaining)
-        token = json['access_token']
-
-        student = Student.objects.get(user=request.user)
-        student.linkedin_token = token
-        student.linkedin_expires = expires
-        student.save()
-
-        return HttpResponseRedirect('/cern/')
 
 
 def share_marketing_points(request):
@@ -702,8 +713,11 @@ def share_marketing_points(request):
     :param request: a POST request from a user with LinkedIn credentials
     :return: the response from the LinkedIn Share API
     """
-    student = Student.objects.get(user=request.user)
-    return HttpResponse(student.brag_marketing())
+    if request.method == 'POST':
+        student = Student.objects.get(user=request.user)
+        return HttpResponse(student.brag_marketing())
+    else:
+        return HttpResponseNotAllowed(['POST'])
 
 
 def share_social_media_points(request):
@@ -713,8 +727,11 @@ def share_social_media_points(request):
     :param request: a POST request from a user with LinkedIn credentials
     :return: the response from the LinkedIn Share API
     """
-    student = Student.objects.get(user=request.user)
-    return HttpResponse(student.brag_social_media())
+    if request.method == 'POST':
+        student = Student.objects.get(user=request.user)
+        return HttpResponse(student.brag_social_media())
+    else:
+        return HttpResponseNotAllowed(['POST'])
 
 
 def auto_share_marketing(request):
@@ -724,14 +741,17 @@ def auto_share_marketing(request):
     :param request: request to toggle marketing auto-share
     :return: an HttpResponse with the new state of the auto-sharing
     """
-    student = Student.objects.get(user=request.user)
-    if student.auto_brag_marketing:
-        student.auto_brag_marketing = False
-    else:
-        student.auto_brag_marketing = True
+    if request.method == 'POST':
+        student = Student.objects.get(user=request.user)
+        if student.auto_brag_marketing:
+            student.auto_brag_marketing = False
+        else:
+            student.auto_brag_marketing = True
 
-    student.save()
-    return HttpResponse(str(student.auto_brag_marketing))
+        student.save()
+        return HttpResponse(str(student.auto_brag_marketing))
+    else:
+        return HttpResponseNotAllowed(['POST'])
 
 
 def auto_share_social_media(request):
@@ -741,14 +761,17 @@ def auto_share_social_media(request):
     :param request: request to toggle social media auto-share
     :return: an HttpResponse with the new state of auto-sharing
     """
-    student = Student.objects.get(user=request.user)
-    if student.auto_brag_social_media:
-        student.auto_brag_social_media = False
-    else:
-        student.auto_brag_social_media = True
+    if request.method == 'POST':
+        student = Student.objects.get(user=request.user)
+        if student.auto_brag_social_media:
+            student.auto_brag_social_media = False
+        else:
+            student.auto_brag_social_media = True
 
-    student.save()
-    return HttpResponse(str(student.auto_brag_social_media))
+        student.save()
+        return HttpResponse(str(student.auto_brag_social_media))
+    else:
+        return HttpResponseNotAllowed(['POST'])
 
 
 def auto_share_marketing_level(request):
@@ -758,14 +781,17 @@ def auto_share_marketing_level(request):
     :param request: request to toggle, linked to a user
     :return: an HttpResponse with the new state of level-sharing
     """
-    student = Student.objects.get(user=request.user)
-    if student.level_brag_marketing:
-        student.level_brag_marketing = False
-    else:
-        student.level_brag_marketing = True
+    if request.method == 'POST':
+        student = Student.objects.get(user=request.user)
+        if student.level_brag_marketing:
+            student.level_brag_marketing = False
+        else:
+            student.level_brag_marketing = True
 
-    student.save()
-    return HttpResponse(str(student.level_brag_marketing))
+        student.save()
+        return HttpResponse(str(student.level_brag_marketing))
+    else:
+        return HttpResponseNotAllowed(['POST'])
 
 
 def auto_share_social_media_level(request):
@@ -775,12 +801,15 @@ def auto_share_social_media_level(request):
     :param request: request to toggle, linked to a user
     :return: an HttpResponse with the new state of level-sharing
     """
-    student = Student.objects.get(user=request.user)
-    if student.level_brag_social_media:
-        student.level_brag_social_media = False
-    else:
-        student.level_brag_social_media = True
+    if request.methd == 'POST':
+        student = Student.objects.get(user=request.user)
+        if student.level_brag_social_media:
+            student.level_brag_social_media = False
+        else:
+            student.level_brag_social_media = True
 
-    student.save()
-    return HttpResponse(str(student.level_brag_social_media))
+        student.save()
+        return HttpResponse(str(student.level_brag_social_media))
+    else:
+        return HttpResponseNotAllowed(['POST'])
 

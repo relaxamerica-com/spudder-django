@@ -14,20 +14,20 @@ urlpatterns = patterns(
     (r'^testing/$', 'testing'),
     (r'^mobile/$', 'mobile'),
 
-    # Functional URLs
+    # Functional URLs (limited to POST requests)
     (r'^add_email_alert/$', 'add_email_alert'),
     (r'^save_short_url/$', 'save_short_url'),
     (r'^disable_about/$', 'disable_about'),
-    (r'^save_linkedin$', 'save_linkedin'),
-
     (r'^share/marketing_points$', 'share_marketing_points'),
     (r'^share/social_media_points$', 'share_social_media_points'),
-
     (r'^auto_share/marketing$', 'auto_share_marketing'),
     (r'^auto_share/social_media$', 'auto_share_social_media'),
     (r'^auto_share/marketing_level$', 'auto_share_marketing_level'),
     (r'^auto_share/social_media_level$', 'auto_share_social_media_level'),
-    
+    # This is a handler for the LinkedIn Response, and is limited to GETs
+    (r'^save_linkedin$', 'save_linkedin'),
+
+
     # Registration & school pages
     (r'^(?P<school_id>\d+)/save_logo$', 'save_school_logo'),
     (r'^(?P<school_id>\d+)/save$', 'save_school'),
