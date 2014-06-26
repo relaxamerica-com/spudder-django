@@ -251,12 +251,21 @@ def display_cern(request):
     """
     if request.user.is_authenticated():
         try:
-            Student.objects.get(user=request.user)
+            student = Student.objects.get(user=request.user)
         except ObjectDoesNotExist:
             # In the future, we can create a custom "join CERN" page
             #  for existing users
             return cern_splash(request)
         else:
+            # check LinkedIn access token
+            if student.linkedin_expires < datetime.utcnow():
+                urlopen('https://www.linkedin.com/uas/oauth2/authorization' +
+                        '?response_type=code' +
+                        '&client_id=' + settings.LINKEDIN_API_KEY +
+                        '&scope=rw_nus' +
+                        '&state=aowj3p5ro8a0f9jq23lk4jqlwkejADSE$SDSDFGJJaw' +
+                        '&redirect_uri=http://' + request.META['HTTP_HOST'] +
+                        '/cern/save_linkedin')
             return dashboard(request)
     else:
         return cern_splash(request)
@@ -675,7 +684,7 @@ def save_linkedin(request):
                             data=" ")
 
         json = loads(response.read())
-        seconds_remaining = int(json['expires_in']) - 86400*2
+        seconds_remaining = int(json['expires_in']) - 86400*3
         expires = datetime.utcnow() + timedelta(seconds=seconds_remaining)
         token = json['access_token']
 
@@ -697,6 +706,7 @@ def share_points(request):
     :return: the response from the LinkedIn Share API
     """
     student = Student.objects.get(user=request.user)
+
     points = request.POST['points']
     project = request.POST['project']
 
