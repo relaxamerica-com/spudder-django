@@ -1,5 +1,6 @@
 import os
 import mimetypes
+import socket
 from djangoappengine.settings_base import *
 from spudmart.utils.app_identity import get_spudmart_app_name
 
@@ -10,6 +11,10 @@ DATABASES['default'] = {'ENGINE': 'dbindexer', 'TARGET': 'native', 'HIGH_REPLICA
 AUTOLOAD_SITECONF = 'indexes'
 
 DEBUG = True
+if socket.gethostname() == 'www.spudder.com':
+    DEBUG = False
+else:
+    DEBUG = True
 
 APP_NAME = 'Spudmart'
 
@@ -169,6 +174,17 @@ shared_settings = {
         'amazon_login_client_id': 'amzn1.application-oa2-client.47892dcda29f4d3d8c437b7c44f1b6e6',
         'linkedin_api_key': '77acg7pe6xdqfo',
         'linkedin_secret_key': 'Eh1uPylFg3RMSOu9',
+
+    },
+    'livespudder': {  #mg@metalayer.com
+        'server_email': 'help@spuder.com',
+        'spudder_application_id': '',
+        'spudder_rest_api_key': '',
+        'spudder_base_url': 'https://spudmart.parseapp.com',
+        'spudmart_base_url': 'https://livespudder.appspot.com',
+        'amazon_login_client_id': 'amzn1.application-oa2-client.47892dcda29f4d3d8c437b7c44f1b6e6',
+        'linkedin_api_key': '',
+        'linkedin_secret_key': '',
 
     },
 }

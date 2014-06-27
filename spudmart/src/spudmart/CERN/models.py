@@ -333,6 +333,7 @@ class Student(models.Model):
 
     def dismiss_info_message(self, message_id):
         self.info_messages_dismissed = "%s,%s" % (self.info_messages_dismissed or '', message_id)
+        self.save()
 
     def brag(self, comment):
         """

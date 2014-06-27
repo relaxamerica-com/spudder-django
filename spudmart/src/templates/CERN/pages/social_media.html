@@ -69,9 +69,11 @@
             </script>
             <script src="https://apis.google.com/js/client.js?onload=load"></script>
 
-            {% if student.show_social_media %}
-                {% include 'CERN/quote_messages/quote_social_media_instructions.html' %}
-            {% endif %}
+            {% with info_message_id="social_media_info" %}
+                {% if info_message_id not in student.hidden_info_messages %}
+                    {% include 'CERN/quote_messages/quote_social_media_instructions.html' %}
+                {% endif %}
+            {% endwith %}
 
             <div class="row">
                 <div class="span5 align-center">
