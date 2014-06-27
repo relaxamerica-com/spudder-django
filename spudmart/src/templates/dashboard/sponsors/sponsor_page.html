@@ -12,7 +12,7 @@
         <div id="entity-create">
             <form action="" method="post" id="create-team-form" class="form-horizontal" enctype="multipart/form-data">
                 <div class="control-group">
-                    <label class="control-label" for="name">Name:</label>
+                    <label class="control-label" for="name">Company Name:</label>
                     <div class="controls">
                         <input  name="name" id="name"  value="{{form.name.value|default:"" }}"/>
                         <span class="input-required">*required</span>
@@ -109,6 +109,17 @@
                                    id="form-field-google" type="url" placeholder="https://plus.google.com/u/0/your.id"
                                    value="{{form.google_plus.value|default:"" }}" />
                             <i class="icon-google-plus icon-for-not-required-field"></i>
+                        </span>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="form-field-linkedin">LinkedIn:</label>
+                    <div class="controls">
+                        <span class="input-icon input-icon-right">
+                            <input  class="input-medium input-mask-website" name="linkedin"
+                                   id="form-field-linkedin" type="url" placeholder="https://www.linkedin.com/company/company-name"
+                                   value="{{form.linkedin.value|default:"" }}" />
+                            <i class="icon-linkedin-plus icon-for-not-required-field"></i>
                         </span>
                     </div>
                 </div>

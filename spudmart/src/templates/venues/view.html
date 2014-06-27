@@ -57,11 +57,7 @@
 					<div style="display: inline-block; text-align: center; width: 75%; margin-top:10px;">
 						<h3 style="margin-bottom: 0px; font-weight: bold;" id="venue-name"> 
 
-						{% if sponsor %}
-							{{ sponsor.name }}
-						{% else %}
-							{{ venue.name }}
-						{% endif %}
+						{{ venue.name }}
 						</h3>
 						<h5 class="view-mode" id="venue-aka-name">
 						{% if venue.aka_name %}
@@ -485,11 +481,7 @@
 							{% endif %}
 						</div>
 						<div class="span12" id="venue-name2" style="text-align: center; width: 60%; margin-top:38px;">
-							{% if sponsor %}
-								{{ sponsor.name }}
-							{% else %}
 								{{ venue.name }}
-							{% endif %}
 						</div>
 					</div></h5>
 
@@ -557,7 +549,7 @@
 							</li>
 
 							<li>
-								<a href="{{ sponsor.linked_in }}" target="_blank" rel="publisher" data-placement="bottom" title=""
+								<a href="{{ sponsor.linkedin }}" target="_blank" rel="publisher" data-placement="bottom" title=""
 								data-original-title="Sponsor LinkedIn profile"> <i class="fa fa-linkedin-square fa-2x"> </i> </a>
 							</li>
 						</ul>
@@ -957,7 +949,7 @@
 							if (parsed['uploaded_files'].length > 0) {
 								$('#venue-logo, #venue-logo2').attr('src', parsed['uploaded_files'][0]);
 								$('#placeholder1').text('Refresh to see logo')
-								$().text('Refresh to see logo')
+								$('#placeholder2').text('Refresh to see logo')
 							}
 
 							dfd.resolve();
