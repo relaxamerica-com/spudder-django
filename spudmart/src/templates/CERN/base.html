@@ -335,7 +335,9 @@
         ga('create', 'UA-52142935-1', 'spudder.com');
         ga('require', 'displayfeatures');
         {% block google_analytics_additions %}{% endblock %}
-        ga('send', 'pageview');
+        {% if not is_staff_context %}
+            ga('send', 'pageview');
+        {% endif %}
     </script>
     {% block scripts %}{% endblock scripts %}
 </body>

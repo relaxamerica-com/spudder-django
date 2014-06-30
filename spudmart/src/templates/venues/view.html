@@ -46,6 +46,13 @@
 
 			<form method="post" enctype="multipart/form-data">
 
+                {% if can_edit %}
+                    <div class="pull-right">
+                        <div class="btn btn-orange" id="edit">
+                            Edit Mode
+                        </div>
+                    </div>
+                {% endif %}
 				<div class="row-fluid">
 					<div class="span2">
                         <div class="view-mode">
