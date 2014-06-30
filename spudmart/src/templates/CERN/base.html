@@ -65,6 +65,24 @@
     {% block meta %} {% endblock %}
 
     <script src="/media/js/jquery.js"></script>
+    <script type="text/javascript" src="//assets.zendesk.com/external/zenbox/v2.6/zenbox.js"></script>
+    <style type="text/css" media="screen, projection">
+      @import url(//assets.zendesk.com/external/zenbox/v2.6/zenbox.css);
+    </style>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            if (typeof(Zenbox) !== "undefined") {
+                Zenbox.init({
+                    dropboxID:   "20173894",
+                    url:     	"https://spudder.zendesk.com",
+                    tabTooltip:  "Support",
+                    tabImageURL: "https://p2.zdassets.com/external/zenbox/images/tab_support.png",
+                    tabColor:	"#fb810b",
+                    tabPosition: "Left"
+                });
+            }
+        });
+    </script>
 </head>
 <body>
     {% include 'accounts/common/amazon-root.html' %}
@@ -316,6 +334,7 @@
 
         ga('create', 'UA-52142935-1', 'spudder.com');
         ga('require', 'displayfeatures');
+        {% block google_analytics_additions %}{% endblock %}
         ga('send', 'pageview');
     </script>
     {% block scripts %}{% endblock scripts %}

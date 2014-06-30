@@ -5130,3 +5130,7 @@ div[id^=donation-modal] .loading {
 #venue-property-buttons .btn {
     width: 18px;
 }
+
+#zenbox_tab {
+   top: 80% !important;
+}
