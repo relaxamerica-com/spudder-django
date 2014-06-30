@@ -1800,6 +1800,7 @@ ul.folio-detail li label{
 	cursor:default;
 	color:#353535;
 	font-weight:bold;
+	vertical-align: initial;
 }
 
 .widget ul.recent li {
@@ -4270,6 +4271,10 @@ aside .widget.offer-widget {
 }
 
 .offer-widget ul.folio-detail.offer-details li {
+	color: red;
+}
+
+.offer-widget ul.folio-detail.offer-details a {
 	color: red;
 }
 

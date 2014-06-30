@@ -474,7 +474,11 @@
 
                 <hr class="hidden-desktop"/>
                 {% if request.user == venue.user %}
-                    {% include 'CERN/quote_messages/quote_venue_sponsors_coming_soon_can_edit.html' %}
+                    {% if not venue.renter %}
+                        {% include 'CERN/quote_messages/quote_venue_sponsors_coming_soon_can_edit.html' %}
+                    {% else %}
+                        {% include 'CERN/quote_messages/quote_venue_rented_for_student.html' %}
+                    {% endif %}
                 {% else %}
                     {% if not sponsor %}
                         {% include 'CERN/quote_messages/quote_venue_sponsors_coming_soon.html' %}
@@ -582,7 +586,7 @@
 
                         {% if sponsor.location %}
                         <li>
-                            <label>Location: </label> {{ sponsor.location }}
+                            <label>Location: </label> <a href="http://maps.google.com/?q={{ sponsor.location }}" target="_blank" id="sponsor-location">{{ sponsor.location }}</a>
                         </li>
                         {% endif %}
 
@@ -594,13 +598,13 @@
 
                         {% if sponsor.email %}
                         <li>
-                            <label>E-mail: </label> {{ sponsor.email }}
+                            <label>E-mail: </label> <a href="mailto:{{ sponsor.email }}">{{ sponsor.email }}</a>
                         </li>
                         {% endif %}
 
                         {% if sponsor.website %}
                         <li>
-                            <label>Website: </label> {{ sponsor.website }}
+                            <label>Website: </label> <a href="{{ sponsor.website }}">{{ sponsor.website }}</a>
                         </li>
                         {% endif %}
 
