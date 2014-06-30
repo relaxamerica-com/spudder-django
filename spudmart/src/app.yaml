@@ -12,10 +12,6 @@ inbound_services:
 - warmup
 
 handlers:
-- url: /CERN/import_schools
-  script: djangoappengine/main/main.py
-  login: admin
-
 - url: /_ah/queue/deferred
   script: djangoappengine/deferred/handler.py
   login: admin
@@ -25,6 +21,14 @@ handlers:
 
 - url: /media
   static_dir: templates/static_files
+
+- url: /favicon.ico
+  static_files: templates/static_files/img/favicon.png
+  upload: templates/static_files/img/favicon.png
+
+- url: /robots.txt
+  static_files: templates/static_files/robots.txt
+  upload: templates/static_files/robots.txt
 
 - url: /admin/.*
   script: $PYTHON_LIB/google/appengine/ext/admin

@@ -59,6 +59,13 @@ def view(request, venue_id):
 
     sponsor = SponsorPage.objects.filter(sponsor=venue.renter)
 
+    try:
+        student = Student.objects.get(user=request.user)
+    except Student.DoesNotExist:
+        student = False
+    except TypeError:
+        student = False
+
     return render(request, 'venues/view.html', {
         'venue': venue,
         'sports': SPORTS,
@@ -67,7 +74,8 @@ def view(request, venue_id):
         'rent_venue_url': rent_venue_url,
         'can_edit': can_edit,
         'sponsor': sponsor[0] if len(sponsor) else None,
-        'is_sponsor': venue.renter == user
+        'is_sponsor': venue.renter == user,
+        'student': student,
     })
 
 def create(request):
