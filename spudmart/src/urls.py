@@ -1,6 +1,7 @@
 import urlparse
 from django.conf.urls.defaults import *
 from django.http import HttpResponseRedirect
+from django.views.generic import RedirectView
 
 handler404 = 'django.views.defaults.page_not_found'
 handler500 = 'djangotoolbox.errorviews.server_error'
@@ -50,6 +51,9 @@ urlpatterns = patterns(
     (r'^api/1/', include('spudmart.api.urls')),
 
     (r'^cern/', include('spudmart.CERN.urls')),
+
+    # Legacy URL mapping
+    (r'^campusrep', RedirectView.as_view(url="/cern/")),
 
     # Note the below line was added to catch root urls and push them to info.spudder.com for now MG 20140618
     (r'^$', temp_redirect_view)

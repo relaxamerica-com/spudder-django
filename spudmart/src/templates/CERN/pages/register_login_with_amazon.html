@@ -5,6 +5,10 @@
 
 {% block title %}CERN Register for : {{ school.name }} - CERN{% endblock %}
 
+{% block google_analytics_additions %}
+    ga('set', 'contentGroup1', 'CERN Register - Login With Amazon');
+{% endblock %}
+
 {% block well_content %}
 		<h4 class="aligncenter">
             Join CERN Team for: <br/>

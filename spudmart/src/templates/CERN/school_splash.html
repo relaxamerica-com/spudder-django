@@ -4,6 +4,10 @@
 
 {% block title %}{{ school.name }} on CERN{% endblock %}
 
+{% block google_analytics_additions %}
+    ga('set', 'contentGroup2', 'CERN Students - Team Page');
+{% endblock %}
+
 {% block content %}
 
     <div class="container" id="venue-view">

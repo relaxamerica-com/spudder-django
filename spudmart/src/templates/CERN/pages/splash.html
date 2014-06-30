@@ -1,5 +1,9 @@
 {% extends 'CERN/base_no_side_nav.html' %}
 
+{% block google_analytics_additions %}
+    ga('set', 'contentGroup1', 'CERN Splash Page');
+{% endblock %}
+
 {% block content %}
 
     <div class="container">

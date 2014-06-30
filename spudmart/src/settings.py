@@ -183,8 +183,8 @@ shared_settings = {
         'spudder_base_url': 'https://spudmart.parseapp.com',
         'spudmart_base_url': 'https://livespudder.appspot.com',
         'amazon_login_client_id': 'amzn1.application-oa2-client.47892dcda29f4d3d8c437b7c44f1b6e6',
-        'linkedin_api_key': '',
-        'linkedin_secret_key': '',
+        'linkedin_api_key': '77acg7pe6xdqfo',
+        'linkedin_secret_key': 'Eh1uPylFg3RMSOu9',
 
     },
 }
