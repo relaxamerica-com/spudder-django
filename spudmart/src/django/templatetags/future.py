@@ -1,7 +1,10 @@
+import re
 from django.conf import settings
 from django.template import Library, Node, Template, TemplateSyntaxError
-from django.template.defaulttags import kwarg_re, include_is_allowed, SsiNode, URLNode
+from django.template.defaulttags import include_is_allowed, SsiNode, URLNode
 from django.utils.encoding import smart_str
+
+kwarg_re = re.compile(r"(?:(\w+)=)?(.+)")
 
 
 register = Library()

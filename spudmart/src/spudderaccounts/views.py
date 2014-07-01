@@ -1,8 +1,9 @@
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from spudderaccounts.forms import ProfileDetailsForm
+from spudderdomain.controllers import RoleController
+from spudderaccounts.wrappers import EntityStudent
 
 
 def accounts_signin(request):
@@ -11,7 +12,14 @@ def accounts_signin(request):
 
 @login_required(login_url='/accounts/signin')
 def accounts_dashboard(request):
-    template_data = {}
+    role_controller = RoleController(request.user)
+    user_roles = []
+    for pair in ((RoleController.ENTITY_STUDENT, EntityStudent), ):
+        user_roles += role_controller.roles_by_entity(pair[0], pair[1])
+    user_roles.sort(key=lambda r: r.meta_data.get('last_accessed', 0), reverse=True)
+    template_data = {
+        'roles': user_roles
+    }
     profile_details_form = ProfileDetailsForm(
         initial={'first_name': request.user.first_name, 'last_name': request.user.last_name})
     if request.method == "POST":
@@ -27,3 +35,6 @@ def accounts_dashboard(request):
         'spudderaccounts/pages/dashboard.html',
         template_data,
         context_instance=RequestContext(request))
+
+@login_required(login_url='/accounts/signin')
+def accounts_manage_role(request, role_type)

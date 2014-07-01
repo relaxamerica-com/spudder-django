@@ -3,6 +3,10 @@
 
 {% block page %}
     <div class="container">
+        <ol class="breadcrumb">
+            <li class="active">User dashboard</li>
+        </ol>
+
         <div class="row">
             <div class="col-md-6">
 
@@ -45,6 +49,24 @@
                     </header>
                     <div class="panel-body" method="POST">
                         <legend>Manage your roles within Spudder</legend>
+                        {% for role in roles %}
+                            <div class="panel panel-default">
+                                <div class="panel-body">
+                                    <div class="media">
+                                        <img class="media-object pull-left" src="{{ role.image }}" />
+                                        <div class="media-body">
+                                            <h4 class="media-heading">{{ role.title|safe }}</h4>
+                                            <p>{{ role.subtitle|safe }}</p>
+                                            <a href="{{ role.links.role_management_url }}" class="btn btn-default">
+                                                Manage this role
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% empty %}
+
+                        {% endfor %}
                     </div>
                 </div>
 

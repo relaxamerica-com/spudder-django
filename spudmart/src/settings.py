@@ -47,6 +47,8 @@ INSTALLED_APPS = (
     'spudmart.amazon',
     'spudmart.utils',
     'spudderadmin',
+    'spudderaccounts',
+    'spudderdomain',
 )
 
 MIDDLEWARE_CLASSES = (
