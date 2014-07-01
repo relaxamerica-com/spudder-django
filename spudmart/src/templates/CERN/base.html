@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+{% load accounts %}
 <html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -103,7 +104,7 @@
                 <div class="headnav">
                     <ul>
                         {% if request.user.is_authenticated %}
-                            <li><a href="/cern/">Dashboard</a>
+                            <li><a href="{% if request.user|is_sponsor %}/dashboard/{% else %}/cern/{% endif %}">Dashboard</a>
                         {% else %}
                             <li><a href="/cern/register/">Register</a></li>
                             <li><a href="/cern/login/">Login</a></li>

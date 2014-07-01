@@ -215,14 +215,23 @@ def just_login(request):
             try:
                 Student.objects.get(user=user)
             except ObjectDoesNotExist:
-                return HttpResponseRedirect('/cern/register')
+                if is_sponsor(user):
+                    django.contrib.auth.login(request, user)
 
-            django.contrib.auth.login(request, user)
+                    logging.info(request.user.is_authenticated())
+                    logging.info(is_sponsor(request.user))
 
-            logging.info(request.user.is_authenticated())
-            logging.info(is_sponsor(request.user))
+                    return HttpResponseRedirect('/dashboard/')
+                else:
+                    # Redirect to splash page w/o authentication
+                    return HttpResponseRedirect('/cern/register')
+            else:
+                django.contrib.auth.login(request, user)
 
-            return HttpResponseRedirect('/cern/')
+                logging.info(request.user.is_authenticated())
+                logging.info(is_sponsor(request.user))
+
+                return HttpResponseRedirect('/cern/')
         else:
             return _handle_amazon_conn_error(request, profile_json_data)
     else:
