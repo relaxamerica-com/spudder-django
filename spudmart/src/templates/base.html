@@ -11,12 +11,29 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         {% block meta %}{% endblock %}
         {% block css %}{% endblock %}
-        <script src="js/vendor/modernizr-2.6.2-respond-1.1.0.min.js"></script>
+        <script src="/static/js/libs/modernizr-2.6.2-respond-1.1.0.min.js"></script>
     </head>
     <body class="{% block body_class %}{% endblock %}" id="{% block body_id %}{% endblock %}">
         {% block body %}{% endblock %}
-        <script src="/static/js/libs/jquery-1.11.0.min.js"></script>
-        <script src="/static/js/libs/bootstrap.min.js"></script>
+        <script type="text/javascript" language="javascript" src="/static/js/libs/jquery-1.11.0.min.js"></script>
+        <script type="text/javascript" language="javascript" src="/static/js/libs/bootstrap.min.js"></script>
+        <script type="text/javascript" language="javascript" src="/static/js/libs/jquery.livequery.js"></script>
+        <script type="text/javascript" language="javascript">
+
+            /* GLOBAL - auto hide .alert-autohide alerts after two seconds */
+            $(document).ready(function(){
+                $('.alert-autohide').livequery(function(){
+                    var $alert = $(this);
+                    setTimeout(function(){
+                        var $form = $alert.parents('form:first');
+                        if ($form.length > 0)
+                            $form.find('.has-success').removeClass('has-success');
+                        $alert.remove();
+                    }, 2000);
+                })
+            });
+
+        </script>
         {% block js %}
         {% endblock %}
     </body>

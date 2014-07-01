@@ -1,0 +1,21 @@
+{% extends 'spuddercern/old/quote_messages/base_quote_message.html' %}
+
+{% block content %}
+    <h4>Sell Venue Sponsorship!</h4>
+    <br/>
+    <p>You, the student managing this venue, can now...</p>
+    <br/>
+    <p><b>  <i class="fa fa-money"></i>  Sell Sponsorship  <i class="fa fa-money"></i>  </b></p>
+    <br/>
+    <p>of this venue to local and national <b>Sponsors</b>.</p>
+    <br />
+    <p>Use the button below to:</p>
+    <div class="btn btn-orange" id="prize-this-venue">
+        Price this Venue
+    </div>
+    <div class="input-prepend">
+        <span class="add-on">$</span>
+        <input name="price" id="price" type="text" class="input-small" value="{{ venue.price }}" />
+    </div>
+    <div class="alert"></div>
+{% endblock %}

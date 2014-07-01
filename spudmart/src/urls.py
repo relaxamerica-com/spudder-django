@@ -50,7 +50,8 @@ urlpatterns = patterns(
     (r'^file/serve/(?P<file_id>\d+)$', 'spudmart.upload.views.serve_uploaded_file'),
     (r'^api/1/', include('spudmart.api.urls')),
 
-    (r'^cern/', include('spudmart.CERN.urls')),
+    url(r'^cern/', include('spudmart.CERN.urls')),
+    url(r'^users/', include('spudderaccounts.urls')),
 
     # Spudder Admin site
     (r'^spudderadmin', include('spudderadmin.urls')),

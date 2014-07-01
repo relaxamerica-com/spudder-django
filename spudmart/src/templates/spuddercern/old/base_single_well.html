@@ -1,0 +1,13 @@
+{% extends 'spuddercern/old/base_no_side_nav.html' %}
+
+{% block content %}
+    <div class="container clearfix single-well-container" id="{% block well_container_id %}{% endblock %}">
+        <div class="row-fluid">
+            <div class="span6 offset3">
+                <div class="well">
+                    {% block well_content %}{% endblock %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

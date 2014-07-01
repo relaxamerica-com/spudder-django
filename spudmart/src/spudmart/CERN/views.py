@@ -59,7 +59,7 @@ def register(request, referral_id=None):
     if bool(os.environ['SERVER_SOFTWARE'].startswith('Development')):
         template_data['in_dev_states_with_schools'] = [s.state for s in School.objects.all()]
     return render(
-        request, 'spuddercern/pages/register_choose_state.html', template_data)
+        request, 'spuddercern/old/pages/register_choose_state.html', template_data)
 
 
 def register_with_state(request, state, referral_id=None):
@@ -79,7 +79,7 @@ def register_with_state(request, state, referral_id=None):
         for s in School.objects.filter(state=state):
             schools.append(s)
         schools = sorted(schools, key=lambda sch: sch.name)
-        return render(request, 'spuddercern/pages/register_choose_school.html',
+        return render(request, 'spuddercern/old/pages/register_choose_school.html',
                       {
                       'state': STATES[state],
                       'abbr': state,
@@ -117,7 +117,7 @@ def school(request, state, school_id, name, referral_id=None):
     try:
         sch = School.objects.get(id=school_id)
     except ObjectDoesNotExist:
-        return render(request, 'spuddercern/no-school.html')
+        return render(request, 'spuddercern/old/no-school.html')
 
     stripped_name = strip_invalid_chars(sch.name)
     if strip_invalid_chars(sch.name) != name:
@@ -153,7 +153,7 @@ def school(request, state, school_id, name, referral_id=None):
 
     return render(
         request,
-        'spuddercern/school_splash.html', {
+        'spuddercern/old/school_splash.html', {
             'school': sch,
             'student': student,
             'head': head,
@@ -271,7 +271,10 @@ def display_cern(request):
 
 
 def cern_splash(request):
-    return render(request, 'spuddercern/pages/splash.html')
+    return render(request, 'spuddercern/old/pages/splash.html')
+
+def test(request):
+    return render(request, 'spuddercern/base.html')
 
 
 @login_required
@@ -314,7 +317,7 @@ def dashboard(request):
 
     linkedin_key = settings.LINKEDIN_API_KEY
 
-    return render(request, 'spuddercern/pages/dashboard.html',
+    return render(request, 'spuddercern/old/pages/dashboard.html',
                   {
                   'student': student,
                   'content': content,
@@ -358,7 +361,7 @@ def social_media(request):
                              student.id))
         need_saving = True
 
-    return render(request, 'spuddercern/pages/social_media.html',
+    return render(request, 'spuddercern/old/pages/social_media.html',
                   {
                   'num_referred': num_referred,
                   'referral_url': referral_url,
@@ -387,7 +390,7 @@ def content(request):
     else:
         if request.user.email in mailing.emails:
             joined = True
-    return render(request, 'spuddercern/pages/coming_soon.html',
+    return render(request, 'spuddercern/old/pages/coming_soon.html',
                   {
                   'project': project,
                   'joined': joined,
@@ -415,7 +418,7 @@ def design(request):
             joined = True
         else:
             joined = False
-    return render(request, 'spuddercern/pages/coming_soon.html',
+    return render(request, 'spuddercern/old/pages/coming_soon.html',
                   {
                   'project': project,
                   'joined': joined,
@@ -443,7 +446,7 @@ def testing(request):
             joined = True
         else:
             joined = False
-    return render(request, 'spuddercern/pages/coming_soon.html',
+    return render(request, 'spuddercern/old/pages/coming_soon.html',
                   {
                   'project': project,
                   'joined': joined,
@@ -471,7 +474,7 @@ def mobile(request):
             joined = True
         else:
             joined = False
-    return render(request, 'spuddercern/pages/coming_soon.html',
+    return render(request, 'spuddercern/old/pages/coming_soon.html',
                   {
                   'project': project,
                   'joined': joined,
@@ -483,7 +486,7 @@ def mobile(request):
 @user_passes_test(user_is_student, '/cern/non-student/')
 def venues(request):
     template_data = {'venues': Venue.objects.filter(user=request.user)}
-    return render(request, 'spuddercern/pages/venues.html', template_data)
+    return render(request, 'spuddercern/old/pages/venues.html', template_data)
 
 
 @login_required
@@ -501,7 +504,7 @@ def venues_new(request):
 
         return redirect_to('/venues/view/%s' % venue.id)
     template_data = {'sports': SPORTS}
-    return render(request, 'spuddercern/pages/venues_new.html', template_data)
+    return render(request, 'spuddercern/old/pages/venues_new.html', template_data)
 
 
 @login_required
@@ -611,7 +614,7 @@ def register_school(request, school_id, referral_id=None):
                 referrer = Student.objects.get(id=referral_id)
             except ObjectDoesNotExist:
                 pass
-        return render(request, 'spuddercern/pages/register_login_with_amazon.html',
+        return render(request, 'spuddercern/old/pages/register_login_with_amazon.html',
                       {
                       'school': school,
                       'referrer': referrer,
@@ -625,7 +628,7 @@ def user_not_student_error_page(request):
     :param request: request to render the restricted page
     :return: a simple error page that links to the info page for CERN
     """
-    return render(request, 'spuddercern/non-student.html')
+    return render(request, 'spuddercern/old/non-student.html')
 
 
 def join_school(request, school_id, referral_id=None):
@@ -656,7 +659,7 @@ def join_school(request, school_id, referral_id=None):
 
 
 def login(request):
-    return render(request, 'spuddercern/login.html', {
+    return render(request, 'spuddercern/old/login.html', {
                            'client_id': settings.AMAZON_LOGIN_CLIENT_ID,
                            'base_url': settings.SPUDMART_BASE_URL,
                            'returnURL': get_return_url(request)

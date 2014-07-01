@@ -1,0 +1,31 @@
+{% extends 'spuddercern/old/base.html' %}
+
+{% block title %}CERN Dashboard{% endblock %}
+
+{% block google_analytics_additions %}
+    ga('set', 'contentGroup2', 'CERN Students - Dashboard');
+{% endblock %}
+
+{% block content %}
+
+    <div class="container-fluid main-container">
+        {% include 'spuddercern/old/parts/sideNav.html' with active="scoreboard" %}
+
+        <div class="main-content">
+            <div class="page-content">
+                <div class="main-content-header">
+                    <h1><i class="fa fa-fw fa-bar-chart-o"></i> Dashboard</h1>
+                    <h2>Keep up to date with how you are accruing points!</h2>
+                </div>
+                {% if 'dashbaord' not in student.hidden_info_messages %}
+                    {% include 'spuddercern/old/quote_messages/quote_dashboard_instructions.html' with info_message_id="dashbaord" %}
+                {% endif %}
+                {% include 'spuddercern/old/parts/grid.html' %}
+            </div>
+
+        </div>
+    </div>
+
+    {% include 'old/dashboard/parts/scripts.html' %}
+
+{% endblock %}

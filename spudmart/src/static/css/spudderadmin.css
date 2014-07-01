@@ -12382,3 +12382,7 @@ li.list-group-header {
   background-color: #262626;
   background-color: rgba(0, 0, 0, 0.55);
 }
+/* todc-bootstrap/forms.less */
+legend {
+  font-size: 14.3px;
+}

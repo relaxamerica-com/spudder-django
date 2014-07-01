@@ -161,7 +161,7 @@ def just_login(request):
         error_message = request.GET.get('error_description') + \
                         '<br><a href="' + request.GET.get('error_uri') + \
                         '">Learn more</a>'
-        return render(request, 'spuddercern/login.html', {
+        return render(request, 'spuddercern/old/login.html', {
             'error': error_message
         })
 
@@ -174,7 +174,7 @@ def just_login(request):
     if token_request.getcode() == 200:
         is_verified = json_data['aud'] == settings.AMAZON_LOGIN_CLIENT_ID
         if not is_verified:
-            return render(request, 'spuddercern/login.html', {
+            return render(request, 'spuddercern/old/login.html', {
                 'error': 'Verification failed! Please contact administrators'
             })
 
@@ -270,7 +270,7 @@ def amazon_required(request):
     :return: Simple error page explaining that Spudder/CERN requires
         the user to share information from Amazon
     """
-    return render(request, 'spuddercern/need-amazon-account.html')
+    return render(request, 'spuddercern/old/need-amazon-account.html')
 
 
 def login_fake(request):

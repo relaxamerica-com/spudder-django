@@ -31,6 +31,7 @@ INSTALLED_APPS = (
     'autoload',
     'dbindexer',
     'boto',
+    'bootstrap3',  # Bootstrap3 provides bootstrap 3 style form rendering
     'spudmart.utils',
     'spudmart.home',
     'spudmart.accounts',
