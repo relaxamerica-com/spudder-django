@@ -1,0 +1,16 @@
+{% extends 'spuddercern/quote_messages/base_quote_message.html' %}
+
+{% block alert_style %}display: inline-block{% endblock %}
+
+{% block content %}
+    <h4>You have not claimed any venues yet!</h4>
+    <p>Once you have created some venues, you can manage them here.</p>
+    <p>
+    <b>You should know:</b><br/>
+        Venues need to have a physical location, you must be in the actual venue to claim it. <br/>
+        If you are not, please visit this page on your mobile browser while at the venue.
+    </p>
+    <a class="btn btn-orange" style="margin: 30px;" href="/cern/venues/new/">
+        Claim your first Venue
+    </a>
+{% endblock %}

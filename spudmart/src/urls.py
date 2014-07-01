@@ -52,6 +52,9 @@ urlpatterns = patterns(
 
     (r'^cern/', include('spudmart.CERN.urls')),
 
+    # Spudder Admin site
+    (r'^spudderadmin', include('spudderadmin.urls')),
+
     # Legacy URL mapping
     (r'^campusrep', RedirectView.as_view(url="/cern/")),
 

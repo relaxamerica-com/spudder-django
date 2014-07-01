@@ -1,156 +1,23 @@
-{% load accounts %}
-{% load system_messages %}
-
 <!DOCTYPE html>
-<html>
-<head>
-	{% include 'parts/meta.html' %}
-	{% block meta %}
-        <title>Spudmart | Spudder - Sports Updates Made Simple</title>
-    {% endblock %}
-</head>
-
-<script type="text/javascript">
-  var url = 'http://{{ request.META.HTTP_HOST }}{{ request.get_full_path }}'
-
-  function sendRequest(){
-      var request = gapi.client.urlshortener.url.insert({
-          'resource': {'longUrl':url,},
-      })
-      request.execute(function(response){
-          this.url = response.id;
-      })
-  }
-
-  function load() {
-    gapi.client.setApiKey('AIzaSyDDSFnHOspc8Xx-RKMS6qiVASBMk-4ehRk');
-    gapi.client.load('urlshortener', 'v1', sendRequest);
-  }
-
-  function newPopup(url){
-      window.open(url, 'popup', 'height=500, width=500, left=100, top-10, scrollbars=yes,toolbar=no,menubar=no');
-  }
-
-  function facebookPopup(){
-	  newPopup('http://www.facebook.com/sharer/sharer.php?u=' + url);
-  }
-
-  function linkedinPopup(){
-	  newPopup('http://www.linkedin.com/shareArticle?mini=true&url=' + url);
-  }
-
-  function twitterPopup(){
-      newPopup('http://twitter.com/intent/tweet?text=Check%20out%20this%20page%20' + url);
-  }
-
-  function googlePopup(){
-      newPopup('https://plus.google.com/share?url=' + url);
-  }
-</script>
-<script src="https://apis.google.com/js/client.js?onload=load"></script>
-
-<body>
-    {% display_messages_for_user request.user %}
-    {% include 'accounts/common/amazon-root.html' %}
-    <div id="wrapper">
-        <header>
-            <div class="container">
-                <div class="row nomargin">
-                    <div class="span8 social-network">
-                        Share:
-							<ul class="social-network" style="display: inline-block;">
-							<li>
-                            <a data-original-title="Share on Facebook" data-placement="bottom" href="JavaScript:facebookPopup()">
-								<i class="fa fa-facebook-square fa-2x"></i>
-								<!--<span class="fa-stack fa-lg">
-									<i class="fa fa-square fa-stack-2x"></i>
-									<i style="text-align:right;" class="fa fa-facebook fa-stack-1x fa-inverse"></i>
-								</span>-->
-							</a>
-							</li>
-							<li>
-                            <a data-original-title="Share on Twitter" data-placement="bottom" href="javascript:twitterPopup()">
-								<i class="fa fa-twitter-square fa-2x"></i>
-								<!--<span class="fa-stack fa-lg">
-									<i class="fa fa-square fa-stack-2x"></i>
-									<i style="text-align:right;" class="fa fa-twitter fa-stack-1x fa-inverse"></i>
-								</span>-->
-							</a>
-							</li>
-							<li>
-							<a data-original-title="Share on LinkedIn" data-placement="bottom"href="Javascript:linkedinPopup()">
-								<i class="fa fa-linkedin-square fa-2x"></i>
-							</a>
-							</li>
-							<li>
-                            <a data-original-title="Share on Google+" data-placement="bottom" href="javascript:googlePopup()">
-								<i class="fa fa-google-plus-square fa-2x"></i>
-								<!--<span class="fa-stack fa-lg">
-									<i class="fa fa-square fa-stack-2x"></i>
-									<i style="text-align:right;" class="fa fa-facebook fa-stack-1x fa-inverse"></i>
-								</span>-->
-							</a>
-							</li>
-							<li>
-                            <a data-original-title="Share via Email" data-placement="bottom" href="mailto:?subject=Check out this Spudder page!&body=Check out this cool page I saw on Spudder: {{ request.META.HTTP_HOST }}{{ request.get_full_path }}">
-							<i class="fa fa-envelope-square fa-2x"></i>
-							</a>
-							</li>
-							</ul>
-                        
-                    </div>
-                    <div class="headnav span4">
-                        <ul>
-                            {% if request.user.is_authenticated %}
-                            <li><a href="/dashboard"><i class="icon-user"></i>{% user_name user %}</a></li>
-                            <li><a href="/accounts/logout" id="logout-button">Sign out</a></li>
-                            {%  else  %}
-                            <li><a href="/accounts/login">Sign in</a></li>
-                            {% endif %}
-                        </ul>
-                    </div>
-
-                    <div class="hidden-top span8 download-buttons-wrapper">
-                        <div class="row-fluid" id="download-buttons">
-                            <a href="http://www.spudder.com/mobile" class="span3 btn btn-primary btn-large" title="App Store" style="color:black">
-                                <img src="/media/img/app_store_logo.png" />
-                                Our iOS Apps
-                            </a>
-                            <a href="http://www.spudder.com/mobile" class="span3 btn btn-primary btn-large" title="Google Play" style="color:black">
-                                <img src="/media/img/google_play_logo.png" class="pull-left"/>
-                                Our Android Apps
-                            </a>
-                            <a href="http://www.spudder.com/mobile" class="span3 btn btn-primary btn-large amazon" title="Amazon App" style="color:black">
-                                <img src="/media/img/amazon_apps_logo.png" />
-                            </a>
-                            <a href="http://www.spudder.com/mobile" class="span3 btn btn-primary btn-large" title="Flag" style="color:black">
-                                <span class="icon-flag icon-circled icon-64 active pull-left" style="margin-left: 0"></span>
-                                Flag content
-                            </a>
-                        </div>
-                    </div>
-
-                    <div id="header-hidden-link">
-                        <a href="#" class="toggle-link" title="Click me you'll get a surprise" data-target=".hidden-top"><i></i>Open</a>
-                    </div>
-                    <div id="header-logo">
-                        <a href="/"><img src="/media/ico/favicon.png"></a>
-                    </div>
-                </div>
-            </div>
-
-            {% include 'parts/modals.html' %}
-
-        </header>
-
-        {% block content %}{% endblock content %}
-
-		<div class="push"> </div> <!-- sticky footer part -->
-
-    </div>
-    {% include 'parts/footer.html' %}
-
-    {% include 'parts/scripts.html' %}
-    {% block scripts %}{% endblock scripts %}
-</body>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>{% block title %}{% endblock %}</title>
+        <meta name="description" content="{% block description %}{% endblock %}">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        {% block meta %}{% endblock %}
+        {% block css %}{% endblock %}
+        <script src="js/vendor/modernizr-2.6.2-respond-1.1.0.min.js"></script>
+    </head>
+    <body class="{% block body_class %}{% endblock %}" id="{% block body_id %}{% endblock %}">
+        {% block body %}{% endblock %}
+        <script src="/static/js/libs/jquery-1.11.0.min.js"></script>
+        <script src="/static/js/libs/bootstrap.min.js"></script>
+        {% block js %}
+        {% endblock %}
+    </body>
 </html>

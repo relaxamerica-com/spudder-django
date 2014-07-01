@@ -1,0 +1,81 @@
+{% extends 'spuddercern/base_single_well.html' %}
+
+{% block title %}Claim a new Venue on CERN{% endblock %}
+
+{% block scripts %}
+	<script type="text/javascript" src="/media/js/venues/utils.js"></script>
+	<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=true&libraries=geometry"></script>
+	<script type="text/javascript" src="/media/js/google.map.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function() {
+            $('.alert').each(function(i, alert) {
+               var $alert = $(alert);
+               if ($alert.html().trim() == "")
+                   $alert.hide();
+            });
+
+			initialize(true, $('#alert-location'), function(venue) {
+				return venue.sport == $('#venue-sport').val();
+			}, function(latitude, longitude) {
+				$('[name="longitude"]').val(longitude);
+				$('[name="latitude"]').val(latitude);
+				$('#save').removeClass('hidden');
+			});
+		});
+	</script>
+{% endblock %}
+
+{% block google_analytics_additions %}
+    ga('set', 'contentGroup2', 'CERN Students - Create New Venue');
+{% endblock %}
+
+{% block well_content %}
+    <h4 class="aligncenter">Claim the venue at this location!</h4>
+
+    <div class="question left">
+        <div class="alert alert-info alert-block">
+            <h4>You must be at the venue to create a new venue</h4>
+            <p>The location of venues is very important to the way that Spudder and CERN Teams work.</p>
+            <p>You must physically <b>be</b> at the venue you are trying to create.</p>
+            <p>Once created, you can not change a venue's location.</p>
+            <p>If your location isn't correct, try enabling GPS on your device and reloading the page.</p>
+            <i class="fa fa-caret-down"></i>
+        </div>
+        <img src="/media/img/button-cern-small.png" class="button-cern" />
+    </div>
+
+    <form action="/venues/create" method="post" id="create-team-form" class="form-horizontal" enctype="multipart/form-data">
+        <div class="control-group">
+            <label class="control-label" for="sport">Sport:</label>
+            <div class="controls">
+                {% include 'old/venues/parts/select_sport.html' %}
+            </div>
+        </div>
+
+        <div class="control-group" id="create-venue">
+            <label class="control-label" for="location">Venue Location:</label>
+            <div class="controls">
+                <input name="longitude" type="hidden" />
+                <input name="latitude" type="hidden" />
+                <div class="" id="map">
+                    <div id="map-canvas">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <div class="controls">
+                <div class="btn-group">
+                    <button type="submit" id="save" class="btn btn-orange hidden">Create</button>
+                    <a href="/cern/venues" class="btn">
+                        Cancel
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </form>
+
+{% endblock %}

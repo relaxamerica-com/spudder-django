@@ -3,7 +3,7 @@ from django.conf.urls.defaults import patterns
 
 urlpatterns = patterns('spudmart.venues.views',
     (r'^$', 'index'),
-    (r'^login$', 'login_view'),
+    # (r'^login$', 'login_view'),
     (r'^view/(?P<venue_id>\d+)$', 'view'),
     (r'^save_coordinates/(?P<venue_id>\d+)$', 'save_coordinates'),
     (r'^save_parking_details/(?P<venue_id>\d+)$', 'save_parking_details'),

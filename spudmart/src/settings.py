@@ -45,6 +45,7 @@ INSTALLED_APPS = (
     'spudmart.CERN',
     'spudmart.amazon',
     'spudmart.utils',
+    'spudderadmin',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -65,6 +66,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'spudmart.amazon.context.amazon_client_id',
     'spuddercontextprocessors.appenginhelpers.context_running_locally',
     'spuddercontextprocessors.staffcontext.staff_context',
+    'spuddercontextprocessors.settingscontext.settings_context',
 )
 
 

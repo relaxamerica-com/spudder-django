@@ -67,7 +67,7 @@ def sponsor_page(request):
 
             return HttpResponseRedirect('/dashboard/sponsor/page')
 
-    return render(request, 'dashboard/sponsors/sponsor_page.html', {
+    return render(request, 'old/dashboard/sponsors/sponsor_page.html', {
         'form': form,
         'places_api_key': settings.GOOGLE_PLACES_API_KEY,
         'lat': lat, 'lng': lng, 'info_window': info_window,
@@ -80,6 +80,6 @@ def public_view(request, page_id):
     page = get_object_or_404(SponsorPage, pk=page_id)
     page.images = filter(lambda image: image != "", page.images)
 
-    return render(request, 'sponsors/public_view.html', {
+    return render(request, 'old/sponsors/public_view.html', {
         'page': page
     })

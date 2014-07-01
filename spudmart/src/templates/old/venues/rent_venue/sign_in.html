@@ -1,0 +1,31 @@
+{% extends 'old/base.html' %}
+
+{% block content %}
+    <div class="container clearfix" id="venue-account">
+        <div class="well">
+            <p class="header">Sign in needed</p>
+            <p class="centered">Your payment was successfull, but in order to complete renting venue, you must sign in</p>
+            <p class="centered"><strong>If you don't sign in and create an account, you won't be able to claim your rights for this venue!</strong></p>
+            <a href="#" id="LoginWithAmazon" class="centered">
+                <img border="0" alt="Login with Amazon"
+                    src="https://images-na.ssl-images-amazon.com/images/G/01/lwa/btnLWA_gold_156x32.png"
+                    width="156" height="32" />
+            </a>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block scripts %}
+    <script>
+        var loginWithAmazon = document.getElementById('LoginWithAmazon'),
+            returnUrl = '{{ base_url }}/accounts/login/amazon?next=/venues/rent_venue/sign_in_complete';
+
+        if (loginWithAmazon) {
+            loginWithAmazon.onclick = function() {
+                options = { scope : 'profile' };
+                amazon.Login.authorize(options, returnUrl);
+                return false;
+            };
+        }
+    </script>
+{% endblock scripts %}

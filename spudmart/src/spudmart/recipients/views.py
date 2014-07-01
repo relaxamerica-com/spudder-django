@@ -13,7 +13,7 @@ def index(request, team_id):
     team = get_team(team_id)
     get_or_create_recipient(team, request.user)
 
-    return render(request, 'dashboard/recipients/index.html', {
+    return render(request, 'old/dashboard/recipients/index.html', {
         'team': team,
         'cbui_url': get_recipient_cbui_url(team_id),
         'spudder_url': '%s/dashboard/teams' % settings.SPUDDER_BASE_URL
@@ -49,7 +49,7 @@ def complete(request, team_id):
 
 
 def thanks(request, team_id):
-    return render(request, 'dashboard/recipients/thanks.html', {
+    return render(request, 'old/dashboard/recipients/thanks.html', {
         'spudder_url': '%s/dashboard/teams/%s/offers' % (settings.SPUDDER_BASE_URL, team_id)
     })
 
@@ -59,7 +59,7 @@ def error(request, team_id):
     recipient = get_or_create_recipient(team, request.user)
     status_message = AmazonActionStatus.get_status_message(recipient.status_code)
 
-    return render(request, 'dashboard/recipients/error.html', {
+    return render(request, 'old/dashboard/recipients/error.html', {
         'spudder_url': '%s/dashboard/teams/%s/offers' % (settings.SPUDDER_BASE_URL, team_id),
         'status': status_message
     })

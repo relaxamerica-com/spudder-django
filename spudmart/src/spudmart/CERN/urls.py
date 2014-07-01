@@ -41,7 +41,7 @@ urlpatterns = patterns(
         'school'),
     (r'^register/(?P<referral_id>[\w\d\-]+)$', 'register'),
     (r'^register/$', 'register'),
-    (r'^amazon_login/$', 'amazon_login'),
+    # (r'^amazon_login/$', 'amazon_login'),
     (r'^join_school/(?P<school_id>\d+)/(?P<referral_id>\d+)$', 'join_school'),
     (r'^join_school/(?P<school_id>\d+)/$', 'join_school'),
 

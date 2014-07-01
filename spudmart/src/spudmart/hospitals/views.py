@@ -37,7 +37,7 @@ def convert_json_hospital_list_async(request):
     return HttpResponse('OK')
 
 def convert_xml_hospital_list_async(request):
-    doc = minidom.parseString(render_to_string('hospitals/rows.xml'))
+    doc = minidom.parseString(render_to_string('old/hospitals/rows.xml'))
     Hospital.objects.all().delete()
     for row in doc.getElementsByTagName('row'):
         try:

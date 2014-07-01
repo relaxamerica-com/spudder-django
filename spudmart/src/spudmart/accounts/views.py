@@ -19,7 +19,7 @@ from spudmart.CERN.models import Student, School
 
 
 def login(request):
-    return render(request, 'accounts/login.html', {
+    return render(request, 'old/accounts/login.html', {
         'client_id': settings.AMAZON_LOGIN_CLIENT_ID,
         'base_url': settings.SPUDMART_BASE_URL,
         'returnURL': get_return_url(request)
@@ -27,7 +27,7 @@ def login(request):
 
 
 def _handle_amazon_conn_error(request, json_data):
-    return render(request, 'accounts/login.html', {
+    return render(request, 'old/accounts/login.html', {
         'next': get_return_url(request),
         'error': json_data['error_description']
     })
@@ -71,7 +71,7 @@ def amazon_login(request):
         error_message = request.GET.get('error_description') + \
                         '<br><a href="' + request.GET.get('error_uri') + \
                         '">Learn more</a>'
-        return render(request, 'accounts/login.html', {
+        return render(request, 'old/accounts/login.html', {
             'next': return_url,
             'error': error_message
         })
@@ -85,7 +85,7 @@ def amazon_login(request):
     if token_request.getcode() == 200:
         is_verified = json_data['aud'] == settings.AMAZON_LOGIN_CLIENT_ID
         if not is_verified:
-            return render(request, 'accounts/login.html', {
+            return render(request, 'old/accounts/login.html', {
                 'next': return_url,
                 'error': 'Verification failed! Please contact administrators'
             })
@@ -161,7 +161,7 @@ def just_login(request):
         error_message = request.GET.get('error_description') + \
                         '<br><a href="' + request.GET.get('error_uri') + \
                         '">Learn more</a>'
-        return render(request, 'cern/login.html', {
+        return render(request, 'spuddercern/login.html', {
             'error': error_message
         })
 
@@ -174,7 +174,7 @@ def just_login(request):
     if token_request.getcode() == 200:
         is_verified = json_data['aud'] == settings.AMAZON_LOGIN_CLIENT_ID
         if not is_verified:
-            return render(request, 'cern/login.html', {
+            return render(request, 'spuddercern/login.html', {
                 'error': 'Verification failed! Please contact administrators'
             })
 
@@ -270,7 +270,7 @@ def amazon_required(request):
     :return: Simple error page explaining that Spudder/CERN requires
         the user to share information from Amazon
     """
-    return render(request, 'CERN/need-amazon-account.html')
+    return render(request, 'spuddercern/need-amazon-account.html')
 
 
 def login_fake(request):

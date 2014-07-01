@@ -42,7 +42,7 @@ class Venue(models.Model):
     price = models.DecimalField(default=0.0, decimal_places=2, max_digits=10)
     fax = models.CharField(max_length=200)
 
-    # Just to stay consistent with fcns created in CERN.rep
+    # Just to stay consistent with fcns created in spuddercern.rep
     rep = models.IntegerField(default=0)
     
 
