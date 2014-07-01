@@ -1,0 +1,21 @@
+{% extends 'spuddercern/quote_messages/base_quote_message.html' %}
+{% load CERN %}
+
+{% block alert_style %}display: inline-block{% endblock %}
+
+{% block content %}
+    <h4>What is the Social Media PR project?</h4>
+    <p>In the <em>Social Media PR</em> project, we reward you for spreading publicity about CERN and for bringing in new users.</p>
+    <p><b>How do I do that?</b></p>
+    <p>Below, you'll find two links - one is a quick link for referring students at your school, and the other allows you to recruit students from another school. Distribute this link, and anyone who signs up at your custom URL will give you rewards!</p>
+    <p><b>How do I track my progress?</b></p>
+    <p>You'll also find some metrics recording your progress in recruiting members below. Currently we display the number of users you have recruited, and a list of all the users you have recruited, ranked on their overall score.</p>
+    <p><b>Sounds great, but didn't you say something about prizes?</b></p>
+    <p>Yes, you will get rewarded for your work! You earn a certain number of points for each student you recruit, as well as how many points they earn in their projects. These points can be redeemed for cash and other prizes.</p>
+
+    <br/>
+    <div class="btn-group">
+        <button class="btn dismiss-for-now-button">Hide for now</button>
+        <button id="submit" class="btn btn-primary dismiss-for-good-button">Hide Forever</button>
+    </div>
+{% endblock %}

@@ -1,0 +1,332 @@
+<div class="row">
+    <div class="col-sm-2">
+        <div class="pricing-box-alt" id="marketing">
+            <div class="pricing-heading">
+                <i class="fa fa-fw fa-map-marker"></i>
+                <h3>Marketing <br/>(Venues)</h3>
+            </div>
+            <div class="pricing-terms">
+                <h3>{{ student.marketing_points }} pts</h3>
+            </div>
+            <div class="pricing-content">
+                <ul>
+                    <li>Learn proven techniques to drive traffic to your Venue page</li>
+                    <li>Earn a percentage of your venue's sponsorship</li>
+                    <li>
+                        <a class="btn btn-orange" href="/cern/venues">
+                            {% if student.marketing_points > 0 %}
+                                Go to this project
+                            {% else %}
+                                Start this project!
+                            {% endif %}
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-2">
+        <div class="pricing-box-alt" id="social-media">
+            <div class="pricing-heading">
+                <i class="fa fa-fw fa-rss"></i>
+                <h3>Social Media PR</h3>
+            </div>
+            <div class="pricing-terms">
+                <h3>{{ student.social_media_points }} pts</h3>
+            </div>
+            <div class="pricing-content">
+                <ul>
+                    <li>Earn points based on the number of people you bring to CERN</li>
+                    <li>Redeem these points for cash and other great prizes</li>
+                    <li>
+                        <a class="btn btn-orange" href="/cern/social_media/">
+                            {% if student.social_media_points > 0 %}
+                                Go to this project
+                            {% else %}
+                                Start this project!
+                            {% endif %}
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="col-sm-2">
+        <div class="pricing-box-alt" id="blogging">
+            <div class="pricing-heading">
+                <i class="fa fa-fw fa-edit"></i>
+                <h3>Content Management</h3>
+            </div>
+            <div class="pricing-terms">
+                <h3>{{ student.content_points }} pts</h3>
+            </div>
+            <div class="pricing-content">
+                <ul>
+                    <li>Manage a blog and even earn a featured column on Spudder's main site</li>
+                    <li>This feature isn't ready yet. Sign up below to be alerted when it is.</li>
+                    {% if content %}
+                    <li><button class="btn btn-orange" id='content-btn'>Join mailing list</button></li>
+                    {% else %}
+                    <li><button class="btn">You're on the list</button></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-2">
+        <div class="pricing-box-alt" id="design">
+            <div class="pricing-heading">
+                <i class="fa fa-fw fa-pencil"></i>
+                <h3>Design UX/UI</h3>
+            </div>
+            <div class="pricing-terms">
+                <h3>{{ student.design_points }} pts</h3>
+            </div>
+            <div class="pricing-content">
+                <ul>
+                    <li>Help sponsors (small businesses) manage their Spudder pages</li>
+                    <li>This feature isn't ready yet. Sign up below to be alerted when it is.</li>
+                    {% if design %}
+                    <li><button class="btn btn-orange" id='design-btn'>Join mailing list</button></li>
+                    {% else %}
+                    <li><button class="btn">You're on the list</button></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-2">
+        <div class="pricing-box-alt" id="quality-assurance">
+            <div class="pricing-heading">
+                <i class="fa fa-fw fa-cogs"></i>
+                <h3>Quality Assurance</h3>
+            </div>
+            <div class="pricing-terms">
+                <h3>{{ student.testing_points }} pts</h3>
+            </div>
+            <div class="pricing-content">
+                <ul>
+                    <li>Beta applications and get advanced access prior to release</li>
+                    <li>This feature isn't ready yet. Sign up below to be alerted when it is.</li>
+                    {% if qa %}
+                    <li><button class="btn btn-orange" id="qa">Join mailing list</button></li>
+                    {% else %}
+                    <li><button class="btn">You're on the list</button></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-2">
+        <div class="pricing-box-alt" id="linkedin-sharing">
+            <div class="pricing-heading">
+                <i class="fa fa-fw fa-linkedin"></i>
+                <h3>Share Points on LinkedIn</h3>
+            </div>
+            <div class="pricing-terms">
+                {% if student.linkedin_token %}
+                <p>Your LinkedIn account is connected to Spudder.</p>
+                {% else %}
+                <a href="https://www.linkedin.com/uas/oauth2/authorization?response_type=code&client_id={{ key }}&scope=rw_nus&state=aowj3p5ro8a0f9jq23lk4jqlwkejADSE$SDSDFGJJaw&redirect_uri=http://{{ request.META.HTTP_HOST }}/cern/save_linkedin">Connect your LinkedIn account to Spudder</a>
+                {% endif %}
+            </div>
+            {% if student.linkedin_token %}
+            <div class="pricing-content">
+                <ul>
+                    <li><p>Share current points:</p>
+                        {% if student.marketing_points > 0 %}<a id="share-marketing">Marketing</a><br>{% endif %}
+                        {% if student.social_media_points > 0 %}<a id="share-social-media">Social Media PR</a>{% endif %}
+                    </li>
+                    <li>
+                        <p>Auto-share every 100 points:</p>
+                        {% if student.marketing_points > 0 %}
+                            <input type="checkbox" class="checkbox-sharing" id="marketing-checkbox" {% if student.auto_brag_marketing %} checked {% endif %}> <label class="checkbox-label" id="marketing-label">Marketing</label>
+                        {% endif %}
+                        {% if student.social_media_points > 0 %}
+                            <input type="checkbox" class="checkbox-sharing" id="social-media-checkbox" {% if student.auto_brag_social_media %} checked {% endif %}> <label class="checkbox-label" id="social-media-label">Social Media PR</label>
+                        {% endif %}
+                    </li>
+                    <li>
+                        <p>Auto-share every time you level up:</p>
+                        {% if student.marketing_points > 0 %}
+                            <input type="checkbox" class="checkbox-sharing" id="marketing-level-checkbox" {% if student.level_brag_marketing %} checked {% endif %}> <label class="checkbox-label" id="marketing-level-label">Marketing</label>
+                        {% endif %}
+                        {% if student.social_media_points > 0 %}
+                            <input type="checkbox" class="checkbox-sharing" id="social-media-level-checkbox" {% if student.level_brag_social_media %} checked {% endif %}> <label class="checkbox-label" id="social-media-level-label">Social Media PR</label>
+                        {% endif %}
+                    </li>
+                </ul>
+            </div>
+            {% endif %}
+    </div>
+</div>
+<script type="text/javascript">
+    function join_list(project){
+        $.post('/cern/add_email_alert/',
+            { 'email' : "{{ request.user.email }}",
+              'project' : project, });
+    }
+
+    $(document).ready(function(){
+        $('#content-btn').click(function(){
+            $(this).removeClass('btn-orange');
+            $(this).text("You're on the list");
+            join_list('Blogging');
+        });
+
+        $('#design-btn').click(function(){
+            $(this).removeClass('btn-orange');
+            $(this).text("You're on the list");
+            join_list('Sponsor Page Design');
+        });
+
+        $('#qa').click(function(){
+            $(this).removeClass('btn-orange');
+            $(this).text("You're on the list");
+            join_list('Quality Assurance Testing');
+        });
+    });
+
+    $('#share-marketing').click(function(){
+        if (confirm('This will send a post to your LinkedIn network.\nThis post will be visible to anyone on LinkedIn.')){
+            $.post('/cern/share/marketing_points');
+        }
+    });
+
+    $('#share-social-media').click(function(){
+        if (confirm('This will send a post to your LinkedIn network.\nThis post will be visible to anyone on LinkedIn.')){
+            $.post('/cern/share/social_media_points');
+        }
+    });
+
+    var marketing = $('#marketing-checkbox'),
+        socialMedia = $('#social-media-checkbox');
+
+    marketing.click(function(){
+        if (marketing.prop('checked')){
+            if (confirm('This will start auto-sharing your Marketing points every 100 points!\nThis will NOT make a post to LinkedIn right now.')){
+                $.post('/cern/auto_share/marketing');
+            } else{
+                marketing.prop('checked', false);
+            }
+        } else{
+            if (confirm('This will stop auto-sharing your Marketing points every 100 points!')){
+                $.post('/cern/auto_share/marketing');
+            } else{
+                marketing.prop('checked', true);
+            }
+        }
+    });
+    $('#marketing-label').click(function(){
+        if (marketing.prop('checked')){
+            if (confirm('This will stop auto-sharing your Marketing points every 100 points!')){
+                $.post('/cern/auto_share/marketing');
+                marketing.prop('checked', false);
+            }
+        } else{
+            if (confirm('This will start auto-sharing your Marketing points every 100 points!\nThis will NOT make a post to LinkedIn right now.')){
+                $.post('/cern/auto_share/marketing');
+                marketing.prop('checked', true);
+            }
+        }
+    });
+
+    socialMedia.click(function(){
+        if (socialMedia.prop('checked')){
+            if (confirm('This will start auto-sharing your Social Media PR points every 100 points!\nThis will NOT make a post to LinkedIn right now.')){
+                $.post('/cern/auto_share/social_media');
+            } else{
+                socialMedia.prop('checked', false);
+            }
+        } else{
+            if (confirm('This will stop auto-sharing your Social Media PR points every 100 points!')){
+                $.post('/cern/auto_share/social_media');
+            } else{
+                socialMedia.prop('checked', true);
+            }
+        }
+    });
+    $('#social-media-label').click(function(){
+        if (socialMedia.prop('checked')){
+            if (confirm('This will stop auto-sharing your Social Media PR points every 100 points!')){
+                $.post('/cern/auto_share/social_media');
+                socialMedia.prop('checked', false);
+            }
+        } else{
+            if (confirm('This will start auto-sharing your Social Media PR points every 100 points!\nThis will NOT make a post to LinkedIn right now.')){
+                $.post('/cern/auto_share/social_media');
+                socialMedia.prop('checked', true);
+            }
+        }
+    });
+
+    var marketingLevel = $('#marketing-level-checkbox'),
+        socialMediaLevel = $('#social-media-level-checkbox');
+
+    marketingLevel.click(function(){
+        if (marketingLevel.prop('checked')){
+            if (confirm('This will start auto-sharing your Marketing level every time you level up.\nThis will NOT make a post to LinkedIn right now.')){
+                $.post('/cern/auto_share/marketing_level');
+            } else {
+                marketingLevel.prop('checked', false);
+            }
+        } else{
+            if (confirm('This will stop auto-sharing your Marketing level every time you level up!')){
+                $.post('/cern/auto_share/marketing_level');
+            } else {
+                marketingLevel.prop('checked', true);
+            }
+        }
+    });
+
+    $('#marketing-level-label').click(function(){
+        if (marketingLevel.prop('checked')){
+            if (confirm('This will stop auto-sharing your Marketing level every time you level up!')){
+                $.post('/cern/auto_share/marketing_level');
+                marketingLevel.prop('checked', false);
+            }
+        } else{
+             if (confirm('This will start auto-sharing your Marketing level every time you level up.\nThis will NOT make a post to LinkedIn right now.')){
+                $.post('/cern/auto_share/marketing_level');
+                marketingLevel.prop('checked', true);
+            }
+        }
+
+    });
+
+    socialMediaLevel.click(function(){
+        if (socialMediaLevel.prop('checked')){
+            if (confirm('This will start auto-sharing your Social Media PR level every time you level up.\nThis will NOT make a post to LinkedIn right now.')){
+                $.post('/cern/auto_share/social_media_level');
+            } else {
+                socialMediaLevel.prop('checked', false);
+            }
+        } else{
+             if (confirm('This will stop auto-sharing your Social Media PR level every time you level up!')){
+                $.post('/cern/auto_share/social_media_level');
+            } else {
+                socialMediaLevel.prop('checked', true);
+            }
+        }
+    });
+
+    $('#social-media-level-label').click(function(){
+        if (socialMediaLevel.prop('checked')){
+            if (confirm('This will stop auto-sharing your Social Media PR level every time you level up!')){
+                $.post('/cern/auto_share/social_media_level');
+                socialMediaLevel.prop('checked', false);
+            }
+        } else{
+            if (confirm('This will start auto-sharing your Social Media PR level every time you level up.\nThis will NOT make a post to LinkedIn right now.')){
+                $.post('/cern/auto_share/social_media_level');
+                socialMediaLevel.prop('checked', true);
+            }
+        }
+
+    });
+</script>

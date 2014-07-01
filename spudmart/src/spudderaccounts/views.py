@@ -37,4 +37,5 @@ def accounts_dashboard(request):
         context_instance=RequestContext(request))
 
 @login_required(login_url='/accounts/signin')
-def accounts_manage_role(request, role_type)
+def accounts_manage_role(request, role_type):
+    pass

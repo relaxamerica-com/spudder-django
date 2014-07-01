@@ -1,0 +1,14 @@
+{% extends 'spuddercern/quote_messages/base_quote_message.html' %}
+
+{% block content %}
+    <h4>Welcome to your CERN Team page!</h4>
+    <p>
+        You are a <b>member</b> of this CERN Team and the points you earn by completing projects in your
+        <a href="/cern/">dashboard</a> will show on this page and will contribute to your teams
+        overall score!
+    </p>
+    <div class="btn-group" style="margin: 30px;">
+        <button class="btn dismiss-for-now-button">Hide for now</button>
+        <button id="submit" class="btn btn-primary dismiss-for-good-button">Hide Forever</button>
+    </div>
+{% endblock %}

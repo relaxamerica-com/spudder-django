@@ -1,0 +1,12 @@
+{% extends 'spuddercern/quote_messages/base_quote_message.html' %}
+
+{% block alert_type %}alert-success{% endblock %}
+
+{% block content %}
+    <h4>No Team Description!</h4>
+    <p>There is currently no description for this CERN Team.</p>
+    <p>You are the team <b>head</b> and are tasked with keeping this CERN Team page up to date.</p>
+    <button class="btn btn-primary" type="submit" style="margin: 30px;">
+        <i class="fa fa-cog"></i> Edit team description
+    </button>
+{% endblock %}
