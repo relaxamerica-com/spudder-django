@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-
+{% load bootstrap3 %}
 {% block title %}Spudder - User and Role Manager{% endblock %}
 
 {% block css %}
@@ -7,36 +7,42 @@
 {% endblock %}
 
 {% block body %}
-<nav class="navbar navbar-masthead navbar-default navbar-static-top" role="navigation">
+
+    <nav class="navbar navbar-masthead navbar-default navbar-static-top" role="navigation">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a href="/users" class="navbar-brand">Spudder - Accounts</a>
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    {% block main_nav %}
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                account <i class="fa fa-caret-down"></i>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a href="/users">
+                                        <i class="fa fa-fw fa-user"></i> My Account
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    {% endblock %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
     <div class="container">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a href="/users" class="navbar-brand">Spudder - Accounts</a>
-        </div>
-        <div class="navbar-collapse collapse">
-            <ul class="nav navbar-nav">
-                {% block main_nav %}
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            account <i class="fa fa-caret-down"></i>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li>
-                                <a href="/users">
-                                    <i class="fa fa-fw fa-user"></i> My Account
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                {% endblock %}
-            </ul>
-        </div>
+        {% bootstrap_messages %}
     </div>
-</nav>
+
 {% block page %}{% endblock %}
 {% endblock %}

@@ -1,11 +1,44 @@
 import datetime
+import abc
 from spudmart.accounts.models import UserProfile
 
 
-class EntityStudent(object):
+class EntityBase(object):
+    __metaclass__ = abc.ABCMeta
 
     def __init__(self, entity):
-        self.student = entity
+        self.entity = entity
+
+    @abc.abstractproperty
+    def image(self):
+        pass
+
+    @abc.abstractproperty
+    def title(self):
+        pass
+
+    @abc.abstractproperty
+    def subtitle(self):
+        pass
+
+    @abc.abstractproperty
+    def meta_data(self):
+        pass
+
+    @abc.abstractproperty
+    def links(self):
+        pass
+
+    @abc.abstractproperty
+    def breadcrumb_name(self):
+        pass
+
+    @abc.abstractproperty
+    def user_is_owner(self, user):
+        pass
+
+
+class EntityStudent(EntityBase):
 
     @property
     def image(self):
@@ -17,7 +50,9 @@ class EntityStudent(object):
 
     @property
     def subtitle(self):
-        return 'Tied to Amazon ID: %s' % UserProfile.objects.get(user=self.student.user).amazon_id
+        return 'Tied to Amazon ID: %s <br /> School: %s' % (
+            UserProfile.objects.get(user=self.entity.user).amazon_id,
+            self.entity.school.name)
 
     @property
     def meta_data(self):
@@ -28,5 +63,14 @@ class EntityStudent(object):
     @property
     def links(self):
         return {
-            'role_management_url': '/users/roles/student/%s' % self.student.id
+            'role_management_url': '/users/roles/student/%s' % self.entity.id
         }
+
+    @property
+    def breadcrumb_name(self):
+        return "Student: %s (%s)" % (
+            UserProfile.objects.get(user=self.entity.user).amazon_id,
+            self.entity.school.name)
+
+    def user_is_owner(self, user):
+        return self.entity.user == user

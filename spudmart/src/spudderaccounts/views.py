@@ -1,5 +1,7 @@
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render_to_response
+from django.http import HttpResponseRedirect
+from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 from spudderaccounts.forms import ProfileDetailsForm
 from spudderdomain.controllers import RoleController
@@ -36,5 +38,19 @@ def accounts_dashboard(request):
         template_data,
         context_instance=RequestContext(request))
 
+
 @login_required(login_url='/accounts/signin')
-def accounts_manage_role(request, role_type)
+def accounts_manage_role(request, role_type, entity_id):
+    role_controller = RoleController(request.user)
+    if role_type == RoleController.ENTITY_STUDENT:
+        role = role_controller.role_by_entity_type_and_entity_id(role_type, entity_id, EntityStudent)
+        if not role:
+            messages.add_message(request, messages.ERROR, "There was an error loading that role.")
+            return redirect('/users')
+        if not role.user_is_owner(request.user):
+            messages.add_message(request, messages.WARNING, "You are not the owner of that role.")
+            return redirect('/users')
+    return render_to_response(
+        'spudderaccounts/pages/role_manage.html',
+        {'role': role},
+        context_instance=RequestContext(request))

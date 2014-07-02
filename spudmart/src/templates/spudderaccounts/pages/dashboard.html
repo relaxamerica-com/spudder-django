@@ -57,16 +57,27 @@
                                         <div class="media-body">
                                             <h4 class="media-heading">{{ role.title|safe }}</h4>
                                             <p>{{ role.subtitle|safe }}</p>
+                                            <a href="javascript:alert('in development');" title="delete" class="pull-right" style="margin-top: 5px">
+                                                <i class="fa fa-trash-o"></i>
+                                            </a>
                                             <a href="{{ role.links.role_management_url }}" class="btn btn-default">
-                                                Manage this role
+                                                <i class="fa fa-cog"></i> Manage this role
                                             </a>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         {% empty %}
-
+                            <div class="alert alert-info">
+                                <h4><i class="fa fa-exclamation"></i> You don't have any roles.</h4>
+                                <p>To get the best of the Spudder universe, you really need to add some roles.</p>
+                                <p>Do you want to be a Sponsor, a Fan or a Team Manager, the choice is yours.</p>
+                                <p><i class="fa fa-hand-o-down"></i> <b>Add a role now!</b></p>
+                            </div>
                         {% endfor %}
+                        <a href="javascript:alert('in development');" class="btn btn-primary">
+                            <i class="fa fa-plus"></i> Add new role
+                        </a>
                     </div>
                 </div>
 

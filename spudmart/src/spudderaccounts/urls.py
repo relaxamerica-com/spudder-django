@@ -1,10 +1,13 @@
 from django.conf.urls.defaults import *
+from spudderdomain.controllers import RoleController
 
 urlpatterns = patterns(
     'spudderaccounts.views',
 
-    url('^$', 'accounts_dashboard',),
-    url('^/signin', 'accounts_signin',),
+    url('signin', 'accounts_signin',),
 
-    url('^/roles/student/(?P<entity_id>\d+)', 'accounts_manage_role',),
+    url('roles/student/(?P<entity_id>\d+)', 'accounts_manage_role',
+        {'role_type': RoleController.ENTITY_STUDENT}),
+
+    url('$', 'accounts_dashboard',),
 )

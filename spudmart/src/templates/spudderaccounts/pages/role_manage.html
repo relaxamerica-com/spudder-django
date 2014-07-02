@@ -1,0 +1,13 @@
+{% extends 'spudderaccounts/base.html' %}
+{% load bootstrap3 %}
+
+{% block page %}
+    <div class="container">
+        <ol class="breadcrumb">
+            <li><a href="/users">User dashboard</a></li>
+            <li class="active">{{ role.breadcrumb_name }}</li>
+        </ol>
+
+
+    </div>
+{% endblock %}

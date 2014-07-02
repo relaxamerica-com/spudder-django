@@ -23,3 +23,13 @@ class RoleController(object):
             roles = Student.objects.filter(user=self.user)
         roles = [entity_wrapper(r) for r in roles]
         return roles
+
+    def role_by_entity_type_and_entity_id(self, entity_key, entity_id, entity_wrapper):
+        if entity_key == self.ENTITY_STUDENT:
+            try:
+                entity = Student.objects.get(id=entity_id)
+                return entity_wrapper(entity)
+            except Student.DoesNotExist:
+                return None
+        return None
+
