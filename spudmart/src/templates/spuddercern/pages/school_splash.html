@@ -25,7 +25,7 @@
         <div class="row-fluid">
             <div class="col-sm-7">
                 <div id="school-body">
-                    <div class="view-control">
+                    <div class="quotes">
                         {% if user_is_head or running_locally %}
                             {% with info_message_id="cern_team_welcome_head" %}
                                 {% if info_message_id not in student.hidden_info_messages %}
@@ -48,13 +48,13 @@
                     </div>
 
                     <div class="school-description">
-                        <div class="view-control">
+                        <div class="view-mode">
                             {% if school.description %}
                                 <div class="row-fluid">
                                     <div class="col-sm-10 col-sm-offset-1">
                                         <p class="school-description-p">{{ school.description|linebreaksbr }}</p>
                                         {% if user_is_head or running_locally%}
-                                            <button class="btn btn-primary btn-small" type="submit">
+                                            <button class="btn btn-primary btn-small"  id="edit-description">
                                                 <i class="fa fa-cog"></i> Edit cern team description
                                             </button>
                                         {% endif %}
@@ -68,14 +68,14 @@
                                 {% endif %}
                             {% endif %}
                         </div>
-                        <div class="edit-control">
-                            <form method="POST" id="description-form" enctype="multipart/form-data" role="form">
+                        <div class="edit-mode">
+                            <form method="POST" enctype="multipart/form-data" role="form">
                                 <div class="form-group">
                                     <label for="school-form-description">CERN Team Description:</label>
                                     <textarea id="school-form-description" name="description" class="input-block-level" placeholder="Enter something that you would like other to know about your CERN Team">{{ school.description }}</textarea>
                                     <p class="help-block">Remember, visitors to your CERN Team page will see this description!</p>
                                 </div>
-                                <button class="btn btn-primary btn-small" type="submit">
+                                <button class="btn btn-primary btn-small" >
                                     <i class="fa fa-save"></i> Save cern team description
                                 </button>
                         </div>
@@ -120,13 +120,8 @@
                             {% else %}
                                 <img src="/static/img/spuddercern/button-cern-large.png" />
                             {% endif %}
-                            {% if user_is_head or running_locally %}
-                                <button type="submit" class="btn btn-primary btn-small pull-right view-control">
-                                    <i class="fa fa-cog"></i> Change Team Logo
-                                </button>
-                            {% endif %}
                         </div>
-                        <div class="edit-control">
+                        <div class="edit-mode">
                             <div class="row-fluid">
                                 <div class="col-sm-10 col-sm-offset-1">
                                     <form method="POST" enctype="multipart/form-data" role="form">
@@ -145,26 +140,26 @@
                     </div>
 
 
-                    <ul class="unstyled" id="school-details">
-                        <li  class="view-control clearfix">
+                    <ul class="list-unstyled" id="school-details">
+                        <li  class="view-mode clearfix">
                             <label>Team Size: </label> {{ school.num_students }} registered
                             <span id="mascot">
                                 {{ school.mascot|default:"students" }}
                                 {% if user_is_head or running_locally %}
-                                    <button class="btn btn-primary btn-mini pull-right" type="submit">
+                                    <button class="btn btn-primary btn-mini pull-right" id="edit-right">
                                         <i class="fa fa-cog"></i> Edit
                                     </button>
                                 {% endif %}
                             </span>
                         </li>
 
-                        <li class="edit-control">
-                            <form method="POST" id="mascot-form" enctype="multipart/form-data" role="form">
+                        <li class="edit-mode">
+                            <form method="POST" enctype="multipart/form-data" role="form">
                                 <div class="form-group">
                                     <label>Students are called:</label>
                                     <input type="text" name="mascot" value="{{ school.mascot|default_if_none:"students"  }}" placeholder="students" class="input-small" />
                                 </div>
-                                <button class="btn btn-primary btn-mini" type="submit" style="position: relative;top: -5px;">
+                                <button class="btn btn-primary btn-mini" style="position: relative;top: -5px;">
                                     <i class="fa fa-save"></i> save mascot name
                                 </button>
                             </form>
@@ -228,11 +223,11 @@
                         });
 
                         response.done(function(data) {
-                            if (parsed['uploaded_files'].length > 0) {
-                                $('.logo-placeholder').text('Refresh to see logo');
-                                $('#logo').attr('src', parsed['uploaded_files'][0]);
-                            }
-                            window.location.reload();
+{#                            if (parsed['uploaded_files'].length > 0) {#}
+{#                                $('.logo-placeholder').text('Refresh to see logo');#}
+{#                                $('#logo').attr('src', parsed['uploaded_files'][0]);#}
+{#                            }#}
+{#                            window.location.reload();#}
                         });
                     }
                 });
@@ -244,6 +239,7 @@
     window.preloadedOrange = $('<img src="/static/img/spuddercern/ajax-loader-orange.gif" />');
     window.preloadedBlack = $('<img src="/static/img/spuddercern/ajax-loader-black.gif" />');
     window.isEditMode = false;
+    $('.edit-mode').hide();
 
     $(document).ready(function() {
         var editMode = $('.edit-mode'), viewMode = $('.view-mode'), buttons = $('.buttons'), icons = buttons.find('i');
@@ -253,61 +249,55 @@
                 save();
                 editMode.hide();
                 viewMode.show();
-                $(this).html($(this).data('old_html'));
+{#                $(this).html($(this).data('old_html'));#}
                 window.isEditMode = false;
             } else {
                 editMode.show();
                 viewMode.hide();
-                $(this).data('old_html', $(this).html());
-                $(this).html('<i class="fa fa-save"></i> save');
+{#                $(this).data('old_html', $(this).html());#}
                 window.isEditMode = true;
             }
         });
 
         $('#edit-right').click(function() {
-            if ($(this).html() == 'Show Mode') {
+            if (window.isEditMode === true) {
+{#                save();#}
                 editMode.hide();
                 viewMode.show();
-                buttons.addClass('no-border');
-                $(this).html('Edit Mode');
-                $('#edit-description').html('Edit Mode');
                 window.isEditMode = false;
             } else {
                 editMode.show();
                 viewMode.hide();
-                buttons.removeClass('no-border');
-                $(this).html('Show Mode');
-                $('#edit-description').html('Show Mode');
                 window.isEditMode = true;
             }
         });
 
-        function show(element) {
-            $('.contents > .active').removeClass('active');
-            $(element).addClass('active');
-            $(element).animate({
-                'margin-left' : '0px'
-            }, '1000');
-            $(element).show();
-        }
+{#        function show(element) {#}
+{#            $('.contents > .active').removeClass('active');#}
+{#            $(element).addClass('active');#}
+{#            $(element).animate({#}
+{#                'margin-left' : '0px'#}
+{#            }, '1000');#}
+{#            $(element).show();#}
+{#        }#}
+{##}
+{#        function hide(elements) {#}
+{#            $.each(elements, function() {#}
+{#                $(this).css({#}
+{#                    'margin-left' : '-1000px',#}
+{#                    'display' : 'none'#}
+{#                });#}
+{#            });#}
+{#        }#}
 
-        function hide(elements) {
-            $.each(elements, function() {
-                $(this).css({
-                    'margin-left' : '-1000px',
-                    'display' : 'none'
-                });
-            });
-        }
-
-        $('#edit-logo').ace_file_input({
-            no_file : 'No File ...',
-            btn_choose : 'Choose',
-            btn_change : 'Change',
-            droppable : false,
-            onchange : null,
-            thumbnail : false
-        });
+{#        $('#edit-logo').ace_file_input({#}
+{#            no_file : 'No File ...',#}
+{#            btn_choose : 'Choose',#}
+{#            btn_change : 'Change',#}
+{#            droppable : false,#}
+{#            onchange : null,#}
+{#            thumbnail : false#}
+{#        });#}
 
 {#        function save() {#}
 {#        	var logo_form = $('#logo-form'),#}
