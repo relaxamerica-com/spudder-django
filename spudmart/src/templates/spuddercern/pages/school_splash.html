@@ -147,7 +147,7 @@
                                 {{ school.mascot|default:"students" }}
                                 {% if user_is_head or running_locally %}
                                     <button class="btn btn-primary btn-mini pull-right" id="edit-right">
-                                        <i class="fa fa-cog"></i> Edit
+                                        <i class="fa fa-fw fa-cog"></i> Edit
                                     </button>
                                 {% endif %}
                             </span>
@@ -186,7 +186,7 @@
     </div>
 {% endblock %}
 
-{% block js %}
+{% block scripts %}
 <script type="text/javascript" src="/static/js/libs/jquery.serialize.file.js"></script>
 <script type="text/javascript">
 

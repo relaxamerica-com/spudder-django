@@ -13656,12 +13656,29 @@ legend {
   font-size: 14.3px;
 }
 .create-venue-map {
-  min-width: 100px;
   min-height: 100px;
 }
-@media (min-height: 480px) {
+@media (min-width: 768px) {
+  .create-venue-map {
+    min-height: 200px;
+  }
+}
+@media (min-width: 992px) {
   .create-venue-map {
     min-height: 300px;
+  }
+}
+.view-venue-map {
+  min-height: 100px;
+}
+@media (min-width: 768px) {
+  .view-venue-map {
+    min-height: 250px;
+  }
+}
+@media (min-width: 992px) {
+  .view-venue-map {
+    min-height: 350px;
   }
 }
 .school-logo {

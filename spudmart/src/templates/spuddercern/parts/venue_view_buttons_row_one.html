@@ -1,0 +1,18 @@
+<a class="btn btn-primary" openTab="#map" title="Venue Location">
+    <i class="fa fa-2x fa-map-marker {% if venue.longitude and venue.latitude %}ready{% endif %}" title="Map"> </i>
+</a>
+<a class="btn btn-primary" openTab="#parking-details" title="Parking Details">
+    <i class="fa fa-2x fa-car {% if venue.parking_details and venue.parking_tips %}ready{% endif %}" title="Parking"> </i>
+</a>
+<a class="btn btn-primary" openTab="#up-to-5-pics" title="Venue Pictures">
+    <i class="fa fa-2x fa-camera {% if venue.venue_pics %}ready{% endif %}" title="Upto 5 pics"> </i>
+</a>
+<a class="btn btn-primary" openTab="#video" title="Venue Video">
+    <i class="fa fa-2x fa-youtube-play {% if venue.video %}ready{% endif %}" title="Video"> </i>
+</a>
+<a class="btn btn-primary" openTab="#playing-surface" title="Playing Surface">
+    <i class="fa fa-2x fa-eye {% comment %}icon-field-inverse-full{% endcomment %} {% if venue.playing_surface_pics and venue.playing_surface_details %}ready{% endif %}" title="Playing surface"> </i>
+</a>
+<a class="btn btn-primary" openTab="#flag-content" title="Flag Content">
+    <i class="fa fa-2x fa-envelope ready" title="Flag content"> </i>
+</a>

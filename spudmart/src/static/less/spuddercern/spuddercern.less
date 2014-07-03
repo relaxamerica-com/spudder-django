@@ -2,11 +2,26 @@
 @import "../libs/spudder-bootstrap/spudder-bootstrap.less";
 
 .create-venue-map{
-  min-width: 100px;
   min-height: 100px;
 
-  @media(min-height: @screen-phone) {
+  @media(min-width: @screen-tablet) {
+    min-height: 200px;
+  }
+
+  @media(min-width: @screen-md){
     min-height: 300px;
+  }
+}
+
+.view-venue-map{
+  min-height: 100px;
+
+  @media(min-width: @screen-tablet) {
+    min-height: 250px;
+  }
+
+  @media(min-width: @screen-md){
+    min-height: 350px;
   }
 }
 

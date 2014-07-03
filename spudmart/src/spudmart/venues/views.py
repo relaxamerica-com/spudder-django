@@ -66,7 +66,7 @@ def view(request, venue_id):
     except TypeError:
         student = False
 
-    return render(request, 'old/venues/view.html', {
+    return render(request, 'spuddercern/pages/venues_view.html', {
         'venue': venue,
         'sports': SPORTS,
         'medical_address': medical_address,
