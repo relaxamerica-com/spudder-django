@@ -10,7 +10,7 @@
 {% endblock %}
 
 {% block well_content %}
-		<h4 class="aligncenter">
+		<h4 class="text-center">
             Join CERN Team for: <br/>
             <b>{{ school.name }}</b>
         </h4>
@@ -62,7 +62,7 @@
                     </p>
                 </div>
 
-                <a class="btn btn-orange btn-large" href="/accounts/login_fake?school_id={{ school.id }}&next=/cern/{{ school.state }}/{{ school.id }}/{% strip_school_name school %}/">
+                <a class="btn btn-primary btn-large" href="/accounts/login_fake?school_id={{ school.id }}&next=/cern/{{ school.state }}/{{ school.id }}/{% strip_school_name school %}/">
                     <i class="fa fa-sign-in"></i> Login with fake account
                 </a>
 

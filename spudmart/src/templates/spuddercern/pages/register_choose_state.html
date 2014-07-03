@@ -21,7 +21,7 @@
     <form action="/cern/register/{{ referral_id|default_if_none:"" }}" method="post" role="form">
         <div class="form-group">
             <label for="state">State:</label>
-            <select name="state" id="state" class="span12">
+            <select name="state" id="state" class="form-control">
                {% for abbr, full in states %}
                    {% if state == abbr %}
                        <option value="{{ abbr }}" selected>{{ full }}</option>

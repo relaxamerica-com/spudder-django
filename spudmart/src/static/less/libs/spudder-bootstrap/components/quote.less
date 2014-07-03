@@ -1,0 +1,28 @@
+.quote {
+    position:relative;
+    margin-bottom: 50px;
+    text-align: left;
+    .alert {
+        position:relative;
+        border-radius: 15px;
+        padding: 30px;
+        .fa-caret-down {
+            font-size: 30px;
+            position:absolute;
+            left: 40px;
+            bottom: -20px;
+            color: @alert-info-border;
+        }
+        &.alert-success {
+            .fa-caret-down {
+                color: @alert-success-border;
+            }
+        }
+    }
+    img.button {
+        display: block;
+        margin-left: 25px;
+        height: 50px;
+        width: 50px;
+    }
+}

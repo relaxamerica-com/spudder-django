@@ -39,7 +39,7 @@
 //
 //## Font, line-height, and color for body text, headings, and more.
 
-@font-family-sans-serif:  Arial, Helvetica, sans-serif;
+@font-family-sans-serif:  "Proxima Nova Light", "Droid Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;;
 @font-family-serif:       Georgia, "Times New Roman", Times, serif;
 //** Default monospace fonts for `<code>`, `<kbd>`, and `<pre>`.
 @font-family-monospace:   Menlo, Monaco, Consolas, "Courier New", monospace;
@@ -64,7 +64,7 @@
 
 //** By default, this inherits from the `<body>`.
 @headings-font-family:    inherit;
-@headings-font-weight:    bold;
+@headings-font-weight:    normal; //bold;
 @headings-line-height:    1.15;
 @headings-color:          inherit;
 
@@ -74,11 +74,11 @@
 //## Specify custom location and filename of the included Glyphicons icon font. Useful for those including Bootstrap via Bower.
 
 //** Load fonts from this directory.
-@icon-font-path:          "../fonts/";
+@icon-font-path:          "../fonts/fontawesome-4.1.0";
 //** File name for all font files.
-@icon-font-name:          "glyphicons-halflings-regular";
+@icon-font-name:          "fontawesome-webfont";//"glyphicons-halflings-regular";
 //** Element ID within SVG icon file.
-@icon-font-svg-id:        "glyphicons_halflingsregular";
+@icon-font-svg-id:        "fontawesomeregular"; //"glyphicons_halflingsregular";
 
 
 //== Components
@@ -141,7 +141,7 @@
 //
 //## For each of Bootstrap's buttons, define text, background and border color.
 
-@btn-font-weight:                bold;
+@btn-font-weight:                normal; //bold;
 
 @btn-default-color:              #333;
 @btn-default-bg:                 #f3f3f3;

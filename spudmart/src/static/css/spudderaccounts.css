@@ -1,3 +1,13 @@
+@font-face {
+  font-family: 'Proxima Nova';
+  src: url('../fonts/proximanova/proximanova-reg-webfont.eot');
+  src: url('../fonts/proximanova/proximanova-reg-webfont.eot?#iefix') format('embedded-opentype'), url('../fonts/proximanova/proximanova-reg-webfont.woff') format('woff'), url('../fonts/proximanova/proximanova-reg-webfont.ttf') format('truetype'), url('../fonts/proximanova/proximanova-reg-webfont.svg#fontawesomeregular') format('svg');
+}
+@font-face {
+  font-family: 'Proxima Nova Light';
+  src: url('../fonts/proximanova/proximanova-light-webfont.eot');
+  src: url('../fonts/proximanova/proximanova-light-webfont.eot?#iefix') format('embedded-opentype'), url('../fonts/proximanova/proximanova-light-webfont.woff') format('woff'), url('../fonts/proximanova/proximanova-light-webfont.ttf') format('truetype'), url('../fonts/proximanova/proximanova-light-webfont.svg#fontawesomeregular') format('svg');
+}
 /*
     Fonts
 */
@@ -1823,8 +1833,8 @@ th {
 }
 @font-face {
   font-family: 'Glyphicons Halflings';
-  src: url('../fonts/glyphicons-halflings-regular.eot');
-  src: url('../fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('../fonts/glyphicons-halflings-regular.woff') format('woff'), url('../fonts/glyphicons-halflings-regular.ttf') format('truetype'), url('../fonts/glyphicons-halflings-regular.svg#glyphicons_halflingsregular') format('svg');
+  src: url('../fonts/fontawesome-4.1.0fontawesome-webfont.eot');
+  src: url('../fonts/fontawesome-4.1.0fontawesome-webfont.eot?#iefix') format('embedded-opentype'), url('../fonts/fontawesome-4.1.0fontawesome-webfont.woff') format('woff'), url('../fonts/fontawesome-4.1.0fontawesome-webfont.ttf') format('truetype'), url('../fonts/fontawesome-4.1.0fontawesome-webfont.svg#fontawesomeregular') format('svg');
 }
 .glyphicon,
 .panel-group .panel-heading a:before,
@@ -2455,7 +2465,7 @@ html {
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 body {
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "Proxima Nova Light", "Droid Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 13px;
   line-height: 1.4;
   color: #333333;
@@ -2557,7 +2567,7 @@ h6,
 .h5,
 .h6 {
   font-family: inherit;
-  font-weight: bold;
+  font-weight: normal;
   line-height: 1.15;
   color: inherit;
 }
@@ -4344,7 +4354,7 @@ select[multiple].input-lg {
 .btn {
   display: inline-block;
   margin-bottom: 0;
-  font-weight: bold;
+  font-weight: normal;
   text-align: center;
   vertical-align: middle;
   cursor: pointer;
@@ -8347,7 +8357,7 @@ button.close {
     TODC Bootstrap
 */
 body {
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "Proxima Nova Light", "Droid Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 13px;
   line-height: 1.4;
   color: #333333;

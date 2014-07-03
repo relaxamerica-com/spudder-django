@@ -1,0 +1,8 @@
+<div class="quote" data-id="{{ info_message_id }}">
+    <div class="alert {% block alert_type %}alert-info{% endblock %}" style="{% block alert_style %}{% endblock %}">
+        {% block content %}
+        {% endblock %}
+        <i class="fa fa-caret-down"></i>
+    </div>
+    <img src="{% block button_image_src %}/static/img/spudderspuds/button-spuds-small.png{% endblock %}" class="button" />
+</div>

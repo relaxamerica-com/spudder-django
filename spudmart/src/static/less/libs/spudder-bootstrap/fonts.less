@@ -1,0 +1,23 @@
+@import "../fontawesome-4.1.0/font-awesome.less";
+
+@spudder-font-path:         "../fonts/proximanova/";
+@spudder-font-name:         "proximanova-reg-webfont";
+@spudder-font-name-light:   "proximanova-light-webfont";
+
+@font-face {
+  font-family: 'Proxima Nova';
+  src: ~"url('@{spudder-font-path}@{spudder-font-name}.eot')";
+  src: ~"url('@{spudder-font-path}@{spudder-font-name}.eot?#iefix') format('embedded-opentype')",
+       ~"url('@{spudder-font-path}@{spudder-font-name}.woff') format('woff')",
+       ~"url('@{spudder-font-path}@{spudder-font-name}.ttf') format('truetype')",
+       ~"url('@{spudder-font-path}@{spudder-font-name}.svg#@{icon-font-svg-id}') format('svg')";
+}
+
+@font-face {
+  font-family: 'Proxima Nova Light';
+  src: ~"url('@{spudder-font-path}@{spudder-font-name-light}.eot')";
+  src: ~"url('@{spudder-font-path}@{spudder-font-name-light}.eot?#iefix') format('embedded-opentype')",
+       ~"url('@{spudder-font-path}@{spudder-font-name-light}.woff') format('woff')",
+       ~"url('@{spudder-font-path}@{spudder-font-name-light}.ttf') format('truetype')",
+       ~"url('@{spudder-font-path}@{spudder-font-name-light}.svg#@{icon-font-svg-id}') format('svg')";
+}

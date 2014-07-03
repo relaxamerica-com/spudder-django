@@ -6,35 +6,7 @@
     <link rel="stylesheet" href="/static/css/spuddercern.css" />
 {% endblock %}
 
+{% block nav_brand %}<a href="/"><img src="/static/img/spuddercern/logo-cern-small.png" style="height:35px;margin-top:2px;"/> </a>{% endblock %}
+
 {% block body %}
-<nav class="navbar navbar-masthead navbar-default navbar-static-top" role="navigation">
-    <div class="container">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a href="/cern/"><img src="/static/img/spuddercern/logo-cern-small.png" style="height:44px;"/></a>
-        </div>
-        <div class="navbar-collapse collapse">
-            <ul class="nav navbar-nav pull-right">
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                        account <i class="fa fa-caret-down"></i>
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-right">
-                        <li>
-                            <a href="#">
-                                <i class="fa fa-fw fa-user"></i> My Account
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-        </div>
-    </div>
-</nav>
-{% block page %}{% endblock %}
 {% endblock %}
