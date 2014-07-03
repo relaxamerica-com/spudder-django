@@ -1,7 +1,8 @@
 {% extends 'spudderaccounts/base.html' %}
 {% load bootstrap3 %}
+{% load spudderaccountstags %}
 
-{% block page %}
+{% block body %}
     <div class="container">
         <ol class="breadcrumb">
             <li class="active">User dashboard</li>
@@ -49,7 +50,27 @@
                     </header>
                     <div class="panel-body" method="POST">
                         <legend>Manage your roles within Spudder</legend>
-                        {% for role in roles %}
+                        {% if current_role %}
+                            <div class="panel panel-default">
+                                <div class="panel-body">
+                                    <div class="media">
+                                        <img class="media-object pull-left" src="{{ current_role.image }}" />
+                                        <div class="media-body">
+                                            <h4 class="media-heading">{{ current_role.title|safe }}</h4>
+                                            <p>{{ current_role.subtitle|safe }}</p>
+                                            <p><span class="label label-success">Current role</span></p>
+                                            <a href="javascript:alert('in development');" title="delete" class="pull-right" style="margin-top: 5px">
+                                                <i class="fa fa-trash-o"></i>
+                                            </a>
+                                            <a href="javascript:alert('in development');{# role.links.role_management_url #}" class="btn btn-default btn-sm">
+                                                <i class="fa fa-cog"></i> Manage this role
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                        {% for role in other_roles %}
                             <div class="panel panel-default">
                                 <div class="panel-body">
                                     <div class="media">
@@ -60,22 +81,28 @@
                                             <a href="javascript:alert('in development');" title="delete" class="pull-right" style="margin-top: 5px">
                                                 <i class="fa fa-trash-o"></i>
                                             </a>
-                                            <a href="{{ role.links.role_management_url }}" class="btn btn-default">
-                                                <i class="fa fa-cog"></i> Manage this role
-                                            </a>
+                                            <div class="btn-group">
+                                                <a href="javascript:alert('in development');{# role.links.role_management_url #}" class="btn btn-default btn-sm">
+                                                    <i class="fa fa-cog"></i> Manage this role
+                                                </a>
+                                                <a href="{% change_role_and_return_url role %}" class="btn btn-default btn-sm">
+                                                    Activate this role
+                                                </a>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        {% empty %}
+                        {% endfor %}
+                        {% if not current_role and not other_roles %}
                             <div class="alert alert-info">
                                 <h4><i class="fa fa-exclamation"></i> You don't have any roles.</h4>
                                 <p>To get the best of the Spudder universe, you really need to add some roles.</p>
                                 <p>Do you want to be a Sponsor, a Fan or a Team Manager, the choice is yours.</p>
                                 <p><i class="fa fa-hand-o-down"></i> <b>Add a role now!</b></p>
                             </div>
-                        {% endfor %}
-                        <a href="javascript:alert('in development');" class="btn btn-primary">
+                        {% endif %}
+                        <a href="/users/roles/add" class="btn btn-primary">
                             <i class="fa fa-plus"></i> Add new role
                         </a>
                     </div>

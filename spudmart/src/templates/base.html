@@ -1,3 +1,6 @@
+{% load bootstrap3 %}
+{% load spudderaccountstags %}
+
 <!DOCTYPE html>
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
@@ -14,6 +17,97 @@
         <script src="/static/js/libs/modernizr-2.6.2-respond-1.1.0.min.js"></script>
     </head>
     <body class="{% block body_class %}{% endblock %}" id="{% block body_id %}{% endblock %}">
+        <nav class="navbar navbar-masthead navbar-default navbar-static-top" role="navigation">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    {% block nav_brand %}<a href="/"><img src="/static/img/spudderspuds/logo-spuds-small.png" style="height:35px;margin-top:2px;"/> </a>{% endblock %}
+                </div>
+                <div class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav navbar-right">
+                        {% block user_account_nav %}
+                            {% if current_role %}
+                                <li class="dropdown">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                        My roles <i class="fa fa-caret-down"></i>
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li style=" padding: 5px 30px; min-width: 350px;">
+                                            <div class="panel panel-default">
+                                                <div class="panel-body">
+                                                    <div class="media">
+                                                        <img class="media-object pull-left" src="{{ current_role.image }}" style="height: 40px;" />
+                                                        <div class="media-body">
+                                                            <p class="media-heading">{{ current_role.title|safe }}</p>
+                                                            <span class="label label-success">Current role</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {% if other_roles %}
+                                                <hr />
+                                                <p>My {% if other_roles|length > 2 %}top{% else %}other{% endif %} role{% if other_roles|length > 1 %}s{% endif %}</p>
+                                                <div style="margin-left:10px;">
+                                                    {% for role in other_roles %}
+                                                        {% if forloop.counter < 3 %}
+                                                            <hr />
+                                                            <div class="media">
+                                                                <img class="media-object pull-left" src="{{ role.image }}" style="height: 40px;" />
+                                                                <div class="media-body">
+                                                                    <p class="media-heading"><small>{{ role.title|safe }}</small></p>
+                                                                    <a href="{% change_role_and_return_url role %}" class="btn btn-default btn-xs" style="margin:0;">
+                                                                        Activate this role
+                                                                    </a>
+                                                                </div>
+                                                            </div>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </div>
+                                                <hr />
+                                                {% if other_roles|length > 2 %}
+                                                    <div class="btn-group">
+                                                        <a class="btn btn-primary btn-sm" href="/users/roles/add">
+                                                            <i class="fa fa-plus"></i> Add a new role
+                                                        </a>
+                                                        <a class="btn btn-default btn-sm" href="/users">
+                                                            View all your roles
+                                                        </a>
+                                                    </div>
+                                                {% else %}
+                                                    <a class="btn btn-primary btn-sm" href="/users/roles/add">
+                                                        <i class="fa fa-plus"></i> Add a new role
+                                                    </a>
+                                                {% endif %}
+                                            {% else %}
+                                                <a class="btn btn-primary btn-sm" href="/users/roles/add">
+                                                    <i class="fa fa-plus"></i> Add a new role
+                                                </a>
+                                            {% endif %}
+                                        </li>
+                                    </ul>
+                                </li>
+                            {% else %}
+                                <li>
+                                    <a href="javascript:alert('in development');">
+                                        <i class="fa fa-sign-in"></i> sign in
+                                    </a>
+                                </li>
+                            {% endif %}
+                        {% endblock %}
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container">
+            {% bootstrap_messages %}
+        </div>
+
         {% block body %}{% endblock %}
         <script type="text/javascript" language="javascript" src="/static/js/libs/jquery-1.11.0.min.js"></script>
         <script type="text/javascript" language="javascript" src="/static/js/libs/bootstrap.min.js"></script>

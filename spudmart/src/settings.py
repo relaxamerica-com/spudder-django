@@ -62,6 +62,7 @@ MIDDLEWARE_CLASSES = (
     # 'spudmart.accounts.middleware.SponsorMiddleware',
     'spuddermiddleware.SSL_Middleware.SSLRedirect',
     'spuddermiddleware.staffmiddleware.StaffMiddleware',
+    'spuddermiddleware.spudderaccountsmiddleware.RolesMiddleware',
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
@@ -70,6 +71,8 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.media',
     'django.contrib.messages.context_processors.messages',
     'spudmart.amazon.context.amazon_client_id',
+    'spuddercontextprocessors.spudderaccountscontext.current_role_context',
+    'spuddercontextprocessors.spudderaccountscontext.other_roles_context',
     'spuddercontextprocessors.appenginhelpers.context_running_locally',
     'spuddercontextprocessors.staffcontext.staff_context',
     'spuddercontextprocessors.settingscontext.settings_context',

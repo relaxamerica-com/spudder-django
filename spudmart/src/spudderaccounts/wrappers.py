@@ -1,13 +1,21 @@
 import datetime
 import abc
+from spudderdomain.controllers import RoleController
 from spudmart.accounts.models import UserProfile
+from spudderdomain.wrappers import EntityBase
 
 
-class EntityBase(object):
-    __metaclass__ = abc.ABCMeta
+class RoleBase(EntityBase):
+    @classmethod
+    def RoleWrapperByEntityType(cls, entity_key):
+        if entity_key == RoleController.ENTITY_STUDENT:
+            return RoleStudent
+        else:
+            raise NotImplementedError("the entity_key %s is not supported yet." % entity_key)
 
-    def __init__(self, entity):
-        self.entity = entity
+    @abc.abstractproperty
+    def entity_type(self):
+        pass
 
     @abc.abstractproperty
     def image(self):
@@ -33,12 +41,19 @@ class EntityBase(object):
     def breadcrumb_name(self):
         pass
 
-    @abc.abstractproperty
+    @abc.abstractmethod
     def user_is_owner(self, user):
         pass
 
 
-class EntityStudent(EntityBase):
+class RoleStudent(RoleBase):
+    @property
+    def _amazon_id(self):
+        return UserProfile.objects.get(user=self.entity.user).amazon_id
+
+    @property
+    def entity_type(self):
+        return RoleController.ENTITY_STUDENT
 
     @property
     def image(self):
@@ -46,12 +61,14 @@ class EntityStudent(EntityBase):
 
     @property
     def title(self):
-        return 'Student in <abbr title="Campus Entrepreneur Recruiting Network">CERN</abbr>'
+        return '<abbr title="Accociated with %s">Student</abbr> in ' \
+               '<abbr title="Campus Entrepreneur Recruiting Network">CERN</abbr> with Amazon ID %s' % (
+               self.entity.school.name, self._amazon_id)
 
     @property
     def subtitle(self):
         return 'Tied to Amazon ID: %s <br /> School: %s' % (
-            UserProfile.objects.get(user=self.entity.user).amazon_id,
+            self._amazon_id,
             self.entity.school.name)
 
     @property

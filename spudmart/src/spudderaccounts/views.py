@@ -1,11 +1,11 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 from spudderaccounts.forms import ProfileDetailsForm
+from spudderaccounts.utils import select_all_user_roles
 from spudderdomain.controllers import RoleController
-from spudderaccounts.wrappers import EntityStudent
+from spudderaccounts.wrappers import RoleBase
 
 
 def accounts_signin(request):
@@ -15,10 +15,7 @@ def accounts_signin(request):
 @login_required(login_url='/accounts/signin')
 def accounts_dashboard(request):
     role_controller = RoleController(request.user)
-    user_roles = []
-    for pair in ((RoleController.ENTITY_STUDENT, EntityStudent), ):
-        user_roles += role_controller.roles_by_entity(pair[0], pair[1])
-    user_roles.sort(key=lambda r: r.meta_data.get('last_accessed', 0), reverse=True)
+    user_roles = select_all_user_roles(role_controller)
     template_data = {
         'roles': user_roles
     }
@@ -43,7 +40,10 @@ def accounts_dashboard(request):
 def accounts_manage_role(request, role_type, entity_id):
     role_controller = RoleController(request.user)
     if role_type == RoleController.ENTITY_STUDENT:
-        role = role_controller.role_by_entity_type_and_entity_id(role_type, entity_id, EntityStudent)
+        role = role_controller.role_by_entity_type_and_entity_id(
+            role_type,
+            entity_id,
+            RoleBase.RoleWrapperByEntityType(role_type))
         if not role:
             messages.add_message(request, messages.ERROR, "There was an error loading that role.")
             return redirect('/users')

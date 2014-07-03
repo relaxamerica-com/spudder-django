@@ -1,13 +1,17 @@
 {% extends 'spudderaccounts/base.html' %}
 {% load bootstrap3 %}
 
-{% block page %}
+{% block body %}
     <div class="container">
         <ol class="breadcrumb">
             <li><a href="/users">User dashboard</a></li>
             <li class="active">{{ role.breadcrumb_name }}</li>
         </ol>
 
+        <div class="alert alert-warning" style="width:80%; margin: 20px auto">
+            <h4><i class="fa fa-exclamation-triangle"></i> Coming Soone</h4>
+            <p>This page is coming soon!</p>
+        </div>
 
     </div>
 {% endblock %}
