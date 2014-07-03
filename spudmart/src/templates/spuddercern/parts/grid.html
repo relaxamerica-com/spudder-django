@@ -1,19 +1,19 @@
 <div class="row">
-    <div class="col-sm-2">
-        <div class="pricing-box-alt" id="marketing">
-            <div class="pricing-heading">
+    <div class="col-md-2 col-sm-4">
+        <div class="cern-dashboard-project" id="marketing">
+            <div class="cern-dashboard-project-header">
                 <i class="fa fa-fw fa-map-marker"></i>
                 <h3>Marketing <br/>(Venues)</h3>
             </div>
-            <div class="pricing-terms">
+            <div class="cern-dashboard-project-points">
                 <h3>{{ student.marketing_points }} pts</h3>
             </div>
-            <div class="pricing-content">
-                <ul>
+            <div class="cern-dashboard-project-content">
+                <ul class="list-unstyled" >
                     <li>Learn proven techniques to drive traffic to your Venue page</li>
                     <li>Earn a percentage of your venue's sponsorship</li>
                     <li>
-                        <a class="btn btn-orange" href="/cern/venues">
+                        <a class="btn btn-default btn-primary" href="/cern/venues">
                             {% if student.marketing_points > 0 %}
                                 Go to this project
                             {% else %}
@@ -26,21 +26,21 @@
         </div>
     </div>
 
-    <div class="col-sm-2">
-        <div class="pricing-box-alt" id="social-media">
-            <div class="pricing-heading">
+    <div class="col-md-2 col-sm-4">
+        <div class="cern-dashboard-project" id="social-media">
+            <div class="cern-dashboard-project-header">
                 <i class="fa fa-fw fa-rss"></i>
                 <h3>Social Media PR</h3>
             </div>
-            <div class="pricing-terms">
+            <div class="cern-dashboard-project-points">
                 <h3>{{ student.social_media_points }} pts</h3>
             </div>
-            <div class="pricing-content">
-                <ul>
+            <div class="cern-dashboard-project-content">
+                <ul class="list-unstyled" >
                     <li>Earn points based on the number of people you bring to CERN</li>
                     <li>Redeem these points for cash and other great prizes</li>
                     <li>
-                        <a class="btn btn-orange" href="/cern/social_media/">
+                        <a class="btn btn-default btn-primary" href="/cern/social_media/">
                             {% if student.social_media_points > 0 %}
                                 Go to this project
                             {% else %}
@@ -54,90 +54,90 @@
 
     </div>
 
-    <div class="col-sm-2">
-        <div class="pricing-box-alt" id="blogging">
-            <div class="pricing-heading">
+    <div class="col-md-2 col-sm-4">
+        <div class="cern-dashboard-project" id="blogging">
+            <div class="cern-dashboard-project-header">
                 <i class="fa fa-fw fa-edit"></i>
                 <h3>Content Management</h3>
             </div>
-            <div class="pricing-terms">
+            <div class="cern-dashboard-project-points">
                 <h3>{{ student.content_points }} pts</h3>
             </div>
-            <div class="pricing-content">
-                <ul>
+            <div class="cern-dashboard-project-content">
+                <ul class="list-unstyled" >
                     <li>Manage a blog and even earn a featured column on Spudder's main site</li>
                     <li>This feature isn't ready yet. Sign up below to be alerted when it is.</li>
                     {% if content %}
-                    <li><button class="btn btn-orange" id='content-btn'>Join mailing list</button></li>
+                    <li><button class="btn btn-default btn-primary" id='content-btn'>Join mailing list</button></li>
                     {% else %}
-                    <li><button class="btn">You're on the list</button></li>
+                    <li><button class="btn btn-default">You're on the list</button></li>
                     {% endif %}
                 </ul>
             </div>
         </div>
     </div>
 
-    <div class="col-sm-2">
-        <div class="pricing-box-alt" id="design">
-            <div class="pricing-heading">
+    <div class="col-md-2 col-sm-4">
+        <div class="cern-dashboard-project" id="design">
+            <div class="cern-dashboard-project-header">
                 <i class="fa fa-fw fa-pencil"></i>
                 <h3>Design UX/UI</h3>
             </div>
-            <div class="pricing-terms">
+            <div class="cern-dashboard-project-points">
                 <h3>{{ student.design_points }} pts</h3>
             </div>
-            <div class="pricing-content">
-                <ul>
+            <div class="cern-dashboard-project-content">
+                <ul class="list-unstyled" >
                     <li>Help sponsors (small businesses) manage their Spudder pages</li>
                     <li>This feature isn't ready yet. Sign up below to be alerted when it is.</li>
                     {% if design %}
-                    <li><button class="btn btn-orange" id='design-btn'>Join mailing list</button></li>
+                    <li><button class="btn btn-default btn-primary" id='design-btn'>Join mailing list</button></li>
                     {% else %}
-                    <li><button class="btn">You're on the list</button></li>
+                    <li><button class="btn btn-default">You're on the list</button></li>
                     {% endif %}
                 </ul>
             </div>
         </div>
     </div>
 
-    <div class="col-sm-2">
-        <div class="pricing-box-alt" id="quality-assurance">
-            <div class="pricing-heading">
+    <div class="col-md-2 col-sm-4">
+        <div class="cern-dashboard-project" id="quality-assurance">
+            <div class="cern-dashboard-project-header">
                 <i class="fa fa-fw fa-cogs"></i>
                 <h3>Quality Assurance</h3>
             </div>
-            <div class="pricing-terms">
+            <div class="cern-dashboard-project-points">
                 <h3>{{ student.testing_points }} pts</h3>
             </div>
-            <div class="pricing-content">
-                <ul>
+            <div class="cern-dashboard-project-content">
+                <ul class="list-unstyled" >
                     <li>Beta applications and get advanced access prior to release</li>
                     <li>This feature isn't ready yet. Sign up below to be alerted when it is.</li>
                     {% if qa %}
-                    <li><button class="btn btn-orange" id="qa">Join mailing list</button></li>
+                    <li><button class="btn btn-default btn-primary" id="qa">Join mailing list</button></li>
                     {% else %}
-                    <li><button class="btn">You're on the list</button></li>
+                    <li><button class="btn btn-default">You're on the list</button></li>
                     {% endif %}
                 </ul>
             </div>
         </div>
     </div>
-    <div class="col-sm-2">
-        <div class="pricing-box-alt" id="linkedin-sharing">
-            <div class="pricing-heading">
+    <div class="col-md-2 col-sm-4">
+        <div class="cern-dashboard-project" id="linkedin-sharing">
+            <div class="cern-dashboard-project-header">
                 <i class="fa fa-fw fa-linkedin"></i>
                 <h3>Share Points on LinkedIn</h3>
             </div>
-            <div class="pricing-terms">
+            <div class="cern-dashboard-project-points">
                 {% if student.linkedin_token %}
                 <p>Your LinkedIn account is connected to Spudder.</p>
                 {% else %}
-                <a href="https://www.linkedin.com/uas/oauth2/authorization?response_type=code&client_id={{ key }}&scope=rw_nus&state=aowj3p5ro8a0f9jq23lk4jqlwkejADSE$SDSDFGJJaw&redirect_uri=http://{{ request.META.HTTP_HOST }}/cern/save_linkedin">Connect your LinkedIn account to Spudder</a>
+                <a class="btn btn-default" href="https://www.linkedin.com/uas/oauth2/authorization?response_type=code&client_id={{ key }}&scope=rw_nus&state=aowj3p5ro8a0f9jq23lk4jqlwkejADSE$SDSDFGJJaw&redirect_uri=http://{{ request.META.HTTP_HOST }}/cern/save_linkedin">Connect</a>
                 {% endif %}
             </div>
             {% if student.linkedin_token %}
-            <div class="pricing-content">
-                <ul>
+            <div class="cern-dashboard-project-content">
+                <ul class="list-unstyled" >
                     <li><p>Share current points:</p>
                         {% if student.marketing_points > 0 %}<a id="share-marketing">Marketing</a><br>{% endif %}
                         {% if student.social_media_points > 0 %}<a id="share-social-media">Social Media PR</a>{% endif %}
@@ -174,19 +174,19 @@
 
     $(document).ready(function(){
         $('#content-btn').click(function(){
-            $(this).removeClass('btn-orange');
+            $(this).removeClass('btn-primary');
             $(this).text("You're on the list");
             join_list('Blogging');
         });
 
         $('#design-btn').click(function(){
-            $(this).removeClass('btn-orange');
+            $(this).removeClass('btn-primary');
             $(this).text("You're on the list");
             join_list('Sponsor Page Design');
         });
 
         $('#qa').click(function(){
-            $(this).removeClass('btn-orange');
+            $(this).removeClass('btn-primary');
             $(this).text("You're on the list");
             join_list('Quality Assurance Testing');
         });

@@ -1,67 +1,102 @@
 {% load CERN %}
-<div class="navbar-left" id="sidebar">
-	<ul class="nav nav-pills nav-stacked">
-	    <li {% if active == "scoreboard" %}class="active"{% endif %}>
-	       <a class="dropwdown-toggle" href="/cern/">
-	           <i class="fa fa-fw fa-bar-chart-o"></i>
-	           <span class="menu-text"> Scoreboard </span>
-           </a>
-        </li>
+<a class="list-group-item {% if active == "scoreboard" %}active{% endif %}"href="/cern/">
+   <i class="fa fa-fw fa-bar-chart-o"></i> Scoreboard
+</a>
 
-	    <li>
-	       <a class="dropwdown-toggle" href="{% my_school_link request.user %}">
-	           <i class="fa fa-fw fa-users"></i>
-	           <span class="menu-text"> School Page </span>
-           </a>
-        </li>
+<a class="list-group-item" href="{% my_school_link request.user %}">
+   <i class="fa fa-fw fa-users"></i> School Page
+</a>
 
-		<li {% if active == "venues" %}class="active"{% endif %}>
-			<a class="dropdown-toggle" href="/cern/venues/">
-				<i class="fa fa-fw fa-map-marker"></i>
-				<span class="menu-text"> Venues </span>
-			</a>
-		</li>
+<a class="list-group-item {% if active == "venues" %}active{% endif %}" href="/cern/venues/">
+    <i class="fa fa-fw fa-map-marker"></i> Venues
+</a>
 
-		<li {% if active == "social" %}class="active"{% endif %}>
-			<a class="dropdown-toggle" href="/cern/social_media/">
-				<i class="fa fa-fw fa-rss"></i>
-				<span class="menu-text"> Social Media </span>
-			</a>
-		</li>
+<a class="list-group-item {% if active == "social" %}active{% endif %}" href="/cern/social_media/">
+    <i class="fa fa-fw fa-rss"></i> Social Media
+</a>
 
-		<li {% if active == "content" %}class="active"{% endif %}>
-			<a class="dropdown-toggle" href="/cern/content/">
-				<i class="fa fa-fw fa-edit"></i>
-				<span class="menu-text"> Content </span>
-			</a>
-		</li>
+<a class="list-group-item {% if active == "content" %}active{% endif %}" href="/cern/content/">
+    <i class="fa fa-fw fa-edit"></i> Content
+</a>
 
-		<li {% if active == "design" %}class="active"{% endif %}>
-			<a class="dropdown-toggle" href="/cern/design/">
-				<i class="fa fa-fw fa-pencil"></i>
-				<span class="menu-text"> Design </span>
-			</a>
-		</li>
+<a class="list-group-item {% if active == "design" %}active{% endif %}" href="/cern/design/">
+    <i class="fa fa-fw fa-pencil"></i> Design
+</a>
 
-		<li {% if active == "testing" %}class="active"{% endif %}>
-			<a class="dropdown-toggle" href="/cern/testing/">
-				<i class="fa fa-fw fa-cogs"></i>
-				<span class="menu-text"> QA Testing </span>
-			</a>
-		</li>
+<a class="list-group-item {% if active == "testing" %}active{% endif %}" href="/cern/testing/">
+    <i class="fa fa-fw fa-cogs"></i> QA Testing
+</a>
 
-		<li {% if active == "mobile" %}class="active"{% endif %}>
-			<a class="dropdown-toggle" href="/cern/mobile/">
-				<i class="fa fa-fw fa-mobile-phone"></i>
-				<span class="menu-text"> Mobile App </span>
-			</a>
-		</li>
+<a class="list-group-item {% if active == "mobile" %}active{% endif %}" href="/cern/mobile/">
+    <i class="fa fa-fw fa-mobile-phone"></i> Mobile App
+</a>
 
-        <li>
-            <a class="dropwdown-toggle" href="/accounts/logout?next=/cern/">
-                <i class="fa fa-fw fa-power-off"></i>
-                <span class="menu-text">Logout</span>
-            </a>
-        </li>
-	</ul>
-</div>
+<a class="list-group-item" href="/accounts/logout?next=/cern/">
+    <i class="fa fa-fw fa-power-off"></i> Logout
+</a>
+{#<div class="navbar-left" id="sidebar">#}
+{#	<ul class="nav nav-pills nav-stacked">#}
+{#	    <li {% if active == "scoreboard" %}class="active"{% endif %}>#}
+{#	       <a class="dropwdown-toggle" href="/cern/">#}
+{#	           <i class="fa fa-fw fa-bar-chart-o"></i>#}
+{#	           <span class="menu-text"> Scoreboard </span>#}
+{#           </a>#}
+{#        </li>#}
+{##}
+{#	    <li>#}
+{#	       <a class="dropwdown-toggle" href="{% my_school_link request.user %}">#}
+{#	           <i class="fa fa-fw fa-users"></i>#}
+{#	           <span class="menu-text"> School Page </span>#}
+{#           </a>#}
+{#        </li>#}
+{##}
+{#		<li {% if active == "venues" %}class="active"{% endif %}>#}
+{#			<a class="dropdown-toggle" href="/cern/venues/">#}
+{#				<i class="fa fa-fw fa-map-marker"></i>#}
+{#				<span class="menu-text"> Venues </span>#}
+{#			</a>#}
+{#		</li>#}
+{##}
+{#		<li {% if active == "social" %}class="active"{% endif %}>#}
+{#			<a class="dropdown-toggle" href="/cern/social_media/">#}
+{#				<i class="fa fa-fw fa-rss"></i>#}
+{#				<span class="menu-text"> Social Media </span>#}
+{#			</a>#}
+{#		</li>#}
+{##}
+{#		<li {% if active == "content" %}class="active"{% endif %}>#}
+{#			<a class="dropdown-toggle" href="/cern/content/">#}
+{#				<i class="fa fa-fw fa-edit"></i>#}
+{#				<span class="menu-text"> Content </span>#}
+{#			</a>#}
+{#		</li>#}
+{##}
+{#		<li {% if active == "design" %}class="active"{% endif %}>#}
+{#			<a class="dropdown-toggle" href="/cern/design/">#}
+{#				<i class="fa fa-fw fa-pencil"></i>#}
+{#				<span class="menu-text"> Design </span>#}
+{#			</a>#}
+{#		</li>#}
+{##}
+{#		<li {% if active == "testing" %}class="active"{% endif %}>#}
+{#			<a class="dropdown-toggle" href="/cern/testing/">#}
+{#				<i class="fa fa-fw fa-cogs"></i>#}
+{#				<span class="menu-text"> QA Testing </span>#}
+{#			</a>#}
+{#		</li>#}
+{##}
+{#		<li {% if active == "mobile" %}class="active"{% endif %}>#}
+{#			<a class="dropdown-toggle" href="/cern/mobile/">#}
+{#				<i class="fa fa-fw fa-mobile-phone"></i>#}
+{#				<span class="menu-text"> Mobile App </span>#}
+{#			</a>#}
+{#		</li>#}
+{##}
+{#        <li>#}
+{#            <a class="dropwdown-toggle" href="/accounts/logout?next=/cern/">#}
+{#                <i class="fa fa-fw fa-power-off"></i>#}
+{#                <span class="menu-text">Logout</span>#}
+{#            </a>#}
+{#        </li>#}
+{#	</ul>#}
+{#</div>#}

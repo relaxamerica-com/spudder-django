@@ -5,7 +5,11 @@
 {% block title %}{{ school.name }} on CERN{% endblock %}
 
 {% block google_analytics_additions %}
-    ga('set', 'contentGroup2', 'CERN Students - Team Page');
+    ga('set', 'contentGroup1', 'CERN Students - Team Page');
+{% endblock %}
+
+{% block nav %}
+    {% include 'spuddercern/parts/cern_dropdown_menu.html' %}
 {% endblock %}
 
 {% block body %}

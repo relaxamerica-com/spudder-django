@@ -314,7 +314,7 @@ def dashboard(request):
 
     linkedin_key = settings.LINKEDIN_API_KEY
 
-    return render(request, 'spuddercern/pages/dashboard.html',
+    return render(request, 'spuddercern/pages/dashboard_pages/dashboard.html',
                   {
                   'student': student,
                   'content': content,
@@ -358,7 +358,7 @@ def social_media(request):
                              student.id))
         need_saving = True
 
-    return render(request, 'spuddercern/pages/social_media.html',
+    return render(request, 'spuddercern/pages/dashboard_pages/social_media.html',
                   {
                   'num_referred': num_referred,
                   'referral_url': referral_url,
@@ -387,7 +387,7 @@ def content(request):
     else:
         if request.user.email in mailing.emails:
             joined = True
-    return render(request, 'spuddercern/pages/coming_soon.html',
+    return render(request, 'spuddercern/pages/dashboard_pages/coming_soon.html',
                   {
                   'project': project,
                   'joined': joined,
@@ -415,7 +415,7 @@ def design(request):
             joined = True
         else:
             joined = False
-    return render(request, 'spuddercern/pages/coming_soon.html',
+    return render(request, 'spuddercern/pages/dashboard_pages/coming_soon.html',
                   {
                   'project': project,
                   'joined': joined,
@@ -443,7 +443,7 @@ def testing(request):
             joined = True
         else:
             joined = False
-    return render(request, 'spuddercern/pages/coming_soon.html',
+    return render(request, 'spuddercern/pages/dashboard_pages/coming_soon.html',
                   {
                   'project': project,
                   'joined': joined,
@@ -471,7 +471,7 @@ def mobile(request):
             joined = True
         else:
             joined = False
-    return render(request, 'spuddercern/pages/coming_soon.html',
+    return render(request, 'spuddercern/pages/dashboard_pages/coming_soon.html',
                   {
                   'project': project,
                   'joined': joined,
@@ -483,7 +483,7 @@ def mobile(request):
 @user_passes_test(user_is_student, '/cern/non-student/')
 def venues(request):
     template_data = {'venues': Venue.objects.filter(user=request.user)}
-    return render(request, 'spuddercern/pages/venues.html', template_data)
+    return render(request, 'spuddercern/pages/dashboard_pages/venues.html', template_data)
 
 
 @login_required

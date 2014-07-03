@@ -1,0 +1,17 @@
+{% load CERN %}
+<li class="dropdown">
+    <a class="dropdown-toggle" href="#" data-toggle="dropdown">
+        CERN Menu <i class="fa fa-caret-down"></i>
+    </a>
+    <ul class="dropdown-menu">
+        <li><a href="/cern/"><i class="fa fa-fw fa-bar-chart-o"></i> Scoreboard</a></li>
+        <li><a href="{% my_school_link request.user %}"><i class="fa fa-fw fa-users"></i> School Page</a></li>
+        <li><a href="/cern/venues/"><i class="fa fa-fw fa-map-marker"></i> Venues</a></li>
+        <li><a href="/cern/social_media/"><i class="fa fa-fw fa-rss"></i> Social Media</a></li>
+        <li><a href="/cern/content/"><i class="fa fa-fw fa-edit"></i> Content</a></li>
+        <li><a href="/cern/design/"><i class="fa fa-fw fa-pencil"></i> Design</a></li>
+        <li><a href="/cern/testing/"><i class="fa fa-fw fa-cogs"></i> QA Testing</a></li>
+        <li><a href="/cern/mobile/"><i class="fa fa-fw fa-mobile-phone"></i> Mobile App</a></li>
+        <li><a href="/accounts/logout?next=/cern/"><i class="fa fa-fw fa-power-off"></i> Logout</a></li>
+    </ul>
+</li>

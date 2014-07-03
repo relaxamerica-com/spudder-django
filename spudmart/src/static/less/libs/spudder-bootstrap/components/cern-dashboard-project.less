@@ -1,0 +1,44 @@
+.cern-dashboard-project {
+    .panel;
+    .panel-default;
+    .cern-dashboard-project-header {
+        height: 80px;
+        position: relative;
+        border-bottom: 1px solid @panel-default-border;
+        > i {
+            position: absolute;
+            top: 5%;
+            left: 15%;
+            opacity: 0.1;
+            font-size: 55px;
+        }
+        > h3 {
+            padding: 5px;
+            text-align: center;
+        }
+    }
+    .cern-dashboard-project-points {
+        height: 60px;
+        border-bottom: 1px solid @panel-default-border;
+        color: @gray-lighter;
+        background-color: @brand-primary;
+        padding: 10px 0;
+        text-align: center;
+        > h3 {
+            margin-top: 0;
+            padding-top: 10px;
+        }
+    }
+    .cern-dashboard-project-content {
+        padding: 5px;
+        position: relative;
+        @media(min-width: @screen-md) {
+            min-height: 200px;
+            .btn {
+                position: absolute;
+                bottom: 5px;
+                left: 5px;
+            }
+        }
+    }
+}

@@ -1,0 +1,45 @@
+{% extends 'spuddercern/pages/dashboard_pages/dashboard.html' %}
+{% load accounts %}
+
+{% block google_analytics_additions %}
+    ga('set', 'contentGroup1', 'CERN Students - {{ menu_context|capfirst }}');
+{% endblock %}
+
+{% block side_nav %}{% include 'spuddercern/parts/sideNav.html' with active=menu_context %}{% endblock %}
+
+{% block dashboard_page %}
+    <div class="page-header">
+        {% if menu_context == "content" %}
+            <h1><i class="fa fa-fw fa-edit"></i> Content</h1>
+        {% endif %}
+        {% if menu_context == "design" %}
+            <h1><i class="fa fa-fw fa-pencil"></i> Design</h1>
+        {% endif %}
+        {% if menu_context == "testing" %}
+            <h1><i class="fa fa-fw fa-cogs"></i> Testing</h1>
+        {% endif %}
+        {% if menu_context == "mobile" %}
+            <h1><i class="fa fa-fw fa-mobile-phone"></i> Mobile</h1>
+        {% endif %}
+    </div>
+
+    {% include 'spuddercern/quote_messages/quote_coming_soon.html' %}
+
+{% endblock %}
+
+{% block js %}
+    {{ block.super }}
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $('#join').click(function(){
+             if ($(this).text() == "Join {{ project }} mailing list"){
+                 $(this).removeClass('btn-orange');
+                 $(this).text("Mailing list joined.");
+                 $.post('/cern/add_email_alert/',
+                        { 'email' : "{{ request.user.email }}",
+                          'project' : "{{ project }}", });
+             }
+            });
+        });
+    </script>
+{% endblock %}

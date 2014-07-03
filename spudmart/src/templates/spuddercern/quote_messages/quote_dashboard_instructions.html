@@ -8,25 +8,25 @@
     <h4><i class="fa fa-fw fa-bullhorn"></i> What to do now?</h4>
     <p><b>Welcome to your CERN dashboard.</b> This is your control center for managing your CERN Teams and any venues you claim!</p>
     <br/>
-    <div class="visible-desktop">
-        <i class="fa fa-hand-o-left fa-2x pull-left" style="position:relative; top:-3px;"></i>
+    <div class="hidden-xs hidden-sm">
+        <i class="fa fa-hand-o-left fa-2x pull-left" style="position:relative; top:-5px;"></i>
         <p>You can use the navigation on the left to visit the various pages in your dashboard:</p>
     </div>
-    <div class="hidden-desktop">
-        <i class="fa fa-hand-o-up fa-2x pull-left"></i>
+    <div class="hidden-md hidden-lg">
+        <i class="fa fa-hand-o-up fa-2x  pull-right"></i>
         <p>You can use this button to bring down the menu and visit the various pages in your dashboard:</p>
     </div>
     <br/>
-    <ul class="unstyled">
-        <li><i class="fa fa-fw fa-asterisk orange"></i> Keep up to date with how you are accruing points on the <a href="/cern/">Scoreboard</a></li>
-        <li><i class="fa fa-fw fa-asterisk orange"></i> Manage and interact with your CERN Team on the <a href="{% my_school_link request.user %}">School page</a></li>
-        <li><i class="fa fa-fw fa-asterisk orange"></i> Claim, manage and <b>monetize</b> venues on the <a href="/cern/venues">Venues Page</a></li>
-        <li><i class="fa fa-fw fa-asterisk orange"></i> Earn points by keeping your venues and Team pages rocking using the <a href="/cern/social_media">Social Media</a>, <a href="/cern/content">Content</a> and <a href="/cern/design">Design</a> pages.</li>
-        <li><i class="fa fa-fw fa-asterisk orange"></i> Earn <b>extra</b> points by joining the Spudder QA Team on the  <a href="/cern/testing">QA Testing</a> page.</li>
+    <ul class="list-unstyled">
+        <li><i class="fa fa-fw fa-asterisk"></i> Keep up to date with how you are accruing points on the <a href="/cern/">Scoreboard</a></li>
+        <li><i class="fa fa-fw fa-asterisk"></i> Manage and interact with your CERN Team on the <a href="{% my_school_link request.user %}">School page</a></li>
+        <li><i class="fa fa-fw fa-asterisk"></i> Claim, manage and <b>monetize</b> venues on the <a href="/cern/venues">Venues Page</a></li>
+        <li><i class="fa fa-fw fa-asterisk"></i> Earn points by keeping your venues and Team pages rocking using the <a href="/cern/social_media">Social Media</a>, <a href="/cern/content">Content</a> and <a href="/cern/design">Design</a> pages.</li>
+        <li><i class="fa fa-fw fa-asterisk"></i> Earn <b>extra</b> points by joining the Spudder QA Team on the  <a href="/cern/testing">QA Testing</a> page.</li>
     </ul>
     <br/>
     <div class="btn-group">
-        <button class="btn dismiss-for-now-button">Hide for now</button>
+        <button class="btn btn-default dismiss-for-now-button">Hide for now</button>
         <button id="submit" class="btn btn-primary dismiss-for-good-button">Hide Forever</button>
     </div>
 {% endblock %}
