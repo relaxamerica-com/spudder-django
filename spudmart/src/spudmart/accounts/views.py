@@ -270,7 +270,7 @@ def amazon_required(request):
     :return: Simple error page explaining that Spudder/CERN requires
         the user to share information from Amazon
     """
-    return render(request, 'spuddercern/old/need-amazon-account.html')
+    return render(request, 'spuddercern/pages/need_amazon_account.html')
 
 
 def login_fake(request):
