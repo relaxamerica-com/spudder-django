@@ -271,7 +271,7 @@
 					</div>
 					<div id="flag-content" class="content">
 						<div class="row-fluid">
-                            {% include 'spuddercern/old/quote_messages/quote_venue_feature_coming_soon.html' %}
+                            {% include 'spuddercern/quote_messages/quote_venue_feature_coming_soon.html' %}
 {#							<form method="post" role="form">#}
 {#								<p>#}
 {#									Send message to Groundskeeper#}
@@ -425,7 +425,7 @@
 						</div>
 						<div class="row-fluid view-mode">
 							<div class="col-md-6" style="width:100%;">
-                                {% include 'spuddercern/old/quote_messages/quote_venue_feature_coming_soon.html' %}
+                                {% include 'spuddercern/quote_messages/quote_venue_feature_coming_soon.html' %}
 {#								<p>#}
 {#									Address of nearby facility#}
 {#								</p>#}
@@ -475,15 +475,15 @@
                 <hr class="hidden-desktop"/>
                 {% if request.user == venue.user %}
                     {% if not venue.renter %}
-                        {% include 'spuddercern/old/quote_messages/quote_venue_sponsors_coming_soon_can_edit.html' %}
+                        {% include 'spuddercern/quote_messages/quote_venue_sponsors_coming_soon_can_edit.html' %}
                     {% else %}
-                        {% include 'spuddercern/old/quote_messages/quote_venue_rented_for_student.html' %}
+                        {% include 'spuddercern/quote_messages/quote_venue_rented_for_student.html' %}
                     {% endif %}
                 {% else %}
                     {% if not sponsor %}
-                        {% include 'spuddercern/old/quote_messages/quote_venue_sponsors_coming_soon.html' %}
+                        {% include 'spuddercern/quote_messages/quote_venue_sponsors_coming_soon.html' %}
                         {% if venue.renter %}
-                            {% include 'spuddercern/old/quote_messages/quote_venue_reserved.html' %}
+                            {% include 'spuddercern/quote_messages/quote_venue_reserved.html' %}
                         {% endif %}
                     {% else %}
                         This venue is sponsored.
