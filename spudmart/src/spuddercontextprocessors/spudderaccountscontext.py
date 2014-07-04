@@ -16,12 +16,6 @@ def other_roles_context(request):
     :param request: the Django request object
     :return: dict with the all_roles set to a list of all user roles as subclass of spudderaccounts.wrappers.RoleBase
     """
-    return {'other_roles': [
-        request.current_role,
-        request.current_role,
-        request.current_role,
-        request.current_role,
-    ]}
     if request.all_roles and request.current_role:
         other_roles = [r for r in request.all_roles if r.entity.id != request.current_role.entity.id]
         return {'other_roles': other_roles}

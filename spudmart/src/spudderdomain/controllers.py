@@ -1,3 +1,4 @@
+from spudderdomain.models import LinkedService
 from spudmart.CERN.models import Student
 
 
@@ -51,3 +52,21 @@ class RoleController(object):
         else:
             raise NotImplementedError("that entity_key is not yet supported")
 
+
+class LinkedServiceController(object):
+
+    SERVICE_AMAZON = "amazon"
+    SERVICE_TYPES = (SERVICE_AMAZON, )
+
+    def __init__(self, role):
+        self.role = role
+
+    def create_linked_service(self, linked_service_type, service_wrapper):
+        linked_service = LinkedService.Create(self.role, linked_service_type)
+        return service_wrapper(linked_service)
+
+    def linked_services(self, type_filters=None):
+        all_linked_services = LinkedService.objects.filter(role_type=self.role.entity_type, role_id=self.role.entity.id)
+        if type_filters:
+            all_linked_services = [s for s in all_linked_services if s.service_type in type_filters]
+        return all_linked_services

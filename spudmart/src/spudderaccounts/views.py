@@ -37,13 +37,13 @@ def accounts_dashboard(request):
 
 
 @login_required(login_url='/accounts/signin')
-def accounts_manage_role(request, role_type, entity_id):
+def accounts_manage_role(request, entity_type, entity_id):
     role_controller = RoleController(request.user)
-    if role_type == RoleController.ENTITY_STUDENT:
+    if entity_type == RoleController.ENTITY_STUDENT:
         role = role_controller.role_by_entity_type_and_entity_id(
-            role_type,
+            entity_type,
             entity_id,
-            RoleBase.RoleWrapperByEntityType(role_type))
+            RoleBase.RoleWrapperByEntityType(entity_type))
         if not role:
             messages.add_message(request, messages.ERROR, "There was an error loading that role.")
             return redirect('/users')
@@ -54,3 +54,24 @@ def accounts_manage_role(request, role_type, entity_id):
         'spudderaccounts/pages/role_manage.html',
         {'role': role},
         context_instance=RequestContext(request))
+
+
+def accounts_delete_role(request, entity_type, entity_id):
+    pass
+
+
+def accounts_activate_role(request, entity_type, entity_id):
+    next_url = request.GET.get('next', None)
+    request.session['current_role'] = {'entity_type': entity_type, 'entity_id': entity_id}
+    return redirect(next_url or '/users')
+
+
+def accounts_add_role(request):
+    return render_to_response(
+        'spudderaccounts/pages/add_new_role.html',
+        {},
+        context_instance=RequestContext(request))
+
+
+def accounts_create_role(request, entity_type):
+    pass  # TODO: working here MG: 20140704

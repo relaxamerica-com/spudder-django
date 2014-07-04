@@ -29,19 +29,19 @@
                 </label></p>
         {% endif %}
 
-        {% if request.user.is_authenticated %}
-
-            {% if request.user|is_student %}
-                <div class="alert alert-danger">
-                    <p>Uhoh! You've already joined a CERN team - you can only be on one team!</p>
-                    <p>Go back to your <a href="/cern/">dashboard</a></p>
-                </div>
-            {% else %}
-                <p><a href="/cern/join_school/{{ school.id }}/{{ referrer.id }}" class="btn btn-orange aligncenter">Join team with Existing Account</a></p>
-            {% endif %}
-
-        {% else %}
-
+{#        {% if request.user.is_authenticated %}#}
+{##}
+{#            {% if request.user|is_student %}#}
+{#                <div class="alert alert-danger">#}
+{#                    <p>Uhoh! You've already joined a CERN team - you can only be on one team!</p>#}
+{#                    <p>Go back to your <a href="/cern/">dashboard</a></p>#}
+{#                </div>#}
+{#            {% else %}#}
+{#                <p><a href="/cern/join_school/{{ school.id }}/{{ referrer.id }}" class="btn btn-orange aligncenter">Join team with Existing Account</a></p>#}
+{#            {% endif %}#}
+{##}
+{#        {% else %}#}
+{##}
             <div class="alert alert-info">
                 <h4><i class="fa fa-question"></i> Why Amazon</h4>
                 <p>CERN aims to get you <b>paid</b>!</p>
@@ -90,7 +90,7 @@
 
             {% endif %}
 
-        {% endif %}
+{#        {% endif %}#}
         <p>Not your team? Click <a href="/cern/register/{{ referrer.id }}">here</a>.</p>
       </div>
 {% endblock %}

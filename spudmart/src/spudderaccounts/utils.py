@@ -1,4 +1,5 @@
-from spudderaccounts.wrappers import RoleBase
+from spudderaccounts.wrappers import RoleBase, AuthenticationServiceBase
+from spudderdomain.controllers import LinkedServiceController
 
 
 def select_all_user_roles(role_controller):
@@ -25,3 +26,18 @@ def select_user_role_if_only_one_role_exists(role_controller):
     if len(roles) == 1:
         return roles[0]
     return None
+
+
+def select_authentication_services_for_role(role):
+    """
+    Selects all the linked authentication services for a given role
+
+    :param role: An instance of RoleBase of one of its subclasses
+    :return: Collection of subclasses of LinkedServiceBase
+    """
+    linked_service_controller = LinkedServiceController(role)
+    return [
+        AuthenticationServiceBase.RoleWrapperByEntityType(linked_service.service_type)(linked_service)
+        for linked_service in linked_service_controller.linked_services(
+            type_filtes=AuthenticationServiceBase.AUTHENTICATION_SERVICE_TYPES)]
+

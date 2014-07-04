@@ -279,9 +279,9 @@ def login_fake(request):
         raise Http404
 
     # Delete all users and profiles and students
-    [u.delete() for u in User.objects.all()]
-    [p.delete() for p in UserProfile.objects.all()]
-    [s.delete() for s in Student.objects.all()]
+    # [u.delete() for u in User.objects.all()]
+    # [p.delete() for p in UserProfile.objects.all()]
+    # [s.delete() for s in Student.objects.all()]
 
     amazon_user_id = "somemadeupid"
     amazon_user_name = "Test"

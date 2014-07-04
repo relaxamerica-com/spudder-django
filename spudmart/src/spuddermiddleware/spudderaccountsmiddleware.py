@@ -13,13 +13,13 @@ class RolesMiddleware:
                 one_ane_only_role = select_user_role_if_only_one_role_exists(role_controller)
                 if one_ane_only_role:
                     current_role = {
-                        'entity_key': one_ane_only_role.entity_type,
+                        'entity_type': one_ane_only_role.entity_type,
                         'entity_id': one_ane_only_role.entity.id}
             if current_role:
                 current_role = role_controller.role_by_entity_type_and_entity_id(
-                    current_role['entity_key'],
+                    current_role['entity_type'],
                     current_role['entity_id'],
-                    RoleBase.RoleWrapperByEntityType(current_role['entity_key']))
+                    RoleBase.RoleWrapperByEntityType(current_role['entity_type']))
         request.current_role = current_role
 
     def _add_all_roles(self, request):

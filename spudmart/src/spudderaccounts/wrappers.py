@@ -1,8 +1,17 @@
 import datetime
 import abc
-from spudderdomain.controllers import RoleController
+from spudderdomain.controllers import RoleController, LinkedServiceController
 from spudmart.accounts.models import UserProfile
-from spudderdomain.wrappers import EntityBase
+from spudderdomain.wrappers import EntityBase, LinkedServiceBase
+
+"""
+    Roles
+        Roles are the generic name given to the different types of entities within the Spudder ecosystem. These
+        can include, Students in CERN, Sponsors, Players, Fans etc.
+
+        Each Role should be based on the RoleBase base class and must implement all abstract methods and properties
+        from that class.
+"""
 
 
 class RoleBase(EntityBase):
@@ -31,10 +40,6 @@ class RoleBase(EntityBase):
 
     @abc.abstractproperty
     def meta_data(self):
-        pass
-
-    @abc.abstractproperty
-    def links(self):
         pass
 
     @abc.abstractproperty
@@ -78,12 +83,6 @@ class RoleStudent(RoleBase):
         }
 
     @property
-    def links(self):
-        return {
-            'role_management_url': '/users/roles/student/%s' % self.entity.id
-        }
-
-    @property
     def breadcrumb_name(self):
         return "Student: %s (%s)" % (
             UserProfile.objects.get(user=self.entity.user).amazon_id,
@@ -91,3 +90,28 @@ class RoleStudent(RoleBase):
 
     def user_is_owner(self, user):
         return self.entity.user == user
+
+
+"""
+    AuthenticationServices
+        Authentication services are linked providers of authentication such as 'login with amazon', 'login with
+        facebook' etc.
+
+        Each Authentication service must be based on the AuthenticationServiceBase class and implement all abstract
+        methods and properties from this class.
+"""
+
+
+class AuthenticationServiceBase(LinkedServiceBase):
+    AUTHENTICATION_SERVICE_TYPES = (LinkedServiceController.SERVICE_AMAZON, )
+
+    @classmethod
+    def RoleWrapperByEntityType(cls, service_type):
+        if service_type == LinkedServiceController.SERVICE_AMAZON:
+            return AmazonAuthenticationService
+        else:
+            raise NotImplementedError("the service_type %s is not supported yet." % service_type)
+
+
+class AmazonAuthenticationService(AuthenticationServiceBase):
+    pass

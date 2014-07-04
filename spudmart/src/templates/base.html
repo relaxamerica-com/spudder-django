@@ -64,7 +64,7 @@
                                                                 <img class="media-object pull-left" src="{{ role.image }}" style="height: 40px;" />
                                                                 <div class="media-body">
                                                                     <p class="media-heading"><small>{{ role.title|safe }}</small></p>
-                                                                    <a href="{% change_role_and_return_url role %}" class="btn btn-default btn-xs" style="margin:0;">
+                                                                    <a href="{% link_to_change_role_and_return role %}" class="btn btn-default btn-xs" style="margin:0;">
                                                                         Activate this role
                                                                     </a>
                                                                 </div>
@@ -83,14 +83,18 @@
                                                         </a>
                                                     </div>
                                                 {% else %}
+                                                    <div class="btn-group">
+                                                        <a class="btn btn-primary btn-sm" href="/users/roles/add">
+                                                            <i class="fa fa-plus"></i> Add a new role
+                                                        </a>
+                                                    </div>
+                                                {% endif %}
+                                            {% else %}
+                                                <div class="btn-group">
                                                     <a class="btn btn-primary btn-sm" href="/users/roles/add">
                                                         <i class="fa fa-plus"></i> Add a new role
                                                     </a>
-                                                {% endif %}
-                                            {% else %}
-                                                <a class="btn btn-primary btn-sm" href="/users/roles/add">
-                                                    <i class="fa fa-plus"></i> Add a new role
-                                                </a>
+                                                </div>
                                             {% endif %}
                                         </li>
                                     </ul>
@@ -114,53 +118,43 @@
 
         {% block body %}{% endblock %}
         {% block footer %}
-            <footer>
-                <div class="container hidden-sm hidden-xs footer">
-                    <div class="row">
+            <footer class="spudder-footer">
+                <div class="container">
+                    <div class="row hidden-sm hidden-xs main-footer">
                         <div class="col-md-3">
-                            <div class="widget">
-                                <h5 class="widgetheading">Features</h5>
-                                <ul class="link-list">
-                                    <li><a href="http://info.spudder.com/fundraising/">Fundraising</a></li>
-                                    <li><a href="http://info.spudder.com/sports-updates/">Sports Updates</a></li>
-                                    <li><a href="http://info.spudder.com/communications/">Safe Communications</a></li>
-                                    <li><a href="http://info.spudder.com/community-metrics/">Community Metrics</a></li>
-                                    <li><a href="http://info.spudder.com/parental-controls">Parental Controls</a></li>
-                                </ul>
-                            </div>
+                            <h3>Features</h3>
+                            <ul class="list-unstyled">
+                                <li><a href="http://info.spudder.com/fundraising/">Fundraising</a></li>
+                                <li><a href="http://info.spudder.com/sports-updates/">Sports Updates</a></li>
+                                <li><a href="http://info.spudder.com/communications/">Safe Communications</a></li>
+                                <li><a href="http://info.spudder.com/community-metrics/">Community Metrics</a></li>
+                                <li><a href="http://info.spudder.com/parental-controls">Parental Controls</a></li>
+                            </ul>
                         </div>
-                        <div class="col-md-2">
-                            <div class="widget">
-                                <h5 class="widgetheading">About Spudder</h5>
-                                <ul class="link-list">
-                                    <li><a href="http://spudder.zendesk.com/hc/en-us">Support</a></li>
-                                    <li><a href="http://info.spudder.com/contact">Contact Us</a></li>
-                                    <li><a href="http://info.spudder.com/meet-our-team/">Meet our team</a></li>
-                                    <li><a href="http://info.spudder.com/Students">College Reps</a></li>
-                                    <li><a href="http://info.spudder.com/partner">Partners</a></li>
-                                </ul>
-                            </div>
+                        <div class="col-md-3">
+                            <h3>About Spudder</h3>
+                            <ul class="list-unstyled">
+                                <li><a href="http://spudder.zendesk.com/hc/en-us">Support</a></li>
+                                <li><a href="http://info.spudder.com/contact">Contact Us</a></li>
+                                <li><a href="http://info.spudder.com/meet-our-team/">Meet our team</a></li>
+                                <li><a href="http://info.spudder.com/Students">College Reps</a></li>
+                                <li><a href="http://info.spudder.com/partner">Partners</a></li>
+                            </ul>
                         </div>
-                        <div class="col-md-4">
-                            <div class="widget">
-                                <iframe width="300" height="200" src="//www.youtube.com/embed/Fde3tYVcuGc?rel=0" frameborder="0" allowfullscreen></iframe>
-                                <div class="clear">
-                                </div>
+                        <div class="col-md-3">
+                            <div class="embed-responsive embed-responsive-16by9">
+                                <iframe width="300" height="200" src="//www.youtube.com/embed/Fde3tYVcuGc?rel=0" allowfullscreen class="embed-responsive-item"></iframe>
                             </div>
                         </div>
                         <div class="col-md-3">
-                            <div class="widget">
-                                <h5 class="widgetheading">Sports Updates Made Simple</h5>
-                                <address>
-                                    Our patent pending system gives more than just the score, it gives amateur sports leagues a platform to connect, promote, fund and grow their local communities with about 50% the effort.
-                                </address>
-                                <p>
-                                </p>
-                            </div>
+                            <h3>Sports Updates Made Simple</h3>
+                            <p>
+                                Our patent pending system gives more than just the score, it gives amateur sports leagues a platform to connect, promote, fund and grow their local communities with about 50% the effort.
+                            </p>
                         </div>
                     </div>
-                    <div class="clearfix row">
-                        <ul class="social-network pull-right">
+                    <div class="clearfix row sub-footer">
+                        <ul class="list-inline pull-right">
                             <li><a href="https://www.facebook.com/spudderdotcom" target="_blank" title="Spudder on Facebook"><i class="fa fa-fw fa-facebook "></i></a></li>
                             <li><a href="https://twitter.com/spudder_com" target="_blank" title="Spudder on Twitter"><i class="fa fa-fw fa-twitter "></i></a></li>
                             <li><a href="https://www.linkedin.com/company/5012950" target="_blank" title="Spudder on LinkedIn"><i class="fa fa-fw fa-linkedin "></i></a></li>
@@ -179,9 +173,24 @@
 
         <script type="text/javascript" language="javascript">
 
-            /* GLOBAL - auto hide .alert-autohide alerts after two seconds */
+            function fix_footer_position(){
+                setTimeout(function(){
+                    var $footer = $('.spudder-footer');
+                    if ($(document).height() > $(window).height())
+                        $footer.css({top: ''});
+                    else
+                        $footer.css({top: $(window).height() - $footer.outerHeight()});
+                }, 500);
+            }
+
+
             $(document).ready(function(){
 
+                /* GLOBAL - set the footer position */
+                fix_footer_position();
+                $(window).on('resize', function() { fix_footer_position(); });
+
+                /* GLOBAL - auto hide .alert-autohide alerts after two seconds */
                 $('.alert-autohide').livequery(function(){
                     var $alert = $(this);
                     var timeout = 2000;
@@ -195,8 +204,7 @@
                     }, 5000);
                 });
 
-
-                //Attach to the dismissable notification
+                /* Attach to the dismissable notification */
                 $('.dismiss-for-now-button').livequery(function(){
                     $(this).unbind('click').on('click', function(){
                         $(this).parents('.quote').remove();
@@ -212,6 +220,27 @@
             });
 
         </script>
+        {% if user.is_authenticated %}
+            <script type="text/javascript" src="//assets.zendesk.com/external/zenbox/v2.6/zenbox.js"></script>
+            <style type="text/css" media="screen, projection">
+              @import url(//assets.zendesk.com/external/zenbox/v2.6/zenbox.css);
+              #zenbox_tab {top: 80% !important;}
+            </style>
+            <script type="text/javascript">
+                $(document).ready(function(){
+                    if (typeof(Zenbox) !== "undefined") {
+                        Zenbox.init({
+                            dropboxID:   "20173894",
+                            url:     	"https://spudder.zendesk.com",
+                            tabTooltip:  "Support",
+                            tabImageURL: "https://p2.zdassets.com/external/zenbox/images/tab_support.png",
+                            tabColor:	"#fb810b",
+                            tabPosition: "Left"
+                        });
+                    }
+                });
+            </script>
+        {% endif %}
         {% block js %}
         {% endblock %}
     </body>

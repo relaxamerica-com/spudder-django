@@ -13378,6 +13378,294 @@ fieldset[disabled] .btn-link:focus {
   height: 50px;
   width: 50px;
 }
+.cern-dashboard-project {
+  margin-bottom: 18px;
+  -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+  word-wrap: break-word;
+  background-color: #ffffff;
+  border: 1px solid transparent;
+  border-bottom-width: 2px;
+  border-radius: 3px;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+  border-color: #d8d8d8;
+}
+.cern-dashboard-project > .list-group {
+  margin-bottom: 0;
+}
+.cern-dashboard-project > .list-group .list-group-item {
+  border-width: 1px 0;
+  border-radius: 0;
+}
+.cern-dashboard-project > .list-group:first-child .list-group-item:first-child {
+  border-top: 0;
+  border-top-right-radius: 2px;
+  border-top-left-radius: 2px;
+}
+.cern-dashboard-project > .list-group:last-child .list-group-item:last-child {
+  border-bottom: 0;
+  border-bottom-right-radius: 2px;
+  border-bottom-left-radius: 2px;
+}
+.cern-dashboard-project > .table,
+.cern-dashboard-project > .table-responsive > .table,
+.cern-dashboard-project > .panel-collapse > .table {
+  margin-bottom: 0;
+}
+.cern-dashboard-project > .table:first-child,
+.cern-dashboard-project > .table-responsive:first-child > .table:first-child {
+  border-top-right-radius: 2px;
+  border-top-left-radius: 2px;
+}
+.cern-dashboard-project > .table:first-child > thead:first-child > tr:first-child td:first-child,
+.cern-dashboard-project > .table-responsive:first-child > .table:first-child > thead:first-child > tr:first-child td:first-child,
+.cern-dashboard-project > .table:first-child > tbody:first-child > tr:first-child td:first-child,
+.cern-dashboard-project > .table-responsive:first-child > .table:first-child > tbody:first-child > tr:first-child td:first-child,
+.cern-dashboard-project > .table:first-child > thead:first-child > tr:first-child th:first-child,
+.cern-dashboard-project > .table-responsive:first-child > .table:first-child > thead:first-child > tr:first-child th:first-child,
+.cern-dashboard-project > .table:first-child > tbody:first-child > tr:first-child th:first-child,
+.cern-dashboard-project > .table-responsive:first-child > .table:first-child > tbody:first-child > tr:first-child th:first-child {
+  border-top-left-radius: 2px;
+}
+.cern-dashboard-project > .table:first-child > thead:first-child > tr:first-child td:last-child,
+.cern-dashboard-project > .table-responsive:first-child > .table:first-child > thead:first-child > tr:first-child td:last-child,
+.cern-dashboard-project > .table:first-child > tbody:first-child > tr:first-child td:last-child,
+.cern-dashboard-project > .table-responsive:first-child > .table:first-child > tbody:first-child > tr:first-child td:last-child,
+.cern-dashboard-project > .table:first-child > thead:first-child > tr:first-child th:last-child,
+.cern-dashboard-project > .table-responsive:first-child > .table:first-child > thead:first-child > tr:first-child th:last-child,
+.cern-dashboard-project > .table:first-child > tbody:first-child > tr:first-child th:last-child,
+.cern-dashboard-project > .table-responsive:first-child > .table:first-child > tbody:first-child > tr:first-child th:last-child {
+  border-top-right-radius: 2px;
+}
+.cern-dashboard-project > .table:last-child,
+.cern-dashboard-project > .table-responsive:last-child > .table:last-child {
+  border-bottom-right-radius: 2px;
+  border-bottom-left-radius: 2px;
+}
+.cern-dashboard-project > .table:last-child > tbody:last-child > tr:last-child td:first-child,
+.cern-dashboard-project > .table-responsive:last-child > .table:last-child > tbody:last-child > tr:last-child td:first-child,
+.cern-dashboard-project > .table:last-child > tfoot:last-child > tr:last-child td:first-child,
+.cern-dashboard-project > .table-responsive:last-child > .table:last-child > tfoot:last-child > tr:last-child td:first-child,
+.cern-dashboard-project > .table:last-child > tbody:last-child > tr:last-child th:first-child,
+.cern-dashboard-project > .table-responsive:last-child > .table:last-child > tbody:last-child > tr:last-child th:first-child,
+.cern-dashboard-project > .table:last-child > tfoot:last-child > tr:last-child th:first-child,
+.cern-dashboard-project > .table-responsive:last-child > .table:last-child > tfoot:last-child > tr:last-child th:first-child {
+  border-bottom-left-radius: 2px;
+}
+.cern-dashboard-project > .table:last-child > tbody:last-child > tr:last-child td:last-child,
+.cern-dashboard-project > .table-responsive:last-child > .table:last-child > tbody:last-child > tr:last-child td:last-child,
+.cern-dashboard-project > .table:last-child > tfoot:last-child > tr:last-child td:last-child,
+.cern-dashboard-project > .table-responsive:last-child > .table:last-child > tfoot:last-child > tr:last-child td:last-child,
+.cern-dashboard-project > .table:last-child > tbody:last-child > tr:last-child th:last-child,
+.cern-dashboard-project > .table-responsive:last-child > .table:last-child > tbody:last-child > tr:last-child th:last-child,
+.cern-dashboard-project > .table:last-child > tfoot:last-child > tr:last-child th:last-child,
+.cern-dashboard-project > .table-responsive:last-child > .table:last-child > tfoot:last-child > tr:last-child th:last-child {
+  border-bottom-right-radius: 2px;
+}
+.cern-dashboard-project > .panel-body + .table,
+.cern-dashboard-project > .panel-body + .table-responsive {
+  border-top: 1px solid #dddddd;
+}
+.cern-dashboard-project > .table > tbody:first-child > tr:first-child th,
+.cern-dashboard-project > .table > tbody:first-child > tr:first-child td {
+  border-top: 0;
+}
+.cern-dashboard-project > .table-bordered,
+.cern-dashboard-project > .table-responsive > .table-bordered {
+  border: 0;
+}
+.cern-dashboard-project > .table-bordered > thead > tr > th:first-child,
+.cern-dashboard-project > .table-responsive > .table-bordered > thead > tr > th:first-child,
+.cern-dashboard-project > .table-bordered > tbody > tr > th:first-child,
+.cern-dashboard-project > .table-responsive > .table-bordered > tbody > tr > th:first-child,
+.cern-dashboard-project > .table-bordered > tfoot > tr > th:first-child,
+.cern-dashboard-project > .table-responsive > .table-bordered > tfoot > tr > th:first-child,
+.cern-dashboard-project > .table-bordered > thead > tr > td:first-child,
+.cern-dashboard-project > .table-responsive > .table-bordered > thead > tr > td:first-child,
+.cern-dashboard-project > .table-bordered > tbody > tr > td:first-child,
+.cern-dashboard-project > .table-responsive > .table-bordered > tbody > tr > td:first-child,
+.cern-dashboard-project > .table-bordered > tfoot > tr > td:first-child,
+.cern-dashboard-project > .table-responsive > .table-bordered > tfoot > tr > td:first-child {
+  border-left: 0;
+}
+.cern-dashboard-project > .table-bordered > thead > tr > th:last-child,
+.cern-dashboard-project > .table-responsive > .table-bordered > thead > tr > th:last-child,
+.cern-dashboard-project > .table-bordered > tbody > tr > th:last-child,
+.cern-dashboard-project > .table-responsive > .table-bordered > tbody > tr > th:last-child,
+.cern-dashboard-project > .table-bordered > tfoot > tr > th:last-child,
+.cern-dashboard-project > .table-responsive > .table-bordered > tfoot > tr > th:last-child,
+.cern-dashboard-project > .table-bordered > thead > tr > td:last-child,
+.cern-dashboard-project > .table-responsive > .table-bordered > thead > tr > td:last-child,
+.cern-dashboard-project > .table-bordered > tbody > tr > td:last-child,
+.cern-dashboard-project > .table-responsive > .table-bordered > tbody > tr > td:last-child,
+.cern-dashboard-project > .table-bordered > tfoot > tr > td:last-child,
+.cern-dashboard-project > .table-responsive > .table-bordered > tfoot > tr > td:last-child {
+  border-right: 0;
+}
+.cern-dashboard-project > .table-bordered > thead > tr:first-child > td,
+.cern-dashboard-project > .table-responsive > .table-bordered > thead > tr:first-child > td,
+.cern-dashboard-project > .table-bordered > tbody > tr:first-child > td,
+.cern-dashboard-project > .table-responsive > .table-bordered > tbody > tr:first-child > td,
+.cern-dashboard-project > .table-bordered > thead > tr:first-child > th,
+.cern-dashboard-project > .table-responsive > .table-bordered > thead > tr:first-child > th,
+.cern-dashboard-project > .table-bordered > tbody > tr:first-child > th,
+.cern-dashboard-project > .table-responsive > .table-bordered > tbody > tr:first-child > th {
+  border-bottom: 0;
+}
+.cern-dashboard-project > .table-bordered > tbody > tr:last-child > td,
+.cern-dashboard-project > .table-responsive > .table-bordered > tbody > tr:last-child > td,
+.cern-dashboard-project > .table-bordered > tfoot > tr:last-child > td,
+.cern-dashboard-project > .table-responsive > .table-bordered > tfoot > tr:last-child > td,
+.cern-dashboard-project > .table-bordered > tbody > tr:last-child > th,
+.cern-dashboard-project > .table-responsive > .table-bordered > tbody > tr:last-child > th,
+.cern-dashboard-project > .table-bordered > tfoot > tr:last-child > th,
+.cern-dashboard-project > .table-responsive > .table-bordered > tfoot > tr:last-child > th {
+  border-bottom: 0;
+}
+.cern-dashboard-project > .table-responsive {
+  border: 0;
+  margin-bottom: 0;
+}
+.cern-dashboard-project > .list-group:first-child .list-group-item:first-child {
+  border-top-right-radius: 2px;
+  border-top-left-radius: 2px;
+}
+.cern-dashboard-project > .list-group:last-child .list-group-item:last-child {
+  border-bottom-right-radius: 2px;
+  border-bottom-left-radius: 2px;
+}
+.cern-dashboard-project > .table:first-child > thead:first-child > tr:first-child td:first-child,
+.cern-dashboard-project > .table-responsive:first-child > .table:first-child > thead:first-child > tr:first-child td:first-child,
+.cern-dashboard-project > .table:first-child > tbody:first-child > tr:first-child td:first-child,
+.cern-dashboard-project > .table-responsive:first-child > .table:first-child > tbody:first-child > tr:first-child td:first-child,
+.cern-dashboard-project > .table:first-child > thead:first-child > tr:first-child th:first-child,
+.cern-dashboard-project > .table-responsive:first-child > .table:first-child > thead:first-child > tr:first-child th:first-child,
+.cern-dashboard-project > .table:first-child > tbody:first-child > tr:first-child th:first-child,
+.cern-dashboard-project > .table-responsive:first-child > .table:first-child > tbody:first-child > tr:first-child th:first-child {
+  border-top-left-radius: 2px;
+}
+.cern-dashboard-project > .table:first-child > thead:first-child > tr:first-child td:last-child,
+.cern-dashboard-project > .table-responsive:first-child > .table:first-child > thead:first-child > tr:first-child td:last-child,
+.cern-dashboard-project > .table:first-child > tbody:first-child > tr:first-child td:last-child,
+.cern-dashboard-project > .table-responsive:first-child > .table:first-child > tbody:first-child > tr:first-child td:last-child,
+.cern-dashboard-project > .table:first-child > thead:first-child > tr:first-child th:last-child,
+.cern-dashboard-project > .table-responsive:first-child > .table:first-child > thead:first-child > tr:first-child th:last-child,
+.cern-dashboard-project > .table:first-child > tbody:first-child > tr:first-child th:last-child,
+.cern-dashboard-project > .table-responsive:first-child > .table:first-child > tbody:first-child > tr:first-child th:last-child {
+  border-top-right-radius: 2px;
+}
+.cern-dashboard-project > .table:last-child > tbody:last-child > tr:last-child td:first-child,
+.cern-dashboard-project > .table-responsive:last-child > .table:last-child > tbody:last-child > tr:last-child td:first-child,
+.cern-dashboard-project > .table:last-child > tfoot:last-child > tr:last-child td:first-child,
+.cern-dashboard-project > .table-responsive:last-child > .table:last-child > tfoot:last-child > tr:last-child td:first-child,
+.cern-dashboard-project > .table:last-child > tbody:last-child > tr:last-child th:first-child,
+.cern-dashboard-project > .table-responsive:last-child > .table:last-child > tbody:last-child > tr:last-child th:first-child,
+.cern-dashboard-project > .table:last-child > tfoot:last-child > tr:last-child th:first-child,
+.cern-dashboard-project > .table-responsive:last-child > .table:last-child > tfoot:last-child > tr:last-child th:first-child {
+  border-bottom-left-radius: 2px;
+}
+.cern-dashboard-project > .table:last-child > tbody:last-child > tr:last-child td:last-child,
+.cern-dashboard-project > .table-responsive:last-child > .table:last-child > tbody:last-child > tr:last-child td:last-child,
+.cern-dashboard-project > .table:last-child > tfoot:last-child > tr:last-child td:last-child,
+.cern-dashboard-project > .table-responsive:last-child > .table:last-child > tfoot:last-child > tr:last-child td:last-child,
+.cern-dashboard-project > .table:last-child > tbody:last-child > tr:last-child th:last-child,
+.cern-dashboard-project > .table-responsive:last-child > .table:last-child > tbody:last-child > tr:last-child th:last-child,
+.cern-dashboard-project > .table:last-child > tfoot:last-child > tr:last-child th:last-child,
+.cern-dashboard-project > .table-responsive:last-child > .table:last-child > tfoot:last-child > tr:last-child th:last-child {
+  border-bottom-right-radius: 2px;
+}
+.cern-dashboard-project > .panel-body + .table,
+.cern-dashboard-project > .panel-body + .table-responsive {
+  border-top: 1px solid #dddddd;
+}
+.cern-dashboard-project > .panel-heading {
+  color: #333333;
+  background-color: #ffffff;
+  border-color: #d8d8d8;
+}
+.cern-dashboard-project > .panel-heading + .panel-collapse > .panel-body {
+  border-top-color: #d8d8d8;
+}
+.cern-dashboard-project > .panel-heading .badge {
+  color: #ffffff;
+  background-color: #333333;
+}
+.cern-dashboard-project > .panel-footer + .panel-collapse > .panel-body {
+  border-bottom-color: #d8d8d8;
+}
+.cern-dashboard-project > .panel-heading {
+  color: #333333;
+  background-color: #ffffff;
+  border-color: #ffffff;
+}
+.cern-dashboard-project > .panel-heading + .panel-collapse > .panel-body {
+  border-top-color: #d8d8d8;
+}
+.cern-dashboard-project > .panel-heading .badge {
+  color: #ffffff;
+  background-color: #333333;
+}
+.cern-dashboard-project > .panel-footer + .panel-collapse > .panel-body {
+  border-bottom-color: #d8d8d8;
+}
+.cern-dashboard-project .cern-dashboard-project-header {
+  height: 80px;
+  position: relative;
+  border-bottom: 1px solid #d8d8d8;
+}
+.cern-dashboard-project .cern-dashboard-project-header > i {
+  position: absolute;
+  top: 5%;
+  left: 15%;
+  opacity: 0.1;
+  font-size: 55px;
+}
+.cern-dashboard-project .cern-dashboard-project-header > h3 {
+  padding: 5px;
+  text-align: center;
+}
+.cern-dashboard-project .cern-dashboard-project-points {
+  height: 60px;
+  border-bottom: 1px solid #d8d8d8;
+  color: #eeeeee;
+  background-color: #f47321;
+  padding: 10px 0;
+  text-align: center;
+}
+.cern-dashboard-project .cern-dashboard-project-points > h3 {
+  margin-top: 0;
+  padding-top: 10px;
+}
+.cern-dashboard-project .cern-dashboard-project-content {
+  padding: 5px;
+  position: relative;
+}
+@media (min-width: 992px) {
+  .cern-dashboard-project .cern-dashboard-project-content {
+    min-height: 200px;
+  }
+  .cern-dashboard-project .cern-dashboard-project-content .btn {
+    position: absolute;
+    bottom: 5px;
+    left: 5px;
+  }
+}
+.spudder-footer {
+  position: absolute;
+  width: 100%;
+  background-color: #f1f1f1;
+  border-top: 1px solid #e5e5e5;
+}
+.spudder-footer .main-footer {
+  padding: 30px 10px 20px;
+}
+.spudder-footer .main-footer h3 {
+  margin-top: 0;
+}
+.spudder-footer .sub-footer {
+  padding: 10px;
+}
 /* todc-bootstrap/forms.less */
 legend {
   font-size: 14.3px;
