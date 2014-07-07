@@ -43,29 +43,31 @@
 {% endblock %}
 
 {% block js %}
-<script>
-$(document).ready(function () {
-    if (typeof amazon == undefined) return;
+    {{ block.super }}
+    {% include 'spudderaccounts/parts/amazon_login_js.html' %}
+    <script type="text/javascript" language="javascript">
+        $(document).ready(function () {
+            if (typeof amazon == undefined) return;
 
-    var $logoutBtn = $('#logout-button');
+            var $logoutBtn = $('#logout-button');
 
-    if ($logoutBtn.length) {
-        $logoutBtn.click(function (event) {
-            event.preventDefault();
-            amazon.Login.logout();
-            window.location = $logoutBtn.attr('href');
+            if ($logoutBtn.length) {
+                $logoutBtn.click(function (event) {
+                    event.preventDefault();
+                    amazon.Login.logout();
+                    window.location = $logoutBtn.attr('href');
+                });
+            }
+            var loginWithAmazon = document.getElementById('LoginWithAmazon'),
+                returnUrl = '{{ request.META.HTTP_HOST }}/accounts/login/just_login';
+
+            if (loginWithAmazon) {
+                loginWithAmazon.onclick = function() {
+                    options = { scope : 'profile' };
+                    amazon.Login.authorize(options, returnUrl);
+                    return false;
+                };
+            }
         });
-    }
-});
-    var loginWithAmazon = document.getElementById('LoginWithAmazon'),
-        returnUrl = '{{ request.META.HTTP_HOST }}/accounts/login/just_login';
-
-    if (loginWithAmazon) {
-        loginWithAmazon.onclick = function() {
-            options = { scope : 'profile' };
-            amazon.Login.authorize(options, returnUrl);
-            return false;
-        };
-    }
-</script>
+    </script>
 {% endblock %}

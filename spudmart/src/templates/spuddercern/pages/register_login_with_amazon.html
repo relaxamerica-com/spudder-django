@@ -95,28 +95,34 @@
       </div>
 {% endblock %}
 
-{% block scripts %}
+{% block js %}
+    {{ block.super }}
+    {% include 'spudderaccounts/parts/amazon_login_js.html' %}
     <script type="text/javascript" language="javascript">
 
-        var loginWithAmazon = document.getElementById('LoginWithAmazon'),
-            returnUrl = '{{ request.META_HEADER.HTTP_HOST }}/accounts/login/amazon';
+        $(document).ready(function(){
 
-        returnUrl += '?school_id={{ school.id }}&next=/cern/{{ school.state }}/{{ school.id }}/{% strip_school_name school %}/';
-        {% if referrer %}
-            returnUrl += '&referrer=' + {{ referrer.id }};
-        {% endif %}
+            var loginWithAmazon = document.getElementById('LoginWithAmazon'),
+                returnUrl = '{{ request.META_HEADER.HTTP_HOST }}/accounts/login/amazon';
+
+            returnUrl += '?school_id={{ school.id }}&next=/cern/{{ school.state }}/{{ school.id }}/{% strip_school_name school %}/';
+            {% if referrer %}
+                returnUrl += '&referrer=' + {{ referrer.id }};
+            {% endif %}
 
 
-        if (loginWithAmazon) {
-            loginWithAmazon.onclick = function() {
-                if ($('#accepted-terms-and-conditions').prop('checked')){
-                    options = { scope : 'profile' };
-                    amazon.Login.authorize(options, returnUrl);
-                    return false;
-                } else{
-                    alert('You must accept the terms and conditions to register!');
-                }
-            };
-        }
+            if (loginWithAmazon) {
+                loginWithAmazon.onclick = function() {
+                    if ($('#accepted-terms-and-conditions').prop('checked')){
+                        options = { scope : 'profile' };
+                        amazon.Login.authorize(options, returnUrl);
+                        return false;
+                    } else{
+                        alert('You must accept the terms and conditions to register!');
+                    }
+                };
+            }
+
+        })
     </script>
 {% endblock %}

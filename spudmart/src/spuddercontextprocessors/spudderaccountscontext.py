@@ -1,3 +1,6 @@
+from django.conf import settings
+
+
 def current_role_context(request):
     """
     Exposes the current role to the template context
@@ -20,3 +23,7 @@ def other_roles_context(request):
         other_roles = [r for r in request.all_roles if r.entity.id != request.current_role.entity.id]
         return {'other_roles': other_roles}
     return {}
+
+
+def amazon_client_id(_):
+    return {'AMAZON_CLIENT_ID': settings.AMAZON_LOGIN_CLIENT_ID}
