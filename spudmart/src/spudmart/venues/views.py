@@ -40,8 +40,9 @@ from spudmart.venues.utils import finalize_pending_rentals
 
 
 def view(request, venue_id):
-    venue = Venue.objects.get(pk = venue_id)
-    user = request.user
+    venue = Venue.objects.get(pk=venue_id)
+    role = request.session.get('current_role', None)
+
     splitted_address = venue.medical_address.split(', ')
     medical_address = {
         'address': splitted_address.pop(0) if splitted_address else '',
@@ -50,17 +51,17 @@ def view(request, venue_id):
         'zip': splitted_address.pop(0) if splitted_address else ''
     }
 
-    is_recipient = VenueRecipient.objects.filter(groundskeeper=user)
+    is_recipient = VenueRecipient.objects.filter(groundskeeper=request.user)
     rent_venue_url = False
-    can_edit = user.is_authenticated() and (venue.is_groundskeeper(user) or venue.is_renter(user))
+    can_edit = request.user.is_authenticated() and (venue.is_groundskeeper(role) or venue.is_renter(role))
 
-    if venue.is_available() and not venue.is_renter(user):
+    if venue.is_available() and not venue.is_renter(role):
         rent_venue_url = get_rent_venue_cbui_url(venue)
 
     sponsor = SponsorPage.objects.filter(sponsor=venue.renter)
 
     try:
-        student = Student.objects.get(user=request.user)
+        student = Student.objects.get(id=role['entity_id'])
     except Student.DoesNotExist:
         student = False
     except TypeError:
@@ -74,19 +75,22 @@ def view(request, venue_id):
         'rent_venue_url': rent_venue_url,
         'can_edit': can_edit,
         'sponsor': sponsor[0] if len(sponsor) else None,
-        'is_sponsor': venue.renter == user,
+        'is_sponsor': venue.is_renter(role),
         'student': student,
     })
 
 def create(request):
     if request.method == 'POST' and isinstance(request.user, User):
-        venue = Venue(user = request.user, sport = request.POST['sport'])
+        role = request.session.get('current_role', None)
+        stu = Student.objects.get(id=role['entity_id'])
+        venue = Venue(student=stu, sport=request.POST['sport'])
         venue.latitude = float(request.POST['latitude'])
         venue.longitude = float(request.POST['longitude'])
         venue.save()
 
         # Reward the student for creating the venue
-        owner = Student.objects.get(user=request.user)
+        role = request.session.get('current_role', None)
+        owner = Student.objects.get(id=role['entity_id'])
         created_venue(owner)
         return HttpResponseRedirect('/venues/view/%s' % venue.id)
     elif request.method == 'POST':
