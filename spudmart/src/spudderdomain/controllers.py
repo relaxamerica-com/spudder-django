@@ -10,6 +10,16 @@ class RoleController(object):
     ENTITY_STUDENT = "student"
     ENTITY_TYPES = (ENTITY_STUDENT, )
 
+    @classmethod
+    def GetRoleForEntityTypeAndID(cls, entity_type, entity_id, entity_wrapper):
+        if entity_type == cls.ENTITY_STUDENT:
+            try:
+                return entity_wrapper(Student.objects.get(id=entity_id))
+            except Student.DoesNotExist:
+                return None
+        else:
+            raise NotImplementedError("The entity_type: %s is not yet supported" % entity_type)
+
     def __init__(self, user):
         """
         Init a new role controller based on the provided User instance
@@ -58,11 +68,22 @@ class LinkedServiceController(object):
     SERVICE_AMAZON = "amazon"
     SERVICE_TYPES = (SERVICE_AMAZON, )
 
+    @classmethod
+    def LinkedServiceByTypeAndID(cls, linked_service_type, unique_service_id, service_wrapper):
+        try:
+            linked_service = LinkedService.objects.get(
+                service_type=linked_service_type,
+                unique_service_id=unique_service_id)
+            return service_wrapper(linked_service)
+        except LinkedService.DoesNotExist:
+            return None
+
     def __init__(self, role):
         self.role = role
 
-    def create_linked_service(self, linked_service_type, service_wrapper):
-        linked_service = LinkedService.Create(self.role, linked_service_type)
+    def create_linked_service(self, linked_service_type, unique_service_id, configuration, service_wrapper):
+        linked_service = LinkedService.Create(self.role, linked_service_type, unique_service_id, configuration)
+        linked_service.save()
         return service_wrapper(linked_service)
 
     def linked_services(self, type_filters=None):

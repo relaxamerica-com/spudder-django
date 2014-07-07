@@ -8,10 +8,6 @@
     ga('set', 'contentGroup1', 'CERN Students - Team Page');
 {% endblock %}
 
-{% block nav %}
-    {% include 'spuddercern/parts/cern_dropdown_menu.html' %}
-{% endblock %}
-
 {% block body %}
 
     <div class="container" id="venue-view">
@@ -26,7 +22,7 @@
             <div class="col-sm-7">
                 <div id="school-body">
                     <div class="quotes">
-                        {% if user_is_head or running_locally %}
+                        {% if user_is_head  %}
                             {% with info_message_id="cern_team_welcome_head" %}
                                 {% if info_message_id not in student.hidden_info_messages %}
                                     {% include 'spuddercern/quote_messages/quote_cern_team_welcome_head.html' %}
@@ -34,7 +30,7 @@
                             {% endwith %}
                         {% endif %}
 
-                        {% if user_is_team_member or running_locally %}
+                        {% if user_is_team_member %}
                             {% with info_message_id="cern_team_welcome_member" %}
                                 {% if info_message_id not in student.hidden_info_messages %}
                                     {% include 'spuddercern/quote_messages/quote_cern_team_welcome_member.html' %}
@@ -61,7 +57,7 @@
                                     </div>
                                 </div>
                             {% else %}
-                                {% if user_is_head or running_locally %}
+                                {% if user_is_head %}
                                     {% include 'spuddercern/quote_messages/quote_no_team_description_head.html' %}
                                 {% else %}
                                     {% include 'spuddercern/quote_messages/quote_no_team_description.html' %}
@@ -145,7 +141,7 @@
                             <label>Team Size: </label> {{ school.num_students }} registered
                             <span id="mascot">
                                 {{ school.mascot|default:"students" }}
-                                {% if user_is_head or running_locally %}
+                                {% if user_is_head %}
                                     <button class="btn btn-primary btn-mini pull-right" id="edit-right">
                                         <i class="fa fa-fw fa-cog"></i> Edit
                                     </button>

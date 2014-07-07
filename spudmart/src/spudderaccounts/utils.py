@@ -1,5 +1,10 @@
+from django.contrib.auth import authenticate
 from spudderaccounts.wrappers import RoleBase, AuthenticationServiceBase
-from spudderdomain.controllers import LinkedServiceController
+from spudderdomain.controllers import LinkedServiceController, RoleController
+
+
+def change_role_url(role):
+    return '/users/roles/activate/%s/%s' % (role.entity_type, role.entity.id)
 
 
 def select_all_user_roles(role_controller):
@@ -41,3 +46,34 @@ def select_authentication_services_for_role(role):
         for linked_service in linked_service_controller.linked_services(
             type_filtes=AuthenticationServiceBase.AUTHENTICATION_SERVICE_TYPES)]
 
+
+def select_role_by_authentication_service(service_type, unique_service_id):
+    service_wrapper = LinkedServiceController.LinkedServiceByTypeAndID(
+        service_type,
+        unique_service_id,
+        AuthenticationServiceBase.RoleWrapperByEntityType(service_type))
+    if not service_wrapper:
+        return None
+    return RoleController.GetRoleForEntityTypeAndID(
+        service_wrapper.linked_service.role_type,
+        service_wrapper.linked_service.role_id,
+        RoleBase.RoleWrapperByEntityType(service_wrapper.linked_service.role_type))
+
+
+def get_authentication_wrapper(role, service_type, unique_service_id):
+    if service_type != LinkedServiceController.SERVICE_AMAZON:
+        raise NotImplementedError("the service type %s is not yet supported by this method" % service_type)
+    return LinkedServiceController.LinkedServiceByTypeAndID(
+        service_type,
+        unique_service_id,
+        AuthenticationServiceBase.RoleWrapperByEntityType(service_type))
+
+
+def create_linked_authentication_service(role, service_type, unique_service_id, configuration):
+    linked_service_controller = LinkedServiceController(role)
+    linked_service_wrapper = linked_service_controller.create_linked_service(
+        service_type,
+        unique_service_id,
+        configuration,
+        AuthenticationServiceBase.RoleWrapperByEntityType(service_type))
+    return linked_service_wrapper

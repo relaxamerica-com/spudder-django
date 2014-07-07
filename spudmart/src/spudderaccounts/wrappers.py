@@ -1,7 +1,7 @@
 import datetime
 import abc
 from spudderdomain.controllers import RoleController, LinkedServiceController
-from spudmart.accounts.models import UserProfile
+from spudderdomain.models import LinkedService
 from spudderdomain.wrappers import EntityBase, LinkedServiceBase
 
 """
@@ -21,6 +21,10 @@ class RoleBase(EntityBase):
             return RoleStudent
         else:
             raise NotImplementedError("the entity_key %s is not supported yet." % entity_key)
+
+    @abc.abstractproperty
+    def user(self):
+        pass
 
     @abc.abstractproperty
     def entity_type(self):
@@ -46,6 +50,10 @@ class RoleBase(EntityBase):
     def breadcrumb_name(self):
         pass
 
+    @abc.abstractproperty
+    def home_page_path(self):
+        return '/cern'
+
     @abc.abstractmethod
     def user_is_owner(self, user):
         pass
@@ -53,8 +61,15 @@ class RoleBase(EntityBase):
 
 class RoleStudent(RoleBase):
     @property
+    def user(self):
+        return self.entity.user
+
+    @property
     def _amazon_id(self):
-        return UserProfile.objects.get(user=self.entity.user).amazon_id
+        return LinkedService.objects.get(
+            role_id=self.entity.id,
+            role_type=self.entity_type,
+            service_type=LinkedServiceController.SERVICE_AMAZON).configuration.get('amazon_user_email')
 
     @property
     def entity_type(self):
@@ -85,7 +100,7 @@ class RoleStudent(RoleBase):
     @property
     def breadcrumb_name(self):
         return "Student: %s (%s)" % (
-            UserProfile.objects.get(user=self.entity.user).amazon_id,
+            self._amazon_id,
             self.entity.school.name)
 
     def user_is_owner(self, user):
@@ -114,4 +129,13 @@ class AuthenticationServiceBase(LinkedServiceBase):
 
 
 class AmazonAuthenticationService(AuthenticationServiceBase):
-    pass
+    @property
+    def user_password(self):
+        return self.linked_service.configuration.get('amazon_user_id', None)
+
+    def update_amazon_access_token(self, access_token):
+        linked_service = self.linked_service
+        configuration = linked_service.configuration
+        configuration['access_token'] = access_token
+        linked_service.configuration = configuration
+        linked_service.save()

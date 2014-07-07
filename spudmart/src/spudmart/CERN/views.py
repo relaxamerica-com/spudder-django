@@ -7,6 +7,7 @@ from django.http import HttpResponseRedirect, HttpResponse, \
     HttpResponseNotAllowed, HttpResponseForbidden
 from django.template import RequestContext
 from django.views.generic.simple import redirect_to
+from spudderdomain.controllers import RoleController
 from spudmart.upload.models import UploadedFile
 from spudmart.CERN.models import School, Student, STATES, MailingList
 from django.core.exceptions import ObjectDoesNotExist
@@ -33,12 +34,7 @@ def user_is_student(user):
     :param user: any user
     :return: True if user is student and False if not
     """
-    try:
-        Student.objects.get(user=user)
-    except ObjectDoesNotExist:
-        return False
-    else:
-        return True
+    return bool(Student.objects.filter(user=user).count())
 
 
 def register(request, referral_id=None):
@@ -128,12 +124,9 @@ def school(request, state, school_id, name, referral_id=None):
     except ObjectDoesNotExist:
         head = None
 
-    try:
-        student = Student.objects.get(user=request.user)
-    except Student.DoesNotExist:
-        student = False
-    except TypeError:
-        student = False
+    student = None
+    if request.current_role and request.current_role.entity_type == RoleController.ENTITY_STUDENT:
+        student = request.current_role.entity
 
     ranked_students = sorted(sch.get_students(), key=lambda s: s.rep(), reverse=True)
     if len(ranked_students) == 0:
@@ -157,7 +150,7 @@ def school(request, state, school_id, name, referral_id=None):
             'school': sch,
             'student': student,
             'head': head,
-            'user_is_head': bool(head and head.user == request.user),
+            'user_is_head': bool(head and student and head == student),
             'user_is_team_member': bool(request.user in ranked_students),
             'referrer': referrer,
             'top_students': top_students,
@@ -249,7 +242,9 @@ def display_cern(request):
     """
     if request.user.is_authenticated():
         try:
-            student = Student.objects.get(user=request.user)
+            student = None
+            if request.current_role and request.current_role.entity_type == RoleController.ENTITY_STUDENT:
+                student = request.current_role.entity
         except ObjectDoesNotExist:
             # In the future, we can create a custom "join spuddercern" page
             #  for existing users
@@ -283,7 +278,9 @@ def dashboard(request):
     :param request: request to render page
     :return: dashboard customized for logged in student
     """
-    student = Student.objects.get(user=request.user)
+    student = None
+    if request.current_role and request.current_role.entity_type == RoleController.ENTITY_STUDENT:
+        student = request.current_role.entity
 
     content = design = qa = True
 
@@ -334,7 +331,7 @@ def social_media(request):
     :return: social media page customized for currently logged in
         student (with custom links and info on top 5 referred users)
     """
-    student = Student.objects.get(user=request.user)
+    student = request.current_role.entity
 
     all_referrals = sorted(student.referrals(), key=lambda s: s.rep(),
                        reverse=True)
@@ -496,7 +493,7 @@ def venues_new(request):
         venue.save()
 
         # Reward the student for creating the venue
-        owner = Student.objects.get(user=request.user)
+        owner = request.current_role.entity
         created_venue(owner)
 
         return redirect_to('/venues/view/%s' % venue.id)
@@ -553,7 +550,7 @@ def save_short_url(request):
         OR HttpResponseNotAllowed object (code 405) if not POST request
     """
     if request.method == 'POST':
-        student = Student.objects.get(user=request.user)
+        student = request.current_role.entity
         try:
             referral = request.POST['same-referral-url']
         except MultiValueDictKeyError:
@@ -580,7 +577,7 @@ def disable_about(request):
     :return: a blank HttpResponse on success
     """
     if request.method == 'POST':
-        student = Student.objects.get(user=request.user)
+        student = request.current_role.entity
         message_id = request.POST.get('message_id')
         if message_id:
             student.dismiss_info_message(message_id)
@@ -693,7 +690,7 @@ def save_linkedin(request):
             expires = datetime.utcnow() + timedelta(seconds=seconds_remaining)
             token = json['access_token']
 
-            student = Student.objects.get(user=request.user)
+            student = request.current_user.entity
             student.linkedin_token = token
             student.linkedin_expires = expires
             student.save()
@@ -715,7 +712,7 @@ def share_marketing_points(request):
     :return: the response from the LinkedIn Share API
     """
     if request.method == 'POST':
-        student = Student.objects.get(user=request.user)
+        student = request.current_role.entity
         return HttpResponse(student.brag_marketing())
     else:
         return HttpResponseNotAllowed(['POST'])
@@ -729,7 +726,7 @@ def share_social_media_points(request):
     :return: the response from the LinkedIn Share API
     """
     if request.method == 'POST':
-        student = Student.objects.get(user=request.user)
+        student = request.current_role.entity
         return HttpResponse(student.brag_social_media())
     else:
         return HttpResponseNotAllowed(['POST'])
@@ -743,7 +740,7 @@ def auto_share_marketing(request):
     :return: an HttpResponse with the new state of the auto-sharing
     """
     if request.method == 'POST':
-        student = Student.objects.get(user=request.user)
+        student = request.current_role.entity
         if student.auto_brag_marketing:
             student.auto_brag_marketing = False
         else:
@@ -763,7 +760,7 @@ def auto_share_social_media(request):
     :return: an HttpResponse with the new state of auto-sharing
     """
     if request.method == 'POST':
-        student = Student.objects.get(user=request.user)
+        student = request.current_role.entity
         if student.auto_brag_social_media:
             student.auto_brag_social_media = False
         else:
@@ -783,7 +780,7 @@ def auto_share_marketing_level(request):
     :return: an HttpResponse with the new state of level-sharing
     """
     if request.method == 'POST':
-        student = Student.objects.get(user=request.user)
+        student = request.current_role.entity
         if student.level_brag_marketing:
             student.level_brag_marketing = False
         else:
@@ -803,7 +800,7 @@ def auto_share_social_media_level(request):
     :return: an HttpResponse with the new state of level-sharing
     """
     if request.methd == 'POST':
-        student = Student.objects.get(user=request.user)
+        student = request.current_role.entity
         if student.level_brag_social_media:
             student.level_brag_social_media = False
         else:

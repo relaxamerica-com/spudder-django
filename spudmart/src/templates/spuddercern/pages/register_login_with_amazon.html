@@ -114,7 +114,7 @@
             if (loginWithAmazon) {
                 loginWithAmazon.onclick = function() {
                     if ($('#accepted-terms-and-conditions').prop('checked')){
-                        options = { scope : 'profile' };
+                        options = { scope : 'profile', interactive: 'always' };
                         amazon.Login.authorize(options, returnUrl);
                         return false;
                     } else{
