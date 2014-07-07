@@ -13699,3 +13699,6 @@ legend {
 .school-logo {
   max-width: 300px;
 }
+.edit-mode {
+  display: none;
+}

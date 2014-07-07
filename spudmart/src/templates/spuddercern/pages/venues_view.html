@@ -626,11 +626,11 @@
 
 
 
-    $('.edit-mode').hide();
     $('.content').hide();
     $('.active').show();
 
 	$(document).ready(function() {
+        console.log('ready');
         $('.alert').each(function(i, alert) {
            var $alert = $(alert);
            if ($alert.html() == "")

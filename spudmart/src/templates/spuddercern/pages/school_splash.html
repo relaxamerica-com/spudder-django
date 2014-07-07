@@ -182,7 +182,7 @@
     </div>
 {% endblock %}
 
-{% block scripts %}
+{% block js %}
 <script type="text/javascript" src="/static/js/libs/jquery.serialize.file.js"></script>
 <script type="text/javascript">
 
@@ -223,7 +223,7 @@
 {#                                $('.logo-placeholder').text('Refresh to see logo');#}
 {#                                $('#logo').attr('src', parsed['uploaded_files'][0]);#}
 {#                            }#}
-{#                            window.location.reload();#}
+                            window.location.reload();
                         });
                     }
                 });
@@ -235,7 +235,6 @@
     window.preloadedOrange = $('<img src="/static/img/spuddercern/ajax-loader-orange.gif" />');
     window.preloadedBlack = $('<img src="/static/img/spuddercern/ajax-loader-black.gif" />');
     window.isEditMode = false;
-    $('.edit-mode').hide();
 
     $(document).ready(function() {
         var editMode = $('.edit-mode'), viewMode = $('.view-mode'), buttons = $('.buttons'), icons = buttons.find('i');

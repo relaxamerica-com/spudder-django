@@ -479,7 +479,9 @@ def mobile(request):
 @login_required
 @user_passes_test(user_is_student, '/cern/non-student/')
 def venues(request):
-    template_data = {'venues': Venue.objects.filter(user=request.user)}
+    role = request.session.get('current_role', None)
+    stu = Student.objects.get(id=role['entity_id'])
+    template_data = {'venues': Venue.objects.filter(student=stu)}
     return render(request, 'spuddercern/pages/dashboard_pages/venues.html', template_data)
 
 
