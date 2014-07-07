@@ -69,12 +69,14 @@
             {% else %}
 
                 <div class="accounts-form-body">
-                    <form class="form-horizontal" action="/accounts/login" id="registration-form" method="POST">
+                    <form class="form-horizontal" action="/accounts/login" id="registration-form" method="POST" role="form">
                         {% if error %}
                         <div class="alert alert-error"><%= error %></div>
                         {% endif %}
+                        <div class="checkbox col-sm-12">
+                            <input type="checkbox" class="checkbox-visible" id="accepted-terms-and-conditions"><label class="checkbox-label">I have accepted the <a href="https://docs.google.com/document/d/1z1O8dbfsKidDVfcEjZCX17v7sq07RV2Qfy5ykCrUAgE/view">terms and conditions</a>.</label>
+                        </div>
 
-                        <input type="checkbox" class="checkbox-visible" id="accepted-terms-and-conditions"><label class="checkbox-label">I have accepted the <a href="https://docs.google.com/document/d/1z1O8dbfsKidDVfcEjZCX17v7sq07RV2Qfy5ykCrUAgE/view">terms and conditions</a>.</label>
 
                         <div class="control-group">
                             <p class="aligncenter">
