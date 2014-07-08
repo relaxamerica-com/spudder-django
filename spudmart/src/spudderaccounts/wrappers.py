@@ -3,6 +3,7 @@ import abc
 from spudderdomain.controllers import RoleController, LinkedServiceController
 from spudderdomain.models import LinkedService
 from spudderdomain.wrappers import EntityBase, LinkedServiceBase
+from spudmart.venues.models import Venue
 
 """
     Roles
@@ -81,7 +82,7 @@ class RoleStudent(RoleBase):
 
     @property
     def title(self):
-        return '<abbr title="Accociated with %s">Student</abbr> in ' \
+        return '<abbr title="Associated with %s">Student</abbr> in ' \
                '<abbr title="Campus Entrepreneur Recruiting Network">CERN</abbr> with Amazon ID %s' % (
                self.entity.school.name, self._amazon_id)
 
@@ -106,6 +107,59 @@ class RoleStudent(RoleBase):
     @property
     def home_page_path(self):
         return '/cern'
+
+    def user_is_owner(self, user):
+        return self.entity.user == user
+
+
+class SponsorRole(RoleBase):
+    @property
+    def user(self):
+        return self.entity.sponsor
+
+    @property
+    def _amazon_id(self):
+        return LinkedService.objects.get(
+            role_id=self.entity.id,
+            role_type=self.entity_type,
+            service_type=LinkedServiceController.SERVICE_AMAZON).configuration.get('amazon_user_email')
+
+    @property
+    def entity_type(self):
+        return RoleController.ENTITY_SPONSOR
+
+    @property
+    def image(self):
+        return '/file/serve/%s' % self.entity.thumbnail \
+               or '/static/img/spuddercern/button-cern-small.png'
+
+    @property
+    def title(self):
+        sponsorships = Venue.objects.filter(sponsor=self.entity)
+        return '<abbr title="Renting %s venues">Sponsor</abbr> on ' \
+               'Spudder with Amazon ID %s' % (
+               len(sponsorships), self._amazon_id)
+
+    @property
+    def subtitle(self):
+        sponsorships = Venue.objects.filter(sponsor=self.entity)
+        return 'Tied to Amazon ID: %s <br /> Rented Venues: %s' % (
+            self._amazon_id,
+            len(sponsorships))
+
+    @property
+    def meta_data(self):
+        return {
+            'last_accessed': datetime.datetime.now()
+        }
+
+    @property
+    def breadcrumb_name(self):
+        return "Sponsor: %s" % self._amazon_id
+
+    @property
+    def home_page_path(self):
+        return '/dashboard'
 
     def user_is_owner(self, user):
         return self.entity.user == user

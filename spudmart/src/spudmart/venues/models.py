@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django.db import models
+from spudmart.sponsors.models import SponsorPage
 from spudmart.upload.models import UploadedFile
 from djangotoolbox.fields import ListField
 from spudmart.CERN.rep import deleted_venue
@@ -13,8 +14,9 @@ SPORTS = ['Baseball', 'Basketball', 'Field Hockey', 'Football',
 
 class Venue(models.Model):
     created_date = models.DateTimeField(auto_now_add=True, null=True)
-    student = models.ForeignKey(Student)
-    renter = models.ForeignKey(User, null=True)
+    user = models.ForeignKey(User, related_name="owner_user", null=True)
+    student = models.ForeignKey(Student, null=True)
+    sponsor = models.ForeignKey(SponsorPage, null=True)
     name = models.CharField(max_length=200, default="Sponsor's Name for Venue")
     aka_name = models.CharField(max_length=200, default="Common Venue Name")
     sport = models.CharField(max_length=100)
@@ -59,10 +61,10 @@ class Venue(models.Model):
         return self.renter is None
 
     def is_renter(self, role):
-        if self.renter is None:
+        if self.sponsor is None:
             return False
 
-        return str(self.renter.id) == role['entity_id']
+        return str(self.sponsor.id) == role['entity_id']
 
     def is_groundskeeper(self, role):
         return str(self.student.id) == role['entity_id']
