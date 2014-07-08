@@ -52,7 +52,7 @@ class RoleBase(EntityBase):
 
     @abc.abstractproperty
     def home_page_path(self):
-        return '/cern'
+        return '/'
 
     @abc.abstractmethod
     def user_is_owner(self, user):
@@ -102,6 +102,10 @@ class RoleStudent(RoleBase):
         return "Student: %s (%s)" % (
             self._amazon_id,
             self.entity.school.name)
+
+    @property
+    def home_page_path(self):
+        return '/cern'
 
     def user_is_owner(self, user):
         return self.entity.user == user

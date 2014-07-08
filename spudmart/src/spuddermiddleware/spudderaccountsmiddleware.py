@@ -1,3 +1,4 @@
+from django.shortcuts import redirect
 from spudderaccounts.utils import select_user_role_if_only_one_role_exists, select_all_user_roles
 from spudderaccounts.wrappers import RoleBase
 from spudderdomain.controllers import RoleController
@@ -32,3 +33,12 @@ class RolesMiddleware:
     def process_request(self, request):
         self._add_current_role(request)
         self._add_all_roles(request)
+
+
+class AccountPasswordMiddleware:
+    def process_request(self, request):
+        path = '/users/account/create_password'
+        if request.path != path and request.user and request.user.is_authenticated():
+            spudder_user = request.user.spudder_user
+            if spudder_user.needs_to_set_password and not spudder_user.has_set_password:
+                return redirect("%s?next=%s" % (path, request.path))

@@ -1,15 +1,31 @@
 from django.contrib import messages
+from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
-from spudderaccounts.forms import ProfileDetailsForm
+from spudderaccounts.forms import ProfileDetailsForm, CreatePasswordForm, SigninForm
 from spudderaccounts.utils import select_all_user_roles
 from spudderdomain.controllers import RoleController
 from spudderaccounts.wrappers import RoleBase
 
 
-def accounts_signin(request):
-    return render_to_response('spudderaccounts/base.html')
+def accounts_signin(request, user_id):
+    # TODO /cern should be dynamic
+    signin_form = SigninForm(initial={'user_id': user_id, 'next_url': request.GET.get('next', '/cern')})
+    if request.method == 'POST':
+        signin_form = SigninForm(request.POST)
+        if signin_form.is_valid():
+            password = signin_form.cleaned_data.get('password')
+            user = authenticate(
+                username=User.object.get(id=signin_form.cleaned_data.get('user_id')).username,
+                password=password)
+            login(request, user)
+            return redirect(signin_form.cleaned_data.get('next_url'))
+    return render_to_response(
+        'spudderaccounts/base.html',
+        {'signin_form': signin_form},
+        context_instance=RequestContext(request))
 
 
 @login_required(login_url='/accounts/signin')
@@ -75,3 +91,24 @@ def accounts_add_role(request):
 
 def accounts_create_role(request, entity_type):
     pass  # TODO: working here MG: 20140704
+
+
+def accounts_create_password(request):
+    password_form = CreatePasswordForm(initial={'next_url': request.GET.get('next', request.current_role.home_page_path)})
+    if request.method == 'POST':
+        password_form = CreatePasswordForm(request.POST)
+        if password_form.is_valid():
+            user = request.user
+            user.set_password(password_form.cleaned_data.get('password_1'))
+            user.save()
+            user.spudder_user.mark_password_as_done()
+            messages.success(request, "Your new password was saved!")
+            return redirect(password_form.cleaned_data.get('next_url'))
+    return render_to_response(
+        'spudderaccounts/pages/create_password.html',
+        {'password_form': password_form},
+        context_instance=RequestContext(request))
+
+
+def accounts_signin_choose_account(request):
+    return render_to_response('spudderaccounts/pages/signin_choose_account.html')

@@ -42,6 +42,7 @@ def _accommodate_legacy_pre_V1_1_0_users(access_token, amazon_user_email, amazon
 
 
 def login(request):
+    raise DeprecationWarning("This code is deprecated")
     return render(request, 'old/accounts/login.html', {
         'client_id': settings.AMAZON_LOGIN_CLIENT_ID,
         'base_url': settings.SPUDMART_BASE_URL,
@@ -56,17 +57,18 @@ def _handle_amazon_conn_error(request, json_data):
     })
 
 
-def create_student(user, school, referrer_id):
+def create_student(user, school_id, referrer_id):
     """
     Creates a Student object to go with a new user.
 
     :param user: the User object linked to the Student
-    :param school: the School the Student attends
+    :param school_id: the id of the School object
     :param referrer_id: a string containing the ID of the student who
         referred the new student
         equal to '' if no one referred new student
     """
 
+    school = School.objects.get(id=school_id)
     student = Student(user=user, school=school)
     if school.num_students() == 0:
         student.isHead = True
@@ -83,6 +85,79 @@ def create_student(user, school, referrer_id):
         student.save()
         recruited_new_student(referrer, school)
     return student
+
+
+def _process_amazon_login(access_token, amazon_user_email, amazon_user_id, request):
+
+    # Check to see if these credential are tied to a user role via an authentication service
+    user_role = select_role_by_authentication_service(LinkedServiceController.SERVICE_AMAZON, amazon_user_id)
+
+    # If there is a role then get the user, else get the currently authenticate user else create a new user
+    if user_role:
+        # Case - Amazon Login to existing account
+        user = user_role.user
+
+        # Get the role controller for this user
+        role_controller = RoleController(user)
+    else:
+        # First get the user or create one
+        if request.user.is_authenticated():
+            # Case - Add new amazon login based role to existing account
+            user = request.user
+
+            # Make a note on the spudder users that as there are multiple roles a password needs to be set for this user
+            user.spudder_user.mark_as_password_required()
+
+        else:
+            # Case - first time registration
+            user = User.objects.create_user(amazon_user_email, amazon_user_email, amazon_user_id)
+            user.save()
+
+        # If there is a school id then this is a student registration
+        school_id = request.GET.get('school_id', None)
+        if school_id:
+            # Create the student
+            student = create_student(user, school_id, request.GET.get('referrer', None))
+
+            # Get the Role controller for the current user
+            role_controller = RoleController(user)
+
+            # Get the user_role for this user/student combo
+            user_role = role_controller.role_by_entity_type_and_entity_id(
+                RoleController.ENTITY_STUDENT,
+                student.id,
+                RoleBase.RoleWrapperByEntityType(RoleController.ENTITY_STUDENT))
+
+            # Store the amazon linked authentication service details
+            create_linked_authentication_service(
+                user_role,
+                LinkedServiceController.SERVICE_AMAZON,
+                amazon_user_id,
+                {
+                    'amazon_user_email': amazon_user_email,
+                    'amazon_user_id': amazon_user_id,
+                    'amazon_access_token': access_token
+                })
+
+    # Get and update the amazon auth record with the latest access token
+    # Note that we don't use this at the moment but will in future - MG:20140708
+    amazon_auth = get_authentication_wrapper(user_role, LinkedServiceController.SERVICE_AMAZON, amazon_user_id)
+    amazon_auth.update_amazon_access_token(access_token)
+
+    next_url = request.GET.get('next', None) or user_role.home_page_path
+    if not request.user.is_authenticated():
+        if user.spudder_user.has_set_password:
+            return redirect('/users/account/signin/%s?next=%s' % (user.id, next_url))
+        user = authenticate(
+            username=user_role.user.username,
+            password=amazon_auth.user_password)
+        if user:
+            django.contrib.auth.login(request, user)
+        else:
+            return Http404
+    return redirect('%s?next=%s' % (
+        change_role_url(user_role),
+        next_url))
 
 
 def amazon_login(request):
@@ -103,8 +178,7 @@ def amazon_login(request):
     access_token = get_request_param(request, 'access_token')
     query_parameters = urllib.urlencode({'access_token': access_token})
 
-    token_request = urllib2.urlopen(
-        'https://api.amazon.com/auth/O2/tokeninfo?%s' % query_parameters)
+    token_request = urllib2.urlopen('https://api.amazon.com/auth/O2/tokeninfo?%s' % query_parameters)
     json_data = json.load(token_request)
     if token_request.getcode() == 200:
         is_verified = json_data['aud'] == settings.AMAZON_LOGIN_CLIENT_ID
@@ -114,118 +188,19 @@ def amazon_login(request):
                 'error': 'Verification failed! Please contact administrators'
             })
 
-        profile_request = urllib2.urlopen(
-            'https://api.amazon.com/user/profile?%s' % query_parameters)
+        profile_request = urllib2.urlopen('https://api.amazon.com/user/profile?%s' % query_parameters)
         profile_json_data = json.load(profile_request)
 
         if profile_request.getcode() == 200:
+
+            # Extract the values we need from the Amazon profile
             amazon_user_id = profile_json_data['user_id']
             amazon_user_name = profile_json_data['name']
             amazon_user_email = profile_json_data['email']
 
-            # Check to see if these credential are tied to a user role via an authentication service
-            user_role = select_role_by_authentication_service(
-                LinkedServiceController.SERVICE_AMAZON,
-                amazon_user_id)
+            # Process the login as an amazon login, creating and adding roles to the user as needed
+            return _process_amazon_login(access_token, amazon_user_email, amazon_user_id, request)
 
-            if not user_role:
-                # If they are not then there are two choices
-                # 1. Its a pre V1.1.0 account
-                # 2. This is a registration via amazon
-                if UserProfile.objects.filter(amazon_id=amazon_user_id).count():
-                    # Run the function to upgrade V1.0.0 accounts
-                    user_role = _accommodate_legacy_pre_V1_1_0_users(
-                        access_token,
-                        amazon_user_email,
-                        amazon_user_id,
-                        user_role)
-                else:
-                    # If this is a registation via amazon
-                    school_id = request.GET.get('school_id', None)
-                    if school_id:  # This is "Create a student"
-                        user = User.objects.create_user(
-                            amazon_user_email,
-                            amazon_user_email,
-                            amazon_user_id)
-                        user.save()
-                        school = School.objects.get(id=school_id)
-                        student = create_student(user, school, request.GET.get('referrer', None))
-                        role_controller = RoleController(user)
-                        user_role = role_controller.role_by_entity_type_and_entity_id(
-                            RoleController.ENTITY_STUDENT,
-                            student.id,
-                            RoleBase.RoleWrapperByEntityType(RoleController.ENTITY_STUDENT))
-                        create_linked_authentication_service(
-                            user_role,
-                            LinkedServiceController.SERVICE_AMAZON,
-                            amazon_user_id,
-                            {
-                                'amazon_user_email': amazon_user_email,
-                                'amazon_user_id': amazon_user_id,
-                                'amazon_access_token': access_token
-                            })
-            amazon_authentication_service = get_authentication_wrapper(
-                user_role, LinkedServiceController.SERVICE_AMAZON, amazon_user_id)
-            amazon_authentication_service.update_amazon_access_token(access_token)
-            # TODO: Here we need to check if the user has multiple auth services and then ask for the password
-            user = authenticate(username=user_role.user.username, password=amazon_authentication_service.user_password)
-            if user:
-                django.contrib.auth.login(request, user)
-                return redirect('%s?next=%s' % (
-                    change_role_url(user_role),
-                    request.GET.get('next', None) or user_role.home_page_path))
-            else:
-                raise Exception(amazon_authentication_service)
-
-            # profiles = UserProfile.objects.filter(amazon_id=amazon_user_id)
-            # if profiles.count() == 0:
-            #     users_with_email = User.objects.filter(
-            #         email=amazon_user_email)
-            #
-            #     if len(users_with_email) == 0:
-            #         user = User.objects.create_user(amazon_user_email,
-            #                                         amazon_user_email,
-            #                                         amazon_user_id)
-            #         user.save()
-            #     else:  # User exists, but for some reason it's profile
-            #            #  wasn't created
-            #         user = users_with_email[0]
-            #
-            #     user_profile = UserProfile(user=user)
-            #     user_profile.amazon_id = amazon_user_id
-            #     user_profile.amazon_access_token = access_token
-            #     user_profile.username = amazon_user_name
-            #     user_profile.save()
-            #
-            #     # Scrub the request for data to create a student
-            #     school_id = get_request_param(request, 'school_id')
-            #     referrer = get_request_param(request, 'referrer')
-            #
-            #     try:
-            #         sch = School.objects.get(id=school_id)
-            #     except ObjectDoesNotExist:
-            #         pass
-            #     except ValueError:
-            #         pass
-            #     else:
-            #         create_student(user, sch, referrer)
-            #
-            # user = authenticate(username=amazon_user_email, password=amazon_user_id)
-            # profile = user.get_profile()
-            #
-            # if not profile.amazon_access_token:
-            #     profile.amazon_access_token = access_token
-            #     profile.save()
-            #
-            # django.contrib.auth.login(request, user)
-            #
-            # if request.user.is_authenticated() and not (return_url != '/'):
-            #     if is_sponsor(request.user):
-            #         return_url = '/dashboard'
-            #     elif is_student(request.user):
-            #         return_url = '/cern/'
-            #
-            # return HttpResponseRedirect(return_url)
         else:
             return _handle_amazon_conn_error(request, profile_json_data)
     else:
@@ -233,6 +208,7 @@ def amazon_login(request):
 
 
 def just_login(request):
+    raise DeprecationWarning("This code is deprecated")
     error = get_request_param(request, 'error', None)
 
     if error is not None:
@@ -356,62 +332,9 @@ def login_fake(request):
     if not bool(os.environ['SERVER_SOFTWARE'].startswith('Development')):
         raise Http404
 
-    # Delete all users and profiles and students
-    # [u.delete() for u in User.objects.all()]
-    # [p.delete() for p in UserProfile.objects.all()]
-    # [s.delete() for s in Student.objects.all()]
-
     amazon_user_id = "somemadeupid1"
     amazon_user_name = "Test"
     amazon_user_email = "test@test.com"
     access_token = "someaccesstoken"
 
-    user_role = select_role_by_authentication_service(
-        LinkedServiceController.SERVICE_AMAZON,
-        amazon_user_id)
-
-    if not user_role:
-        if UserProfile.objects.filter(amazon_id=amazon_user_id).count():
-            user_role = _accommodate_legacy_pre_V1_1_0_users(
-                access_token,
-                amazon_user_email,
-                amazon_user_id,
-                user_role)
-        else:
-            school_id = request.GET.get('school_id', None)
-            if school_id:  # This is "Create a student"
-                if request.user.is_authenticated():
-                    user = request.user
-                else:
-                    user = User.objects.create_user(
-                        amazon_user_email,
-                        amazon_user_email,
-                        amazon_user_id)
-                    user.save()
-                school = School.objects.get(id=school_id)
-                student = create_student(user, school, request.GET.get('referrer', None))
-                role_controller = RoleController(user)
-                user_role = role_controller.role_by_entity_type_and_entity_id(
-                    RoleController.ENTITY_STUDENT,
-                    student.id,
-                    RoleBase.RoleWrapperByEntityType(RoleController.ENTITY_STUDENT))
-                create_linked_authentication_service(
-                    user_role,
-                    LinkedServiceController.SERVICE_AMAZON,
-                    amazon_user_id,
-                    {
-                        'amazon_user_email': amazon_user_email,
-                        'amazon_user_id': amazon_user_id,
-                        'amazon_access_token': access_token
-                    })
-    amazon_authentication_service = get_authentication_wrapper(
-        user_role, LinkedServiceController.SERVICE_AMAZON, amazon_user_id)
-    amazon_authentication_service.update_amazon_access_token(access_token)
-    # TODO: Here we need to check if the user has multiple auth services and then ask for the password
-    if not request.user.is_authenticated():
-        user = authenticate(username=user_role.user.username, password=amazon_authentication_service.user_password)
-        if user:
-            django.contrib.auth.login(request, user)
-    return redirect('%s?next=%s' % (
-        change_role_url(user_role),
-        request.GET.get('next', None) or user_role.home_page_path))
+    return _process_amazon_login(access_token, amazon_user_email, amazon_user_id, request)

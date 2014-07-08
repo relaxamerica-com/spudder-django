@@ -63,6 +63,7 @@ MIDDLEWARE_CLASSES = (
     'spuddermiddleware.SSL_Middleware.SSLRedirect',
     'spuddermiddleware.staffmiddleware.StaffMiddleware',
     'spuddermiddleware.spudderaccountsmiddleware.RolesMiddleware',
+    'spuddermiddleware.spudderaccountsmiddleware.AccountPasswordMiddleware',
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (

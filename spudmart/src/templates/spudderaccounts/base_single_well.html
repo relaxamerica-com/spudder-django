@@ -1,0 +1,16 @@
+{% extends 'spudderaccounts/base.html' %}
+
+{% block current_role_nav %}{# block out this nav #}{% endblock %}
+{% block user_account_nav %}{# block out this nav #}{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 col-md-offset-3">
+                <div class="well" style="margin-top: 5%">
+                    {% block well_body %}{% endblock %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

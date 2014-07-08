@@ -1,0 +1,36 @@
+{% extends 'spudderaccounts/base.html' %}
+{% load bootstrap3 %}
+
+{% block user_account_nav %}{% endblock %}
+{% block current_role_nav %}{% endblock %}
+
+{% block body %}
+    <div class="container">
+
+        <div class="alert alert-info">
+            <h4>Which account to log in with?</h4>
+            <p>Please login with your primary (first) spudder account.</p>
+            <p><small>You will have access to all your roles once logged in.</small></p>
+        </div>
+
+        <div class="row">
+            <div class="col-md-3">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <div class="thumbnail">
+                            <img src="/static/img/spuddercern/button-cern-large.png"/>
+                            <div class="caption">
+                                <h3>Student in CERN</h3>
+                                <p>Login as a Student in CERN</p>
+                                <a href="/cern/login/" class="btn btn-primary">
+                                    <i class="fa fa-signin"></i> Signin as a Student
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+{% endblock %}
