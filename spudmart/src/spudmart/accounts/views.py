@@ -13,6 +13,7 @@ from spudderaccounts.utils import select_role_by_authentication_service, change_
 from spudderaccounts.wrappers import RoleBase
 from spudderdomain.controllers import LinkedServiceController, RoleController
 from spudmart.accounts.models import UserProfile
+from spudmart.sponsors.models import SponsorPage
 from spudmart.utils.url import get_return_url, get_request_param
 from django.contrib.auth.models import User
 from spudmart.accounts.utils import is_sponsor, is_student
@@ -127,6 +128,33 @@ def _process_amazon_login(access_token, amazon_user_email, amazon_user_id, reque
                 RoleController.ENTITY_STUDENT,
                 student.id,
                 RoleBase.RoleWrapperByEntityType(RoleController.ENTITY_STUDENT))
+
+            # Store the amazon linked authentication service details
+            create_linked_authentication_service(
+                user_role,
+                LinkedServiceController.SERVICE_AMAZON,
+                amazon_user_id,
+                {
+                    'amazon_user_email': amazon_user_email,
+                    'amazon_user_id': amazon_user_id,
+                    'amazon_access_token': access_token
+                })
+
+        # If the account_type is sponsor, create a SponsorPage
+        account_type = get_request_param(request, 'account_type')
+        if account_type == 'sponsor':
+            # Create sponsor
+            sponsor = SponsorPage(user=user)
+            sponsor.save()
+
+            # Get the Role controller for the current user
+            role_controller = RoleController(user)
+
+            # Get the user_role for this user/student combo
+            user_role = role_controller.role_by_entity_type_and_entity_id(
+                RoleController.ENTITY_SPONSOR,
+                sponsor.id,
+                RoleBase.RoleWrapperByEntityType(RoleController.ENTITY_SPONSOR))
 
             # Store the amazon linked authentication service details
             create_linked_authentication_service(
@@ -338,3 +366,54 @@ def login_fake(request):
     access_token = "someaccesstoken"
 
     return _process_amazon_login(access_token, amazon_user_email, amazon_user_id, request)
+
+
+def sponsor_login(request):
+    return render(request, 'spudderaccounts/pages/sponsor_login.html')
+
+
+def sponsor_login_amazon(request):
+    error = get_request_param(request, 'error', None)
+    return_url = get_return_url(request)
+
+    if error is not None:
+        if error == 'access_denied':
+            return HttpResponseRedirect('/accounts/amazon_required/')
+        error_message = request.GET.get('error_description') + \
+                        '<br><a href="' + request.GET.get('error_uri') + \
+                        '">Learn more</a>'
+        return render(request, 'spudderaccounts/sponsor_login.html', {
+            'next': return_url,
+            'error': error_message
+        })
+
+    access_token = get_request_param(request, 'access_token')
+    query_parameters = urllib.urlencode({'access_token': access_token})
+
+    token_request = urllib2.urlopen('https://api.amazon.com/auth/O2/tokeninfo?%s' % query_parameters)
+    json_data = json.load(token_request)
+    if token_request.getcode() == 200:
+        is_verified = json_data['aud'] == settings.AMAZON_LOGIN_CLIENT_ID
+        if not is_verified:
+            return render(request, 'templates/spudderaccounts/sponsor_login.html', {
+                'next': return_url,
+                'error': 'Verification failed! Please contact administrators'
+            })
+
+        profile_request = urllib2.urlopen('https://api.amazon.com/user/profile?%s' % query_parameters)
+        profile_json_data = json.load(profile_request)
+
+        if profile_request.getcode() == 200:
+
+            # Extract the values we need from the Amazon profile
+            amazon_user_id = profile_json_data['user_id']
+            amazon_user_name = profile_json_data['name']
+            amazon_user_email = profile_json_data['email']
+
+            # Process the login as an amazon login, creating and adding roles to the user as needed
+            return _process_amazon_login(access_token, amazon_user_email, amazon_user_id, request)
+
+        else:
+            return _handle_amazon_conn_error(request, profile_json_data)
+    else:
+        return _handle_amazon_conn_error(request, json_data)

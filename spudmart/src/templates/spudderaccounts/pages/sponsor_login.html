@@ -1,0 +1,28 @@
+{% extends 'spudderaccounts/base_single_well.html' %}
+
+{% block title %} Sponsor Login Page {% endblock %}
+
+{% block well_body %}
+    <h2 class="text-center">Login</h2>
+    <p class="text-center">Use the button below to log in or sign up as a Sponsor.</p>
+    <p class="text-center"><a href="#" id="LoginWithAmazon">
+        <img border="0" alt="Login with Amazon"
+            src="https://images-na.ssl-images-amazon.com/images/G/01/lwa/btnLWA_gold_156x32.png"
+            width="156" height="32" />
+    </a></p>
+{% endblock %}
+
+{% block js %}
+    <script>
+        var loginWithAmazon = document.getElementById('LoginWithAmazon'),
+            returnUrl = '{{ base_url }}/accounts/login/sponsors/amazon?next=/dashboard/sponsor/page&account_type=sponsor';
+
+        if (loginWithAmazon) {
+            loginWithAmazon.onclick = function() {
+                options = { scope : 'profile' };
+                amazon.Login.authorize(options, returnUrl);
+                return false;
+            };
+        }
+    </script>
+{% endblock %}

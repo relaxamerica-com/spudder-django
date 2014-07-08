@@ -500,7 +500,8 @@ def rent_sign_in_complete(request):
 
     # direct import so that testing framework can properly mock function
     from spudmart.venues.utils import finalize_pending_rentals as finalize
-    finalize(pending_session_venues, request.user)
+    role = request.session.get('current_role', None)
+    finalize(pending_session_venues, role)
 
     del request.session['pending_venues_rental']
 

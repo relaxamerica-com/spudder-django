@@ -8,6 +8,8 @@ urlpatterns = patterns('spudmart.accounts.views',
     (r'^amazon_required/$', 'amazon_required'),
     (r'^logout/$', 'logout'),
     (r'^fix_accounts$', 'fix_accounts'),
+    (r'^login/sponsors$', 'sponsor_login'),
+    (r'^login/sponsors/amazon$', 'sponsor_login_amazon'),
 
     # This was added so that local fake login can take place
     (r'^login_fake/$', 'login_fake'),
