@@ -37,8 +37,7 @@ def add_venue_rep(venue, points):
     venue.rep += points
     venue.save()
 
-    student = Student.objects.get(user=venue.user)
-    add_marketing_points(student, points)
+    add_marketing_points(venue.student, points)
 
 
 def add_marketing_points(student, points):
@@ -316,5 +315,4 @@ def deleted_venue(venue):
         managing the venue.
     :param venue: The venue about to be deleted.
     """
-    stu = Student.objects.get(user=venue.user)
-    add_marketing_points(stu, -venue.rep)
+    add_marketing_points(venue.student, -venue.rep)

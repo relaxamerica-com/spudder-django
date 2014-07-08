@@ -35,7 +35,6 @@
 <div class="container clearfix" id="venue-view">
 	<div class="row">
 		<div class="col-sm-8" style="margin-top:20px;">
-            <i class="fa fa-fw fa-cogs"></i>
             {% if can_edit %}
                 {% with info_message_id="venues_can_edit" %}
                     {% if info_message_id not in student.hidden_info_messages %}
@@ -56,7 +55,7 @@
                 <div class="col-sm-2">
                     <div class="view-mode">
                         {% if venue.logo %}
-                            <img id="venue-logo" src="/file/serve/{{ venue.logo.id }}" />
+                            <img id="venue-logo" src="/file/serve/{{ venue.logo.id }}" height="100px"/>
                         {% else %}
                             <img id="venue-logo" src="/static/img/spuddercern/button-cern-medium.png" />
                         {% endif %}
@@ -74,26 +73,27 @@
 
             <div class="alert" id="logo-name-alert"></div>
             <div class="row-fluid edit-mode">
-                <div class="col-md-12">
+                <div class="col-md-12" style="padding:15px;">
                     <form method="post" enctype="multipart/form-data" role="form">
                         <div class="row-fluid edit-mode edit-mode-sponsor col-sm-4">
-                            <div class="form-group">
+{#                            <div class="form-group">#}
                                 <label>Upload a logo:</label>
                                 <input type="file" name="file" id="edit-logo" />
-                            </div>
+{#                            </div>#}
                         </div>
                         <div class="row-fluid edit-mode edit-mode-sponsor col-sm-8">
                             <div class="form-group edit-mode">
                                 <label>Venue Name:</label>
-                                <input type="text" name="name" value="{{ venue.name }}" id="venue-name" />
+                                <input type="text" name="name" value="{{ venue.name }}" id="venue-name-input" />
                             </div>
                             <div class="form-group">
                                 <label>Venue Common Name:</label>
-                                <input type="text" name="aka_name" value="{{ venue.aka_name }}" id="venue-aka-name" />
+                                <input type="text" name="aka_name" value="{{ venue.aka_name }}" id="venue-aka-name-input" />
                             </div>
                         </div>
+{#                    <button class="btn btn-primary edit-mode" id="save-name">Save</button>#}
+                        <a class="btn btn-primary edit-mode" id="save-name">Save</a>
                     </form>
-                    <button class="btn btn-primary edit-mode" id="save-name">Save</button>
                 </div>
             </div>
 
@@ -115,7 +115,7 @@
                 </div>
             </div>
 
-			<div style="min-height: 362px; margin: 0 auto; width: 100%; vertical-align: middle; text-align: center;">
+			<div style="min-height: 362px; margin: 0 auto; width: 100%; vertical-align: middle; text-align: center; padding:15px;">
 			<div class="row-fluid" style="height:100%;">
 				<div class="col-md-12 contents" style="height:100%;">
 					<div class="alert"></div>
@@ -235,9 +235,9 @@
 									<input type="file" name="file" multiple="multiple" />
 								</div>
 								<div class="col-md-6">
-									<textarea placeholder="Enter playing surface details" name="details">{{ venue.playing_surface_details }}</textarea>
+									<textarea placeholder="Enter playing surface details" name="details" id="playing-surface-details">{{ venue.playing_surface_details }}</textarea>
 								</div>
-								<div>
+								<div class="col-md-6">
 									<a id="upload-playing-surface" class="btn btn-primary pull-left">Upload</a>
 									<div class="progress progress-striped">
 										<div class="bar"> </div>
@@ -260,7 +260,7 @@
                                 <div class="btn btn-danger remove-pic edit-mode" id="playing_surface_pics">Remove</div>
                                 <div class="pin-pic view-mode" id="venue_pics_pin"><a href="#"><i class="fa fa-pinterest fa-2x"></i></a></div>
                             </div>
-                            <div class="col-md-12" id="venue-playing-surface-details" style="width: 95%; margin: 0 auto; float: none;">
+                            <div class="col-md-12 view-mode" id="venue-playing-surface-details" style="width: 95%; margin: 0 auto; float: none;">
                                 <p class="text-center">Playing Surface Details</p>
 								<div class="well">
                                     {{ venue.playing_surface_details }}
@@ -298,7 +298,7 @@
 									</p>
 									<textarea placeholder="Enter restroom details" name="details">{{ venue.restroom_details }}</textarea>
 								</div>
-								<div>
+								<div class="col-md-6">
 									<a id="save-restroom-details" class="btn btn-primary pull-left">Save</a>
 									<div class="progress progress-striped">
 										<div class="bar"> </div>
@@ -321,10 +321,10 @@
 								<div class="btn btn-danger remove-pic edit-mode" id="restroom_pics">Remove</div>
                                 <div class="pin-pic view-mode" id="venue_pics_pin"><a href="#"><i class="fa fa-pinterest fa-2x"></i></a></div>
 							</div>
-							<p>
-								Restroom Details
-							</p>
-							<div class="well col-md-6 nomargin" id="venue-restroom-details" style="width: 100%;">
+							<div class="well col-md-6 nomargin view-mode" id="venue-restroom-details" style="width: 100%;">
+                                <p class="view-mode">
+                                    Restroom Details
+                                </p>
 								{{ venue.restroom_details }}
 							</div>
 						</div>
@@ -395,12 +395,12 @@
 					<div id="medical-details" class="content">
 						<div class="row-fluid edit-mode">
 							<form method="post" class="form-horizontal" role="form">
-								<div class="col-md-6">
-									<p>
-										Available Medical Details
-									</p>
-									<textarea placeholder="Enter details about medical" name="details">{{ venue.medical_details }}</textarea>
-								</div>
+{#								<div class="col-md-6">#}
+{#									<p>#}
+{#										Available Medical Details#}
+{#									</p>#}
+{#									<textarea placeholder="Enter details about medical" name="details">{{ venue.medical_details }}</textarea>#}
+{#								</div>#}
 {#								<div class="col-md-6" style="width:100%;">#}
 {#									<p>#}
 {#										Address of nearby facility#}
@@ -423,7 +423,7 @@
 								</p>
 							</form>
 						</div>
-						<div class="row-fluid view-mode">
+						<div class="row-fluid">
 							<div class="col-md-6" style="width:100%;">
                                 {% include 'spuddercern/quote_messages/quote_venue_feature_coming_soon.html' %}
 {#								<p>#}
@@ -605,6 +605,7 @@
 {% endblock %}
 
 {% block js %}
+    {{ block.super }}
 {#<script type="text/javascript" src="/media/js/venues/utils.js"></script>#}
 <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=true&libraries=geometry"></script>
 <script type="text/javascript" src="/static/js/libs/google.map.js"></script>
@@ -625,11 +626,11 @@
 
 
 
-    $('.edit-mode').hide();
     $('.content').hide();
     $('.active').show();
 
 	$(document).ready(function() {
+        console.log('ready');
         $('.alert').each(function(i, alert) {
            var $alert = $(alert);
            if ($alert.html() == "")
@@ -910,14 +911,13 @@
 		}
 
 		$('#save-name').click(function() {
-            console.log('hello');
-			var form = $('#edit-logo'),
+			var form = $('#edit-logo').parents('form'),
 				files = $(form).serializeFiles(),
 {#				filesList = $(form).find('input')[0].files,#}
-				name = $('#venue-name').val(),
-				akaName = $('#venue-aka-name').val(),
+				name = $('#venue-name-input').val(),
+				akaName = $('#venue-aka-name-input').val();
 {#				dfd = saving($(this), $(form).find('.alert'), 'Venue basic information has been saved'),#}
-				sport = $('[name="sport"]').val();
+{#				sport = $('[name="sport"]').val();#}
 
 			$.get('/upload/get_upload_url', function(data) {
 				$.ajax({
@@ -934,12 +934,12 @@
 							'logo' : parsed['uploaded_files'],
 							'name' : name,
 							'aka_name' : akaName,
-							'sport' : sport
+{#							'sport' : sport#}
 						});
 
 						response.done(function(data) {
-							window.currentSelectedSport;
-							window.venueName = name;
+{#							window.currentSelectedSport;#}
+{#							window.venueName = name;#}
 
 							$('#venue-name, #venue-name2').html(name);
 							$('#venue-aka-name, #venue-aka-name2').html(akaName);
@@ -948,7 +948,7 @@
 							}
 
 {#							dfd.resolve();#}
-							$('.remove').click()
+{#							$('.remove').click()#}
 						});
 					}
 				});
@@ -969,6 +969,7 @@
 				progressBar = form.find('.progress');
 
 			$.get('/upload/get_upload_url', function(data) {
+                var details = $('#playing-surface-details');
 				$.ajax({
 					xhr: function() {
                  		var xhr = showProgress(progressBar);
@@ -1069,7 +1070,7 @@
 		});
 
 		$('#save-concession-details').click(function() {
-			var textarea = $('#concession-details form textarea'), dfd = saving($(this), $('.contents .alert'), 'Concession details has been saved');
+			var textarea = $('#concession-details form textarea'){% comment %}, dfd = saving($(this), $('.contents .alert'), 'Concession details has been saved'){% endcomment %};
 
 			var response = $.post('/venues/save_concession_details/{{ venue.id }}', {
 				'concession_details' : textarea.val()
@@ -1083,7 +1084,7 @@
 		});
 
 		$('#save-admission-details').click(function() {
-			var textarea = $('#admission-details form textarea'), dfd = saving($(this), $('.contents .alert'), 'Admission details has been saved');
+			var textarea = $('#admission-details form textarea'){% comment %}, dfd = saving($(this), $('.contents .alert'), 'Admission details has been saved'){% endcomment %};
 
 			var response = $.post('/venues/save_admission_details/{{ venue.id }}', {
 				'admission_details' : textarea.val()
@@ -1097,7 +1098,7 @@
 		});
 
 		$('#save-shelter-details').click(function() {
-			var textarea = $('#shelter-details form textarea'), dfd = saving($(this), $('.contents .alert'), 'Shelter details has been saved');
+			var textarea = $('#shelter-details form textarea'){% comment %}, dfd = saving($(this), $('.contents .alert'), 'Shelter details has been saved'){% endcomment %};
 
 			var response = $.post('/venues/save_shelter_details/{{ venue.id }}', {
 				'shelter_details' : textarea.val()
@@ -1132,7 +1133,7 @@
 		});
 
 		$('#save-handicap-details').click(function() {
-			var textarea = $('#handicap-details form textarea'), dfd = saving($(this), $('.contents .alert'), 'Handicap details has been saved');
+			var textarea = $('#handicap-details form textarea'){% comment %}, dfd = saving($(this), $('.contents .alert'), 'Handicap details has been saved'){% endcomment %};
 
 			var response = $.post('/venues/save_handicap_details/{{ venue.id }}', {
 				'handicap_details' : textarea.val()

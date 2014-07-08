@@ -3,6 +3,7 @@ from django.db import models
 from spudmart.upload.models import UploadedFile
 from djangotoolbox.fields import ListField
 from spudmart.CERN.rep import deleted_venue
+from spudmart.CERN.models import Student
 
 SPORTS = ['Baseball', 'Basketball', 'Field Hockey', 'Football',
           'Ice Hockey', 'Lacrosse', 'Rugby', 'Soccer', 'Softball',
@@ -12,8 +13,8 @@ SPORTS = ['Baseball', 'Basketball', 'Field Hockey', 'Football',
 
 class Venue(models.Model):
     created_date = models.DateTimeField(auto_now_add=True, null=True)
-    user = models.ForeignKey(User, related_name="owner_user")
-    renter = models.ForeignKey(User, null=True, related_name="renter_user")
+    student = models.ForeignKey(Student)
+    renter = models.ForeignKey(User, null=True)
     name = models.CharField(max_length=200, default="Sponsor's Name for Venue")
     aka_name = models.CharField(max_length=200, default="Common Venue Name")
     sport = models.CharField(max_length=100)
@@ -44,7 +45,6 @@ class Venue(models.Model):
 
     # Just to stay consistent with fcns created in spuddercern.rep
     rep = models.IntegerField(default=0)
-    
 
     def __eq__(self, other):
         return self.pk == other.pk
@@ -58,14 +58,14 @@ class Venue(models.Model):
 
         return self.renter is None
 
-    def is_renter(self, user):
+    def is_renter(self, role):
         if self.renter is None:
             return False
 
-        return self.renter.id == user.id
+        return str(self.renter.id) == role['entity_id']
 
-    def is_groundskeeper(self, user):
-        return self.user.id == user.id
+    def is_groundskeeper(self, role):
+        return str(self.student.id) == role['entity_id']
 
     def delete(self, using=None):
         """
