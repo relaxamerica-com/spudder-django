@@ -37,6 +37,11 @@ from spudmart.CERN.models import Student
 #
 #     return render(request, 'venues/login.html', { 'errors' : errors })
 from spudmart.venues.utils import finalize_pending_rentals
+from spudderdomain.controllers import SpudsController
+from spudderkrowdio.models import KrowdIOStorage
+from spudderkrowdio.utils import _ensure_oAuth_token, post_spud,\
+    get_spuds_for_entity, get_user_mentions_activity
+import logging
 
 
 def view(request, venue_id):
@@ -566,3 +571,42 @@ def delete_venue(request, venue_id):
     venue = Venue.objects.get(id=venue_id)
     venue.delete()
     return HttpResponseRedirect('/venues/list')
+
+
+def get_instagram_stream(request, venue_id):
+    controller = SpudsController(request.current_role, venue_id)
+    
+    return render(request, 'old/venues/instagram_stream.html', 
+                  { 'stream_data' : controller.get_any_unapproved_spuds(), 
+                   'venue_id' : venue_id })
+    
+    
+def accept_instagram_media(request, venue_id):
+    storage = KrowdIOStorage.GetOrCreateForVenue(venue_id)
+    controller = SpudsController(request.current_role, venue_id)
+    stream_data = controller.get_any_unapproved_spuds()
+    accepted_element = None
+    
+    for element in stream_data:
+        if str(element['id']) == request.POST.get('id'):
+            accepted_element = element
+    
+    if accepted_element:
+        accepted_element['tags'].append('@Venue%s' % venue_id)
+        post_spud(storage, { 'type' : 'image', 'url' : accepted_element['images']['small'], 'title' : 'title', 'usertext' : ' '.join(accepted_element['tags']) })
+    
+    return HttpResponse('OK')
+
+
+def reject_instagram_media(request, venue_id):
+    return HttpResponse('Error', status=500)
+
+
+def list_venue_spuds(request, venue_id):
+    storage = KrowdIOStorage.GetOrCreateForVenue(venue_id)
+    
+    venue_spuds = get_user_mentions_activity(storage)
+    
+    return render(request, 'old/venues/venue_spuds.html', 
+                  { 'venue_spuds' : venue_spuds['items'] }
+                  )

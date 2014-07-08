@@ -34,7 +34,7 @@
 <script type="text/javascript">
     function deleteVenue(id){
         if (confirm('This will permanently delete the venue!')){
-            window.location.href="/venues/delete/" + id
+            window.location.href="/venues/delete/" + id;
         }
     }
 </script>
@@ -76,6 +76,12 @@
                         <a class="btn btn-mini btn-orange" href="javascript:deleteVenue('{{ venue.id }}')" title="Delete">
                             <i class="icon-remove"> </i>
                         </a>
+                        <a class="btn btn-mini btn-orange" href="/venues/get_instagram_stream/{{ venue.id }}" title="Instagram Stream">
+                        	<i class="icon-instagram"> </i> 
+                   		</a>
+                   		<a class="btn btn-mini btn-orange" href="/venues/list_venue_spuds/{{ venue.id }}" title="Venue's SPUDS">
+                        	<i class="icon-microphone"> </i> 
+                   		</a>
                     </td>
 	    		</tr>
 	    	{% endfor %}

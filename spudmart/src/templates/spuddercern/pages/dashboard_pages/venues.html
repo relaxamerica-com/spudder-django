@@ -43,6 +43,12 @@
                             <a class="btn btn-mini btn-orange" href="javascript:deleteVenue('{{ venue.id }}')" title="Delete">
                                 <i class="fa fa-fw fa-trash-o"> </i>
                             </a>
+                            <a class="btn btn-mini btn-orange" href="/venues/get_instagram_stream/{{ venue.id }}" title="Instagram Stream">
+	                        	<i class="fa fa-fw fa-instagram"> </i> 
+	                   		</a>
+	                   		<a class="btn btn-mini btn-orange" href="/venues/list_venue_spuds/{{ venue.id }}" title="Venue's SPUDS">
+	                        	<i class="fa fa-fw fa-microphone"> </i> 
+	                   		</a>
                         </td>
                     </tr>
                 {% endfor %}
@@ -64,10 +70,10 @@
 
 {% block js %}
     {{ block.super }}
-    <script type="text/javascript" language="javascript">
+    <script type="text/javascript">
         function deleteVenue(id){
             if (confirm('This will permanently delete the venue!')){
-                window.location.href="/cern/venues/delete/" + id
+                window.location.href = "/cern/venues/delete/" + id;
             }
         }
     </script>

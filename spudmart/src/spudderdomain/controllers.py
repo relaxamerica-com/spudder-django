@@ -91,3 +91,73 @@ class LinkedServiceController(object):
         if type_filters:
             all_linked_services = [s for s in all_linked_services if s.service_type in type_filters]
         return all_linked_services
+    
+
+class SpudsController(object):
+
+    def __init__(self, role, venue_id):
+        self.role = role
+        self.venue_id = venue_id
+
+    def get_any_unapproved_spuds(self):
+        """
+        Gets any unapproved spuds linked to this role
+
+        :return: Collection of Spuds
+        """
+        return [{
+            'id': 1,
+            'images': {
+                'large': 'http://cdn.cutestpaw.com/wp-content/uploads/2013/12/l-Soccer-cat.jpg',
+                'small': 'http://cdn.cutestpaw.com/wp-content/uploads/2013/12/l-Soccer-cat.jpg'
+            },
+            'tags': ['@Karol', '@Matt'],
+            'created_time': '123'
+        },
+        {
+         'id': 2,
+         'images': {
+                'large': 'https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcTdw2F_TbS2s9GJUGyyJaCug1WARReA5b9HhyKnaS-NsV8dKp-j',
+                'small': 'https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcTdw2F_TbS2s9GJUGyyJaCug1WARReA5b9HhyKnaS-NsV8dKp-j'
+            },
+            'tags': ['@Lucy'],
+            'created_time': '1235'
+        },
+        {
+         'id': 3,
+         'images': {
+                'large': 'http://graphics8.nytimes.com/images/2009/06/25/sports/soccer/soccer3_600.jpg',
+                'small': 'http://graphics8.nytimes.com/images/2009/06/25/sports/soccer/soccer3_600.jpg'
+            },
+            'tags': ['@Dennis'],
+            'created_time': '12315'
+        },
+        {
+         'id': 4,
+         'images': {
+                'large': 'https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcSAsRerQz8jvmWivhzthsO7Atb4L5jZyiqhdPh8epVEPjv23wSnow',
+                'small': 'https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcSAsRerQz8jvmWivhzthsO7Atb4L5jZyiqhdPh8epVEPjv23wSnow'
+            },
+            'tags': ['@Marie'],
+            'created_time': '1315'
+        },
+        {
+         'id': 5,
+         'images': {
+                'large': 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcThG4sHdvuflQ6lIVA60XnaZeNxdEqaeiAIIEJMygdiNBHVo4O5',
+                'small': 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcThG4sHdvuflQ6lIVA60XnaZeNxdEqaeiAIIEJMygdiNBHVo4O5'
+            },
+            'tags': ['@Karol', '@Lukasz'],
+            'created_time': '13'
+        }
+        ]  # collection of spuds
+        
+        
+    def approve_spuds(self, spuds):
+        """
+        Sends spuds off to Krowd.io tagged with the venue in this case
+
+        :param spuds: Collection of spuds
+        :return: None
+        """
+        pass

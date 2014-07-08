@@ -1,0 +1,87 @@
+{% extends 'spuddercern/pages/dashboard_pages/dashboard.html' %}
+
+{% block title %}Marketing Projects (Venues) on CERN{% endblock %}
+
+{% block google_analytics_additions %}
+    ga('set', 'contentGroup1', 'CERN Students - Venues');
+{% endblock %}
+
+{% block side_nav %}{% include 'spuddercern/parts/sideNav.html' with active="venues" %}{% endblock %}
+
+{% block dashboard_page %}
+    <div class="page-header">
+        <h1>
+            <i class="fa fa-fw fa-map-marker"> </i> Venues - <small> filter <i class="fa fa-instagram"> </i> Instagram Stream</small>
+        </h1>
+    </div>
+    
+    {% if stream_data %}
+    <div id="stream">
+        {% for element in stream_data %}
+			
+				<div class="col-sm-6 col-md-3 item">
+					<div class="thumbnail" style="min-height: 200px; padding: 5px; border-color: #eee;">
+						<div class="alert text-center"> </div>
+						<img class="img-thumbnail" width="150" src="{{ element.images.small }}" />
+						<div class="caption text-center">
+							{% for tag in element.tags %}
+								<a href="#">{{ tag }}</a> &nbsp;
+							{% endfor %}
+							<div id="{{ element.id }}" style="margin-top: 20px" class="confirmation-buttons">
+								<a href="javascript:void(0)" data-url="/venues/accept_instagram_media/{{ venue_id }}" class="btn btn-success">Accept</a>
+								<a href="javascript:void(0)" data-url="/venues/reject_instagram_media/{{ venue_id }}" href="#" class="btn btn-danger">Reject</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			
+		{% endfor %}
+	</div>
+    {% else %}
+        <div class="alert alert-info about-cern">
+	        <h2 class="aligncenter">This is the Instagram Stream.</h2>
+	        <p>Here you can accept or reject media that comes from Instagram,</p>
+	        <p>but currently there is no stream data.</p>
+	    </div>
+    {% endif %}
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript" src="/static/js/libs/isotope.min.js"></script>
+<script type="text/javascript">
+	$(document).ready(function() {
+		var container = $('#stream'),
+			iso = container.isotope({
+				itemSelector: '.item',
+				layoutMode: 'fitRows'
+			});
+		
+		$('.confirmation-buttons .btn').click(function() {
+			var url = $(this).attr('data-url'),
+				id = $(this).parent().attr('id'),
+				thumbnail = $(this).parents('.thumbnail'),
+				alert = thumbnail.find('.alert');
+				
+			var response = $.post(url, {
+				'id' : id
+			});
+			
+			response.done(function() {
+				thumbnail.addClass('alert-success');
+				alert.html('Accepted.');
+				thumbnail.animate({
+					'opacity' : 0
+				}, 1000, function() {
+					container.isotope('remove', thumbnail.parent());
+					iso.isotope('layout');
+				});
+			});
+			
+			response.fail(function() {
+				thumbnail.addClass('alert-danger');
+				alert.html('Something went wrong. Please try again later.');
+			});
+		});
+	});
+</script>
+{% endblock %}

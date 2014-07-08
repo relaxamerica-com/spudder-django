@@ -50,6 +50,7 @@ INSTALLED_APPS = (
     'spudderadmin',
     'spudderaccounts',
     'spudderdomain',
+    'spudderkrowdio',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -216,3 +217,5 @@ LINKEDIN_SECRET_KEY = shared_settings[app_name]['linkedin_secret_key']
 AWS_ACCESS_KEY_ID = 'AKIAIEUN2XKQF4ZU7UDA'
 AWS_SECRET_KEY_ID = 'CIwpNtDm6OBGUiOGxjZ+XqdOjMPhhaFgTi7c1Ah/'
 GOOGLE_PLACES_API_KEY = 'AIzaSyBY2lT_31eUX7yTH90gyPXxcJvM4pqSycs'
+KROWDIO_CLIENT_KEY = '52769e9ff1f70e0552df58a4'
+KROWDIO_GLOBAL_PASSWORD = 'spudtastic'
