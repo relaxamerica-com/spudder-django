@@ -1,5 +1,6 @@
 from spudderdomain.models import LinkedService
 from spudmart.CERN.models import Student
+from spudmart.sponsors.models import SponsorPage
 
 
 class RoleController(object):
@@ -8,7 +9,8 @@ class RoleController(object):
     """
 
     ENTITY_STUDENT = "student"
-    ENTITY_TYPES = (ENTITY_STUDENT, )
+    ENTITY_SPONSOR = "sponsor"
+    ENTITY_TYPES = (ENTITY_STUDENT, ENTITY_SPONSOR)
 
     @classmethod
     def GetRoleForEntityTypeAndID(cls, entity_type, entity_id, entity_wrapper):
@@ -16,6 +18,11 @@ class RoleController(object):
             try:
                 return entity_wrapper(Student.objects.get(id=entity_id))
             except Student.DoesNotExist:
+                return None
+        elif entity_type == cls.ENTITY_SPONSOR:
+            try:
+                return entity_wrapper(SponsorPage.objects.get(id=entity_id))
+            except SponsorPage.DoesNotExist:
                 return None
         else:
             raise NotImplementedError("The entity_type: %s is not yet supported" % entity_type)
@@ -39,8 +46,10 @@ class RoleController(object):
         """
         if entity_key == self.ENTITY_STUDENT:
             roles = Student.objects.filter(user=self.user)
+        elif entity_key == self.ENTITY_SPONSOR:
+            roles = SponsorPage.objects.filter(sponsor=self.user)
         else:
-            raise NotImplementedError("that entity_key is not yet supported")
+            raise NotImplementedError("That entity_key is not yet supported")
         roles = [entity_wrapper(r) for r in roles]
         return roles
 
@@ -48,7 +57,7 @@ class RoleController(object):
         """
         Get a given role wrapped in entity_wrapper for a given entity_key and entity_id
 
-        :param entity_key: Enumeration from RoleController.ENETITY_, the type of role to return
+        :param entity_key: Enumeration from RoleController.ENTITY_, the type of role to return
         :param entity_id: The id of the entity
         :param entity_wrapper: class derived from EntityBase
         :return: Instance of the entity of type entity_type with id entity_id wrapped in entity_wrapper
@@ -59,8 +68,14 @@ class RoleController(object):
                 return entity_wrapper(entity)
             except Student.DoesNotExist:
                 return None
+        elif entity_key == self.ENTITY_SPONSOR:
+            try:
+                entity = SponsorPage.objects.get(id=entity_id)
+                return entity_wrapper(entity)
+            except SponsorPage.DoesNotExist:
+                return None
         else:
-            raise NotImplementedError("that entity_key is not yet supported")
+            raise NotImplementedError("That entity_key is not yet supported")
 
 
 class LinkedServiceController(object):

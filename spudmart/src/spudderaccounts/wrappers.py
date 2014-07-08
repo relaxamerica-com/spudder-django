@@ -3,7 +3,6 @@ import abc
 from spudderdomain.controllers import RoleController, LinkedServiceController
 from spudderdomain.models import LinkedService
 from spudderdomain.wrappers import EntityBase, LinkedServiceBase
-from spudmart.venues.models import Venue
 
 """
     Roles
@@ -20,6 +19,8 @@ class RoleBase(EntityBase):
     def RoleWrapperByEntityType(cls, entity_key):
         if entity_key == RoleController.ENTITY_STUDENT:
             return RoleStudent
+        elif entity_key == RoleController.ENTITY_SPONSOR:
+            return RoleSponsor
         else:
             raise NotImplementedError("the entity_key %s is not supported yet." % entity_key)
 
@@ -112,7 +113,7 @@ class RoleStudent(RoleBase):
         return self.entity.user == user
 
 
-class SponsorRole(RoleBase):
+class RoleSponsor(RoleBase):
     @property
     def user(self):
         return self.entity.sponsor
@@ -135,17 +136,15 @@ class SponsorRole(RoleBase):
 
     @property
     def title(self):
-        sponsorships = Venue.objects.filter(sponsor=self.entity)
         return '<abbr title="Renting %s venues">Sponsor</abbr> on ' \
                'Spudder with Amazon ID %s' % (
-               len(sponsorships), self._amazon_id)
+               len(self.entity.sponsorships()), self._amazon_id)
 
     @property
     def subtitle(self):
-        sponsorships = Venue.objects.filter(sponsor=self.entity)
         return 'Tied to Amazon ID: %s <br /> Rented Venues: %s' % (
             self._amazon_id,
-            len(sponsorships))
+            len(self.entity.sponsorships()))
 
     @property
     def meta_data(self):
