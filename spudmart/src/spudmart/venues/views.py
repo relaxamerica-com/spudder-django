@@ -312,7 +312,7 @@ def send_message(request, venue_id):
     to.append('support@spudder.zendesk.com')
     to.append(venue.user.email)
     mail.send_mail(subject='Message from Spudmart about Venue: %s' % venue.name, body=message, sender='help@spudder.com', to=to)
-    
+
     return HttpResponse('OK')
 
 def save_price(request, venue_id):
@@ -324,13 +324,13 @@ def save_price(request, venue_id):
 def get_venues_within_bounds(request):
     latitude_range = [float(value) for value in request.GET.getlist('latitude_range[]')]
     longitude_range = [float(value) for value in request.GET.getlist('longitude_range[]')]
-    
+
     if longitude_range[0] < 0 and longitude_range[1] < 0:
         longitude_range.reverse()
-    
+
     venues_in_latitude_range = Venue.objects.filter(latitude__range = latitude_range)
     venues_in_longitude_range = Venue.objects.filter(longitude__range = longitude_range)
-    
+
     venues = []
     for venue in venues_in_latitude_range:
         if venue in venues_in_longitude_range:
@@ -342,13 +342,13 @@ def get_venues_within_bounds(request):
                 'longitude' : venue.longitude,
                 'sport' : venue.sport
             })
-    
+
     venues_dict = {
         'venues' : venues
     }
-    
+
     return HttpResponse(simplejson.dumps(venues_dict))
-    
+
 def fix_venue_coordinates(request):
     for venue in Venue.objects.all():
         splitted = venue.coordinates.split(',')
@@ -361,16 +361,16 @@ def remove_pic(request, venue_id):
     venue = Venue.objects.get(pk = venue_id)
     list_type = request.POST['list_type']
     file_url = request.POST['file_url']
-    
+
     the_list = getattr(venue, list_type)
-        
+
     if file_url in the_list:
         the_list.remove(file_url)
-     
+
     setattr(venue, list_type, the_list)
-    
-    venue.save() 
-        
+
+    venue.save()
+
     return HttpResponse('OK')
 
 # AMAZON
@@ -381,8 +381,8 @@ def recipient(request, venue_id):
     return render(request, 'old/venues/recipient/recipient.html', {
         'cbui_url': get_venue_recipient_cbui_url(venue)
     })
-    
-    
+
+
 def complete(request, venue_id):
     venue = Venue.objects.get(pk=venue_id)
     venue_recipient, _ = VenueRecipient.objects.get_or_create(groundskeeper = venue.user)
@@ -426,11 +426,11 @@ def rent_complete(request, venue_id):
 
     rent_venue, _ = RentVenue.objects.get_or_create(venue=venue)
     rent_venue.status_code = AmazonActionStatus.get_from_code(request.GET.get('status'))
-    
+
     if rent_venue.status_code is AmazonActionStatus.SUCCESS:
         recipients = VenueRecipient.objects.filter(groundskeeper=venue.user)
         recipient_token_id = recipients[0].recipient_token_id
-        
+
         try:
             connection = get_fps_connection()
             transaction_amount = venue.price
@@ -444,7 +444,7 @@ def rent_complete(request, venue_id):
                 MarketplaceVariableFee='50',
                 OverrideIPNURL=venue_ipn_url
             )
-            
+
             rent_venue.sender_token_id = request.GET.get('tokenID')
 
             if not request.user.is_authenticated():
@@ -513,7 +513,7 @@ def rent_thanks(request, venue_id):
         'spudder_url': '%s/dashboard/sponsor/page' % settings.SPUDMART_BASE_URL,
         'venue_url': '%s/venues/view/%s' % (settings.SPUDMART_BASE_URL, venue_id)
     })
-    
+
 
 def rent_error(request, venue_id):
     venue = get_object_or_404(Venue, pk=venue_id)

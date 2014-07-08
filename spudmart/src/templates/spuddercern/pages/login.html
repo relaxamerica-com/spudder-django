@@ -59,7 +59,7 @@
                 });
             }
             var loginWithAmazon = document.getElementById('LoginWithAmazon'),
-                returnUrl = '{{ request.META.HTTP_HOST }}/accounts/login/amazon';
+                returnUrl = '/accounts/login/amazon';
 
             if (loginWithAmazon) {
                 loginWithAmazon.onclick = function() {
