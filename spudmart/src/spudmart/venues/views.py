@@ -56,20 +56,20 @@ def view(request, venue_id):
         'zip': splitted_address.pop(0) if splitted_address else ''
     }
 
-    is_recipient = VenueRecipient.objects.filter(groundskeeper=request.user)
-    rent_venue_url = False
-    can_edit = request.user.is_authenticated() and (venue.is_groundskeeper(role) or venue.is_renter(role))
-    if venue.is_available() and not venue.is_renter(role):
-        rent_venue_url = get_rent_venue_cbui_url(venue)
-
-    sponsor = SponsorPage.objects.filter(sponsor=venue.renter)
-
     try:
         student = Student.objects.get(id=role.entity.id)
     except Student.DoesNotExist:
         student = False
     except TypeError:
         student = False
+
+    is_recipient = VenueRecipient.objects.filter(groundskeeper=student)
+    rent_venue_url = False
+    can_edit = request.user.is_authenticated() and (venue.is_groundskeeper(role) or venue.is_renter(role))
+    if venue.is_available() and not venue.is_renter(role):
+        rent_venue_url = get_rent_venue_cbui_url(venue)
+
+    sponsor = SponsorPage.objects.filter(sponsor=venue.renter)
 
     return render(request, 'spuddercern/pages/venues_view.html', {
         'venue': venue,
@@ -384,7 +384,7 @@ def recipient(request, venue_id):
 
 def complete(request, venue_id):
     venue = Venue.objects.get(pk=venue_id)
-    venue_recipient, _ = VenueRecipient.objects.get_or_create(groundskeeper = venue.user)
+    venue_recipient, _ = VenueRecipient.objects.get_or_create(groundskeeper = venue.student)
     venue_recipient.status_code = AmazonActionStatus.get_from_code(request.GET.get('status'))
     venue_recipient.max_fee = 50
 
@@ -411,7 +411,7 @@ def thanks(request, venue_id):
 
 def error(request, venue_id):
     venue = Venue.objects.get(pk = venue_id)
-    recipient = VenueRecipient.objects.get_or_create(groundskeeper = venue.user)
+    recipient = VenueRecipient.objects.get_or_create(groundskeeper = venue.student)
     status_message = AmazonActionStatus.get_status_message(recipient.status_code)
 
     return render(request, 'old/dashboard/recipient/error.html', {
@@ -427,7 +427,7 @@ def rent_complete(request, venue_id):
     rent_venue.status_code = AmazonActionStatus.get_from_code(request.GET.get('status'))
 
     if rent_venue.status_code is AmazonActionStatus.SUCCESS:
-        recipients = VenueRecipient.objects.filter(groundskeeper=venue.user)
+        recipients = VenueRecipient.objects.filter(groundskeeper=venue.student)
         recipient_token_id = recipients[0].recipient_token_id
 
         try:
