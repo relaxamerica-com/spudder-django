@@ -66,7 +66,7 @@ def get_venues(request):
                 venues_json = []
 
                 for venue in venues:
-                    venues_json.append({'id': venue.id, 'lat': venue.latitude, 'lon': venue.longitude})
+                    venues_json.append({'id': venue.id, 'lat': str(venue.latitude), 'lon': str(venue.longitude)})
 
                 return_json = {'venues': venues_json}
 

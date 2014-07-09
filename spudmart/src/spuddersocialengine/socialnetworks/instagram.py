@@ -167,11 +167,17 @@ def callback(request):
                     subscription_id = json_response_item['subscription_id']
                     subscription = InstagramSubscriptions.objects.get(subscription_id=subscription_id)
                     venue_id = subscription.venue_id
-                    data = get_instagram_callback_json_end_result(json_response_item['object_id'])
+
+                    data = json.loads(get_instagram_callback_json_end_result(json_response_item['object_id']))
+
+                    for data_item in data.get('data', []):
+                        process_item = InstagramDataProcessor(venue_id=venue_id, data=data_item, processed=False)
+                        process_item.save()
+
 
                     # Create a new item for processing
-                    process_item = InstagramDataProcessor(venue_id=venue_id, data=data, processed=False)
-                    process_item.save()
+                    # process_item = InstagramDataProcessor(venue_id=venue_id, data=data, processed=False)
+                    # process_item.save()
 
                     # Is the content auto-processor enabled?
                     if instagram_settings.instagram_auto_process_callback == True:
