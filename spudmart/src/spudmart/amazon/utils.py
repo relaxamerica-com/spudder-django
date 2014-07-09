@@ -51,7 +51,7 @@ def get_venue_recipient_cbui_url(venue):
 def get_rent_venue_cbui_url(venue):
     connection = get_fps_connection()
 
-    recipients = VenueRecipient.objects.filter(groundskeeper=venue.user)
+    recipients = VenueRecipient.objects.filter(groundskeeper=venue.student)
     recipient_token_id = recipients[0].recipient_token_id
     
     return connection.cbui_url(

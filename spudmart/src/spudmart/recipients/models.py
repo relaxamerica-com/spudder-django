@@ -1,4 +1,5 @@
 from django.db import models
+from spudmart.CERN.models import Student
 from spudmart.spudder.models import Team
 from django.contrib.auth.models import User
 
@@ -30,4 +31,4 @@ class Recipient(AmazonRecipient):
 
 
 class VenueRecipient(AmazonRecipient):
-    groundskeeper = models.ForeignKey(User)
+    groundskeeper = models.ForeignKey(Student)
