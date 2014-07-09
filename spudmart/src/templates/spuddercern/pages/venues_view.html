@@ -473,7 +473,7 @@
 
 
                 <hr class="hidden-desktop"/>
-                {% if request.user == venue.user %}
+                {% if request.current_role.entity == venue.student %}
                     {% if not venue.renter %}
                         {% include 'spuddercern/quote_messages/quote_venue_sponsors_coming_soon_can_edit.html' %}
                     {% else %}

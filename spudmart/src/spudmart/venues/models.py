@@ -16,7 +16,7 @@ class Venue(models.Model):
     created_date = models.DateTimeField(auto_now_add=True, null=True)
     user = models.ForeignKey(User, related_name="owner_user", null=True)
     student = models.ForeignKey(Student, null=True)
-    sponsor = models.ForeignKey(SponsorPage, null=True)
+    renter = models.ForeignKey(SponsorPage, null=True)
     name = models.CharField(max_length=200, default="Sponsor's Name for Venue")
     aka_name = models.CharField(max_length=200, default="Common Venue Name")
     sport = models.CharField(max_length=100)
@@ -61,13 +61,13 @@ class Venue(models.Model):
         return self.renter is None
 
     def is_renter(self, role):
-        if self.sponsor is None:
+        if self.renter is None:
             return False
 
-        return str(self.sponsor.id) == role.entity.id
+        return str(self.renter.id) == role.entity.id
 
     def is_groundskeeper(self, role):
-        return str(self.student.id) == role.entity.id
+        return self.student.id == role.entity.id
 
     def delete(self, using=None):
         """

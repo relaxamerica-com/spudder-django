@@ -59,7 +59,6 @@ def view(request, venue_id):
     is_recipient = VenueRecipient.objects.filter(groundskeeper=request.user)
     rent_venue_url = False
     can_edit = request.user.is_authenticated() and (venue.is_groundskeeper(role) or venue.is_renter(role))
-
     if venue.is_available() and not venue.is_renter(role):
         rent_venue_url = get_rent_venue_cbui_url(venue)
 
