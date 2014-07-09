@@ -11,8 +11,8 @@ urlpatterns = patterns(
     url('roles/activate/(?P<entity_type>\w+)/(?P<entity_id>\d+)', 'accounts_activate_role'),
 
     url('account/create_password', 'accounts_create_password'),
-    url('account/signin', 'accounts_signin_choose_account',),
     url('account/signin/(?P<user_id>\d+)', 'accounts_signin',),
+    url('account/signin', 'accounts_signin_choose_account',),
 
     url('$', 'accounts_dashboard',),
 )
