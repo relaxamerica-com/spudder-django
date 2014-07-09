@@ -2,6 +2,10 @@
 
 {% block title %} Sponsor Login Page {% endblock %}
 
+{% block google_analytics_additions %}
+    ga('set', 'contentGroup1', 'ACCOUNTS Sponsors Login');
+{% endblock %}
+
 {% block well_body %}
     <h2 class="text-center">Login</h2>
     <p class="text-center">Use the button below to log in or sign up as a Sponsor.</p>
@@ -29,11 +33,11 @@
                 });
             }
             var loginWithAmazon = document.getElementById('LoginWithAmazon'),
-                returnUrl = '/accounts/login/sponsors/amazon?next=/dashboard/sponsor/page&account_type=sponsor';';
+                returnUrl = '/accounts/login/sponsors/amazon?next=/dashboard/sponsor/page&account_type=sponsor';
 
             if (loginWithAmazon) {
                 loginWithAmazon.onclick = function() {
-                    options = { scope : 'profile' };
+                    options = { scope : 'profile', interactive: 'always' };
                     amazon.Login.authorize(options, returnUrl);
                     return false;
                 };

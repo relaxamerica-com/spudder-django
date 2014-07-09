@@ -18,12 +18,12 @@ def accounts_signin(request, user_id):
         if signin_form.is_valid():
             password = signin_form.cleaned_data.get('password')
             user = authenticate(
-                username=User.object.get(id=signin_form.cleaned_data.get('user_id')).username,
+                username=User.objects.get(id=signin_form.cleaned_data.get('user_id')).username,
                 password=password)
             login(request, user)
             return redirect(signin_form.cleaned_data.get('next_url'))
     return render_to_response(
-        'spudderaccounts/base.html',
+        'spudderaccounts/pages/signin_with_password.html',
         {'signin_form': signin_form},
         context_instance=RequestContext(request))
 

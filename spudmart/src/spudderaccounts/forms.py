@@ -27,7 +27,7 @@ class CreatePasswordForm(forms.Form):
 class SigninForm(forms.Form):
     next_url = forms.CharField(max_length=256, required=False, widget=HiddenInput)
     user_id = forms.CharField(max_length=256, widget=HiddenInput)
-    password = forms.CharField(max_length=256, min_length=6, widget=HiddenInput)
+    password = forms.CharField(max_length=256, min_length=6, widget=PasswordInput)
 
     def clean(self):
         data = super(SigninForm, self).clean()

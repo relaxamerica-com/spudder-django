@@ -28,7 +28,7 @@ def select_user_role_if_only_one_role_exists(role_controller):
     :return: Either the one and only role the user has or None
     """
     roles = select_all_user_roles(role_controller)
-    if len(roles) == 1:
+    if len(roles):  # == 1: TODO: This needs to be implemented alongside a highlevel role chooing page
         return roles[0]
     return None
 

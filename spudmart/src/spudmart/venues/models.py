@@ -64,10 +64,10 @@ class Venue(models.Model):
         if self.sponsor is None:
             return False
 
-        return str(self.sponsor.id) == role['entity_id']
+        return str(self.sponsor.id) == role.entity.id
 
     def is_groundskeeper(self, role):
-        return str(self.student.id) == role['entity_id']
+        return str(self.student.id) == role.entity.id
 
     def delete(self, using=None):
         """

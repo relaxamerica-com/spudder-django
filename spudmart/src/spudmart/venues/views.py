@@ -46,7 +46,7 @@ import logging
 
 def view(request, venue_id):
     venue = Venue.objects.get(pk=venue_id)
-    role = request.session.get('current_role', None)
+    role = request.current_role
 
     splitted_address = venue.medical_address.split(', ')
     medical_address = {
@@ -66,7 +66,7 @@ def view(request, venue_id):
     sponsor = SponsorPage.objects.filter(sponsor=venue.renter)
 
     try:
-        student = Student.objects.get(id=role['entity_id'])
+        student = Student.objects.get(id=role.entity.id)
     except Student.DoesNotExist:
         student = False
     except TypeError:
@@ -86,16 +86,16 @@ def view(request, venue_id):
 
 def create(request):
     if request.method == 'POST' and isinstance(request.user, User):
-        role = request.session.get('current_role', None)
-        stu = Student.objects.get(id=role['entity_id'])
+        role = request.current_role
+        stu = Student.objects.get(id=role.entity.id)
         venue = Venue(student=stu, sport=request.POST['sport'])
         venue.latitude = float(request.POST['latitude'])
         venue.longitude = float(request.POST['longitude'])
         venue.save()
 
         # Reward the student for creating the venue
-        role = request.session.get('current_role', None)
-        owner = Student.objects.get(id=role['entity_id'])
+        role = request.current_role
+        owner = Student.objects.get(id=role.entity.id)
         created_venue(owner)
         return HttpResponseRedirect('/venues/view/%s' % venue.id)
     elif request.method == 'POST':
@@ -500,7 +500,7 @@ def rent_sign_in_complete(request):
 
     # direct import so that testing framework can properly mock function
     from spudmart.venues.utils import finalize_pending_rentals as finalize
-    role = request.session.get('current_role', None)
+    role = request.current_role
     finalize(pending_session_venues, role)
 
     del request.session['pending_venues_rental']

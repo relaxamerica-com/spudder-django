@@ -9,7 +9,10 @@ class RolesMiddleware:
         current_role = None
         if request.user and request.user.is_authenticated():
             role_controller = RoleController(request.user)
-            current_role = request.session.get('current_role', None)
+            try:
+                current_role = request.current_role
+            except AttributeError:
+                current_role = None
             if not current_role:
                 one_ane_only_role = select_user_role_if_only_one_role_exists(role_controller)
                 if one_ane_only_role:
