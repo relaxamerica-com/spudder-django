@@ -62,6 +62,8 @@ def view(request, venue_id):
         student = False
     except TypeError:
         student = False
+    except AttributeError:
+        student = False
 
     is_recipient = VenueRecipient.objects.filter(groundskeeper=student)
     rent_venue_url = False
@@ -83,35 +85,15 @@ def view(request, venue_id):
         'student': student,
     })
 
-def create(request):
-    if request.method == 'POST' and isinstance(request.user, User):
-        role = request.current_role
-        stu = Student.objects.get(id=role.entity.id)
-        venue = Venue(student=stu, sport=request.POST['sport'])
-        venue.latitude = float(request.POST['latitude'])
-        venue.longitude = float(request.POST['longitude'])
-        venue.save()
-
-        # Reward the student for creating the venue
-        role = request.current_role
-        owner = Student.objects.get(id=role.entity.id)
-        created_venue(owner)
-        return HttpResponseRedirect('/venues/view/%s' % venue.id)
-    elif request.method == 'POST':
-        return HttpResponseRedirect('/accounts/login?next=/venues/create')
-    return render(request, 'old/venues/create.html',
-                  {'sports': SPORTS,
-                   })
-
 def index(request):
-    return render(request, 'old/venues/index.html')
+    return render(request, 'spuddercern/pages/venue_index.html')
 
 @login_required
 def list_view(request):
     venues = []
     if is_sponsor(request.user):
         venues.extend(Venue.objects.filter(renter = request.user))
-        template = 'venues/list_sponsor.html'
+        template = 'spuddercern/sponsor_dashboard/venues.html'
     else:
         venues.extend(Venue.objects.filter(user = request.user))
         template = 'venues/list.html'
@@ -377,7 +359,7 @@ def remove_pic(request, venue_id):
 def recipient(request, venue_id):
     venue = Venue.objects.get(pk = venue_id)
 
-    return render(request, 'old/venues/recipient/recipient.html', {
+    return render(request, 'spuddercern/pages/recipient_register.html', {
         'cbui_url': get_venue_recipient_cbui_url(venue)
     })
 
@@ -404,7 +386,7 @@ def complete(request, venue_id):
 
 
 def thanks(request, venue_id):
-    return render(request, 'old/venues/recipient/thanks.html', {
+    return render(request, 'spuddercern/pages/recipient_thanks.html', {
         'spudder_url': '%s/venues/view/%s' % (settings.SPUDMART_BASE_URL, venue_id)
     })
 
@@ -414,7 +396,7 @@ def error(request, venue_id):
     recipient = VenueRecipient.objects.get_or_create(groundskeeper = venue.student)
     status_message = AmazonActionStatus.get_status_message(recipient.status_code)
 
-    return render(request, 'old/dashboard/recipient/error.html', {
+    return render(request, 'spuddercern/pages/recipient_error.html', {
         'spudder_url': '%s/venues/view/%s' % (settings.SPUDMART_BASE_URL, venue_id),
         'status': status_message
     })
@@ -484,7 +466,7 @@ def rent_complete(request, venue_id):
 
 
 def rent_sign_in(request):
-    return render(request, 'old/venues/rent_venue/sign_in.html', {
+    return render(request, 'spuddercern/pages/rent_venue_signin.html', {
         'client_id': settings.AMAZON_LOGIN_CLIENT_ID,
         'base_url': settings.SPUDMART_BASE_URL
     })
@@ -508,7 +490,7 @@ def rent_sign_in_complete(request):
 
 
 def rent_thanks(request, venue_id):
-    return render(request, 'old/venues/rent_venue/thanks.html', {
+    return render(request, 'spuddercern/pages/rent_venue_thanks.html', {
         'spudder_url': '%s/dashboard/sponsor/page' % settings.SPUDMART_BASE_URL,
         'venue_url': '%s/venues/view/%s' % (settings.SPUDMART_BASE_URL, venue_id)
     })
@@ -519,7 +501,7 @@ def rent_error(request, venue_id):
     rent_venue = RentVenue.objects.get(venue=venue)
     status_message = AmazonActionStatus.get_status_message(rent_venue.status_code)
 
-    return render(request, 'old/venues/rent_venue/error.html', {
+    return render(request, 'spuddercern/pages/rent_venue_error.html', {
         'spudder_url': '%s/venues/view/%s' % (settings.SPUDMART_BASE_URL, venue.id),
         'status': status_message,
         'error_message': rent_venue.error_message
@@ -549,7 +531,7 @@ def rent_notification(request, venue_id, user_id):
         venue.renter = None
         venue.save()
 
-        message_body = render_to_string('old/venues/rent_venue/rent_error.html', {
+        message_body = render_to_string('spuddercern/pages/rent_venue_rent_error.html', {
             'venue': venue,
             'error_message': rent_venue.error_message,
             'venue_url': '%s/venues/view/%s' % (settings.SPUDMART_BASE_URL, venue.id)

@@ -67,7 +67,7 @@ def sponsor_page(request):
 
             return HttpResponseRedirect('/dashboard/sponsor/page')
 
-    return render(request, 'old/dashboard/sponsors/sponsor_page.html', {
+    return render(request, 'spuddercern/sponsor_dashboard/sponsor_page.html', {
         'form': form,
         'places_api_key': settings.GOOGLE_PLACES_API_KEY,
         'lat': lat, 'lng': lng, 'info_window': info_window,

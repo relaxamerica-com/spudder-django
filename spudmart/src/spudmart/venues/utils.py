@@ -16,7 +16,7 @@ def finalize_pending_rentals(pending_rentals, role):
     venues = pending_rentals.split(',')
     count = 0
 
-    sponsor = SponsorPage.objects.get(id=role.entity_id)
+    sponsor = SponsorPage.objects.get(id=role.entity.id)
 
     for venue_id in venues:
         pending_venue = get_object_or_none(PendingVenueRental, pk=venue_id)

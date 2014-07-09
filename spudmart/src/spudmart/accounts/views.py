@@ -144,7 +144,7 @@ def _process_amazon_login(access_token, amazon_user_email, amazon_user_id, reque
         account_type = get_request_param(request, 'account_type')
         if account_type == 'sponsor':
             # Create sponsor
-            sponsor = SponsorPage(user=user)
+            sponsor = SponsorPage(sponsor=user)
             sponsor.save()
 
             # Get the Role controller for the current user
