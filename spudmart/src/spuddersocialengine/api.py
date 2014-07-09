@@ -3,10 +3,10 @@ import json
 from django.http import HttpResponse
 import spice_settings
 
-import spice.spudmart.api
-import spice.socialnetworks
+import spuddersocialengine.spudmart.api
+import spuddersocialengine.socialnetworks
 
-from spice.models import *
+from spuddersocialengine.models import *
 
 import logging
 import importlib
@@ -143,7 +143,7 @@ def location_task(request):
 
             if validate_api_key(api_key):
 
-                venues_json = spice.spudmart.api.call_venues_api()
+                venues_json = spuddersocialengine.spudmart.api.call_venues_api()
 
                 # Save venues into the database
                 save_venues(venues_json)
@@ -173,11 +173,11 @@ def location_task(request):
                             # Has a dedicated class to poll for data
                             venue_social_network_json.append(
                                 {social_network: getattr(
-                                    importlib.import_module('spice.socialnetworks.' + social_network_name),
+                                    importlib.import_module('spuddersocialengine.socialnetworks.' + social_network_name),
                                     "location_data")(request, latitude, longitude, venue_id)})
                         elif social_network_type == "subscription":
                             # Deal with the subscription
-                            getattr(importlib.import_module('spice.socialnetworks.' + social_network_name),
+                            getattr(importlib.import_module('spuddersocialengine.socialnetworks.' + social_network_name),
                                     "process_data")(request, latitude, longitude, venue_id)
 
                         # Debug logging of images returned back
@@ -186,7 +186,7 @@ def location_task(request):
                     # Main JSON append
                     json_response.append({'venue_id': venue['id'], 'data': venue_social_network_json})
 
-                spice.spudmart.api.send_posts_for_venue(json_response)
+                spuddersocialengine.spudmart.api.send_posts_for_venue(json_response)
             else:
                 logging.debug("SPICE: api/location_task : invalid API Key")
 
@@ -224,13 +224,13 @@ def manual_process(request):
 
                 for social_network in social_networks:
 
-                    venue_return = getattr(importlib.import_module('spice.socialnetworks.' + social_network['name']),
+                    venue_return = getattr(importlib.import_module('spuddersocialengine.socialnetworks.' + social_network['name']),
                                            "manual_process_for_venue")(venue_id)
 
                     if venue_return is not None:
                         venues_return.append(venues_return)
 
-                spice.spudmart.api.send_posts_for_venue(venues_return)
+                spuddersocialengine.spudmart.api.send_posts_for_venue(venues_return)
 
             else:
                 logging.debug("SPICE: api/manual_process : invalid API Key")
@@ -274,7 +274,7 @@ def save_venues(venues_json):
             # Get each social network to register: Where applicable
             for social_network in social_networks:
                 logging.debug("SPICE: api/save_venues register venue for social network %s" % social_network['name'])
-                getattr(importlib.import_module('spice.socialnetworks.' + social_network['name']),
+                getattr(importlib.import_module('spuddersocialengine.socialnetworks.' + social_network['name']),
                         "register_venue")(venue_id)
 
 
@@ -299,7 +299,7 @@ def save_venues(venues_json):
                 # Get each social network to de-register: Where applicable
                 for social_network in social_networks:
                     logging.debug("SPICE: api/save_venues deregister on network %s" % social_network['name'])
-                    getattr(importlib.import_module('spice.socialnetworks.' + social_network['name']),
+                    getattr(importlib.import_module('spuddersocialengine.socialnetworks.' + social_network['name']),
                             "deregister_venue")(venue_to_find.venue_id)
             except VenuesModel.DoesNotExist:
                 # Nothing to do if it does not exist

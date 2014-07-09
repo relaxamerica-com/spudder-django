@@ -3,11 +3,11 @@ import hmac
 import hashlib
 import httplib
 
-from spice.socialnetworks import instagram_settings
-from spice.api import *
-from spice.spudmart.api import *
-from spice.models import *
-from spice.spudmart import api as spudmart_api
+from spuddersocialengine.socialnetworks import instagram_settings
+from spuddersocialengine.api import *
+from spuddersocialengine.spudmart.api import *
+from spuddersocialengine.models import *
+from spuddersocialengine.spudmart import api as spudmart_api
 
 from google.appengine.api import taskqueue
 import logging
