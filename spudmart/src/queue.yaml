@@ -1,0 +1,8 @@
+queue:
+- name: locationtask
+  rate: 1/h
+  max_concurrent_requests: 1
+
+- name: instagramcallback
+  rate: 1/m
+  max_concurrent_requests: 1

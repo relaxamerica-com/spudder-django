@@ -56,6 +56,9 @@ urlpatterns = patterns(
     # Spudder Admin site
     (r'^spudderadmin', include('spudderadmin.urls')),
 
+    # Spudder Social Engine Urls
+    (r'^socialengine/', include('spuddersocialengine.urls')),
+
     # Legacy URL mapping
     (r'^campusrep', RedirectView.as_view(url="/cern/")),
 

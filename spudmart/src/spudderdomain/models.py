@@ -1,8 +1,9 @@
 import datetime
 import json
+from django.contrib.auth.models import User
 from django.db import models
-from djangotoolbox.fields import DictField
-import spudderaccounts
+from djangotoolbox.fields import DictField, ListField
+from spudmart.upload.models import UploadedFile
 
 
 class LinkedServiceTypeExistsForThisRole(Exception):
@@ -71,3 +72,33 @@ class LinkedService(models.Model):
     @configuration.setter
     def configuration(self, config_object):
         self._service_configuration = json.dumps(config_object or '{}')
+
+class SpudType():
+    TEXT = 1
+    VIDEO = 2
+    IMAGE = 3
+
+
+class Comment(models.Model):
+    created_date = models.DateTimeField(auto_now_add=True)
+    author = models.ForeignKey(User)  # what user should be used here?
+    text = models.TextField()
+
+
+class Spud(models.Model):
+    created_date = models.DateTimeField(auto_now_add=True)
+    updated_date = models.DateTimeField(auto_now=True)
+
+    tags = ListField()
+    type = models.IntegerField(choices = ((SpudType.TEXT, 'Text'),
+                                          (SpudType.VIDEO, 'Video'),
+                                          (SpudType.IMAGE, 'Image')), default = SpudType.TEXT)
+    comments = ListField(Comment)
+    content = models.TextField()
+    image = models.ForeignKey(UploadedFile, null=True)
+    likes = models.IntegerField(default=0)
+    dislikes = models.IntegerField(default=0)
+    author = models.ForeignKey(User)  # what user should be used here?
+
+    def tags_to_string(self):
+        return ' '.join(self.tags)
