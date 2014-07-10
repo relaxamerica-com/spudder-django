@@ -45,13 +45,6 @@
                 {{ venue.name }}
                 <br/>
                 <small>{{ venue.aka_name }}</small>
-                {% if can_edit %}
-                    <div class="pull-right" style="position:relative; bottom: 0; right: 10px;">
-                        <div class="btn btn-primary" id="edit">
-                            Edit Mode
-                        </div>
-                    </div>
-                {% endif %}
             </h1>
         </div>
     </div>
@@ -67,6 +60,13 @@
                 {% endwith %}
             {% endif %}
 
+            {% if can_edit %}
+                <div style="margin-bottom: 30px;">
+                    <div class="btn btn-primary" id="edit">
+                        Edit Mode
+                    </div>
+                </div>
+            {% endif %}
 
             <div class="alert" id="logo-name-alert"></div>
             <div class="edit-mode well">
@@ -502,7 +502,7 @@
 
                 <hr class="hidden-md hidden-lg"/>
                 {% if request.current_role.entity == venue.student %}
-                    {% if not venue.renter %}
+                    {% if not venue.sponsor %}
                         {% include 'spuddercern/quote_messages/quote_venue_sponsors_coming_soon_can_edit.html' %}
                     {% else %}
                         {% include 'spuddercern/quote_messages/quote_venue_rented_for_student.html' %}
@@ -766,8 +766,7 @@
 
 				if (!$(this).hasClass('initialized')) {
 					initialize(false, $('.contents .alert'), function(venue) {
-						return
-							venue.sport == window.currentSelectedSport
+                        return venue.sport == window.currentSelectedSport
 							&& venue.id != parseInt(window.currentVenueId, 10);
 					}, function() {
 						//$('#save-location').removeClass('hidden');
@@ -1074,9 +1073,9 @@
 			});
 
 			response.done(function() {
-                $('.remove').click()
+                $('.remove').click();
 				$('#venue-video').html(textarea.val());
-				$('.fa fa-youtube-play').addClass('ready');
+				$('.fa.fa-youtube-play').addClass('ready');
 			});
 		});
 
@@ -1097,9 +1096,7 @@
 			$.get('/upload/get_upload_url', function(data) {
 				$.ajax({
 					xhr: function() {
-                 		var xhr = showProgress(progressBar);
-
-                 		return xhr;
+                 		return showProgress(progressBar);
                  	},
 					url : data,
 					data : files,
@@ -1221,7 +1218,7 @@
 		});*/
 
 		$('#prize-this-venue').click(function() {
-			{% if not is_recipient %}
+            {% if not is_recipient %}
 				document.location = '/venues/recipient/{{ venue.id }}';
 				return;
 			{% endif %}
@@ -1238,7 +1235,7 @@
 
 				response.done(function() {
 {#					dfd.resolve();#}
-					$(button).html($(this).data('original_text'));
+					$(button).text('Price this Venue');
 					currentPrice.show();
 					currentPrice.find('span').html(priceInput.val());
 					priceInput.parent().css('display', 'none');
@@ -1246,9 +1243,8 @@
 
 			} else {
 				priceInput.parent().css('display', 'table');
-				$(this).data('original_text', $(this).html())
-                $(this).html('' +
-                        'Save');
+				$(this).data('original_text', $(this).html());
+                $(this).html('Save');
 			}
 		});
 

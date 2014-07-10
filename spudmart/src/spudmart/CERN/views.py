@@ -498,6 +498,7 @@ def venues_new(request):
         created_venue(owner)
 
         return redirect('/venues/view/%s' % venue.id)
+
     template_data = {'sports': SPORTS}
     return render(request, 'spuddercern/pages/venues_new.html', template_data)
 
