@@ -3,6 +3,7 @@ from spudmart.utils.querysets import get_object_or_none
 from spudmart.venues.models import PendingVenueRental
 from spudmart.sponsors.models import SponsorPage
 
+
 def finalize_pending_rentals(pending_rentals, role):
     """
     Finalizes pending Venue rentals.

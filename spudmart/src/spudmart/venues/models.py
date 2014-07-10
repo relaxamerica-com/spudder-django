@@ -58,15 +58,18 @@ class Venue(models.Model):
         if PendingVenueRental.objects.filter(venue=self).count() > 0:
             return False
 
-        return self.renter is None
+        return self.sponsor is None
 
     def is_renter(self, role):
-        if self.renter is None:
+        if role is None or self.sponsor is None:
             return False
 
         return str(self.renter.id) == role.entity.id
 
     def is_groundskeeper(self, role):
+        if not role or not self.student:
+            return False
+
         return self.student.id == role.entity.id
 
     def delete(self, using=None):

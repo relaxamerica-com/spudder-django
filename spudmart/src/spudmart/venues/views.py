@@ -18,8 +18,13 @@ from django.contrib.auth.decorators import login_required
 from spudmart.sponsors.models import SponsorPage
 from spudmart.accounts.utils import is_sponsor
 from spudmart.CERN.rep import added_basic_info, added_photos, added_logo, \
-                            added_video, created_venue
+                            added_video
 from spudmart.CERN.models import Student
+
+from spudderdomain.controllers import SpudsController
+from spudderkrowdio.models import KrowdIOStorage
+from spudderkrowdio.utils import post_spud, \
+    get_user_mentions_activity
 
 # DO NOT REMOVE, PLEASE! It's needed for testing purpose
 #
@@ -36,12 +41,6 @@ from spudmart.CERN.models import Student
 #             return HttpResponseRedirect('/venues/list')
 #
 #     return render(request, 'venues/login.html', { 'errors' : errors })
-from spudmart.venues.utils import finalize_pending_rentals
-from spudderdomain.controllers import SpudsController
-from spudderkrowdio.models import KrowdIOStorage
-from spudderkrowdio.utils import _ensure_oAuth_token, post_spud,\
-    get_spuds_for_entity, get_user_mentions_activity
-import logging
 
 
 def view(request, venue_id):
@@ -90,14 +89,15 @@ def index(request):
 
 @login_required
 def list_view(request):
-    venues = []
     if is_sponsor(request.user):
-        venues.extend(Venue.objects.filter(renter = request.user))
+        sponsor_page = SponsorPage.objects.get(sponsor=request.user)
+        venues = Venue.objects.filter(sponsor=sponsor_page)
         template = 'spuddercern/sponsor_dashboard/venues.html'
     else:
-        venues.extend(Venue.objects.filter(user = request.user))
+        venues = Venue.objects.filter(user=request.user)
         template = 'venues/list.html'
-    return render(request, template, { 'venues' : venues })
+
+    return render(request, template, {'venues': venues})
 
 # VENUE ENDPOINTS
 
@@ -444,7 +444,8 @@ def rent_complete(request, venue_id):
                 redirect_to = '/venues/rent_venue/sign_in'
             else:
                 state = DonationState.FINISHED
-                venue.renter = request.user
+                sponsor_page = SponsorPage.objects.get(sponsor=request.user)
+                venue.sponsor = sponsor_page
                 redirect_to = '/venues/rent_venue/%s/thanks' % venue.pk
 
             venue.save()
@@ -528,7 +529,7 @@ def rent_notification(request, venue_id, user_id):
         rent_venue.error_message = parsed_status.statusMessage
         rent_venue.save()
 
-        venue.renter = None
+        venue.sponsor = None
         venue.save()
 
         message_body = render_to_string('spuddercern/pages/rent_venue_rent_error.html', {
