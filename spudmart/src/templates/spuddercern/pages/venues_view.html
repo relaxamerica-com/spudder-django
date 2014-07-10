@@ -68,26 +68,6 @@
             {% endif %}
 
 
-{#            <div class="row-fluid">#}
-{#                <div class="col-sm-2">#}
-{#                    <div class="view-mode">#}
-{#                        {% if venue.logo %}#}
-{#                            <img id="venue-logo" src="/file/serve/{{ venue.logo.id }}" height="100px"/>#}
-{#                        {% else %}#}
-{#                            <img id="venue-logo" src="/static/img/spuddercern/button-cern-medium.png" />#}
-{#                        {% endif %}#}
-{#                    </div>#}
-{#                </div>#}
-{#                <div style="display: inline-block; text-align: center; width: 75%; margin-top:10px;">#}
-{#                    <h3 style="margin-bottom: 0px; font-weight: bold;" id="venue-name">#}
-{#                        {{ venue.name }}#}
-{#                    </h3>#}
-{#                    <h5 class="view-mode" id="venue-aka-name">#}
-{#                        {{ venue.aka_name }}#}
-{#                    </h5>#}
-{#                </div>#}
-{#            </div>#}
-
             <div class="alert" id="logo-name-alert"></div>
             <div class="edit-mode well">
                 <h2>Edit basic venue details</h2>
@@ -104,25 +84,59 @@
                         <label>Venue Common Name:</label>
                         <input type="text" name="aka_name" value="{{ venue.aka_name }}" id="venue-aka-name-input"  class="form-control"/>
                     </div>
-                    <button class="btn btn-primary edit-mode" id="save-name">Save</button>
-{#                    <a class="btn btn-primary edit-mode" id="save-name">Save</a>#}
+{#                    <button class="btn btn-primary edit-mode" id="save-name">Save</button>#}
+                    <a class="btn btn-primary edit-mode" id="save-name">Save</a>
                 </form>
             </div>
 
-            <div style="padding: 30px 0; border-top: 1px solid #CCC;">
+            <div style="padding-bottom: 30px">
+                <h4 style="margin-bottom: 0"><abbr title="Sports Updates">SPUDS</abbr> from this venue</h4>
+                <p class="help-block">Follow your favorite teams and players by following this venue!</p>
+            </div>
+
+            <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+                <!-- Indicators -->
+                <ol class="carousel-indicators">
+                    <li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
+                </ol>
+
+                <!-- Wrapper for slides -->
+                <div class="carousel-inner">
+                    <div class="item active">
+                        <img src="/static/img/spudderspuds/button-spuds-large.png" height="300px"/>
+                        <div class="carousel-caption">
+                            <div class="alert alert-info">
+                                <h4>No SPUDS Yet</h4>
+                                <p>Stay tuned, there will soon be SPUDS for this venue!</p>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Controls -->
+                <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
+                    <span class="icon-prev"></span>
+                </a>
+                <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
+                    <span class="icon-next"></span>
+                </a>
+            </div>
+
+            <div style="padding-bottom: 30px">
                 <h4 style="margin-bottom: 0">Venue Details</h4>
                 <p class="help-block">Click the buttons below to cycle through the venue details.</p>
             </div>
 
             <div id="venue-property-buttons">
-                <div class="btn-group hidden-sm hidden-xs" style="margin: 0 auto;">
+                <div class="btn-group hidden-sm hidden-xs btn-group-justified" style="margin: 0 auto;">
                     {% include 'spuddercern/parts/venue_view_buttons_row_one.html' %}
                     {% include 'spuddercern/parts/venue_view_buttons_row_two.html' %}
                 </div>
-                <div class="btn-group hidden-md hidden-lg" style="margin: 0 auto;">
+                <div class="btn-group hidden-md hidden-lg btn-group-justified" style="margin: 0 auto 10px;">
                     {% include 'spuddercern/parts/venue_view_buttons_row_one.html' %}
                 </div>
-                <div class="btn-group hidden-md hidden-lg" style="margin: 0 auto;">
+                <div class="btn-group hidden-md hidden-lg btn-group-justified" style="margin: 0 auto;">
                     {% include 'spuddercern/parts/venue_view_buttons_row_two.html' %}
                 </div>
             </div>
@@ -131,12 +145,12 @@
 			<div class="row-fluid" style="height:100%;">
 				<div class="col-md-12 contents" style="height:100%;">
 					<div class="alert"></div>
-					<div id="venue-promo-video" class="active content">
-                        <div class="embed-responsive embed-responsive-16by9">
-                            <iframe width="100%" height="100%" src="//www.youtube.com/embed/H72B-GCMohs?rel=0" allowfullscreen></iframe>
-                        </div>
-					</div>
-					<div class="content" id="map">
+{#					<div id="venue-promo-video" class="active content">#}
+{#                        <div class="embed-responsive embed-responsive-16by9">#}
+{#                            <iframe width="100%" height="100%" src="//www.youtube.com/embed/H72B-GCMohs?rel=0" allowfullscreen></iframe>#}
+{#                        </div>#}
+{#					</div>#}
+					<div class="content active" id="map">
 						<div id="map-canvas" class="view-venue-map">
 
 						</div>
@@ -484,7 +498,7 @@
 			<aside class="right-sidebar" style="margin-top: 20px;">
 
 
-                <hr class="hidden-desktop"/>
+                <hr class="hidden-md hidden-lg"/>
                 {% if request.current_role.entity == venue.student %}
                     {% if not venue.renter %}
                         {% include 'spuddercern/quote_messages/quote_venue_sponsors_coming_soon_can_edit.html' %}
@@ -715,7 +729,16 @@
 
 
 
-
+        initialize(
+            false,
+            $('.contents .alert'),
+            function(venue) {
+                return venue.sport == window.currentSelectedSport && venue.id != parseInt(window.currentVenueId, 10);
+            },
+            function() {
+            //$('#save-location').removeClass('hidden');
+            }
+        );
 
 		icons.click(function() {
 			if(!$(this).hasClass('active')) {
@@ -966,6 +989,8 @@
 						});
 
 						response.done(function(data) {
+                            window.location.reload();
+                            return;
 {#							window.currentSelectedSport;#}
 {#							window.venueName = name;#}
 

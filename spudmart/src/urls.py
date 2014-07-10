@@ -61,6 +61,7 @@ urlpatterns = patterns(
 
     # Legacy URL mapping
     (r'^campusrep', RedirectView.as_view(url="/cern/")),
+    (r'^privacy', RedirectView.as_view(url="http://info.spudder.com/privacy/")),
 
     # Note the below line was added to catch root urls and push them to info.spudder.com for now MG 20140618
     (r'^$', temp_redirect_view)

@@ -45,6 +45,12 @@ from spudderkrowdio.utils import post_spud, \
 
 def view(request, venue_id):
     venue = Venue.objects.get(pk=venue_id)
+
+    if request.method == "POST":
+        venue.name = request.POST.get('name', '')
+        venue.aka_name = request.POST.get('aka_name', '')
+        venue.save()
+
     role = request.current_role
 
     splitted_address = venue.medical_address.split(', ')
