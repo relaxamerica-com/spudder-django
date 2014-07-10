@@ -45,6 +45,13 @@
                 {{ venue.name }}
                 <br/>
                 <small>{{ venue.aka_name }}</small>
+                {% if can_edit %}
+                    <div class="pull-right" style="position:relative; bottom: 0; right: 10px;">
+                        <div class="btn btn-primary" id="edit">
+                            Edit Mode
+                        </div>
+                    </div>
+                {% endif %}
             </h1>
         </div>
     </div>
@@ -60,13 +67,6 @@
                 {% endwith %}
             {% endif %}
 
-            {% if can_edit %}
-                <div style="margin-bottom: 30px;">
-                    <div class="btn btn-primary" id="edit">
-                        Edit Mode
-                    </div>
-                </div>
-            {% endif %}
 
             <div class="alert" id="logo-name-alert"></div>
             <div class="edit-mode well">
