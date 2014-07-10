@@ -609,11 +609,12 @@ def register_school(request, school_id, referral_id=None):
                 referrer = Student.objects.get(id=referral_id)
             except ObjectDoesNotExist:
                 pass
-        return render(request, 'spuddercern/pages/register_login_with_amazon.html',
-                      {
-                      'school': school,
-                      'referrer': referrer,
-                      })
+
+        return render(request, 'spuddercern/pages/register_login_with_amazon.html', {
+            'school': school,
+            'referrer': referrer,
+            'base_url': settings.SPUDMART_BASE_URL
+        })
 
 
 def user_not_student_error_page(request):
