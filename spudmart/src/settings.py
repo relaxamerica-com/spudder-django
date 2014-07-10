@@ -125,6 +125,8 @@ shared_settings = {
         'amazon_login_client_id': 'amzn1.application-oa2-client.4637978bf71a44fdb057225c55e78d12',
         'linkedin_api_key': '77rm3ugcrdkqk7',
         'linkedin_secret_key': '7BlAnjhz5FetO09O',
+        'instagram_client_id': '3888eac365f7468dabd5bf9ad06c8930',
+        'instagram_client_secret': 'b1bc01bf1a9944e2834288484f450ab2'
 
     },
     'sharp-avatar-587': {  # lukasz@spuder.com
@@ -190,7 +192,6 @@ shared_settings = {
         'amazon_login_client_id': 'amzn1.application-oa2-client.47892dcda29f4d3d8c437b7c44f1b6e6',
         'linkedin_api_key': '77acg7pe6xdqfo',
         'linkedin_secret_key': 'Eh1uPylFg3RMSOu9',
-
     },
     'livespudder': {  #mg@metalayer.com
         'server_email': 'help@spuder.com',
@@ -201,7 +202,8 @@ shared_settings = {
         'amazon_login_client_id': 'amzn1.application-oa2-client.47892dcda29f4d3d8c437b7c44f1b6e6',
         'linkedin_api_key': '77acg7pe6xdqfo',
         'linkedin_secret_key': 'Eh1uPylFg3RMSOu9',
-
+        'instagram_client_id': '3888eac365f7468dabd5bf9ad06c8930',
+        'instagram_client_secret': 'b1bc01bf1a9944e2834288484f450ab2'
     },
 }
 
@@ -213,6 +215,8 @@ AMAZON_LOGIN_CLIENT_ID = shared_settings[app_name]['amazon_login_client_id']
 SERVER_EMAIL = shared_settings[app_name]['server_email']
 LINKEDIN_API_KEY = shared_settings[app_name]['linkedin_api_key']
 LINKEDIN_SECRET_KEY = shared_settings[app_name]['linkedin_secret_key']
+INSTAGRAM_CLIENT_ID = shared_settings[app_name].get('instagram_client_id', '')
+INSTAGRAM_CLIENT_SECRET = shared_settings[app_name].get('instagram_client_secret', '')
 
 # Configuration shared across all applications
 AWS_ACCESS_KEY_ID = 'AKIAIEUN2XKQF4ZU7UDA'
