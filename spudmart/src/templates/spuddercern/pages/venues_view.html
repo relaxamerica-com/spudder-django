@@ -659,8 +659,6 @@
     $('.active').show();
 
 	$(document).ready(function() {
-        console.log('ready');
-
         // Init the Jumbo Map
         if ($('#jumbo-map-container').is(':visible')) {
             var jumbo_map = new google.maps.Map($('#jumbo-map-container')[0], {
@@ -696,7 +694,7 @@
 			interval : false
 		});
 
-		var editMode = $('{% if is_sponsor %}.edit-mode-sponsor{% else %}.edit-mode{% endif %}'),
+		var editMode = $('.edit-mode'),
 			viewMode = $('.view-mode'),
 			buttons = $('#venue-property-buttons'),
 			icons = buttons.find('.btn');

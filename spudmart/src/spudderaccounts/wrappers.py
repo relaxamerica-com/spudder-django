@@ -131,20 +131,26 @@ class RoleSponsor(RoleBase):
 
     @property
     def image(self):
-        return '/file/serve/%s' % self.entity.thumbnail \
-               or '/static/img/spuddercern/button-cern-small.png'
+        if self.entity.thumbnail:
+            return '/file/serve/%s' % self.entity.thumbnail
+
+        return '/static/img/spuddercern/button-cern-small.png'
 
     @property
     def title(self):
-        return '<abbr title="Renting %s venues">Sponsor</abbr> on ' \
-               'Spudder with Amazon ID %s' % (
-               len(self.entity.sponsorships()), self._amazon_id)
+        role_title = '<abbr title="Renting %s venues">Sponsor</abbr> on '
+        role_title += 'Spudder with Amazon ID %s' % self._amazon_id
+
+        return role_title
 
     @property
     def subtitle(self):
-        return 'Tied to Amazon ID: %s <br /> Rented Venues: %s' % (
+        role_subtitle = 'Tied to Amazon ID: %s <br /> Rented Venues: %s' % (
             self._amazon_id,
-            len(self.entity.sponsorships()))
+            len(self.entity.sponsorships())
+        )
+
+        return role_subtitle
 
     @property
     def meta_data(self):
