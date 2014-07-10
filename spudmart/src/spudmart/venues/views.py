@@ -23,24 +23,8 @@ from spudmart.CERN.models import Student
 
 from spudderdomain.controllers import SpudsController
 from spudderkrowdio.models import KrowdIOStorage
-from spudderkrowdio.utils import post_spud, \
-    get_user_mentions_activity
-
-# DO NOT REMOVE, PLEASE! It's needed for testing purpose
-#
-# def login_view(request):
-#     errors = []
-#     if request.method == 'POST':
-#         username = request.POST['email']
-#         password = request.POST['password']
-#         user = authenticate(username=username, password=password)
-#         if not user:
-#             errors.append('Wrong username/password')
-#         else:
-#             login(request, user)
-#             return HttpResponseRedirect('/venues/list')
-#
-#     return render(request, 'venues/login.html', { 'errors' : errors })
+from spudderkrowdio.utils import get_user_mentions_activity
+import json
 
 
 def view(request, venue_id):
@@ -73,12 +57,15 @@ def view(request, venue_id):
     is_recipient = VenueRecipient.objects.filter(groundskeeper=student)
     rent_venue_url = False
     can_edit = request.user.is_authenticated() and (venue.is_groundskeeper(role) or venue.is_renter(role))
-
     if venue.is_available() and not venue.is_renter(role):
         rent_venue_url = get_rent_venue_cbui_url(venue)
 
     sponsor = SponsorPage.objects.filter(sponsor=venue.renter)
-
+    
+    storage = KrowdIOStorage.GetOrCreateForVenue(venue_id)
+    
+    venue_spuds = get_user_mentions_activity(storage)
+    
     return render(request, 'spuddercern/pages/venues_view.html', {
         'venue': venue,
         'sports': SPORTS,
@@ -88,7 +75,8 @@ def view(request, venue_id):
         'can_edit': can_edit,
         'sponsor': sponsor[0] if len(sponsor) else None,
         'is_sponsor': venue.is_renter(role),
-        'student': student
+        'student': student,
+        'venue_spuds' : venue_spuds['items']
     })
 
 def index(request):
@@ -452,7 +440,7 @@ def rent_complete(request, venue_id):
             else:
                 state = DonationState.FINISHED
                 sponsor_page = SponsorPage.objects.get(sponsor=request.user)
-                venue.renter = sponsor_page
+                venue.sponsor = sponsor_page
                 redirect_to = '/venues/rent_venue/%s/thanks' % venue.pk
 
             venue.save()
@@ -536,7 +524,7 @@ def rent_notification(request, venue_id, user_id):
         rent_venue.error_message = parsed_status.statusMessage
         rent_venue.save()
 
-        venue.renter = None
+        venue.sponsor = None
         venue.save()
 
         message_body = render_to_string('spuddercern/pages/rent_venue_rent_error.html', {
@@ -572,31 +560,29 @@ def get_instagram_stream(request, venue_id):
     
     
 def accept_instagram_media(request, venue_id):
-    storage = KrowdIOStorage.GetOrCreateForVenue(venue_id)
     controller = SpudsController(request.current_role, venue_id)
-    stream_data = controller.get_any_unapproved_spuds()
-    accepted_element = None
+    spud = controller.get_unapproved_spud_by_id(request.POST.get('id'))
     
-    for element in stream_data:
-        if str(element['id']) == request.POST.get('id'):
-            accepted_element = element
+    if spud:
+        controller.approve_spud(spud, venue_id)
     
-    if accepted_element:
-        accepted_element['tags'].append('@Venue%s' % venue_id)
-        post_spud(storage, { 'type' : 'image', 'url' : accepted_element['images']['small'], 'title' : 'title', 'usertext' : ' '.join(accepted_element['tags']) })
+    response = {
+        'alertClass' : 'alert-success',
+        'alertText' : 'SPUD Accepted',
+        'animationTime' : 1000
+    }
     
-    return HttpResponse('OK')
+    return HttpResponse(json.dumps(response))
 
 
 def reject_instagram_media(request, venue_id):
-    return HttpResponse('Error', status=500)
-
-
-def list_venue_spuds(request, venue_id):
-    storage = KrowdIOStorage.GetOrCreateForVenue(venue_id)
+    controller = SpudsController(request.current_role, venue_id)
+    _ = controller.get_unapproved_spud_by_id(request.POST.get('id')) # just get it, so the instagram_data_processor will set the processed flag to True
     
-    venue_spuds = get_user_mentions_activity(storage)
+    response = {
+        'alertClass' : 'alert-warning',
+        'alertText' : 'SPUD Rejected',
+        'animationTime' : 700
+    }
     
-    return render(request, 'old/venues/venue_spuds.html', 
-                  { 'venue_spuds' : venue_spuds['items'] }
-                  )
+    return HttpResponse(json.dumps(response))

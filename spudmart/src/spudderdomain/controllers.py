@@ -1,6 +1,12 @@
 from spudderdomain.models import LinkedService
 from spudmart.CERN.models import Student
 from spudmart.sponsors.models import SponsorPage
+from spuddersocialengine.models import InstagramDataProcessor
+import logging
+import simplejson
+from spudmart.venues.models import Venue
+from spudderkrowdio.utils import post_spud
+from spudderkrowdio.models import KrowdIOStorage
 
 
 class RoleController(object):
@@ -120,59 +126,42 @@ class SpudsController(object):
 
         :return: Collection of Spuds
         """
-        return [{
-            'id': 1,
-            'images': {
-                'large': 'http://cdn.cutestpaw.com/wp-content/uploads/2013/12/l-Soccer-cat.jpg',
-                'small': 'http://cdn.cutestpaw.com/wp-content/uploads/2013/12/l-Soccer-cat.jpg'
-            },
-            'tags': ['@Karol', '@Matt'],
-            'created_time': '123'
-        },
-        {
-         'id': 2,
-         'images': {
-                'large': 'https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcTdw2F_TbS2s9GJUGyyJaCug1WARReA5b9HhyKnaS-NsV8dKp-j',
-                'small': 'https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcTdw2F_TbS2s9GJUGyyJaCug1WARReA5b9HhyKnaS-NsV8dKp-j'
-            },
-            'tags': ['@Lucy'],
-            'created_time': '1235'
-        },
-        {
-         'id': 3,
-         'images': {
-                'large': 'http://graphics8.nytimes.com/images/2009/06/25/sports/soccer/soccer3_600.jpg',
-                'small': 'http://graphics8.nytimes.com/images/2009/06/25/sports/soccer/soccer3_600.jpg'
-            },
-            'tags': ['@Dennis'],
-            'created_time': '12315'
-        },
-        {
-         'id': 4,
-         'images': {
-                'large': 'https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcSAsRerQz8jvmWivhzthsO7Atb4L5jZyiqhdPh8epVEPjv23wSnow',
-                'small': 'https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcSAsRerQz8jvmWivhzthsO7Atb4L5jZyiqhdPh8epVEPjv23wSnow'
-            },
-            'tags': ['@Marie'],
-            'created_time': '1315'
-        },
-        {
-         'id': 5,
-         'images': {
-                'large': 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcThG4sHdvuflQ6lIVA60XnaZeNxdEqaeiAIIEJMygdiNBHVo4O5',
-                'small': 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcThG4sHdvuflQ6lIVA60XnaZeNxdEqaeiAIIEJMygdiNBHVo4O5'
-            },
-            'tags': ['@Karol', '@Lukasz'],
-            'created_time': '13'
-        }
-        ]  # collection of spuds
+        
+        unapproved_spuds = {}
+        latest_instagram_data = InstagramDataProcessor.objects.filter(processed=False, venue_id=self.venue_id)[:10]
+        for item in latest_instagram_data:
+            unapproved_spuds[item.id] = simplejson.loads(item.data)
+        
+        return unapproved_spuds
+
+
+    def get_unapproved_spud_by_id(self, instagram_data_id):
+        """
+        Gets any unapproved spuds linked to this role
+
+        :return: Collection of Spuds
+        """
+        
+        instagram_data = InstagramDataProcessor.objects.get(pk = instagram_data_id)
+        instagram_data.processed = True
+        instagram_data.save()
+        
+        return simplejson.loads(instagram_data.data)
         
         
-    def approve_spuds(self, spuds):
+    def approve_spud(self, spud, venue_id):
         """
         Sends spuds off to Krowd.io tagged with the venue in this case
 
         :param spuds: Collection of spuds
         :return: None
         """
-        pass
+        
+        storage = KrowdIOStorage.GetOrCreateForVenue(venue_id)
+        spud['tags'].append('@Venue%s' % venue_id)
+        
+        if 'images' in spud:
+            post_spud(storage, { 'type' : 'image', 'url' : spud['images']['standard_resolution']['url'], 'title' : spud['caption']['text'], 'usertext' : ' '.join(spud['tags']) })
+            
+        if 'videos' in spud:
+            post_spud(storage, { 'type' : 'video', 'url' : spud['videos']['standard_resolution']['url'], 'title' : spud['caption']['text'], 'usertext' : ' '.join(spud['tags']) })

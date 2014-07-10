@@ -17,17 +17,22 @@
     
     {% if stream_data %}
     <div id="stream">
-        {% for element in stream_data %}
+        {% for key, element in stream_data.items %}
 			
 				<div class="col-sm-6 col-md-3 item">
 					<div class="thumbnail" style="min-height: 200px; padding: 5px; border-color: #eee;">
 						<div class="alert text-center"> </div>
-						<img class="img-thumbnail" width="150" src="{{ element.images.small }}" />
+						<img class="img-thumbnail" width="150" src="{{ element.images.standard_resolution.url }}" />
 						<div class="caption text-center">
-							{% for tag in element.tags %}
-								<a href="#">{{ tag }}</a> &nbsp;
-							{% endfor %}
-							<div id="{{ element.id }}" style="margin-top: 20px" class="confirmation-buttons">
+							<div class="text">
+								{{ element.caption.text }}
+							</div>
+							<div class="tags">
+								{% for tag in element.tags %}
+									<a href="#">{{ tag }}</a> &nbsp;
+								{% endfor %}
+							</div>
+							<div id="{{ key }}" style="margin-top: 20px" class="confirmation-buttons">
 								<a href="javascript:void(0)" data-url="/venues/accept_instagram_media/{{ venue_id }}" class="btn btn-success">Accept</a>
 								<a href="javascript:void(0)" data-url="/venues/reject_instagram_media/{{ venue_id }}" href="#" class="btn btn-danger">Reject</a>
 							</div>
@@ -66,12 +71,13 @@
 				'id' : id
 			});
 			
-			response.done(function() {
-				thumbnail.addClass('alert-success');
-				alert.html('Accepted.');
+			response.done(function(data) {
+				var parsed = JSON.parse(data);
+				thumbnail.addClass(parsed.alertClass);
+				alert.html(parsed.alertText);
 				thumbnail.animate({
 					'opacity' : 0
-				}, 1000, function() {
+				}, parsed.animationTime, function() {
 					container.isotope('remove', thumbnail.parent());
 					iso.isotope('layout');
 				});
@@ -82,6 +88,7 @@
 				alert.html('Something went wrong. Please try again later.');
 			});
 		});
+		
 	});
 </script>
 {% endblock %}

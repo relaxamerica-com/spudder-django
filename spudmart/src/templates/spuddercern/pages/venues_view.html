@@ -1,6 +1,7 @@
 {% extends 'spuddercern/base.html' %}
 
 {% load displays %}
+{% load krowdio %}
 
 {% block title %}{{ venue.name }} ({{ venue.sport }}) | Spudder - Sports Updates Made Simple{% endblock %}
 
@@ -102,6 +103,20 @@
 
                 <!-- Wrapper for slides -->
                 <div class="carousel-inner">
+                	{% if venue_spuds|length > 0 %}
+                		{% for spud in venue_spuds %}
+                			<div class="item {% if forloop.counter0 == 0 %}active{% endif %}">
+		                        <img src="{{ spud.target.json.media.0.raw.url }}" />
+		                        <div class="carousel-caption">
+		                            {{ spud.target.title }}
+		                            
+		                            {% for tag in spud.target.usertext|get_venue_tags %}
+										<a href="#">{{ tag }}</a> &nbsp;
+									{% endfor %}
+		                        </div>
+                    		</div>
+                		{% endfor %}
+                	{% else %}
                     <div class="item active">
                         <img src="/static/img/spudderspuds/button-spuds-large.png" height="300px"/>
                         <div class="carousel-caption">
@@ -109,9 +124,9 @@
                                 <h4>No SPUDS Yet</h4>
                                 <p>Stay tuned, there will soon be SPUDS for this venue!</p>
                             </div>
-
                         </div>
                     </div>
+                    {% endif %}
                 </div>
 
                 <!-- Controls -->

@@ -171,7 +171,7 @@ def callback(request):
                     data = json.loads(get_instagram_callback_json_end_result(json_response_item['object_id']))
 
                     for data_item in data.get('data', []):
-                        process_item = InstagramDataProcessor(venue_id=venue_id, data=data_item, processed=False)
+                        process_item = InstagramDataProcessor(venue_id=venue_id, data=json.dumps(data_item), processed=False)
                         process_item.save()
 
 
