@@ -10,7 +10,7 @@ class RoleController(object):
 
     ENTITY_STUDENT = "student"
     ENTITY_SPONSOR = "sponsor"
-    ENTITY_TYPES = (ENTITY_STUDENT, ENTITY_SPONSOR)
+    ENTITY_TYPES = (ENTITY_STUDENT, ENTITY_SPONSOR, )
 
     @classmethod
     def GetRoleForEntityTypeAndID(cls, entity_type, entity_id, entity_wrapper):

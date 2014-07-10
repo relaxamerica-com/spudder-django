@@ -143,15 +143,17 @@ def location_task(request):
 
             if validate_api_key(api_key):
 
+                # Get the venues from spudmart
                 venues_json = spuddersocialengine.spudmart.api.call_venues_api()
+                venues_data = json.loads(venues_json)
 
                 # Save venues into the database
-                save_venues(venues_json)
+                save_venues(venues_data)
 
                 # For debugging purposes
                 venue_count = 0
 
-                for venue in venues_json['venues']:
+                for venue in venues_data['venues']:
 
                     venue_count += 1
 
@@ -249,7 +251,7 @@ Save (Add / Remove) venues from the database
 """
 
 
-def save_venues(venues_json):
+def save_venues(venues_data):
     logging.debug("SPICE: api/save_venues started")
     # Save venues not in the database
     venues_ids_array = []
@@ -257,7 +259,7 @@ def save_venues(venues_json):
     social_networks = spice_settings.social_networks
 
     # Create new venues
-    for venue in venues_json['venues']:
+    for venue in venues_data['venues']:
         latitude = venue['lat']
         longitude = venue['lon']
         venue_id = str(venue['id'])

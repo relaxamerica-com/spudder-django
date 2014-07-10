@@ -91,7 +91,7 @@
     <script type="text/javascript" language="javascript">
         $(document).ready(function() {
             var loginWithAmazon = document.getElementById('LoginWithAmazon'),
-                returnUrl = '{{ base_url }}/accounts/login/amazon';
+                returnUrl = '/accounts/login/amazon';
 
             returnUrl += '?school_id={{ school.id }}&next=/cern/{{ school.state }}/{{ school.id }}/{% strip_school_name school %}/';
             {% if referrer %}

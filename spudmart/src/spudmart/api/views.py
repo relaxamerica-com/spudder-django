@@ -2,8 +2,7 @@ import json
 
 from django.http import HttpResponse
 from spudmart.api import api_settings
-
-from spudmart.venues.models import Venue
+from spudmart.api.api import get_venues
 
 """
 
@@ -57,19 +56,11 @@ Returns all the venues from SpudMart in JSON Format
 """
 
 
-def get_venues(request):
+def get_venues_api_request(request):
     if request.method == 'GET':
         if 'key' in request.GET and request.GET['key'] != '':
             if verify_api_key(request.GET['key']):
-                venues = Venue.objects.all()
-
-                venues_json = []
-
-                for venue in venues:
-                    venues_json.append({'id': venue.id, 'lat': str(venue.latitude), 'lon': str(venue.longitude)})
-
-                return_json = {'venues': venues_json}
-
+                return_json = get_venues()
                 return HttpResponse(json.dumps(return_json), content_type='application/json')
             else:
                 return HttpResponse(json.dumps(key_authentication_error()), content_type='application/json')

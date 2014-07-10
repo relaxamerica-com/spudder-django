@@ -32,6 +32,9 @@
 {% endblock %}
 
 {% block body %}
+    <div class="jumbotron" style="height:200px;" id="jumbo-map-container">
+
+    </div>
 <div class="container clearfix" id="venue-view">
 	<div class="row">
 		<div class="col-sm-8" style="margin-top:20px;">
@@ -629,7 +632,18 @@
     $('.content').hide();
     $('.active').show();
 
-	$(document).ready(function()
+	$(document).ready(function() {
+        console.log('ready');
+
+        // Init the Jumbo Map
+        var jumbo_map = new google.maps.Map($('#jumbo-map-container')[0], {
+            zoom: 18,
+            mapTypeId: 'satellite',
+            center: new google.maps.LatLng(parseFloat("{{ venue.latitude }}"), parseFloat("{{ venue.longitude }}"))
+        });
+        //jumbo_map.setTilt(45);
+
+
         $('.alert').each(function(i, alert) {
            var $alert = $(alert);
            if ($alert.html() == "")

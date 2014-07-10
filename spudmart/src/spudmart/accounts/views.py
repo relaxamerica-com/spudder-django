@@ -22,13 +22,21 @@ from spudmart.CERN.rep import recruited_new_student, signed_up
 from spudmart.CERN.models import Student, School
 
 
-def _accommodate_legacy_pre_V1_1_0_users(access_token, amazon_user_email, amazon_user_id, user_role):
+def _accommodate_legacy_pre_V1_1_0_users(access_token, amazon_user_email, amazon_user_id):
+
+    # Check if there is a UserProfile (old workflow) for this amazon id
+    if not UserProfile.objects.filter(amazon_id=amazon_user_id):
+        return
+
+    # If there was a user profile then we need to convert and scrub the user
+    UserProfile.objects.get(amazon_id=amazon_user_id).delete()
+
     # This is a legacy condition covering users that were created before V1.1.0
     user = User.objects.get(username=amazon_user_email)
     role_controller = RoleController(user)
     user_role = role_controller.role_by_entity_type_and_entity_id(
         RoleController.ENTITY_STUDENT,
-        Student.objects.get(user=user),
+        Student.objects.get(user=user).id,
         RoleBase.RoleWrapperByEntityType(RoleController.ENTITY_STUDENT))
     create_linked_authentication_service(
         user_role,
@@ -39,7 +47,6 @@ def _accommodate_legacy_pre_V1_1_0_users(access_token, amazon_user_email, amazon
             'amazon_user_id': amazon_user_id,
             'amazon_access_token': access_token
         })
-    return user_role
 
 
 def login(request):
@@ -89,6 +96,9 @@ def create_student(user, school_id, referrer_id):
 
 
 def _process_amazon_login(access_token, amazon_user_email, amazon_user_id, request):
+
+    # Check to see if we need to accomodate pre V1.1.0 accounts
+    _accommodate_legacy_pre_V1_1_0_users(access_token, amazon_user_email, amazon_user_id)
 
     # Check to see if these credential are tied to a user role via an authentication service
     user_role = select_role_by_authentication_service(LinkedServiceController.SERVICE_AMAZON, amazon_user_id)

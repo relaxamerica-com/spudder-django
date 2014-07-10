@@ -9,10 +9,7 @@ class RolesMiddleware:
         current_role = None
         if request.user and request.user.is_authenticated():
             role_controller = RoleController(request.user)
-            try:
-                current_role = request.current_role
-            except AttributeError:
-                current_role = None
+            current_role = request.session.get('current_role', None)
             if not current_role:
                 one_ane_only_role = select_user_role_if_only_one_role_exists(role_controller)
                 if one_ane_only_role:
@@ -20,6 +17,7 @@ class RolesMiddleware:
                         'entity_type': one_ane_only_role.entity_type,
                         'entity_id': one_ane_only_role.entity.id}
             if current_role:
+                request.session['current_role'] = current_role
                 current_role = role_controller.role_by_entity_type_and_entity_id(
                     current_role['entity_type'],
                     current_role['entity_id'],
