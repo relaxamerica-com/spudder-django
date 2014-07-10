@@ -30,20 +30,20 @@
                         <td>{{ venue.sport }}</td>
                         <td><a href="/venues/view/{{ venue.id }}">{{ venue.aka_name }}</a></td>
                         <td>{{ venue.name }}</td>
-                        <td>
-                            <!--<a class="btn btn-mini btn-orange" href="javascript:alert('Feature Coming Soon!')" title="SPUDS from SPICE">
+                        <td style="white-space: nowrap">
+                            <!--<a class="btn btn-xs btn-primary" href="javascript:alert('Feature Coming Soon!')" title="SPUDS from SPICE">
                                 <i class="icon-microphone"> </i>
                             </a>
-                            <a class="btn btn-mini btn-orange" href="javascript:alert('Feature Coming Soon!')" title="My Venue Teams">
+                            <a class="btn btn-xs btn-primary" href="javascript:alert('Feature Coming Soon!')" title="My Venue Teams">
                                 <i class="icon-group"> </i>
                             </a>-->
-                            <a class="btn btn-mini btn-orange" href="/venues/view/{{ venue.id }}" title="Edit">
+                            <a class="btn btn-xs btn-primary" href="/venues/view/{{ venue.id }}" title="Edit">
                                 <i class="fa fa-fw fa-edit"> </i>
                             </a>
-                            <a class="btn btn-mini btn-orange" href="javascript:deleteVenue('{{ venue.id }}')" title="Delete">
+                            <a class="btn btn-xs btn-primary" href="javascript:deleteVenue('{{ venue.id }}')" title="Delete">
                                 <i class="fa fa-fw fa-trash-o"> </i>
                             </a>
-                            <a class="btn btn-mini btn-orange" href="/venues/get_instagram_stream/{{ venue.id }}" title="Instagram Stream">
+                            <a class="btn btn-xs btn-primary" href="/venues/get_instagram_stream/{{ venue.id }}" title="Instagram Stream">
 	                        	<i class="fa fa-fw fa-instagram"> </i> 
 	                   		</a>
                         </td>
@@ -51,7 +51,7 @@
                 {% endfor %}
                 <tr>
                     <td colspan="4">
-                        <a href="/cern/venues/new/" class="btn btn-orange">
+                        <a href="/cern/venues/new/" class="btn btn-primary">
                             <i class="fa fa-fw fa-plus"></i> Claim another venue!
                         </a>
                     </td>
