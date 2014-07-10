@@ -32,9 +32,30 @@
 {% endblock %}
 
 {% block body %}
-    <div class="jumbotron" style="height:200px;" id="jumbo-map-container">
-
+<div class="jumbotron" style="position:relative; top: -20px; padding: 0;">
+    <div style="height:400px" id="jumbo-map-container"></div>
+    <div class="container">
+        <div class="page-header" style="background: rgba(255, 255, 255, .7); position:absolute; bottom: 10px; padding: 10px;">
+            <h1 style="position:relative">
+                {% if venue.logo %}
+                    <img id="venue-logo" src="/file/serve/{{ venue.logo.id }}" height="100px"/>
+                {% else %}
+                    <img id="venue-logo" src="/static/img/spuddercern/button-cern-medium.png" height="100px"/>
+                {% endif %}
+                {{ venue.name }}
+                <br/>
+                <small>{{ venue.aka_name }}</small>
+                {% if can_edit %}
+                    <div class="pull-right" style="position:relative; bottom: 0; right: 10px;">
+                        <div class="btn btn-primary" id="edit">
+                            Edit Mode
+                        </div>
+                    </div>
+                {% endif %}
+            </h1>
+        </div>
     </div>
+</div>
 <div class="container clearfix" id="venue-view">
 	<div class="row">
 		<div class="col-sm-8" style="margin-top:20px;">
@@ -46,58 +67,46 @@
                 {% endwith %}
             {% endif %}
 
-            {% if can_edit %}
-                <div class="pull-right">
-                    <div class="btn btn-primary" id="edit">
-                        Edit Mode
-                    </div>
-                </div>
-            {% endif %}
 
-            <div class="row-fluid">
-                <div class="col-sm-2">
-                    <div class="view-mode">
-                        {% if venue.logo %}
-                            <img id="venue-logo" src="/file/serve/{{ venue.logo.id }}" height="100px"/>
-                        {% else %}
-                            <img id="venue-logo" src="/static/img/spuddercern/button-cern-medium.png" />
-                        {% endif %}
-                    </div>
-                </div>
-                <div style="display: inline-block; text-align: center; width: 75%; margin-top:10px;">
-                    <h3 style="margin-bottom: 0px; font-weight: bold;" id="venue-name">
-                        {{ venue.name }}
-                    </h3>
-                    <h5 class="view-mode" id="venue-aka-name">
-                        {{ venue.aka_name }}
-                    </h5>
-                </div>
-            </div>
+{#            <div class="row-fluid">#}
+{#                <div class="col-sm-2">#}
+{#                    <div class="view-mode">#}
+{#                        {% if venue.logo %}#}
+{#                            <img id="venue-logo" src="/file/serve/{{ venue.logo.id }}" height="100px"/>#}
+{#                        {% else %}#}
+{#                            <img id="venue-logo" src="/static/img/spuddercern/button-cern-medium.png" />#}
+{#                        {% endif %}#}
+{#                    </div>#}
+{#                </div>#}
+{#                <div style="display: inline-block; text-align: center; width: 75%; margin-top:10px;">#}
+{#                    <h3 style="margin-bottom: 0px; font-weight: bold;" id="venue-name">#}
+{#                        {{ venue.name }}#}
+{#                    </h3>#}
+{#                    <h5 class="view-mode" id="venue-aka-name">#}
+{#                        {{ venue.aka_name }}#}
+{#                    </h5>#}
+{#                </div>#}
+{#            </div>#}
 
             <div class="alert" id="logo-name-alert"></div>
-            <div class="row-fluid edit-mode">
-                <div class="col-md-12" style="padding:15px;">
-                    <form method="post" enctype="multipart/form-data" role="form">
-                        <div class="row-fluid edit-mode edit-mode-sponsor col-sm-4">
-{#                            <div class="form-group">#}
-                                <label>Upload a logo:</label>
-                                <input type="file" name="file" id="edit-logo" />
-{#                            </div>#}
-                        </div>
-                        <div class="row-fluid edit-mode edit-mode-sponsor col-sm-8">
-                            <div class="form-group edit-mode">
-                                <label>Venue Name:</label>
-                                <input type="text" name="name" value="{{ venue.name }}" id="venue-name-input" />
-                            </div>
-                            <div class="form-group">
-                                <label>Venue Common Name:</label>
-                                <input type="text" name="aka_name" value="{{ venue.aka_name }}" id="venue-aka-name-input" />
-                            </div>
-                        </div>
-{#                    <button class="btn btn-primary edit-mode" id="save-name">Save</button>#}
-                        <a class="btn btn-primary edit-mode" id="save-name">Save</a>
-                    </form>
-                </div>
+            <div class="edit-mode well">
+                <h2>Edit basic venue details</h2>
+                <form method="post" enctype="multipart/form-data" role="form">
+                    <div class="form-group edit-mode edit-mode-sponsor">
+                        <label>Upload a logo:</label>
+                        <input type="file" name="file" id="edit-logo" class="form-control" />
+                    </div>
+                    <div class="form-group edit-mode">
+                        <label>Venue Name:</label>
+                        <input type="text" name="name" value="{{ venue.name }}" id="venue-name-input"  class="form-control"/>
+                    </div>
+                    <div class="form-group">
+                        <label>Venue Common Name:</label>
+                        <input type="text" name="aka_name" value="{{ venue.aka_name }}" id="venue-aka-name-input"  class="form-control"/>
+                    </div>
+                    <button class="btn btn-primary edit-mode" id="save-name">Save</button>
+{#                    <a class="btn btn-primary edit-mode" id="save-name">Save</a>#}
+                </form>
             </div>
 
             <div style="padding: 30px 0; border-top: 1px solid #CCC;">
@@ -636,12 +645,18 @@
         console.log('ready');
 
         // Init the Jumbo Map
-        var jumbo_map = new google.maps.Map($('#jumbo-map-container')[0], {
-            zoom: 18,
-            mapTypeId: 'satellite',
-            center: new google.maps.LatLng(parseFloat("{{ venue.latitude }}"), parseFloat("{{ venue.longitude }}"))
-        });
-        //jumbo_map.setTilt(45);
+        if ($('#jumbo-map-container').is(':visible')) {
+            var jumbo_map = new google.maps.Map($('#jumbo-map-container')[0], {
+                zoom: 19,
+                mapTypeId: 'satellite',
+                center: new google.maps.LatLng(parseFloat("{{ venue.latitude }}"), parseFloat("{{ venue.longitude }}"))
+            });
+            //jumbo_map.setTilt(45);
+{#            $('#venue-view').css({#}
+{#                position: 'relative',#}
+{#                top: -130#}
+{#            });#}
+        }
 
 
         $('.alert').each(function(i, alert) {

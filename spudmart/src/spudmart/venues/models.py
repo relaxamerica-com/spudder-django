@@ -61,7 +61,7 @@ class Venue(models.Model):
         return self.sponsor is None
 
     def is_renter(self, role):
-        if role is None or self.sponsor is None:
+        if role is None or self.renter is None:
             return False
 
         return str(self.renter.id) == role.entity.id

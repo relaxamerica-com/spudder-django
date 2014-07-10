@@ -2,7 +2,7 @@ import os
 from urllib2 import urlopen
 from urllib import urlencode
 from boto.s3.user import User
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect, HttpResponse, \
     HttpResponseNotAllowed, HttpResponseForbidden
 from django.template import RequestContext
@@ -488,7 +488,7 @@ def venues(request):
 @user_passes_test(user_is_student, '/cern/non-student/')
 def venues_new(request):
     if request.method == 'POST':
-        venue = Venue(user=request.user, sport=request.POST['sport'])
+        venue = Venue(user=request.user, sport=request.POST['sport'], student=request.current_role.entity)
         venue.latitude = float(request.POST['latitude'])
         venue.longitude = float(request.POST['longitude'])
         venue.save()
@@ -497,7 +497,7 @@ def venues_new(request):
         owner = request.current_role.entity
         created_venue(owner)
 
-        return redirect_to('/venues/view/%s' % venue.id)
+        return redirect('/venues/view/%s' % venue.id)
     template_data = {'sports': SPORTS}
     return render(request, 'spuddercern/pages/venues_new.html', template_data)
 
