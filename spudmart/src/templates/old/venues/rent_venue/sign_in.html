@@ -18,7 +18,7 @@
 {% block scripts %}
     <script>
         var loginWithAmazon = document.getElementById('LoginWithAmazon'),
-            returnUrl = '{{ base_url }}/accounts/login/sponsors/amazon?next=/venues/rent_venue/sign_in_complete&account_type=sponsor';
+            returnUrl = '{{ base_url }}/accounts/login/sponsors?next=/venues/rent_venue/sign_in_complete&account_type=sponsor';
 
         if (loginWithAmazon) {
             loginWithAmazon.onclick = function() {

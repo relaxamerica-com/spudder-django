@@ -123,6 +123,8 @@
                 </a>
             </div>
 
+            <hr />
+
             <div style="padding-bottom: 30px">
                 <h4 style="margin-bottom: 0">Venue Details</h4>
                 <p class="help-block">Click the buttons below to cycle through the venue details.</p>
@@ -663,6 +665,11 @@
             var jumbo_map = new google.maps.Map($('#jumbo-map-container')[0], {
                 zoom: 19,
                 mapTypeId: 'satellite',
+                scrollwheel: false,
+                navigationControl: false,
+                mapTypeControl: false,
+                scaleControl: false,
+                draggable: false,
                 center: new google.maps.LatLng(parseFloat("{{ venue.latitude }}"), parseFloat("{{ venue.longitude }}"))
             });
             //jumbo_map.setTilt(45);
@@ -1231,7 +1238,7 @@
 
 				response.done(function() {
 {#					dfd.resolve();#}
-					$(button).html('Price this Venue');
+					$(button).html($(this).data('original_text'));
 					currentPrice.show();
 					currentPrice.find('span').html(priceInput.val());
 					priceInput.parent().css('display', 'none');
@@ -1239,7 +1246,8 @@
 
 			} else {
 				priceInput.parent().css('display', 'table');
-				$(this).html('' +
+				$(this).data('original_text', $(this).html())
+                $(this).html('' +
                         'Save');
 			}
 		});

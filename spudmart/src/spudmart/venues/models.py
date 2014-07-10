@@ -58,7 +58,7 @@ class Venue(models.Model):
         if PendingVenueRental.objects.filter(venue=self).count() > 0:
             return False
 
-        return self.sponsor is None
+        return self.renter is None
 
     def is_renter(self, role):
         if role is None or self.renter is None:
