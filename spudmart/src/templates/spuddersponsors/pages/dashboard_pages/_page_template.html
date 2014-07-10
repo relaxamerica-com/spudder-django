@@ -1,0 +1,18 @@
+{% extends 'spuddersponsors/pages/dashboard_pages/dashboard.html' %}
+
+{% block google_analytics_additions %}
+    ga('set', 'contentGroup1', 'SPONSORS - CHANGE_THIS');
+{% endblock %}
+
+{% block side_nav %}{% include 'spuddersponsors/parts/side_nav.html' with active=CHANGE_THIS %}{% endblock %}
+
+{% block dashboard_page %}
+    <div class="page-header">
+        <h1>
+            <i class="fa fa-CHANGE_THIS"></i> CHANGE_THIS <small>CHANGE_THIS</small>
+        </h1>
+    </div>
+
+    CHANGE_THIS
+
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends 'spuddersponsors/base.html' %}
+
+{% block title %}Spudder Sponsors Dashboard{% endblock %}
+
+{% block google_analytics_additions %}
+    ga('set', 'contentGroup1', 'SPONSORS - Dashboard');
+{% endblock %}
+
+
+{% block body %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-2 hidden-xs hidden-sm">
+                <div class="list-group">
+                    {% block side_nav %}{% include 'spuddersponsors/parts/side_nav.html' with active="dashboard" %}{% endblock %}
+                </div>
+            </div>
+            <div class="col-md-10 col-sm-12">
+                {% block dashboard_page %}
+                    <div class="page-header">
+                        <h1>
+                            <i class="fa fa-fw fa-bar-chart-o"></i> Dashboard <small>Monitor your Sponsor profile across all your Spudder assets</small>
+                        </h1>
+                    </div>
+                {% endblock %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

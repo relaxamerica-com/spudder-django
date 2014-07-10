@@ -83,3 +83,10 @@ def public_view(request, page_id):
     return render(request, 'old/sponsors/public_view.html', {
         'page': page
     })
+
+
+def sponsors_dashboard(request):
+    return render(
+        request,
+        'spuddersponsors/pages/dashboard_pages/dashboard.html',
+        {})

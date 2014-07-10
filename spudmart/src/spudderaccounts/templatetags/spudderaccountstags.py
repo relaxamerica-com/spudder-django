@@ -24,3 +24,8 @@ def link_to_delete_role_and_return(context, role):
 @register.filter(name='is_cern_student')
 def is_cern_student(role):
     return role.entity_type == RoleController.ENTITY_STUDENT
+
+
+@register.filter(name='is_sponsor')
+def is_cern_student(role):
+    return role.entity_type == RoleController.ENTITY_SPONSOR
