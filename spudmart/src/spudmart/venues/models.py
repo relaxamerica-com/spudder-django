@@ -64,7 +64,7 @@ class Venue(models.Model):
         if role is None or self.renter is None:
             return False
 
-        return str(self.renter.id) == role.entity.id
+        return self.renter.sponsor.id == role.user.id
 
     def is_groundskeeper(self, role):
         if not role or not self.student:

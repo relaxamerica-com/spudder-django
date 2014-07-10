@@ -73,6 +73,7 @@ def view(request, venue_id):
     is_recipient = VenueRecipient.objects.filter(groundskeeper=student)
     rent_venue_url = False
     can_edit = request.user.is_authenticated() and (venue.is_groundskeeper(role) or venue.is_renter(role))
+
     if venue.is_available() and not venue.is_renter(role):
         rent_venue_url = get_rent_venue_cbui_url(venue)
 
@@ -87,7 +88,7 @@ def view(request, venue_id):
         'can_edit': can_edit,
         'sponsor': sponsor[0] if len(sponsor) else None,
         'is_sponsor': venue.is_renter(role),
-        'student': student,
+        'student': student
     })
 
 def index(request):
@@ -451,7 +452,7 @@ def rent_complete(request, venue_id):
             else:
                 state = DonationState.FINISHED
                 sponsor_page = SponsorPage.objects.get(sponsor=request.user)
-                venue.sponsor = sponsor_page
+                venue.renter = sponsor_page
                 redirect_to = '/venues/rent_venue/%s/thanks' % venue.pk
 
             venue.save()
@@ -535,7 +536,7 @@ def rent_notification(request, venue_id, user_id):
         rent_venue.error_message = parsed_status.statusMessage
         rent_venue.save()
 
-        venue.sponsor = None
+        venue.renter = None
         venue.save()
 
         message_body = render_to_string('spuddercern/pages/rent_venue_rent_error.html', {

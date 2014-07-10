@@ -25,7 +25,7 @@ def finalize_pending_rentals(pending_rentals, role):
             count += 1
 
             venue = pending_venue.venue
-            venue.sponsor = sponsor
+            venue.renter = sponsor
             venue.save()
 
             rent_venue = RentVenue.objects.get(venue=venue)

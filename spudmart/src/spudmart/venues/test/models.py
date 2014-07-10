@@ -38,6 +38,6 @@ class IsVenueAvailable(FormattedOutputTestCase):
 
     def test_price_is_set_and_somebody_rented_it(self):
         self.venue.price = 2
-        self.venue.sponsor = self.sponsor_page
+        self.venue.renter = self.sponsor_page
 
         self.assertFalse(self.venue.is_available())

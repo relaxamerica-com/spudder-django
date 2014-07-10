@@ -498,20 +498,21 @@
 
 		<div class="col-md-4">
 			<aside class="right-sidebar" style="margin-top: 20px;">
-
+                <hr class="hidden-md hidden-lg"/>
 
                 <hr class="hidden-md hidden-lg"/>
                 {% if request.current_role.entity == venue.student %}
-                    {% if not venue.sponsor %}
+                    {% if not venue.renter %}
                         {% include 'spuddercern/quote_messages/quote_venue_sponsors_coming_soon_can_edit.html' %}
                     {% else %}
                         {% include 'spuddercern/quote_messages/quote_venue_rented_for_student.html' %}
                     {% endif %}
                 {% else %}
                     {% if not sponsor %}
-                        {% include 'spuddercern/quote_messages/quote_venue_sponsors_coming_soon.html' %}
                         {% if venue.renter %}
                             {% include 'spuddercern/quote_messages/quote_venue_reserved.html' %}
+                        {% else %}
+                            {% include 'spuddercern/quote_messages/quote_venue_sponsors_coming_soon.html' %}
                         {% endif %}
                     {% else %}
                         This venue is sponsored.
