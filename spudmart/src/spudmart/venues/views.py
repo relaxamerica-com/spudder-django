@@ -482,12 +482,12 @@ def rent_sign_in_complete(request):
 
     del request.session['pending_venues_rental']
 
-    return HttpResponseRedirect('/dashboard/sponsor/page')
+    return HttpResponseRedirect('/sponsor/page')
 
 
 def rent_thanks(request, venue_id):
     return render(request, 'spuddercern/pages/rent_venue_thanks.html', {
-        'spudder_url': '%s/dashboard/sponsor/page' % settings.SPUDMART_BASE_URL,
+        'spudder_url': '%s/sponsor/page' % settings.SPUDMART_BASE_URL,
         'venue_url': '%s/venues/view/%s' % (settings.SPUDMART_BASE_URL, venue_id)
     })
 

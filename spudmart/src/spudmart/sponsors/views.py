@@ -66,7 +66,7 @@ def sponsor_page(request):
             saved_page.thumbnail = _get_thumbnail_id(request.POST)
             saved_page.save()
 
-            return HttpResponseRedirect('/dashboard/sponsor/page')
+            return HttpResponseRedirect('/sponsor/page')
 
     return render(request, 'spuddersponsors/pages/dashboard_pages/sponsor_page_edit.html', {
         'form': form,
