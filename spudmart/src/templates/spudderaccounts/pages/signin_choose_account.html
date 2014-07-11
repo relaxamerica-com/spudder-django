@@ -23,12 +23,16 @@
                     <div class="panel-body">
                         <div class="thumbnail">
                             <img src="/static/img/spuddercern/button-cern-large.png"/>
-                            <div class="caption">
+                            <div class="caption" style="text-align: center;">
                                 <h3>Student in CERN</h3>
                                 <p>Login as a Student in CERN</p>
-                                <a href="/cern/login/" class="btn btn-primary">
-                                    <i class="fa fa-signin"></i> Signin as a Student
+                                <a href="javascript:loginAsStudent();">
+                                    <img border="0" alt="Login with Amazon"
+                                             src="https://images-na.ssl-images-amazon.com/images/G/01/lwa/btnLWA_gold_156x32.png"
+                                             width="156" height="32" style="margin-bottom: 10px;"/>
                                 </a>
+                                <p>Don't have an account?</p>
+                                <a href="/cern/register/" class="btn btn-primary">Register as a Student</a>
                             </div>
                         </div>
                     </div>
@@ -39,11 +43,13 @@
                     <div class="panel-body">
                         <div class="thumbnail">
                             <img src="/static/img/spuddercern/button-cern-large.png"/>
-                            <div class="caption">
+                            <div class="caption" style="text-align: center;">
                                 <h3>Venue Sponsor</h3>
                                 <p>Login as a Venue Sponsor</p>
-                                <a href="/accounts/login/sponsors" class="btn btn-primary">
-                                    <i class="fa fa-signin"></i> Signin as a Sponsor
+                                <a href="javascript:loginAsVenueSponsor();">
+                                    <img border="0" alt="Login with Amazon"
+                                        src="https://images-na.ssl-images-amazon.com/images/G/01/lwa/btnLWA_gold_156x32.png"
+                                        width="156" height="32" style="margin-bottom: 10px;" />
                                 </a>
                             </div>
                         </div>
@@ -54,3 +60,28 @@
 
     </div>
 {% endblock %}
+
+{% block js %}
+    {{ block.super }}
+    {% include 'spudderaccounts/parts/amazon_login_js.html' %}
+    <script type="text/javascript" language="javascript">
+        window.loginAsStudent = function () {
+            return loginWithAmazon('{{ base_url }}/accounts/login/amazon');
+        };
+
+        window.loginAsVenueSponsor = function () {
+            return loginWithAmazon('{{ base_url }}/accounts/login/amazon?next=/dashboard/sponsor/page&account_type=sponsor');
+        };
+
+        function loginWithAmazon(returnURL) {
+            if (typeof amazon == undefined) return;
+
+            var options = { scope : 'profile', interactive: 'always' };
+
+            amazon.Login.authorize(options, returnURL);
+
+            return false;
+        }
+    </script>
+
+{% endblock js %}

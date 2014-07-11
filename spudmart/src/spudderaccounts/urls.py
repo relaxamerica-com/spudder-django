@@ -1,3 +1,4 @@
+import os
 from django.conf.urls.defaults import *
 
 urlpatterns = patterns(
@@ -12,7 +13,6 @@ urlpatterns = patterns(
 
     url('account/create_password', 'accounts_create_password'),
     url('account/signin/(?P<user_id>\d+)', 'accounts_signin',),
-    url('account/signin', 'accounts_signin_choose_account',),
-
+    url('account/signin', 'accounts_signin_choose_account', {'SSL' : True }),
     url('$', 'accounts_dashboard',),
 )

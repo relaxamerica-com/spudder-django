@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
+import settings
 from spudderaccounts.forms import ProfileDetailsForm, CreatePasswordForm, SigninForm
 from spudderaccounts.utils import select_all_user_roles
 from spudderdomain.controllers import RoleController
@@ -111,4 +112,7 @@ def accounts_create_password(request):
 
 
 def accounts_signin_choose_account(request):
-    return render_to_response('spudderaccounts/pages/signin_choose_account.html')
+    return render_to_response('spudderaccounts/pages/signin_choose_account.html', {
+        'AMAZON_CLIENT_ID': settings.AMAZON_LOGIN_CLIENT_ID,
+        'base_url': settings.SPUDMART_BASE_URL,
+    })
