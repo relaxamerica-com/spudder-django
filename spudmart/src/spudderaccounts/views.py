@@ -78,7 +78,12 @@ def accounts_delete_role(request, entity_type, entity_id):
 
 
 def accounts_activate_role(request, entity_type, entity_id):
-    next_url = request.GET.get('next', None)
+    # next_url = request.GET.get('next', None)
+    role = RoleController.GetRoleForEntityTypeAndID(
+        entity_type,
+        entity_id,
+        RoleBase.RoleWrapperByEntityType(entity_type))
+    next_url = role.home_page_path
     request.session['current_role'] = {'entity_type': entity_type, 'entity_id': entity_id}
     return redirect(next_url or '/users')
 

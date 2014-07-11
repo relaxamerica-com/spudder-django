@@ -164,7 +164,7 @@ class RoleSponsor(RoleBase):
 
     @property
     def home_page_path(self):
-        return '/dashboard'
+        return '/sponsors'
 
     def user_is_owner(self, user):
         return self.entity.user == user

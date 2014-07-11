@@ -1,6 +1,7 @@
 import urlparse
 from django.conf.urls.defaults import *
 from django.http import HttpResponseRedirect
+from django.shortcuts import render_to_response
 from django.views.generic import RedirectView
 
 handler404 = 'django.views.defaults.page_not_found'
@@ -30,7 +31,7 @@ def temp_redirect_view(request):
         except KeyError:
             pass  # request META dict doesn't have HTTP_HOST key (f.i. in tests)
 
-    return HttpResponseRedirect(redirect_url)
+    return render_to_response('main_splash.html')
 
 urlpatterns = patterns(
     '',
