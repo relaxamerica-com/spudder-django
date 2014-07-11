@@ -37,5 +37,4 @@ urlpatterns = patterns('spudmart.venues.views',
     (r'^get_instagram_stream/(?P<venue_id>\d+)$', 'get_instagram_stream'),
     (r'^accept_instagram_media/(?P<venue_id>\d+)$', 'accept_instagram_media'),
     (r'^reject_instagram_media/(?P<venue_id>\d+)$', 'reject_instagram_media'),
-    (r'^list_venue_spuds/(?P<venue_id>\d+)$', 'list_venue_spuds'),
 )
