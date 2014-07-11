@@ -440,7 +440,7 @@ def rent_complete(request, venue_id):
             else:
                 state = DonationState.FINISHED
                 sponsor_page = SponsorPage.objects.get(sponsor=request.user)
-                venue.sponsor = sponsor_page
+                venue.renter = sponsor_page
                 redirect_to = '/venues/rent_venue/%s/thanks' % venue.pk
 
             venue.save()
