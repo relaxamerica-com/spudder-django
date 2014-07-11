@@ -554,7 +554,7 @@ def delete_venue(request, venue_id):
 def get_instagram_stream(request, venue_id):
     controller = SpudsController(request.current_role, venue_id)
     
-    return render(request, 'old/venues/instagram_stream.html', 
+    return render(request, 'spuddercern/pages/venue_instagram_stream.html',
                   { 'stream_data' : controller.get_any_unapproved_spuds(), 
                    'venue_id' : venue_id })
     
