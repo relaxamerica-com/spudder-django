@@ -60,14 +60,6 @@
 <div class="container clearfix" id="venue-view">
 	<div class="row">
 		<div class="col-sm-8" style="margin-top:20px;">
-            {% if can_edit %}
-                {% with info_message_id="venues_can_edit" %}
-                    {% if info_message_id not in student.hidden_info_messages %}
-                        {% include 'spuddercern/quote_messages/quote_venue_instructions.html' %}
-                    {% endif %}
-                {% endwith %}
-            {% endif %}
-
 
             <div class="alert" id="logo-name-alert"></div>
             <div class="edit-mode well">
@@ -89,6 +81,14 @@
                     <a class="btn btn-primary edit-mode" id="save-name">Save</a>
                 </form>
             </div>
+
+            {% if can_edit %}
+                {% with info_message_id="venues_can_edit" %}
+                    {% if info_message_id not in student.hidden_info_messages %}
+                        {% include 'spuddercern/quote_messages/quote_venue_instructions.html' %}
+                    {% endif %}
+                {% endwith %}
+            {% endif %}
 
             <div style="padding-bottom: 30px">
                 <h4 style="margin-bottom: 0"><abbr title="Sports Updates">SPUDS</abbr> from this venue</h4>
