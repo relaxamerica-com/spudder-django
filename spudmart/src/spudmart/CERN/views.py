@@ -693,7 +693,7 @@ def save_linkedin(request):
             expires = datetime.utcnow() + timedelta(seconds=seconds_remaining)
             token = json['access_token']
 
-            student = request.current_user.entity
+            student = request.current_role.entity
             student.linkedin_token = token
             student.linkedin_expires = expires
             student.save()

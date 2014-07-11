@@ -65,10 +65,10 @@
                             {% endif %}
                         </div>
                         <div class="edit-mode">
-                            <form method="POST" enctype="multipart/form-data" role="form">
+                            <form method="POST" enctype="multipart/form-data" role="form" class="form-horizontal">
                                 <div class="form-group">
-                                    <label for="school-form-description">CERN Team Description:</label>
-                                    <textarea id="school-form-description" name="description" class="input-block-level" placeholder="Enter something that you would like other to know about your CERN Team">{{ school.description }}</textarea>
+                                    <label for="school-form-description" class="col-sm-12">CERN Team Description:</label>
+                                    <textarea id="school-form-description" name="description" class="input-block-level" placeholder="Enter something that you would like other to know about your CERN Team" class="col-sm-12">{{ school.description }}</textarea>
                                     <p class="help-block">Remember, visitors to your CERN Team page will see this description!</p>
                                 </div>
                                 <button class="btn btn-primary btn-small" >

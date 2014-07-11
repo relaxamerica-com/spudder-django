@@ -9,10 +9,7 @@ register = template.Library()
 @register.simple_tag
 def user_name(user):
     try:
-        profile = user.get_profile()
-        return profile.username
-    except SiteProfileNotAvailable:
-        return user.username
+        return str(user.first_name) + " " + str(user.last_name)
     except Exception:
         return ''
 
