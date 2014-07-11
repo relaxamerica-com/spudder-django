@@ -40,23 +40,6 @@
                     </div>
                 </td>
                 <td>
-                <% if (team.get('isRegisteredRecipient')) { %>
-                    <a class="btn btn-mini btn-lightgrey btn-action" title="Offers" href="/dashboard/teams/<%= team.id %>/offers" >
-                <% } else { %>
-                    <a class="btn btn-mini btn-lightgrey btn-action" title="Offers" href="javascript:void(0);" disabled>
-                <% } %>
-                        <i class="icon-time"></i>
-                    </a>
-
-
-                <% if (!team.get('isRegisteredRecipient')) { %>
-                    <a class="btn btn-mini btn-lightgrey btn-action" title="Register with Amazon" href="/dashboard/payments/recipient/<%= team.id %>" >
-                <% } else { %>
-                    <a class="btn btn-mini btn-lightgrey btn-action" title="Register with Amazon" href="javascript:void(0);" disabled>
-                <% } %>
-                        <i class="icon-credit-card"></i>
-                    </a>
-
                     <a class="btn btn-mini btn-lightgrey btn-action" href="javascript:void(0);" title="Reports" disabled>
                         <i class="icon-file-text"></i>
                     </a>
