@@ -31,22 +31,29 @@ def _accommodate_legacy_pre_V1_1_0_users(access_token, amazon_user_email, amazon
     # If there was a user profile then we need to convert and scrub the user
     UserProfile.objects.get(amazon_id=amazon_user_id).delete()
 
-    # This is a legacy condition covering users that were created before V1.1.0
-    user = User.objects.get(username=amazon_user_email)
-    role_controller = RoleController(user)
-    user_role = role_controller.role_by_entity_type_and_entity_id(
-        RoleController.ENTITY_STUDENT,
-        Student.objects.get(user=user).id,
-        RoleBase.RoleWrapperByEntityType(RoleController.ENTITY_STUDENT))
-    create_linked_authentication_service(
-        user_role,
-        LinkedServiceController.SERVICE_AMAZON,
-        amazon_user_id,
-        {
-            'amazon_user_email': amazon_user_email,
-            'amazon_user_id': amazon_user_id,
-            'amazon_access_token': access_token
-        })
+    try:
+        # This is a legacy condition covering users that were created before V1.1.0
+        user = User.objects.get(username=amazon_user_email)
+        student = Student.objects.get(user=user).id
+
+        role_controller = RoleController(user)
+        user_role = role_controller.role_by_entity_type_and_entity_id(
+            RoleController.ENTITY_STUDENT,
+            student,
+            RoleBase.RoleWrapperByEntityType(RoleController.ENTITY_STUDENT))
+        create_linked_authentication_service(
+            user_role,
+            LinkedServiceController.SERVICE_AMAZON,
+            amazon_user_id,
+            {
+                'amazon_user_email': amazon_user_email,
+                'amazon_user_id': amazon_user_id,
+                'amazon_access_token': access_token
+            })
+    except ObjectDoesNotExist:
+        # It is possible that previously accommodation went wrong and not all objects are currently available
+        # If that situation occurs - just leave it as that, it should happen only for sponsors
+        pass
 
 
 def login(request):
@@ -104,7 +111,7 @@ def _process_amazon_login(access_token, amazon_user_email, amazon_user_id, reque
     user_role = select_role_by_authentication_service(LinkedServiceController.SERVICE_AMAZON, amazon_user_id)
 
     # If there is a role then get the user, else get the currently authenticate user else create a new user
-    if user_role:
+    if user_role and user_role.user:
         # Case - Amazon Login to existing account
         user = user_role.user
 

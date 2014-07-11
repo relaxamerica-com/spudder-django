@@ -7,7 +7,7 @@
     <br/>
     <p>Additionally, your Sponsor Profile will be listed on this page so anyone visiting this venue can find out all about you and your company.</p>
     <br />
-    {% if venue.price > 0 %}
+    {% if venue.price > 0 and rent_venue_url %}
         <p>Sponsor now for ${{ venue.price }}</p>
         <a href="{{ rent_venue_url }}"><img src="/media/img/buttons/pay-with-amazon.png" /></a>
         <br />
