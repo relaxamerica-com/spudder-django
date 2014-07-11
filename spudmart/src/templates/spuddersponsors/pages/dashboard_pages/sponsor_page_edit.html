@@ -1,7 +1,7 @@
 {% extends 'spuddersponsors/pages/dashboard_pages/dashboard.html' %}
 
 {% block google_analytics_additions %}
-    ga('set', 'contentGroup1', 'SPONSORS - CHANGE_THIS');
+    ga('set', 'contentGroup1', 'SPONSORS - SPONSOR PAGE EDIT');
 {% endblock %}
 
 {% block side_nav %}{% include 'spuddersponsors/parts/side_nav.html' with active="sponsor-page" %}{% endblock %}
@@ -44,37 +44,37 @@
                     </div>
                     <div class="form-group">
                         <label>Website:</label>
-                        <input id="form-field-website" type="url" class="form-control" placeholder="http://www.website.com"
+                        <input id="website" name="website" type="url" class="form-control" placeholder="http://www.website.com"
                                value="{{form.website.value|default:"" }}" />
                     </div>
                     <div class="form-group">
                         <label>Instagram:</label>
-                        <input id="form-field-instagram" type="url" class="form-control" placeholder="http://instagram.com/your.name"
+                        <input id="instagram" name="instagram" type="url" class="form-control" placeholder="http://instagram.com/your.name"
                                value="{{form.instagram.value|default:"" }}" />
                     </div>
                     <div class="form-group">
                         <label>Facebook:</label>
-                        <input id="form-field-facebook" type="url" class="form-control" placeholder="https://www.facebook.com/your.name"
+                        <input id="facebook" name="facebook" type="url" class="form-control" placeholder="https://www.facebook.com/your.name"
                                value="{{form.facebook.value|default:"" }}" />
                     </div>
                     <div class="form-group">
                         <label>Twitter:</label>
-                        <input id="form-field-twitter" type="url" class="form-control" placeholder="http://www.twitter.com/your.name"
+                        <input id="twitter" name="twitter" type="url" class="form-control" placeholder="http://www.twitter.com/your.name"
                                value="{{form.twitter.value|default:"" }}" />
                     </div>
                     <div class="form-group">
                         <label>Google+:</label>
-                        <input id="form-field-google" type="url" class="form-control" placeholder="https://plus.google.com/u/0/your.id"
+                        <input id="google_plus" name="google_plus" type="url" class="form-control" placeholder="https://plus.google.com/u/0/your.id"
                                value="{{form.google_plus.value|default:"" }}" />
                     </div>
                     <div class="form-group">
                         <label>LinkedIn:</label>
-                        <input id="form-field-linkedin" type="url" class="form-control" placeholder="https://www.linkedin.com/company/company-name"
+                        <input id="linkedin" name="linkedin" type="url" class="form-control" placeholder="https://www.linkedin.com/company/company-name"
                                value="{{form.linkedin.value|default:"" }}" />
                     </div>
                     <div class="form-group">
                         <label>Video:</label>
-                        <input id="form-field-video" type="url" class="form-control" value="{{form.video.value|default:"" }}" />
+                        <input id="video" name="video" type="url" class="form-control" value="{{form.video.value|default:"" }}" />
                     </div>
                     <div class="form-group">
                         <label>Description:</label>

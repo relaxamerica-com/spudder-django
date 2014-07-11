@@ -68,7 +68,7 @@ def sponsor_page(request):
 
             return HttpResponseRedirect('/dashboard/sponsor/page')
 
-    return render(request, 'spuddersponsors/pages/dashboard_pages/sponsor_page.html', {
+    return render(request, 'spuddersponsors/pages/dashboard_pages/sponsor_page_edit.html', {
         'form': form,
         'places_api_key': settings.GOOGLE_PLACES_API_KEY,
         'lat': lat, 'lng': lng, 'info_window': info_window,
@@ -81,7 +81,7 @@ def public_view(request, page_id):
     page = get_object_or_404(SponsorPage, pk=page_id)
     page.images = filter(lambda image: image != "", page.images)
 
-    return render(request, 'old/sponsors/public_view.html', {
+    return render(request, 'spuddersponsors/pages/dashboard_pages/sponsor_page_view.html', {
         'page': page
     })
 
