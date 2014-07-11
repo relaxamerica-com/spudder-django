@@ -5,6 +5,7 @@ import settings
 from spudmart.sponsors.forms import SponsorPageForm
 from spudmart.sponsors.models import SponsorPage
 from spudmart.accounts.utils import is_sponsor
+from spudmart.venues.models import Venue
 
 
 def _get_map_info(post_data):
@@ -86,7 +87,13 @@ def public_view(request, page_id):
 
 
 def sponsors_dashboard(request):
-    return render(
-        request,
-        'spuddersponsors/pages/dashboard_pages/dashboard.html',
-        {})
+    return render(request, 'spuddersponsors/pages/dashboard_pages/dashboard.html')
+
+
+def sponsors_venues(request):
+    sponsor = request.current_role.entity
+    venues = Venue.objects.filter(renter=sponsor)
+
+    return render(request, 'spuddersponsors/pages/dashboard_pages/venues.html', {
+        'venues': venues
+    })
