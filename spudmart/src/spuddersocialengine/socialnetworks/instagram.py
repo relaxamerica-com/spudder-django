@@ -186,7 +186,7 @@ def callback(request):
 
                         # Only add if there is no task in the queue
                         if queue_stats.tasks < 1:
-                            task = taskqueue.Task(url='/api/instagram/callback_task?key=' + spice_settings.static_api_key, method='GET')
+                            task = taskqueue.Task(url='/socialengine/api/instagram/callback_task?key=' + spice_settings.static_api_key, method='GET')
                             instagram_queue.add(task)
 
                 except InstagramSubscriptions.DoesNotExist:
@@ -298,7 +298,7 @@ def manual_process_for_venue(venue_id):
 
         # Only add if there is no task in the queue
         if queue_stats.tasks < 1:
-            task = taskqueue.Task(url='/api/instagram/callback_task?key=%s&venue_id=%s' %
+            task = taskqueue.Task(url='/socialengine/api/instagram/callback_task?key=%s&venue_id=%s' %
                                       (spice_settings.static_api_key, venue_id),
                                   method='GET')
             instagram_queue.add(task)
