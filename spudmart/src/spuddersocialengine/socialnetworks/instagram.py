@@ -162,9 +162,9 @@ def callback(request):
             json_response = json.loads(raw_response)
 
             for json_response_item in json_response:
+                subscription_id = json_response_item.get('subscription_id', None)
                 try:
                     # Try get the subscription
-                    subscription_id = json_response_item['subscription_id']
                     subscription = InstagramSubscriptions.objects.get(subscription_id=subscription_id)
                     venue_id = subscription.venue_id
 
@@ -190,7 +190,10 @@ def callback(request):
                             instagram_queue.add(task)
 
                 except InstagramSubscriptions.DoesNotExist:
-                    # If the subscription does not exist then create it
+                    # If the subscription does not exist then deregister it
+                    if subscription_id and not InstagramSubscriptions.objects.filter(subscription_id=subscription_id):
+                        deregister_subscription(subscription_id)
+                        logging.debug("SPICE: socialnetworks/instagram/callback deregistered unknown subscription")
                     pass
 
         else:
@@ -394,16 +397,20 @@ De-register a venue
 """
 
 
+def deregister_subscription(subscription_id):
+    instagram_delete_url = "https://api.instagram.com/v1/subscriptions?client_secret=%s&id=%s&client_id=%s" % (
+        instagram_settings.instagram_client_secret,
+        subscription_id,
+        instagram_settings.instagram_client_id)
+    urllib2.urlopen(instagram_delete_url)
+
+
 def deregister_venue(venue_id):
     subscriptions = InstagramSubscriptions.objects.filter(venue_id=venue_id)
 
     for subscription in subscriptions:
         # Un-subscribe
-        instagram_delete_url = \
-            "https://api.instagram.com/v1/subscriptions?client_secret=%s&id=%s&client_id=%s" % \
-            (instagram_settings.instagram_client_secret, subscription.subscription_id, instagram_settings.instagram_client_id)
-
-        urllib2.urlopen(instagram_delete_url)
+        deregister_subscription(subscription.subscription_id)
 
         # Delete
         subscription.delete()
