@@ -34,7 +34,28 @@
 
 {% block body %}
 <div class="jumbotron" style="position:relative; top: -20px; padding: 0;">
+    {%  if venue.cover_image %}
+    <div id="cover-image-conainer">
+        <center><img src=/file/serve/{{ venue.cover_image.id }} height="400px" /></center>
+    </div>
+    {% else %}
     <div style="height:400px" id="jumbo-map-container"></div>
+    {% endif %}
+    {% if can_edit %}
+    <div style="position:absolute; top:20px; right:20px;">
+        <button class="btn btn-primary" id="toggle-cover">Edit Cover Image</button>
+        <form role="form" style="display:none;background:rgba(255,255,255,.65);padding:5px" id="cover-form" class="pull-right">
+            <div class="form-group">
+                <input type="file" name="file" id="cover-upload" />
+            </div>
+            <div class="btn-group">
+                <button class="btn btn-primary" id="upload-cover">Upload</button>
+                {% if venue.cover_image %}<button class="btn btn-default" id="reset-cover">Reset to Map</button>{% endif %}
+                <button class="btn btn-default" id="cancel-cover">Cancel</button>
+            </div>
+        </form>
+    </div>
+    {% endif %}
     <div class="container">
         <div class="page-header" style="background: rgba(255, 255, 255, .7); position:absolute; bottom: 10px; padding: 10px;">
             <h1 style="position:relative">
@@ -1352,8 +1373,7 @@
 			    setPinButtonPosition($(this).attr('id'));
 			}
 		});
-
-	})
+    
 
     $('#toggle-cover').click(function(){
        $(this).hide();
@@ -1439,5 +1459,6 @@
         else if (active == "admission-details") click_nav_button('#medical-details');
         else if (active == "medical-details") click_nav_button('#handicap-details');
     });
+    })
 </script>
 {% endblock %}

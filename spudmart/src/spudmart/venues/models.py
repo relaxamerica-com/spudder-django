@@ -20,7 +20,7 @@ class Venue(models.Model):
     name = models.CharField(max_length=200, default="Venue yet to be Named")
     aka_name = models.CharField(max_length=200, default="Venue yet to be Named")
     sport = models.CharField(max_length=100)
-    logo = models.ForeignKey(UploadedFile, null=True)
+    logo = models.ForeignKey(UploadedFile, null=True, related_name="logo_file")
     speciality = models.CharField(max_length=200)
     location = models.CharField(max_length=200)
     coordinates = models.CharField(max_length=100)
@@ -44,6 +44,7 @@ class Venue(models.Model):
     website = models.CharField(max_length=200)
     price = models.DecimalField(default=0.0, decimal_places=2, max_digits=10)
     fax = models.CharField(max_length=200)
+    cover_image = models.ForeignKey(UploadedFile, null=True, related_name="cover_image")
 
     # Just to stay consistent with fcns created in spuddercern.rep
     rep = models.IntegerField(default=0)

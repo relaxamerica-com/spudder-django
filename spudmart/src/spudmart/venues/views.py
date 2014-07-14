@@ -591,3 +591,23 @@ def reject_instagram_media(request, venue_id):
     }
     
     return HttpResponse(json.dumps(response))
+
+
+def save_cover(request, venue_id):
+    venue = Venue.objects.get(pk=venue_id)
+
+    request_cover = request.POST.getlist('cover[]')
+    cover_id = request_cover[0].split('/')[3]
+    cover = UploadedFile.objects.get(pk=cover_id)
+
+    venue.cover_image = cover
+    venue.save()
+    return HttpResponse('OK')
+
+
+def reset_cover(request, venue_id):
+    venue = Venue.objects.get(pk=venue_id)
+
+    venue.cover_image = None
+    venue.save()
+    return HttpResponse('OK')
