@@ -138,7 +138,7 @@ class SpudsController(object):
     def get_unapproved_spud_by_id(self, instagram_data_id):
         """
         Gets any unapproved spuds linked to this role
-
+        :param instagram_data_id: InstagramDataProcessor ID
         :return: Collection of Spuds
         """
         
@@ -151,9 +151,9 @@ class SpudsController(object):
         
     def approve_spud(self, spud, venue_id):
         """
-        Sends spuds off to Krowd.io tagged with the venue in this case
+        Sends SPUD off to Krowd.io tagged with the venue in this case
 
-        :param spuds: Collection of spuds
+        :param spud: A single SPUD to approve
         :return: None
         """
         
@@ -165,3 +165,4 @@ class SpudsController(object):
             
         if 'videos' in spud:
             post_spud(storage, { 'type' : 'video', 'url' : spud['videos']['standard_resolution']['url'], 'title' : spud['caption']['text'], 'usertext' : ' '.join(spud['tags']) })
+            

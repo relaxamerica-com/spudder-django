@@ -23,8 +23,10 @@ from spudmart.CERN.models import Student
 
 from spudderdomain.controllers import SpudsController
 from spudderkrowdio.models import KrowdIOStorage
-from spudderkrowdio.utils import get_user_mentions_activity
+from spudderkrowdio.utils import get_user_mentions_activity, delete_spud
 import json
+import logging
+from spuddersocialengine.models import InstagramDataProcessor
 
 
 def view(request, venue_id):
@@ -76,7 +78,8 @@ def view(request, venue_id):
         'sponsor': sponsor[0] if len(sponsor) else None,
         'is_sponsor': venue.is_renter(role),
         'student': student,
-        'venue_spuds' : venue_spuds['items']
+        'venue_spuds' : venue_spuds['items'],
+        'has_spuds' : len(venue_spuds['items']) > 0
     })
 
 def index(request):
@@ -586,3 +589,14 @@ def reject_instagram_media(request, venue_id):
     }
     
     return HttpResponse(json.dumps(response))
+
+
+def delete_spud_endpoint(request, venue_id):
+    try:
+        venue = Venue.objects.get(pk = venue_id)
+        storage = KrowdIOStorage.objects.get(venue = venue)
+        delete_spud(storage, request.POST.get('spud_id'))
+    except Exception, e:
+        logging.error(e.message)
+        return HttpResponse(status=500)
+    return HttpResponse('OK')

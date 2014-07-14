@@ -96,12 +96,20 @@
             </div>
 
             <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
-
+            	{% if has_spuds %}
+					{% if can_edit %}
+						<div class="btn btn-danger spud-action-button" title="Delete the SPUD" action="delete"><i class="fa fa-trash-o"> </i> Delete</div>
+					{% else %}
+						<div class="btn btn-danger spud-action-button" title="Flag the SPUD as Inappropriated" action="flag"><i class="fa fa-flag-o"> </i> Inappropriate</div>
+					{% endif %}
+				{% endif %}
+			
                 <!-- Wrapper for slides -->
                 <div class="carousel-inner">
-                	{% if venue_spuds|length > 0 %}
+                	{% if has_spuds %}
+                		<div class="alert"> </div>
                 		{% for spud in venue_spuds %}
-                			<div class="item {% if forloop.counter0 == 0 %}active{% endif %}">
+                			<div id="{{ spud.target.id }}" class="item {% if forloop.counter0 == 0 %}active{% endif %}">
 		                        <img src="{{ spud.target.json.media.0.raw.url }}" />
 		                        <div class="carousel-caption">
 		                            {{ spud.target.title }}
@@ -1335,6 +1343,58 @@
 			else {
 			    setPinButtonPosition($(this).attr('id'));
 			}
+		});
+		
+		$('.spud-action-button').click(function() {
+			var actionType = $(this).attr('action'),
+				carousel = $('#carousel-example-generic'),
+				spud_id = $('#carousel-example-generic .item.active').attr('id'),
+				alert = $(this).parent().find('.alert');
+			
+			if (confirm('Are you sure?')) {
+				var response = $.post('/venues/' + actionType + '_spud/{{ venue.id }}', { 'spud_id' : spud_id });
+			
+				response.done(function(data) {
+					alert.html('SPUD removed.');
+					alert.addClass('alert-success');
+					alert.show();
+					alert.css('opacity', 1);
+					
+					carousel.on('slide.bs.carousel', function() {
+						console.log('test slid')
+					});
+					
+					carousel.on('slid.bs.carousel', function() {
+						$('#' + spud_id).remove();
+						if (carousel.find('.item').length == 0) {
+							carousel.hide();
+						}
+						carousel.off('slid.bs.carousel');
+					});
+					carousel.carousel('next');
+					
+					alert.animate({
+						'opacity' : 0
+					}, 2000, function(){ 
+						alert.css('display', 'none');
+						alert.removeClass('alert-success');
+					});
+				});
+				
+				response.fail(function(data) {
+					alert.html('Something went wrong. Please try again later.');
+					alert.addClass('alert-danger');
+					alert.show();
+					alert.css('opacity', 1);
+					alert.animate({
+						'opacity' : 0
+					}, 2000, function(){ 
+						alert.css('display', 'none');
+						alert.removeClass('alert-danger');
+					});
+				});
+			}
+			
 		});
 
 	});
