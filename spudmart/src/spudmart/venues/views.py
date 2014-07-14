@@ -60,7 +60,11 @@ def view(request, venue_id):
     if venue.is_available() and not venue.is_renter(role):
         rent_venue_url = get_rent_venue_cbui_url(venue)
 
-    sponsor = SponsorPage.objects.filter(sponsor=venue.renter)
+    sponsor = venue.renter
+    sponsor_info = False
+    if sponsor:
+        if sponsor.name != "":
+            sponsor_info = True
     
     storage = KrowdIOStorage.GetOrCreateForVenue(venue_id)
     
@@ -73,7 +77,8 @@ def view(request, venue_id):
         'is_recipient': is_recipient,
         'rent_venue_url': rent_venue_url,
         'can_edit': can_edit,
-        'sponsor': sponsor[0] if len(sponsor) else None,
+        'sponsor': sponsor,
+        'sponsor_info': sponsor_info,
         'is_sponsor': venue.is_renter(role),
         'student': student,
         'venue_spuds' : venue_spuds['items']
