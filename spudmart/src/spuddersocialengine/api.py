@@ -95,7 +95,7 @@ def location(request):
             if validate_api_key(api_key):
                 # Add task to queue
                 location_queue = taskqueue.Queue('locationtask')
-                task = taskqueue.Task(url='/socialengine/api/location?key=' + api_key, method='GET')
+                task = taskqueue.Task(url='/socialengine/api/location_task?key=' + api_key, method='GET')
                 location_queue.add(task)
 
                 logging.debug("SPICE: api/locations finished")

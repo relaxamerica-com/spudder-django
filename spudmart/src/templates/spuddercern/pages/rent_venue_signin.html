@@ -1,5 +1,9 @@
 {% extends 'spuddercern/base_single_well.html' %}
 
+{% block google_analytics_additions %}
+    ga('set', 'contentGroup1', 'CERN RENT - Signin');
+{% endblock %}
+
 {% block well_content %}
     <h2 class="text-center">Sign in needed</h2>
     <p class="text-center">Your payment was successful, but in order to complete renting venue, you must sign in</p>

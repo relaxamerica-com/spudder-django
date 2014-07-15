@@ -1,5 +1,9 @@
 {% extends 'spuddercern/base_single_well.html' %}
 
+{% block google_analytics_additions %}
+    ga('set', 'contentGroup1', 'CERN Login - Non Student');
+{% endblock %}
+
 {% block well_content %}
         <h2 class="aligncenter">Oops!</h2>
         <p>You're not registered for a CERN Team, which means you can't see this page.</p>

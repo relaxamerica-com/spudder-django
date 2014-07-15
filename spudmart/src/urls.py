@@ -3,6 +3,8 @@ from django.conf.urls.defaults import *
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.views.generic import RedirectView
+from spudmart.CERN.models import Student
+from spudmart.venues.models import Venue
 
 handler404 = 'django.views.defaults.page_not_found'
 handler500 = 'djangotoolbox.errorviews.server_error'
@@ -28,6 +30,7 @@ def temp_redirect_view(request):
                     redirect_url = "http://www.spudder.com/cern/"
                 if url_parts[0] == "spudder" and url_parts[1] == "com":
                     redirect_url = "http://www." + ",".join(url_parts)
+                return HttpResponseRedirect(redirect_url)
         except KeyError:
             pass  # request META dict doesn't have HTTP_HOST key (f.i. in tests)
 

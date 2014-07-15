@@ -2,6 +2,10 @@
 
 {% load displays %}
 
+{% block google_analytics_additions %}
+    ga('set', 'contentGroup1', 'CERN Login - No School');
+{% endblock %}
+
 {% block meta %}
 {#<link rel="stylesheet" href="/media/dashboard/css/ace-file-input.css" />#}
 {% endblock meta %}

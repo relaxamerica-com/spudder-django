@@ -186,7 +186,9 @@ def callback(request):
 
                         # Only add if there is no task in the queue
                         if queue_stats.tasks < 1:
-                            task = taskqueue.Task(url='/socialengine/api/instagram/callback_task?key=' + spice_settings.static_api_key, method='GET')
+                            task = taskqueue.Task(
+                                url='/socialengine/api/instagram/callback_task?key=' + spice_settings.static_api_key,
+                                method='GET')
                             instagram_queue.add(task)
 
                 except InstagramSubscriptions.DoesNotExist:
@@ -223,8 +225,8 @@ def callback_task(request):
 
                 # Does venue_id feature in the filter?
                 if 'venue_id' in request.GET:
-                    items_to_process = InstagramDataProcessor.objects.filter(processed=False,
-                                                                             venue_id=request.GET['venue_id'])
+                    items_to_process = InstagramDataProcessor.objects.filter(
+                        processed=False, venue_id=request.GET['venue_id'])
                 else:
                     items_to_process = InstagramDataProcessor.objects.filter(processed=False)
 
@@ -402,7 +404,9 @@ def deregister_subscription(subscription_id):
         instagram_settings.instagram_client_secret,
         subscription_id,
         instagram_settings.instagram_client_id)
-    urllib2.urlopen(instagram_delete_url)
+    request = urllib2.Request(instagram_delete_url)
+    request.get_method = lambda: 'DELETE'
+    urllib2.urlopen(request)
 
 
 def deregister_venue(venue_id):
