@@ -20,7 +20,7 @@ def temp_redirect_view(request):
     :param request: the request object
     :return: HttpResponseRedirect object
     """
-    redirect_url = "http://info.spudder.com"
+    redirect_url = None
 
     if hasattr(request, 'META'):
         try:
@@ -30,7 +30,8 @@ def temp_redirect_view(request):
                     redirect_url = "http://www.spudder.com/cern/"
                 if url_parts[0] == "spudder" and url_parts[1] == "com":
                     redirect_url = "http://www." + ",".join(url_parts)
-                return HttpResponseRedirect(redirect_url)
+                if redirect_url:
+                    return HttpResponseRedirect(redirect_url)
         except KeyError:
             pass  # request META dict doesn't have HTTP_HOST key (f.i. in tests)
 
