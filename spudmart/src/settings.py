@@ -172,6 +172,8 @@ shared_settings = {
         'amazon_login_client_id': 'amzn1.application-oa2-client.b1404a35a0484c64a0fdf150a8a7a6f2',
         'linkedin_api_key': '77rqz7l270vhsb',
         'linkedin_secret_key': '5PcKrcRI2m5q4zWP',
+        'instagram_client_id': '3888eac365f7468dabd5bf9ad06c8930',
+        'instagram_client_secret': 'b1bc01bf1a9944e2834288484f450ab2'
     },
     'spudmartmatt': {  # mg@metalayer.com
         'server_email': 'mg@metalayer.com',

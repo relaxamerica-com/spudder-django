@@ -109,18 +109,17 @@ def save_coordinates(request, venue_id):
     return HttpResponse('OK')
 
 def save_parking_details(request, venue_id):
-    parking_tips = request.POST['parking-tips']
-    parking_details = request.POST['parking-details']
+    venue = Venue.objects.get(pk = venue_id)
+    parking_pics = request.POST.getlist('parking_pics[]')
+    parking_details = request.POST['parking_details']
 
-    venue = Venue.objects.get(pk=venue_id)
-
-    # If there was no info, but now there is, add points
-    if venue.parking_details == '' or venue.parking_tips == '':
-        if parking_details != '' and parking_tips != '':
+    # Reward student for completing parking info
+    if len(venue.parking_pics) == 0 or venue.parking_details == '':
+        if len(parking_pics) and parking_details != '':
             added_basic_info(venue)
 
-    # Update parking info and save
-    venue.parking_tips = parking_tips
+    # Add pics and details and save
+    venue.parking_pics.extend(parking_pics)
     venue.parking_details = parking_details
     venue.save()
     return HttpResponse('OK')
@@ -157,11 +156,11 @@ def save_logo_and_name(request, venue_id):
     # If either name has been customized for the first time, add points
     request_name = request.POST['name']
     request_aka_name = request.POST['aka_name']
-    if venue.name == "Sponsor's Name for Venue":
-        if request_name != "Sponsor's Name for Venue":
+    if venue.name == "Venue not yet Named":
+        if request_name != "Venue not yet Named":
             added_basic_info(venue)
-    if venue.aka_name == "Common Venue Name":
-        if request_aka_name != "Common Venue Name":
+    if venue.aka_name == "Venue not yet Named":
+        if request_aka_name != "Venue not yet Named":
             added_basic_info(venue)
 
     # Update name(s)
@@ -218,45 +217,49 @@ def save_restroom_details(request, venue_id):
 
 def save_concession_details(request, venue_id):
     venue = Venue.objects.get(pk = venue_id)
+    concession_pics = request.POST.getlist('concession_pics[]')
     concession_details = request.POST['concession_details']
 
-    # If this is filled in for the first time, add points
-    if venue.concession_details == '':
-        if concession_details:
+    # Reward student for completing concession info
+    if len(venue.concession_pics) == 0 or venue.concession_details == '':
+        if len(concession_pics) and concession_details != '':
             added_basic_info(venue)
 
-    # Make and save changes
+    # Add pics and details and save
+    venue.concession_pics.extend(concession_pics)
     venue.concession_details = concession_details
     venue.save()
     return HttpResponse('OK')
 
 def save_admission_details(request, venue_id):
     venue = Venue.objects.get(pk = venue_id)
+    admission_pics = request.POST.getlist('admission_pics[]')
     admission_details = request.POST['admission_details']
 
-    # If this is filled in for the first time, add points
-    if venue.admission_details == '':
-        if admission_details:
+    # Reward student for completing admission info
+    if len(venue.admission_pics) == 0 or venue.admission_details == '':
+        if len(admission_pics) and admission_details != '':
             added_basic_info(venue)
 
-    # Update and save data
+    # Add pics and details and save
+    venue.admission_pics.extend(admission_pics)
     venue.admission_details = admission_details
     venue.save()
     return HttpResponse('OK')
 
-def save_shelter_details(request, venue_id):
-    venue = Venue.objects.get(pk = venue_id)
-    shelter_details = request.POST['shelter_details']
-
-    # If this is filled in for the first time, add points
-    if venue.shelter_details == '':
-        if shelter_details:
-            added_basic_info(venue)
-
-    # Update and save shelter details
-    venue.shelter_details = shelter_details
-    venue.save()
-    return HttpResponse('OK')
+# def save_shelter_details(request, venue_id):
+#     venue = Venue.objects.get(pk = venue_id)
+#     shelter_details = request.POST['shelter_details']
+#
+#     # If this is filled in for the first time, add points
+#     if venue.shelter_details == '':
+#         if shelter_details:
+#             added_basic_info(venue)
+#
+#     # Update and save shelter details
+#     venue.shelter_details = shelter_details
+#     venue.save()
+#     return HttpResponse('OK')
 
 def save_medical_details(request, venue_id):
     venue = Venue.objects.get(pk = venue_id)
@@ -274,14 +277,16 @@ def save_medical_details(request, venue_id):
 
 def save_handicap_details(request, venue_id):
     venue = Venue.objects.get(pk = venue_id)
+    handicap_pics = request.POST.getlist('handicap_pics[]')
     handicap_details = request.POST['handicap_details']
 
-    # If this is filled in for the first time, add points
-    if venue.handicap_details == '':
-        if handicap_details:
+    # Reward student for completing handicap info
+    if len(venue.handicap_pics) == 0 or venue.handicap_details == '':
+        if len(handicap_pics) and handicap_details != '':
             added_basic_info(venue)
 
-    # Update and save handicap details
+    # Add pics and details and save
+    venue.handicap_pics.extend(handicap_pics)
     venue.handicap_details = handicap_details
     venue.save()
     return HttpResponse('OK')
