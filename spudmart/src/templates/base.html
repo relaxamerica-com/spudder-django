@@ -36,6 +36,9 @@
                 {% block masterhead %}{% endblock %}
                 <div class="navbar-collapse collapse">
                     <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="http://spudder.zendesk.com/account/dropboxes/20176994" onClick="Zenbox.show(); return false;">Support</a>
+                        </li>
                         {% block nav %}{% endblock %}
                         {% block current_role_nav %}
                             {% if current_role and current_role|is_cern_student %}
@@ -127,7 +130,7 @@
                                 </li>
                                 <li class="dropdown">
                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                        Share Page <i class="fa fa-caret-down"></i>
+                                        Share <i class="fa fa-caret-down"></i>
                                     </a>
                                     <ul class="dropdown-menu">
                                         <li>
@@ -278,27 +281,35 @@
             });
 
         </script>
-        {% if user.is_authenticated %}
+{#        {% if user.is_authenticated %}#}
             <script type="text/javascript" src="//assets.zendesk.com/external/zenbox/v2.6/zenbox.js"></script>
             <style type="text/css" media="screen, projection">
               @import url(//assets.zendesk.com/external/zenbox/v2.6/zenbox.css);
-              #zenbox_tab {top: 80% !important;}
+              #zenbox_container{
+                  min-width: 100px;
+                  max-width: 615px;
+                  width: 75%;
+              }
+            #zenbox_body{
+                width: 100%;
+            }
             </style>
             <script type="text/javascript">
                 $(document).ready(function(){
                     if (typeof(Zenbox) !== "undefined") {
                         Zenbox.init({
-                            dropboxID:   "20173894",
+                            dropboxID:   "20176994",
                             url:     	"https://spudder.zendesk.com",
                             tabTooltip:  "Support",
                             tabImageURL: "https://p2.zdassets.com/external/zenbox/images/tab_support.png",
                             tabColor:	"#fb810b",
-                            tabPosition: "Left"
+                            tabPosition: "Left",
+                            hide_tab: true
                         });
                     }
                 });
             </script>
-        {% endif %}
+{#        {% endif %}#}
 
         {# Social Media sharing popups #}
         <script type="text/javascript">
