@@ -9,11 +9,6 @@
 {% block body %}
     <div class="container-fluid">
         <div class="row">
-            <div class="col-md-2 hidden-xs hidden-sm">
-                <div class="list-group">
-                    {% block side_nav %}{% include 'spuddercern/parts/sideNav.html' with active="scoreboard" %}{% endblock %}
-                </div>
-            </div>
             <div class="col-md-10 col-sm-12">
                 {% block dashboard_page %}
                     <div class="page-header">
