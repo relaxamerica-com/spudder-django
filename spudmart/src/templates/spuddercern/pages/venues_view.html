@@ -34,13 +34,10 @@
 
 {% block body %}
 <div class="jumbotron" style="position:relative; top: -20px; padding: 0;">
-    {%  if venue.cover_image %}
-    <div id="cover-image-container" style="text-align:center;">
+    <div {% if not venue.cover_image %}class="hidden"{% endif %} id="cover-image-container" style="text-align:center;">
         <img src=/file/serve/{{ venue.cover_image.id }} height="400px" />
     </div>
-    {% else %}
-    <div style="height:400px" id="jumbo-map-container"></div>
-    {% endif %}
+    <div {% if venue.cover_image %}class="hidden"{% endif %} style="height:400px" id="jumbo-map-container"></div>
     {% if can_edit %}
     <div style="position:absolute; top:20px; right:20px;">
         <button class="btn btn-primary" id="toggle-cover">Edit Cover Image</button>
@@ -48,11 +45,11 @@
             <div class="form-group">
                 <input type="file" name="file" id="cover-upload" />
             </div>
-            <div class="alert hidden"> </div>
+            <div class="alert"> </div>
             <div class="btn-group">
-                <button class="btn btn-primary" id="upload-cover">Upload</button>
-                {% if venue.cover_image %}<button class="btn btn-default" id="reset-cover">Reset to Map</button>{% endif %}
-                <button class="btn btn-default" id="cancel-cover">Cancel</button>
+                <a class="btn btn-primary" id="upload-cover">Upload</a>
+                {% if venue.cover_image %}<a class="btn btn-default" id="reset-cover">Reset to Map</a>{% endif %}
+                <a class="btn btn-default" id="cancel-cover">Cancel</a>
             </div>
         </form>
     </div>
@@ -1585,7 +1582,7 @@
     $('#upload-cover').click(function(){
         var form = $(this).parents('form'),
             files = $(form).serializeFiles(),
-            alert = $('.contents').find('.alert');
+            alert = $(form).find('.alert');
 
         $.get('/upload/get_upload_url', function(data) {
             $.ajax({
@@ -1603,9 +1600,13 @@
                     });
 
                     response.done(function(data) {
-{#                        window.location.reload();#}
+                        console.log('done');
                         showAlert(alert, 'Image successfully uploaded.', 'success', true);
                         $('#cover-image-container img').attr('src', parsed['uploaded_files'][0])
+                        {% if not venue.cover_image %}
+                            $('#jumbo-map-container').addClass('hidden');
+                            $('#cover-image-container').removeClass('hidden');
+                        {% endif %}
                     });
                 }
             });
@@ -1613,7 +1614,7 @@
     });
 
     $('#reset-cover').click(function(){
-        if (alert('This will permanently delete your cover image!')){
+        if (confirm('This will permanently delete your cover image!')){
             var response = $.post('/venues/reset_cover/{{ venue.id }}');
 
             response.done(function(data){
