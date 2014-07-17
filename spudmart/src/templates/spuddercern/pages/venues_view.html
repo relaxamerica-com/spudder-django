@@ -1496,15 +1496,15 @@
 		});
 
 		$('#send-message').click(function() {
-			var message = $('[name="message"]').val()
-{#				dfd = saving($(this), $(this).parents('.contents').find('.alert'), 'Message has been sent');#}
+			var message = $('[name="message"]').val(),
+                alert = $('.contents').find('.alert');
 
 			var response = $.post('/venues/send_message/{{ venue.id }}', {
 				'message' : message
 			});
 
 			response.done(function() {
-{#				dfd.resolve();#}
+                showAlert(alert, 'Message has been sent!', 'success', true)
 			});
 		});
 

@@ -296,8 +296,8 @@ def send_message(request, venue_id):
     message = request.POST.get('message', '')
     to = []
     to.append('support@spudder.zendesk.com')
-    to.append(venue.user.email)
-    mail.send_mail(subject='Message from Spudmart about Venue: %s' % venue.name, body=message, sender='help@spudder.com', to=to)
+    to.append(venue.student.user.email)
+    mail.send_mail(subject='Message from Spudmart about Venue: %s' % venue.name, body=message, sender=settings.SERVER_EMAIL, to=to)
 
     return HttpResponse('OK')
 
