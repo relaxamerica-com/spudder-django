@@ -144,7 +144,7 @@ def location_task(request):
             if validate_api_key(api_key):
 
                 # Get the venues from spudmart
-                venues_json = spuddersocialengine.spudmart.api.call_venues_api()
+                venues_json = spuddersocialengine.spudmart.api.call_venues_api(request)
                 venues_data = json.loads(venues_json)
 
                 # Save venues into the database
@@ -170,7 +170,7 @@ def location_task(request):
 
                         social_network_name = social_network['name']
                         social_network_type = social_network['meta']['type']
-						social_network_enabled = social_network['enabled']
+                        social_network_enabled = social_network['enabled']
 
                         if social_network_type == "polling" and social_network_enabled:
                             # Has a dedicated class to poll for data

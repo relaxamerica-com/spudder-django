@@ -3,5 +3,5 @@ static_api_key = "746fygf472f4o2ri"
 
 social_networks = [
     {"name": "instagram", "meta": {"type": "subscription"}, "enabled": False},
-    {"name": "twitter", "meta": {"type": "polling"}, "enabled": False},
+    {"name": "twitter", "meta": {"type": "polling"}, "enabled": True},
 ]
