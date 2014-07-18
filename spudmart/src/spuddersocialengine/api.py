@@ -174,10 +174,8 @@ def location_task(request):
 
                         if social_network_type == "polling" and social_network_enabled:
                             # Has a dedicated class to poll for data
-                            venue_social_network_json.append(
-                                {social_network: getattr(
-                                    importlib.import_module('spuddersocialengine.socialnetworks.' + social_network_name),
-                                    "location_data")(request, latitude, longitude, venue_id)})
+                            getattr(importlib.import_module('spuddersocialengine.socialnetworks.' + social_network_name),
+                                "location_data")(request, latitude, longitude, venue_id)
                         elif social_network_type == "subscription" and social_network_enabled:
                             # Deal with the subscription
                             getattr(importlib.import_module('spuddersocialengine.socialnetworks.' + social_network_name),

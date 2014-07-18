@@ -23,24 +23,30 @@ def location_data(request, latitude, longitude, venue_id):
     # Debug logging of twitter
     logging.debug("SPICE: socialnetworks/twitter/location_data started")
 
-    # authenticate
+    # Authenticate
     auth = OAuth1(twitter_settings.twitter_client_id, twitter_settings.twitter_client_secret,
-                         twitter_settings.twitter_access_token, twitter_settings.twitter_access_token_secret)
+                  twitter_settings.twitter_access_token, twitter_settings.twitter_access_token_secret)
 
-    # get latest ID
-    since_id = TwitterPolling.objects.latest('last_poll_id')
+    # Get latest ID
+    latest_id_exists = True
+    since_id = None
 
-    if since_id is None:
-        url = 'https://api.twitter.com/1.1/search/tweets.json?geocode=%f,%f,1km' % format(latitude, longitude)
+    try:
+        since_id = TwitterPolling.objects.latest('last_poll_id')
+    except TwitterPolling.DoesNotExist:
+        latest_id_exists = False
+
+    if not latest_id_exists:
+        url = 'https://api.twitter.com/1.1/search/tweets.json?geocode=%s,%s,1km' % (latitude, longitude)
     else:
-        url = 'https://api.twitter.com/1.1/search/tweets.json?since_id=%f&geocode=%f,%f,1km' % format(since_id,
-                                                                                                      latitude,
-                                                                                                      longitude)
-    # send search request
+        url = 'https://api.twitter.com/1.1/search/tweets.json?since_id=%s&geocode=%s,%s,1km' % (since_id,
+                                                                                                latitude,
+                                                                                                longitude)
+    # Send search request
     get_request = requests.get(url, auth=auth)
 
-    # response json
-    response_json = get_request.json()
+    # Response JSON
+    response_json = json.loads(get_request.text)
 
     # last_tweet_id of the polling
     last_tweet_id = 0
@@ -49,12 +55,12 @@ def location_data(request, latitude, longitude, venue_id):
         if status['id'] > last_tweet_id:
             last_tweet_id = status['id']
 
-    # save last_tweet_id
+    # Save last_tweet_id
     polling_result = TwitterPolling(last_poll_id=last_tweet_id)
     polling_result.save()
 
-    # save the response data
-    response_data = TwitterDataProcessor(venue_id=venue_id, data=response_json, processed=False)
+    # Save the response data
+    response_data = TwitterDataProcessor(venue_id=venue_id, data=get_request.text, processed=False)
     logging.debug("SPICE: socialnetworks/twitter/location_data save response json")
     response_data.save()
 
@@ -87,8 +93,8 @@ def manual_process_for_venue(venue_id):
             item_to_process.save()
 
     logging.debug("SPICE: socialnetworks/twitter/manual_process_for_venue ended")
-    
-    
+
+
 """
 
 This specific function call process content and passes it over to spudmart.
