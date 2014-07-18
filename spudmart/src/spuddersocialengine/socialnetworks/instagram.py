@@ -394,7 +394,7 @@ def register_venue(venue_id):
 
 """
 
-De-register a venue
+De-register a subscription
 
 """
 
@@ -407,6 +407,12 @@ def deregister_subscription(subscription_id):
     request = urllib2.Request(instagram_delete_url)
     request.get_method = lambda: 'DELETE'
     urllib2.urlopen(request)
+
+"""
+
+De-register a venue
+
+"""
 
 
 def deregister_venue(venue_id):
