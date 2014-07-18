@@ -17,3 +17,14 @@ class InstagramDataProcessor(models.Model):
 class InstagramSubscriptions(models.Model):
     venue_id = models.CharField(max_length=20)
     subscription_id = models.CharField(max_length=20)
+
+# Twitter Specific Models
+
+class TwitterPolling(models.Model):
+    last_poll_id = models.CharField(max_length=20)
+
+
+class TwitterDataProcessor(models.Model):
+    venue_id = models.CharField(max_length=20)
+    data = models.TextField()
+    processed = models.BooleanField(default=False)
