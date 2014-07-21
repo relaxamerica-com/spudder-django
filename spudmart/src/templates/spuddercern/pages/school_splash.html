@@ -1,359 +1,306 @@
-{% extends 'spuddercern/base.html' %}
+{% extends 'spuddercern/public_page_base.html' %}
 {% load accounts %}
 {% load CERN %}
-
-{% block title %}{{ school.name }} on CERN{% endblock %}
 
 {% block google_analytics_additions %}
     ga('set', 'contentGroup1', 'CERN Students - Team Page');
 {% endblock %}
 
-{% block body %}
+{% block title %}{{ school.name }} on CERN{% endblock %}
 
-    <div class="container" id="venue-view">
-        <div class="school-header">
-            <div class="row-fluid">
-                <div class="col-sm-10">
-                    <h1><i class="fa fa-users"></i> {{ school.name }} CERN Team</h1>
-                </div>
+{% block meta %}
+{{ block.super }}
+<meta property="og:title" content="{{ school.name }} | Spudder - Sports Updates Made Simple">
+<meta property="og:description" content="See details about the CERN Team for {{ school.name }}! Find out more on Spudder.">
+{% if school.logo %} <meta property="og:image" content="http://{{ request.META.HTTP_HOST }}/file/serve/{{ school.logo.id }}">
+    {% else %}<meta property="og:image" content="http://{{ request.META.HTTP_HOST }}/static/img/spuddercern/button-cern-large.png">
+{% endif %}
+{% endblock %}
+
+{% block favicon %}"/static/img/spuddercern/button-cern-tiny.png"{% endblock %}
+
+{% block cover_image %}
+    <div {% if not school.cover_image %}class="hidden"{% endif %} id="cover-image-container" style="text-align:center;">
+        <img src=/file/serve/{{ school.cover_image.id }} height="400px" />
+    </div>
+    <div {% if school.cover_image %}class="hidden"{% endif %} style="height:400px" id="jumbo-map-container"></div>
+    {% if user_is_head %}
+    <div style="position:absolute; top:20px; right:20px;">
+        <button class="btn btn-primary" id="toggle-cover">Edit Cover Image</button>
+        <form role="form" style="display:none;background:rgba(255,255,255,.65);padding:5px" id="cover-form" class="pull-right">
+            <div class="form-group">
+                <input type="file" name="file" id="cover-upload" />
+            </div>
+            <div class="alert" style="display:none"></div>
+            <div class="btn-group">
+                <a class="btn btn-primary" id="upload-cover">Upload</a>
+                {% if school.cover_image %}<a class="btn btn-default" id="reset-cover">Reset to Map</a>{% endif %}
+                <a class="btn btn-default" id="cancel-cover">Cancel</a>
+            </div>
+        </form>
+    </div>
+    {% endif %}
+{% endblock %}
+{% block cover_title %}
+    {% if school.logo %}
+        <img id="school-logo" src="/file/serve/{{ school.logo.id }}" height="100px"/>
+    {% else %}
+        <img id="school-logo" src="/static/img/spuddercern/button-cern-medium.png" height="100px"/>
+    {% endif %}
+    {{ school.name }}
+    {% if user_is_head %}
+        <div class="pull-right" style="position:relative; bottom: 0; right: 10px;">
+            <div class="btn btn-primary" id="edit">
+                Edit Mode
             </div>
         </div>
-        <div class="row-fluid">
-            <div class="col-sm-7">
-                <div id="school-body">
-                    <div class="quotes">
-                        {% if user_is_head  %}
-                            {% with info_message_id="cern_team_welcome_head" %}
-                                {% if info_message_id not in student.hidden_info_messages %}
-                                    {% include 'spuddercern/quote_messages/quote_cern_team_welcome_head.html' %}
-                                {% endif %}
-                            {% endwith %}
-                        {% endif %}
+    {% endif %}
+{% endblock %}
 
-                        {% if user_is_team_member %}
-                            {% with info_message_id="cern_team_welcome_member" %}
-                                {% if info_message_id not in student.hidden_info_messages %}
-                                    {% include 'spuddercern/quote_messages/quote_cern_team_welcome_member.html' %}
-                                {% endif %}
-                            {% endwith %}
-                        {% endif %}
+{% block main_page %}
+    <div class="edit-mode well">
+        <h2>Edit School Information</h2>
+        <form method="post" enctype="multipart/form-data" role="form">
+            <div class="form-group edit-mode">
+                <label>Upload a profile image (logo):</label>
+                <input type="file" name="logo" id="logo-input" class="form-control" />
+            </div>
 
-                        {% if not request.user.is_authenticated %}
-                            {% include 'spuddercern/quote_messages/quote_join_this_team.html' %}
-                        {% endif %}
+            <div class="form-group">
+                <label>School Mascot:</label>
+                <input type="text" name="mascot" value="{% if school.mascot %}{{ school.mascot }}{% endif %}" placeholder="Students" id="mascot-input"  class="form-control"/>
+            </div>
+
+            <div class="form-group">
+                <label>CERN Team Description:</label>
+                <p class="help-block">Remember, visitors to your CERN Team page will see this description!</p>
+                <textarea id="description-input" name="description" placeholder="Enter something that you would like other to know about your CERN Team" class="form-control">{{ school.description }}</textarea>
+            </div>
+
+            <a class="btn btn-primary" id="save"><i class="fa fa-save"></i> Save</a>
+        </form>
+        <div class="alert" id="logo-name-alert" style="margin-top:10px"></div>
+    </div>
+
+    <div id="school-body">
+        <div class="quotes">
+            {% if user_is_head  %}
+                {% with info_message_id="cern_team_welcome_head" %}
+                    {% if info_message_id not in student.hidden_info_messages %}
+                        {% include 'spuddercern/quote_messages/quote_cern_team_welcome_head.html' %}
+                    {% endif %}
+                {% endwith %}
+            {% endif %}
+
+            {% if user_is_team_member %}
+                {% with info_message_id="cern_team_welcome_member" %}
+                    {% if info_message_id not in student.hidden_info_messages %}
+                        {% include 'spuddercern/quote_messages/quote_cern_team_welcome_member.html' %}
+                    {% endif %}
+                {% endwith %}
+            {% endif %}
+
+            {% if not request.user.is_authenticated %}
+                {% include 'spuddercern/quote_messages/quote_join_this_team.html' %}
+            {% endif %}
+        </div>
+
+        <div class="school-description">
+            <div class="view-mode">
+                <div class="row-fluid {% if not school.description %}hidden{% endif %}">
+                    <div class="col-sm-10 col-sm-offset-1">
+                        <p class="school-description-p">{{ school.description|linebreaksbr }}</p>
                     </div>
-
-                    <div class="school-description">
-                        <div class="view-mode">
-                            {% if school.description %}
-                                <div class="row-fluid">
-                                    <div class="col-sm-10 col-sm-offset-1">
-                                        <p class="school-description-p">{{ school.description|linebreaksbr }}</p>
-                                        {% if user_is_head or running_locally%}
-                                            <button class="btn btn-primary btn-small"  id="edit-description">
-                                                <i class="fa fa-cog"></i> Edit cern team description
-                                            </button>
-                                        {% endif %}
-                                    </div>
-                                </div>
-                            {% else %}
-                                {% if user_is_head %}
-                                    {% include 'spuddercern/quote_messages/quote_no_team_description_head.html' %}
-                                {% else %}
-                                    {% include 'spuddercern/quote_messages/quote_no_team_description.html' %}
-                                {% endif %}
-                            {% endif %}
-                        </div>
-                        <div class="edit-mode">
-                            <form method="POST" enctype="multipart/form-data" role="form" class="form-horizontal">
-                                <div class="form-group">
-                                    <label for="school-form-description" class="col-sm-12">CERN Team Description:</label>
-                                    <textarea id="school-form-description" name="description" class="input-block-level" placeholder="Enter something that you would like other to know about your CERN Team" class="col-sm-12">{{ school.description }}</textarea>
-                                    <p class="help-block">Remember, visitors to your CERN Team page will see this description!</p>
-                                </div>
-                                <button class="btn btn-primary btn-small" >
-                                    <i class="fa fa-save"></i> Save cern team description
-                                </button>
-                        </div>
-                    </div>
-
                 </div>
-
-                {% if top_students %}
-                    <div id="school-student-points">
-                        <div class="row-fluid">
-                            <div class="col-sm-10 col-sm-offset-1 top-students">
-                                <h4 class="aligncenter">Top students at {{ school.name }}:</h4>
-                                <ol>
-                                    {% for student in top_students %}
-                                    <li>{% user_name student.user %}: {{ student.rep }} total points - Top project: {{ student.top_project_verbose }}</li>
-                                    {% endfor %}
-                                </ol>
-                            </div>
-                        </div>
-                        {% if remaining_students %}
-                            <div class="row-fluid">
-                                <div class="col-sm-10 col-sm-offset-1 remaining-students">
-                                    <h4>More students at {{ school.name }}:</h4>
-                                        {% for student in remaining_students %}
-                                        <p>{% user_name student.user %}: {{ student.rep }} total points - Top project: {{ student.top_project_verbose }}</p>
-                                        {% endfor %}
-                                </div>
-                            </div>
-                        {% endif %}
-                    </div>
+                {% if not school.description %}
+                    {% if user_is_head %}
+                        {% include 'spuddercern/quote_messages/quote_no_team_description_head.html' %}
+                    {% else %}
+                        {% include 'spuddercern/quote_messages/quote_no_team_description.html' %}
+                    {% endif %}
                 {% endif %}
             </div>
+        </div>
 
-            <div class="col-sm-5">
-                <div id="school-sidebar">
-                    <hr class="hidden-desktop"/>
+        <div class="school-stats">
+            <ul class="list-unstyled" id="school-details" style="padding-top:30px">
+                <li  class="view-mode clearfix">
+                    <label>Team Size: </label> {{ school.num_students }} registered
+                    <span id="mascot">
+                        {{ school.mascot|default:"students" }}
+                    </span>
+                </li>
 
-                    <div id="school-logo-container">
-                        <div class="clearfix">
-                            {% if school.logo %}
-                                <img src="/file/serve/{{ school.logo.id }}" class="school-logo"/>
-                            {% else %}
-                                <img src="/static/img/spuddercern/button-cern-large.png" />
-                            {% endif %}
-                        </div>
-                        <div class="edit-mode">
-                            <div class="row-fluid">
-                                <div class="col-sm-10 col-sm-offset-1">
-                                    <form method="POST" enctype="multipart/form-data" role="form">
-                                        <div class="form-group" id="logo-form">
-                                            <label>Upload a new Logo</label>
-                                            <input type="file" name="file-0" id="logo-input"/>
-                                            <p class="help-block">Don't use your school's logo or anything else that has a trademark. Create something new instead!</p>
-                                        </div>
-                                        <a class="btn btn-primary btn-small" id="logo-button">
-                                            <i class="fa fa-save"></i> Save new logo
-                                        </a>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <li>
+                    <label>School Reputation: </label> {{ school.get_rep }} points, Level {{ school.level }}
+                </li>
 
-
-                    <ul class="list-unstyled" id="school-details">
-                        <li  class="view-mode clearfix">
-                            <label>Team Size: </label> {{ school.num_students }} registered
-                            <span id="mascot">
-                                {{ school.mascot|default:"students" }}
-                                {% if user_is_head %}
-                                    <button class="btn btn-primary btn-mini pull-right" id="edit-right">
-                                        <i class="fa fa-fw fa-cog"></i> Edit
-                                    </button>
-                                {% endif %}
-                            </span>
-                        </li>
-
-                        <li class="edit-mode">
-                            <form method="POST" enctype="multipart/form-data" role="form">
-                                <div class="form-group">
-                                    <label>Students are called:</label>
-                                    <input type="text" name="mascot" value="{{ school.mascot|default_if_none:"students"  }}" placeholder="students" class="input-small" />
-                                </div>
-                                <button class="btn btn-primary btn-mini" style="position: relative;top: -5px;">
-                                    <i class="fa fa-save"></i> save mascot name
-                                </button>
-                            </form>
-                        </li>
-
-                        <li>
-                            <label>School Reputation: </label> {{ school.get_rep }} points, Level {{ school.level }}
-                        </li>
-
-                        <li>
-                            <label>Team Captain: </label>
-                                {% if head %}
-                                    {% user_name head.user %}
-                                {% else %}
-                                    Register now to be Team Captain!
-                                {% endif %}
-                        </li>
-                    </ul>
-
-
-                </div>
-            </div>
+                <li>
+                    <label>Team Captain: </label>
+                        {% if head %}
+                            {% user_name head.user %}
+                        {% else %}
+                            Register now to be Team Captain!
+                        {% endif %}
+                </li>
+            </ul>
         </div>
     </div>
 {% endblock %}
 
+{% block sidebar %}
+    {% if top_students %}
+        <div id="school-student-points">
+            <div class="row-fluid">
+                <div class="col-sm-10 col-sm-offset-1 top-students">
+                    <h4 class="aligncenter">Top students at {{ school.name }}:</h4>
+                    <ol>
+                        {% for student in top_students %}
+                        <li><a href="/cern/student/{{ student.id }}">{% user_name student.user %}: {{ student.rep }} total points</a> - Top project: {{ student.top_project_verbose }}</li>
+                        {% endfor %}
+                    </ol>
+                </div>
+            </div>
+            {% if remaining_students %}
+                <div class="row-fluid">
+                    <div class="col-sm-10 col-sm-offset-1 remaining-students">
+                        <h4>More students at {{ school.name }}:</h4>
+                            {% for student in remaining_students %}
+                            <p><a href="/cern/student/{{ student.id }}">{% user_name student.user %}: {{ student.rep }} total points</a> - Top project: {{ student.top_project_verbose }}</p>
+                            {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    {% endif %}
+{% endblock %}
+
 {% block js %}
+{{ block.super }}
+<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=true&libraries=geometry"></script>
+<script type="text/javascript" src="/static/js/libs/google.map.js"></script>
 <script type="text/javascript" src="/static/js/libs/jquery.serialize.file.js"></script>
 <script type="text/javascript">
+    window.isEditMode = false;
 
-    // Attach to the clicking of the main submit button
-    var $school_form = $('#school-form');
-    $school_form.on('submit', function(e){
-        // Is the form in edit mode?
-        var in_edit_mode = $school_form.is('.in-edit-mode');
-        if (!in_edit_mode) {
-            e.preventDefault();
-            e.stopPropagation();
-            $school_form.addClass('in-edit-mode');
-        }
-        else {
-            $school_form.find('.btn[type=submit]:visible i').attr('class', 'fa fa-spinner fa-spin');
-        }
-    });
+    $(document).ready(function(){
+        var editMode = $('.edit-mode'),
+	        viewMode = $('.view-mode');
 
-    $('#logo-button').click(function(){
-        if ($('#logo-input').val() > "") {
-            $(this).find('i').attr('class', 'fa fa-spinner fa-spin');
+        $('.alert').each(function(i, alert) {
+           var $alert = $(alert);
+           if ($alert.html() == "")
+               $alert.hide();
+        });
+
+        $('#edit').click(function(){
+            if (window.isEditMode){
+                editMode.hide();
+                viewMode.show();
+                $(this).html('Edit Mode');
+                window.isEditMode = false;
+            } else{
+                viewMode.hide();
+                editMode.show();
+                $(this).html('Show Mode');
+                window.isEditMode = true;
+            }
+        });
+
+        $('#save').click(function() {
+			var form = $(this).parents('form'),
+				files = $(form).serializeFiles(),
+				mascot = $('#mascot-input').val(),
+				description = $('#description-input').val(),
+                alert = $('#logo-name-alert');
+
             $.get('/upload/get_upload_url', function(data) {
                 $.ajax({
                     url : data,
-                    data : $('#logo-form').serializeFiles(),
+                    data : files,
                     cache : false,
                     contentType : false,
                     processData : false,
                     type : 'POST',
                     success : function(data) {
                         var parsed = JSON.parse(data);
-                        var response = $.post('/cern/{{ school.id }}/save_logo', {
-                            'logo' : parsed['uploaded_files'],
+                        var response = $.post('/cern/{{ school.id }}/save', {
+							'logo' : parsed['uploaded_files'],
+                            'mascot': mascot,
+                            'description': description
                         });
 
                         response.done(function(data) {
-{#                            if (parsed['uploaded_files'].length > 0) {#}
-{#                                $('.logo-placeholder').text('Refresh to see logo');#}
-{#                                $('#logo').attr('src', parsed['uploaded_files'][0]);#}
-{#                            }#}
-                            window.location.reload();
+                            if (parsed['uploaded_files'].length > 0){
+                                showAlert(alert, 'School details have been saved (new logo uploaded).', 'success', true);
+                                $('#school-logo').attr('src', parsed['uploaded_files'][0]);
+                                $('#mascot').html(mascot);
+                                $('.school-description-p').html(description);
+                            } else {
+                                showAlert(alert, 'School details have been saved.', 'success', true);
+                                $('.school-description-p').html(description);
+                                $('#mascot').html(mascot);
+                            }
                         });
                     }
                 });
             });
-        }
-    });
+		});
 
-{#    $('.alert').hide();#}
-    window.preloadedOrange = $('<img src="/static/img/spuddercern/ajax-loader-orange.gif" />');
-    window.preloadedBlack = $('<img src="/static/img/spuddercern/ajax-loader-black.gif" />');
-    window.isEditMode = false;
+        $('#toggle-cover').click(function(){
+            $(this).hide();
+            $('#cover-form').show();
+        });
 
-    $(document).ready(function() {
-        var editMode = $('.edit-mode'), viewMode = $('.view-mode'), buttons = $('.buttons'), icons = buttons.find('i');
+        $('#upload-cover').click(function(){
+            var form = $(this).parents('form'),
+                files = $(form).serializeFiles(),
+                alert = $(form).find('.alert');
 
-        $('#edit-description').click(function() {
-            if (window.isEditMode === true) {
-                save();
-                editMode.hide();
-                viewMode.show();
-{#                $(this).html($(this).data('old_html'));#}
-                window.isEditMode = false;
-            } else {
-                editMode.show();
-                viewMode.hide();
-{#                $(this).data('old_html', $(this).html());#}
-                window.isEditMode = true;
+            $.get('/upload/get_upload_url', function(data) {
+                $.ajax({
+                    url : data,
+                    data : files,
+                    cache : false,
+                    contentType : false,
+                    processData : false,
+                    type : 'POST',
+                    success : function(data) {
+                        var parsed = JSON.parse(data);
+
+                        var response = $.post('/cern/{{ school.id }}/save_school_cover', {
+                            'cover' : parsed['uploaded_files']
+                        });
+
+                        response.done(function(data) {
+                            console.log('done');
+                            showAlert(alert, 'Image successfully uploaded.', 'success', true);
+                            $('#cover-image-container img').attr('src', parsed['uploaded_files'][0])
+                            {% if not venue.cover_image %}
+                                $('#jumbo-map-container').addClass('hidden');
+                                $('#cover-image-container').removeClass('hidden');
+                            {% endif %}
+                        });
+                    }
+                });
+            });
+        });
+
+        $('#reset-cover').click(function(){
+            if (confirm('This will permanently delete your cover image!')){
+                var response = $.post('/cern/{{ school.id }}/reset_school_cover');
+
+                response.done(function(data){
+                    window.location.reload();
+                    return;
+                });
             }
         });
 
-        $('#edit-right').click(function() {
-            if (window.isEditMode === true) {
-{#                save();#}
-                editMode.hide();
-                viewMode.show();
-                window.isEditMode = false;
-            } else {
-                editMode.show();
-                viewMode.hide();
-                window.isEditMode = true;
-            }
+        $('#cancel-cover').click(function(){
+            $('#cover-form').hide();
+            $('#toggle-cover').show();
         });
-
-{#        function show(element) {#}
-{#            $('.contents > .active').removeClass('active');#}
-{#            $(element).addClass('active');#}
-{#            $(element).animate({#}
-{#                'margin-left' : '0px'#}
-{#            }, '1000');#}
-{#            $(element).show();#}
-{#        }#}
-{##}
-{#        function hide(elements) {#}
-{#            $.each(elements, function() {#}
-{#                $(this).css({#}
-{#                    'margin-left' : '-1000px',#}
-{#                    'display' : 'none'#}
-{#                });#}
-{#            });#}
-{#        }#}
-
-{#        $('#edit-logo').ace_file_input({#}
-{#            no_file : 'No File ...',#}
-{#            btn_choose : 'Choose',#}
-{#            btn_change : 'Change',#}
-{#            droppable : false,#}
-{#            onchange : null,#}
-{#            thumbnail : false#}
-{#        });#}
-
-{#        function save() {#}
-{#        	var logo_form = $('#logo-form'),#}
-{#        	   files = $(logo_form).serializeFiles()#}
-{#        	   filesList = $(logo_form).find('input')[0].files,#}
-{#        	   mascot = $('#mascot-form').find('[name="mascot"]').val()#}
-{#        	   description = $('#description-input').val()#}
-{#               dfd = saving($(this), $('.alert'), 'Customized page has been saved!');#}
-{##}
-{#               if (filesList.length > 0) {#}
-{#                // There is a logo, so upload it#}
-{#                $.get('/upload/get_upload_url', function(data) {#}
-{#                    $.ajax({#}
-{#                        url : data,#}
-{#                        data : files,#}
-{#                        cache : false,#}
-{#                        contentType : false,#}
-{#                        processData : false,#}
-{#                        type : 'POST',#}
-{#                        success : function(data) {#}
-{#                            var parsed = JSON.parse(data);#}
-{##}
-{#                            console.log("something dammit");#}
-{##}
-{#                            var response = $.post('/cern/{{ school.id }}/save_logo', {#}
-{#                                'logo' : parsed['uploaded_files'],#}
-{#                            });#}
-{##}
-{#                            response.done(function(data) {#}
-{#                                if (parsed['uploaded_files'].length > 0) {#}
-{#                                    $('.logo-placeholder').text('Refresh to see logo');#}
-{#                                    $('#logo').attr('src', parsed['uploaded_files'][0]);#}
-{#                                }#}
-{#                                //dfd.resolve();#}
-{#                            });#}
-{#                        }#}
-{#                    });#}
-{#                });#}
-{#               }#}
-{##}
-{##}
-{#                var response = $.post('/cern/{{ school.id }}/save', {#}
-{#                    'mascot' : mascot,#}
-{#                    'description' : description,#}
-{#                });#}
-{##}
-{#                response.done(function(data) {#}
-{#                    if (mascot !== ""){#}
-{#                        $('#mascot').text(mascot)#}
-{#                    }#}
-{#                    $('#description').text(description)#}
-{##}
-{#                    dfd.resolve();#}
-{#                });#}
-{##}
-{#        }#}
-{##}
-{#        $('#save-description').click(save);#}
-{#        $('#save-right').click(save)#}
-
-
     });
 </script>
 {% endblock %}

@@ -14,6 +14,7 @@ urlpatterns = patterns(
     url(r'^design/$', 'design'),
     url(r'^testing/$', 'testing'),
     url(r'^mobile/$', 'mobile'),
+    url(r'^student/(?P<student_id>\d+)$', 'student_page'),
 
     # Functional URLs url(limited to POST requests)
     url(r'^add_email_alert/$', 'add_email_alert'),
@@ -28,10 +29,11 @@ urlpatterns = patterns(
     # This is a handler for the LinkedIn Response, and is limited to GETs
     url(r'^save_linkedin$', 'save_linkedin'),
 
-
     # Registration & school pages
     url(r'^(?P<school_id>\d+)/save_logo$', 'save_school_logo'),
     url(r'^(?P<school_id>\d+)/save$', 'save_school'),
+    url(r'^(?P<school_id>\d+)/save_school_cover$', 'save_school_cover'),
+    url(r'^(?P<school_id>\d+)/reset_school_cover$', 'reset_school_cover'),
     url(r'^(?P<school_id>\d+)/register/(?P<referral_id>.+)$', 'register_school',
         {'SSL': False if os.environ['SERVER_SOFTWARE'].startswith('Development') else True}),
     url(r'^(?P<school_id>\d+)/register/$', 'register_school',

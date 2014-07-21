@@ -195,6 +195,12 @@ def save_school(request, school_id):
     if request.method == 'POST':
         school = School.objects.get(id=school_id)
 
+        request_logo = request.POST.getlist('logo[]')
+        if len(request_logo):
+            logo_id = request_logo[0].split('/')[3]
+            logo = UploadedFile.objects.get(pk=logo_id)
+            school.logo = logo
+
         mascot = request.POST['mascot']
         if mascot != '':
             school.mascot = mascot
@@ -814,3 +820,49 @@ def auto_share_social_media_level(request):
     else:
         return HttpResponseNotAllowed(['POST'])
 
+def save_school_cover(request, school_id):
+    """
+    Saves a school's new cover image.
+
+    :param request: POST request containing uploaded image id
+    :param school_id: ID of the school
+    :return: a blank HTTPResponse on success
+    """
+    school = School.objects.get(id=school_id)
+
+    request_cover = request.POST.getlist('cover[]')
+    cover_id = request_cover[0].split('/')[3]
+    cover = UploadedFile.objects.get(pk=cover_id)
+
+    school.cover_image = cover
+    school.save()
+    return HttpResponse()
+
+
+def reset_school_cover(request, school_id):
+    """
+    Resets the school cover image to map by setting field to None
+    :param request: POST request
+    :param school_id: id of school whose cover is to be reset
+    :return: a blank HTTPResponse on success
+    """
+    school = School.objects.get(pk=school_id)
+
+    school.cover_image = None
+    school.save()
+    return HttpResponse()
+
+def student_page(request, student_id):
+    """
+    Displays the "profile" for the student.
+
+    :param request: request to display the student page
+    :param student_id: ID of the student whose information we display
+    :return: a page rendered from the student_page template with basic
+        details about the student, designed to be consistent with the
+        other profile pages on Spudder
+    """
+    student = Student.objects.get(id=student_id)
+    return render(request, 'spuddercern/pages/student_page.html',{
+            'student': student,
+            })
