@@ -138,12 +138,12 @@
             {% if student.linkedin_token %}
             <div class="cern-dashboard-project-content">
                 <ul class="list-unstyled" >
-                    <li><p>Share current points: <a href="javascript:window.open('/static/img/spuddercern/linkedin-example-points-now.png', 'popup', 'height=120, width=650, left=100, top-10, scrollbars=no,toolbar=no,menubar=no');" title="See example post"><i class="fa fa-question-circle"></i></a></p>
+                    <li><p>Share current points: <a href="javascript:window.open('/static/img/spuddercern/linkedin-example-points-now.png', 'current-popup', 'height=120, width=650, left=100, top-10, scrollbars=no,toolbar=no,menubar=no');" title="See example post"><i class="fa fa-question-circle"></i></a></p>
                         {% if student.marketing_points > 0 %}<a id="share-marketing">Marketing</a><br>{% endif %}
                         {% if student.social_media_points > 0 %}<a id="share-social-media">Social Media PR</a>{% endif %}
                     </li>
                     <li>
-                        <p>Auto-share every 100 points: <a href="javascript:window.open('/static/img/spuddercern/linkedin-example-points-auto.png', 'popup', 'height=120, width=650, left=100, top-10, scrollbars=no,toolbar=no,menubar=no');" title="See example post"><i class="fa fa-question-circle"></i></a></p>
+                        <p>Auto-share every 100 points: <a href="javascript:window.open('/static/img/spuddercern/linkedin-example-points-auto.png', 'hundred-popup', 'height=120, width=650, left=100, top-10, scrollbars=no,toolbar=no,menubar=no');" title="See example post"><i class="fa fa-question-circle"></i></a></p>
                         <form role="form" class="form-inline">
                             {% if student.marketing_points > 0 %}
                                 <div class="form-group">
@@ -160,7 +160,7 @@
                         </form>
                     </li>
                     <li>
-                        <p>Auto-share every time you level up: <a href="javascript:window.open('/static/img/spuddercern/linkedin-example-level-auto.png', 'popup', 'height=120, width=650, left=100, top-10, scrollbars=no,toolbar=no,menubar=no');" title="See example post"><i class="fa fa-question-circle"></i></a></p>
+                        <p>Auto-share every time you level up: <a href="javascript:window.open('/static/img/spuddercern/linkedin-example-level-auto.png', 'level-popup', 'height=120, width=650, left=100, top-10, scrollbars=no,toolbar=no,menubar=no');" title="See example post"><i class="fa fa-question-circle"></i></a></p>
                         <form role="form" class="form-inline">
                             {% if student.marketing_points > 0 %}
                                 <div class="form-group">
