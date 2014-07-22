@@ -6,7 +6,7 @@
     ga('set', 'contentGroup1', 'CERN Students - Venues');
 {% endblock %}
 
-{% block side_nav %}{% include 'spuddercern/parts/sideNav.html' with active="venues" %}{% endblock %}
+{#{% block side_nav %}{% include 'spuddercern/parts/sideNav.html' with active="venues" %}{% endblock %}#}
 
 {% block dashboard_page %}
     <div class="page-header">
@@ -20,7 +20,7 @@
                 <tr>
                     <th>Sport</th>
                     <th>AKA Name</th>
-                    <th>Name</th>
+                    <th>Tag</th>
                     <th style="width: 70px;">Actions</th>
                 </tr>
             </thead>
@@ -29,7 +29,7 @@
                     <tr>
                         <td>{{ venue.sport }}</td>
                         <td><a href="/venues/view/{{ venue.id }}">{{ venue.aka_name }}</a></td>
-                        <td>{{ venue.name }}</td>
+                        <td>@{{ venue.name }}</td>
                         <td style="white-space: nowrap">
                             <!--<a class="btn btn-xs btn-primary" href="javascript:alert('Feature Coming Soon!')" title="SPUDS from SPICE">
                                 <i class="icon-microphone"> </i>

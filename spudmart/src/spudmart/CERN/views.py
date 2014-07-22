@@ -802,7 +802,7 @@ def auto_share_social_media_level(request):
     :param request: request to toggle, linked to a user
     :return: an HttpResponse with the new state of level-sharing
     """
-    if request.methd == 'POST':
+    if request.method == 'POST':
         student = request.current_role.entity
         if student.level_brag_social_media:
             student.level_brag_social_media = False

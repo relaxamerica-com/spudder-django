@@ -1,5 +1,9 @@
 {% extends 'spuddercern/base_single_well.html' %}
 
+{% block google_analytics_additions %}
+    ga('set', 'contentGroup1', 'CERN RECIPIENT - Error');
+{% endblock %}
+
 {% block content %}
     <h2 class="text-center">Error</h2>
     <p class="text-center">{{ status }}</p>

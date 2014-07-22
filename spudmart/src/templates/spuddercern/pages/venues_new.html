@@ -59,13 +59,24 @@
 	<script type="text/javascript" src="/static/js/libs/google.map.js"></script>
 	<script type="text/javascript">
 		$(document).ready(function() {
-			initialize(true, $('#alert-location'), function(venue) {
-				return venue.sport == $('#venue-sport').val();
-			}, function(latitude, longitude) {
-				$('[name="longitude"]').val(longitude);
-				$('[name="latitude"]').val(latitude);
-				$('#save').removeClass('hidden');
-			});
+            function init(){
+                initialize(true, $('#alert-location'), function(venue) {
+                    return venue.sport == $('#venue-sport').val();
+                }, function(latitude, longitude) {
+                    $('[name="longitude"]').val(longitude);
+                    $('[name="latitude"]').val(latitude);
+                    $('#save').removeClass('hidden');
+                });
+            }
+
+            init();
+
+            $('#venue-sport').change(function(){
+                console.log('changed');
+                $('#save').addClass('hidden');
+                $('.alert').hide();
+               init();
+            });
 		});
 	</script>
 {% endblock %}

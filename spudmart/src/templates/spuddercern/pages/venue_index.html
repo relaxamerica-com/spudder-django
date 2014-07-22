@@ -1,5 +1,9 @@
 {% extends 'spuddercern/base.html' %}
 
+{% block google_analytics_additions %}
+    ga('set', 'contentGroup1', 'CERN Students - Index');
+{% endblock %}
+
 {% block body %}
 <div class="container clearfix" id="venue-index">
 	<div class="row video-row">

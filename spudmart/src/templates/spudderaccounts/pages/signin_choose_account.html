@@ -26,7 +26,7 @@
                             <div class="caption" style="text-align: center;">
                                 <h3>Student in CERN</h3>
                                 <p>Login as a Student in CERN</p>
-                                <a href="javascript:loginAsStudent();">
+                                <a id="log-in-with-amazon-student">
                                     <img border="0" alt="Login with Amazon"
                                              src="https://images-na.ssl-images-amazon.com/images/G/01/lwa/btnLWA_gold_156x32.png"
                                              width="156" height="32" style="margin-bottom: 10px;"/>
@@ -46,7 +46,7 @@
                             <div class="caption" style="text-align: center;">
                                 <h3>Venue Sponsor</h3>
                                 <p>Login as a Venue Sponsor</p>
-                                <a href="javascript:loginAsVenueSponsor();">
+                                <a id="log-in-with-amazon-sponsor">
                                     <img border="0" alt="Login with Amazon"
                                         src="https://images-na.ssl-images-amazon.com/images/G/01/lwa/btnLWA_gold_156x32.png"
                                         width="156" height="32" style="margin-bottom: 10px;" />
@@ -65,14 +65,23 @@
     {{ block.super }}
     {% include 'spudderaccounts/parts/amazon_login_js.html' %}
     <script type="text/javascript" language="javascript">
-        window.loginAsStudent = function () {
-            return loginWithAmazon('{{ base_url }}/accounts/login/amazon');
-        };
+        $(document).ready(function(){
+            $('#log-in-with-amazon-sponsor').click(function(){
+                loginWithAmazon('{{ base_url }}/accounts/login/amazon?next=/sponsor/page&account_type=sponsor');
+            });
+            $('#log-in-with-amazon-student').click(function(){
+                loginWithAmazon('{{ base_url }}/accounts/login/amazon');
+            })
+        });
 
-        window.loginAsVenueSponsor = function () {
-            return loginWithAmazon('{{ base_url }}/accounts/login/amazon?next=/sponsor/page&account_type=sponsor');
-        };
-
+{#        window.loginAsStudent = function () {#}
+{#            return #}
+{#        };#}
+{##}
+{#        window.loginAsVenueSponsor = function () {#}
+{#            return #}
+{#        };#}
+{##}
         function loginWithAmazon(returnURL) {
             if (typeof amazon == undefined) return;
 

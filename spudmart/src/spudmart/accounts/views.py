@@ -20,6 +20,7 @@ from spudmart.accounts.utils import is_sponsor, is_student
 import logging
 from spudmart.CERN.rep import recruited_new_student, signed_up
 from spudmart.CERN.models import Student, School
+from spudmart.venues.models import Venue
 
 
 def _accommodate_legacy_pre_V1_1_0_users(access_token, amazon_user_email, amazon_user_id):

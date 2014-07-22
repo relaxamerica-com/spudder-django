@@ -15,6 +15,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         {% block meta %}{% endblock %}
         {% block css %}{% endblock %}
+        <link rel="shortcut icon" href={% block favicon %}"/media/ico/favicon.png"{% endblock %} />
         <script src="/static/js/libs/modernizr-2.6.2-respond-1.1.0.min.js"></script>
         <script type="text/javascript" language="javascript" src="/static/js/libs/jquery-1.11.0.min.js"></script>
         <script type="text/javascript" language="javascript" src="/static/js/libs/bootstrap.min.js"></script>
@@ -35,6 +36,9 @@
                 {% block masterhead %}{% endblock %}
                 <div class="navbar-collapse collapse">
                     <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="http://spudder.zendesk.com/account/dropboxes/20176994" onClick="Zenbox.show(); return false;">Support</a>
+                        </li>
                         {% block nav %}{% endblock %}
                         {% block current_role_nav %}
                             {% if current_role and current_role|is_cern_student %}
@@ -126,7 +130,7 @@
                                 </li>
                                 <li class="dropdown">
                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                        Share Page <i class="fa fa-caret-down"></i>
+                                        Share <i class="fa fa-caret-down"></i>
                                     </a>
                                     <ul class="dropdown-menu">
                                         <li>
@@ -150,7 +154,7 @@
                                             </a>
                                         </li>
                                         <li>
-                                            <a data-original-title="Share via Email" data-placement="bottom" href="mailto:?subject=Check out this Spudder page!&body=Check out this cool page I saw on Spudder: http:/{{ request.META.HTTP_HOST }}{{ request.get_full_path }}">
+                                            <a data-original-title="Share via Email" data-placement="bottom" href="mailto:?subject=Check out this Spudder page!&body=Check out this cool page I saw on Spudder: http://{{ request.META.HTTP_HOST }}{{ request.get_full_path }}">
                                             <i class="fa fa-envelope-square fa-2x"></i>
                                             </a>
                                         </li>
@@ -277,27 +281,35 @@
             });
 
         </script>
-        {% if user.is_authenticated %}
+{#        {% if user.is_authenticated %}#}
             <script type="text/javascript" src="//assets.zendesk.com/external/zenbox/v2.6/zenbox.js"></script>
             <style type="text/css" media="screen, projection">
               @import url(//assets.zendesk.com/external/zenbox/v2.6/zenbox.css);
-              #zenbox_tab {top: 80% !important;}
+              #zenbox_container{
+                  min-width: 100px;
+                  max-width: 615px;
+                  width: 75%;
+              }
+            #zenbox_body{
+                width: 100%;
+            }
             </style>
             <script type="text/javascript">
                 $(document).ready(function(){
                     if (typeof(Zenbox) !== "undefined") {
                         Zenbox.init({
-                            dropboxID:   "20173894",
+                            dropboxID:   "20176994",
                             url:     	"https://spudder.zendesk.com",
                             tabTooltip:  "Support",
                             tabImageURL: "https://p2.zdassets.com/external/zenbox/images/tab_support.png",
                             tabColor:	"#fb810b",
-                            tabPosition: "Left"
+                            tabPosition: "Left",
+                            hide_tab: true
                         });
                     }
                 });
             </script>
-        {% endif %}
+{#        {% endif %}#}
 
         {# Social Media sharing popups #}
         <script type="text/javascript">
@@ -335,6 +347,11 @@
 
           function googlePopup(){
               newPopup('https://plus.google.com/share?url=' + url);
+          }
+
+          function pinterestPopup(paramImage){
+              image = paramImage || {% if venue %} "http://{{ request.META.HTTP_HOST }}/file/serve/{{ venue.logo.id }}" {% else %} {% if school %} "http://{{ request.META.HTTP_HOST }}/file/serve/{{ school.logo.id }}" {% else %} '' {% endif %}{% endif %}
+              newPopup('http://pinterest.com/pin/create/button/?url=http://{{ request.META.HTTP_HOST }}{{ request.get_full_path }}&media=' + image);
           }
         </script>
         <script src="https://apis.google.com/js/client.js?onload=load"></script>

@@ -1,5 +1,9 @@
 {% extends 'spuddercern/base_single_well.html' %}
 
+{% block google_analytics_additions %}
+    ga('set', 'contentGroup1', 'CERN RENT - Thanks');
+{% endblock %}
+
 {% block well_content %}
     <p class="header">Success</p>
     <p class="text-center">You've just bought this Venue!</p>

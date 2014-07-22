@@ -1,7 +1,7 @@
 {% extends 'spuddersponsors/pages/dashboard_pages/dashboard.html' %}
 
 {% block google_analytics_additions %}
-    ga('set', 'contentGroup1', 'SPONSORS - CHANGE_THIS');
+    ga('set', 'contentGroup1', 'SPONSORS - Venues');
 {% endblock %}
 
 {% block side_nav %}{% include 'spuddersponsors/parts/side_nav.html' with active="venues" %}{% endblock %}
@@ -19,7 +19,7 @@
                 <tr>
                     <th>Sport</th>
                     <th>AKA Name</th>
-                    <th>Name</th>
+                    <th>Tag</th>
                     <th style="width: 70px;">Actions</th>
                 </tr>
             </thead>
@@ -28,7 +28,7 @@
                     <tr>
                         <td>{{ venue.sport }}</td>
                         <td><a href="/venues/view/{{ venue.id }}">{{ venue.aka_name }}</a></td>
-                        <td>{{ venue.name }}</td>
+                        <td>@{{ venue.name }}</td>
                         <td style="white-space: nowrap">
                             <a class="btn btn-xs btn-primary" href="/venues/view/{{ venue.id }}" title="Edit">
                                 <i class="fa fa-fw fa-edit"> </i>

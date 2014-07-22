@@ -351,6 +351,7 @@ class Student(models.Model):
                           '?oauth2_access_token=%s' % self.linkedin_token)
         request.add_header('Content-Type', 'application/xml')
         request.add_data(data)
+        url = request.get_full_url()
 
         return urlopen(request).read()
 
@@ -418,7 +419,7 @@ class Student(models.Model):
 
         :return: the response from the LinkedIn Share API
         """
-        return self.brag("I just reached Level " + self.marketing_level() +
+        return self.brag("I just reached Level " + str(self.marketing_level()) +
                          " in Marketing for CERN on Spudder.")
 
     def brag_social_media_level(self):
@@ -427,8 +428,8 @@ class Student(models.Model):
 
         :return: the response from the LinkedIn Share API
         """
-        return self.brag("I just reached Level " + self.social_media_level() +
-                         "in Social Media PR for CERN on Spudder.")
+        return self.brag("I just reached Level " + str(self.social_media_level()) +
+                         " in Social Media PR for CERN on Spudder.")
 
 
 class Challenge(models.Model):
