@@ -232,6 +232,17 @@ class Student(models.Model):
 
     info_messages_dismissed = models.TextField(blank=True, null=True)
 
+    logo = models.ForeignKey(UploadedFile, null=True, related_name="student_logo")
+    cover_image = models.ForeignKey(UploadedFile, null=True, related_name="student_cover_image")
+    display_name = models.CharField(max_length=200, blank=True, null=True)
+    append_points = models.BooleanField(default=False)
+
+    linkedin_link = models.CharField(max_length=200, blank=True, null=True)
+    facebook_link = models.CharField(max_length=200, blank=True, null=True)
+    twitter_link = models.CharField(max_length=200, blank=True, null=True)
+    google_link = models.CharField(max_length=200, blank=True, null=True)
+    instagram_link = models.CharField(max_length=200, blank=True, null=True)
+
     def __str__(self):
         something = str(self.user.username)
         if self.isHead:

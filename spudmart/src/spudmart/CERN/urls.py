@@ -14,7 +14,13 @@ urlpatterns = patterns(
     url(r'^design/$', 'design'),
     url(r'^testing/$', 'testing'),
     url(r'^mobile/$', 'mobile'),
+
+    # For student pages
     url(r'^student/(?P<student_id>\d+)$', 'student_page'),
+    url(r'^student/(?P<student_id>\d+)/save_cover', 'save_student_cover'),
+    url(r'^student/(?P<student_id>\d+)/reset_cover', 'reset_student_cover'),
+    url(r'^student/(?P<student_id>\d+)/save_logo', 'save_student_logo'),
+    url(r'^student/(?P<student_id>\d+)/save_social_media', 'save_student_social_media'),
 
     # Functional URLs url(limited to POST requests)
     url(r'^add_email_alert/$', 'add_email_alert'),

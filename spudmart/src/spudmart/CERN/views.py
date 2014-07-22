@@ -863,6 +863,103 @@ def student_page(request, student_id):
         other profile pages on Spudder
     """
     student = Student.objects.get(id=student_id)
-    return render(request, 'spuddercern/pages/student_page.html',{
-            'student': student,
-            })
+    can_edit = False
+
+    # Double layering to handle unauthenticated users
+    if request.current_role:
+        if request.current_role.entity == student:
+            can_edit = True
+
+    venues = Venue.objects.filter(student=student)
+
+    all_referrals = sorted(student.referrals(), key=lambda s: s.rep(),
+                       reverse=True)
+    num_referred = len(all_referrals)
+
+    return render(request, 'spuddercern/pages/student_page.html', {
+                  'student': student,
+                  'can_edit': can_edit,
+                  'venues': venues,
+                  'num_referred': num_referred,
+                  'top_five': all_referrals[:5]
+                  })
+
+def save_student_cover(request, student_id):
+    """
+    Saves student's cover image.
+
+    :param request: POST request containing reference to UploadedImage
+    :param student_id: ID of student who gets new image
+    :return: Empty HTTPResponse on success
+    """
+    student = Student.objects.get(id=student_id)
+
+    request_cover = request.POST.getlist('cover[]')
+    cover_id = request_cover[0].split('/')[3]
+    cover = UploadedFile.objects.get(pk=cover_id)
+
+    student.cover_image = cover
+    student.save()
+    return HttpResponse()
+
+
+def reset_student_cover(request, student_id):
+    """
+    Resets the student cover image to map by setting field to None
+    :param request: POST request
+    :param student_id: id of student whose cover is to be reset
+    :return: a blank HTTPResponse on success
+    """
+    student = Student.objects.get(pk=student_id)
+
+    student.cover_image = None
+    student.save()
+    return HttpResponse()
+
+
+def save_student_logo(request, student_id):
+    """
+    Associates a recently-uploaded logo with a student
+
+    :param request: POST request with uploaded image data
+    :param student_id: the id of the student
+    :return: a blank HttpResponse object if success on POST request
+        OR an HttpResponseNotAllowed object (code 405)
+    """
+    if request.method == 'POST':
+        student = Student.objects.get(id=student_id)
+
+        request_logo = request.POST.getlist('logo[]')
+        if len(request_logo):
+            logo_id = request_logo[0].split('/')[3]
+            logo = UploadedFile.objects.get(pk=logo_id)
+            student.logo = logo
+
+        student.display_name = request.POST['displayName']
+        student.append_points = (request.POST['appendPoints'] == 'true')
+
+        student.save()
+
+        return HttpResponse()
+    else:
+        return HttpResponseNotAllowed(['POST'])
+
+
+def save_student_social_media(request, student_id):
+    """
+    Saves social media links for student
+
+    :param request: POST request containing social media link(s)
+    :param student_id: the student whose social media info is updated
+    :return: a blank HTTPResponse on success
+    """
+    student = Student.objects.get(id=student_id)
+
+    student.linkedin_link = request.POST['linkedin']
+    student.facebook_link = request.POST['facebook']
+    student.twitter_link = request.POST['twitter']
+    student.google_link = request.POST['google']
+    student.instagram_link = request.POST['instagram']
+
+    student.save()
+    return HttpResponse()
