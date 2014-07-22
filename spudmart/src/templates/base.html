@@ -102,26 +102,21 @@
                                                     {% endfor %}
                                                 </div>
                                                 <hr />
-                                                {% if other_roles|length > 2 %}
-                                                    <div class="btn-group">
-                                                        <a class="btn btn-primary btn-sm" href="/users/roles/add">
-                                                            <i class="fa fa-plus"></i> Add a new role
-                                                        </a>
-                                                        <a class="btn btn-default btn-sm" href="/users">
-                                                            View all your roles
-                                                        </a>
-                                                    </div>
-                                                {% else %}
-                                                    <div class="btn-group">
-                                                        <a class="btn btn-primary btn-sm" href="/users/roles/add">
-                                                            <i class="fa fa-plus"></i> Add a new role
-                                                        </a>
-                                                    </div>
-                                                {% endif %}
+                                                <div class="btn-group">
+                                                    <a class="btn btn-primary btn-sm" href="/users/roles/add">
+                                                        <i class="fa fa-plus"></i> Add a new role
+                                                    </a>
+                                                    <a class="btn btn-default btn-sm" href="/users">
+                                                        Manage your account
+                                                    </a>
+                                                </div>
                                             {% else %}
                                                 <div class="btn-group">
                                                     <a class="btn btn-primary btn-sm" href="/users/roles/add">
                                                         <i class="fa fa-plus"></i> Add a new role
+                                                    </a>
+                                                    <a class="btn btn-default btn-sm" href="/users">
+                                                        Manage your account
                                                     </a>
                                                 </div>
                                             {% endif %}
