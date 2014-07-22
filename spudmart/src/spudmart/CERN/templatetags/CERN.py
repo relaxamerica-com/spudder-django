@@ -28,3 +28,14 @@ def my_school_link(context, user):
         return '/cern/%s/%s/%s' % (sch.state, sch.id, strip_invalid_chars(sch.name))
     else:
         return ''
+
+@register.simple_tag
+def student_school_link(student):
+    """
+    Gets the link for the school of a supplied student
+    :param student: any Student object
+    :return: the relative link to the page for the school if given a student
+    """
+    if type(student) is Student:
+        sch = student.school
+        return '/cern/%s/%s/%s' % (sch.state, sch.id, strip_invalid_chars(sch.name))
