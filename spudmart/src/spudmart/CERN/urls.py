@@ -17,11 +17,13 @@ urlpatterns = patterns(
 
     # For student pages
     url(r'^student/(?P<student_id>\d+)$', 'student_page'),
-    url(r'^student/(?P<student_id>\d+)/save_cover', 'save_student_cover'),
-    url(r'^student/(?P<student_id>\d+)/reset_cover', 'reset_student_cover'),
-    url(r'^student/(?P<student_id>\d+)/save_logo', 'save_student_logo'),
-    url(r'^student/(?P<student_id>\d+)/save_social_media', 'save_student_social_media'),
-    url(r'^student/(?P<student_id>\d+)/upload_resume', 'upload_student_resume'),
+    url(r'^student/(?P<student_id>\d+)/save_cover$', 'save_student_cover'),
+    url(r'^student/(?P<student_id>\d+)/reset_cover$', 'reset_student_cover'),
+    url(r'^student/(?P<student_id>\d+)/save_logo$', 'save_student_logo'),
+    url(r'^student/(?P<student_id>\d+)/save_social_media$', 'save_student_social_media'),
+    url(r'^student/(?P<student_id>\d+)/upload_resume$', 'upload_student_resume'),
+    url(r'^student/(?P<student_id>\d+)/apply_qa$', 'apply_qa'),
+    url(r'^student/(?P<student_id>\d+)/delete_resume$', 'delete_resume'),
 
     # Functional URLs url(limited to POST requests)
     url(r'^add_email_alert/$', 'add_email_alert'),

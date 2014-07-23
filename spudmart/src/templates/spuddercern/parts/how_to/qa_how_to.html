@@ -12,7 +12,7 @@
     <h4>Overview of QA Testing Project</h4>
     <p>The <b>QA Testing</b> project involves testing new features of the Spudder website. We will give you tasks to try, and you will provide us with feedback on what works and what doesn't.</p>
     <p><b>Rewards:</b> Every task for this project will be associated with a given number of points. If you complete the task to the best of your ability, we will award you those points. In return, these points will be redeemable for prizes.</p>
-    <p><b>Note:</b> The QA Testing project is more exclusive than other projects. To make sure that you will do a good job, we need to take a look at your resume. You can upload your resume on the "Apply" tab.</p>
+    <p><b>Note:</b> The QA Testing project is more exclusive than other projects. To make sure that you will do a good job, we need to take a look at your resume. You can upload your resume on the "Join" tab.</p>
     {% endif %}
 {% endblock %}
 
@@ -41,26 +41,30 @@
     <h4>Apply to Join the QA Testing Project</h4>
     <div class="alert" id="join-alert" style="margin-top:15px;"></div>
     {% if student.resume %}
-    <form role="form">
-        <div class="form-group">
-            <label>Edit Resume:</label>
-            <textarea class="form-control" placeholder="Your resume here" id="resume">{{ student.resume }}</textarea>
-        </div>
-        <div class="form-group">
-            <label>Remove resume:</label>
-            <input type="checkbox" style="margin-left:4px" id="remove-resume" />
-        </div>
-        <a class="btn btn-primary" id="save-resume">Save</a>
-    </form>
+        {% if student.applied_qa %}<p>You have already applied to the QA testing program, but you can still update your resume below.</p>{% endif %}
+        <form role="form">
+            <div class="form-group">
+                <label>Edit Resume:</label>
+                <textarea class="form-control" placeholder="Your resume here" id="resume">{{ student.resume }}</textarea>
+            </div>
+            <div class="btn-group">
+                <a class="btn btn-default" id="remove-resume">Remove Resume</a>
+                <a class="btn btn-primary" id="save-resume">Save Resume</a>
+                {% if not student.applied_qa %}<a class="btn btn-primary" id="save-and-apply">Save and Apply Now</a>{% endif %}
+            </div>
+        </form>
     {% else %}
-    <p>To join the QA Testing project, copy and paste your resume into the text box below.</p>
-    <form role="form">
-        <div class="form-group">
-            <label>Resume:</label>
-            <textarea class="form-control" placeholder="Your resume here" id="resume"></textarea>
-        </div>
-        <a class="btn btn-primary" id="upload-resume">Submit</a>
-    </form>
+        <p>To join the QA Testing project, copy and paste your resume into the text box below. Your resume can be edited later by returning to this page.</p>
+        <form role="form">
+            <div class="form-group">
+                <label>Resume:</label>
+                <textarea class="form-control" placeholder="Your resume here" id="resume"></textarea>
+            </div>
+            <div class="btn-group">
+                <a class="btn btn-default" id="save-resume">Save Resume</a>
+                <a class="btn btn-primary" id="save-and-apply">Save and Apply Now</a>
+            </div>
+        </form>
     {% endif %}
 {% endblock %}
 
@@ -68,18 +72,6 @@
 {{ block.super }}
 
 <script type="text/javascript">
-    $('#upload-resume').click(function(){
-        var resume = $('#resume').val();
-
-        var response = $.post('/cern/student/{{ student.id }}/upload_resume', {
-                              'resume': resume
-                              });
-
-        response.done(function(){
-            showAlert($('#join-alert'), 'Your resume has been received. Please check back later to see if you have been approved.', 'success', true);
-        })
-    });
-
     $('#save-resume').click(function(){
         var resume = $('#resume').val();
 
@@ -88,8 +80,35 @@
                               });
 
         response.done(function(){
-            showAlert($('#join-alert'), 'Your resume has been updated.', 'success', true);
+            showAlert($('#join-alert'), 'Your resume has been saved.', 'success', true);
         })
+    });
+
+    $('#save-and-apply').click(function(){
+        var resume = $('#resume').val();
+
+        if (resume.val() == ""){
+            alert("Oops! You need to paste some text into the resume box to apply.")
+        } else{
+            var response = $.post('/cern/student/{{ student.id }}/upload_resume', {
+                                 'resume': resume
+                                  });
+
+            response.done(function(){
+                $.post('/cern/student/{{ student.id }}/apply_qa').done(function(){
+                    showAlert($('#join-alert'), 'Your application for the QA project has been received. We will inform you when you have been accepted.', 'success', true);
+                })
+            })
+        }
+    });
+
+    $('#remove-resume').click(function(){
+       if (confirm('This will permanently delete your resume, and remove your application to join the QA Testing project.')){
+           var response = $.post('/cern/student/{{ student.id }}/delete_resume');
+           response.done(function(){
+               window.location.reload();
+           })
+       }
     });
 </script>
 {% endblock %}

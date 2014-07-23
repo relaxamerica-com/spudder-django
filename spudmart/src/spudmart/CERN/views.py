@@ -833,7 +833,7 @@ def save_school_cover(request, school_id):
 
     :param request: POST request containing uploaded image id
     :param school_id: ID of the school
-    :return: a blank HTTPResponse on success
+    :return: a blank HttpResponse on success
     """
     school = School.objects.get(id=school_id)
 
@@ -851,7 +851,7 @@ def reset_school_cover(request, school_id):
     Resets the school cover image to map by setting field to None
     :param request: POST request
     :param school_id: id of school whose cover is to be reset
-    :return: a blank HTTPResponse on success
+    :return: a blank HttpResponse on success
     """
     school = School.objects.get(pk=school_id)
 
@@ -897,7 +897,7 @@ def save_student_cover(request, student_id):
 
     :param request: POST request containing reference to UploadedImage
     :param student_id: ID of student who gets new image
-    :return: Empty HTTPResponse on success
+    :return: Empty HttpResponse on success
     """
     student = Student.objects.get(id=student_id)
 
@@ -915,7 +915,7 @@ def reset_student_cover(request, student_id):
     Resets the student cover image to map by setting field to None
     :param request: POST request
     :param student_id: id of student whose cover is to be reset
-    :return: a blank HTTPResponse on success
+    :return: a blank HttpResponse on success
     """
     student = Student.objects.get(pk=student_id)
 
@@ -958,7 +958,7 @@ def save_student_social_media(request, student_id):
 
     :param request: POST request containing social media link(s)
     :param student_id: the student whose social media info is updated
-    :return: a blank HTTPResponse on success
+    :return: a blank HttpResponse on success
     """
     student = Student.objects.get(id=student_id)
 
@@ -978,12 +978,44 @@ def upload_student_resume(request, student_id):
 
     :param request: POST request with resume as string
     :param student_id: ID of student belonging to resume
-    :return: a blank HTTPResponse on success
+    :return: a blank HttpResponse on success
     """
     stu = Student.objects.get(id=student_id)
 
     resume = request.POST['resume']
     stu.resume = resume
+    stu.save()
+
+    return HttpResponse()
+
+
+def apply_qa(request, student_id):
+    """
+    Marks a student as applied to the QA Testing program.
+
+    :param request: POST request
+    :param student_id: id of student with resume who is applying to QA
+        program
+    :return: a blank HttpResponse on success
+    """
+    stu = Student.objects.get(id=student_id)
+
+    stu.applied_qa = True
+    stu.save()
+    return HttpResponse()
+
+
+def delete_resume(request, student_id):
+    """
+    Removes a student's resume by setting field to None.
+
+    :param request: POST request
+    :param student_id: id of student losing resume
+    :return: a blank HttpResponse on success
+    """
+    stu = Student.objects.get(id=student_id)
+    stu.resume = None
+    stu.applied_qa = False
     stu.save()
 
     return HttpResponse()

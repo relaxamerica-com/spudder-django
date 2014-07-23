@@ -246,6 +246,7 @@ class Student(models.Model):
     on_qa_waitlist = models.BooleanField(default=False)
     is_tester = models.BooleanField(default=False)
     resume = models.TextField(null=True)
+    applied_qa = models.BooleanField(default=False)
 
     def __str__(self):
         something = str(self.user.username)
