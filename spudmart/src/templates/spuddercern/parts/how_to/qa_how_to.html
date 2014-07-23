@@ -39,6 +39,20 @@
 
 {% block join %}
     <h4>Apply to Join the QA Testing Project</h4>
+    <div class="alert" id="join-alert" style="margin-top:15px;"></div>
+    {% if student.resume %}
+    <form role="form">
+        <div class="form-group">
+            <label>Edit Resume:</label>
+            <textarea class="form-control" placeholder="Your resume here" id="resume">{{ student.resume }}</textarea>
+        </div>
+        <div class="form-group">
+            <label>Remove resume:</label>
+            <input type="checkbox" style="margin-left:4px" id="remove-resume" />
+        </div>
+        <a class="btn btn-primary" id="save-resume">Save</a>
+    </form>
+    {% else %}
     <p>To join the QA Testing project, copy and paste your resume into the text box below.</p>
     <form role="form">
         <div class="form-group">
@@ -47,8 +61,7 @@
         </div>
         <a class="btn btn-primary" id="upload-resume">Submit</a>
     </form>
-
-    <div class="alert" id="join-alert" style="margin-top:15px;"></div>
+    {% endif %}
 {% endblock %}
 
 {% block howto_js %}
@@ -65,6 +78,18 @@
         response.done(function(){
             showAlert($('#join-alert'), 'Your resume has been received. Please check back later to see if you have been approved.', 'success', true);
         })
-    })
+    });
+
+    $('#save-resume').click(function(){
+        var resume = $('#resume').val();
+
+        var response = $.post('/cern/student/{{ student.id }}/upload_resume', {
+                              'resume': resume
+                              });
+
+        response.done(function(){
+            showAlert($('#join-alert'), 'Your resume has been updated.', 'success', true);
+        })
+    });
 </script>
 {% endblock %}
