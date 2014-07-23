@@ -433,26 +433,33 @@ def testing(request):
     Displays QA testing page
 
     :param request: request to render page
-    :return: 'Coming Soon' page customized for QA testing
+    :return: qa testing how to in a CERN dashboard page
     """
-    project = 'Quality Assurance Testing'
-    joined = False
-    try:
-        mailing = MailingList.objects.get(project=project)
-    except ObjectDoesNotExist:
-        pass
-    else:
-        if request.user.email in mailing.emails:
-            joined = True
-        else:
-            joined = False
-    return render(request, 'spuddercern/pages/dashboard_pages/coming_soon.html',
-                  {
-                  'project': project,
-                  'joined': joined,
-                  'menu_context': 'testing',
-                  })
+    # project = 'Quality Assurance Testing'
+    # joined = False
+    # try:
+    #     mailing = MailingList.objects.get(project=project)
+    # except ObjectDoesNotExist:
+    #     pass
+    # else:
+    #     if request.user.email in mailing.emails:
+    #         joined = True
+    #     else:
+    #         joined = False
+    # return render(request, 'spuddercern/pages/dashboard_pages/coming_soon.html',
+    #               {
+    #               'project': project,
+    #               'joined': joined,
+    #               'menu_context': 'testing',
+    #               })
 
+    student = None
+    if request.current_role and request.current_role.entity_type == RoleController.ENTITY_STUDENT:
+        student = request.current_role.entity
+
+    return render(request, 'spuddercern/pages/dashboard_pages/qa_testing.html',{
+                  'student': student
+                  })
 
 @login_required
 @user_passes_test(user_is_student, '/cern/non-student/')
@@ -962,4 +969,21 @@ def save_student_social_media(request, student_id):
     student.instagram_link = request.POST['instagram']
 
     student.save()
+    return HttpResponse()
+
+
+def upload_student_resume(request, student_id):
+    """
+    Attaches a resume to a student object so student can apply to QA
+
+    :param request: POST request with resume as string
+    :param student_id: ID of student belonging to resume
+    :return: a blank HTTPResponse on success
+    """
+    stu = Student.objects.get(id=student_id)
+
+    resume = request.POST['resume']
+    stu.resume = resume
+    stu.save()
+
     return HttpResponse()

@@ -243,6 +243,10 @@ class Student(models.Model):
     google_link = models.CharField(max_length=200, blank=True, null=True)
     instagram_link = models.CharField(max_length=200, blank=True, null=True)
 
+    on_qa_waitlist = models.BooleanField(default=False)
+    is_tester = models.BooleanField(default=False)
+    resume = models.TextField(null=True)
+
     def __str__(self):
         something = str(self.user.username)
         if self.isHead:

@@ -36,3 +36,32 @@
 .pin-pic{
   position: relative;
 }
+
+.how-to-nav {
+  text-align: center;
+  > li {
+    // Actual tabs (as links)
+    > a {
+      color: @alert-info-text;
+    }
+
+    // Active state, and it's :hover to override normal :hover
+    &.active > a {
+      &,
+      &:hover,
+      &:focus {
+        color: @alert-info-text;
+        border-bottom-color: @alert-info-border;
+        background-color: rgba(255,255,255,.7);
+      }
+
+      &:hover{
+        color: @nav-tabs-google-link-hover-color;
+      }
+    }
+  }
+}
+
+.faq-question{
+  font-weight: bold;
+}

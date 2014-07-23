@@ -1,0 +1,70 @@
+{% extends 'spuddercern/parts/how_to/how_to_base.html' %}
+
+{% block join-class %}{% if student.is_tester or student.on_qa_waitinglist %}hidden{% endif %}{% endblock %}
+
+{% block overview %}
+    {% if student.is_tester %}
+    <h4>Your Progress in QA Testing</h4>
+    <p><b><i>Alert! Filler text below!!</i></b></p>
+    <p>Here we can display a progress report for students involved in the project, with basic details.</p>
+    <p>My thinking is that we could have some stats like "total tasks completed" and such.</p>
+    {% else %}
+    <h4>Overview of QA Testing Project</h4>
+    <p>The <b>QA Testing</b> project involves testing new features of the Spudder website. We will give you tasks to try, and you will provide us with feedback on what works and what doesn't.</p>
+    <p><b>Rewards:</b> Every task for this project will be associated with a given number of points. If you complete the task to the best of your ability, we will award you those points. In return, these points will be redeemable for prizes.</p>
+    <p><b>Note:</b> The QA Testing project is more exclusive than other projects. To make sure that you will do a good job, we need to take a look at your resume. You can upload your resume on the "Apply" tab.</p>
+    {% endif %}
+{% endblock %}
+
+{% block details %}
+    <h4>Details on QA Testing</h4>
+    <p>QA Testing involves trying to find the problems in new or existing features on Spudder. Your basic responsibilities are to try to perform the task that we assign you, and then let us know what worked and what didn't work. If something worked, but you think that some piece could be improved, let us know that, too!</p>
+    <p>For every task we assign you, there will be an associated points value. This value is the <b>maximum</b> number of points you can receive for completing the task. Writing clear and helpful comments when you submit the task is the best way to get the most possible points.</p>
+{% endblock %}
+
+{% block faq %}
+    <h4>QA Testing FAQ</h4>
+    <p>
+        <span class="faq-question">The task I completed said it was worth X points, but I got less than that. What gives?</span>
+        <br />
+        The points listed with a task is the <b>maximum</b> number of points you can get for the task. Try to be more detailed in the comments that add when submitting your task.
+    </p>
+{% endblock %}
+
+{% block walkthrough %}
+    <h4>Video Walkthroughs</h4>
+    <p><b><i>Alert! Filler text below!!</i></b></p>
+    <p>Here we would have some video walkthroughs. I'm imagining some links down the left hand side, and a video embedded on the right hand side. The video would switch to the corresponding video when you selected a different "task" from the left.</p>
+{% endblock %}
+
+{% block join %}
+    <h4>Apply to Join the QA Testing Project</h4>
+    <p>To join the QA Testing project, copy and paste your resume into the text box below.</p>
+    <form role="form">
+        <div class="form-group">
+            <label>Resume:</label>
+            <textarea class="form-control" placeholder="Your resume here" id="resume"></textarea>
+        </div>
+        <a class="btn btn-primary" id="upload-resume">Submit</a>
+    </form>
+
+    <div class="alert" id="join-alert" style="margin-top:15px;"></div>
+{% endblock %}
+
+{% block howto_js %}
+{{ block.super }}
+
+<script type="text/javascript">
+    $('#upload-resume').click(function(){
+        var resume = $('#resume').val();
+
+        var response = $.post('/cern/student/{{ student.id }}/upload_resume', {
+                              'resume': resume
+                              });
+
+        response.done(function(){
+            showAlert($('#join-alert'), 'Your resume has been received. Please check back later to see if you have been approved.', 'success', true);
+        })
+    })
+</script>
+{% endblock %}

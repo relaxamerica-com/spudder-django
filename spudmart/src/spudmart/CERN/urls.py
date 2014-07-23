@@ -21,6 +21,7 @@ urlpatterns = patterns(
     url(r'^student/(?P<student_id>\d+)/reset_cover', 'reset_student_cover'),
     url(r'^student/(?P<student_id>\d+)/save_logo', 'save_student_logo'),
     url(r'^student/(?P<student_id>\d+)/save_social_media', 'save_student_social_media'),
+    url(r'^student/(?P<student_id>\d+)/upload_resume', 'upload_student_resume'),
 
     # Functional URLs url(limited to POST requests)
     url(r'^add_email_alert/$', 'add_email_alert'),
@@ -61,5 +62,5 @@ urlpatterns = patterns(
     url(r'^import_schools_async$', 'import_school_data_async'),
 
     # Link for decorator error page
-    url(r'^non-student/$', 'user_not_student_error_page')
+    url(r'^non-student/$', 'user_not_student_error_page'),
 )

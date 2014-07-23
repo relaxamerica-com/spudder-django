@@ -1,0 +1,18 @@
+{% extends 'spuddercern/pages/dashboard_pages/dashboard.html' %}
+{% load accounts %}
+
+{% block title %}QA Testing | CERN {% endblock %}
+
+{% block google_analytics_additions %}
+    ga('set', 'contentGroup1', 'CERN Students - {{ menu_context|capfirst }}');
+{% endblock %}
+
+{% block dashboard_page %}
+
+    <div class="row">
+        <div class="col-sm-10 col-sm-offset-1">
+            {% include 'spuddercern/parts/how_to/qa_how_to.html' %}
+        </div>
+    </div>
+
+{% endblock %}

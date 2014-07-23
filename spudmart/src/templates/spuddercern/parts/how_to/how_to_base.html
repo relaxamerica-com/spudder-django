@@ -1,0 +1,62 @@
+{% extends 'spuddercern/quote_messages/base_quote_message.html' %}
+
+{% block content %}
+
+    <ul class="nav nav-tabs how-to-nav nav-tabs-google">
+        <li class="active"><a openTab="#overview">Overview</a></li>
+        <li><a openTab="#details">Details</a></li>
+        <li><a openTab="#faq">FAQ</a></li>
+        <li><a openTab="#walkthrough">Walkthrough</a></li>
+        <li class="{% block join-class %}{% endblock %}"><a openTab="#join">Join</a></li>
+    </ul>
+
+    <div class="contents" style="height: 200px; padding:15px;overflow-y:scroll">
+        <div class="content" id="overview">
+            {% block overview %}{% endblock %}
+        </div>
+        <div class="content" id="details" style="display:none">
+            {% block details %}{% endblock %}
+        </div>
+        <div class="content" id="faq" style="display:none">
+            {% block faq %}{% endblock %}
+        </div>
+        <div class="content" id="walkthrough" style="display:none">
+            {% block walkthrough %}{% endblock %}
+        </div>
+        <div class="content" id="join" style="display:none">
+            {% block join %}{% endblock %}
+        </div>
+    </div>
+
+    {% block howto_js %}
+        <script type="text/javascript">
+            $('.how-to-nav a').click(function(){
+                if(!$(this).hasClass('active')) {
+                    var currentTab = $(this).attr('openTab');
+
+                    $('.alert').not('.alert-info').hide();
+
+                    $('.how-to-nav').find('.active').removeClass('active');
+
+                    hideHowTo($('.contents > div.content'));
+
+                    $(this).parent().addClass('active');
+
+                    showHowTo(currentTab);
+                }
+            });
+
+                function showHowTo(element) {
+                    $('.contents > .active').removeClass('active');
+                    $(element).addClass('active');
+                    $(element).show();
+                }
+
+                function hideHowTo(elements) {
+                    $.each(elements, function() {
+                        $(this).hide();
+                    });
+                }
+        </script>
+    {% endblock %}
+{% endblock %}
