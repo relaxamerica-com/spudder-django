@@ -23,8 +23,9 @@ from spudmart.CERN.models import Student
 
 from spudderdomain.controllers import SpudsController
 from spudderkrowdio.models import KrowdIOStorage
-from spudderkrowdio.utils import get_user_mentions_activity
-import json
+from spudderkrowdio.utils import get_user_mentions_activity, delete_spud
+import logging
+import datetime
 
 
 def view(request, venue_id):
@@ -563,39 +564,37 @@ def delete_venue(request, venue_id):
 
 def get_instagram_stream(request, venue_id):
     controller = SpudsController(request.current_role, venue_id)
+    date = None
+    
+    if request.method == 'GET':
+        # 86400 = 24 hrs
+        now = datetime.datetime.now()
+        seconds = controller.date_time_to_seconds(now)
+    else:
+        day = int(request.POST['day'])
+        month = int(request.POST['month'])
+        year = int(request.POST['year'])
+        date = '%s-%s-%s' % (year, month, day)
+        seconds = controller.date_time_to_seconds(datetime.datetime(year, month, day))
+        
+    time_range = [seconds - 86400, seconds + 86400]
     
     return render(request, 'spuddercern/pages/venue_instagram_stream.html',
-                  { 'stream_data' : controller.get_any_unapproved_spuds(), 
-                   'venue_id' : venue_id })
-    
+                  { 'stream_data' : controller.get_unapproved_spuds(time_range), 
+                   'venue_id' : venue_id,
+                   'date' : date })
+        
     
 def accept_instagram_media(request, venue_id):
     controller = SpudsController(request.current_role, venue_id)
-    spud = controller.get_unapproved_spud_by_id(request.POST.get('id'))
+    spuds = []
     
-    if spud:
-        controller.approve_spud(spud, venue_id)
+    for data_id in request.POST.get('spuds').split('|'):
+        spuds.append(controller.get_unapproved_spud_by_id(data_id))
     
-    response = {
-        'alertClass' : 'alert-success',
-        'alertText' : 'SPUD Accepted',
-        'animationTime' : 1000
-    }
+    controller.approve_spuds(spuds, venue_id)
     
-    return HttpResponse(json.dumps(response))
-
-
-def reject_instagram_media(request, venue_id):
-    controller = SpudsController(request.current_role, venue_id)
-    _ = controller.get_unapproved_spud_by_id(request.POST.get('id')) # just get it, so the instagram_data_processor will set the processed flag to True
-    
-    response = {
-        'alertClass' : 'alert-warning',
-        'alertText' : 'SPUD Rejected',
-        'animationTime' : 700
-    }
-    
-    return HttpResponse(json.dumps(response))
+    return HttpResponseRedirect('/venues/get_instagram_stream/%s' % venue_id)
 
 
 def save_cover(request, venue_id):
@@ -616,3 +615,14 @@ def reset_cover(request, venue_id):
     venue.cover_image = None
     venue.save()
     return HttpResponse('OK')
+    
+    
+def delete_spud_endpoint(request, venue_id):
+    try:
+        venue = Venue.objects.get(pk = venue_id)
+        
+        storage = KrowdIOStorage.objects.get(venue = venue)
+        delete_spud(storage, request.POST.get('spud_id'))
+    except Exception, e:
+        logging.error(e.message)
+        return HttpResponse(status=500)

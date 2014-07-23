@@ -3,7 +3,6 @@ import urllib, urllib2
 import django
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils.log import logger
-from django.views.generic.simple import redirect_to
 import settings
 import json
 from django.contrib.auth import authenticate
@@ -16,11 +15,11 @@ from spudmart.accounts.models import UserProfile
 from spudmart.sponsors.models import SponsorPage
 from spudmart.utils.url import get_return_url, get_request_param
 from django.contrib.auth.models import User
-from spudmart.accounts.utils import is_sponsor, is_student
+from spudmart.accounts.utils import is_sponsor
 import logging
 from spudmart.CERN.rep import recruited_new_student, signed_up
 from spudmart.CERN.models import Student, School
-from spudmart.venues.models import Venue
+from spudderdomain.models import FanPage
 
 
 def _accommodate_legacy_pre_V1_1_0_users(access_token, amazon_user_email, amazon_user_id):
@@ -184,6 +183,32 @@ def _process_amazon_login(access_token, amazon_user_email, amazon_user_id, reque
                     'amazon_user_id': amazon_user_id,
                     'amazon_access_token': access_token
                 })
+            
+        # If the account_type is fan, create a FanPage
+        if account_type == 'fan':
+            # Create fan
+            fan = FanPage(fan=user)
+            fan.save()
+
+            # Get the Role controller for the current user
+            role_controller = RoleController(user)
+
+            # Get the user_role for this user/student combo
+            user_role = role_controller.role_by_entity_type_and_entity_id(
+                RoleController.ENTITY_FAN,
+                fan.id,
+                RoleBase.RoleWrapperByEntityType(RoleController.ENTITY_FAN))
+
+            # Store the amazon linked authentication service details
+            create_linked_authentication_service(
+                user_role,
+                LinkedServiceController.SERVICE_AMAZON,
+                amazon_user_id,
+                {
+                    'amazon_user_email': amazon_user_email,
+                    'amazon_user_id': amazon_user_id,
+                    'amazon_access_token': access_token
+                })
 
     # Get and update the amazon auth record with the latest access token
     # Note that we don't use this at the moment but will in future - MG:20140708
@@ -201,6 +226,7 @@ def _process_amazon_login(access_token, amazon_user_email, amazon_user_id, reque
             django.contrib.auth.login(request, user)
         else:
             return Http404
+    logging.info('%s?next=%s',change_role_url(user_role),next_url)
     return redirect('%s?next=%s' % (
         change_role_url(user_role),
         next_url))
@@ -388,3 +414,7 @@ def login_fake(request):
 
 def sponsor_login(request):
     return render(request, 'spudderaccounts/pages/sponsor_login.html')
+
+
+def fan_login(request):
+    return render(request, 'spudderaccounts/pages/fan_login.html')

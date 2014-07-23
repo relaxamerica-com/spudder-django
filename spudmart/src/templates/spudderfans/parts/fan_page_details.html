@@ -1,0 +1,39 @@
+{% load sponsors %}
+
+<div class="widget offer-widget">
+    <h5 class="widgetheading">
+        {% if page.avatar %}
+            <img style="max-width: 100%;" src="/file/serve/{{ page.avatar.id }}" id="fan-page-thumbnail" />
+        {% else %}
+            <i class="fa fa-camera"></i>
+        {% endif %}
+    </h5>
+
+    <ul class="folio-detail offer-details">
+    	{% if page.name %}
+	        <li>
+	            <label>Name: </label> {{ page.name }}
+	        </li>
+        {% endif %}
+        
+        {% if page.last_name %}
+	        <li>
+	            <label>Last name: </label> {{ page.last_name }}
+	        </li>
+        {% endif %}
+
+        {% if page.phone %}
+            <li>
+                <label>Phone: </label> {{ page.phone }}
+            </li>
+        {% endif %}
+
+        {% if page.email %}
+            <li>
+                <label>Email: </label>
+                <a href="mailto:{{ page.email }}">{{ page.email }}</a>
+            </li>
+        {% endif %}
+
+    </ul>
+</div>

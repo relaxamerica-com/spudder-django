@@ -21,6 +21,8 @@ class RoleBase(EntityBase):
             return RoleStudent
         elif entity_key == RoleController.ENTITY_SPONSOR:
             return RoleSponsor
+        elif entity_key == RoleController.ENTITY_FAN:
+            return RoleFan
         else:
             raise NotImplementedError("the entity_key %s is not supported yet." % entity_key)
 
@@ -168,6 +170,62 @@ class RoleSponsor(RoleBase):
 
     def user_is_owner(self, user):
         return self.entity.user == user
+
+
+class RoleFan(RoleBase):
+    @property
+    def user(self):
+        return self.entity.fan
+
+    @property
+    def _amazon_id(self):
+        return LinkedService.objects.get(
+            role_id=self.entity.id,
+            role_type=self.entity_type,
+            service_type=LinkedServiceController.SERVICE_AMAZON).configuration.get('amazon_user_email')
+
+    @property
+    def entity_type(self):
+        return RoleController.ENTITY_FAN
+
+    @property
+    def image(self):
+        if self.entity.avatar:
+            return '/file/serve/%s' % self.entity.avatar.id
+
+        return '/static/img/spuddercern/button-cern-small.png'
+
+    @property
+    def title(self):
+        role_title = '<abbr title="Fan %s">Fan</abbr> on '
+        role_title += 'Spudder with Amazon ID %s' % self._amazon_id
+
+        return role_title
+
+    @property
+    def subtitle(self):
+        role_subtitle = 'Tied to Amazon ID: %s <br />' % (
+            self._amazon_id
+        )
+
+        return role_subtitle
+
+    @property
+    def meta_data(self):
+        return {
+            'last_accessed': datetime.datetime.now()
+        }
+
+    @property
+    def breadcrumb_name(self):
+        return "Fan: %s" % self._amazon_id
+
+    @property
+    def home_page_path(self):
+        return '/fan'
+
+    def user_is_owner(self, user):
+        return self.entity.fan == user
 
 
 """

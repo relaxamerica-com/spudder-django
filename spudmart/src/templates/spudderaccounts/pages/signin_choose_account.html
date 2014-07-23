@@ -56,6 +56,25 @@
                     </div>
                 </div>
             </div>
+            
+            <div class="col-md-3">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <div class="thumbnail">
+                            <img src="/static/img/spuddercern/button-cern-large.png"/>
+                            <div class="caption" style="text-align: center;">
+                                <h3>Fan</h3>
+                                <p>Login as a Fan</p>
+                                <a id="log-in-with-amazon-fan">
+                                    <img border="0" alt="Login with Amazon"
+                                        src="https://images-na.ssl-images-amazon.com/images/G/01/lwa/btnLWA_gold_156x32.png"
+                                        width="156" height="32" style="margin-bottom: 10px;" />
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
     </div>
@@ -64,24 +83,19 @@
 {% block js %}
     {{ block.super }}
     {% include 'spudderaccounts/parts/amazon_login_js.html' %}
-    <script type="text/javascript" language="javascript">
+    <script type="text/javascript">
         $(document).ready(function(){
             $('#log-in-with-amazon-sponsor').click(function(){
                 loginWithAmazon('{{ base_url }}/accounts/login/amazon?next=/sponsor/page&account_type=sponsor');
             });
             $('#log-in-with-amazon-student').click(function(){
                 loginWithAmazon('{{ base_url }}/accounts/login/amazon');
-            })
+            });
+            $('#log-in-with-amazon-fan').click(function(){
+                loginWithAmazon('{{ base_url }}/accounts/login/amazon?next=/fan/page&account_type=fan');
+            });
         });
-
-{#        window.loginAsStudent = function () {#}
-{#            return #}
-{#        };#}
-{##}
-{#        window.loginAsVenueSponsor = function () {#}
-{#            return #}
-{#        };#}
-{##}
+        
         function loginWithAmazon(returnURL) {
             if (typeof amazon == undefined) return;
 

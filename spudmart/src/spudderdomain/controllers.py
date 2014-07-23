@@ -1,4 +1,4 @@
-from spudderdomain.models import LinkedService
+from spudderdomain.models import LinkedService, FanPage
 from spudmart.CERN.models import Student
 from spudmart.sponsors.models import SponsorPage
 from spuddersocialengine.models import InstagramDataProcessor
@@ -7,6 +7,7 @@ import simplejson
 from spudmart.venues.models import Venue
 from spudderkrowdio.utils import post_spud
 from spudderkrowdio.models import KrowdIOStorage
+import datetime
 
 
 class RoleController(object):
@@ -16,7 +17,8 @@ class RoleController(object):
 
     ENTITY_STUDENT = "student"
     ENTITY_SPONSOR = "sponsor"
-    ENTITY_TYPES = (ENTITY_STUDENT, ENTITY_SPONSOR, )
+    ENTITY_FAN = "fan"
+    ENTITY_TYPES = (ENTITY_STUDENT, ENTITY_SPONSOR, ENTITY_FAN)
 
     @classmethod
     def GetRoleForEntityTypeAndID(cls, entity_type, entity_id, entity_wrapper):
@@ -29,6 +31,11 @@ class RoleController(object):
             try:
                 return entity_wrapper(SponsorPage.objects.get(id=entity_id))
             except SponsorPage.DoesNotExist:
+                return None
+        elif entity_type == cls.ENTITY_FAN:
+            try:
+                return entity_wrapper(FanPage.objects.get(id=entity_id))
+            except FanPage.DoesNotExist:
                 return None
         else:
             raise NotImplementedError("The entity_type: %s is not yet supported" % entity_type)
@@ -54,6 +61,8 @@ class RoleController(object):
             roles = Student.objects.filter(user=self.user)
         elif entity_key == self.ENTITY_SPONSOR:
             roles = SponsorPage.objects.filter(sponsor=self.user)
+        elif entity_key == self.ENTITY_FAN:
+            roles = FanPage.objects.filter(fan=self.user)
         else:
             raise NotImplementedError("That entity_key is not yet supported")
         roles = [entity_wrapper(r) for r in roles]
@@ -79,6 +88,12 @@ class RoleController(object):
                 entity = SponsorPage.objects.get(id=entity_id)
                 return entity_wrapper(entity)
             except SponsorPage.DoesNotExist:
+                return None
+        elif entity_key == self.ENTITY_FAN:
+            try:
+                entity = FanPage.objects.get(id=entity_id)
+                return entity_wrapper(entity)
+            except FanPage.DoesNotExist:
                 return None
         else:
             raise NotImplementedError("That entity_key is not yet supported")
@@ -120,7 +135,7 @@ class SpudsController(object):
         self.role = role
         self.venue_id = venue_id
 
-    def get_any_unapproved_spuds(self):
+    def get_unapproved_spuds(self, time_range):
         """
         Gets any unapproved spuds linked to this role
 
@@ -128,28 +143,28 @@ class SpudsController(object):
         """
         
         unapproved_spuds = {}
-        latest_instagram_data = InstagramDataProcessor.objects.filter(processed=False, venue_id=self.venue_id)[:10]
+        latest_instagram_data = InstagramDataProcessor.objects.filter(processed=True, venue_id=self.venue_id, _created_time__range=time_range)[:10]
         for item in latest_instagram_data:
+            item.processed = True
+            item.save()
             unapproved_spuds[item.id] = simplejson.loads(item.data)
         
         return unapproved_spuds
 
 
-    def get_unapproved_spud_by_id(self, instagram_data_id):
+    def get_unapproved_spud_by_id(self, data_id):
         """
         Gets any unapproved spuds linked to this role
-        :param instagram_data_id: InstagramDataProcessor ID
+        :param data_id: InstagramDataProcessor ID
         :return: Collection of Spuds
         """
         
-        instagram_data = InstagramDataProcessor.objects.get(pk = instagram_data_id)
-        instagram_data.processed = True
-        instagram_data.save()
+        instagram_data = InstagramDataProcessor.objects.get(pk = data_id)
         
         return simplejson.loads(instagram_data.data)
         
         
-    def approve_spud(self, spud, venue_id):
+    def approve_spuds(self, spuds, venue_id):
         """
         Sends SPUD off to Krowd.io tagged with the venue in this case
 
@@ -158,11 +173,20 @@ class SpudsController(object):
         """
         
         storage = KrowdIOStorage.GetOrCreateForVenue(venue_id)
-        spud['tags'].append('@Venue%s' % venue_id)
         
-        if 'images' in spud:
-            post_spud(storage, { 'type' : 'image', 'url' : spud['images']['standard_resolution']['url'], 'title' : spud['caption']['text'], 'usertext' : ' '.join(spud['tags']) })
+        for spud in spuds:
+            spud['tags'].append('@Venue%s' % venue_id)
             
-        if 'videos' in spud:
-            post_spud(storage, { 'type' : 'video', 'url' : spud['videos']['standard_resolution']['url'], 'title' : spud['caption']['text'], 'usertext' : ' '.join(spud['tags']) })
+            if 'images' in spud:
+                post_spud(storage, { 'type' : 'image', 'url' : spud['images']['standard_resolution']['url'], 'title' : spud['caption']['text'], 'usertext' : ' '.join(spud['tags']) })
+                
+            if 'videos' in spud:
+                post_spud(storage, { 'type' : 'video', 'url' : spud['videos']['standard_resolution']['url'], 'title' : spud['caption']['text'], 'usertext' : ' '.join(spud['tags']) })
             
+            
+    def seconds_to_date_time(self, seconds):
+        return datetime.datetime.utcfromtimestamp(seconds)
+    
+    
+    def date_time_to_seconds(self, date):
+        return int((date - datetime.datetime(1970, 1, 1)).total_seconds())

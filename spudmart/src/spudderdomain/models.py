@@ -102,3 +102,20 @@ class Spud(models.Model):
 
     def tags_to_string(self):
         return ' '.join(self.tags)
+    
+    
+class FanPage(models.Model):
+    fan = models.ForeignKey(User)
+    username = models.CharField(max_length=255, blank=False)
+    name = models.CharField(max_length=255, blank=True)
+    last_name = models.CharField(max_length=255, blank=True)
+    avatar = models.ForeignKey(UploadedFile, blank=True, null=True)
+    free_text = models.CharField(max_length=1024, blank=True)
+    date_of_birth = models.DateField(null=True, blank=True)
+    phone = models.CharField(max_length=255, blank=True)
+    email = models.CharField(max_length=255, blank=True)
+    facebook = models.CharField(max_length=255, blank=True)
+    twitter = models.CharField(max_length=255, blank=True)
+    google_plus = models.CharField(max_length=255, blank=True)
+    instagram = models.CharField(max_length=255, blank=True)
+    linkedin = models.CharField(max_length=255, blank=True)
