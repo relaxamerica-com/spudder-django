@@ -1,6 +1,9 @@
 {% extends 'spuddercern/parts/how_to/how_to_base.html' %}
 
-{% block join-class %}{% if student.is_tester or student.on_qa_waitinglist %}hidden{% endif %}{% endblock %}
+{# Display apply and make active only when student has not been accpeted #}
+{% block join-class %}{% if student.is_tester or student.on_qa_waitinglist %}hidden{% else %}active{% endif %}{% endblock %}
+{# Display join content div #}
+{% block join-style %}{% endblock %}
 
 {% block overview %}
     {% if student.is_tester %}
@@ -11,24 +14,17 @@
     {% else %}
     <h4>Overview of QA Testing Project</h4>
     <p>The <b>QA Testing</b> project involves testing new features of the Spudder website. We will give you tasks to try, and you will provide us with feedback on what works and what doesn't.</p>
-    <p><b>Rewards:</b> Every task for this project will be associated with a given number of points. If you complete the task to the best of your ability, we will award you those points. In return, these points will be redeemable for prizes.</p>
-    <p><b>Note:</b> The QA Testing project is more exclusive than other projects. To make sure that you will do a good job, we need to take a look at your resume. You can upload your resume on the "Join" tab.</p>
     {% endif %}
 {% endblock %}
 
 {% block details %}
     <h4>Details on QA Testing</h4>
-    <p>QA Testing involves trying to find the problems in new or existing features on Spudder. Your basic responsibilities are to try to perform the task that we assign you, and then let us know what worked and what didn't work. If something worked, but you think that some piece could be improved, let us know that, too!</p>
-    <p>For every task we assign you, there will be an associated points value. This value is the <b>maximum</b> number of points you can receive for completing the task. Writing clear and helpful comments when you submit the task is the best way to get the most possible points.</p>
-{% endblock %}
-
-{% block faq %}
-    <h4>QA Testing FAQ</h4>
-    <p>
-        <span class="faq-question">The task I completed said it was worth X points, but I got less than that. What gives?</span>
-        <br />
-        The points listed with a task is the <b>maximum</b> number of points you can get for the task. Try to be more detailed in the comments that add when submitting your task.
-    </p>
+    <p><b>QA Testing</b> involves selecting a "user story" and taking “Screen Shots” of you acting as the user who performs the tasks described in the user story. You will learn to become a QA Professional by taking detailed notes about any <b>issues</b> you encounter when performing the task described in the user story that you choose.</p>
+    <p><b>What is a User Story?</b> - User stories are short, simple descriptions of a feature, that are told from the perspective of the person who wants to use the new feature, usually a user or customer of the system.</p>
+    <p>An example user story might be: <i>As a Student, I want to be able to Review a list of Available User Stories and their Points Value so that I can choose which ones I want to Test. - Value 100 PTs</i></p>
+    <p>See the Walkthrough tab for a video of someone actually testing a user story, so that you know exactly what to expect.</p>
+    <p>There are only a very limited number of people accepted as QA testers, because you will be able to receive the hands on training of our Quality assurance manager. This will teach you to become a true Quality Assurance Professional.</p>
+    <p><b>How can I use these skills after school?</b> <a href="http://www.indeed.com/jobs?q=Quality+Assurance&l=&radius=100">Search various QA Positions</a></p>
 {% endblock %}
 
 {% block walkthrough %}
@@ -39,18 +35,15 @@
 
 {% block join %}
     <h4>Apply to Join the QA Testing Project</h4>
-    <div class="alert" id="join-alert" style="margin-top:15px;"></div>
+    <p><b>Rewards:</b> Every task for this project will be associated with a given number of points. If you complete the task to the best of your ability, we will award you those points. In return, these points will be redeemable for prizes.</p>
+    <p><b>Note:</b> The QA Testing project is more exclusive than other projects. To make sure that you will do a good job, we need to take a look at your resume. You can upload your resume on the "Apply" tab.</p>
+    <div class="alert" id="join-alert" style="margin-top:15px;display:none"></div>
     {% if student.resume %}
         {% if student.applied_qa %}<p>You have already applied to the QA testing program, but you can still update your resume below.</p>{% endif %}
         <form role="form">
             <div class="form-group">
                 <label>Edit Resume:</label>
                 <textarea class="form-control" placeholder="Your resume here" id="resume">{{ student.resume }}</textarea>
-            </div>
-            <div class="btn-group">
-                <a class="btn btn-default" id="remove-resume">Remove Resume</a>
-                <a class="btn btn-primary" id="save-resume">Save Resume</a>
-                {% if not student.applied_qa %}<a class="btn btn-primary" id="save-and-apply">Save and Apply Now</a>{% endif %}
             </div>
         </form>
     {% else %}
@@ -60,18 +53,20 @@
                 <label>Resume:</label>
                 <textarea class="form-control" placeholder="Your resume here" id="resume"></textarea>
             </div>
-            <div class="btn-group">
-                <a class="btn btn-default" id="save-resume">Save Resume</a>
-                <a class="btn btn-primary" id="save-and-apply">Save and Apply Now</a>
-            </div>
         </form>
     {% endif %}
+    <div class="btn-group">
+        <a class="btn btn-default {% if not student.resume %}hidden{% endif %}" id="remove-resume">Remove Resume</a>
+        <a class="btn btn-primary" id="save-resume">Save Resume</a>
+        <a class="btn btn-primary {% if student.applied_qa %}hidden{% endif %}" id="save-and-apply">Save and Apply Now</a>
+    </div>
 {% endblock %}
 
 {% block howto_js %}
 {{ block.super }}
 
 <script type="text/javascript">
+    window.project = "QA Testing";
     $('#save-resume').click(function(){
         var resume = $('#resume').val();
 
@@ -81,13 +76,14 @@
 
         response.done(function(){
             showAlert($('#join-alert'), 'Your resume has been saved.', 'success', true);
+            $('#remove-resume').removeClass('hidden');
         })
     });
 
     $('#save-and-apply').click(function(){
         var resume = $('#resume').val();
 
-        if (resume.val() == ""){
+        if (resume == ""){
             alert("Oops! You need to paste some text into the resume box to apply.")
         } else{
             var response = $.post('/cern/student/{{ student.id }}/upload_resume', {
@@ -96,7 +92,8 @@
 
             response.done(function(){
                 $.post('/cern/student/{{ student.id }}/apply_qa').done(function(){
-                    showAlert($('#join-alert'), 'Your application for the QA project has been received. We will inform you when you have been accepted.', 'success', true);
+                    alert('Your resume has been received. We will inform you when your application has been accepted.');
+                    window.location.reload();
                 })
             })
         }

@@ -13721,8 +13721,15 @@ legend {
 .how-to-nav > li.active > a:hover {
   color: #000000;
 }
-.faq-question {
-  font-weight: bold;
+.how-to-contents {
+  height: 200px;
+  padding: 15px;
+  overflow-y: scroll;
+}
+@media (min-width: 1200px) {
+  .how-to-contents {
+    height: 300px;
+  }
 }
 .jumbotron-img {
   max-height: 150px;
@@ -13741,7 +13748,7 @@ legend {
 }
 @media (min-width: 992px) {
   .jumbotron-img {
-    max-height: 300px;
+    max-height: 310px;
   }
 }
 @media (min-width: 1200px) {

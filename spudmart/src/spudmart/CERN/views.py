@@ -1,3 +1,4 @@
+from google.appengine.api import mail
 import os
 from urllib2 import urlopen
 from urllib import urlencode
@@ -1007,7 +1008,7 @@ def apply_qa(request, student_id):
 
 def delete_resume(request, student_id):
     """
-    Removes a student's resume by setting field to None.
+    Removes a student's resume and application to join QA project.
 
     :param request: POST request
     :param student_id: id of student losing resume
@@ -1017,5 +1018,27 @@ def delete_resume(request, student_id):
     stu.resume = None
     stu.applied_qa = False
     stu.save()
+
+    return HttpResponse()
+
+
+def send_help_message(request, student_id):
+    """
+    Sends a help message to the ZenDesk account from a student.
+
+    :param request: POST request containing message as plain text
+    :param student_id: ID of student who sent message
+    :return: a blank HttpResponse on success
+    """
+
+    stu = Student.objects.get(id=student_id)
+    email = stu.user.email
+
+    message = request.POST.get('message', '')
+    message += "\n--From Student %s" % email
+    project = request.POST.get('project')
+    to = ['support@spudder.zendesk.com']
+    mail.send_mail(subject='Message from Student about Project %s' % project,
+                   body=message, sender=settings.SERVER_EMAIL, to=to)
 
     return HttpResponse()

@@ -24,6 +24,7 @@ urlpatterns = patterns(
     url(r'^student/(?P<student_id>\d+)/upload_resume$', 'upload_student_resume'),
     url(r'^student/(?P<student_id>\d+)/apply_qa$', 'apply_qa'),
     url(r'^student/(?P<student_id>\d+)/delete_resume$', 'delete_resume'),
+    url(r'^student/(?P<student_id>\d+)/send_help_message$', 'send_help_message'),
 
     # Functional URLs url(limited to POST requests)
     url(r'^add_email_alert/$', 'add_email_alert'),
