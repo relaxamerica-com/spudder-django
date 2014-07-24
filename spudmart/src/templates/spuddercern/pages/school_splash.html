@@ -21,7 +21,7 @@
 
 {% block cover_image %}
     <div {% if not school.cover_image %}class="hidden"{% endif %} id="cover-image-container" style="text-align:center;">
-        <img src=/file/serve/{{ school.cover_image.id }} height="400px" />
+        <img src="/file/serve/{{ school.cover_image.id }}" class="jumbotron-img"/>
     </div>
     <div {% if school.cover_image %}class="hidden"{% endif %} style="height:400px" id="jumbo-map-container"></div>
     {% if user_is_head %}
@@ -99,10 +99,6 @@
                     {% endif %}
                 {% endwith %}
             {% endif %}
-
-            {% if not request.user.is_authenticated %}
-                {% include 'spuddercern/quote_messages/quote_join_this_team.html' %}
-            {% endif %}
         </div>
 
         <div class="school-description">
@@ -151,6 +147,13 @@
 {% block sidebar %}
     {% if top_students %}
         <div id="school-student-points">
+            {% if not request.user.is_authenticated %}
+                <div class="row">
+                    <div class="col-sm-10 col-sm-offset-1">
+                        {% include 'spuddercern/quote_messages/quote_join_this_team.html' %}
+                    </div>
+                </div>
+            {% endif %}
             <div class="row-fluid">
                 <div class="col-sm-10 col-sm-offset-1 top-students">
                     <h4 class="aligncenter">Top students at {{ school.name }}:</h4>

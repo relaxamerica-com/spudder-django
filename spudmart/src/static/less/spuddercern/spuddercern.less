@@ -65,3 +65,32 @@
 .faq-question{
   font-weight: bold;
 }
+
+.jumbotron-img{
+  max-height: 150px;
+  max-width: 100%;
+
+//  To center image in div, since horizontal-align:center isn't working
+  position:absolute;
+  left:0;
+  right:0;
+  top:0;
+  bottom:0;
+  margin:auto;
+
+  @media(min-width: @screen-sm){
+    max-height: 200px;
+  }
+
+  @media(min-width: @screen-md){
+    max-height: 300px;
+  }
+
+  @media(min-width: @screen-lg){
+    max-height: 400px;
+  }
+}
+
+.jumbotron{
+  height: 400px
+}

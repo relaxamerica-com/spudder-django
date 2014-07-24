@@ -90,7 +90,7 @@
             <div class="form-group">
                 <label>Display Name</label>
                 <br />
-                <span class="tips">Tip: This will only be displayed on this page. Use the Roles Manager to change your global name.</span>
+                <span class="tips">Tip: This only changes the header of this page. Use the Roles Manager to change your global name.</span>
                 <input type="text" name="display-name" id="display-name-input" class="form-control" placeholder="{% user_name student.user %}"/>
             </div>
 
@@ -162,7 +162,11 @@
         <div class="row-fluid" style="height:100%;">
             <div class="col-md-12 contents" style="height:100%;">
                 <div class="content active" id="landing">
-                    Landing div...
+                    <div class="row">
+                        <div class="col-sm-8 col-sm-offset-2">
+                            {% include 'spuddercern/quote_messages/quote_student_page_landing.html' %}
+                        </div>
+                    </div>
                 </div>
                 <div class="content" id="venues">
                     {% if venues > 0 %}
@@ -252,28 +256,16 @@
         </div>
 
         <hr />
-=======
-    <div class="btn-group hidden-sm hidden-xs btn-group-justified" style="margin: 0 auto;">
-        <a class="btn btn-primary active" openTab="#venues" title="Venues">
-            <i class="fa fa-2x fa-map-marker" title="Venues"></i>
-        </a>
-        <a class="btn btn-primary" openTab="#social-media" title="Social Media PR">
-            <i class="fa fa-2x fa-rss" title="Social Media PR"></i>
-        </a>
-        <a class="btn btn-primary" openTab="#content" title="Content">
-            <i class="fa fa-2x fa-edit" title="Content"></i>
-        </a>
-        <a class="btn btn-primary" openTab="#design" title="Design">
-            <i class="fa fa-2x fa-pencil" title="Design"></i>
-        </a>
-        <a class="btn btn-primary" openTab="#qa" title="QA Testing">
-            <i class="fa fa-2x fa-cogs" title="QA Testing"></i>
-        </a>
-        <a class="btn btn-primary" href="{% student_school_link student %}" title="School Page">
-            <i class="fa fa-2x fa-university" title="School Page"></i>
-        </a>
-
     </div>
+{% endblock %}
+
+{% block sidebar %}
+    <h3>CERN Rankings</h3>
+    <p>This rank is based on students' overall CERN points.</p>
+    <ul class="list-unstyled">
+        <li><label>School rank:</label> {% school_rank student %}</li>
+        <li><label>National rank:</label> {% national_rank student %}</li>
+    </ul>
 {% endblock %}
 
 {% block js %}

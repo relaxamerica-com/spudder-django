@@ -13724,3 +13724,31 @@ legend {
 .faq-question {
   font-weight: bold;
 }
+.jumbotron-img {
+  max-height: 150px;
+  max-width: 100%;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+}
+@media (min-width: 768px) {
+  .jumbotron-img {
+    max-height: 200px;
+  }
+}
+@media (min-width: 992px) {
+  .jumbotron-img {
+    max-height: 300px;
+  }
+}
+@media (min-width: 1200px) {
+  .jumbotron-img {
+    max-height: 400px;
+  }
+}
+.jumbotron {
+  height: 400px;
+}
