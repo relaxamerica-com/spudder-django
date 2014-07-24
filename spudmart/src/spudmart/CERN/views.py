@@ -1,13 +1,9 @@
 from google.appengine.api import mail
 import os
 from urllib2 import urlopen
-from urllib import urlencode
-from boto.s3.user import User
 from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect, HttpResponse, \
     HttpResponseNotAllowed, HttpResponseForbidden
-from django.template import RequestContext
-from django.views.generic.simple import redirect_to
 from spudderdomain.controllers import RoleController
 from spudmart.upload.models import UploadedFile
 from spudmart.CERN.models import School, Student, STATES, MailingList
@@ -16,10 +12,8 @@ from django.utils.datastructures import MultiValueDictKeyError
 from spudmart.CERN.utils import import_schools, strip_invalid_chars
 from django.contrib.auth.decorators import login_required, user_passes_test
 from spudmart.CERN.rep import recruited_new_student, created_venue
-from spudmart.upload.views import upload_image_endpoint
 from spudmart.utils.queues import trigger_backend_task
 from spudmart.utils.url import get_return_url, get_request_param
-import logging
 import settings
 from spudmart.venues.models import Venue, SPORTS
 from datetime import timedelta, datetime
@@ -1042,3 +1036,30 @@ def send_help_message(request, student_id):
                    body=message, sender=settings.SERVER_EMAIL, to=to)
 
     return HttpResponse()
+
+
+def redeem_points(request):
+    """
+    Displays a page about redeeming CERN points for prizes.
+    :param request: any request
+    :return: redeem_points page
+    """
+    return render(request, 'spuddercern/pages/redeem_points.html')
+
+
+def compensation(request):
+    """
+    Displays a page about student compensation of venue sponsorship
+    :param request: any request
+    :return: compensation page
+    """
+    return render(request, 'spuddercern/pages/compensation.html')
+
+
+def after_college(request):
+    """
+    Displays a page about how CERN helps you after college
+    :param request: any request
+    :return: after_college page
+    """
+    return render(request, 'spuddercern/pages/after_college.html')

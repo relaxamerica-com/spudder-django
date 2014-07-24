@@ -66,4 +66,8 @@ urlpatterns = patterns(
 
     # Link for decorator error page
     url(r'^non-student/$', 'user_not_student_error_page'),
+
+    url(r'^compensation$', 'compensation'),
+    url(r'^redeem_points$', 'redeem_points'),
+    url(r'^after_college$', 'after_college'),
 )
