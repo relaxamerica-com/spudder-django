@@ -108,7 +108,7 @@ def send_owner_message(flag, host):
     subject = "Your page has been flagged with %s content" % flag.flag_type
 
     mail.send_mail(subject=subject, body=message,
-                   sender=settings.SERVER_EMAIL, to=['thecoloryes@gmail.com'])
+                   sender=settings.SERVER_EMAIL, to=[flag.flagger_user.email])
 
 
 def send_zendesk_message(flag, host):
@@ -160,5 +160,5 @@ def send_zendesk_message(flag, host):
     subject = "A page has been flagged with %s content" % flag.flag_type
 
     mail.send_mail(subject=subject, body=message,
-                   sender=settings.SERVER_EMAIL, to=['thecoloryes@gmail.com'])
+                   sender=settings.SERVER_EMAIL, to=['support@spudder.zendesk.com'])
 
