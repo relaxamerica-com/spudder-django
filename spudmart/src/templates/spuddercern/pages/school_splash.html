@@ -19,6 +19,11 @@
 
 {% block favicon %}"/static/img/spuddercern/button-cern-tiny.png"{% endblock %}
 
+{% block flag-page-class %}{% endblock %}
+{% block flag-modal %}
+{% include 'spuddercern/flag-modals/school-flag-modal.html' %}
+{% endblock %}
+
 {% block cover_image %}
     <div {% if not school.cover_image %}class="hidden"{% endif %} id="cover-image-container" style="text-align:center;">
         <img src="/file/serve/{{ school.cover_image.id }}" class="jumbotron-img"/>
@@ -184,6 +189,7 @@
 <script type="text/javascript" src="/static/js/libs/google.map.js"></script>
 <script type="text/javascript" src="/static/js/libs/jquery.serialize.file.js"></script>
 <script type="text/javascript">
+    {% if head %}window.ownerId = {{ head.user.id }}{% endif %}
     window.isEditMode = false;
 
     $(document).ready(function(){

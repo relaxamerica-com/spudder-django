@@ -55,6 +55,7 @@ urlpatterns = patterns(
 
     url(r'^cern/', include('spudmart.CERN.urls')),
     url(r'^users/', include('spudderaccounts.urls')),
+    url(r'^flag/', include('spudmart.flags.urls')),
 
     # Spudder Admin site
     (r'^spudderadmin', include('spudderadmin.urls')),

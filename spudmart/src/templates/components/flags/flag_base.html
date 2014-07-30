@@ -1,0 +1,140 @@
+{% load flag_tags %}
+<div class="modal fade" id="flag-modal" tabindex="-1" role="dialog" aria-labelledby="flag-modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content text-center">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">Flag Page Content</h4>
+            </div>
+            <div class="modal-body">
+                <form role="form">
+                    {% if not request.user.is_authenticated %}
+                        <div class="form-group">
+                            <label>Name:</label>
+                            <input type="text" name="flag-name" class="form-control"/>
+                        </div>
+                        <div class="form-group">
+                            <label>Email:</label>
+                            <input type="email" name="flag-email" class="form-control" />
+                        </div>
+                    {% endif %}
+                    {# "Incorrect" flag type only currently valid for venues, so make it easily hidden #}
+                    <div class="form-group {% block flag_type_class %}{% endblock %}">
+                        <label>Flag Type:</label>
+                        &nbsp;&nbsp;
+                        <div class="radio-inline">
+                            <input type="radio" name="flag-type" value="inappropriate" checked style="position:absolute">
+                            <span>Inappropriate Content</span>
+                        </div>
+                        <div class="radio-inline">
+                            <input type="radio" name="flag-type" value="incorrect" style="position:absolute">
+                            <span>Incorrect Content</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <h4 class="text-center">Select the content you are flagging:</h4>
+                        <div class="row">
+                            <div class="col-xs-3 col-xs-offset-3">
+                                <p style="margin-bottom:0;font-weight:bold">Text:</p>
+                                <ul class="list-unstyled" style="display:-moz-inline-stack;display:inline-block;*display:inline;" id="flag-texts">
+                                {% if text_fields %}
+                                    {% for field in text_fields %}
+                                        <li class="checkbox text-left">
+                                            <span><input type="checkbox" name="{{ field }}" value="{{ text_fields|get_value:field }}" style="margin:0;vertical-align:text-top">
+                                            {{ field }}</span>
+                                        </li>
+                                    {% endfor %}
+                                {% else %}
+                                    <p>There are no custom text fields on this page.</p>
+                                {% endif %}
+                                </ul>
+                            </div>
+                            <div class="col-xs-3">
+                                <p style="margin-bottom:0;font-weight:bold">Images:</p>
+                                <ul class="list-unstyled" style="display:-moz-inline-stack;display:inline-block;*display:inline;" id="flag-imgs">
+                                {% if img_fields %}
+                                    {% for field in img_fields %}
+                                        <li class="checkbox text-left">
+                                            <span><input type="checkbox" name="{{ field }}" value="{{ img_fields|get_value:field }}" style="margin:0;vertical-align:text-top">
+                                            {{ field }}</span>
+                                        </li>
+                                    {% endfor %}
+                                {% else %}
+                                    <p>There are no custom images on this page.</p>
+                                {% endif %}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-sm-10 col-sm-offset-1">
+                                <label>Comment:</label>
+                                <textarea class="form-control" placeholder="Comment on the custom fields you're flagging" name="flag-comment"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                {% if text_fields or img_fields %}<button type="button" class="btn btn-primary" id="flag-page">Flag Page</button>{% endif %}
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<script type="text/javascript">
+    window.ownerId = null;
+{#    $(window).load($('#flag-modal').modal('show'));#}
+
+    function getImageFields(){
+        var fields = {};
+        $('#flag-imgs input').each(function(){
+            if ($(this).is(':checked')) fields[$(this).attr('name')] = $(this).val();
+        });
+        if (jQuery.isEmptyObject(fields)) return null;
+            else return fields;
+    }
+
+    function getTextFields(){
+        var fields = {};
+        $('#flag-texts input').each(function(){
+            if ($(this).is(':checked')) fields[$(this).attr('name')] = $(this).val();
+        });
+        if (jQuery.isEmptyObject(fields)) return null;
+            else return fields;
+    }
+
+    $('#flag-page').click(function(){
+        if (getTextFields() || getImageFields()){
+            if ($('[name="flag-comment"]').val() == ""){
+                alert('You must explain why you are flagging this content in the comment section.');
+            }else {
+                var response = $.post('/flag/flag', {
+                    {% if request.user.is_authenticated %}
+                        'user_id': '{{ request.user.id }}',
+                    {% else %}
+                        'name': $('[name="flag-name"]').val(),
+                        'email': $('[name="flag-email"]').val(),
+                    {% endif %}
+                    'text': JSON.stringify(getTextFields()),
+                    'img': JSON.stringify(getImageFields()),
+                    'url': '{{ request.get_full_path }}',
+                    'owner_id': window.ownerId,
+                    'type': $('[name="flag-type"]:checked').val(),
+                    'comment': $('[name="flag-comment"]').val()
+                });
+
+                response.done(function(){
+                    alert('Content successfully flagged. The page moderator and an administrator have been contacted regarding the flagged content.');
+                    $('#flag-modal').modal('hide');
+                });
+            }
+        } else{
+            alert("You must select at least one field to flag!");
+        }
+    });
+</script>

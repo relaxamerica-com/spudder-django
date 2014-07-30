@@ -47,6 +47,7 @@ INSTALLED_APPS = (
     'spudmart.CERN',
     'spudmart.amazon',
     'spudmart.utils',
+    'spudmart.flags',
     'spudderadmin',
     'spudderaccounts',
     'spudderdomain',

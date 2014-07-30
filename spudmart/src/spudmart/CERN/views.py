@@ -139,6 +139,15 @@ def school(request, state, school_id, name, referral_id=None):
         sch.mascot = request.POST.get('mascot', '')
         sch.save()
 
+    texts = {}
+    if sch.description:
+        texts['Description'] = sch.description
+    imgs = {}
+    if sch.logo:
+        imgs['Logo'] = sch.logo.id
+    if sch.cover_image:
+        imgs['Cover Image'] = sch.cover_image.id
+
     return render(
         request,
         'spuddercern/pages/school_splash.html', {
@@ -149,7 +158,10 @@ def school(request, state, school_id, name, referral_id=None):
             'user_is_team_member': bool(request.user in ranked_students),
             'referrer': referrer,
             'top_students': top_students,
-            'remaining_students': remaining_students})
+            'remaining_students': remaining_students,
+            'text_fields': texts,
+            'img_fields': imgs
+        })
 
 
 def save_school_logo(request, school_id):

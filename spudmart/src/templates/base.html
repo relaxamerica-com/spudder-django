@@ -23,6 +23,7 @@
         <script type="text/javascript" src="/static/js/alerts.js"></script>
     </head>
     <body class="{% block body_class %}{% endblock %}" id="{% block body_id %}{% endblock %}">
+        {% block flag-modal %}{% endblock %}
         <nav class="navbar navbar-masthead navbar-default navbar-static-top" role="navigation">
             <div class="container-fluid">
                 <div class="navbar-header">
@@ -37,8 +38,14 @@
                 {% block masterhead %}{% endblock %}
                 <div class="navbar-collapse collapse">
                     <ul class="nav navbar-nav navbar-right">
-                        <li>
-                            <a href="http://spudder.zendesk.com/account/dropboxes/20176994" onClick="Zenbox.show(); return false;">Support</a>
+                        <li class="dropdown">
+                            <a class="dropdown-toggle" href="#" data-toggle="dropdown">
+                                Support <i class="fa fa-caret-down"></i>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a href="http://spudder.zendesk.com/account/dropboxes/20176994" onClick="Zenbox.show(); return false;">Support Ticket</a></li>
+                                <li><a href="#" data-toggle="modal" data-target="#flag-modal" class="{% block flag-page-class %}hidden{% endblock %}">Flag Page</a></li>
+                            </ul>
                         </li>
                         {% block nav %}{% endblock %}
                         {% block current_role_nav %}
