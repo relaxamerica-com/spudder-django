@@ -80,7 +80,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                {% if text_fields or img_fields %}<button type="button" class="btn btn-primary" id="flag-page">Flag Page</button>{% endif %}
+                {% if text_fields or img_fields %}<button type="button" class="btn btn-primary" id="flag-page"><i class="fa fa-flag"></i> Flag Page</button>{% endif %}
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
@@ -113,6 +113,7 @@
             if ($('[name="flag-comment"]').val() == ""){
                 alert('You must explain why you are flagging this content in the comment section.');
             }else {
+                $('.fa-flag').removeClass('fa-flag').addClass('fa-spinner fa-spin');
                 var response = $.post('/flag/flag', {
                     {% if request.user.is_authenticated %}
                         'user_id': '{{ request.user.id }}',
@@ -129,6 +130,7 @@
                 });
 
                 response.done(function(){
+                    $('.fa-spinner').removeClass('fa-spinner fa-spin').addClass('fa-flag');
                     alert('Content successfully flagged. The page moderator and an administrator have been contacted regarding the flagged content.');
                     $('#flag-modal').modal('hide');
                 });

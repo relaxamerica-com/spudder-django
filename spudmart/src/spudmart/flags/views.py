@@ -32,15 +32,9 @@ def flag_page(request):
     ownerid = request.POST.get('owner_id')
     owner = User.objects.get(id=ownerid)
     url = request.POST.get('url')
-    try:
-        custom_text = simplejson.loads(request.POST.get('text'))
-    except TypeError:
-        custom_text = None
-    try:
-        custom_imgs = simplejson.loads(request.POST.get('img'))
-    except TypeError:
-        custom_imgs = None
-    else:
+    custom_text = simplejson.loads(request.POST.get('text'))
+    custom_imgs = simplejson.loads(request.POST.get('img'))
+    if custom_imgs:
         temp_custom_imgs = dict()
         for key in custom_imgs:
             img = UploadedFile.objects.get(id=custom_imgs[key])
@@ -108,7 +102,7 @@ def send_owner_message(flag, host):
     subject = "Your page has been flagged with %s content" % flag.flag_type
 
     mail.send_mail(subject=subject, body=message,
-                   sender=settings.SERVER_EMAIL, to=[flag.flagger_user.email])
+                   sender=settings.SERVER_EMAIL, to=[flag.owner.email])
 
 
 def send_zendesk_message(flag, host):
