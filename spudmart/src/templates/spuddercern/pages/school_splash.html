@@ -25,10 +25,9 @@
 {% endblock %}
 
 {% block cover_image %}
-    <div {% if not school.cover_image %}class="hidden"{% endif %} id="cover-image-container" style="text-align:center;">
+    <div {% if not school.cover_image %}class="school-jumbotron-default"{% endif %}id="cover-image-container" style="text-align:center;">
         <img src="/file/serve/{{ school.cover_image.id }}" class="jumbotron-img"/>
     </div>
-    <div {% if school.cover_image %}class="hidden"{% endif %} style="height:400px" id="jumbo-map-container"></div>
     {% if user_is_head %}
     <div style="position:absolute; top:20px; right:20px;">
         <button class="btn btn-primary" id="toggle-cover">Edit Cover Image</button>

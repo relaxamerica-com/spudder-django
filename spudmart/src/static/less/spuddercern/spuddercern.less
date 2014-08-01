@@ -73,7 +73,7 @@
 }
 
 .jumbotron-img{
-  max-height: 150px;
+  max-height: 100%;
   max-width: 100%;
 
 //  To center image in div, since horizontal-align:center isn't working
@@ -83,21 +83,15 @@
   top:0;
   bottom:0;
   margin:auto;
-
-  @media(min-width: @screen-sm){
-    max-height: 200px;
-  }
-
-  @media(min-width: @screen-md){
-    max-height: 310px;
-  }
-
-  @media(min-width: @screen-lg){
-    max-height: 400px;
-  }
 }
 
 .jumbotron{
   height: 400px
 }
 
+
+.school-jumbotron-default{
+  background-image: url("/static/img/spuddercern/button-cern-large.png");
+  opacity: 0.2;
+  height: 100%;
+}
