@@ -28,7 +28,7 @@ class Flag(models.Model):
     or a guest.
     """
     url = models.CharField(max_length=200)
-    owner = models.ForeignKey(User)
+    owner = models.ForeignKey(User, related_name='flag_owner')
     state = models.CharField(max_length=8)  # rejected/accepted are 8 chars
     custom_text = DictField(null=True)
     custom_imgs = DictField(null=True)
