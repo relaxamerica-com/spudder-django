@@ -63,6 +63,10 @@ def setup_env():
             else:
                 if name == 'webapp2':
                     extra_paths.append(root)
+                # Fix from djangoappengine repository
+                # https://github.com/dragonx/djangoappengine/commit/257e3390ab4768abbb6d82af6c16438cb9ede3cb
+                elif name == 'webob_0_9':
+                    extra_paths.append(root)
         sys.path = extra_paths + sys.path
         from google.appengine.api import apiproxy_stub_map
 
