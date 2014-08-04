@@ -25,9 +25,17 @@
 {% endblock %}
 
 {% block cover_image %}
-    <div {% if not school.cover_image %}class="school-jumbotron-default"{% endif %}id="cover-image-container" style="text-align:center;">
-        <img src="/file/serve/{{ school.cover_image.id }}" class="jumbotron-img"/>
-    </div>
+    {% if school.cover_image %}
+        <div id="cover-image-container" style="text-align:center;">
+            <img src="/file/serve/{{ school.cover_image.id }}" class="jumbotron-img"/>
+        </div>
+    {% else %}
+        {% if school.full_address %}
+            <div class="cover-image-container" id="jumbo-map-container"></div>
+        {% else %}
+            <div class="school-jumbotron-default"></div>
+        {% endif %}
+    {% endif %}
     {% if user_is_head %}
     <div style="position:absolute; top:20px; right:20px;">
         <button class="btn btn-primary" id="toggle-cover">Edit Cover Image</button>
@@ -47,9 +55,9 @@
 {% endblock %}
 {% block cover_title %}
     {% if school.logo %}
-        <img id="school-logo" src="/file/serve/{{ school.logo.id }}" height="100px"/>
+        <img id="school-logo" src="/file/serve/{{ school.logo.id }}" class="logo"/>
     {% else %}
-        <img id="school-logo" src="/static/img/spuddercern/button-cern-medium.png" height="100px"/>
+        <img id="school-logo" src="/static/img/spuddercern/button-cern-medium.png" class="logo"/>
     {% endif %}
     {{ school.name }}
     {% if user_is_head %}
@@ -192,6 +200,10 @@
     window.isEditMode = false;
 
     $(document).ready(function(){
+        if ($('#jumbo-map-container').is(':visible')) {
+            initWithAddr('{{ school.full_address }}, {{ school.verbose_state }}')
+        }
+
         var editMode = $('.edit-mode'),
 	        viewMode = $('.view-mode');
 
@@ -220,7 +232,11 @@
 				files = $(form).serializeFiles(),
 				mascot = $('#mascot-input').val(),
 				description = $('#description-input').val(),
-                alert = $('#logo-name-alert');
+                alert = $('#logo-name-alert'),
+                ico = $('.fa-save');
+
+            ico.removeClass('fa-save').addClass('fa-spinner fa-spin');
+
 
             $.get('/upload/get_upload_url', function(data) {
                 $.ajax({
@@ -240,11 +256,13 @@
 
                         response.done(function(data) {
                             if (parsed['uploaded_files'].length > 0){
+                                ico.removeClass('fa-spinner fa-spin').addClass('fa-save');
                                 showAlert(alert, 'School details have been saved (new logo uploaded).', 'success', true);
                                 $('#school-logo').attr('src', parsed['uploaded_files'][0]);
                                 $('#mascot').html(mascot);
                                 $('.school-description-p').html(description);
                             } else {
+                                ico.removeClass('fa-spinner fa-spin').addClass('fa-save');
                                 showAlert(alert, 'School details have been saved.', 'success', true);
                                 $('.school-description-p').html(description);
                                 $('#mascot').html(mascot);
@@ -281,12 +299,11 @@
                         });
 
                         response.done(function(data) {
-                            console.log('done');
                             showAlert(alert, 'Image successfully uploaded.', 'success', true);
-                            $('#cover-image-container img').attr('src', parsed['uploaded_files'][0])
-                            {% if not venue.cover_image %}
-                                $('#jumbo-map-container').addClass('hidden');
-                                $('#cover-image-container').removeClass('hidden');
+                            {% if not school.cover_image %}
+                                window.location.reload();
+                            {% else %}
+                                $('#cover-image-container img').attr('src', parsed['uploaded_files'][0])
                             {% endif %}
                         });
                     }

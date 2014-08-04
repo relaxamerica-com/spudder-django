@@ -9,7 +9,7 @@ from spudmart.upload.models import UploadedFile
 from spudmart.CERN.models import School, Student, STATES, MailingList
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils.datastructures import MultiValueDictKeyError
-from spudmart.CERN.utils import import_schools, strip_invalid_chars
+from spudmart.CERN.utils import import_schools, strip_invalid_chars, add_school_address
 from django.contrib.auth.decorators import login_required, user_passes_test
 from spudmart.CERN.rep import recruited_new_student, created_venue
 from spudmart.utils.queues import trigger_backend_task
@@ -1075,3 +1075,26 @@ def after_college(request):
     :return: after_college page
     """
     return render(request, 'spuddercern/pages/after_college.html')
+
+
+# @login_required
+# @user_passes_test(lambda u: u.is_superuser, '/')
+def import_school_addrs(request):
+    trigger_backend_task('/cern/import_school_addrs_async')
+
+    return HttpResponse('School addresses are being added in the background')
+
+
+def import_school_addrs_async(request):
+    """
+    Adds addresses to all existing schools in database
+
+    :param request: request to run import script
+    :return: HttpResponseNotAllowed (code 405) if not POST request
+    """
+    if request.method != 'POST':
+        return HttpResponseNotAllowed(['POST'])
+
+    add_school_address()
+
+    return HttpResponse('OK')

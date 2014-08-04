@@ -63,6 +63,8 @@ urlpatterns = patterns(
     # Link for queue url(it's protected)
     url(r'^import_schools$', 'import_school_data'),
     url(r'^import_schools_async$', 'import_school_data_async'),
+    url(r'^import_school_addrs$', 'import_school_addrs'),
+    url(r'^import_school_addrs_async', 'import_school_addrs_async'),
 
     # Link for decorator error page
     url(r'^non-student/$', 'user_not_student_error_page'),
