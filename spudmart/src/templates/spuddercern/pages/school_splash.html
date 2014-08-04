@@ -11,7 +11,7 @@
 {% block meta %}
 {{ block.super }}
 <meta property="og:title" content="{{ school.name }} | Spudder - Sports Updates Made Simple">
-<meta property="og:description" content="See details about the CERN Team for {{ school.name }}! Find out more on Spudder.">
+<meta property="og:description" content="Check out the newest team from {{ school.name }}! They are making it better for YOUR local sports team!">
 {% if school.logo %} <meta property="og:image" content="http://{{ request.META.HTTP_HOST }}/file/serve/{{ school.logo.id }}">
     {% else %}<meta property="og:image" content="http://{{ request.META.HTTP_HOST }}/static/img/spuddercern/button-cern-large.png">
 {% endif %}
@@ -31,7 +31,7 @@
         </div>
     {% else %}
         {% if school.full_address %}
-            <div class="cover-image-container" id="jumbo-map-container"></div>
+            <div id="jumbo-map-container" style="height:100%"></div>
         {% else %}
             <div class="school-jumbotron-default"></div>
         {% endif %}
@@ -201,6 +201,7 @@
 
     $(document).ready(function(){
         if ($('#jumbo-map-container').is(':visible')) {
+            console.log('{{ school.full_address }}, {{ school.verbose_state }}');
             initWithAddr('{{ school.full_address }}, {{ school.verbose_state }}')
         }
 

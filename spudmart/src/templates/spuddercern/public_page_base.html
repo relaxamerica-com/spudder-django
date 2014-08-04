@@ -2,17 +2,6 @@
 
 {% load displays %}
 
-{% block meta %}
-{{ block.super }}
-<!-- Base facebook meta tags -->
-<meta property="og:url" content="http://{{ request.META.HTTP_HOST }}{{ request.path }}">
-<meta property="og:site_name" content="Spudder - Sports Updates Made Simple">
-<meta propety="og:type" content="website">
-<!-- Twitter meta tags -->
-<meta property="twitter:card" content="summary">
-<meta property="twitter:site" content="@spudder_com">
-{% endblock %}
-
 {% block body %}
 <div class="jumbotron" style="position:relative; top: -20px; padding: 0;">
     {% block cover_image %}{% endblock %}

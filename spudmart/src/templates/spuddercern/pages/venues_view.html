@@ -12,11 +12,11 @@
 {{ block.super }}
 <!--Facebook meta tags-->
 {% if venue.aka_name and venue.sport %}
-<meta property="og:title" content="{{ venue.aka_name }} ({{ venue.sport }}) | Spudder - Sports Updates Made Simple">
-<meta property="og:description" content="Youth sports in action at your local venues! Find out more on Spudder.">
+<meta property="og:title" content="{{ venue.aka_name }} | Spudder - Sports Updates Made Simple">
+<meta property="og:description" content="Need directions, closest hospital information, details on seating, or playing conditions? Everything about {{ venue.aka_name }} in one place!">
 {% endif %}
 {% if venue.logo %}<meta property="og:image" content="http://{{ request.META.HTTP_HOST }}/file/serve/{{ venue.logo.id }}">
-    {% else %}<meta property="og:image" content="http://{{ request.META.HTTP_HOST }}/ico/favicon.png">
+    {% else %}<meta property="og:image" content="http://{{ request.META.HTTP_HOST }}/static/img/spuddersponsors/button-sponsors-large.png">
 {% endif %}
 {% endblock meta %}
 
@@ -704,6 +704,7 @@
 	window.preloadedBlack = $('<img src="/media/img/ajax-loader-black.gif" />');
 	window.isEditMode = false;
 	window.currentSelectedSport = '{{ venue.sport }}';
+    window.twitterPopupText = "Checkout all the action happening near you at {{ venue.aka_name }}!";
 
 
 

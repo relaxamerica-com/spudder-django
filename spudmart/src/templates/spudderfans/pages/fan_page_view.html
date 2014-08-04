@@ -6,6 +6,14 @@
 
 {% block side_nav %}{% endblock side_nav %}
 
+{% block meta %}
+{{ block.super }}
+<meta property="og:title" content="{{ page.name }} | Spudder - Sports Updates Made Simple">
+<meta property="og:description" content="Check out this awesome sponsor: {{ page.name }}! Here is a business that gives back to the community. Let's all click here and support them!">
+{% if page.logo %} <meta property="og:image" content="http://{{ request.META.HTTP_HOST }}/file/serve/{{ page.logo.id }}">
+{% endif %}
+{% endblock %}
+
 {% block dashboard_page %}
     <div class="row">
         <div class="col-sm-8">
@@ -86,4 +94,11 @@
         </div>
     </div>
 
+{% endblock %}
+
+{% block js %}
+{{ block.super }}
+<script type="text/javascript">
+    window.twitterPopupText = "See the great Sports Updates that these fans have shared on their page!"
+</script>
 {% endblock %}
