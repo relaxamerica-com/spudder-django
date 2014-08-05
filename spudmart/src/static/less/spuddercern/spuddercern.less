@@ -25,10 +25,91 @@
   }
 }
 
-.school-logo{
-  max-width: 300px;
-}
-
 .edit-mode{
   display: none;
+}
+
+.pin-pic{
+  position: relative;
+}
+
+.how-to-nav {
+  text-align: center;
+  > li {
+    // Actual tabs (as links)
+    > a {
+      color: @alert-info-text;
+    }
+
+    // Active state, and it's :hover to override normal :hover
+    &.active > a {
+      &,
+      &:hover,
+      &:focus {
+        color: @alert-info-text;
+        border-bottom-color: @alert-info-border;
+        background-color: rgba(255,255,255,.7);
+      }
+
+      &:hover{
+        color: @nav-tabs-google-link-hover-color;
+      }
+    }
+  }
+}
+
+.how-to-contents{
+  height:200px;
+  padding:15px;
+  overflow-y: scroll;
+
+  @media(min-width: @screen-lg){
+    height:300px;
+  }
+}
+
+.jumbotron-img{
+  max-height: 100%;
+  max-width: 100%;
+
+//  To center image in div, since horizontal-align:center isn't working
+  position:absolute;
+  left:0;
+  right:0;
+  top:0;
+  bottom:0;
+  margin:auto;
+}
+
+.jumbotron{
+  height: 250px;
+
+  @media (min-width: @screen-sm) {
+    height:300px;
+  }
+
+  @media (min-width: @screen-md) {
+    height:350px;
+  }
+
+  @media (min-width: @screen-lg) {
+    height:400px;
+  }
+}
+
+
+.school-jumbotron-default{
+  background-image: url("/static/img/spuddercern/button-cern-large.png");
+  opacity: 0.2;
+  height: 100%;
+}
+
+.logo{
+  max-width: 50px;
+  max-height: 50px;
+
+  @media(min-width: @screen-sm){
+    max-width:100px;
+    max-height:100px;
+  }
 }

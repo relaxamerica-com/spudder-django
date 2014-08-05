@@ -11,7 +11,9 @@ urlpatterns = patterns('spudmart.accounts.views',
     (r'^fix_accounts$', 'fix_accounts'),
     (r'^login/sponsors$', 'sponsor_login',
         {'SSL': False if os.environ['SERVER_SOFTWARE'].startswith('Development') else True}),
-
+    (r'^login/fans$', 'fan_login',
+        {'SSL': False if os.environ['SERVER_SOFTWARE'].startswith('Development') else True}),
+                       
     # This was added so that local fake login can take place
     (r'^login_fake/$', 'login_fake'),
 

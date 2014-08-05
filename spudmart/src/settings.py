@@ -15,7 +15,6 @@ if socket.gethostname() == 'www.spudder.com':
     DEBUG = False
 else:
     DEBUG = True
-DEBUG = True
 
 APP_NAME = 'Spudmart'
 
@@ -48,6 +47,7 @@ INSTALLED_APPS = (
     'spudmart.CERN',
     'spudmart.amazon',
     'spudmart.utils',
+    'spudmart.flags',
     'spudderadmin',
     'spudderaccounts',
     'spudderdomain',
@@ -127,8 +127,11 @@ shared_settings = {
         'linkedin_api_key': '77rm3ugcrdkqk7',
         'linkedin_secret_key': '7BlAnjhz5FetO09O',
         'instagram_client_id': '3888eac365f7468dabd5bf9ad06c8930',
-        'instagram_client_secret': 'b1bc01bf1a9944e2834288484f450ab2'
-
+        'instagram_client_secret': 'b1bc01bf1a9944e2834288484f450ab2',
+        'twitter_client_secret': 'lVgYuiP2QBKl0vOOX3swt9ynQheP3zQMUBN6Jcm3I',
+        'twitter_client_id': 'OSwUJxPN7xkwEpVufgp0w',
+        'twitter_access_token': '481249312-aFVuYa0HUCTKV7bc3Xrnk2twNHXwLV6r3uteKwe0',
+        'twitter_access_token_secret': 'hHPebsFws3AcWyDrAvjnxapUJ95JI15NjZ7TwiXgF5f3v',
     },
     'sharp-avatar-587': {  # lukasz@spuder.com
         'server_email': 'lukasz@spuder.com',
@@ -184,17 +187,32 @@ shared_settings = {
         'linkedin_secret_key': '',
 
     },
+    'spudder-live': {  #mg@metalayer.com
+        'server_email': 'help@spuder.com',
+        'spudder_application_id': '',
+        'spudder_rest_api_key': '',
+        'spudder_base_url': 'https://spudmart.parseapp.com',
+        'spudmart_base_url': 'https://spudder-live.appspot.com',
+        'amazon_login_client_id': 'amzn1.application-oa2-client.47892dcda29f4d3d8c437b7c44f1b6e6',
+        'linkedin_api_key': '77acg7pe6xdqfo',
+        'linkedin_secret_key': 'Eh1uPylFg3RMSOu9',
+
+    },
     'livespudder': {  #mg@metalayer.com
         'server_email': 'help@spuder.com',
         'spudder_application_id': '',
         'spudder_rest_api_key': '',
         'spudder_base_url': 'https://spudmart.parseapp.com',
-        'spudmart_base_url': 'https://www.spudder.com',
+        'spudmart_base_url': 'https://livespudder.appspot.com',
         'amazon_login_client_id': 'amzn1.application-oa2-client.47892dcda29f4d3d8c437b7c44f1b6e6',
         'linkedin_api_key': '77acg7pe6xdqfo',
         'linkedin_secret_key': 'Eh1uPylFg3RMSOu9',
         'instagram_client_id': '3888eac365f7468dabd5bf9ad06c8930',
-        'instagram_client_secret': 'b1bc01bf1a9944e2834288484f450ab2'
+        'instagram_client_secret': 'b1bc01bf1a9944e2834288484f450ab2',
+        'twitter_client_secret': '',
+        'twitter_client_id': '',
+        'twitter_access_token': '',
+        'twitter_access_token_secret': '',
     },
 }
 
@@ -208,6 +226,10 @@ LINKEDIN_API_KEY = shared_settings[app_name]['linkedin_api_key']
 LINKEDIN_SECRET_KEY = shared_settings[app_name]['linkedin_secret_key']
 INSTAGRAM_CLIENT_ID = shared_settings[app_name].get('instagram_client_id', '')
 INSTAGRAM_CLIENT_SECRET = shared_settings[app_name].get('instagram_client_secret', '')
+TWITTER_CLIENT_SECRET = shared_settings[app_name].get('twitter_client_secret', '')
+TWITTER_CLIENT_ID = shared_settings[app_name].get('twitter_client_id', '')
+TWITTER_ACCESS_TOKEN = shared_settings[app_name].get('twitter_access_token', '')
+TWITTER_ACCESS_TOKEN_SECRET = shared_settings[app_name].get('twitter_access_token_secret', '')
 
 # Configuration shared across all applications
 AWS_ACCESS_KEY_ID = 'AKIAIEUN2XKQF4ZU7UDA'

@@ -2,7 +2,7 @@ import spudmart_settings
 import urllib2
 import json
 import logging
-from spudmart.api.api import get_venues
+from spudmart.api.views import get_venues
 
 """
 
@@ -23,19 +23,17 @@ Call SpudMart API and get venues
 """
 
 
-def call_venues_api():
+def call_venues_api(request):
     logging.debug("SPICE: spudmart/api started")
 
-    return json.dumps(get_venues())
+    url_to_call = spudmart_settings.spudmart_api_url + "get_venues?key=" + spudmart_settings.spudmart_api_key
 
+    logging.debug("SPICE: spudmart/api Calling: %s", url_to_call)
 
-    # url_to_call = spudmart_settings.spudmart_api_url + "get_venues?key=" + spudmart_settings.spudmart_api_key
-    #
-    # logging.debug("SPICE: spudmart/api Calling: %s", url_to_call)
-    #
-    # api_request = urllib2.urlopen(url_to_call)
-    # json_response = json.load(api_request)
-    #
-    # logging.debug("SPICE: spudmart/api finished")
+    json_response = urllib2.urlopen(url_to_call)
+    json_response = json_response.read()
 
-    # return json_response
+    logging.debug("SPICE: spudmart/api returned: %s", json_response)
+    logging.debug("SPICE: spudmart/api finished")
+
+    return json_response

@@ -15,10 +15,58 @@
         </h1>
     </div>
     
+    {% if instagram_media %}
+		<div class="alert alert-info about-cern">
+	        <h2 class="aligncenter">This is the Instagram Stream.</h2>
+	        <p>Here you can see all the media taken from Instagram, near the Venue.</p>
+	        <p>All of the media, listed here, will become SPUDS if you press the Accept button.</p>
+	        <p>You can reject the media you don't want to become a SPUD by pressing the Reject button.</p>
+	    </div>
+	{% endif %}
+	
+	    <div class="container-fluid">
+		    <div class="row">
+			    <div class="col-sm-12 col-md-2">
+		        	<div class="well">
+		        		<form action="/venues/accept_instagram_media/{{ venue_id }}" method="post">
+		        			<input type="hidden" name="spuds" value="{% for key, element in stream_data.items %}{{ key }}{% if not forloop.last %}|{% endif %}{% endfor %}" />
+		        			<button {% if not instagram_media %}disabled{% endif %} type="submit" class="btn btn-primary" id="accept-button">Accept All Media</button>
+		        		</form>
+	        		</div>
+		        </div>
+		        
+		        <div class="col-sm-12 col-md-6">
+		        	<div class="well">
+		        		<form action="" method="post" class="form-inline" role="form">
+		        			<div class="form-group">
+							    <label class="sr-only" for="month">Month</label>
+							    <input class="form-control" name="month" type="number" placeholder="month" />
+						 	</div>
+		        			
+		        			<div class="form-group">
+							    <label class="sr-only" for="day">Day</label>
+							    <input class="form-control" name="day" type="number" placeholder="day" />
+						 	</div>
+						 	
+						 	<div class="form-group">
+							    <label class="sr-only" for="year">Year</label>
+							    <input class="form-control" name="year" type="number" placeholder="year" />
+						 	</div>
+		        			
+		        			<button type="submit" class="btn btn-primary" id="filter">Filter</button>
+		        		</form>
+	        		</div>
+		        </div>
+	        </div>
+        </div>
+        
     {% if stream_data %}
-    <div id="stream">
-        {% for key, element in stream_data.items %}
-			
+	    <div id="stream" class="container-fluid">
+	        {% for key, element in stream_data.items %}
+	        	{% if forloop.counter0|divisibleby:4 %}
+	        		<div class="row">
+	        	{% endif %}
+	        	
 				<div class="col-sm-6 col-md-3 item">
 					<div class="thumbnail" style="min-height: 200px; padding: 5px; border-color: #eee;">
 						<div class="alert text-center"> </div>
@@ -33,15 +81,17 @@
 								{% endfor %}
 							</div>
 							<div id="{{ key }}" style="margin-top: 20px" class="confirmation-buttons">
-								<a href="javascript:void(0)" data-url="/venues/accept_instagram_media/{{ venue_id }}" class="btn btn-success">Accept</a>
-								<a href="javascript:void(0)" data-url="/venues/reject_instagram_media/{{ venue_id }}" href="#" class="btn btn-danger">Reject</a>
+								<a href="javascript:void(0)" href="#" class="btn btn-danger">Reject</a>
 							</div>
 						</div>
 					</div>
 				</div>
-			
-		{% endfor %}
-	</div>
+				
+				{% if forloop.counter|divisibleby:4 %}
+	        		</div>
+	        	{% endif %}
+			{% endfor %}
+		</div>
     {% else %}
         <div class="alert alert-info about-cern">
 	        <h2 class="aligncenter">This is the Instagram Stream.</h2>
@@ -52,43 +102,40 @@
 {% endblock %}
 
 {% block js %}
-<script type="text/javascript" src="/static/js/libs/isotope.min.js"></script>
 <script type="text/javascript">
 	$(document).ready(function() {
-		var container = $('#stream'),
-			iso = container.isotope({
-				itemSelector: '.item',
-				layoutMode: 'fitRows'
-			});
+		var date = new Date({% if date %}'{{ date }}'{% endif %});
+		var month = date.getMonth() + 1;
+		var day = date.getDate();
+		var year = date.getFullYear();
+		$('[name="month"]').val(month);
+		$('[name="day"]').val(day);
+		$('[name="year"]').val(year);
 		
-		$('.confirmation-buttons .btn').click(function() {
-			var url = $(this).attr('data-url'),
+		
+		$('.confirmation-buttons .btn-danger').click(function() {
+			var thumbnail = $(this).parents('.thumbnail'),
+				acceptButton = $('#accept-button'),
 				id = $(this).parent().attr('id'),
-				thumbnail = $(this).parents('.thumbnail'),
-				alert = thumbnail.find('.alert');
+				values = $('[name="spuds"]').val().split('|');
 				
-			var response = $.post(url, {
-				'id' : id
+			thumbnail.toggleClass('alert-danger');
+			
+			if( $('.thumbnail.alert-danger').length > 0 ) {
+				acceptButton.html('Accept The Rest');
+			} else {
+				acceptButton.html('Accept All Media');
+			}
+			
+			var newValue = '';
+			$.each(values, function() {
+				if (this.toString() != id) {
+					newValue += (this.toString() + '|');
+				}
 			});
 			
-			response.done(function(data) {
-				var parsed = JSON.parse(data);
-				thumbnail.addClass(parsed.alertClass);
-				alert.html(parsed.alertText);
-				thumbnail.animate({
-					'opacity' : 0
-				}, parsed.animationTime, function() {
-					container.isotope('remove', thumbnail.parent());
-					iso.isotope('layout');
-				});
-			});
-			
-			response.fail(function() {
-				thumbnail.addClass('alert-danger');
-				alert.html('Something went wrong. Please try again later.');
-			});
+			$('[name="spuds"]').val(newValue.slice(0, newValue.length - 1));
 		});
-		
 	});
 </script>
 {% endblock %}

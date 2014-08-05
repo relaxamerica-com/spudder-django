@@ -19,7 +19,7 @@
                 <tr>
                     <th>Sport</th>
                     <th>AKA Name</th>
-                    <th>Name</th>
+                    <th>Tag</th>
                     <th style="width: 70px;">Actions</th>
                 </tr>
             </thead>
@@ -28,7 +28,7 @@
                     <tr>
                         <td>{{ venue.sport }}</td>
                         <td><a href="/venues/view/{{ venue.id }}">{{ venue.aka_name }}</a></td>
-                        <td>{{ venue.name }}</td>
+                        <td>@{{ venue.name }}</td>
                         <td style="white-space: nowrap">
                             <a class="btn btn-xs btn-primary" href="/venues/view/{{ venue.id }}" title="Edit">
                                 <i class="fa fa-fw fa-edit"> </i>

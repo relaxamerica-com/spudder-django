@@ -1,0 +1,47 @@
+{% extends 'spudderaccounts/base_single_well.html' %}
+
+{% block title %} Fan Login Page {% endblock %}
+
+{% block google_analytics_additions %}
+    ga('set', 'contentGroup1', 'ACCOUNTS Fans Login');
+{% endblock %}
+
+{% block well_body %}
+    <h2 class="text-center">Login</h2>
+    <p class="text-center">Use the button below to log in or sign up as a Fan.</p>
+    <p class="text-center"><a href="#" id="LoginWithAmazon">
+        <img border="0" alt="Login with Amazon"
+            src="https://images-na.ssl-images-amazon.com/images/G/01/lwa/btnLWA_gold_156x32.png"
+            width="156" height="32" />
+    </a></p>
+{% endblock %}
+
+{% block js %}
+    {{ block.super }}
+    {% include 'spudderaccounts/parts/amazon_login_js.html' %}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            if (typeof amazon == undefined) return;
+
+            var $logoutBtn = $('#logout-button');
+
+            if ($logoutBtn.length) {
+                $logoutBtn.click(function (event) {
+                    event.preventDefault();
+                    amazon.Login.logout();
+                    window.location = $logoutBtn.attr('href');
+                });
+            }
+            var loginWithAmazon = document.getElementById('LoginWithAmazon'),
+                returnUrl = '/accounts/login/amazon?next=/fan/page&account_type=fan';
+
+            if (loginWithAmazon) {
+                loginWithAmazon.onclick = function() {
+                    options = { scope : 'profile', interactive: 'always' };
+                    amazon.Login.authorize(options, returnUrl);
+                    return false;
+                };
+            }
+        });
+    </script>
+{% endblock %}

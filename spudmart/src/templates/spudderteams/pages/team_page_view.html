@@ -1,0 +1,89 @@
+{% extends 'spudderfans/pages/dashboard.html' %}
+
+{% block google_analytics_additions %}
+    ga('set', 'contentGroup1', 'FANS - FAN PAGE VIEW');
+{% endblock %}
+
+{% block side_nav %}{% endblock side_nav %}
+
+{% block dashboard_page %}
+    <div class="row">
+        <div class="col-sm-8">
+            <div class="post-heading">
+                <h3 class="team-name">
+                    {{ page.username }}
+                    
+                    <div class="pull-right">
+                	{% if page.facebook %}
+                		<a href="{{ page.facebook }}">
+                			<i class="fa fa-facebook"> </i>
+                		</a>
+                	{% endif %}
+                	{% if page.instagram %}
+                		<a href="{{ page.instagram }}">
+                			<i class="fa fa-instagram"> </i>
+                		</a>
+                	{% endif %}
+                	{% if page.google_plus %}
+                		<a href="{{ page.google_plus }}">
+                			<i class="fa fa-google-plus"> </i>
+                		</a>
+                	{% endif %}
+                	{% if page.twitter %}
+                		<a href="{{ page.twitter }}">
+                			<i class="fa fa-twitter"> </i>
+                		</a>
+                	{% endif %}
+                	{% if page.linkedin %}
+                		<a href="{{ page.linkedin }}">
+                			<i class="fa fa-linkedin"> </i>
+                		</a>
+                	{% endif %}
+                </div>
+                </h3>
+            </div>
+
+            <div id="fan-page-carousel" class="carousel slide" data-ride="carousel">
+                <!-- Wrapper for slides -->
+                <div class="carousel-inner">
+                    {% if page.images|length > 0 %}
+                        {% for image in page.images %}
+                            <div class="item {% if forloop.counter0 == 0 %}active{% endif %}">
+                                <img src="/file/serve/{{ image }}" />
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="item active">
+                            <img src="/static/img/spudderspuds/button-spuds-large.png" height="300px"/>
+                            <div class="carousel-caption">
+                                <div class="alert alert-info">
+                                    <h4>No images yet</h4>
+                                    <p>Stay tuned, there will soon be images for this fan!</p>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Controls -->
+                <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
+                    <span class="icon-prev"></span>
+                </a>
+                <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
+                    <span class="icon-next"></span>
+                </a>
+            </div>
+
+            <div class="top-wrapper">
+                <div class="offer-description">
+                    <p>{{ page.free_text }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-4" id="fan-page-details-container">
+            {% include 'spudderfans/parts/fan_page_details.html' %}
+        </div>
+    </div>
+
+{% endblock %}

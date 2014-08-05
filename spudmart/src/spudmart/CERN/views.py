@@ -1,24 +1,19 @@
+from google.appengine.api import mail
 import os
 from urllib2 import urlopen
-from urllib import urlencode
-from boto.s3.user import User
 from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect, HttpResponse, \
     HttpResponseNotAllowed, HttpResponseForbidden
-from django.template import RequestContext
-from django.views.generic.simple import redirect_to
 from spudderdomain.controllers import RoleController
 from spudmart.upload.models import UploadedFile
 from spudmart.CERN.models import School, Student, STATES, MailingList
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils.datastructures import MultiValueDictKeyError
-from spudmart.CERN.utils import import_schools, strip_invalid_chars
+from spudmart.CERN.utils import import_schools, strip_invalid_chars, add_school_address
 from django.contrib.auth.decorators import login_required, user_passes_test
 from spudmart.CERN.rep import recruited_new_student, created_venue
-from spudmart.upload.views import upload_image_endpoint
 from spudmart.utils.queues import trigger_backend_task
 from spudmart.utils.url import get_return_url, get_request_param
-import logging
 import settings
 from spudmart.venues.models import Venue, SPORTS
 from datetime import timedelta, datetime
@@ -144,6 +139,15 @@ def school(request, state, school_id, name, referral_id=None):
         sch.mascot = request.POST.get('mascot', '')
         sch.save()
 
+    texts = {}
+    if sch.description:
+        texts['Description'] = sch.description
+    imgs = {}
+    if sch.logo:
+        imgs['Logo'] = sch.logo.id
+    if sch.cover_image:
+        imgs['Cover Image'] = sch.cover_image.id
+
     return render(
         request,
         'spuddercern/pages/school_splash.html', {
@@ -154,7 +158,10 @@ def school(request, state, school_id, name, referral_id=None):
             'user_is_team_member': bool(request.user in ranked_students),
             'referrer': referrer,
             'top_students': top_students,
-            'remaining_students': remaining_students})
+            'remaining_students': remaining_students,
+            'text_fields': texts,
+            'img_fields': imgs
+        })
 
 
 def save_school_logo(request, school_id):
@@ -194,6 +201,12 @@ def save_school(request, school_id):
 
     if request.method == 'POST':
         school = School.objects.get(id=school_id)
+
+        request_logo = request.POST.getlist('logo[]')
+        if len(request_logo):
+            logo_id = request_logo[0].split('/')[3]
+            logo = UploadedFile.objects.get(pk=logo_id)
+            school.logo = logo
 
         mascot = request.POST['mascot']
         if mascot != '':
@@ -427,26 +440,33 @@ def testing(request):
     Displays QA testing page
 
     :param request: request to render page
-    :return: 'Coming Soon' page customized for QA testing
+    :return: qa testing how to in a CERN dashboard page
     """
-    project = 'Quality Assurance Testing'
-    joined = False
-    try:
-        mailing = MailingList.objects.get(project=project)
-    except ObjectDoesNotExist:
-        pass
-    else:
-        if request.user.email in mailing.emails:
-            joined = True
-        else:
-            joined = False
-    return render(request, 'spuddercern/pages/dashboard_pages/coming_soon.html',
-                  {
-                  'project': project,
-                  'joined': joined,
-                  'menu_context': 'testing',
-                  })
+    # project = 'Quality Assurance Testing'
+    # joined = False
+    # try:
+    #     mailing = MailingList.objects.get(project=project)
+    # except ObjectDoesNotExist:
+    #     pass
+    # else:
+    #     if request.user.email in mailing.emails:
+    #         joined = True
+    #     else:
+    #         joined = False
+    # return render(request, 'spuddercern/pages/dashboard_pages/coming_soon.html',
+    #               {
+    #               'project': project,
+    #               'joined': joined,
+    #               'menu_context': 'testing',
+    #               })
 
+    student = None
+    if request.current_role and request.current_role.entity_type == RoleController.ENTITY_STUDENT:
+        student = request.current_role.entity
+
+    return render(request, 'spuddercern/pages/dashboard_pages/qa_testing.html',{
+                  'student': student
+                  })
 
 @login_required
 @user_passes_test(user_is_student, '/cern/non-student/')
@@ -802,7 +822,7 @@ def auto_share_social_media_level(request):
     :param request: request to toggle, linked to a user
     :return: an HttpResponse with the new state of level-sharing
     """
-    if request.methd == 'POST':
+    if request.method == 'POST':
         student = request.current_role.entity
         if student.level_brag_social_media:
             student.level_brag_social_media = False
@@ -814,3 +834,267 @@ def auto_share_social_media_level(request):
     else:
         return HttpResponseNotAllowed(['POST'])
 
+def save_school_cover(request, school_id):
+    """
+    Saves a school's new cover image.
+
+    :param request: POST request containing uploaded image id
+    :param school_id: ID of the school
+    :return: a blank HttpResponse on success
+    """
+    school = School.objects.get(id=school_id)
+
+    request_cover = request.POST.getlist('cover[]')
+    cover_id = request_cover[0].split('/')[3]
+    cover = UploadedFile.objects.get(pk=cover_id)
+
+    school.cover_image = cover
+    school.save()
+    return HttpResponse()
+
+
+def reset_school_cover(request, school_id):
+    """
+    Resets the school cover image to map by setting field to None
+    :param request: POST request
+    :param school_id: id of school whose cover is to be reset
+    :return: a blank HttpResponse on success
+    """
+    school = School.objects.get(pk=school_id)
+
+    school.cover_image = None
+    school.save()
+    return HttpResponse()
+
+def student_page(request, student_id):
+    """
+    Displays the "profile" for the student.
+
+    :param request: request to display the student page
+    :param student_id: ID of the student whose information we display
+    :return: a page rendered from the student_page template with basic
+        details about the student, designed to be consistent with the
+        other profile pages on Spudder
+    """
+    student = Student.objects.get(id=student_id)
+    can_edit = False
+
+    # Double layering to handle unauthenticated users
+    if request.current_role:
+        if request.current_role.entity == student:
+            can_edit = True
+
+    venues = Venue.objects.filter(student=student)
+
+    all_referrals = sorted(student.referrals(), key=lambda s: s.rep(),
+                       reverse=True)
+    num_referred = len(all_referrals)
+
+    return render(request, 'spuddercern/pages/student_page.html', {
+                  'student': student,
+                  'can_edit': can_edit,
+                  'venues': venues,
+                  'num_referred': num_referred,
+                  'top_five': all_referrals[:5]
+                  })
+
+def save_student_cover(request, student_id):
+    """
+    Saves student's cover image.
+
+    :param request: POST request containing reference to UploadedImage
+    :param student_id: ID of student who gets new image
+    :return: Empty HttpResponse on success
+    """
+    student = Student.objects.get(id=student_id)
+
+    request_cover = request.POST.getlist('cover[]')
+    cover_id = request_cover[0].split('/')[3]
+    cover = UploadedFile.objects.get(pk=cover_id)
+
+    student.cover_image = cover
+    student.save()
+    return HttpResponse()
+
+
+def reset_student_cover(request, student_id):
+    """
+    Resets the student cover image to map by setting field to None
+    :param request: POST request
+    :param student_id: id of student whose cover is to be reset
+    :return: a blank HttpResponse on success
+    """
+    student = Student.objects.get(pk=student_id)
+
+    student.cover_image = None
+    student.save()
+    return HttpResponse()
+
+
+def save_student_logo(request, student_id):
+    """
+    Associates a recently-uploaded logo with a student
+
+    :param request: POST request with uploaded image data
+    :param student_id: the id of the student
+    :return: a blank HttpResponse object if success on POST request
+        OR an HttpResponseNotAllowed object (code 405)
+    """
+    if request.method == 'POST':
+        student = Student.objects.get(id=student_id)
+
+        request_logo = request.POST.getlist('logo[]')
+        if len(request_logo):
+            logo_id = request_logo[0].split('/')[3]
+            logo = UploadedFile.objects.get(pk=logo_id)
+            student.logo = logo
+
+        student.display_name = request.POST['displayName']
+        student.append_points = (request.POST['appendPoints'] == 'true')
+
+        student.save()
+
+        return HttpResponse()
+    else:
+        return HttpResponseNotAllowed(['POST'])
+
+
+def save_student_social_media(request, student_id):
+    """
+    Saves social media links for student
+
+    :param request: POST request containing social media link(s)
+    :param student_id: the student whose social media info is updated
+    :return: a blank HttpResponse on success
+    """
+    student = Student.objects.get(id=student_id)
+
+    student.linkedin_link = request.POST['linkedin']
+    student.facebook_link = request.POST['facebook']
+    student.twitter_link = request.POST['twitter']
+    student.google_link = request.POST['google']
+    student.instagram_link = request.POST['instagram']
+
+    student.save()
+    return HttpResponse()
+
+
+def upload_student_resume(request, student_id):
+    """
+    Attaches a resume to a student object so student can apply to QA
+
+    :param request: POST request with resume as string
+    :param student_id: ID of student belonging to resume
+    :return: a blank HttpResponse on success
+    """
+    stu = Student.objects.get(id=student_id)
+
+    resume = request.POST['resume']
+    stu.resume = resume
+    stu.save()
+
+    return HttpResponse()
+
+
+def apply_qa(request, student_id):
+    """
+    Marks a student as applied to the QA Testing program.
+
+    :param request: POST request
+    :param student_id: id of student with resume who is applying to QA
+        program
+    :return: a blank HttpResponse on success
+    """
+    stu = Student.objects.get(id=student_id)
+
+    stu.applied_qa = True
+    stu.save()
+    return HttpResponse()
+
+
+def delete_resume(request, student_id):
+    """
+    Removes a student's resume and application to join QA project.
+
+    :param request: POST request
+    :param student_id: id of student losing resume
+    :return: a blank HttpResponse on success
+    """
+    stu = Student.objects.get(id=student_id)
+    stu.resume = None
+    stu.applied_qa = False
+    stu.save()
+
+    return HttpResponse()
+
+
+def send_help_message(request, student_id):
+    """
+    Sends a help message to the ZenDesk account from a student.
+
+    :param request: POST request containing message as plain text
+    :param student_id: ID of student who sent message
+    :return: a blank HttpResponse on success
+    """
+
+    stu = Student.objects.get(id=student_id)
+    email = stu.user.email
+
+    message = request.POST.get('message', '')
+    message += "\n--From Student %s" % email
+    project = request.POST.get('project')
+    to = ['support@spudder.zendesk.com']
+    mail.send_mail(subject='Message from Student about Project %s' % project,
+                   body=message, sender=settings.SERVER_EMAIL, to=to)
+
+    return HttpResponse()
+
+
+def redeem_points(request):
+    """
+    Displays a page about redeeming CERN points for prizes.
+    :param request: any request
+    :return: redeem_points page
+    """
+    return render(request, 'spuddercern/pages/redeem_points.html')
+
+
+def compensation(request):
+    """
+    Displays a page about student compensation of venue sponsorship
+    :param request: any request
+    :return: compensation page
+    """
+    return render(request, 'spuddercern/pages/compensation.html')
+
+
+def after_college(request):
+    """
+    Displays a page about how CERN helps you after college
+    :param request: any request
+    :return: after_college page
+    """
+    return render(request, 'spuddercern/pages/after_college.html')
+
+
+# @login_required
+# @user_passes_test(lambda u: u.is_superuser, '/')
+def import_school_addrs(request):
+    trigger_backend_task('/cern/import_school_addrs_async')
+
+    return HttpResponse('School addresses are being added in the background')
+
+
+def import_school_addrs_async(request):
+    """
+    Adds addresses to all existing schools in database
+
+    :param request: request to run import script
+    :return: HttpResponseNotAllowed (code 405) if not POST request
+    """
+    if request.method != 'POST':
+        return HttpResponseNotAllowed(['POST'])
+
+    add_school_address()
+
+    return HttpResponse('OK')

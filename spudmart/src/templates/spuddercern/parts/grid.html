@@ -103,7 +103,7 @@
     <div class="col-md-2 col-sm-4">
         <div class="cern-dashboard-project" id="quality-assurance">
             <div class="cern-dashboard-project-header">
-                <i class="fa fa-fw fa-cogs"></i>
+                <i class="fa fa-fw fa-bug"></i>
                 <h3>Quality Assurance</h3>
             </div>
             <div class="cern-dashboard-project-points">
@@ -138,27 +138,43 @@
             {% if student.linkedin_token %}
             <div class="cern-dashboard-project-content">
                 <ul class="list-unstyled" >
-                    <li><p>Share current points:</p>
+                    <li><p>Share current points: <a href="javascript:window.open('/static/img/spuddercern/linkedin-example-points-now.png', 'current-popup', 'height=120, width=650, left=100, top-10, scrollbars=no,toolbar=no,menubar=no');" title="See example post"><i class="fa fa-question-circle"></i></a></p>
                         {% if student.marketing_points > 0 %}<a id="share-marketing">Marketing</a><br>{% endif %}
                         {% if student.social_media_points > 0 %}<a id="share-social-media">Social Media PR</a>{% endif %}
                     </li>
                     <li>
-                        <p>Auto-share every 100 points:</p>
-                        {% if student.marketing_points > 0 %}
-                            <input type="checkbox" class="checkbox-sharing" id="marketing-checkbox" {% if student.auto_brag_marketing %} checked {% endif %}> <label class="checkbox-label" id="marketing-label">Marketing</label>
-                        {% endif %}
-                        {% if student.social_media_points > 0 %}
-                            <input type="checkbox" class="checkbox-sharing" id="social-media-checkbox" {% if student.auto_brag_social_media %} checked {% endif %}> <label class="checkbox-label" id="social-media-label">Social Media PR</label>
-                        {% endif %}
+                        <p>Auto-share every 100 points: <a href="javascript:window.open('/static/img/spuddercern/linkedin-example-points-auto.png', 'hundred-popup', 'height=120, width=650, left=100, top-10, scrollbars=no,toolbar=no,menubar=no');" title="See example post"><i class="fa fa-question-circle"></i></a></p>
+                        <form role="form" class="form-inline">
+                            {% if student.marketing_points > 0 %}
+                                <div class="form-group">
+                                    <input type="checkbox" class="checkbox-sharing" id="marketing-checkbox" {% if student.auto_brag_marketing %} checked {% endif %}>
+                                    <label class="checkbox-label" id="marketing-label">Marketing</label>
+                                </div>
+                            {% endif %}
+                            {% if student.social_media_points > 0 %}
+                                <div class="form-group">
+                                    <input type="checkbox" class="checkbox-sharing" id="social-media-checkbox" {% if student.auto_brag_social_media %} checked {% endif %}>
+                                    <label class="checkbox-label" id="social-media-label">Social Media PR</label>
+                                </div>
+                            {% endif %}
+                        </form>
                     </li>
                     <li>
-                        <p>Auto-share every time you level up:</p>
-                        {% if student.marketing_points > 0 %}
-                            <input type="checkbox" class="checkbox-sharing" id="marketing-level-checkbox" {% if student.level_brag_marketing %} checked {% endif %}> <label class="checkbox-label" id="marketing-level-label">Marketing</label>
-                        {% endif %}
-                        {% if student.social_media_points > 0 %}
-                            <input type="checkbox" class="checkbox-sharing" id="social-media-level-checkbox" {% if student.level_brag_social_media %} checked {% endif %}> <label class="checkbox-label" id="social-media-level-label">Social Media PR</label>
-                        {% endif %}
+                        <p>Auto-share every time you level up: <a href="javascript:window.open('/static/img/spuddercern/linkedin-example-level-auto.png', 'level-popup', 'height=120, width=650, left=100, top-10, scrollbars=no,toolbar=no,menubar=no');" title="See example post"><i class="fa fa-question-circle"></i></a></p>
+                        <form role="form" class="form-inline">
+                            {% if student.marketing_points > 0 %}
+                                <div class="form-group">
+                                    <input type="checkbox" class="checkbox-sharing" id="marketing-level-checkbox" {% if student.level_brag_marketing %} checked {% endif %}>
+                                    <label class="checkbox-label" id="marketing-level-label">Marketing</label>
+                                </div>
+                            {% endif %}
+                            {% if student.social_media_points > 0 %}
+                                <div class="form-group">
+                                    <input type="checkbox" class="checkbox-sharing" id="social-media-level-checkbox" {% if student.level_brag_social_media %} checked {% endif %}>
+                                    <label class="checkbox-label" id="social-media-level-label">Social Media PR</label>
+                                </div>
+                            {% endif %}
+                        </form>
                     </li>
                 </ul>
             </div>

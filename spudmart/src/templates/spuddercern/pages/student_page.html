@@ -1,0 +1,492 @@
+{% extends 'spuddercern/public_page_base.html' %}
+
+{% load accounts %}
+{% load CERN %}
+
+{% block title %}
+    {% if student.display_name %}
+        {{ student.display_name }}
+    {% else %}
+        {% user_name student.user %}
+    {% endif %}
+    ({{ student.school.name }}) on CERN
+{% endblock %}
+
+{% block meta %}
+{{ block.super }}
+{% if student.display_name %}
+    <meta property="og:title" content="{{ student.display_name }} | Spudder - Sports Updates Made Simple">
+    <meta property="og:description" content="Check out {{ student.display_name }}'s great work on the {{ student.school.name }} Team proving their skills while improving local sports!">
+{% else %}
+    <meta property="og:title" content="{% user_name student.user %} | Spudder - Sports Updates Made Simple">
+    <meta property="og:description" content="Check out {% user_name student.user %}'s great work on the {{ student.school.name }} Team proving their skills while improving local sports!">
+{% if student.logo %} <meta property="og:image" content="http://{{ request.META.HTTP_HOST }}/file/serve/{{ student.logo.id }}">
+    {% else %}<meta property="og:image" content="http://{{ request.META.HTTP_HOST }}/static/img/spuddercern/button-cern-large.png">
+{% endif %}
+{% endblock %}
+
+{% block favicon %}"/static/img/spuddercern/button-cern-tiny.png"{% endblock %}
+
+{% block cover_image %}
+    <div {% if not student.cover_image %}class="hidden"{% endif %} id="cover-image-container" style="text-align:center;">
+        <img src=/file/serve/{{ student.cover_image.id }} height="400px" />
+    </div>
+    <div {% if student.cover_image %}class="hidden"{% endif %} style="height:400px" id="jumbo-map-container"></div>
+    {% if can_edit %}
+    <div style="position:absolute; top:20px; right:20px;">
+        <button class="btn btn-primary" id="toggle-cover">Edit Cover Image</button>
+        <form role="form" style="display:none;background:rgba(255,255,255,.65);padding:5px" id="cover-form" class="pull-right">
+            <div class="form-group">
+                <input type="file" name="file" id="cover-upload" />
+            </div>
+            <div class="alert" style="display:none"></div>
+            <div class="btn-group">
+                <a class="btn btn-primary" id="upload-cover">Upload</a>
+                {% if student.cover_image %}<a class="btn btn-default" id="reset-cover">Reset to Default</a>{% endif %}
+                <a class="btn btn-default" id="cancel-cover">Cancel</a>
+            </div>
+        </form>
+    </div>
+    {% endif %}
+{% endblock %}
+{% block cover_title %}
+    {% if student.logo %}
+        <img id="student-logo" src="/file/serve/{{ student.logo.id }}" height="100px" style="margin-top:10px" />
+    {% else %}
+        <img id="student-logo" src="/static/img/spuddercern/button-cern-medium.png"style="margin-top:10px" />
+    {% endif %}
+
+    <a href="#" title="Student Account"><img src="/static/img/spuddercern/button-cern-tiny.png" style="position:absolute;margin-top:-20px;left:0"></a>
+    <a href="#" title="Sponsor Account"><img src="/static/img/spuddersponsors/button-sponsors-tiny.png" style="position:absolute;margin-top:-20px;left:30px"></a>
+
+    <span id="display-name">
+        {% if student.display_name %}
+            {{ student.display_name }}{% if student.append_points %} ({{ student.rep }} points){% endif %}
+        {% else %}
+            {% user_name student.user %} ({{ student.rep }} points)
+        {% endif %}
+    </span>
+    <p style="font-size:25px">
+        <a href="{{ student.linkedin_link }}" title="LinkedIn Profile" {% if not student.linkedin_link %}class="hidden"{% endif %}><i class="fa fa-fw fa-linkedin-square" style="display:inline;"></i></a>
+        <a href="{{ student.facebook_link }}" title="Facebook Profile" {% if not student.facebook_link %}class="hidden"{% endif %}><i class="fa fa-fw fa-facebook-square" style="display:inline;"></i></a>
+        <a href="{{ student.twitter_link }}" title="Twitter Profile" {% if not student.twitter_link %}class="hidden"{% endif %}><i class="fa fa-fw fa-twitter-square" style="display:inline;"></i></a>
+        <a href="{{ student.google_link }}" title="Google+ Profile" {% if not student.google_link %}class="hidden"{% endif %}><i class="fa fa-fw fa-google-plus-square" style="display:inline;"></i></a>
+        <a href="{{ student.instagram_link }}" title="Instagram Profile" {% if not student.instagram_link %}class="hidden"{% endif %}><i class="fa fa-fw fa-instagram" style="display:inline;"></i></a>
+    </p>
+    {% if can_edit %}
+        <div class="pull-right" style="position:absolute; bottom: -20px; right: 10px;">
+            <div class="btn btn-primary" id="edit">
+                Edit Mode
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block main_page %}
+    <div class="edit-mode well">
+        <h2>Edit Your Information</h2>
+        <form method="post" enctype="multipart/form-data" role="form">
+            <div class="form-group edit-mode">
+                <label>Upload a profile image (logo):</label>
+                <input type="file" name="logo" id="logo-input" class="form-control" />
+            </div>
+
+            <div class="form-group">
+                <label>Display Name</label>
+                <br />
+                <span class="tips">Tip: This only changes the header of this page. Use the Roles Manager to change your global name.</span>
+                <input type="text" name="display-name" id="display-name-input" class="form-control" placeholder="{% user_name student.user %}"/>
+            </div>
+
+            <div class="form-group">
+                <label>Append current score to display name:</label>
+                <input type="checkbox" style="position:absolute;margin-left:4px" id="append-points-input" />
+            </div>
+
+            <a class="btn btn-primary" id="save-logo"><i class="fa fa-save"></i> Save Basics</a>
+            <div class="alert" id="logo-name-alert" style="margin-top:10px"></div>
+
+            <h3>Social Media Links</h3>
+            <div class="form-group">
+                <label>LinkedIn Profile</label>
+                <br />
+                <span class="tips">Tip: Use your public profile link, so people don't have to be logged in to view it.</span>
+                <input type="url" id="linkedin" name="linkedin" placeholder="http://www.linkedin.com/pub/your-name/00/00" class="form-control"/>
+            </div>
+
+            <div class="form-group">
+                <label>Facebook Profile</label>
+                <input type="url" id="facebook" name="facebook" placeholder="http://www.facebook.com/user.name" class="form-control" />
+            </div>
+
+            <div class="form-group">
+                <label>Twitter Profile</label>
+                <input type="url" id="twitter" name="twitter" placeholder="http://twitter.com/username" class="form-control" />
+            </div>
+
+            <div class="form-group">
+                <label>Google+ Profile</label>
+                <input type="url" id="google-plus" name="google-plus" placeholder="http://plus.google.com/id-number" class="form-control"/>
+            </div>
+
+            <div class="form-group">
+                <label>Instagram Profile </label>
+                <input type="url" id="instagram" name="instagram" placeholder="http://instagram.com/username" class="form-control"/>
+            </div>
+
+            <a class="btn btn-primary" id="save-social-media"><i class="fa fa-save"></i> Save Social Media</a>
+            <div class="alert" id="social-media-alert" style="margin-top:10px"></div>
+        </form>
+    </div>
+
+    <div class="text-center" id="nav-btn-wrapper">
+        <div class="btn-group" style="margin: 0 auto;">
+            <a class="btn btn-primary" openTab="#venues" title="Venues">
+                <i class="fa fa-2x fa-map-marker" title="Venues"></i>
+            </a>
+            <a class="btn btn-primary" openTab="#social-media" title="Social Media PR">
+                <i class="fa fa-2x fa-rss" title="Social Media PR"></i>
+            </a>
+            <a class="btn btn-primary" openTab="#content" title="Content">
+                <i class="fa fa-2x fa-edit" title="Content"></i>
+            </a>
+            <a class="btn btn-primary" openTab="#design" title="Design">
+                <i class="fa fa-2x fa-pencil" title="Design"></i>
+            </a>
+            <a class="btn btn-primary" openTab="#qa" title="QA Testing">
+                <i class="fa fa-2x fa-cogs" title="QA Testing"></i>
+            </a>
+            <a class="btn btn-primary" href="{% student_school_link student %}" title="School Page">
+                <i class="fa fa-2x fa-university" title="School Page"></i>
+            </a>
+        </div>
+    </div>
+
+    <div style="min-height: 362px; margin: 0 auto; width: 100%; vertical-align: middle; text-align: center; padding:15px;">
+        <div class="row-fluid" style="height:100%;">
+            <div class="col-md-12 contents" style="height:100%;">
+                <div class="content active" id="landing">
+                    <div class="row">
+                        <div class="col-sm-8 col-sm-offset-2">
+                            {% include 'spuddercern/quote_messages/quote_student_page_landing.html' %}
+                        </div>
+                    </div>
+                </div>
+                <div class="content" id="venues">
+                    {% if venues > 0 %}
+                        <h3>Venues Managed by {% user_name student.user %}:</h3>
+                        <table class="table" style="text-align:left">
+                            <thead>
+                                <tr>
+                                    <th>Sport</th>
+                                    <th>Name</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for venue in venues %}
+                                    <tr>
+                                        <td>{{ venue.sport }}</td>
+                                        <td><a href="/venues/view/{{ venue.id }}">{{ venue.aka_name }}</a></td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% else %}
+                        <div class="row">
+                            <div class="col-sm-8 col-sm-offset-2">
+                                {% include 'spuddercern/quote_messages/quote_no_venues_student_page.html' %}
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="content" id="social-media">
+                    {% if num_referred > 0 %}
+                        <h3>{% user_name student.user %}'s Social Media Recruitment Progress</h3>
+                        <p><label>Total students referred:</label> {{ num_referred }}</p>
+                        <div id="analytics">
+                            <h4>Top Students Referred:</h4>
+                            <ol>
+                                {% for referred in top_five %}
+                                <li>{% user_name referred.user %}, {{ referred.rep }} points - {{ referred.school.name }}</li>
+                                {% endfor %}
+                            </ol>
+                        </div>
+                    {% else %}
+                        <div class="row">
+                            <div class="col-sm-8 col-sm-offset-2">
+                                {% include 'spuddercern/quote_messages/quote_no_referrals_student_page.html' %}
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="content" id="content">
+                    {% if student.content_points > 0 %}
+                        {# Put content links here... #}
+                    {% else %}
+                        <div class="row">
+                            <div class="col-sm-8 col-sm-offset-2">
+                                {% include 'spuddercern/quote_messages/quote_no_content_student_page.html' %}
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="content" id="design">
+                    {% if student.content_points > 0 %}
+                        {# Put content links here... #}
+                    {% else %}
+                        <div class="row">
+                            <div class="col-sm-8 col-sm-offset-2">
+                                {% include 'spuddercern/quote_messages/quote_no_design_student_page.html' %}
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="content" id="qa">
+                    {% if student.content_points > 0 %}
+                        {# Put content links here... #}
+                    {% else %}
+                        <div class="row">
+                            <div class="col-sm-8 col-sm-offset-2">
+                                {% include 'spuddercern/quote_messages/quote_no_qa_student_page.html' %}
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <hr />
+    </div>
+{% endblock %}
+
+{% block sidebar %}
+    <h3>CERN Rankings</h3>
+    <p>This rank is based on students' overall CERN points.</p>
+    <ul class="list-unstyled">
+        <li><label>School rank:</label> {% school_rank student %}</li>
+        <li><label>National rank:</label> {% national_rank student %}</li>
+    </ul>
+{% endblock %}
+
+{% block js %}
+{{ block.super }}
+<script type="text/javascript" src="/static/js/libs/jquery.serialize.file.js"></script>
+<script type="text/javascript">
+    window.isEditMode = false;
+
+    $('.content').not('.active').hide();
+
+    $(document).ready(function(){
+        var editMode = $('.edit-mode'),
+	        viewMode = $('.view-mode');
+
+        $('.alert').each(function(i, alert) {
+           var $alert = $(alert);
+           if ($alert.html() == "")
+               $alert.hide();
+        });
+
+        $('#edit').click(function(){
+            if (window.isEditMode){
+                editMode.hide();
+                viewMode.show();
+                $(this).html('Edit Mode');
+                window.isEditMode = false;
+            } else{
+                viewMode.hide();
+                editMode.show();
+                $(this).html('Show Mode');
+                window.isEditMode = true;
+            }
+        });
+
+        $('#save-logo').click(function() {
+			var form = $(this).parents('form'),
+				files = $(form).serializeFiles(),
+				displayName = $('#display-name-input').val(),
+				appendPoints = $('#append-points-input').prop('checked'),
+                alert = $('#logo-name-alert');
+
+            $.get('/upload/get_upload_url', function(data) {
+                $.ajax({
+                    url : data,
+                    data : files,
+                    cache : false,
+                    contentType : false,
+                    processData : false,
+                    type : 'POST',
+                    success : function(data) {
+                        var parsed = JSON.parse(data);
+                        var response = $.post('/cern/student/{{ student.id }}/save_logo', {
+							'logo' : parsed['uploaded_files'],
+                            'displayName': displayName,
+                            'appendPoints': appendPoints
+                        });
+
+                        response.done(function(data) {
+                            if (parsed['uploaded_files'].length > 0){
+                                showAlert(alert, 'Your details have been saved (new logo uploaded).', 'success', true);
+                                $('#student-logo').attr('src', parsed['uploaded_files'][0]);
+                                if (displayName != ""){
+                                    if (appendPoints) $("#display-name").html(displayName + " ({{ student.rep }} points)");
+                                        else $('#display-name').html(displayName);
+                                } else{
+                                    $('#display-name').html("{% user_name student.user %} ({{ student.rep }} points)");
+                                }
+                            } else {
+                                showAlert(alert, 'Your details have been saved.', 'success', true);
+                                if (displayName != ""){
+                                    if (appendPoints) $("#display-name").html(displayName + " ({{ student.rep }} points)");
+                                        else $('#display-name').html(displayName);
+                                } else{
+                                    $('#display-name').html("{% user_name student.user %} ({{ student.rep }} points)");
+                                }
+                            }
+                        });
+                    }
+                });
+            });
+		});
+
+        $('#save-social-media').click(function() {
+			var linkedin = $('#linkedin').val(),
+                facebook = $('#facebook').val(),
+                twitter = $('#twitter').val(),
+                google = $('#google-plus').val(),
+                instagram = $('#instagram').val(),
+                alert = $('#social-media-alert');
+
+            var response = $.post('/cern/student/{{ student.id }}/save_social_media', {
+                'linkedin': linkedin,
+                'facebook': facebook,
+                'twitter': twitter,
+                'google': google,
+                'instagram': instagram
+            });
+
+            response.done(function(){
+                if (linkedin != ""){
+                    link = $('.fa-linkedin-square').parent();
+                    link.attr('href', linkedin);
+                    link.removeClass('hidden');
+                }
+
+                if (facebook != ""){
+                    link = $('.fa-facebook-square').parent();
+                    link.attr('href', facebook);
+                    link.removeClass('hidden');
+                }
+
+                if (twitter != ""){
+                    link = $('.fa-twitter-square').parent();
+                    link.attr('href', twitter);
+                    link.removeClass('hidden');
+                }
+
+                if (google != ""){
+                    link = $('.fa-google-plus-square').parent();
+                    link.attr('href', google);
+                    link.removeClass('hidden');
+                }
+
+                if (instagram != ""){
+                    link = $('.fa-instagram').parent();
+                    link.attr('href', instagram);
+                    link.removeClass('hidden');
+                }
+
+                showAlert(alert, 'Social Media details have been saved.', 'success', true)
+            });
+
+
+		});
+
+        $('#toggle-cover').click(function(){
+            $(this).hide();
+            $('#cover-form').show();
+        });
+
+        $('#upload-cover').click(function(){
+            var form = $(this).parents('form'),
+                files = $(form).serializeFiles(),
+                alert = $(form).find('.alert');
+
+            $.get('/upload/get_upload_url', function(data) {
+                $.ajax({
+                    url : data,
+                    data : files,
+                    cache : false,
+                    contentType : false,
+                    processData : false,
+                    type : 'POST',
+                    success : function(data) {
+                        var parsed = JSON.parse(data);
+
+                        var response = $.post('/cern/student/{{ student.id }}/save_cover', {
+                            'cover' : parsed['uploaded_files']
+                        });
+
+                        response.done(function(data) {
+                            console.log('done');
+                            showAlert(alert, 'Image successfully uploaded.', 'success', true);
+                            $('#cover-image-container img').attr('src', parsed['uploaded_files'][0])
+                            {% if not venue.cover_image %}
+                                $('#jumbo-map-container').addClass('hidden');
+                                $('#cover-image-container').removeClass('hidden');
+                            {% endif %}
+                        });
+                    }
+                });
+            });
+        });
+
+        $('#reset-cover').click(function(){
+            if (confirm('This will permanently delete your cover image!')){
+                var response = $.post('/cern/{{ school.id }}/reset_school_cover');
+
+                response.done(function(data){
+                    window.location.reload();
+                    return;
+                });
+            }
+        });
+
+        $('#cancel-cover').click(function(){
+            $('#cover-form').hide();
+            $('#toggle-cover').show();
+        });
+
+        $('#nav-btn-wrapper a').not('[title="School Page"]').click(function(){
+            if(!$(this).hasClass('active')) {
+                var currentTab = $(this).attr('openTab');
+
+                $('.alert').not('.alert-info').hide();
+
+                $('#nav-btn-wrapper').find('.active').removeClass('active');
+
+                hide($('.contents > div.content'));
+
+                $(this).addClass('active');
+
+                show(currentTab);
+            }
+        });
+
+        function show(element) {
+			$('.contents > .active').removeClass('active');
+			$(element).addClass('active');
+			$(element).show();
+		}
+
+		function hide(elements) {
+			$.each(elements, function() {
+				$(this).hide();
+			});
+		}
+    });
+</script>
+{% endblock %}

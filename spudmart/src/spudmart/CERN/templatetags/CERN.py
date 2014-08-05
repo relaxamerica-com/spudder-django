@@ -28,3 +28,69 @@ def my_school_link(context, user):
         return '/cern/%s/%s/%s' % (sch.state, sch.id, strip_invalid_chars(sch.name))
     else:
         return ''
+
+@register.simple_tag
+def student_school_link(student):
+    """
+    Gets the link for the school of a supplied student
+    :param student: any Student object
+    :return: the relative link to the page for the school if given a student
+    """
+    if type(student) is Student:
+        sch = student.school
+        return '/cern/%s/%s/%s' % (sch.state, sch.id, strip_invalid_chars(sch.name))
+
+@register.simple_tag()
+def school_rank(student):
+    """
+    Provides rank information as a string (X of X total students)
+    :param student: a Student object
+    :return: an integer between 1 and the number of students at the school
+    """
+    sch = student.school
+    ranked_students = sorted(sch.get_students(), key=lambda s: s.rep(),
+                             reverse=True)
+
+    count = 1
+    for s in ranked_students:
+        if s == student:
+            break
+        else:
+            count += 1
+
+    return "%s of %s total students" % (count, len(ranked_students))
+
+@register.simple_tag()
+def national_rank(student):
+    """
+    Provides rank information as a string (X of X total students)
+    :param student: a Student object
+    :return: an integer between 1 and the number of total students in CERN
+    """
+    students = Student.objects.all()
+    ranked_students = sorted(students, key=lambda s: s.rep(),
+                             reverse=True)
+
+    count = 1
+    for s in ranked_students:
+        if s == student:
+            break
+        else:
+            count += 1
+
+    return "%s of %s total students" % (count, len(ranked_students))
+
+
+@register.simple_tag(takes_context=True)
+def current_student_page(context):
+    """
+
+    :param context: request context
+    :return: a relative url string to student page
+    """
+    current_role = context['request'].current_role
+    if current_role.entity_type == RoleController.ENTITY_STUDENT:
+        stu = current_role.entity
+        return '/cern/student/%s' % (stu.id)
+    else:
+        return ''

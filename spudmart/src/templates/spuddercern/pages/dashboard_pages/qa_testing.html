@@ -1,0 +1,23 @@
+{% extends 'spuddercern/pages/dashboard_pages/dashboard.html' %}
+{% load accounts %}
+
+{% block title %}QA Testing | CERN {% endblock %}
+
+{% block google_analytics_additions %}
+    ga('set', 'contentGroup1', 'CERN Students - {{ menu_context|capfirst }}');
+{% endblock %}
+
+{% block dashboard_page %}
+    <div class="page-header">
+        <h1>
+            <i class="fa fa-fw fa-bug"></i> QA Testing <small>Experience all the new features FIRST and earn points looking for bugs!</small>
+        </h1>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-10 col-sm-offset-1">
+            {% include 'spuddercern/parts/how_to/qa_how_to.html' %}
+        </div>
+    </div>
+
+{% endblock %}

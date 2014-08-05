@@ -23,8 +23,9 @@ from spudmart.CERN.models import Student
 
 from spudderdomain.controllers import SpudsController
 from spudderkrowdio.models import KrowdIOStorage
-from spudderkrowdio.utils import get_user_mentions_activity
-import json
+from spudderkrowdio.utils import get_user_mentions_activity, delete_spud
+import logging
+import datetime
 
 
 def view(request, venue_id):
@@ -60,7 +61,11 @@ def view(request, venue_id):
     if venue.is_available() and not venue.is_renter(role):
         rent_venue_url = get_rent_venue_cbui_url(venue)
 
-    sponsor = SponsorPage.objects.filter(sponsor=venue.renter)
+    sponsor = venue.renter
+    sponsor_info = False
+    if sponsor:
+        if sponsor.name != "":
+            sponsor_info = True
     
     storage = KrowdIOStorage.GetOrCreateForVenue(venue_id)
     
@@ -73,7 +78,8 @@ def view(request, venue_id):
         'is_recipient': is_recipient,
         'rent_venue_url': rent_venue_url,
         'can_edit': can_edit,
-        'sponsor': sponsor[0] if len(sponsor) else None,
+        'sponsor': sponsor,
+        'sponsor_info': sponsor_info,
         'is_sponsor': venue.is_renter(role),
         'student': student,
         'venue_spuds' : venue_spuds['items']
@@ -104,18 +110,17 @@ def save_coordinates(request, venue_id):
     return HttpResponse('OK')
 
 def save_parking_details(request, venue_id):
-    parking_tips = request.POST['parking-tips']
-    parking_details = request.POST['parking-details']
+    venue = Venue.objects.get(pk = venue_id)
+    parking_pics = request.POST.getlist('parking_pics[]')
+    parking_details = request.POST['parking_details']
 
-    venue = Venue.objects.get(pk=venue_id)
-
-    # If there was no info, but now there is, add points
-    if venue.parking_details == '' or venue.parking_tips == '':
-        if parking_details != '' and parking_tips != '':
+    # Reward student for completing parking info
+    if len(venue.parking_pics) == 0 or venue.parking_details == '':
+        if len(parking_pics) and parking_details != '':
             added_basic_info(venue)
 
-    # Update parking info and save
-    venue.parking_tips = parking_tips
+    # Add pics and details and save
+    venue.parking_pics.extend(parking_pics)
     venue.parking_details = parking_details
     venue.save()
     return HttpResponse('OK')
@@ -152,11 +157,11 @@ def save_logo_and_name(request, venue_id):
     # If either name has been customized for the first time, add points
     request_name = request.POST['name']
     request_aka_name = request.POST['aka_name']
-    if venue.name == "Sponsor's Name for Venue":
-        if request_name != "Sponsor's Name for Venue":
+    if venue.name == "Venue not yet Named":
+        if request_name != "Venue not yet Named":
             added_basic_info(venue)
-    if venue.aka_name == "Common Venue Name":
-        if request_aka_name != "Common Venue Name":
+    if venue.aka_name == "Venue not yet Named":
+        if request_aka_name != "Venue not yet Named":
             added_basic_info(venue)
 
     # Update name(s)
@@ -213,45 +218,49 @@ def save_restroom_details(request, venue_id):
 
 def save_concession_details(request, venue_id):
     venue = Venue.objects.get(pk = venue_id)
+    concession_pics = request.POST.getlist('concession_pics[]')
     concession_details = request.POST['concession_details']
 
-    # If this is filled in for the first time, add points
-    if venue.concession_details == '':
-        if concession_details:
+    # Reward student for completing concession info
+    if len(venue.concession_pics) == 0 or venue.concession_details == '':
+        if len(concession_pics) and concession_details != '':
             added_basic_info(venue)
 
-    # Make and save changes
+    # Add pics and details and save
+    venue.concession_pics.extend(concession_pics)
     venue.concession_details = concession_details
     venue.save()
     return HttpResponse('OK')
 
 def save_admission_details(request, venue_id):
     venue = Venue.objects.get(pk = venue_id)
+    admission_pics = request.POST.getlist('admission_pics[]')
     admission_details = request.POST['admission_details']
 
-    # If this is filled in for the first time, add points
-    if venue.admission_details == '':
-        if admission_details:
+    # Reward student for completing admission info
+    if len(venue.admission_pics) == 0 or venue.admission_details == '':
+        if len(admission_pics) and admission_details != '':
             added_basic_info(venue)
 
-    # Update and save data
+    # Add pics and details and save
+    venue.admission_pics.extend(admission_pics)
     venue.admission_details = admission_details
     venue.save()
     return HttpResponse('OK')
 
-def save_shelter_details(request, venue_id):
-    venue = Venue.objects.get(pk = venue_id)
-    shelter_details = request.POST['shelter_details']
-
-    # If this is filled in for the first time, add points
-    if venue.shelter_details == '':
-        if shelter_details:
-            added_basic_info(venue)
-
-    # Update and save shelter details
-    venue.shelter_details = shelter_details
-    venue.save()
-    return HttpResponse('OK')
+# def save_shelter_details(request, venue_id):
+#     venue = Venue.objects.get(pk = venue_id)
+#     shelter_details = request.POST['shelter_details']
+#
+#     # If this is filled in for the first time, add points
+#     if venue.shelter_details == '':
+#         if shelter_details:
+#             added_basic_info(venue)
+#
+#     # Update and save shelter details
+#     venue.shelter_details = shelter_details
+#     venue.save()
+#     return HttpResponse('OK')
 
 def save_medical_details(request, venue_id):
     venue = Venue.objects.get(pk = venue_id)
@@ -269,14 +278,16 @@ def save_medical_details(request, venue_id):
 
 def save_handicap_details(request, venue_id):
     venue = Venue.objects.get(pk = venue_id)
+    handicap_pics = request.POST.getlist('handicap_pics[]')
     handicap_details = request.POST['handicap_details']
 
-    # If this is filled in for the first time, add points
-    if venue.handicap_details == '':
-        if handicap_details:
+    # Reward student for completing handicap info
+    if len(venue.handicap_pics) == 0 or venue.handicap_details == '':
+        if len(handicap_pics) and handicap_details != '':
             added_basic_info(venue)
 
-    # Update and save handicap details
+    # Add pics and details and save
+    venue.handicap_pics.extend(handicap_pics)
     venue.handicap_details = handicap_details
     venue.save()
     return HttpResponse('OK')
@@ -286,8 +297,8 @@ def send_message(request, venue_id):
     message = request.POST.get('message', '')
     to = []
     to.append('support@spudder.zendesk.com')
-    to.append(venue.user.email)
-    mail.send_mail(subject='Message from Spudmart about Venue: %s' % venue.name, body=message, sender='help@spudder.com', to=to)
+    to.append(venue.student.user.email)
+    mail.send_mail(subject='Message from Spudmart about Venue: %s' % venue.name, body=message, sender=settings.SERVER_EMAIL, to=to)
 
     return HttpResponse('OK')
 
@@ -553,36 +564,65 @@ def delete_venue(request, venue_id):
 
 def get_instagram_stream(request, venue_id):
     controller = SpudsController(request.current_role, venue_id)
+    date = None
+    
+    if request.method == 'GET':
+        # 86400 = 24 hrs
+        now = datetime.datetime.now()
+        seconds = controller.date_time_to_seconds(now)
+    else:
+        day = int(request.POST['day'])
+        month = int(request.POST['month'])
+        year = int(request.POST['year'])
+        date = '%s-%s-%s' % (year, month, day)
+        seconds = controller.date_time_to_seconds(datetime.datetime(year, month, day))
+        
+    time_range = [seconds - 86400, seconds + 86400]
     
     return render(request, 'spuddercern/pages/venue_instagram_stream.html',
-                  { 'stream_data' : controller.get_any_unapproved_spuds(), 
-                   'venue_id' : venue_id })
-    
+                  { 'stream_data' : controller.get_unapproved_spuds(time_range), 
+                   'venue_id' : venue_id,
+                   'date' : date })
+        
     
 def accept_instagram_media(request, venue_id):
     controller = SpudsController(request.current_role, venue_id)
-    spud = controller.get_unapproved_spud_by_id(request.POST.get('id'))
+    spuds = []
     
-    if spud:
-        controller.approve_spud(spud, venue_id)
+    for data_id in request.POST.get('spuds').split('|'):
+        spuds.append(controller.get_unapproved_spud_by_id(data_id))
     
-    response = {
-        'alertClass' : 'alert-success',
-        'alertText' : 'SPUD Accepted',
-        'animationTime' : 1000
-    }
+    controller.approve_spuds(spuds, venue_id)
     
-    return HttpResponse(json.dumps(response))
+    return HttpResponseRedirect('/venues/get_instagram_stream/%s' % venue_id)
 
 
-def reject_instagram_media(request, venue_id):
-    controller = SpudsController(request.current_role, venue_id)
-    _ = controller.get_unapproved_spud_by_id(request.POST.get('id')) # just get it, so the instagram_data_processor will set the processed flag to True
+def save_cover(request, venue_id):
+    venue = Venue.objects.get(pk=venue_id)
+
+    request_cover = request.POST.getlist('cover[]')
+    cover_id = request_cover[0].split('/')[3]
+    cover = UploadedFile.objects.get(pk=cover_id)
+
+    venue.cover_image = cover
+    venue.save()
+    return HttpResponse('OK')
+
+
+def reset_cover(request, venue_id):
+    venue = Venue.objects.get(pk=venue_id)
+
+    venue.cover_image = None
+    venue.save()
+    return HttpResponse('OK')
     
-    response = {
-        'alertClass' : 'alert-warning',
-        'alertText' : 'SPUD Rejected',
-        'animationTime' : 700
-    }
     
-    return HttpResponse(json.dumps(response))
+def delete_spud_endpoint(request, venue_id):
+    try:
+        venue = Venue.objects.get(pk = venue_id)
+        
+        storage = KrowdIOStorage.objects.get(venue = venue)
+        delete_spud(storage, request.POST.get('spud_id'))
+    except Exception, e:
+        logging.error(e.message)
+        return HttpResponse(status=500)

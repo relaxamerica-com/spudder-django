@@ -33,3 +33,9 @@ indexes:
   - name: venue_id
   - name: __key__
     direction: desc
+
+- kind: spuddersocialengine_instagramdataprocessor
+  properties:
+  - name: processed
+  - name: venue_id
+  - name: _created_time

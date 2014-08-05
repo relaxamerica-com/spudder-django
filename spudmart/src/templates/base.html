@@ -13,14 +13,25 @@
         <title>{% block title %}{% endblock %}</title>
         <meta name="description" content="{% block description %}{% endblock %}">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        {% block meta %}{% endblock %}
+        {% block meta %}
+            <!-- Base facebook meta tags -->
+            <meta property="og:url" content="http://{{ request.META.HTTP_HOST }}{{ request.path }}">
+            <meta property="og:site_name" content="Spudder - Sports Updates Made Simple">
+            <meta property="og:type" content="website">
+            <!-- Twitter meta tags -->
+            <meta property="twitter:card" content="summary">
+            <meta property="twitter:site" content="@spudder_com">
+        {% endblock %}
         {% block css %}{% endblock %}
+        <link rel="shortcut icon" href={% block favicon %}"/media/ico/favicon.png"{% endblock %} />
         <script src="/static/js/libs/modernizr-2.6.2-respond-1.1.0.min.js"></script>
         <script type="text/javascript" language="javascript" src="/static/js/libs/jquery-1.11.0.min.js"></script>
         <script type="text/javascript" language="javascript" src="/static/js/libs/bootstrap.min.js"></script>
         <script type="text/javascript" language="javascript" src="/static/js/libs/jquery.livequery.js"></script>
+        <script type="text/javascript" src="/static/js/alerts.js"></script>
     </head>
     <body class="{% block body_class %}{% endblock %}" id="{% block body_id %}{% endblock %}">
+        {% block flag-modal %}{% endblock %}
         <nav class="navbar navbar-masthead navbar-default navbar-static-top" role="navigation">
             <div class="container-fluid">
                 <div class="navbar-header">
@@ -35,6 +46,15 @@
                 {% block masterhead %}{% endblock %}
                 <div class="navbar-collapse collapse">
                     <ul class="nav navbar-nav navbar-right">
+                        <li class="dropdown">
+                            <a class="dropdown-toggle" href="#" data-toggle="dropdown">
+                                Support <i class="fa fa-caret-down"></i>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a href="http://spudder.zendesk.com/account/dropboxes/20176994" onClick="Zenbox.show(); return false;">Support Ticket</a></li>
+                                <li><a href="#" data-toggle="modal" data-target="#flag-modal" class="{% block flag-page-class %}hidden{% endblock %}">Flag Page</a></li>
+                            </ul>
+                        </li>
                         {% block nav %}{% endblock %}
                         {% block current_role_nav %}
                             {% if current_role and current_role|is_cern_student %}
@@ -44,12 +64,12 @@
                                     </a>
                                     <ul class="dropdown-menu">
                                         <li><a href="/cern/"><i class="fa fa-fw fa-bar-chart-o"></i> Scoreboard</a></li>
-                                        <li><a href="{% my_school_link request.user %}"><i class="fa fa-fw fa-users"></i> School Page</a></li>
+                                        <li><a href="{% current_student_page %}"><i class="fa fa-fw fa-user"></i> Student Page</a></li>
                                         <li><a href="/cern/venues/"><i class="fa fa-fw fa-map-marker"></i> Venues</a></li>
                                         <li><a href="/cern/social_media/"><i class="fa fa-fw fa-rss"></i> Social Media</a></li>
                                         <li><a href="/cern/content/"><i class="fa fa-fw fa-edit"></i> Content</a></li>
                                         <li><a href="/cern/design/"><i class="fa fa-fw fa-pencil"></i> Design</a></li>
-                                        <li><a href="/cern/testing/"><i class="fa fa-fw fa-cogs"></i> QA Testing</a></li>
+                                        <li><a href="/cern/testing/"><i class="fa fa-fw fa-bug"></i> QA Testing</a></li>
                                         <li><a href="/cern/mobile/"><i class="fa fa-fw fa-mobile-phone"></i> Mobile App</a></li>
                                         <li><a href="/accounts/logout?next=/cern/"><i class="fa fa-fw fa-power-off"></i> Logout</a></li>
                                     </ul>
@@ -98,26 +118,21 @@
                                                     {% endfor %}
                                                 </div>
                                                 <hr />
-                                                {% if other_roles|length > 2 %}
-                                                    <div class="btn-group">
-                                                        <a class="btn btn-primary btn-sm" href="/users/roles/add">
-                                                            <i class="fa fa-plus"></i> Add a new role
-                                                        </a>
-                                                        <a class="btn btn-default btn-sm" href="/users">
-                                                            View all your roles
-                                                        </a>
-                                                    </div>
-                                                {% else %}
-                                                    <div class="btn-group">
-                                                        <a class="btn btn-primary btn-sm" href="/users/roles/add">
-                                                            <i class="fa fa-plus"></i> Add a new role
-                                                        </a>
-                                                    </div>
-                                                {% endif %}
+                                                <div class="btn-group">
+                                                    <a class="btn btn-primary btn-sm" href="/users/roles/add">
+                                                        <i class="fa fa-plus"></i> Add a new role
+                                                    </a>
+                                                    <a class="btn btn-default btn-sm" href="/users">
+                                                        Manage your account
+                                                    </a>
+                                                </div>
                                             {% else %}
                                                 <div class="btn-group">
                                                     <a class="btn btn-primary btn-sm" href="/users/roles/add">
                                                         <i class="fa fa-plus"></i> Add a new role
+                                                    </a>
+                                                    <a class="btn btn-default btn-sm" href="/users">
+                                                        Manage your account
                                                     </a>
                                                 </div>
                                             {% endif %}
@@ -126,9 +141,9 @@
                                 </li>
                                 <li class="dropdown">
                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                        Share Page <i class="fa fa-caret-down"></i>
+                                        <i class="fa fa-share-alt"></i> <i class="fa fa-caret-down"></i>
                                     </a>
-                                    <ul class="dropdown-menu">
+                                    <ul class="dropdown-menu" style="min-width: 1px">
                                         <li>
                                             <a data-original-title="Share on Facebook" data-placement="bottom" href="JavaScript:facebookPopup()">
                                                 <i class="fa fa-facebook-square fa-2x"></i>
@@ -150,7 +165,7 @@
                                             </a>
                                         </li>
                                         <li>
-                                            <a data-original-title="Share via Email" data-placement="bottom" href="mailto:?subject=Check out this Spudder page!&body=Check out this cool page I saw on Spudder: http:/{{ request.META.HTTP_HOST }}{{ request.get_full_path }}">
+                                            <a data-original-title="Share via Email" data-placement="bottom" href="mailto:?subject=Check out this Spudder page!&body=Check out this cool page I saw on Spudder: http://{{ request.META.HTTP_HOST }}{{ request.get_full_path }}">
                                             <i class="fa fa-envelope-square fa-2x"></i>
                                             </a>
                                         </li>
@@ -290,27 +305,35 @@
             });
 
         </script>
-        {% if user.is_authenticated %}
+{#        {% if user.is_authenticated %}#}
             <script type="text/javascript" src="//assets.zendesk.com/external/zenbox/v2.6/zenbox.js"></script>
             <style type="text/css" media="screen, projection">
               @import url(//assets.zendesk.com/external/zenbox/v2.6/zenbox.css);
-              #zenbox_tab {top: 80% !important;}
+              #zenbox_container{
+                  min-width: 100px;
+                  max-width: 615px;
+                  width: 75%;
+              }
+            #zenbox_body{
+                width: 100%;
+            }
             </style>
             <script type="text/javascript">
                 $(document).ready(function(){
                     if (typeof(Zenbox) !== "undefined") {
                         Zenbox.init({
-                            dropboxID:   "20173894",
+                            dropboxID:   "20176994",
                             url:     	"https://spudder.zendesk.com",
                             tabTooltip:  "Support",
                             tabImageURL: "https://p2.zdassets.com/external/zenbox/images/tab_support.png",
                             tabColor:	"#fb810b",
-                            tabPosition: "Left"
+                            tabPosition: "Left",
+                            hide_tab: true
                         });
                     }
                 });
             </script>
-        {% endif %}
+{#        {% endif %}#}
 
         {# Social Media sharing popups #}
         <script type="text/javascript">
@@ -343,11 +366,22 @@
           }
 
           function twitterPopup(){
-              window.open('http://twitter.com/intent/tweet?text=Check%20out%20this%20page%20' + url, 'popup', 'height=500, width=500, left=100, top-10, scrollbars=yes,toolbar=no,menubar=no');
+              if (window.twitterPopupText){
+                  console.log(window.twitterPopupText);
+                  window.open('http://twitter.com/intent/tweet?text=' + encodeURI(window.twitterPopupText) + ' ' + url, 'popup', 'height=500, width=500, left=100, top-10, scrollbars=yes,toolbar=no,menubar=no');
+              }
+              else{
+                  window.open('http://twitter.com/intent/tweet?text=Check%20out%20this%20page%20' + url, 'popup', 'height=500, width=500, left=100, top-10, scrollbars=yes,toolbar=no,menubar=no');
+              }
           }
 
           function googlePopup(){
               newPopup('https://plus.google.com/share?url=' + url);
+          }
+
+          function pinterestPopup(paramImage){
+              image = paramImage || {% if venue %} "http://{{ request.META.HTTP_HOST }}/file/serve/{{ venue.logo.id }}" {% else %} {% if school %} "http://{{ request.META.HTTP_HOST }}/file/serve/{{ school.logo.id }}" {% else %} '' {% endif %}{% endif %}
+              newPopup('http://pinterest.com/pin/create/button/?url=http://{{ request.META.HTTP_HOST }}{{ request.get_full_path }}&media=' + image);
           }
         </script>
         <script src="https://apis.google.com/js/client.js?onload=load"></script>

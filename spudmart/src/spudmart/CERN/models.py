@@ -108,6 +108,8 @@ class School(models.Model):
     mascot = models.CharField(max_length=32, null=True)
     logo = models.ForeignKey(UploadedFile, null=True)
     description = models.TextField(default='')
+    cover_image = models.ForeignKey(UploadedFile, null=True, related_name="school_cover_image")
+    full_address = models.CharField(max_length=200, null=True)
     
     def level(self):
         return get_max_triangle_num_less_than(self.get_rep() / SCHOOL_REP_LEVEL_MODIFIER)
@@ -194,6 +196,13 @@ class School(models.Model):
     def num_students(self):
         return len(self.get_students())
 
+    # def full_address(self):
+    #     if self._full_address:
+    #         return self._full_address
+    #     else:
+    #         return None
+    # <<Address or something >>
+
 
 class Student(models.Model):
     ''' A model for Student objects (Groundskeepers), which stores the standard Django 
@@ -230,6 +239,22 @@ class Student(models.Model):
     level_brag_social_media = models.BooleanField(default=False)
 
     info_messages_dismissed = models.TextField(blank=True, null=True)
+
+    logo = models.ForeignKey(UploadedFile, null=True, related_name="student_logo")
+    cover_image = models.ForeignKey(UploadedFile, null=True, related_name="student_cover_image")
+    display_name = models.CharField(max_length=200, blank=True, null=True)
+    append_points = models.BooleanField(default=False)
+
+    linkedin_link = models.CharField(max_length=200, blank=True, null=True)
+    facebook_link = models.CharField(max_length=200, blank=True, null=True)
+    twitter_link = models.CharField(max_length=200, blank=True, null=True)
+    google_link = models.CharField(max_length=200, blank=True, null=True)
+    instagram_link = models.CharField(max_length=200, blank=True, null=True)
+
+    on_qa_waitlist = models.BooleanField(default=False)
+    is_tester = models.BooleanField(default=False)
+    resume = models.TextField(null=True)
+    applied_qa = models.BooleanField(default=False)
 
     def __str__(self):
         something = str(self.user.username)
@@ -351,6 +376,7 @@ class Student(models.Model):
                           '?oauth2_access_token=%s' % self.linkedin_token)
         request.add_header('Content-Type', 'application/xml')
         request.add_data(data)
+        url = request.get_full_url()
 
         return urlopen(request).read()
 
@@ -418,7 +444,7 @@ class Student(models.Model):
 
         :return: the response from the LinkedIn Share API
         """
-        return self.brag("I just reached Level " + self.marketing_level() +
+        return self.brag("I just reached Level " + str(self.marketing_level()) +
                          " in Marketing for CERN on Spudder.")
 
     def brag_social_media_level(self):
@@ -427,8 +453,8 @@ class Student(models.Model):
 
         :return: the response from the LinkedIn Share API
         """
-        return self.brag("I just reached Level " + self.social_media_level() +
-                         "in Social Media PR for CERN on Spudder.")
+        return self.brag("I just reached Level " + str(self.social_media_level()) +
+                         " in Social Media PR for CERN on Spudder.")
 
 
 class Challenge(models.Model):

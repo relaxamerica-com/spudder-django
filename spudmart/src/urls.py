@@ -3,8 +3,6 @@ from django.conf.urls.defaults import *
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.views.generic import RedirectView
-from spudmart.CERN.models import Student
-from spudmart.venues.models import Venue
 
 handler404 = 'django.views.defaults.page_not_found'
 handler500 = 'djangotoolbox.errorviews.server_error'
@@ -50,12 +48,15 @@ urlpatterns = patterns(
     (r'^spudder/', include('spudmart.spudder.urls')),
     (r'^upload/', include('spudmart.upload.urls')),
     (r'^sponsor/', include('spudmart.sponsors.urls')),
+    (r'^fan/', include('spudmart.fans.urls')),
+    (r'^team/', include('spudmart.teams.urls')),
     (r'^hospitals/', include('spudmart.hospitals.urls')),
     (r'^file/serve/(?P<file_id>\d+)$', 'spudmart.upload.views.serve_uploaded_file'),
     (r'^api/1/', include('spudmart.api.urls')),
 
     url(r'^cern/', include('spudmart.CERN.urls')),
     url(r'^users/', include('spudderaccounts.urls')),
+    url(r'^flag/', include('spudmart.flags.urls')),
 
     # Spudder Admin site
     (r'^spudderadmin', include('spudderadmin.urls')),

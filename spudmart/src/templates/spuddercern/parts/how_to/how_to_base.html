@@ -1,0 +1,89 @@
+{% extends 'spuddercern/quote_messages/base_quote_message.html' %}
+
+{% block content %}
+
+    <ul class="nav nav-tabs how-to-nav nav-tabs-google">
+        <li class="{% block join-class %}{% endblock %}"><a openTab="#join">Apply</a></li>
+        <li class="{% block overview-class %}{% endblock %}"><a openTab="#overview">Overview</a></li>
+        <li><a openTab="#details">Details</a></li>
+        <li><a openTab="#walkthrough">Walkthrough</a></li>
+        <li><a openTab="#faq">Help</a></li>
+    </ul>
+
+    <div class="contents how-to-contents">
+        <div class="content" id="join" style="{% block join-style %}display:none{% endblock %}">
+            {% block join %}{% endblock %}
+        </div>
+        <div class="content" id="overview" style="{% block overview-style %}display:none{% endblock %}">
+            {% block overview %}{% endblock %}
+        </div>
+        <div class="content" id="details" style="display:none">
+            {% block details %}{% endblock %}
+        </div>
+        <div class="content" id="walkthrough" style="display:none">
+            {% block walkthrough %}{% endblock %}
+        </div>
+        <div class="content" id="faq" style="display:none">
+{#            {% block faq %}#}
+                <h4>Help and FAQ</h4>
+                <p>Check out our <a href="http://spudder.zendesk.com/hc/en-us">Help Center</a>.</p>
+                <div class="alert" style="display:none" id="send-message-alert"></div>
+                <p>Still need help? Send us a message:</p>
+                <form role="form">
+                    <div class="form-group">
+                        <textarea placeholder="Message content" name="message" class="form-control"></textarea>
+                    </div>
+                    <a class="btn btn-primary" id="send-message">Send Message</a>
+                </form>
+{#            {% endblock %}#}
+        </div>
+    </div>
+
+    {% block howto_js %}
+        <script type="text/javascript">
+            window.project = 'No Project Specified';
+
+            $('.how-to-nav a').click(function(){
+                if(!$(this).hasClass('active')) {
+                    var currentTab = $(this).attr('openTab');
+
+                    $('.alert').not('.alert-info').hide();
+
+                    $('.how-to-nav').find('.active').removeClass('active');
+
+                    hideHowTo($('.contents > div.content'));
+
+                    $(this).parent().addClass('active');
+
+                    showHowTo(currentTab);
+                }
+            });
+
+            function showHowTo(element) {
+                $('.contents > .active').removeClass('active');
+                $(element).addClass('active');
+                $(element).show();
+            }
+
+            function hideHowTo(elements) {
+                $.each(elements, function() {
+                    $(this).hide();
+                });
+            }
+
+            $('#send-message').click(function() {
+                var message = $('[name="message"]').val(),
+                    alert = $('#send-message-alert');
+
+                var response = $.post('/cern/student/{{ student.id }}/send_help_message', {
+                    'message' : message,
+                    'project' : window.project
+                });
+
+                response.done(function() {
+                    showAlert(alert, 'Message has been sent!', 'success', true)
+                });
+            });
+        </script>
+    {% endblock %}
+{% endblock %}

@@ -1,0 +1,112 @@
+{% extends 'spuddercern/parts/how_to/how_to_base.html' %}
+
+{# Display apply and make active only when student has not been accpeted #}
+{% block join-class %}{% if student.is_tester or student.on_qa_waitinglist %}hidden{% else %}active{% endif %}{% endblock %}
+{# Display join content div #}
+{% block join-style %}{% endblock %}
+
+{% block overview %}
+    {% if student.is_tester %}
+    <h4>Your Progress in QA Testing</h4>
+    <p><b><i>Alert! Filler text below!!</i></b></p>
+    <p>Here we can display a progress report for students involved in the project, with basic details.</p>
+    <p>My thinking is that we could have some stats like "total tasks completed" and such.</p>
+    {% else %}
+    <h4>Overview of QA Testing Project</h4>
+    <p>There are only a very limited number of people accepted as QA testers, because you will receive the hands on training of our Quality Assurance Manager. This will teach you to become a true <a href="http://www.indeed.com/jobs?q=Quality+Assurance&l=&radius=100">Quality Assurance Professional</a>.</p>
+    <p><b>How do I earn Points?</b> If accepted into the program there will be a listing of User Stories that you can choose to test. Each user story will have a set number of points that can be earned if you choose to test it. (See more about User Stories and testing in Details.)</p>
+    <p><b>Why do I want to earn Points?</b> CERN is <b>all about</b> earning points. CERN points determine the <a href="/cern/compensation">rate you earn</a> on CERN, they can be <a href="/cern/redeem_points">redeemed for cash</a>, and most important they <a href="/cern/after_college">improve your Linkedin Profile</a>.</p>    {% endif %}
+{% endblock %}
+
+{% block details %}
+    <h4>Details on QA Testing</h4>
+    <p><b>QA Testing</b> involves selecting a "user story" and taking “Screen Shots” of you acting as the user who performs the tasks described in the user story. You will learn to become a QA Professional by taking detailed notes about any <b>issues</b> you encounter when performing the task described in the user story that you choose.</p>
+    <p><b>What is a User Story?</b> - User stories are short, simple descriptions of a feature, that are told from the perspective of the person who wants to use the new feature, usually a user or customer of the system.</p>
+    <p>An example user story might be: <i>As a Student, I want to be able to Review a list of Available User Stories and their Points Value so that I can choose which ones I want to Test. - Value 100 PTs</i></p>
+    <p>See the Walkthrough tab for a video of someone actually testing a user story, so that you know exactly what to expect.</p>
+    <p>There are only a very limited number of people accepted as QA testers, because you will be able to receive the hands on training of our Quality assurance manager. This will teach you to become a true Quality Assurance Professional.</p>
+    <p><b>How can I use these skills after school?</b> <a href="http://www.indeed.com/jobs?q=Quality+Assurance&l=&radius=100">Search various QA Positions</a></p>
+{% endblock %}
+
+{% block walkthrough %}
+    <h4>Video Walkthroughs</h4>
+    <p><b><i>Alert! Filler text below!!</i></b></p>
+    <p>Here we would have some video walkthroughs. I'm imagining some links down the left hand side, and a video embedded on the right hand side. The video would switch to the corresponding video when you selected a different "task" from the left.</p>
+{% endblock %}
+
+{% block join %}
+    <h4>Apply to Join the QA Testing Project</h4>
+    <p><b>Rewards:</b> Every task for this project will be associated with a given number of points. If you complete the task to the best of your ability, we will award you those points. In return, these points will be redeemable for prizes.</p>
+    <p><b>Note:</b> The QA Testing project is more exclusive than other projects. To make sure that you will do a good job, we need to take a look at your resume. You can upload your resume on the "Apply" tab.</p>
+    <div class="alert" id="join-alert" style="margin-top:15px;display:none"></div>
+    {% if student.resume %}
+        {% if student.applied_qa %}<p>You have already applied to the QA testing program, but you can still update your resume below.</p>{% endif %}
+        <form role="form">
+            <div class="form-group">
+                <label>Edit Resume:</label>
+                <textarea class="form-control" placeholder="Your resume here" id="resume">{{ student.resume }}</textarea>
+            </div>
+        </form>
+    {% else %}
+        <p>To join the QA Testing project, copy and paste your resume into the text box below. Your resume can be edited later by returning to this page.</p>
+        <form role="form">
+            <div class="form-group">
+                <label>Resume:</label>
+                <textarea class="form-control" placeholder="Your resume here" id="resume"></textarea>
+            </div>
+        </form>
+    {% endif %}
+    <div class="btn-group">
+        <a class="btn btn-default {% if not student.resume %}hidden{% endif %}" id="remove-resume">Remove Resume</a>
+        <a class="btn btn-primary" id="save-resume">Save Resume</a>
+        <a class="btn btn-primary {% if student.applied_qa %}hidden{% endif %}" id="save-and-apply">Save and Apply Now</a>
+    </div>
+{% endblock %}
+
+{% block howto_js %}
+{{ block.super }}
+
+<script type="text/javascript">
+    window.project = "QA Testing";
+    $('#save-resume').click(function(){
+        var resume = $('#resume').val();
+
+        var response = $.post('/cern/student/{{ student.id }}/upload_resume', {
+                              'resume': resume
+                              });
+
+        response.done(function(){
+            showAlert($('#join-alert'), 'Your resume has been saved.', 'success', true);
+            $('#remove-resume').removeClass('hidden');
+        })
+    });
+
+    $('#save-and-apply').click(function(){
+        var resume = $('#resume').val();
+
+        if (resume == ""){
+            alert("Oops! You need to paste some text into the resume box to apply.")
+        } else{
+            var response = $.post('/cern/student/{{ student.id }}/upload_resume', {
+                                 'resume': resume
+                                  });
+
+            response.done(function(){
+                $.post('/cern/student/{{ student.id }}/apply_qa').done(function(){
+                    alert('Your resume has been received. We will inform you when your application has been accepted.');
+                    window.location.reload();
+                })
+            })
+        }
+    });
+
+    $('#remove-resume').click(function(){
+       if (confirm('This will permanently delete your resume, and remove your application to join the QA Testing project.')){
+           var response = $.post('/cern/student/{{ student.id }}/delete_resume');
+           response.done(function(){
+               window.location.reload();
+           })
+       }
+    });
+</script>
+{% endblock %}

@@ -15,6 +15,17 @@ urlpatterns = patterns(
     url(r'^testing/$', 'testing'),
     url(r'^mobile/$', 'mobile'),
 
+    # For student pages
+    url(r'^student/(?P<student_id>\d+)$', 'student_page'),
+    url(r'^student/(?P<student_id>\d+)/save_cover$', 'save_student_cover'),
+    url(r'^student/(?P<student_id>\d+)/reset_cover$', 'reset_student_cover'),
+    url(r'^student/(?P<student_id>\d+)/save_logo$', 'save_student_logo'),
+    url(r'^student/(?P<student_id>\d+)/save_social_media$', 'save_student_social_media'),
+    url(r'^student/(?P<student_id>\d+)/upload_resume$', 'upload_student_resume'),
+    url(r'^student/(?P<student_id>\d+)/apply_qa$', 'apply_qa'),
+    url(r'^student/(?P<student_id>\d+)/delete_resume$', 'delete_resume'),
+    url(r'^student/(?P<student_id>\d+)/send_help_message$', 'send_help_message'),
+
     # Functional URLs url(limited to POST requests)
     url(r'^add_email_alert/$', 'add_email_alert'),
     url(r'^save_short_url/$', 'save_short_url'),
@@ -28,10 +39,11 @@ urlpatterns = patterns(
     # This is a handler for the LinkedIn Response, and is limited to GETs
     url(r'^save_linkedin$', 'save_linkedin'),
 
-
     # Registration & school pages
     url(r'^(?P<school_id>\d+)/save_logo$', 'save_school_logo'),
     url(r'^(?P<school_id>\d+)/save$', 'save_school'),
+    url(r'^(?P<school_id>\d+)/save_school_cover$', 'save_school_cover'),
+    url(r'^(?P<school_id>\d+)/reset_school_cover$', 'reset_school_cover'),
     url(r'^(?P<school_id>\d+)/register/(?P<referral_id>.+)$', 'register_school',
         {'SSL': False if os.environ['SERVER_SOFTWARE'].startswith('Development') else True}),
     url(r'^(?P<school_id>\d+)/register/$', 'register_school',
@@ -51,7 +63,13 @@ urlpatterns = patterns(
     # Link for queue url(it's protected)
     url(r'^import_schools$', 'import_school_data'),
     url(r'^import_schools_async$', 'import_school_data_async'),
+    url(r'^import_school_addrs$', 'import_school_addrs'),
+    url(r'^import_school_addrs_async', 'import_school_addrs_async'),
 
     # Link for decorator error page
-    url(r'^non-student/$', 'user_not_student_error_page')
+    url(r'^non-student/$', 'user_not_student_error_page'),
+
+    url(r'^compensation$', 'compensation'),
+    url(r'^redeem_points$', 'redeem_points'),
+    url(r'^after_college$', 'after_college'),
 )

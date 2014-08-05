@@ -1,0 +1,9 @@
+{% extends 'spuddercern/quote_messages/base_quote_message.html' %}
+
+{% load accounts %}
+
+{% block content %}
+    <h4>Welcome to {% user_name student.user %}'s Student Page!</h4>
+
+    <p>Use the buttons above to navigate between the various CERN projects and find out how this student is involved in CERN!</p>
+{% endblock %}
