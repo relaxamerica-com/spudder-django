@@ -97,6 +97,3 @@ def sponsors_venues(request):
     return render(request, 'spuddersponsors/pages/dashboard_pages/venues.html', {
         'venues': venues
     })
-
-def helloci(_):
-    return HttpResponse('Hello Jenkins CI!')
