@@ -107,10 +107,13 @@ class LinkedServiceController(object):
     @classmethod
     def LinkedServiceByTypeAndID(cls, linked_service_type, unique_service_id, service_wrapper):
         try:
-            linked_service = LinkedService.objects.get(
+            linked_services = LinkedService.objects.filter(
                 service_type=linked_service_type,
                 unique_service_id=unique_service_id)
-            return service_wrapper(linked_service)
+            if len(linked_services): # TODO: I don't know how it should works, but it bombs me an error that there is 2 instances of LinkedService
+                return service_wrapper(linked_services[0])
+            else:
+                raise LinkedService.DoesNotExist
         except LinkedService.DoesNotExist:
             return None
 

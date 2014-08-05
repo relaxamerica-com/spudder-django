@@ -1,104 +1,367 @@
-{% extends 'spudderfans/pages/dashboard.html' %}
+{% extends 'spuddercern/public_page_base.html' %}
 
-{% block google_analytics_additions %}
-    ga('set', 'contentGroup1', 'FANS - FAN PAGE VIEW');
+{% load accounts %}
+{% load CERN %}
+
+{% block title %}
+    {% if page.username %}
+        {{ page.username }}
+    {% else %}
+        {% user_name page.fan %}
+    {% endif %}
 {% endblock %}
-
-{% block side_nav %}{% endblock side_nav %}
 
 {% block meta %}
-{{ block.super }}
-<meta property="og:title" content="{{ page.name }} | Spudder - Sports Updates Made Simple">
-<meta property="og:description" content="Check out this awesome sponsor: {{ page.name }}! Here is a business that gives back to the community. Let's all click here and support them!">
-{% if page.logo %} <meta property="og:image" content="http://{{ request.META.HTTP_HOST }}/file/serve/{{ page.logo.id }}">
-{% endif %}
+	{{ block.super }}
+	<meta property="og:title" content="{{ page.username }} | Spudder - Sports Updates Made Simple">
+	<meta property="og:description" content="Check out this awesome sponsor: {{ page.username }}! Here is a business that gives back to the community. Let's all click here and support them!">
+	{% if page.avatar %} <meta property="og:image" content="http://{{ request.META.HTTP_HOST }}/file/serve/{{ page.avatar.id }}">
+	{% endif %}
 {% endblock %}
 
-{% block dashboard_page %}
-    <div class="row">
-        <div class="col-sm-8">
-            <div class="post-heading">
-                <h3 class="team-name">
-                    {{ page.username }}
-                    
-                    <div class="pull-right">
-                	{% if page.facebook %}
-                		<a href="{{ page.facebook }}">
-                			<i class="fa fa-facebook"> </i>
-                		</a>
-                	{% endif %}
-                	{% if page.instagram %}
-                		<a href="{{ page.instagram }}">
-                			<i class="fa fa-instagram"> </i>
-                		</a>
-                	{% endif %}
-                	{% if page.google_plus %}
-                		<a href="{{ page.google_plus }}">
-                			<i class="fa fa-google-plus"> </i>
-                		</a>
-                	{% endif %}
-                	{% if page.twitter %}
-                		<a href="{{ page.twitter }}">
-                			<i class="fa fa-twitter"> </i>
-                		</a>
-                	{% endif %}
-                	{% if page.linkedin %}
-                		<a href="{{ page.linkedin }}">
-                			<i class="fa fa-linkedin"> </i>
-                		</a>
-                	{% endif %}
-                </div>
-                </h3>
+{% block favicon %}"/static/img/spuddercern/button-cern-tiny.png"{% endblock %}
+
+{% block cover_image %}
+    <div {% if not page.cover_image %}class="hidden"{% endif %} id="cover-image-container" style="text-align:center;">
+        <img src=/file/serve/{{ page.cover_image.id }} height="400px" />
+    </div>
+    <div {% if page.cover_image %}class="hidden"{% endif %} style="height:400px" id="jumbo-map-container"></div>
+    {% if can_edit %}
+    <div style="position:absolute; top:20px; right:20px;">
+        <button class="btn btn-primary" id="toggle-cover">Edit Cover Image</button>
+        <form role="form" style="display:none;background:rgba(255,255,255,.65);padding:5px" id="cover-form" class="pull-right">
+            <div class="form-group">
+                <input type="file" name="file" id="cover-upload" />
             </div>
-
-            <div id="fan-page-carousel" class="carousel slide" data-ride="carousel">
-                <!-- Wrapper for slides -->
-                <div class="carousel-inner">
-                    {% if page.images|length > 0 %}
-                        {% for image in page.images %}
-                            <div class="item {% if forloop.counter0 == 0 %}active{% endif %}">
-                                <img src="/file/serve/{{ image }}" />
-                            </div>
-                        {% endfor %}
-                    {% else %}
-                        <div class="item active">
-                            <img src="/static/img/spudderspuds/button-spuds-large.png" height="300px"/>
-                            <div class="carousel-caption">
-                                <div class="alert alert-info">
-                                    <h4>No images yet</h4>
-                                    <p>Stay tuned, there will soon be images for this fan!</p>
-                                </div>
-                            </div>
-                        </div>
-                    {% endif %}
-                </div>
-
-                <!-- Controls -->
-                <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
-                    <span class="icon-prev"></span>
-                </a>
-                <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
-                    <span class="icon-next"></span>
-                </a>
+            <div class="alert" style="display:none"></div>
+            <div class="btn-group">
+                <a class="btn btn-primary" id="upload-cover">Upload</a>
+                {% if page.cover_image %}<a class="btn btn-default" id="reset-cover">Reset to Default</a>{% endif %}
+                <a class="btn btn-default" id="cancel-cover">Cancel</a>
             </div>
+        </form>
+    </div>
+    {% endif %}
+{% endblock %}
 
-            <div class="top-wrapper">
-                <div class="offer-description">
-                    <p>{{ page.free_text }}</p>
-                </div>
+{% block cover_title %}
+    {% if page.avatar %}
+        <img id="student-logo" src="/file/serve/{{ page.avatar.id }}" height="100px" style="margin-top:10px" />
+    {% else %}
+        <img id="student-logo" src="/static/img/spuddercern/button-cern-medium.png"style="margin-top:10px" />
+    {% endif %}
+
+    <a href="#" title="Student Account"><img src="/static/img/spuddercern/button-cern-tiny.png" style="position:absolute;margin-top:-20px;left:0"></a>
+    <a href="#" title="Sponsor Account"><img src="/static/img/spuddersponsors/button-sponsors-tiny.png" style="position:absolute;margin-top:-20px;left:30px"></a>
+
+    <span id="display-name">
+        {% if page.username %}
+        	{{ page.username }}
+	    {% else %}
+	        {% user_name page.fan %}
+	    {% endif %}
+    </span>
+    <p style="font-size:25px">
+        <a href="{{ page.linkedin }}" title="LinkedIn Profile" {% if not page.linkedin %}class="hidden"{% endif %}><i class="fa fa-fw fa-linkedin-square" style="display:inline;"></i></a>
+        <a href="{{ page.facebook }}" title="Facebook Profile" {% if not page.facebook %}class="hidden"{% endif %}><i class="fa fa-fw fa-facebook-square" style="display:inline;"></i></a>
+        <a href="{{ page.twitter }}" title="Twitter Profile" {% if not page.twitter %}class="hidden"{% endif %}><i class="fa fa-fw fa-twitter-square" style="display:inline;"></i></a>
+        <a href="{{ page.google_plus }}" title="Google+ Profile" {% if not page.google_plus %}class="hidden"{% endif %}><i class="fa fa-fw fa-google-plus-square" style="display:inline;"></i></a>
+        <a href="{{ page.instagram }}" title="Instagram Profile" {% if not page.instagram %}class="hidden"{% endif %}><i class="fa fa-fw fa-instagram" style="display:inline;"></i></a>
+    </p>
+    {% if can_edit %}
+        <div class="pull-right" style="position:absolute; bottom: -20px; right: 10px;">
+            <div class="btn btn-primary" id="edit">
+                Edit Mode
             </div>
         </div>
+    {% endif %}
+{% endblock %}
 
-        <div class="col-sm-4" id="fan-page-details-container">
-            {% include 'spudderfans/parts/fan_page_details.html' %}
+{% block main_page %}
+    <div class="edit-mode well">
+        <h2>Edit Your Information</h2>
+        <form method="post" enctype="multipart/form-data" role="form">
+            <div class="form-group edit-mode">
+                <label>Upload a profile image (logo):</label>
+                <input type="file" name="avatar" id="logo-input" class="form-control" />
+            </div>
+
+            <div class="form-group">
+                <label>Display Name</label>
+                <br />
+                <span class="tips">Tip: This only changes the header of this page. Use the Roles Manager to change your global name.</span>
+                <input type="text" name="username" id="display-name-input" class="form-control" placeholder="{% user_name page.fan %}"/>
+            </div>
+
+            <div class="form-group">
+                <label>Append current score to display name:</label>
+                <input type="checkbox" style="position:absolute;margin-left:4px" id="append-points-input" />
+            </div>
+
+            <a class="btn btn-primary" id="save-logo"><i class="fa fa-save"></i> Save Basics</a>
+            <div class="alert" id="logo-name-alert" style="margin-top:10px"></div>
+
+            <h3>Social Media Links</h3>
+            <div class="form-group">
+                <label>LinkedIn Profile</label>
+                <br />
+                <span class="tips">Tip: Use your public profile link, so people don't have to be logged in to view it.</span>
+                <input type="url" id="linkedin" name="linkedin" placeholder="http://www.linkedin.com/pub/your-name/00/00" class="form-control"/>
+            </div>
+
+            <div class="form-group">
+                <label>Facebook Profile</label>
+                <input type="url" id="facebook" name="facebook" placeholder="http://www.facebook.com/user.name" class="form-control" />
+            </div>
+
+            <div class="form-group">
+                <label>Twitter Profile</label>
+                <input type="url" id="twitter" name="twitter" placeholder="http://twitter.com/username" class="form-control" />
+            </div>
+
+            <div class="form-group">
+                <label>Google+ Profile</label>
+                <input type="url" id="google_plus" name="google_plus" placeholder="http://plus.google.com/id-number" class="form-control"/>
+            </div>
+
+            <div class="form-group">
+                <label>Instagram Profile </label>
+                <input type="url" id="instagram" name="instagram" placeholder="http://instagram.com/username" class="form-control"/>
+            </div>
+
+            <a class="btn btn-primary" id="save-social-media"><i class="fa fa-save"></i> Save Social Media</a>
+            <div class="alert" id="social-media-alert" style="margin-top:10px"></div>
+        </form>
+    </div>
+
+    <div class="text-center" id="nav-btn-wrapper">
+        <div class="btn-group" style="margin: 0 auto;">
+        	WHAT TABS SHOULD BE HERE?
         </div>
     </div>
 
+    <div style="min-height: 362px; margin: 0 auto; width: 100%; vertical-align: middle; text-align: center; padding:15px;">
+
+        <hr />
+    </div>
+{% endblock %}
+
+{% block sidebar %}
+    <h3>About me</h3>
+    <p>{{ page.free_text }}</p>
 {% endblock %}
 
 {% block js %}
 {{ block.super }}
+<script type="text/javascript" src="/static/js/libs/jquery.serialize.file.js"></script>
 <script type="text/javascript">
-    window.twitterPopupText = "See the great Sports Updates that these fans have shared on their page!"
+    window.isEditMode = false;
+
+    $('.content').not('.active').hide();
+
+    $(document).ready(function(){
+        var editMode = $('.edit-mode'),
+	        viewMode = $('.view-mode');
+
+        $('.alert').each(function(i, alert) {
+           var $alert = $(alert);
+           if ($alert.html() == "")
+               $alert.hide();
+        });
+
+        $('#edit').click(function(){
+            if (window.isEditMode){
+                editMode.hide();
+                viewMode.show();
+                $(this).html('Edit Mode');
+                window.isEditMode = false;
+            } else{
+                viewMode.hide();
+                editMode.show();
+                $(this).html('Show Mode');
+                window.isEditMode = true;
+            }
+        });
+
+        $('#save-logo').click(function() {
+			var form = $(this).parents('form'),
+				files = $(form).serializeFiles(),
+				username = $('#display-name-input').val(),
+                alert = $('#logo-name-alert');
+
+            $.get('/upload/get_upload_url', function(data) {
+                $.ajax({
+                    url : data,
+                    data : files,
+                    cache : false,
+                    contentType : false,
+                    processData : false,
+                    type : 'POST',
+                    success : function(data) {
+                        var parsed = JSON.parse(data);
+                        var response = $.post('/fan/{{ page.id }}/save_avatar', {
+							'avatar' : parsed['uploaded_files'],
+                            'username': username
+                        });
+
+                        response.done(function(data) {
+                            if (parsed['uploaded_files'].length > 0){
+                                showAlert(alert, 'Your details have been saved (new logo uploaded).', 'success', true);
+                                $('#student-logo').attr('src', parsed['uploaded_files'][0]);
+                            } else {
+                                showAlert(alert, 'Your details have been saved.', 'success', true);
+                            }
+                            if (displayName != ""){
+                                $('#display-name').html(displayName);
+                            } else{
+                                $('#display-name').html("{% user_name page.fan %}");
+                            }
+                        });
+                    }
+                });
+            });
+		});
+
+        $('#save-social-media').click(function() {
+			var linkedin = $('#linkedin').val(),
+                facebook = $('#facebook').val(),
+                twitter = $('#twitter').val(),
+                google = $('#google_plus').val(),
+                instagram = $('#instagram').val(),
+                alert = $('#social-media-alert');
+
+            var response = $.post('/fan/{{ page.id }}/save_social_media', {
+                'linkedin': linkedin,
+                'facebook': facebook,
+                'twitter': twitter,
+                'google': google,
+                'instagram': instagram
+            });
+
+            response.done(function(){
+                if (linkedin != ""){
+                    link = $('.fa-linkedin-square').parent();
+                    link.attr('href', linkedin);
+                    link.removeClass('hidden');
+                }
+
+                if (facebook != ""){
+                    link = $('.fa-facebook-square').parent();
+                    link.attr('href', facebook);
+                    link.removeClass('hidden');
+                }
+
+                if (twitter != ""){
+                    link = $('.fa-twitter-square').parent();
+                    link.attr('href', twitter);
+                    link.removeClass('hidden');
+                }
+
+                if (google != ""){
+                    link = $('.fa-google-plus-square').parent();
+                    link.attr('href', google);
+                    link.removeClass('hidden');
+                }
+
+                if (instagram != ""){
+                    link = $('.fa-instagram').parent();
+                    link.attr('href', instagram);
+                    link.removeClass('hidden');
+                }
+
+                showAlert(alert, 'Social Media details have been saved.', 'success', true);
+            });
+
+
+		});
+
+        $('#toggle-cover').click(function(){
+            $(this).hide();
+            $('#cover-form').show();
+        });
+
+        $('#upload-cover').click(function(){
+            var form = $(this).parents('form'),
+                files = $(form).serializeFiles(),
+                alert = $(form).find('.alert');
+
+            $.get('/upload/get_upload_url', function(data) {
+                $.ajax({
+                    url : data,
+                    data : files,
+                    cache : false,
+                    contentType : false,
+                    processData : false,
+                    type : 'POST',
+                    success : function(data) {
+                        var parsed = JSON.parse(data);
+
+                        var response = $.post('/fan/{{ page.id }}/save_cover', {
+                            'cover' : parsed['uploaded_files']
+                        });
+
+                        response.done(function(data) {
+                            console.log('done');
+                            showAlert(alert, 'Image successfully uploaded.', 'success', true);
+                            $('#cover-image-container img').attr('src', parsed['uploaded_files'][0]);
+                            {% if not venue.cover_image %}
+                                $('#jumbo-map-container').addClass('hidden');
+                                $('#cover-image-container').removeClass('hidden');
+                            {% endif %}
+                        });
+                    }
+                });
+            });
+        });
+
+        $('#reset-cover').click(function(){
+            if (confirm('This will permanently delete your cover image!')){
+                var response = $.post('/fan/{{ page.id }}/reset_cover');
+
+                response.done(function(data){
+                    window.location.reload();
+                    return;
+                });
+            }
+        });
+
+        $('#cancel-cover').click(function(){
+            $('#cover-form').hide();
+            $('#toggle-cover').show();
+        });
+
+        $('#nav-btn-wrapper a').not('[title="School Page"]').click(function(){
+            if(!$(this).hasClass('active')) {
+                var currentTab = $(this).attr('openTab');
+
+                $('.alert').not('.alert-info').hide();
+
+                $('#nav-btn-wrapper').find('.active').removeClass('active');
+
+                hide($('.contents > div.content'));
+
+                $(this).addClass('active');
+
+                show(currentTab);
+            }
+        });
+
+        function show(element) {
+			$('.contents > .active').removeClass('active');
+			$(element).addClass('active');
+			$(element).show();
+		}
+
+		function hide(elements) {
+			$.each(elements, function() {
+				$(this).hide();
+			});
+		}
+    });
+</script>
+{{ block.super }}
+<script type="text/javascript">
+	window.twitterPopupText = "See the great Sports Updates that these fans have shared on their page!";
 </script>
 {% endblock %}
+

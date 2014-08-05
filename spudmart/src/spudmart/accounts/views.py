@@ -187,7 +187,7 @@ def _process_amazon_login(access_token, amazon_user_email, amazon_user_id, reque
         # If the account_type is fan, create a FanPage
         if account_type == 'fan':
             # Create fan
-            fan = FanPage(fan=user)
+            fan, _ = FanPage.objects.get_or_create(fan=user)
             fan.save()
 
             # Get the Role controller for the current user
@@ -408,6 +408,10 @@ def login_fake(request):
     amazon_user_name = "Test"
     amazon_user_email = "test@test.com"
     access_token = "someaccesstoken"
+    
+    fan_page, created = FanPage.objects.get_or_create(fan = request.user)
+    if created:
+        fan_page.save()
 
     return _process_amazon_login(access_token, amazon_user_email, amazon_user_id, request)
 

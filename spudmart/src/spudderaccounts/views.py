@@ -100,7 +100,7 @@ def accounts_create_role(request, entity_type):
 
 
 def accounts_create_password(request):
-    password_form = CreatePasswordForm(initial={'next_url': request.GET.get('next', request.current_role.home_page_path)})
+    password_form = CreatePasswordForm(initial={'next_url': request.GET.get('next', request.current_role.home_page_path if request.current_role else '/')})
     if request.method == 'POST':
         password_form = CreatePasswordForm(request.POST)
         if password_form.is_valid():

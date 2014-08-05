@@ -40,3 +40,14 @@ def remove_avatar(request):
     page.save()
     return HttpResponse('ok')
     
+def save_avatar(request):
+    pass
+
+def save_social_media(request):
+    pass
+
+def save_cover(request):
+    pass
+
+def reset_cover(request):
+    pass

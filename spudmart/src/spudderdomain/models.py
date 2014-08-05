@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.db import models
 from djangotoolbox.fields import DictField, ListField
 from spudmart.upload.models import UploadedFile
+from spudmart.venues.models import SPORTS
 
 
 class LinkedServiceTypeExistsForThisRole(Exception):
@@ -110,6 +111,7 @@ class FanPage(models.Model):
     name = models.CharField(max_length=255, blank=True)
     last_name = models.CharField(max_length=255, blank=True)
     avatar = models.ForeignKey(UploadedFile, blank=True, null=True)
+    cover_image = models.ForeignKey(UploadedFile, blank=True, null=True)
     free_text = models.CharField(max_length=1024, blank=True)
     date_of_birth = models.DateField(null=True, blank=True)
     phone = models.CharField(max_length=255, blank=True)
@@ -119,3 +121,13 @@ class FanPage(models.Model):
     google_plus = models.CharField(max_length=255, blank=True)
     instagram = models.CharField(max_length=255, blank=True)
     linkedin = models.CharField(max_length=255, blank=True)
+
+
+class TeamPage(models.Model):
+    admins = ListField(models.ForeignKey(User))
+    name = models.CharField(max_length=255)
+    location = models.CharField(max_length=255)
+    contact_details = models.CharField(max_length=255, blank=True)
+    free_text = models.CharField(max_length=255, blank=True)
+    sport = models.CharField(max_length=100)
+    image = models.ForeignKey(UploadedFile, null=True)

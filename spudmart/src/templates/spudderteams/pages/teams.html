@@ -1,0 +1,48 @@
+{% extends 'spudderfans/pages/dashboard.html' %}
+
+{% block google_analytics_additions %}
+    ga('set', 'contentGroup1', 'TEAMS - Teams');
+{% endblock %}
+
+{% block side_nav %}{% include 'spudderfans/parts/side_nav.html' with active="teams" %}{% endblock %}
+
+{% block dashboard_page %}
+    <div class="page-header">
+        <h1>
+            <i class="fa fa-fw fa-group"></i> Teams <small>Manage sponsored Teams!</small>
+        </h1>
+    </div>
+    {% if teams|length > 0 %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Sport</th>
+                    <th>Name</th>
+                    <th>Tag</th>
+                    <th style="width: 70px;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for team in teams %}
+                    <tr>
+                        <td>{{ team.sport }}</td>
+                        <td><a href="/team/page/{{ team.id }}">{{ team.name }}</a></td>
+                        <td>@{{ team.name }}</td>
+                        <td style="white-space: nowrap">
+                            <a class="btn btn-xs btn-primary" href="/team/page/{{ team.id }}" title="Edit">
+                                <i class="fa fa-fw fa-edit"> </i>
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <a href="/team/page/" class="btn btn-primary">
+            <i class="fa fa-fw fa-plus"></i> Claim another team!
+        </a>
+        
+    {% else %}
+        {% include 'spudderteams/parts/quote_teams_empty_list.html' %}
+    {% endif %}
+
+{% endblock %}

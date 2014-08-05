@@ -49,6 +49,7 @@ urlpatterns = patterns(
     (r'^upload/', include('spudmart.upload.urls')),
     (r'^sponsor/', include('spudmart.sponsors.urls')),
     (r'^fan/', include('spudmart.fans.urls')),
+    (r'^team/', include('spudmart.teams.urls')),
     (r'^hospitals/', include('spudmart.hospitals.urls')),
     (r'^file/serve/(?P<file_id>\d+)$', 'spudmart.upload.views.serve_uploaded_file'),
     (r'^api/1/', include('spudmart.api.urls')),
