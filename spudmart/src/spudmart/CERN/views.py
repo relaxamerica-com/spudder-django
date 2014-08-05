@@ -256,8 +256,11 @@ def display_cern(request):
     if request.user.is_authenticated():
         try:
             student = None
-            if request.current_role and request.current_role.entity_type == RoleController.ENTITY_STUDENT:
-                student = request.current_role.entity
+            if request.current_role:
+                if request.current_role.entity_type == RoleController.ENTITY_STUDENT:
+                    student = request.current_role.entity
+                else:
+                    return user_not_student_error_page
         except ObjectDoesNotExist:
             # In the future, we can create a custom "join spuddercern" page
             #  for existing users
