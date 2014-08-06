@@ -3,6 +3,7 @@ import abc
 from spudderdomain.controllers import RoleController, LinkedServiceController
 from spudderdomain.models import LinkedService
 from spudderdomain.wrappers import EntityBase, LinkedServiceBase
+import logging
 
 """
     Roles
@@ -180,9 +181,9 @@ class RoleFan(RoleBase):
     @property
     def _amazon_id(self):
         return LinkedService.objects.get(
-            role_id=self.entity.id,
-            role_type=self.entity_type,
-            service_type=LinkedServiceController.SERVICE_AMAZON).configuration.get('amazon_user_email')
+                role_id=self.entity.id,
+                role_type=self.entity_type,
+                service_type=LinkedServiceController.SERVICE_AMAZON).configuration.get('amazon_user_email')
 
     @property
     def entity_type(self):
@@ -193,14 +194,11 @@ class RoleFan(RoleBase):
         if self.entity.avatar:
             return '/file/serve/%s' % self.entity.avatar.id
 
-        return '/static/img/spuddercern/button-cern-small.png'
+        return '/static/img/spudderspuds/button-spuds-small.png'
 
     @property
     def title(self):
-        role_title = '<abbr title="Fan %s">Fan</abbr> on '
-        role_title += 'Spudder with Amazon ID %s' % self._amazon_id
-
-        return role_title
+        return '<abbr title="Fan %s">Fan</abbr> with Amazon ID: ' % (self.user, self._amazon_id)
 
     @property
     def subtitle(self):

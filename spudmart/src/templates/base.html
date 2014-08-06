@@ -78,6 +78,9 @@
                             {% if current_role and current_role|is_sponsor %}
                                 {% include 'spuddersponsors/parts/sponsors_menu.html' %}
                             {% endif %}
+                            {% if current_role and current_role|is_fan %}
+                                {% include 'spudderfans/parts/fans_menu.html' %}
+                            {% endif %}
                         {% endblock %}
                         {% block user_account_nav %}
                             {% if current_role %}

@@ -4,8 +4,6 @@
     ga('set', 'contentGroup1', 'FANS - FAN PAGE EDIT');
 {% endblock %}
 
-{% block side_nav %}{% include 'spudderfans/parts/side_nav.html' with active="fan-page" %}{% endblock %}
-
 {% block dashboard_page %}
     <div class="page-header">
         <h1>
@@ -14,14 +12,9 @@
     </div>
 
     <div class="row">
-        <div class="col-sm-8">
+        <div class="col-sm-12">
             <div class="edit-mode well" style="display: block;">
                 <form action="{{ upload_url }}" method="post" id="create-team-form" class="sponsor-page-form" enctype="multipart/form-data" role="form">
-                    <div class="form-group edit-mode edit-mode-fan" style="display: block;">
-                        <label>Username:</label>
-                        <span class="input-required">*required</span>
-                        <input name="username" id="username" class="form-control" value="{{form.username.value|default:"" }}"/>
-                    </div>
                     <div class="form-group edit-mode edit-mode-fan" style="display: block;">
                         <label>Name:</label>
                         <input  name="name" id="name" class="form-control" value="{{form.name.value|default:"" }}"/>
@@ -35,56 +28,9 @@
                         <input type="date" name="date_of_birth" id="date_of_birth" class="form-control" value="{{form.date_of_birth.value|default:"" }}" />
                     </div>
                     <div class="form-group">
-                        <label>Say something about yourself:</label>
-                        <textarea name="free_text" id="free_text" class="form-control">{{form.free_text.value|default:"" }}</textarea>
-                    </div>
-                    <div class="form-group">
-                        <label>Phone:</label>
-                        <input name="phone" id="phone" class="form-control" type="text" value="{{form.phone.value|default:"" }}" />
-                    </div>
-                    <div class="form-group">
                         <label>Email:</label>
                         <input id="email" name="email" type="email" class="form-control" placeholder="me@website.com"
-                               value="{{form.email.value|default:"" }}" />
-                    </div>
-                    <div class="form-group">
-                        <label>Instagram:</label>
-                        <input id="instagram" name="instagram" type="url" class="form-control" placeholder="http://instagram.com/your.name"
-                               value="{{form.instagram.value|default:"" }}" />
-                    </div>
-                    <div class="form-group">
-                        <label>Facebook:</label>
-                        <input id="facebook" name="facebook" type="url" class="form-control" placeholder="https://www.facebook.com/your.name"
-                               value="{{form.facebook.value|default:"" }}" />
-                    </div>
-                    <div class="form-group">
-                        <label>Twitter:</label>
-                        <input id="twitter" name="twitter" type="url" class="form-control" placeholder="http://www.twitter.com/your.name"
-                               value="{{form.twitter.value|default:"" }}" />
-                    </div>
-                    <div class="form-group">
-                        <label>Google+:</label>
-                        <input id="google_plus" name="google_plus" type="url" class="form-control" placeholder="https://plus.google.com/u/0/your.id"
-                               value="{{form.google_plus.value|default:"" }}" />
-                    </div>
-                    <div class="form-group">
-                        <label>LinkedIn:</label>
-                        <input id="linkedin" name="linkedin" type="url" class="form-control" placeholder="https://www.linkedin.com/company/company-name"
-                               value="{{form.linkedin.value|default:"" }}" />
-                    </div>
-                    <div class="form-group">
-                        <label>Avatar:</label>
-                        {% if page and page.avatar %}
-                            <div class="thumbnail" id="avatar-preview">
-                                <img src="/file/serve/{{ page.avatar.id }}" class="page-thumbail"/>
-                                <div class="remove-image-container">
-                                    <a href="javascript:void(0)" class="btn btn-small btn-danger">Remove</a>
-                                </div>
-                            </div>
-                        {% endif %}
-                        <div>
-                            <input type="file" id="file" name="file" class="form-control" accept="image/*" />
-                        </div>
+                               value="{{form.email.value|default:request.user.email }}" />
                     </div>
 
                     <button type="submit" class="btn btn-primary edit-mode" style="display: inline">Save</button>

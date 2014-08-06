@@ -10,12 +10,7 @@
 {% block body %}
     <div class="container-fluid">
         <div class="row">
-            <div class="col-md-2 hidden-xs hidden-sm">
-                <div class="list-group">
-                    {% block side_nav %}{% include 'spudderfans/parts/side_nav.html' with active="dashboard" %}{% endblock %}
-                </div>
-            </div>
-            <div class="col-md-10 col-sm-12">
+            <div class="col-md-8 col-md-offset-2 col-sm-12">
                 {% block dashboard_page %}
                     <div class="page-header">
                         <h1>

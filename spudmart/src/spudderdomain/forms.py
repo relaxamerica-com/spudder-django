@@ -5,7 +5,7 @@ from spudderdomain.models import FanPage, TeamPage
 class FanPageForm(ModelForm):
     class Meta:
         model = FanPage
-        exclude = ('fan', 'avatar')
+        exclude = ('fan', 'avatar', 'username')
         
         
 class TeamPageForm(ModelForm):

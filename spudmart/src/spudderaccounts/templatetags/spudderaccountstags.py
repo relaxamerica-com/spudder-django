@@ -21,11 +21,15 @@ def link_to_delete_role_and_return(context, role):
         role.entity_type, role.entity.id, context['request'].path)
 
 
-@register.filter(name='is_cern_student')
+@register.filter
 def is_cern_student(role):
     return role.entity_type == RoleController.ENTITY_STUDENT
 
 
-@register.filter(name='is_sponsor')
-def is_cern_student(role):
+@register.filter
+def is_sponsor(role):
     return role.entity_type == RoleController.ENTITY_SPONSOR
+
+@register.filter
+def is_fan(role):
+    return role.entity_type == RoleController.ENTITY_FAN
