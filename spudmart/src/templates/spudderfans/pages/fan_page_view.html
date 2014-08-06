@@ -1,4 +1,4 @@
-{% extends 'spuddercern/public_page_base.html' %}
+{% extends 'spudderfans/public_page_base.html' %}
 
 {% load accounts %}
 {% load CERN %}
@@ -48,7 +48,7 @@
     {% if page.avatar %}
         <img id="student-logo" src="/file/serve/{{ page.avatar.id }}" height="100px" style="margin-top:10px" />
     {% else %}
-        <img id="student-logo" src="/static/img/spuddercern/button-cern-medium.png"style="margin-top:10px" />
+        <img id="student-logo" src="/static/img/spudderspuds/button-spuds-medium.png" style="margin-top:10px" />
     {% endif %}
 
     <a href="#" title="Student Account"><img src="/static/img/spuddercern/button-cern-tiny.png" style="position:absolute;margin-top:-20px;left:0"></a>
@@ -134,21 +134,64 @@
         </form>
     </div>
 
-    <div class="text-center" id="nav-btn-wrapper">
-        <div class="btn-group" style="margin: 0 auto;">
-        	WHAT TABS SHOULD BE HERE?
-        </div>
+    <div class="row">
+    	<div class="col-md-9">
+			<div class="content active" id="spuds">
+                <div style="padding-bottom: 30px">
+                    <h4 style="margin-bottom: 0">My <abbr title="Sports Updates">SPUDS</abbr></h4>
+                    <p class="help-block">Here is a list of SPUDS I have created!</p>
+                </div>
+                <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+                    <!-- Wrapper for slides -->
+                    <div class="carousel-inner">
+                        {% if spuds|length > 0 %}
+                            {% for spud in spuds %}
+                                <div class="item {% if forloop.counter0 == 0 %}active{% endif %}">
+                                    <img src="{{ spud.target.json.media.0.raw.url }}" />
+                                    <div class="carousel-caption">
+                                        {{ spud.target.title }}
+
+                                        {% for tag in spud.target.usertext %}
+                                            <a href="#">{{ tag }}</a> &nbsp;
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                        <div class="item active">
+                            <img src="/static/img/spudderspuds/button-spuds-large.png" height="300px"/>
+                            <div class="carousel-caption">
+                                <div class="alert alert-info">
+                                    <h4>No SPUDS Yet</h4>
+                                    <p>Stay tuned, there will soon be SPUDS for this venue!</p>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Controls -->
+                    <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
+                        <span class="icon-prev"></span>
+                    </a>
+                    <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
+                        <span class="icon-next"></span>
+                    </a>
+                </div>
+            </div>
+    	</div>
+    	<div class="col-md-3">
+    		<div style="padding-bottom: 30px">
+                <h4 style="margin-bottom: 10px;">Who I follow</h4>
+                <ul class="nav nav-tabs" role="tablist">
+				  <li class="active"><a href="#"><i class="fa fa-group fa-2x"></i></a></li>
+				  <li><a href="#"><i class="fa fa-camera fa-2x"></i></a></li>
+				  <li><a href="#"><i class="fa fa-map-marker fa-2x"></i></a></li>
+				  <li><a href="#"><i class="fa fa-money fa-2x"></i></a></li>
+				</ul>
+            </div>
+    	</div>
     </div>
-
-    <div style="min-height: 362px; margin: 0 auto; width: 100%; vertical-align: middle; text-align: center; padding:15px;">
-
-        <hr />
-    </div>
-{% endblock %}
-
-{% block sidebar %}
-    <h3>About me</h3>
-    <p>{{ page.free_text }}</p>
 {% endblock %}
 
 {% block js %}
