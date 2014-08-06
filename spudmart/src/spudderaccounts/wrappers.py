@@ -198,7 +198,7 @@ class RoleFan(RoleBase):
 
     @property
     def title(self):
-        return '<abbr title="Fan %s">Fan</abbr> with Amazon ID: ' % (self.user, self._amazon_id)
+        return '<abbr title="Fan %s">Fan</abbr> with Amazon ID %s' % (self.user, self._amazon_id)
 
     @property
     def subtitle(self):
@@ -220,7 +220,7 @@ class RoleFan(RoleBase):
 
     @property
     def home_page_path(self):
-        return '/fan'
+        return '/fan/dashboard'
 
     def user_is_owner(self, user):
         return self.entity.fan == user

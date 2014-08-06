@@ -5,9 +5,9 @@ from spudderdomain.controllers import RoleController
 register = template.Library()
 
 
-@register.simple_tag(takes_context=True)
-def link_to_change_role_and_return(context, role):
-    return '%s?next=%s' % (change_role_url(role), context['request'].path)
+@register.simple_tag
+def link_to_change_role_and_return(role):
+    return '%s?next=%s' % (change_role_url(role), role.home_page_path)
 
 
 @register.simple_tag
