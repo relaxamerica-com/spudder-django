@@ -344,15 +344,15 @@
 
         {# Social Media sharing popups #}
         <script type="text/javascript">
-          var url = 'http://{{ request.META.HTTP_HOST }}{{ request.get_full_path }}'
+          var url = 'http://{{ request.META.HTTP_HOST }}{{ request.get_full_path }}';
 
           function sendRequest(){
               var request = gapi.client.urlshortener.url.insert({
-                  'resource': {'longUrl':url,},
-              })
+                  'resource': {'longUrl':url}
+              });
               request.execute(function(response){
                   this.url = response.id;
-              })
+              });
           }
 
           function load() {
