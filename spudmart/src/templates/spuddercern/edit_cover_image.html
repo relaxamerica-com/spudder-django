@@ -1,0 +1,66 @@
+{% extends 'spuddercern/base_large_well.html' %}
+
+{% load CERN %}
+
+{% block well_content %}
+    <div class="text-center">
+        <h4>Change Cover Image for {{ name }}</h4>
+        <p>A good image is about 3 times as wide as it is tall. We recommend a resolution of 1200px by 400px or greater.</p>
+        <p>Use the <b>Select Image to Upload</b> button to select an image. When it loads into the box below, you can use the + and - buttons to zoom in or out, and drag the image within the black box to get the correct position to crop. Only what is inside the black box will be preserved.</p>
+        <p>When the image has been cropped to your satisfaction, use the green button to save your changes. If you are satisfied with the image, you can then click "Save Cover Image" to save and return to your page.</p>
+        <a class="btn btn-default" id="select">Select Image to Upload</a>
+        <div id="croppic" style="width:600px;height:200px;position:relative;margin:20px auto;border-color:black"></div>
+        <div id="croppedURL" class="hidden"></div>
+        <div class="btn-group">
+            <a class="btn btn-primary" href="{{ return_url }}" title="Return to Page">Cancel Editing</a>
+            <a class="btn btn-primary" id="reset-cover">Reset to Default Image</a>
+            <a class="btn btn-primary" id="save-cover"> Save New Cover</a>
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+<link rel="stylesheet" href="/static/css/croppic.css">
+{{ block.super }}
+<script src="/static/js/libs/croppic.min.js"></script>
+<script type="text/javascript">
+    $.get('/upload/get_croppic_upload', function(data){
+        var croppicHeaderOptions = {
+            uploadUrl: data,
+            cropUrl:'/upload/croppic_crop',
+            customUploadButtonId:'select',
+            outputUrlId: 'croppedURL',
+            loaderHtml: '<div class="loader"><i class="fa fa-fw fa-spin fa-spinner" style="font-size:200px"></i></div>'
+        };
+            try{
+                window.croppic.destroy();
+            }
+            catch (TypeError){
+
+            }
+            window.croppic = new Croppic('croppic', croppicHeaderOptions);
+    });
+
+    $('#save-cover').click(function(){
+        var id = $('#croppedURL').val();
+        if (id == ""){
+            alert("Oops! You must hit the green button crop icon, after uploading an image, to confirm the image dimensions.")
+        } else{
+            $.post('{{ post_url }}',
+                {'id': id}).done(function() {
+                    alert('Cover image saved! You will now be redirected back to the page.');
+                    window.location.assign("{{ return_url }}");
+                })
+        }
+    });
+
+    $('#reset-cover').click(function(){
+        if (confirm('This will permanently delete your cover image!')){
+            $.post('{{ reset_url }}').done(function(){
+                alert('Your cover image has been reset. You will now be redirected back to the page.');
+                window.location.assign("{{ return_url }}");
+            })
+        }
+    })
+</script>
+{% endblock %}

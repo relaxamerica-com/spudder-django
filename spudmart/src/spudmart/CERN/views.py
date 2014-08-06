@@ -4,6 +4,7 @@ from urllib2 import urlopen
 from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect, HttpResponse, \
     HttpResponseNotAllowed, HttpResponseForbidden
+import simplejson
 from spudderdomain.controllers import RoleController
 from spudmart.upload.models import UploadedFile
 from spudmart.CERN.models import School, Student, STATES, MailingList
@@ -837,22 +838,21 @@ def auto_share_social_media_level(request):
     else:
         return HttpResponseNotAllowed(['POST'])
 
+
 def save_school_cover(request, school_id):
     """
     Saves a school's new cover image.
 
-    :param request: POST request containing uploaded image id
+    :param request: POST request containing image path (as
+        /file/serve/<id>?max_dim=600 )
     :param school_id: ID of the school
     :return: a blank HttpResponse on success
     """
-    school = School.objects.get(id=school_id)
-
-    request_cover = request.POST.getlist('cover[]')
-    cover_id = request_cover[0].split('/')[3]
-    cover = UploadedFile.objects.get(pk=cover_id)
-
-    school.cover_image = cover
-    school.save()
+    sch = School.objects.get(id=school_id)
+    id = request.POST['id'].split('/')[3][:-12]
+    uploaded_file = UploadedFile.objects.get(id=id)
+    sch.cover_image = uploaded_file
+    sch.save()
     return HttpResponse()
 
 
@@ -901,22 +901,21 @@ def student_page(request, student_id):
                   'top_five': all_referrals[:5]
                   })
 
+
 def save_student_cover(request, student_id):
     """
-    Saves student's cover image.
+    Saves a students's new cover image.
 
-    :param request: POST request containing reference to UploadedImage
-    :param student_id: ID of student who gets new image
-    :return: Empty HttpResponse on success
+    :param request: POST request containing image path (as
+        /file/serve/<id>?max_dim=600 )
+    :param school_id: ID of the student
+    :return: a blank HttpResponse on success
     """
-    student = Student.objects.get(id=student_id)
-
-    request_cover = request.POST.getlist('cover[]')
-    cover_id = request_cover[0].split('/')[3]
-    cover = UploadedFile.objects.get(pk=cover_id)
-
-    student.cover_image = cover
-    student.save()
+    stu = Student.objects.get(id=student_id)
+    id = request.POST['id'].split('/')[3][:-12]
+    uploaded_file = UploadedFile.objects.get(id=id)
+    stu.cover_image = uploaded_file
+    stu.save()
     return HttpResponse()
 
 
@@ -1101,3 +1100,40 @@ def import_school_addrs_async(request):
     add_school_address()
 
     return HttpResponse('OK')
+
+
+def edit_school_cover(request, school_id):
+    """
+    Edit cover template, customized for school
+    :param request: any request
+    :param school_id: valid ID of a school
+    :return: the edit_cover_image template, customized for the school
+    """
+    sch = School.objects.get(id=school_id)
+    return render(request,
+                  'spuddercern/edit_cover_image.html',
+                  {
+                    'name': sch.name,
+                    'return_url': "/cern/%s/%s/%s" %
+                    (sch.state, sch.id, strip_invalid_chars(sch.name)),
+                    'post_url': '/cern/%s/save_school_cover' % sch.id,
+                    'reset_url': '/cern/%s/reset_school_cover' % sch.id
+                  })
+
+
+def edit_student_cover(request, student_id):
+    """
+    Edit cover template, customized for student
+    :param request: any request
+    :param student_id: valid ID of a student
+    :return: the edit_cover_image template, customized for the student
+    """
+    stu = Student.objects.get(id=student_id)
+    return render(request,
+                  'spuddercern/edit_cover_image.html',
+                  {
+                    'name': 'Your Student Page',
+                    'return_url': "/cern/student/%s" % stu.id,
+                    'post_url': '/cern/student/%s/save_cover' % stu.id,
+                    'reset_url': '/cern/student/%s/reset_cover' % stu.id
+                  })

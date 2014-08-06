@@ -39,3 +39,7 @@ handlers:
 
 - url: /.*
   script: djangoappengine/main/main.py
+
+libraries:
+- name: PIL
+  version: latest

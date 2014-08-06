@@ -28,18 +28,7 @@
     <div {% if student.cover_image %}class="hidden"{% endif %} style="height:400px" id="jumbo-map-container"></div>
     {% if can_edit %}
     <div style="position:absolute; top:20px; right:20px;">
-        <button class="btn btn-primary" id="toggle-cover">Edit Cover Image</button>
-        <form role="form" style="display:none;background:rgba(255,255,255,.65);padding:5px" id="cover-form" class="pull-right">
-            <div class="form-group">
-                <input type="file" name="file" id="cover-upload" />
-            </div>
-            <div class="alert" style="display:none"></div>
-            <div class="btn-group">
-                <a class="btn btn-primary" id="upload-cover">Upload</a>
-                {% if student.cover_image %}<a class="btn btn-default" id="reset-cover">Reset to Default</a>{% endif %}
-                <a class="btn btn-default" id="cancel-cover">Cancel</a>
-            </div>
-        </form>
+        <a class="btn btn-primary" href="/cern/student/{{ student.id }}/edit_cover">Edit Cover Image</a>
     </div>
     {% endif %}
 {% endblock %}
@@ -398,61 +387,6 @@
 
 
 		});
-
-        $('#toggle-cover').click(function(){
-            $(this).hide();
-            $('#cover-form').show();
-        });
-
-        $('#upload-cover').click(function(){
-            var form = $(this).parents('form'),
-                files = $(form).serializeFiles(),
-                alert = $(form).find('.alert');
-
-            $.get('/upload/get_upload_url', function(data) {
-                $.ajax({
-                    url : data,
-                    data : files,
-                    cache : false,
-                    contentType : false,
-                    processData : false,
-                    type : 'POST',
-                    success : function(data) {
-                        var parsed = JSON.parse(data);
-
-                        var response = $.post('/cern/student/{{ student.id }}/save_cover', {
-                            'cover' : parsed['uploaded_files']
-                        });
-
-                        response.done(function(data) {
-                            console.log('done');
-                            showAlert(alert, 'Image successfully uploaded.', 'success', true);
-                            $('#cover-image-container img').attr('src', parsed['uploaded_files'][0])
-                            {% if not venue.cover_image %}
-                                $('#jumbo-map-container').addClass('hidden');
-                                $('#cover-image-container').removeClass('hidden');
-                            {% endif %}
-                        });
-                    }
-                });
-            });
-        });
-
-        $('#reset-cover').click(function(){
-            if (confirm('This will permanently delete your cover image!')){
-                var response = $.post('/cern/{{ school.id }}/reset_school_cover');
-
-                response.done(function(data){
-                    window.location.reload();
-                    return;
-                });
-            }
-        });
-
-        $('#cancel-cover').click(function(){
-            $('#cover-form').hide();
-            $('#toggle-cover').show();
-        });
 
         $('#nav-btn-wrapper a').not('[title="School Page"]').click(function(){
             if(!$(this).hasClass('active')) {

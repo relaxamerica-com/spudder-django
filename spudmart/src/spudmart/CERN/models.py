@@ -110,6 +110,7 @@ class School(models.Model):
     description = models.TextField(default='')
     cover_image = models.ForeignKey(UploadedFile, null=True, related_name="school_cover_image")
     full_address = models.CharField(max_length=200, null=True)
+
     
     def level(self):
         return get_max_triangle_num_less_than(self.get_rep() / SCHOOL_REP_LEVEL_MODIFIER)
