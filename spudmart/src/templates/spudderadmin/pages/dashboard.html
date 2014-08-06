@@ -1,0 +1,28 @@
+{% extends 'spudderadmin/base.html' %}
+
+{% block body %}
+
+    <div class="container">
+
+        <div class="alert alert-info">
+            <h4>Welcome to the Spudder Admin Console</h4>
+            <p>Choose one of the business areas below to begin managing the spudder universe.</p>
+        </div>
+
+        <div class="row">
+            <div class="col-md-3">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <div class="thumbnail">
+                            <img src="/static/img/spuddercern/button-cern-large.png"/>
+                            <div class="caption" style="text-align: center;">
+                                <h3>Manage CERN</h3>
+                                <a href="/spudderadmin/cern/" class="btn btn-primary">Manage CERN</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
