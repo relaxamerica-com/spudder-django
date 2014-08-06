@@ -264,7 +264,7 @@ def display_cern(request):
             return cern_splash(request)
         else:
             # check LinkedIn access token
-            if student.linkedin_token:
+            if student and student.linkedin_token:
                 if student.linkedin_expires < datetime.utcnow():
                     urlopen('https://www.linkedin.com/uas/oauth2/authorization' +
                             '?response_type=code' +
