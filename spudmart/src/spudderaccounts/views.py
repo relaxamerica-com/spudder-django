@@ -1,5 +1,5 @@
 from django.contrib import messages
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.shortcuts import render_to_response, redirect
@@ -117,6 +117,8 @@ def accounts_create_password(request):
 
 
 def accounts_signin_choose_account(request):
+    if request.user.is_authenticated():
+        logout(request)
     return render_to_response('spudderaccounts/pages/signin_choose_account.html', {
         'AMAZON_CLIENT_ID': settings.AMAZON_LOGIN_CLIENT_ID,
         'base_url': settings.SPUDMART_BASE_URL,

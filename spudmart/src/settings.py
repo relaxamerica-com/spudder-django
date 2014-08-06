@@ -185,6 +185,8 @@ shared_settings = {
         'amazon_login_client_id': 'amzn1.application-oa2-client.ee0b298ab0ce4be99ef0527da3c4820a',
         'linkedin_api_key': '',
         'linkedin_secret_key': '',
+        'instagram_client_id': '3888eac365f7468dabd5bf9ad06c8930',
+        'instagram_client_secret': 'b1bc01bf1a9944e2834288484f450ab2',
 
     },
     'spudder-live': {  #mg@metalayer.com

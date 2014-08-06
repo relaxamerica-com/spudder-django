@@ -283,7 +283,7 @@ def cern_splash(request):
 
 
 @login_required
-@user_passes_test(user_is_student, '/CERN/non-student/')
+@user_passes_test(user_is_student, '/cern/non-student/')
 def dashboard(request):
     """
     Displays the CERN dashboard/scoreboard,

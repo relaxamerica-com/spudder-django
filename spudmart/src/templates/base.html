@@ -47,15 +47,17 @@
                 <div class="navbar-collapse collapse">
                     <ul class="nav navbar-nav navbar-right">
                         {% block support_nav %}
-                            <li class="dropdown">
-                                <a class="dropdown-toggle" href="#" data-toggle="dropdown">
-                                    Support <i class="fa fa-caret-down"></i>
-                                </a>
-                                <ul class="dropdown-menu">
-                                    <li><a href="http://spudder.zendesk.com/account/dropboxes/20176994" onClick="Zenbox.show(); return false;">Support Ticket</a></li>
-                                    <li><a href="#" data-toggle="modal" data-target="#flag-modal" class="{% block flag-page-class %}hidden{% endblock %}">Flag Page</a></li>
-                                </ul>
-                            </li>
+                            {% if current_role %}
+                                <li class="dropdown">
+                                    <a class="dropdown-toggle" href="#" data-toggle="dropdown">
+                                        Support <i class="fa fa-caret-down"></i>
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li><a href="http://spudder.zendesk.com/account/dropboxes/20176994" onClick="Zenbox.show(); return false;">Support Ticket</a></li>
+                                        <li><a href="#" data-toggle="modal" data-target="#flag-modal" class="{% block flag-page-class %}hidden{% endblock %}">Flag Page</a></li>
+                                    </ul>
+                                </li>
+                            {% endif %}
                         {% endblock %}
                         {% block nav %}{% endblock %}
                         {% block current_role_nav %}
@@ -73,7 +75,6 @@
                                         <li><a href="/cern/design/"><i class="fa fa-fw fa-pencil"></i> Design</a></li>
                                         <li><a href="/cern/testing/"><i class="fa fa-fw fa-bug"></i> QA Testing</a></li>
                                         <li><a href="/cern/mobile/"><i class="fa fa-fw fa-mobile-phone"></i> Mobile App</a></li>
-                                        <li><a href="/accounts/logout?next=/cern/"><i class="fa fa-fw fa-power-off"></i> Logout</a></li>
                                     </ul>
                                 </li>
                             {% endif %}
@@ -142,6 +143,7 @@
                                                 </div>
                                             {% endif %}
                                         </li>
+                                        <li><a href="/accounts/logout?next=/"><i class="fa fa-fw fa-power-off"></i> Logout</a></li>
                                     </ul>
                                 </li>
                                 <li class="dropdown">
