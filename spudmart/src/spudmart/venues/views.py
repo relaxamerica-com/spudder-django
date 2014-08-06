@@ -158,11 +158,11 @@ def save_logo_and_name(request, venue_id):
     # If either name has been customized for the first time, add points
     request_name = request.POST['name']
     request_aka_name = request.POST['aka_name']
-    if venue.name == "Venue not yet Named":
-        if request_name != "Venue not yet Named":
+    if venue.name == "Venue yet to be Named":
+        if request_name != "Venue yet to be Named":
             added_basic_info(venue)
-    if venue.aka_name == "Venue not yet Named":
-        if request_aka_name != "Venue not yet Named":
+    if venue.aka_name == "Venue yet to be Named":
+        if request_aka_name != "Venue yet to be Named":
             added_basic_info(venue)
 
     # Update name(s)
