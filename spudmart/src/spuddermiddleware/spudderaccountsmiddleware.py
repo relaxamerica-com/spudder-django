@@ -1,5 +1,5 @@
 from django.shortcuts import redirect
-from spudderaccounts.utils import select_user_role_if_only_one_role_exists, select_all_user_roles
+from spudderaccounts.utils import select_user_role_if_only_one_role_exists, select_all_user_roles, change_current_role
 from spudderaccounts.wrappers import RoleBase
 from spudderdomain.controllers import RoleController
 
@@ -17,7 +17,7 @@ class RolesMiddleware:
                         'entity_type': one_ane_only_role.entity_type,
                         'entity_id': one_ane_only_role.entity.id}
             if current_role:
-                request.session['current_role'] = current_role
+                change_current_role(request, current_role['entity_type'], current_role['entity_id'])
                 current_role = role_controller.role_by_entity_type_and_entity_id(
                     current_role['entity_type'],
                     current_role['entity_id'],
@@ -42,4 +42,4 @@ class AccountPasswordMiddleware:
         if request.path != path and request.user and request.user.is_authenticated():
             spudder_user = request.user.spudder_user
             if spudder_user.needs_to_set_password and not spudder_user.has_set_password:
-                return redirect("%s?next=%s" % (path, request.path))
+                return redirect("%s?next=%s" % (path, request.get_full_path()))

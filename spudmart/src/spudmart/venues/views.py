@@ -21,7 +21,7 @@ from spudmart.CERN.rep import added_basic_info, added_photos, added_logo, \
                             added_video
 from spudmart.CERN.models import Student
 
-from spudderdomain.controllers import SpudsController
+from spudderdomain.controllers import SpudsController, RoleController
 from spudderkrowdio.models import KrowdIOStorage
 from spudderkrowdio.utils import get_user_mentions_activity, delete_spud
 import logging
@@ -408,6 +408,23 @@ def error(request, venue_id):
     })
 
 
+def _pending_rental_logic(request, venue):
+    pending_rental = PendingVenueRental(venue=venue)
+    pending_rental.save()
+
+    try:
+        pending_session_venues = request.session['pending_venues_rental']
+        pending_session_venues += ',' + str(pending_rental.id)
+    except KeyError:
+        pending_session_venues = str(pending_rental.id)
+
+    request.session['pending_venues_rental'] = pending_session_venues
+    state = DonationState.PENDING
+    redirect_to = '/venues/rent_venue/sign_in'
+
+    return redirect_to, state
+
+
 def rent_complete(request, venue_id):
     venue = get_object_or_404(Venue, pk = venue_id)
 
@@ -435,27 +452,22 @@ def rent_complete(request, venue_id):
             rent_venue.sender_token_id = request.GET.get('tokenID')
 
             if not request.user.is_authenticated():
-                pending_rental = PendingVenueRental(venue=venue)
-                pending_rental.save()
-
-                try:
-                    pending_session_venues = request.session['pending_venues_rental']
-                    pending_session_venues += ',' + str(pending_rental.id)
-                except KeyError:
-                    pending_session_venues = str(pending_rental.id)
-
-                request.session['pending_venues_rental'] = pending_session_venues
-
-                state = DonationState.PENDING
-                redirect_to = '/venues/rent_venue/sign_in'
+                redirect_to, state = _pending_rental_logic(request, venue)
+            elif request.current_role.entity_type is not RoleController.ENTITY_SPONSOR:
+                # We need to check if currently used role is a Sponsor, because users can rent Venues with different
+                # roles but already have the Sposnor role assigned, but not activated
+                redirect_to, state = _pending_rental_logic(request, venue)
             else:
-                state = DonationState.FINISHED
-                sponsor_page = SponsorPage.objects.get(sponsor=request.user)
-                venue.renter = sponsor_page
-                redirect_to = '/venues/rent_venue/%s/thanks' % venue.pk
-
-            venue.save()
-
+                try:
+                    state = DonationState.FINISHED
+                    sponsor_page = SponsorPage.objects.get(sponsor=request.user)
+                    venue.renter = sponsor_page
+                    venue.save()
+                    redirect_to = '/venues/rent_venue/%s/thanks' % venue.pk
+                except SponsorPage.DoesNotExist:
+                    # Missing Sponsor page means that in the past something went wrong while finalizing transaction
+                    # and Sponsor profile wasn't created. In that case the only way is to create Sponsor profile again.
+                    redirect_to, state = _pending_rental_logic(request, venue)
         except Exception, e:
             state = DonationState.TERMINATED
             rent_venue.status_code = AmazonActionStatus.SE
@@ -472,14 +484,7 @@ def rent_complete(request, venue_id):
     return HttpResponseRedirect(redirect_to)
 
 
-def rent_sign_in(request):
-    return render(request, 'spuddercern/pages/rent_venue_signin.html', {
-        'client_id': settings.AMAZON_LOGIN_CLIENT_ID,
-        'base_url': settings.SPUDMART_BASE_URL
-    })
-
-
-def rent_sign_in_complete(request):
+def _handle_sign_in_complete(request):
     try:
         pending_session_venues = request.session['pending_venues_rental']
     except KeyError:
@@ -488,12 +493,25 @@ def rent_sign_in_complete(request):
 
     # direct import so that testing framework can properly mock function
     from spudmart.venues.utils import finalize_pending_rentals as finalize
-    role = request.current_role
-    finalize(pending_session_venues, role)
+    finalize(pending_session_venues, request.current_role)
 
     del request.session['pending_venues_rental']
 
     return HttpResponseRedirect('/sponsor/page')
+
+
+def rent_sign_in(request):
+    if request.user.is_authenticated() and request.current_role.entity_type is RoleController.ENTITY_SPONSOR:
+        return _handle_sign_in_complete(request)
+
+    return render(request, 'spuddercern/pages/rent_venue_signin.html', {
+        'client_id': settings.AMAZON_LOGIN_CLIENT_ID,
+        'base_url': settings.SPUDMART_BASE_URL
+    })
+
+
+def rent_sign_in_complete(request):
+    return _handle_sign_in_complete(request)
 
 
 def rent_thanks(request, venue_id):

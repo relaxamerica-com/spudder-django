@@ -77,3 +77,7 @@ def create_linked_authentication_service(role, service_type, unique_service_id, 
         configuration,
         AuthenticationServiceBase.RoleWrapperByEntityType(service_type))
     return linked_service_wrapper
+
+
+def change_current_role(request, entity_type, entity_id):
+    request.session['current_role'] = {'entity_type': entity_type, 'entity_id': entity_id}

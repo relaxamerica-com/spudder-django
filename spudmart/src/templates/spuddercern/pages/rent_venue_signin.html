@@ -36,7 +36,7 @@
 
             if (loginWithAmazon) {
                 loginWithAmazon.onclick = function() {
-                    options = { scope : 'profile' };
+                    options = { scope : 'profile', interactive: 'always' };
                     amazon.Login.authorize(options, returnUrl);
                     return false;
                 };

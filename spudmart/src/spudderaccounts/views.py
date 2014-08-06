@@ -6,7 +6,7 @@ from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 import settings
 from spudderaccounts.forms import ProfileDetailsForm, CreatePasswordForm, SigninForm
-from spudderaccounts.utils import select_all_user_roles
+from spudderaccounts.utils import select_all_user_roles, change_current_role
 from spudderdomain.controllers import RoleController
 from spudderaccounts.wrappers import RoleBase
 
@@ -78,13 +78,15 @@ def accounts_delete_role(request, entity_type, entity_id):
 
 
 def accounts_activate_role(request, entity_type, entity_id):
-    # next_url = request.GET.get('next', None)
     role = RoleController.GetRoleForEntityTypeAndID(
         entity_type,
         entity_id,
         RoleBase.RoleWrapperByEntityType(entity_type))
-    next_url = role.home_page_path
-    request.session['current_role'] = {'entity_type': entity_type, 'entity_id': entity_id}
+    change_current_role(request, entity_type, entity_id)
+
+    next_url = request.GET.get('next', None)
+    if next_url is None:
+        next_url = role.home_page_path
     return redirect(next_url or '/users')
 
 

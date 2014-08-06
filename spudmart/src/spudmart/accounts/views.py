@@ -225,8 +225,9 @@ def _process_amazon_login(access_token, amazon_user_email, amazon_user_id, reque
         if user:
             django.contrib.auth.login(request, user)
         else:
-            return Http404
+            raise Http404
     logging.info('%s?next=%s',change_role_url(user_role),next_url)
+
     return redirect('%s?next=%s' % (
         change_role_url(user_role),
         next_url))
