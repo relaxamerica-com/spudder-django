@@ -9,41 +9,32 @@
 
 {% block body %}
     <div class="container-fluid">
-        <div class="row">
-            <div class="col-md-2 hidden-xs hidden-sm">
-                <div class="list-group">
-                    {% block side_nav %}{% include 'spudderfans/parts/side_nav.html' with active="dashboard" %}{% endblock %}
+        {% block dashboard_page %}
+            <div class="page-header">
+                <h1>
+                    <i class="fa fa-fw fa-bar-chart-o"></i> Dashboard <small>Monitor your Fan profile across all your Spudder assets</small>
+                </h1>
+            </div>
+
+            <div class="quote" data-id="dashboard">
+                <div class="alert alert-info" style="display: inline-block">
+                    <h4><i class="fa fa-fw fa-bullhorn"></i> What to do now?</h4>
+                    <p><b>Welcome to your Fan dashboard.</b> This is your control center for managing your Fan profile and any venues you fand!</p>
+                    <br/>
+                    <div class="hidden-xs hidden-sm">
+                        <i class="fa fa-hand-o-up fa-2x pull-left" style="position:relative; top:-5px;"></i>
+                        <p>You can use Fans Menu up to top to visit the various pages in your dashboard:</p>
+                    </div>
+                    <div class="hidden-md hidden-lg">
+                        <i class="fa fa-hand-o-up fa-2x  pull-right"></i>
+                        <p>You can use this button to bring down the menu and visit the various pages in your dashboard:</p>
+                    </div>
+                    <br/>
+                    <ul class="list-unstyled">
+                        <li><i class="fa fa-fw fa-asterisk"></i> Manage your fan profile on the <a href="/fan/page">Fan Page</a></li>
+                    </ul>
                 </div>
             </div>
-            <div class="col-md-10 col-sm-12">
-                {% block dashboard_page %}
-                    <div class="page-header">
-                        <h1>
-                            <i class="fa fa-fw fa-bar-chart-o"></i> Dashboard <small>Monitor your Fan profile across all your Spudder assets</small>
-                        </h1>
-                    </div>
-
-                    <div class="quote" data-id="dashboard">
-                        <div class="alert alert-info" style="display: inline-block">
-                            <h4><i class="fa fa-fw fa-bullhorn"></i> What to do now?</h4>
-                            <p><b>Welcome to your Fan dashboard.</b> This is your control center for managing your Fan profile and any venues you fand!</p>
-                            <br/>
-                            <div class="hidden-xs hidden-sm">
-                                <i class="fa fa-hand-o-left fa-2x pull-left" style="position:relative; top:-5px;"></i>
-                                <p>You can use the navigation on the left to visit the various pages in your dashboard:</p>
-                            </div>
-                            <div class="hidden-md hidden-lg">
-                                <i class="fa fa-hand-o-up fa-2x  pull-right"></i>
-                                <p>You can use this button to bring down the menu and visit the various pages in your dashboard:</p>
-                            </div>
-                            <br/>
-                            <ul class="list-unstyled">
-                                <li><i class="fa fa-fw fa-asterisk"></i> Manage your fan profile on the <a href="/fan/page">Fan Page</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                {% endblock %}
-            </div>
-        </div>
+        {% endblock %}
     </div>
 {% endblock %}

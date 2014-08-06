@@ -27,5 +27,10 @@ def is_cern_student(role):
 
 
 @register.filter(name='is_sponsor')
-def is_cern_student(role):
+def is_sponsor(role):
     return role.entity_type == RoleController.ENTITY_SPONSOR
+
+
+@register.filter(name='is_fan')
+def is_fan(role):
+    return role.entity_type == RoleController.ENTITY_FAN
