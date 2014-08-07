@@ -1,0 +1,27 @@
+{% extends 'spudderadmin/base.html' %}
+
+{% block body %}
+
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-3">
+                <div class="text-center">
+                    <h3>
+                        <span class="fa-stack" style="font-size: 53px;">
+                            <i class="fa fa-circle fa-stack-2x text-primary"></i>
+                            <i class="fa fa-cogs fa-stack-1x fa-inverse"></i>
+                        </span>
+                        Manage SocialEngine
+                    </h3>
+                </div>
+                <div class="list-group" style="margin-top: 20px;">
+                    {% block cern_nav %}{% endblock %}
+                </div>
+            </div>
+            <div class="col-sm-9">
+                {% block cern_body %}{% endblock %}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

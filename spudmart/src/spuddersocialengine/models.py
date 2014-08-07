@@ -9,6 +9,29 @@ class VenuesModel(models.Model):
     lat = models.CharField(max_length=20)
     lon = models.CharField(max_length=20)
 
+
+class SpudFromSocialMedia(models.Model):
+    STATE_NEW = '01'
+    STATE_REJECTED = '02'
+    STATE_ACCEPTED = '03'
+    STATE_CHOICES = (STATE_NEW, STATE_REJECTED, STATE_ACCEPTED, )
+
+    TYPE_IMAGE = '01'
+    TYPE_CHOICES = (TYPE_IMAGE, )
+
+    version = models.CharField(max_length=1, default='01')
+    entity_type = models.CharField(max_length=255)
+    entity_id = models.CharField(max_length=255)
+    originating_service = models.CharField(max_length=255)
+    unique_id_from_source = models.CharField(max_length=256)
+    state = models.CharField(max_length=2, choices=STATE_CHOICES)
+    type = models.CharField(max_length=2, choices=TYPE_CHOICES)
+    data = models.TextField()
+    created = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
+
+
+
 # Instagram Specific Models
 
 class InstagramDataProcessor(models.Model):
@@ -16,7 +39,10 @@ class InstagramDataProcessor(models.Model):
     data = models.TextField()
     processed = models.BooleanField(default=False)
     _created_time = models.IntegerField(null=True)
-    
+
+    # def __init__(self):
+    #     raise DeprecationWarning('this class is now depricated, please see usage of SpudFromSocialMedia')
+
     @property
     def created_time(self):
         if self._created_time:

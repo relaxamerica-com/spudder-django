@@ -171,8 +171,11 @@ def callback(request):
                     data = json.loads(get_instagram_callback_json_end_result(json_response_item['object_id']))
 
                     for data_item in data.get('data', []):
-                        process_item = InstagramDataProcessor(venue_id=venue_id, data=json.dumps(data_item), processed=False)
-                        process_item.save()
+                        spud = social_spud_from_instagram_update(data_item, venue_id)
+                        #
+                        #
+                        # process_item = InstagramDataProcessor(venue_id=venue_id, data=json.dumps(data_item), processed=False)
+                        # process_item.save()
 
 
                     # Create a new item for processing
@@ -213,6 +216,7 @@ Instagram Callback Task
 
 
 def callback_task(request):
+    raise DeprecationWarning('this code is now depricated as it relies on the depricated InstagramDataProcessor')
     logging.debug("SPICE: socialnetworks/instagram/callback_task started")
 
     spudmart_json = []
@@ -292,6 +296,7 @@ Manual Process Instagram Entries for each venue
 
 
 def manual_process_for_venue(venue_id):
+    raise DeprecationWarning('this code is now depricated as it relies on the depricated InstagramDataProcessor')
     logging.debug("SPICE: socialnetworks/instagram/process_for_venue started")
 
     if instagram_settings.instagram_auto_process_callback == False:
@@ -424,4 +429,39 @@ def deregister_venue(venue_id):
 
         # Delete
         subscription.delete()
+
+
+def social_spud_from_instagram_update(data, venue_id):
+    id = data.get('id', None)
+    if not id:
+        return None
+    type = data.get('type', None)
+    if type != "image":
+        return None
+    if SpudFromSocialMedia.objects.filter(unique_id_from_source=id, originating_service='INSTAGRAM').count():
+        return None
+    spud = SpudFromSocialMedia(
+        entity_type="VENUE",
+        entity_id=venue_id,
+        originating_service='INSTAGRAM',
+        unique_id_from_source=id,
+        state=SpudFromSocialMedia.STATE_NEW,
+        type=SpudFromSocialMedia.TYPE_IMAGE,
+        data=json.dumps({
+            'user': {
+                'username': data.get('user', {}).get('username', None),
+                'id': data.get('user', {}).get('id', None),
+                'profile_picture': data.get('user', {}).get('profile_picture', None)
+            },
+            'text': [data['caption']['text']] if data.get('caption', None) and 'text' in data['caption'] else [],
+            'image': {
+                'standard_resolution': {
+                    'url': data.get('images', {}).get('low_resolution', {}).get('url', None),
+                    'width': data.get('images', {}).get('low_resolution', {}).get('width', None),
+                    'height': data.get('images', {}).get('low_resolution', {}).get('height', None),
+                }
+            }
+        }))
+    spud.save()
+    return spud
 
