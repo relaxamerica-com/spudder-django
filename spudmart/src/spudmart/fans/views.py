@@ -1,12 +1,10 @@
-from django.contrib.auth.models import User
 from django.shortcuts import render, get_object_or_404
 from spudderdomain.models import FanPage
 from spudderdomain.forms import FanPageForm
-from spudmart.upload.forms import UploadForm
-from google.appengine.api import blobstore
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.decorators import login_required
 from spudmart.upload.models import UploadedFile
+from spudmart.utils.cover_image import save_cover_image_from_request, reset_cover_image
 
 
 @login_required
@@ -56,13 +54,6 @@ def fan_dashboard(request):
     return render(request, 'spudderfans/pages/dashboard.html')
 
 
-def remove_avatar(request):
-    page = FanPage.objects.get(fan = request.user)
-    page.avatar = None
-    page.save()
-    return HttpResponse('ok')
-
-
 def save_avatar(request, page_id):
     avatar_id = request.POST['avatar'].split('/')[3]
     avatar = get_object_or_404(UploadedFile, pk=avatar_id)
@@ -73,8 +64,27 @@ def save_avatar(request, page_id):
 
     return HttpResponse('ok')
 
-def save_cover(request):
-    pass
 
-def reset_cover(request):
-    pass
+def edit_cover(request, page_id):
+    page = get_object_or_404(FanPage, pk=page_id)
+
+    return render(request, 'components/coverimage/edit_cover_image.html', {
+        'name': 'Fan Page',
+        'return_url': "/fan/%s" % page.id,
+        'post_url': '/fan/%s/save_cover' % page.id,
+        'reset_url': '/fan/%s/reset_cover' % page.id
+    })
+
+
+def save_cover(request, page_id):
+    page = get_object_or_404(FanPage, pk=page_id)
+    save_cover_image_from_request(page, request)
+
+    return HttpResponse()
+
+
+def reset_cover(request, page_id):
+    page = get_object_or_404(FanPage, pk=page_id)
+    reset_cover_image(page)
+
+    return HttpResponse('OK')

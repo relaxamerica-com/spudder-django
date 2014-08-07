@@ -13,6 +13,7 @@ from django.utils.datastructures import MultiValueDictKeyError
 from spudmart.CERN.utils import import_schools, strip_invalid_chars, add_school_address
 from django.contrib.auth.decorators import login_required, user_passes_test
 from spudmart.CERN.rep import recruited_new_student, created_venue
+from spudmart.utils.cover_image import save_cover_image_from_request, reset_cover_image
 from spudmart.utils.queues import trigger_backend_task
 from spudmart.utils.url import get_return_url, get_request_param
 import settings
@@ -848,11 +849,9 @@ def save_school_cover(request, school_id):
     :param school_id: ID of the school
     :return: a blank HttpResponse on success
     """
-    sch = School.objects.get(id=school_id)
-    id = request.POST['id'].split('/')[3][:-12]
-    uploaded_file = UploadedFile.objects.get(id=id)
-    sch.cover_image = uploaded_file
-    sch.save()
+    school = School.objects.get(id=school_id)
+    save_cover_image_from_request(school, request)
+
     return HttpResponse()
 
 
@@ -864,9 +863,8 @@ def reset_school_cover(request, school_id):
     :return: a blank HttpResponse on success
     """
     school = School.objects.get(pk=school_id)
+    reset_cover_image(school)
 
-    school.cover_image = None
-    school.save()
     return HttpResponse()
 
 def student_page(request, student_id):
@@ -911,11 +909,9 @@ def save_student_cover(request, student_id):
     :param school_id: ID of the student
     :return: a blank HttpResponse on success
     """
-    stu = Student.objects.get(id=student_id)
-    id = request.POST['id'].split('/')[3][:-12]
-    uploaded_file = UploadedFile.objects.get(id=id)
-    stu.cover_image = uploaded_file
-    stu.save()
+    student = Student.objects.get(id=student_id)
+    save_cover_image_from_request(student, request)
+
     return HttpResponse()
 
 
@@ -927,9 +923,8 @@ def reset_student_cover(request, student_id):
     :return: a blank HttpResponse on success
     """
     student = Student.objects.get(pk=student_id)
+    reset_cover_image(student)
 
-    student.cover_image = None
-    student.save()
     return HttpResponse()
 
 
@@ -1110,15 +1105,13 @@ def edit_school_cover(request, school_id):
     :return: the edit_cover_image template, customized for the school
     """
     sch = School.objects.get(id=school_id)
-    return render(request,
-                  'spuddercern/edit_cover_image.html',
-                  {
-                    'name': sch.name,
-                    'return_url': "/cern/%s/%s/%s" %
-                    (sch.state, sch.id, strip_invalid_chars(sch.name)),
-                    'post_url': '/cern/%s/save_school_cover' % sch.id,
-                    'reset_url': '/cern/%s/reset_school_cover' % sch.id
-                  })
+    return render(request, 'components/coverimage/edit_cover_image.html', {
+        'name': sch.name,
+        'return_url': "/cern/%s/%s/%s" %
+                      (sch.state, sch.id, strip_invalid_chars(sch.name)),
+        'post_url': '/cern/%s/save_school_cover' % sch.id,
+        'reset_url': '/cern/%s/reset_school_cover' % sch.id
+    })
 
 
 def edit_student_cover(request, student_id):
@@ -1129,11 +1122,9 @@ def edit_student_cover(request, student_id):
     :return: the edit_cover_image template, customized for the student
     """
     stu = Student.objects.get(id=student_id)
-    return render(request,
-                  'spuddercern/edit_cover_image.html',
-                  {
-                    'name': 'Your Student Page',
-                    'return_url': "/cern/student/%s" % stu.id,
-                    'post_url': '/cern/student/%s/save_cover' % stu.id,
-                    'reset_url': '/cern/student/%s/reset_cover' % stu.id
-                  })
+    return render(request, 'components/coverimage/edit_cover_image.html', {
+        'name': 'Your Student Page',
+        'return_url': "/cern/student/%s" % stu.id,
+        'post_url': '/cern/student/%s/save_cover' % stu.id,
+        'reset_url': '/cern/student/%s/reset_cover' % stu.id
+    })

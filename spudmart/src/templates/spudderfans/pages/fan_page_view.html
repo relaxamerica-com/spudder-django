@@ -28,7 +28,7 @@
     <div {% if page.cover_image %}class="hidden"{% endif %} style="height:400px" id="jumbo-map-container"></div>
     {% if can_edit %}
     <div style="position:absolute; top:20px; right:20px;">
-        <a class="btn btn-primary" href="/fan/edit_cover/{{ page.id }}">Edit Cover Image</a>
+        <a class="btn btn-primary" href="/fan/{{ page.id }}/edit_cover">Edit Cover Image</a>
     </div>
     {% endif %}
 {% endblock %}

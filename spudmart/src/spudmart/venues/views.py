@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from django.template.loader import render_to_string
+from spudmart.utils.cover_image import reset_cover_image, save_cover_image_from_request
 from spudmart.utils.emails import send_email
 from spudmart.venues.models import Venue, SPORTS, PendingVenueRental
 from django.contrib.auth.models import User
@@ -616,26 +617,16 @@ def accept_instagram_media(request, venue_id):
 
 
 def save_cover(request, venue_id):
-    """
-    Saves a venue's new cover image.
+    venue = Venue.objects.get(id=venue_id)
+    save_cover_image_from_request(venue, request)
 
-    :param request: POST request containing image path (as
-        /file/serve/<id>?max_dim=600 )
-    :param venue_id: ID of the venue
-    :return: a blank HttpResponse on success
-    """
-    ven = Venue.objects.get(id=venue_id)
-    id = request.POST['id'].split('/')[3][:-12]
-    uploaded_file = UploadedFile.objects.get(id=id)
-    ven.cover_image = uploaded_file
-    ven.save()
     return HttpResponse()
+
 
 def reset_cover(request, venue_id):
     venue = Venue.objects.get(pk=venue_id)
+    reset_cover_image(venue)
 
-    venue.cover_image = None
-    venue.save()
     return HttpResponse('OK')
     
     
@@ -651,18 +642,11 @@ def delete_spud_endpoint(request, venue_id):
 
 
 def edit_cover(request, venue_id):
-    """
-    Edit cover template, customized for venue
-    :param request: any request
-    :param venue_id: valid ID of a venue
-    :return: the edit_cover_image template, customized for the venue
-    """
-    ven = Venue.objects.get(id=venue_id)
-    return render(request,
-                  'spuddercern/edit_cover_image.html',
-                  {
-                    'name': ven.aka_name,
-                    'return_url': "/venues/view/%s" % ven.id,
-                    'post_url': '/venues/save_cover/%s' % ven.id,
-                    'reset_url': '/venues/reset_cover/%s' % ven.id
-                  })
+    venue = Venue.objects.get(id=venue_id)
+
+    return render(request, 'components/coverimage/edit_cover_image.html', {
+        'name': venue.aka_name,
+        'return_url': "/venues/view/%s" % venue.id,
+        'post_url': '/venues/save_cover/%s' % venue.id,
+        'reset_url': '/venues/reset_cover/%s' % venue.id
+    })
