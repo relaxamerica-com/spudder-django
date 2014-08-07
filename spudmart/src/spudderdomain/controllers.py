@@ -1,4 +1,4 @@
-from spudderdomain.models import LinkedService, FanPage
+from spudderdomain.models import LinkedService, FanPage, TeamPage, TeamAdministrator
 from spudmart.CERN.models import Student
 from spudmart.sponsors.models import SponsorPage
 from spuddersocialengine.models import InstagramDataProcessor
@@ -127,6 +127,22 @@ class LinkedServiceController(object):
         if type_filters:
             all_linked_services = [s for s in all_linked_services if s.service_type in type_filters]
         return all_linked_services
+
+
+class TeamsController(object):
+
+    @classmethod
+    def CreateTeam(cls, role, **kwargs):
+        team = TeamPage(**kwargs)
+        team.save()
+        team_admin = TeamAdministrator(entity_type=role.entity_type, entity_id=role.entity.id, team_page=team)
+        team_admin.save()
+        return team
+
+    @classmethod
+    def TeamsAdministeredByRole(cls, role):
+        team_admins = TeamAdministrator.objects.filter(entity_type=role.entity_type, entity_id=role.entity.id)
+        return [ta.team_page for ta in team_admins]
     
 
 class SpudsController(object):

@@ -4,7 +4,7 @@ import datetime
 
 # Global Models
 
-class VenuesModel(models.Model) :
+class VenuesModel(models.Model):
     venue_id = models.CharField(max_length=20)
     lat = models.CharField(max_length=20)
     lon = models.CharField(max_length=20)

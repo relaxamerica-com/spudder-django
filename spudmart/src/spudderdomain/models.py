@@ -123,11 +123,22 @@ class FanPage(models.Model):
     linkedin = models.CharField(max_length=255, blank=True)
 
 
+class _TeamWithNameAlreadyExistsError(Exception):
+    pass
+
+
 class TeamPage(models.Model):
-    admins = ListField(models.ForeignKey(User))
     name = models.CharField(max_length=255)
-    location = models.CharField(max_length=255)
+    location = models.CharField(max_length=255, blank=True)
     contact_details = models.CharField(max_length=255, blank=True)
     free_text = models.CharField(max_length=255, blank=True)
     sport = models.CharField(max_length=100)
     image = models.ForeignKey(UploadedFile, null=True)
+
+    TeamWithNameAlreadyExistsError = _TeamWithNameAlreadyExistsError
+
+
+class TeamAdministrator(models.Model):
+    entity_type = models.CharField(max_length=255)
+    entity_id = models.CharField(max_length=255)
+    team_page = models.ForeignKey(TeamPage, related_name='team_administrator_team_page')
