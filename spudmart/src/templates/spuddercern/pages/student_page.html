@@ -22,10 +22,13 @@
 {% block favicon %}"/static/img/spuddercern/button-cern-tiny.png"{% endblock %}
 
 {% block cover_image %}
-    <div {% if not student.cover_image %}class="hidden"{% endif %} id="cover-image-container" style="text-align:center;">
-        <img src=/file/serve/{{ student.cover_image.id }} height="400px" />
-    </div>
-    <div {% if student.cover_image %}class="hidden"{% endif %} style="height:400px" id="jumbo-map-container"></div>
+    {% if student.cover_image %}
+        <div id="cover-image-container" style="text-align:center;">
+            <img src="/file/serve/{{ student.cover_image.id }}" class="jumbotron-img"/>
+        </div>
+    {% else %}
+        <div class="cern-jumbotron-default"></div>
+    {% endif %}
     {% if can_edit %}
     <div style="position:absolute; top:20px; right:20px;">
         <a class="btn btn-primary" href="/cern/student/{{ student.id }}/edit_cover">Edit Cover Image</a>
