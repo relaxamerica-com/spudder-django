@@ -1,7 +1,7 @@
 from spudderdomain.models import LinkedService, FanPage, TeamPage, TeamAdministrator
 from spudmart.CERN.models import Student
 from spudmart.sponsors.models import SponsorPage
-from spuddersocialengine.models import InstagramDataProcessor
+from spuddersocialengine.models import InstagramDataProcessor, SpudFromSocialMedia
 import logging
 import simplejson
 from spudmart.venues.models import Venue
@@ -151,20 +151,21 @@ class SpudsController(object):
         self.role = role
         self.venue_id = venue_id
 
-    def get_unapproved_spuds(self, time_range):
+    def get_unapproved_spuds(self, filters=None):
         """
         Gets any unapproved spuds linked to this role
 
         :return: Collection of Spuds
         """
-        
-        unapproved_spuds = {}
-        latest_instagram_data = InstagramDataProcessor.objects.filter(processed=True, venue_id=self.venue_id, _created_time__range=time_range)[:10]
-        for item in latest_instagram_data:
-            item.processed = True
-            item.save()
-            unapproved_spuds[item.id] = simplejson.loads(item.data)
-        
+
+        unapproved_spuds = dict((s.id, s) for s in SpudFromSocialMedia.objects.filter(
+            entity_id=self.venue_id, entity_type='VENUE').order_by('-created')[:100])
+        facets = {
+            'by_day': [
+                {'name': 'today', 'display_name': 'Posted today'}
+            ]
+        }
+
         return unapproved_spuds
 
 
