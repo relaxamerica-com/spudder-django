@@ -17,7 +17,7 @@ def admin_login_required(function):
     def wrap(request, *args, **kwargs):
 
         if not request.session.get(encoded_admin_session_variable_name(), False):
-            return redirect('admin_login')
+            return redirect('/spudderadmin')
         return function(request, *args, **kwargs)
 
         wrap.__doc__ = function.__doc__

@@ -7,6 +7,7 @@ urlpatterns = patterns(
     url(r'^/cern', 'cern_dashboard'),
     url(r'^/socialengine', 'socialengine_dashboard'),
     url(r'^/system/nukedb', 'system_nukedb'),
+    url(r'^/system/school_covers', 'system_remove_school_cover_images'),
     url(r'^/system', 'system_dashboard'),
     url(r'^', 'admin_login'),
 )

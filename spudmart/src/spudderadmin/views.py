@@ -12,7 +12,7 @@ from spudderadmin.utils import encoded_admin_session_variable_name
 from spudderdomain.models import FanPage, LinkedService, TeamAdministrator, TeamPage
 from spudderkrowdio.models import KrowdIOStorage
 from spuddersocialengine.models import SpudFromSocialMedia, InstagramDataProcessor
-from spudmart.CERN.models import Student
+from spudmart.CERN.models import Student, School
 from spudmart.donations.models import RentVenue
 from spudmart.recipients.models import VenueRecipient
 from spudmart.sponsors.models import SponsorPage
@@ -71,6 +71,18 @@ def system_dashboard(request):
 
 
 @admin_login_required
+def system_remove_school_cover_images(request):
+    if not settings.DEBUG:
+        raise Http404
+    for school in School.objects.all():
+        school.cover_image = None
+        school.save()
+        UploadedFile.objects.all().delete()
+    messages.success(request, 'Schools Reset')
+    return redirect('/spudderadmin/system')
+
+
+@admin_login_required
 def system_nukedb(request):
     if not settings.DEBUG:
         raise Http404
@@ -86,11 +98,10 @@ def system_nukedb(request):
     TeamAdministrator.objects.all().delete()
     TeamPage.objects.all().delete()
     KrowdIOStorage.objects.all().delete()
-    # InstagramDataProcessor.objects.all().delete()
-    SpudFromSocialMedia.objects.all().delete()
-    UploadedFile.objects.all().delete()
     PendingVenueRental.objects.all().delete()
     Venue.objects.all().delete()
+    # InstagramDataProcessor.objects.all().delete()
+    SpudFromSocialMedia.objects.all().delete()
     urllib2.urlopen(settings.SPUDMART_BASE_URL + "/socialengine/api/location_task?key=746fygf472f4o2ri")
 
     messages.success(request, 'NukeDB Done!!!!')
