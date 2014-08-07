@@ -9,23 +9,19 @@
 
 {% block body %}
     <div class="container-fluid">
-        <div class="row">
-            <div class="col-md-8 col-md-offset-2 col-sm-12">
-                {% block dashboard_page %}
-                    <div class="page-header">
-                        <h1>
-                            <i class="fa fa-fw fa-bar-chart-o"></i> Dashboard <small>Monitor your Fan profile across all your Spudder assets</small>
-                        </h1>
-                    </div>
-
-                    <div class="quote" data-id="dashboard">
-                        <div class="alert alert-info" style="display: inline-block">
-                            <h4><i class="fa fa-fw fa-bullhorn"></i> No SPUDS yet.</h4>
-                            <p><b>Welcome to your Fan dashboard.</b> Here should be a list of SPUDS you are following!</p>
-                        </div>
-                    </div>
-                {% endblock %}
+        {% block dashboard_page %}
+            <div class="page-header">
+                <h1>
+                    <i class="fa fa-fw fa-bar-chart-o"></i> Dashboard <small>Monitor your Fan profile across all your Spudder assets</small>
+                </h1>
             </div>
-        </div>
+
+            <div class="quote" data-id="dashboard">
+                <div class="alert alert-info" style="display: inline-block">
+                    <h4><i class="fa fa-fw fa-bullhorn"></i> No SPUDS yet.</h4>
+                    <p><b>Welcome to your Fan dashboard.</b> Here should be a list of SPUDS you are following!</p>
+                </div>
+            </div>
+        {% endblock %}
     </div>
 {% endblock %}

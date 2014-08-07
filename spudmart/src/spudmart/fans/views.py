@@ -4,30 +4,32 @@ from spudderdomain.forms import FanPageForm
 from spudmart.upload.forms import UploadForm
 from google.appengine.api import blobstore
 from django.http import HttpResponseRedirect, HttpResponse
-import logging
 from django.contrib.auth.decorators import login_required
+
 
 @login_required
 def fan_page(request):
-    page = FanPage.objects.get(fan = request.user)
+    page = FanPage.objects.get(fan=request.user)
+    form = FanPageForm(instance=page)
+    should_show_quote = not page.was_edited()
+
     if request.method == 'POST':
         form = FanPageForm(request.POST, instance=page)
-        page_model = form.save(False)
-        page_model.fan = request.user
-        if len(request.FILES) > 0:
-            avatar_form = UploadForm(request.POST, request.FILES)
-            avatar = avatar_form.save()
-            page_model.avatar = avatar
-        page_model.save()
-        return HttpResponseRedirect('/fan/page')
-    form = FanPageForm(instance=page)
-    logging.info(request.user)
-    return render(request, 'spudderfans/pages/fan_page_edit.html', 
-                  { 'form' : form, 
-                   'upload_url' : blobstore.create_upload_url('/fan/page'), 
-                   'page' : page,
-                   'can_edit' : request.user.is_authenticated() and request.user.id == page.fan.id,
-                   'spuds' : []  })
+        updated_page = form.save(False)
+        updated_page.fan = request.user
+        updated_page.save()
+
+        next_url = request.POST.get('next_url', None)
+        if not next_url:
+            next_url = '/fan/page'
+
+        return HttpResponseRedirect(next_url)
+
+    return render(request, 'spudderfans/pages/fan_page_edit.html', {
+        'form': form,
+        'page': page,
+        'should_show_quote': should_show_quote
+    })
 
 
 def view(request, page_id):

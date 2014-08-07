@@ -122,6 +122,9 @@ class FanPage(models.Model):
     instagram = models.CharField(max_length=255, blank=True)
     linkedin = models.CharField(max_length=255, blank=True)
 
+    def was_edited(self):
+        return self.email is not None and self.email != ""
+
 
 class _TeamWithNameAlreadyExistsError(Exception):
     pass
