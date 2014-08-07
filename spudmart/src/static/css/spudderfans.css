@@ -13790,3 +13790,9 @@ legend {
 input[type="file"] {
   display: block;
 }
+.fan-jumbotron-default {
+  background-image: url("/static/img/spudderspuds/button-spuds-large.png");
+  opacity: 0.2;
+  height: 100%;
+  background-size: 12%;
+}
