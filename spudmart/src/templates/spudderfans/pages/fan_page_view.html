@@ -14,12 +14,11 @@
 {% block meta %}
 	{{ block.super }}
 	<meta property="og:title" content="{{ page.username }} | Spudder - Sports Updates Made Simple">
-	<meta property="og:description" content="Check out this awesome sponsor: {{ page.username }}! Here is a business that gives back to the community. Let's all click here and support them!">
+	<meta property="og:description" content="Check out this super fan's page - {{ page.user }} - See the great Sports Updates they have shared!">
 	{% if page.avatar %} <meta property="og:image" content="http://{{ request.META.HTTP_HOST }}/file/serve/{{ page.avatar.id }}">
+        {% else %}<meta property="og:image" content="http://{{ request.META.HTTP_HOST }}/static/img/spudderfans/button-fans-large.png">
 	{% endif %}
 {% endblock %}
-
-{% block favicon %}"/static/img/spuddercern/button-cern-tiny.png"{% endblock %}
 
 {% block cover_image %}
     {% if page.cover_image %}
@@ -204,7 +203,7 @@
 </script>
 {{ block.super }}
 <script type="text/javascript">
-	window.twitterPopupText = "See the great Sports Updates that these fans have shared on their page!";
+	window.twitterPopupText = "See the great Sports Updates that this fan has shared on their page!";
 </script>
 {% endblock %}
 

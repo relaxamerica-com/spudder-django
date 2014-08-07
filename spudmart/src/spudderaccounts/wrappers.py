@@ -194,7 +194,7 @@ class RoleFan(RoleBase):
         if self.entity.avatar:
             return '/file/serve/%s' % self.entity.avatar.id
 
-        return '/static/img/spudderspuds/button-spuds-small.png'
+        return '/static/img/spudderfans/button-fans-small.png'
 
     @property
     def title(self):
