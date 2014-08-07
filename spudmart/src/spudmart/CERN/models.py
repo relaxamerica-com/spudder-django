@@ -72,6 +72,10 @@ STATES = {
         'WY': 'Wyoming'
 }
 
+STATUS_ACCEPTED = "accepted"
+STATUS_REJECTED = "rejected"
+STATUS_WAITLIST = "waitlist"
+
 
 def get_max_triangle_num_less_than(num, n=1):
     """ Calculates the largest triangle number less than num.
@@ -246,14 +250,13 @@ class Student(models.Model):
     display_name = models.CharField(max_length=200, blank=True, null=True)
     append_points = models.BooleanField(default=False)
 
-    linkedin_link = models.CharField(max_length=200, blank=True, null=True)
-    facebook_link = models.CharField(max_length=200, blank=True, null=True)
-    twitter_link = models.CharField(max_length=200, blank=True, null=True)
-    google_link = models.CharField(max_length=200, blank=True, null=True)
-    instagram_link = models.CharField(max_length=200, blank=True, null=True)
+    linkedin_link = models.CharField(max_length=200, null=True)
+    facebook_link = models.CharField(max_length=200, null=True)
+    twitter_link = models.CharField(max_length=200, null=True)
+    google_link = models.CharField(max_length=200, null=True)
+    instagram_link = models.CharField(max_length=200, null=True)
 
-    on_qa_waitlist = models.BooleanField(default=False)
-    is_tester = models.BooleanField(default=False)
+    _qa_status = models.CharField(max_length=8, null=True)
     resume = models.TextField(null=True)
     applied_qa = models.BooleanField(default=False)
 
@@ -456,6 +459,30 @@ class Student(models.Model):
         """
         return self.brag("I just reached Level " + str(self.social_media_level()) +
                          " in Social Media PR for CERN on Spudder.")
+
+    def on_qa_waitlist(self):
+        """
+        Boolean whether student is on QA wait list
+        :return: True or False
+        """
+        return self._qa_status == STATUS_WAITLIST
+
+    def is_tester(self):
+        """
+        Boolean whether student is tester
+        :return: True or False
+        """
+        return self._qa_status == STATUS_ACCEPTED
+
+    def qa_status(self):
+        """
+        Accessor for _qa_status variable
+        :return: a STATUS_ string, or False if no status
+        """
+        if self._qa_status:
+            return self._qa_status
+        else:
+            return False
 
 
 class Challenge(models.Model):

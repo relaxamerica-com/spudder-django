@@ -3,6 +3,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.http import Http404
+from django.http import HttpResponse, HttpResponseNotAllowed
 from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 from spudderaccounts.models import SpudderUser
@@ -18,6 +19,8 @@ from spudmart.recipients.models import VenueRecipient
 from spudmart.sponsors.models import SponsorPage
 from spudmart.upload.models import UploadedFile
 from spudmart.venues.models import PendingVenueRental, Venue
+from spudmart.CERN.models import Student, STATUS_ACCEPTED, STATUS_REJECTED, \
+    STATUS_WAITLIST
 
 
 def admin_login(request):
@@ -106,3 +109,92 @@ def system_nukedb(request):
 
     messages.success(request, 'NukeDB Done!!!!')
     return redirect('/spudderadmin/system')
+
+
+
+@admin_login_required
+def qa_job_board(request):
+    """
+    Displays the students who have applied to join the QA project
+
+    The admin can mass accept/reject students in this view; they see
+        the first 20 words of the student's resume (this is roughly two
+        lines of text
+
+    :param request: any request
+    :return:
+    """
+    students = []
+    for s in Student.objects.filter(applied_qa=True):
+        students.append(s)
+    return render_to_response('spudderadmin/pages/cern/qa_job_board.html',
+                              {'students': students})
+
+
+@admin_login_required
+def student_resume(request, student_id):
+    """
+    Displays the full resume for a given student.
+
+    Also allows the admin to accept/reject their QA application
+    :param request:
+    :param student_id:
+    :return:
+    """
+    stu = Student.objects.get(id=student_id)
+    return render_to_response('spudderadmin/pages/cern/resume.html',
+                              {'student': stu})
+
+
+def accept_student(request, student_id):
+    """
+    Accepts the student into the QA program.
+
+    :param request: a POST request
+    :param student_id: a valid student ID
+    :return: a blank HttpResponse on success, a HttpResponseNotAllowed
+        (code 403) if not a POST request
+    """
+    if request.method == "POST":
+        stu = Student.objects.get(id=student_id)
+        stu._qa_status = STATUS_ACCEPTED
+        stu.save()
+        return HttpResponse(stu._qa_status)
+    else:
+        return HttpResponseNotAllowed(['POST'])
+
+
+def reject_student(request, student_id):
+    """
+    Rejects the student from the QA program.
+
+    :param request: a POST request
+    :param student_id: a valid student ID
+    :return: a blank HttpResponse on success, a HttpResponseNotAllowed
+        (code 403) if not a POST request
+    """
+    if request.method == "POST":
+        stu = Student.objects.get(id=student_id)
+        stu._qa_status = STATUS_REJECTED
+        stu.save()
+        return HttpResponse(stu._qa_status)
+    else:
+        return HttpResponseNotAllowed(['POST'])
+
+
+def waitlist_student(request, student_id):
+    """
+    Put the student on the QA waitlist.
+
+    :param request: a POST request
+    :param student_id: a valid student ID
+    :return: a blank HttpResponse on success, a HttpResponseNotAllowed
+        (code 403) if not a POST request
+    """
+    if request.method == "POST":
+        stu = Student.objects.get(id=student_id)
+        stu._qa_status = STATUS_WAITLIST
+        stu.save()
+        return HttpResponse(stu._qa_status)
+    else:
+        return HttpResponseNotAllowed(['POST'])

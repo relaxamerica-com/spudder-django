@@ -35,32 +35,49 @@
 {% endblock %}
 
 {% block join %}
-    <h4>Apply to Join the QA Testing Project</h4>
-    <p><b>Rewards:</b> Every task for this project will be associated with a given number of points. If you complete the task to the best of your ability, we will award you those points. In return, these points will be redeemable for prizes.</p>
-    <p><b>Note:</b> The QA Testing project is more exclusive than other projects. To make sure that you will do a good job, we need to take a look at your resume. You can upload your resume on the "Apply" tab.</p>
-    <div class="alert" id="join-alert" style="margin-top:15px;display:none"></div>
-    {% if student.resume %}
-        {% if student.applied_qa %}<p>You have already applied to the QA testing program, but you can still update your resume below.</p>{% endif %}
-        <form role="form">
-            <div class="form-group">
-                <label>Edit Resume:</label>
-                <textarea class="form-control" placeholder="Your resume here" id="resume">{{ student.resume }}</textarea>
-            </div>
-        </form>
+    {% if student.qa_status %}
+        {% if student.is_tester %}
+            <h4>QA Testing Application Accepted!</h4>
+            <p>Congratulations! You have been accepted as a member of the QA Testing project!</p>
+            <p>Check back periodically to see when new tasks are available.</p>
+        {% else %}
+            {% if student.on_qa_waitlist %}
+                <h4>QA Testing Application Wait Listed</h4>
+                <p>Your resume shows that you would be a great addition to the QA Testing project. However, at this time, you have been waitlisted.</p>
+                <p>Check back here every so often, in case we gain room on in the project to accept you!</p>
+            {% else %}
+                <h4>QA Testing Application Reject</h4>
+                <p>We're sorry, you don't meet our requirements for joining the QA Testing project at this time.</p>
+            {% endif %}
+        {% endif %}
     {% else %}
-        <p>To join the QA Testing project, copy and paste your resume into the text box below. Your resume can be edited later by returning to this page.</p>
-        <form role="form">
-            <div class="form-group">
-                <label>Resume:</label>
-                <textarea class="form-control" placeholder="Your resume here" id="resume"></textarea>
-            </div>
-        </form>
+        <h4>Apply to Join the QA Testing Project</h4>
+        <p><b>Rewards:</b> Every task for this project will be associated with a given number of points. If you complete the task to the best of your ability, we will award you those points. In return, these points will be redeemable for prizes.</p>
+        <p><b>Note:</b> The QA Testing project is more exclusive than other projects. To make sure that you will do a good job, we need to take a look at your resume. You can upload your resume on the "Apply" tab.</p>
+        <div class="alert" id="join-alert" style="margin-top:15px;display:none"></div>
+        {% if student.resume %}
+            {% if student.applied_qa %}<p>You have already applied to the QA testing program, but you can still update your resume below.</p>{% endif %}
+            <form role="form">
+                <div class="form-group">
+                    <label>Edit Resume:</label>
+                    <textarea class="form-control" placeholder="Your resume here" id="resume">{{ student.resume }}</textarea>
+                </div>
+            </form>
+        {% else %}
+            <p>To join the QA Testing project, copy and paste your resume into the text box below. Your resume can be edited later by returning to this page.</p>
+            <form role="form">
+                <div class="form-group">
+                    <label>Resume:</label>
+                    <textarea class="form-control" placeholder="Your resume here" id="resume"></textarea>
+                </div>
+            </form>
+        {% endif %}
+        <div class="btn-group">
+            <a class="btn btn-default {% if not student.resume %}hidden{% endif %}" id="remove-resume"><i class="fa fa-fw fa-times"></i> Remove Resume</a>
+            <a class="btn btn-primary" id="save-resume"><i class="fa fa-fw fa-save"></i> Save Resume</a>
+            <a class="btn btn-primary {% if student.applied_qa %}hidden{% endif %}" id="save-and-apply"><i class="fa fa-fw fa-share-square-o"></i> Save and Apply Now</a>
+        </div>
     {% endif %}
-    <div class="btn-group">
-        <a class="btn btn-default {% if not student.resume %}hidden{% endif %}" id="remove-resume">Remove Resume</a>
-        <a class="btn btn-primary" id="save-resume">Save Resume</a>
-        <a class="btn btn-primary {% if student.applied_qa %}hidden{% endif %}" id="save-and-apply">Save and Apply Now</a>
-    </div>
 {% endblock %}
 
 {% block howto_js %}
@@ -69,20 +86,27 @@
 <script type="text/javascript">
     window.project = "QA Testing";
     $('#save-resume').click(function(){
-        var resume = $('#resume').val();
+        var resume = $('#resume').val(),
+            icon = $('.fa-save');
+
+        icon.removeClass('fa-save').addClass('fa-spin fa-spinner');
 
         var response = $.post('/cern/student/{{ student.id }}/upload_resume', {
                               'resume': resume
                               });
 
         response.done(function(){
+            icon.removeClass("fa-spin fa-spinner").addClass('fa-save');
             showAlert($('#join-alert'), 'Your resume has been saved.', 'success', true);
             $('#remove-resume').removeClass('hidden');
         })
     });
 
     $('#save-and-apply').click(function(){
-        var resume = $('#resume').val();
+        var resume = $('#resume').val(),
+            icon = $('.fa-share-square-o');
+
+        icon.removeClass('fa-share-square-o').addClass('fa-spin fa-spinner');
 
         if (resume == ""){
             alert("Oops! You need to paste some text into the resume box to apply.")
@@ -93,6 +117,7 @@
 
             response.done(function(){
                 $.post('/cern/student/{{ student.id }}/apply_qa').done(function(){
+                    icon.removeClass('fa-spin fa-spinner').addClass('fa-share-square-o');
                     alert('Your resume has been received. We will inform you when your application has been accepted.');
                     window.location.reload();
                 })

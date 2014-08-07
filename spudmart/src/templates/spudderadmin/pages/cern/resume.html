@@ -1,0 +1,63 @@
+{% extends 'spudderadmin/pages/cern/_cern_base.html' %}
+
+{% load accounts %}
+
+{% block cern_nav %}
+    {% include 'spudderadmin/pages/cern/sidenav.html' with active="qa_job_board" %}
+{% endblock %}
+
+{% block cern_body %}
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <div class="panel-title">
+                <h4>Resume for {% user_name student.user %}</h4>
+            </div>
+            <div class="panel-body">
+                <div class="resume">
+                    {{ student.resume|linebreaksbr }}
+                </div>
+                <div class="text-center" id="status">
+                    {% if student.qa_status %}
+                        {% if student.is_tester %}
+                            <button class="btn btn-success" disabled>Student is Accepted</button>
+                        {% else %}
+                            {% if student.on_qa_waitlist %}
+                                <button class="btn btn-info" disabled>Student is on Waitlist</button>
+                            {% else %}
+                                <button class="btn btn-danger" disabled>Student is Rejected</button>
+                            {% endif %}
+                        {% endif %}
+                    {% else %}
+                        <div class="btn-group">
+                            <a class="btn btn-danger reject"><i class="fa fa-fw fa-times"></i> Reject</a>
+                            <a class="btn btn-info waitlist"><i class="fa fa-fw fa-ellipsis-h"></i> Waitlist</a>
+                            <a class="btn btn-success accept"><i class="fa fa-fw fa-check"></i> Accept</a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+{{ block.super }}
+<script type="text/javascript">
+    $('.reject').click(function(){
+        if(confirm('This will reject the student from the QA program.')){
+            $.post('/spudderadmin/cern/student/{{ student.id }}/reject')//.done(window.location.reload());
+        }
+    });
+    $('.waitlist').click(function(){
+        if(confirm('This will put the student on the QA waitlist.')){
+            $.post('/spudderadmin/cern/student/{{ student.id }}/waitlist')//.done(window.location.reload());
+        }
+    });
+    $('.accept').click(function(){
+        if(confirm('This will accept the student into the QA program.')){
+            $.post('/spudderadmin/cern/student/{{ student.id }}/accept')//.done(window.location.reload());
+        }
+    });
+</script>
+{% endblock %}
