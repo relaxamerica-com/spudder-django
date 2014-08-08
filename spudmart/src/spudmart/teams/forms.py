@@ -11,7 +11,7 @@ class CreateTeamForm(forms.Form):
                   'addresses here!')
     free_text = forms.CharField(max_length=255, help_text='Say something about your team!')
     sport = forms.ChoiceField(choices=[('%s' % x, SPORTS[x]) for x in range(len(SPORTS))])
-    file = forms.FileField(required=False)
+    file = forms.FileField(required=False, label="Image")
 
     def clean(self):
         cleaned_data = super(CreateTeamForm, self).clean()

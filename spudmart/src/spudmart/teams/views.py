@@ -21,7 +21,10 @@ def create_team(request):
         form = CreateTeamForm(request.POST)
         if form.is_valid():
             image_form = UploadForm(request.POST, request.FILES)
-            image = image_form.save()
+            image = None
+            if image_form.is_valid():
+                image = image_form.save()
+
             team = TeamsController.CreateTeam(
                 request.current_role,
                 name=form.cleaned_data.get('team_name'),

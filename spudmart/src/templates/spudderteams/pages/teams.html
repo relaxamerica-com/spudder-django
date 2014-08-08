@@ -24,7 +24,7 @@
                 {% for team in teams %}
                     <tr>
                         <td>{{ team.sport }}</td>
-                        <td><a href="/team/page/{{ team.id }}">{{ team.name }}</a></td>
+                        <td><a href="/team/{{ team.id }}">{{ team.name }}</a></td>
                         <td>@{{ team.name }}</td>
                         <td style="white-space: nowrap">
                             <a class="btn btn-xs btn-primary" href="/team/page/{{ team.id }}" title="Edit">
@@ -36,7 +36,7 @@
             </tbody>
         </table>
         <a href="/team/create/" class="btn btn-primary">
-            <i class="fa fa-fw fa-plus"></i> Claim another team!
+            <i class="fa fa-fw fa-plus"></i> Create another team!
         </a>
         
     {% else %}
