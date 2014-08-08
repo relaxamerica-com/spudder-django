@@ -4,7 +4,8 @@
     </a>
     <ul class="dropdown-menu">
         <li><a href="/sponsor/"><i class="fa fa-fw fa-bar-chart-o"></i> Dashboard</a></li>
-        <li><a href="/sponsor/page"><i class="fa fa-fw fa-pencil"></i> Sponsor Page</a></li>
+        <li><a href="/sponsor/page"><i class="fa fa-fw fa-pencil"></i> Edit Sponsor Page</a></li>
+        <li><a href="/sponsor/{{ request.current_role.entity.id }}"><i class="fa fa-fw fa-search-plus"></i> Sponsor Page Preview</a></li>
         <li><a href="/sponsor/venues/"><i class="fa fa-fw fa-map-marker"></i> Venues</a></li>
     </ul>
 </li>

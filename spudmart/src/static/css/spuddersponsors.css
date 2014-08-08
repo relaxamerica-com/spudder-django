@@ -13760,7 +13760,7 @@ legend {
     height: 400px;
   }
 }
-.school-jumbotron-default {
+.cern-jumbotron-default {
   background-image: url("/static/img/spuddercern/button-cern-large.png");
   opacity: 0.2;
   height: 100%;
