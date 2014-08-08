@@ -1,3 +1,5 @@
+import settings
+from google.appengine.api import mail
 import urllib2
 from django.conf import settings
 from django.contrib import messages
@@ -152,8 +154,8 @@ def accept_student(request, student_id):
 
     :param request: a POST request
     :param student_id: a valid student ID
-    :return: a blank HttpResponse on success, a HttpResponseNotAllowed
-        (code 403) if not a POST request
+    :return: the updated qa status on success, or HttpResponseNotAllowed
+        (code 405) if not a POST request
     """
     if request.method == "POST":
         stu = Student.objects.get(id=student_id)
@@ -170,8 +172,8 @@ def reject_student(request, student_id):
 
     :param request: a POST request
     :param student_id: a valid student ID
-    :return: a blank HttpResponse on success, a HttpResponseNotAllowed
-        (code 403) if not a POST request
+    :return: the updated qa status on success, or HttpResponseNotAllowed
+        (code 405) if not a POST request
     """
     if request.method == "POST":
         stu = Student.objects.get(id=student_id)
@@ -188,8 +190,8 @@ def waitlist_student(request, student_id):
 
     :param request: a POST request
     :param student_id: a valid student ID
-    :return: a blank HttpResponse on success, a HttpResponseNotAllowed
-        (code 403) if not a POST request
+    :return: the updated qa status on success, or HttpResponseNotAllowed
+        (code 405) if not a POST request
     """
     if request.method == "POST":
         stu = Student.objects.get(id=student_id)
@@ -198,3 +200,35 @@ def waitlist_student(request, student_id):
         return HttpResponse(stu._qa_status)
     else:
         return HttpResponseNotAllowed(['POST'])
+
+
+def send_email(request):
+    """
+    Sends message to email (supplied in request)
+    :param request: a POST request containing message body and subject,
+        plus address toe mail to
+    :return: a blank HttpResponse on success, or HttpResponseNotAllowed
+        (ode 405) if not a POST request
+    """
+    if request.method == "POST":
+        body = request.POST.get('message', '')
+        to = [request.POST.get('email', '')]
+        subject = request.POST.get('subject', '')
+        sender = settings.SUPPORT_EMAIL
+
+        mail.send_mail(subject=subject, body=body, sender=sender, to=to)
+        return HttpResponse()
+    else:
+        return HttpResponseNotAllowed(['POST'])
+
+@admin_login_required
+def send_student_email(request, student_id):
+    """
+    Allows admin to compose an email to the student
+    :param request: any request
+    :param student_id: a valid Student ID
+    :return: send_student_email template customized for this student
+    """
+    stu = Student.objects.get(id=student_id)
+    return render_to_response('spudderadmin/pages/cern/send_student_email.html',
+        {'student': stu})

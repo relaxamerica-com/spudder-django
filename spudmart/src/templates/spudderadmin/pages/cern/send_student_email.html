@@ -1,0 +1,57 @@
+{% extends 'spudderadmin/base_single_well.html' %}
+
+{% load accounts %}
+{% load CERN %}
+
+{% block well_content %}
+    <h4>Compose Email to {% user_name student.user %} ({% student_email student %})</h4>
+    <div class="visible-xs">
+        <p>Top Student Project: {{ student.top_project_verbose }}</p>
+    </div>
+    <div class="hidden-xs">
+        <p><b>Quick Details</b></p>
+        <p>
+            <b>Marketing Points:</b> {{ student.entity.marketing_points }} <br/>
+            <b>Social Media Points:</b> {{ student.entity.social_media_points }} <br/>
+            <b>QA Testing Points:</b> {{ student.entity.testing_points }}
+        </p>
+    </div>
+    <form role="form">
+        <div class="form-group">
+            <label>Email Subject:</label>
+            <input type="text" id="subject" class="form-control">
+        </div>
+        <div class="form-group">
+            <label>Email Content:</label>
+            <textarea id="body" class="form-control"></textarea>
+        </div>
+        <a class="btn btn-primary" id="send"><i class="fa fa-fw fa-send-o"></i> Send Email</a>
+    </form>
+    <div class="alert"></div>
+{% endblock %}
+
+{% block js %}
+{{ block.super }}
+<script type="text/javascript">
+    $('#send').click(function(){
+        var subj = $('#subject').val(),
+            body = $('#body').val(),
+            icon = $('.fa-send-o');
+
+        if (subj == "" || body == "")alert('You must supply a subject and content to the email.');
+        else{
+            icon.removeClass('fa-send-o').addClass('fa-spin fa-spinner');
+
+            var response = $.post('/spudderadmin/send_email', {
+                                email: '{% student_email student %}',
+                                subject: subj,
+                                body: body
+                            });
+
+            response.done(function(){
+                icon.removeClass('fa-spin fa-spinner').addClass('fa-send-o');
+            })
+        }
+    });
+</script>
+{% endblock %}

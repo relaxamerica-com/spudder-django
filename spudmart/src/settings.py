@@ -132,6 +132,8 @@ shared_settings = {
         'twitter_client_id': 'OSwUJxPN7xkwEpVufgp0w',
         'twitter_access_token': '481249312-aFVuYa0HUCTKV7bc3Xrnk2twNHXwLV6r3uteKwe0',
         'twitter_access_token_secret': 'hHPebsFws3AcWyDrAvjnxapUJ95JI15NjZ7TwiXgF5f3v',
+        'support_email': 'support@spudder.com',
+
     },
     'sharp-avatar-587': {  # lukasz@spuder.com
         'server_email': 'lukasz@spuder.com',
@@ -142,9 +144,10 @@ shared_settings = {
         'amazon_login_client_id': 'amzn1.application-oa2-client.de78cbafe055444aa00e07a445644d16',
         'linkedin_api_key': '',
         'linkedin_secret_key': '',
+        'support_email': 'lukasz@spuder.com'
 
     },
-    'essential-hawk-597': {  # karol@spudder.com
+    'essential-hawk-597': {  # karol@spuder.com
         'server_email': 'karol@spuder.com',
         'spudder_application_id': 'YU4g6sCW8Dvl6khJsVYgXhr20Pu5zaaLcIQ4oRON',
         'spudder_rest_api_key': 'AbvJ682IvzXdWMMi1CbdONZHZhdJH4gFEyTWo4k9',
@@ -153,6 +156,7 @@ shared_settings = {
         'amazon_login_client_id': 'amzn1.application-oa2-client.d8fccc9c77624577898dca9ff517eff3',
         'linkedin_api_key': '',
         'linkedin_secret_key': '',
+        'support_email': 'karol@spuder.com',
 
     },
     'ahmed': {
@@ -164,9 +168,10 @@ shared_settings = {
         'amazon_login_client_id': 'amzn1.application-oa2-client.d8fccc9c77624577898dca9ff517eff3',
         'linkedin_api_key': '',
         'linkedin_secret_key': '',
+        'support_email': '',
 
     },
-    'genial-union-587': {  # lucy@spudder.com
+    'genial-union-587': {  # lucy@spuder.com
         'server_email': 'lucy@spuder.com',
         'spudder_application_id': '',
         'spudder_rest_api_key': '',
@@ -175,6 +180,7 @@ shared_settings = {
         'amazon_login_client_id': 'amzn1.application-oa2-client.b1404a35a0484c64a0fdf150a8a7a6f2',
         'linkedin_api_key': '77rqz7l270vhsb',
         'linkedin_secret_key': '5PcKrcRI2m5q4zWP',
+        'support_email': 'lucy@spuder.com',
     },
     'spudmartmatt': {  # mg@metalayer.com
         'server_email': 'mg@metalayer.com',
@@ -187,6 +193,7 @@ shared_settings = {
         'linkedin_secret_key': '',
         'instagram_client_id': '3888eac365f7468dabd5bf9ad06c8930',
         'instagram_client_secret': 'b1bc01bf1a9944e2834288484f450ab2',
+        'support_email': 'mg@metalayer.com',
 
     },
     'spudder-live': {  #mg@metalayer.com
@@ -198,6 +205,7 @@ shared_settings = {
         'amazon_login_client_id': 'amzn1.application-oa2-client.47892dcda29f4d3d8c437b7c44f1b6e6',
         'linkedin_api_key': '77acg7pe6xdqfo',
         'linkedin_secret_key': 'Eh1uPylFg3RMSOu9',
+        'support_email': 'support@spudder.com',
 
     },
     'livespudder': {  #mg@metalayer.com
@@ -215,6 +223,7 @@ shared_settings = {
         'twitter_client_id': '',
         'twitter_access_token': '',
         'twitter_access_token_secret': '',
+        'support_email': 'support@spudder.com',
     },
 }
 
@@ -232,6 +241,7 @@ TWITTER_CLIENT_SECRET = shared_settings[app_name].get('twitter_client_secret', '
 TWITTER_CLIENT_ID = shared_settings[app_name].get('twitter_client_id', '')
 TWITTER_ACCESS_TOKEN = shared_settings[app_name].get('twitter_access_token', '')
 TWITTER_ACCESS_TOKEN_SECRET = shared_settings[app_name].get('twitter_access_token_secret', '')
+SUPPORT_EMAIL = shared_settings[app_name]['support_email']
 
 # Configuration shared across all applications
 AWS_ACCESS_KEY_ID = 'AKIAIEUN2XKQF4ZU7UDA'

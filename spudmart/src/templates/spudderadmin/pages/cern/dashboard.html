@@ -25,8 +25,8 @@
                                 <td>{{ s.title|safe }}</td>
                                 <td>{{ s.entity.school.name }}</td>
                                 <td class="actions" style="white-space: nowrap">
-                                    <a class="btn btn-danger btn-sm" href="javascript:alert('In Development')" title="Delete">
-                                        <i class="fa fa-fw fa-trash-o"></i> <span class="hidden-xs">delete</span>
+                                    <a class="btn btn-primary btn-sm" title="Send Email" href="/spudderadmin/cern/student/{{ s.entity.id }}/send_email">
+                                        <i class="fa fa-fw fa-envelope-o"></i> <span class="hidden-xs">Send Email</span>
                                     </a>
                                 </td>
                             </tr>

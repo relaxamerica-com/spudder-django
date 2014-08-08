@@ -1,4 +1,5 @@
 from django import template
+from spudderaccounts.wrappers import RoleStudent
 from spudderdomain.controllers import RoleController
 from spudmart.CERN.utils import strip_invalid_chars
 from spudmart.CERN.models import Student
@@ -94,3 +95,15 @@ def current_student_page(context):
         return '/cern/student/%s' % (stu.id)
     else:
         return ''
+
+
+@register.simple_tag()
+def student_email(student):
+    """
+    Get the Amazon email related to a student
+    :param student: any Student object
+    :return: an email address as string
+    """
+    r = RoleStudent(student)
+    email = r._amazon_id
+    return email
