@@ -15,6 +15,12 @@
 {% endblock %}
 
 {% block dashboard_page %}
+    {% if latitude and longitude %}
+        <div class="row">
+            <div style="height:400px; margin-top: -18px;" id="jumbo-map-container"></div>
+        </div>
+    {% endif %}
+
     <div class="row">
         <div class="col-sm-8">
             <div class="post-heading">
@@ -76,7 +82,31 @@
 
 {% block js %}
     {{ block.super }}
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=true&libraries=geometry"></script>
+    <script type="text/javascript" src="/static/js/libs/google.map.js"></script>
+    {{ block.super }}
+
     <script type="text/javascript">
         window.twitterPopupText = "Here is a business that gives back to the community. Let's all click here and support them.";
+
+        function initWithCoords(latitude, longitude){
+            var jumbo_map = new google.maps.Map($('#jumbo-map-container')[0], {
+                zoom: 19,
+                mapTypeId: 'satellite',
+                scrollwheel: false,
+                navigationControl: false,
+                mapTypeControl: false,
+                scaleControl: false,
+                draggable: false,
+                disableDefaultUI: true,
+                center: new google.maps.LatLng(latitude, longitude)
+            });
+        }
+
+        {% if latitude and longitude %}
+            $(document).ready(function () {
+                initWithCoords(parseFloat("{{ latitude }}"), parseFloat("{{ longitude }}"))
+            });
+        {% endif %}
     </script>
 {% endblock js %}

@@ -80,9 +80,16 @@ def sponsor_page(request):
 def public_view(request, page_id):
     page = get_object_or_404(SponsorPage, pk=page_id)
     page.images = filter(lambda image: image != "", page.images)
+    longitude = None
+    latitude = None
+
+    if page.map_info:
+        longitude, latitude, _ = page.map_info.split(';')
 
     return render(request, 'spuddersponsors/pages/dashboard_pages/sponsor_page_view.html', {
-        'page': page
+        'page': page,
+        'latitude': latitude,
+        'longitude': longitude
     })
 
 
