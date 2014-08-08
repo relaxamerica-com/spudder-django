@@ -448,6 +448,7 @@ def social_spud_from_instagram_update(data, venue_id):
         state=SpudFromSocialMedia.STATE_NEW,
         type=SpudFromSocialMedia.TYPE_IMAGE,
         data=json.dumps({
+            'service': 'INSTAGRAM',
             'user': {
                 'username': data.get('user', {}).get('username', None),
                 'id': data.get('user', {}).get('id', None),

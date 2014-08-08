@@ -16,14 +16,10 @@
         </h1>
     </div>
     
-    {% if instagram_media %}
-		<div class="alert alert-info about-cern">
-	        <h2 class="aligncenter">This is the Instagram Stream.</h2>
-	        <p>Here you can see all the media taken from Instagram, near the Venue.</p>
-	        <p>All of the media, listed here, will become SPUDS if you press the Accept button.</p>
-	        <p>You can reject the media you don't want to become a SPUD by pressing the Reject button.</p>
-	    </div>
-	{% endif %}
+    <div class="alert alert-info">
+        <h4>This is the Instagram Stream.</h4>
+        <p>Here you can manage all the media taken from Instagram, near the Venue.</p>
+    </div>
 
     <div class="row">
         <div class="col-sm-3">
@@ -33,28 +29,40 @@
                     <div style="margin-left: 10px;">
                         <hr/>
                         <h4>{{ facet_group.display_name }}</h4>
-                        <ul class="list-unstyled">
-                            {% for facet in facet_group.facets %}
+                        <ul class="list-unstyled" style="margin-left: 10px;">
+                            {% if request.GET.filter %}
                                 <li>
-                                    <p>
-                                        {% if facet.count  %}
-                                            <a href="{{ request.path }}?filter={{ facet.name }}">
-                                                {{ facet.display_name }} ({{ facet.count }})
-                                            </a>
-                                        {% else %}
-                                            {{ facet.display_name }} ({{ facet.count }})
-                                        {% endif %}
-                                    </p>
+                                    <a href="{{ request.path }}">
+                                        reset
+                                    </a>
                                 </li>
-                            {% endfor %}
+                            {% else %}
+                                {% for facet in facet_group.facets %}
+                                    <li>
+                                        <p>
+                                            {% if facet.count  %}
+                                                <a href="{{ request.path }}?filter={{ facet.name }}">
+                                                    {{ facet.display_name }} ({{ facet.count }})
+                                                </a>
+                                            {% else %}
+                                                {{ facet.display_name }} ({{ facet.count }})
+                                            {% endif %}
+                                        </p>
+                                    </li>
+                                {% endfor %}
+                            {% endif %}
                         </ul>
                     </div>
+                {% empty %}
+                    <p>Sorry, no filters!</p>
                 {% endfor %}
             </div>
         </div>
         <div class="col-sm-9">
             <div class="well">
-                <p>Viewing {{ results.pagination.showing }} of {{ results.pagination.total_count }}</p>
+                <p id="pagination-container" data-showing="{{ results.pagination.showing }}" data-total="{{ results.pagination.total_count }}">
+                    Viewing <span class="showing">{{ results.pagination.showing }}</span> of <span class="total">{{ results.pagination.total_count }}</span> | {{ filter_message|default:"No filters applied, showing most recent first" }}
+                </p>
             </div>
             <div class="clearfix">
                 {% for result in results.results %}
@@ -65,10 +73,10 @@
                                 <div class="cpation">
                                     <hr/>
                                     <div class="btn-group">
-                                        <button class="btn btn-success">
+                                        <button class="btn btn-success button-accept" data-id="{{ result.id }}">
                                             Accept
                                         </button>
-                                        <button class="btn btn-default">
+                                        <button class="btn btn-default button-reject" data-id="{{ result.id }}">
                                             Reject
                                         </button>
                                     </div>
@@ -76,126 +84,62 @@
                             </div>
                         </div>
                     </div>
+                {% empty %}
+                    <div class="alert alert-info">
+                        <h4>Sorry, no spuds to show</h4>
+                        {% if request.GET.filter %}
+                            <p>There are no spuds matching your filters, please reset them!</p>
+                        {% else %}
+                            <p>There are currently no spuds waiting for your approval, please check back soon!</p>
+                        {% endif %}
+                    </div>
                 {% endfor %}
             </div>
+            <a class="btn btn-default" style="width: 30%; margin: 10px auto;" href="javascript:window.location.reload()">
+                <i class="fa fa-refresh"></i> Refresh
+            </a>
         </div>
     </div>
 
-
-
-	
-	    <div class="container-fluid">
-		    <div class="row">
-			    <div class="col-sm-12 col-md-2">
-		        	<div class="well">
-		        		<form action="/venues/accept_instagram_media/{{ venue_id }}" method="post">
-		        			<input type="hidden" name="spuds" value="{% for key, element in stream_data.items %}{{ key }}{% if not forloop.last %}|{% endif %}{% endfor %}" />
-		        			<button {% if not instagram_media %}disabled{% endif %} type="submit" class="btn btn-primary" id="accept-button">Accept All Media</button>
-		        		</form>
-	        		</div>
-		        </div>
-		        
-		        <div class="col-sm-12 col-md-6">
-		        	<div class="well">
-		        		<form action="" method="post" class="form-inline" role="form">
-		        			<div class="form-group">
-							    <label class="sr-only" for="month">Month</label>
-							    <input class="form-control" name="month" type="number" placeholder="month" />
-						 	</div>
-		        			
-		        			<div class="form-group">
-							    <label class="sr-only" for="day">Day</label>
-							    <input class="form-control" name="day" type="number" placeholder="day" />
-						 	</div>
-						 	
-						 	<div class="form-group">
-							    <label class="sr-only" for="year">Year</label>
-							    <input class="form-control" name="year" type="number" placeholder="year" />
-						 	</div>
-		        			
-		        			<button type="submit" class="btn btn-primary" id="filter">Filter</button>
-		        		</form>
-	        		</div>
-		        </div>
-	        </div>
-        </div>
-        
-    {% if stream_data %}
-	    <div id="stream" class="container-fluid">
-	        {% for key, element in stream_data.items %}
-	        	{% if forloop.counter0|divisibleby:4 %}
-	        		<div class="row">
-	        	{% endif %}
-	        	
-				<div class="col-sm-6 col-md-3 item">
-					<div class="thumbnail" style="min-height: 200px; padding: 5px; border-color: #eee;">
-						<div class="alert text-center"> </div>
-						<img class="img-thumbnail" width="150" src="{{ element.images.standard_resolution.url }}" />
-						<div class="caption text-center">
-							<div class="text" style="overflow:auto; height:70px;">
-								{{ element.caption.text }}
-							</div>
-							<div class="tags" style="overflow:auto; height:70px;">
-								{% for tag in element.tags %}
-									<a href="#">{{ tag }}</a> &nbsp;
-								{% endfor %}
-							</div>
-							<div id="{{ key }}" style="margin-top: 20px" class="confirmation-buttons">
-								<a href="javascript:void(0)" href="#" class="btn btn-danger">Reject</a>
-							</div>
-						</div>
-					</div>
-				</div>
-				
-				{% if forloop.counter|divisibleby:4 %}
-	        		</div>
-	        	{% endif %}
-			{% endfor %}
-		</div>
-    {% else %}
-        <div class="alert alert-info about-cern">
-	        <h2 class="aligncenter">This is the Instagram Stream.</h2>
-	        <p>Here you can accept or reject media that comes from Instagram,</p>
-	        <p>but currently there is no stream data.</p>
-	    </div>
-    {% endif %}
 {% endblock %}
 
 {% block js %}
-<script type="text/javascript">
-	$(document).ready(function() {
-		var date = new Date({% if date %}'{{ date }}'{% endif %});
-		var month = date.getMonth() + 1;
-		var day = date.getDate();
-		var year = date.getFullYear();
-		$('[name="month"]').val(month);
-		$('[name="day"]').val(day);
-		$('[name="year"]').val(year);
-		
-		
-		$('.confirmation-buttons .btn-danger').click(function() {
-			var thumbnail = $(this).parents('.thumbnail'),
-				acceptButton = $('#accept-button'),
-				id = $(this).parent().attr('id'),
-				values = $('[name="spuds"]').val().split('|');
-				
-			thumbnail.toggleClass('alert-danger');
-			
-			if( $('.thumbnail.alert-danger').length > 0 ) {
-				acceptButton.html('Accept The Rest');
-			} else {
-				acceptButton.html('Accept All Media');
-			}
-			
-			var newValue = '';
-			$.each(values, function() {
-				if (this.toString() != id) {
-					newValue += (this.toString() + '|');
-				}
-			});
-			
-			$('[name="spuds"]').val(newValue.slice(0, newValue.length - 1));
-		});
-	});
-</script>
+    {{ block.super }}
+    <script type="text/javascript">
+
+        function update_pagination(adjustment) {
+            var $pagination_container = $('#pagination-container');
+            var $showing = $pagination_container.find('.showing');
+            var $total = $pagination_container.find('.total');
+            var showing = $pagination_container.data('showing');
+            var total = $pagination_container.data('total');
+            total += adjustment;
+            showing += adjustment;
+            $total.html(total);
+            $showing.html(showing);
+            $pagination_container.data('showing', showing);
+            $pagination_container.data('total', total);
+        }
+
+        $(document).ready(function() {
+            $('.button-accept').on('click', function(e){
+                e.preventDefault();
+                e.stopPropagation();
+                var $button = $(this);
+                var id = $button.data('id');
+                $.get('/venues/accept_spud/{{ venue_id }}/' + id);
+                $button.parents('.panel').remove();
+                update_pagination(-1);
+            });
+            $('.button-reject').on('click', function(e){
+                e.preventDefault();
+                e.stopPropagation();
+                var $button = $(this);
+                var id = $button.data('id');
+                $.get('/venues/reject_spud/{{ venue_id }}/' + id);
+                $button.parents('.panel').remove();
+                update_pagination(-1);
+            });
+        });
+    </script>
 {% endblock %}

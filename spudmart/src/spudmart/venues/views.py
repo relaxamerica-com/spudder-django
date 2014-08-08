@@ -1,3 +1,4 @@
+import json
 from django.shortcuts import render, get_object_or_404
 from django.template.loader import render_to_string
 from spudmart.utils.cover_image import reset_cover_image, save_cover_image_from_request
@@ -71,7 +72,6 @@ def view(request, venue_id):
     storage = KrowdIOStorage.GetOrCreateForVenue(venue_id)
     
     venue_spuds = get_user_mentions_activity(storage)
-    
     return render(request, 'spuddercern/pages/venues_view.html', {
         'venue': venue,
         'sports': SPORTS,
@@ -83,7 +83,7 @@ def view(request, venue_id):
         'sponsor_info': sponsor_info,
         'is_sponsor': venue.is_renter(role),
         'student': student,
-        'venue_spuds' : venue_spuds['items']
+        'venue_spuds': venue_spuds['items']
     })
 
 def index(request):
@@ -583,21 +583,43 @@ def delete_venue(request, venue_id):
 
 def get_instagram_stream(request, venue_id):
     controller = SpudsController(request.current_role)
-    results = controller.get_unapproved_spuds(venue_id, filters=request.GET.get('filter', None))
+    filters = request.GET.get('filter', None)
+    results = controller.get_unapproved_spuds(venue_id, filters=filters)
+    template_data = {'results': results, 'venue_id': venue_id}
+    if filters == "day-0":
+        template_data['filter_message'] = "Showing posts from today"
+    elif filters == "day-1":
+        template_data['filter_message'] = "Showing posts from yesterday"
+    elif filters == "day-7":
+        template_data['filter_message'] = "Showing older posts"
+    elif filters:
+        template_data['filter_message'] = "Showing posts from %s days ago" % filters.replace('day-', '')
     return render(
         request,
         'spuddercern/pages/venue_instagram_stream.html',
-        {'results': results, 'venue_id': venue_id})
+        template_data)
+
+
+def accept_spud_from_social_media(request, venue_id, spud_from_social_media_id):
+    controller = SpudsController(request.current_role)
+    controller.approve_spuds([spud_from_social_media_id], venue_id)
+    return HttpResponse(json.dumps({'status': 'ok'}), content_type='application/json')
         
     
+def reject_spud_from_social_media(request, venue_id, spud_from_social_media_id):
+    controller = SpudsController(request.current_role)
+    controller.reject_spuds([spud_from_social_media_id])
+    return HttpResponse(json.dumps({'status': 'ok'}), content_type='application/json')
+
+
 def accept_instagram_media(request, venue_id):
-    controller = SpudsController(request.current_role, venue_id)
-    spuds = []
-    
-    for data_id in request.POST.get('spuds').split('|'):
-        spuds.append(controller.get_unapproved_spud_by_id(data_id))
-    
-    controller.approve_spuds(spuds, venue_id)
+    # controller = SpudsController(request.current_role, venue_id)
+    # spuds = []
+    #
+    # # for data_id in request.POST.get('spuds').split('|'):
+    # #     spuds.append(controller.get_unapproved_spud_by_id(data_id))
+    #
+    # controller.approve_spuds(spuds, venue_id)
     
     return HttpResponseRedirect('/venues/get_instagram_stream/%s' % venue_id)
 

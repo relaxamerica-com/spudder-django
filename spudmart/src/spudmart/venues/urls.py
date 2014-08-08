@@ -37,7 +37,11 @@ urlpatterns = patterns('spudmart.venues.views',
     (r'^fix_venue_coordinates$', 'fix_venue_coordinates'),
     (r'^list$', 'list_view'),
     (r'^delete/(?P<venue_id>\d+)$', 'delete_venue'),
+
     (r'^get_instagram_stream/(?P<venue_id>\d+)$', 'get_instagram_stream'),
+    (r'^accept_spud/(?P<venue_id>\d+)/(?P<spud_from_social_media_id>\d+)$', 'accept_spud_from_social_media'),
+    (r'^reject_spud/(?P<venue_id>\d+)/(?P<spud_from_social_media_id>\d+)$', 'reject_spud_from_social_media'),
+
     (r'^accept_instagram_media/(?P<venue_id>\d+)$', 'accept_instagram_media'),
     (r'^delete_spud/(?P<venue_id>\d+)$', 'delete_spud_endpoint'),
 #     (r'^flag_spud/(?P<venue_id>\d+)$', 'flag_spud_endpoint'),

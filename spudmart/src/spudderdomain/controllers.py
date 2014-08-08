@@ -173,7 +173,7 @@ class SpudsController(object):
                     if filters == 'day-%s' % x:
                         base_query = base_query.filter(
                             created__gt=(now - timedelta(days=x+1)),
-                            created__lt=(now - timedelta(days=x))).count()
+                            created__lt=(now - timedelta(days=x)))
         unapproved_spuds = base_query.order_by('-created')[:100]
         facets = [
             {
@@ -246,35 +246,39 @@ class SpudsController(object):
             }
         }
 
-    def get_unapproved_spud_by_id(self, data_id):
-        """
-        Gets any unapproved spuds linked to this role
-        :param data_id: InstagramDataProcessor ID
-        :return: Collection of Spuds
-        """
-        
-        instagram_data = InstagramDataProcessor.objects.get(pk = data_id)
-        
-        return simplejson.loads(instagram_data.data)
-
-    def approve_spuds(self, spuds, venue_id):
+    def approve_spuds(self, spud_ids, venue_id):
         """
         Sends SPUD off to Krowd.io tagged with the venue in this case
 
-        :param spud: A single SPUD to approve
+        :param spud_ids: The ids of the spuds to accept
+        :param venue_id: The id of the venue the spuds are tied to
         :return: None
         """
-        
-        storage = KrowdIOStorage.GetOrCreateForVenue(venue_id)
-        
-        for spud in spuds:
-            spud['tags'].append('@Venue%s' % venue_id)
-            
-            if 'images' in spud:
-                post_spud(storage, { 'type' : 'image', 'url' : spud['images']['standard_resolution']['url'], 'title' : spud['caption']['text'], 'usertext' : ' '.join(spud['tags']) })
-                
-            if 'videos' in spud:
-                post_spud(storage, { 'type' : 'video', 'url' : spud['videos']['standard_resolution']['url'], 'title' : spud['caption']['text'], 'usertext' : ' '.join(spud['tags']) })
+        for spud_id in spud_ids:
+            spud = SpudFromSocialMedia.objects.get(id=spud_id)
+            spud.state = SpudFromSocialMedia.STATE_ACCEPTED
+            spud.save()
+            post_spud(
+                KrowdIOStorage.GetOrCreateForVenue(venue_id),
+                {
+                    'type': 'image',
+                    'url': spud.expanded_data['image']['standard_resolution']['url'],
+                    'title': ' '.join([s.encode('ascii', 'ignore') for s in spud.expanded_data['text']]),
+                    'usertext': '@Venue%s' % venue_id,
+                    'extra': spud.data
+                })
+
+    def reject_spuds(self, spud_ids):
+        """
+        Rejects potential spuds
+
+        :param spud_ids: The ids of the spuds to reject
+        :return: None
+        """
+        for spud_id in spud_ids:
+            spud = SpudFromSocialMedia.objects.get(id=spud_id)
+            spud.state = SpudFromSocialMedia.STATE_REJECTED
+            spud.save()
 
     def seconds_to_date_time(self, seconds):
         return datetime.utcfromtimestamp(seconds)
