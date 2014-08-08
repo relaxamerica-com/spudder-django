@@ -582,26 +582,12 @@ def delete_venue(request, venue_id):
 
 
 def get_instagram_stream(request, venue_id):
-    controller = SpudsController(request.current_role, venue_id)
-    date = None
-    
-    if request.method == 'GET':
-        # 86400 = 24 hrs
-        now = datetime.datetime.now()
-        seconds = controller.date_time_to_seconds(now)
-    else:
-        day = int(request.POST['day'])
-        month = int(request.POST['month'])
-        year = int(request.POST['year'])
-        date = '%s-%s-%s' % (year, month, day)
-        seconds = controller.date_time_to_seconds(datetime.datetime(year, month, day))
-        
-    time_range = [seconds - 86400, seconds + 86400]
-    
-    return render(request, 'spuddercern/pages/venue_instagram_stream.html',
-                  { 'stream_data' : controller.get_unapproved_spuds(time_range), 
-                   'venue_id' : venue_id,
-                   'date' : date })
+    controller = SpudsController(request.current_role)
+    results = controller.get_unapproved_spuds(venue_id, filters=request.GET.get('filter', None))
+    return render(
+        request,
+        'spuddercern/pages/venue_instagram_stream.html',
+        {'results': results, 'venue_id': venue_id})
         
     
 def accept_instagram_media(request, venue_id):

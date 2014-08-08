@@ -7,7 +7,7 @@ import simplejson
 from spudmart.venues.models import Venue
 from spudderkrowdio.utils import post_spud
 from spudderkrowdio.models import KrowdIOStorage
-import datetime
+from datetime import datetime, timedelta
 
 
 class RoleController(object):
@@ -147,27 +147,104 @@ class TeamsController(object):
 
 class SpudsController(object):
 
-    def __init__(self, role, venue_id):
+    def __init__(self, role):
         self.role = role
-        self.venue_id = venue_id
 
-    def get_unapproved_spuds(self, filters=None):
+    def get_unapproved_spuds(self, venue_id, filters=None):
         """
         Gets any unapproved spuds linked to this role
 
         :return: Collection of Spuds
         """
+        DAYS_OF_THE_WEEK = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
+        now = datetime.now().date() + timedelta(days=1)
+        base_query = SpudFromSocialMedia.objects.filter(
+            entity_id=venue_id,
+            entity_type='VENUE',
+            state=SpudFromSocialMedia.STATE_NEW)
 
-        unapproved_spuds = dict((s.id, s) for s in SpudFromSocialMedia.objects.filter(
-            entity_id=self.venue_id, entity_type='VENUE').order_by('-created')[:100])
-        facets = {
-            'by_day': [
-                {'name': 'today', 'display_name': 'Posted today'}
-            ]
+        if filters and 'day-' in filters:
+            if filters == 'day-0':
+                base_query = base_query.filter(created__gt=(now - timedelta(days=1)))
+            elif filters == 'day-7':
+                base_query = base_query.filter(created__lt=(now - timedelta(days=7)))
+            else:
+                for x in range(1, 7):
+                    if filters == 'day-%s' % x:
+                        base_query = base_query.filter(
+                            created__gt=(now - timedelta(days=x+1)),
+                            created__lt=(now - timedelta(days=x))).count()
+        unapproved_spuds = base_query.order_by('-created')[:100]
+        facets = [
+            {
+                'name': 'by_day',
+                'display_name': 'Post by day',
+                'facets': [
+                    {
+                        'name': 'day-0',
+                        'display_name': 'Posted today',
+                        'count': base_query.filter(created__gt=(now - timedelta(days=1))).count()
+                    },
+                    {
+                        'name': 'day-1',
+                        'display_name': 'Posted yesterday',
+                        'count': base_query.filter(
+                            created__gt=(now - timedelta(days=2)),
+                            created__lt=(now - timedelta(days=1))).count()
+                    },
+                    {
+                        'name': 'day-2',
+                        'display_name': 'Posted %s' % DAYS_OF_THE_WEEK[(now - timedelta(days=3)).weekday()],
+                        'count': base_query.filter(
+                            created__gt=(now - timedelta(days=3)),
+                            created__lt=(now - timedelta(days=2))).count()
+                    },
+                    {
+                        'name': 'day-3',
+                        'display_name': 'Posted %s' % DAYS_OF_THE_WEEK[(now - timedelta(days=4)).weekday()],
+                        'count': base_query.filter(
+                            created__gt=(now - timedelta(days=4)),
+                            created__lt=(now - timedelta(days=3))).count()
+                    },
+                    {
+                        'name': 'day-4',
+                        'display_name': 'Posted %s' % DAYS_OF_THE_WEEK[(now - timedelta(days=5)).weekday()],
+                        'count': base_query.filter(
+                            created__gt=(now - timedelta(days=5)),
+                            created__lt=(now - timedelta(days=4))).count()
+                    },
+                    {
+                        'name': 'day-5',
+                        'display_name': 'Posted %s' % DAYS_OF_THE_WEEK[(now - timedelta(days=6)).weekday()],
+                        'count': base_query.filter(
+                            created__gt=(now - timedelta(days=6)),
+                            created__lt=(now - timedelta(days=5))).count()
+                    },
+                    {
+                        'name': 'day-6',
+                        'display_name': 'Posted %s' % DAYS_OF_THE_WEEK[(now - timedelta(days=7)).weekday()],
+                        'count': base_query.filter(
+                            created__gt=(now - timedelta(days=7)),
+                            created__lt=(now - timedelta(days=6))).count()
+                    },
+                    {
+                        'name': 'day-7',
+                        'display_name': 'older posts',
+                        'count': base_query.filter(created__lt=(now - timedelta(days=7))).count()
+                    },
+                ]
+            }
+        ]
+        return {
+            'results': unapproved_spuds,
+            'facets': {
+                'basic_facets': facets
+            },
+            'pagination': {
+                'total_count': base_query.count(),
+                'showing': len(unapproved_spuds)
+            }
         }
-
-        return unapproved_spuds
-
 
     def get_unapproved_spud_by_id(self, data_id):
         """
@@ -179,8 +256,7 @@ class SpudsController(object):
         instagram_data = InstagramDataProcessor.objects.get(pk = data_id)
         
         return simplejson.loads(instagram_data.data)
-        
-        
+
     def approve_spuds(self, spuds, venue_id):
         """
         Sends SPUD off to Krowd.io tagged with the venue in this case
@@ -199,11 +275,9 @@ class SpudsController(object):
                 
             if 'videos' in spud:
                 post_spud(storage, { 'type' : 'video', 'url' : spud['videos']['standard_resolution']['url'], 'title' : spud['caption']['text'], 'usertext' : ' '.join(spud['tags']) })
-            
-            
+
     def seconds_to_date_time(self, seconds):
-        return datetime.datetime.utcfromtimestamp(seconds)
-    
-    
+        return datetime.utcfromtimestamp(seconds)
+
     def date_time_to_seconds(self, date):
-        return int((date - datetime.datetime(1970, 1, 1)).total_seconds())
+        return int((date - datetime(1970, 1, 1)).total_seconds())

@@ -14,10 +14,14 @@ class SpudFromSocialMedia(models.Model):
     STATE_NEW = '01'
     STATE_REJECTED = '02'
     STATE_ACCEPTED = '03'
-    STATE_CHOICES = (STATE_NEW, STATE_REJECTED, STATE_ACCEPTED, )
+    STATE_CHOICES = (
+        (STATE_NEW, 'New'),
+        (STATE_REJECTED, 'Rejected'),
+        (STATE_ACCEPTED, 'Accepted'))
 
     TYPE_IMAGE = '01'
-    TYPE_CHOICES = (TYPE_IMAGE, )
+    TYPE_CHOICES = (
+        (TYPE_IMAGE, 'Image'),)
 
     version = models.CharField(max_length=1, default='01')
     entity_type = models.CharField(max_length=255)
@@ -29,6 +33,10 @@ class SpudFromSocialMedia(models.Model):
     data = models.TextField()
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
+
+    @property
+    def expanded_data(self):
+        return json.loads(self.data or "{}")
 
 
 

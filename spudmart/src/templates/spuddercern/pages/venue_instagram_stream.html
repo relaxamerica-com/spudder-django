@@ -9,6 +9,7 @@
 {% block side_nav %}{% include 'spuddercern/parts/sideNav.html' with active="venues" %}{% endblock %}
 
 {% block dashboard_page %}
+
     <div class="page-header">
         <h1>
             <i class="fa fa-fw fa-map-marker"> </i> Venues - <small> filter <i class="fa fa-instagram"> </i> Instagram Stream</small>
@@ -23,6 +24,65 @@
 	        <p>You can reject the media you don't want to become a SPUD by pressing the Reject button.</p>
 	    </div>
 	{% endif %}
+
+    <div class="row">
+        <div class="col-sm-3">
+            <div class="well">
+                <h3><i class="fa fa-filter"></i> Filters</h3>
+                {% for facet_group in results.facets.basic_facets %}
+                    <div style="margin-left: 10px;">
+                        <hr/>
+                        <h4>{{ facet_group.display_name }}</h4>
+                        <ul class="list-unstyled">
+                            {% for facet in facet_group.facets %}
+                                <li>
+                                    <p>
+                                        {% if facet.count  %}
+                                            <a href="{{ request.path }}?filter={{ facet.name }}">
+                                                {{ facet.display_name }} ({{ facet.count }})
+                                            </a>
+                                        {% else %}
+                                            {{ facet.display_name }} ({{ facet.count }})
+                                        {% endif %}
+                                    </p>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="col-sm-9">
+            <div class="well">
+                <p>Viewing {{ results.pagination.showing }} of {{ results.pagination.total_count }}</p>
+            </div>
+            <div class="clearfix">
+                {% for result in results.results %}
+                    <div class="panel panel-default" style="float: left; width: 200px; margin-right: 10px;">
+                        <div class="panel-body">
+                            <div class="thumbnail">
+                                <img src="{{ result.expanded_data.image.standard_resolution.url }}" />
+                                <div class="cpation">
+                                    <hr/>
+                                    <div class="btn-group">
+                                        <button class="btn btn-success">
+                                            Accept
+                                        </button>
+                                        <button class="btn btn-default">
+                                            Reject
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+
+
 	
 	    <div class="container-fluid">
 		    <div class="row">

@@ -21,5 +21,6 @@ indexes:
   properties:
   - name: entity_id
   - name: entity_type
+  - name: state
   - name: created
     direction: desc
