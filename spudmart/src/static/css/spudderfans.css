@@ -13775,6 +13775,31 @@ legend {
     max-height: 100px;
   }
 }
+#venue-sponsor-container img#sponsor-logo {
+  cursor: pointer;
+  max-width: 50%;
+}
+#venue-sponsor-container ul.social-network {
+  list-style-type: none;
+  margin: 0 0 10px;
+  padding: 0;
+  text-align: left;
+}
+#venue-sponsor-container ul.social-network li {
+  display: inline;
+}
+#venue-sponsor-container ul.social-network li a {
+  text-decoration: none;
+}
+#venue-sponsor-container ul.sponsor-details {
+  list-style-type: none;
+  margin: 0 0 30px;
+  padding: 0;
+}
+#venue-sponsor-container ul.sponsor-details label {
+  font-weight: bold;
+  color: #000000;
+}
 .fan-page-form .input-required {
   color: #ff0000;
 }

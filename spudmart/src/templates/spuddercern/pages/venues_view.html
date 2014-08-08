@@ -545,15 +545,13 @@
 {% endblock %}
 
 {% block sidebar %}
-    <hr class="hidden-md hidden-lg"/>
-
-    <hr class="hidden-md hidden-lg"/>
     {% if request.current_role.entity == venue.student %}
         {% if not venue.renter %}
             {% include 'spuddercern/quote_messages/quote_venue_sponsors_coming_soon_can_edit.html' %}
         {% else %}
             {% include 'spuddercern/quote_messages/quote_venue_rented_for_student.html' %}
         {% endif %}
+        <hr>
     {% else %}
         {% if not sponsor_info %}
             {% if venue.renter %}
@@ -561,118 +559,101 @@
             {% else %}
                 {% include 'spuddercern/quote_messages/quote_venue_sponsors_coming_soon.html' %}
             {% endif %}
-        {% else %}
-            This venue is sponsored.
+            <hr>
         {% endif %}
     {% endif %}
 
     {% if sponsor %}
-    <div class="widget offer-widget">
-        <h5 class="widgetheading">
-        <div class="row-fluid no-margin">
-            <div class="col-md-6" style="float:left; width: 120px; font-size:10pt;">
-                {% if sponsor.thumbnail %}
-                    <a href="/sponsor/{{ sponsor.id }}" target="_blank">
-                        <img id="venue-logo2" src="/file/serve/{{ sponsor.thumbnail }}" />
-                    </a>
-                {% else %}
-                    <div class="logo-placeholder" style="width:45%; font-size: 1.5em;" id="placeholder2">
-                        Your Logo Here
-                    </div>
-                {% endif %}
-            </div>
-            <div class="col-md-12" id="venue-name2" style="text-align: center; width: 60%; margin-top:38px;">
-                {{ sponsor.name }}
-            </div>
-        </div></h5>
+        <div id="venue-sponsor-container">
+            {% if sponsor.thumbnail %}
+                <img id="sponsor-logo" src="/file/serve/{{ sponsor.thumbnail }}" onclick="window.open('/sponsor/{{ sponsor.id }}', '_blank')"/>
+            {% endif %}
 
-        <div class="row-fluid">
-            <div class="col-md-7 details-header">
+            <h3>
                 Support Venue's Sponsor
-            </div>
+            </h3>
 
-            <ul class="col-md-5 social-network">
-                <li>
-                    <a href="/sponsor/{{ sponsor.id }}" target="_blank" data-placement="bottom" title=""
-                    data-original-title="Sponsor Public profile">
-                        <img src="/static/img/spuddersponsors/button-sponsors-tiny.png" />
-                    </a>
-                </li>
-
+            <ul class="social-network">
                 {% if sponsor.instagram %}
-                <li>
-                    <a href="{{ sponsor.instagram }}" target="_blank" data-placement="bottom" title=""
-                    data-original-title="Sponsor Instagram profile"> <i class="fa fa-instagram fa-2x"> </i> </a>
-                </li>
+                    <li>
+                        <a href="{{ sponsor.instagram }}" target="_blank" data-placement="bottom" title=""
+                        data-original-title="Sponsor Instagram profile"> <i class="fa fa-instagram fa-2x"> </i> </a>
+                    </li>
                 {% endif %}
 
                 {% if sponsor.facebook %}
-                <li>
-                    <a href="{{ sponsor.facebook }}" target="_blank" data-placement="bottom" title=""
-                    data-original-title="Sponsor Facebook profile"> <i class="fa fa-facebook-square fa-2x"> </i> </a>
-                </li>
+                    <li>
+                        <a href="{{ sponsor.facebook }}" target="_blank" data-placement="bottom" title=""
+                        data-original-title="Sponsor Facebook profile"> <i class="fa fa-facebook-square fa-2x"> </i> </a>
+                    </li>
                 {% endif %}
 
                 {% if sponsor.twitter %}
-                <li>
-                    <a href="{{ sponsor.twitter }}" target="_blank" data-placement="bottom" title=""
-                    data-original-title="Sponsor Twitter profile"> <i class="fa fa-twitter-square fa-2x"> </i> </a>
-                </li>
+                    <li>
+                        <a href="{{ sponsor.twitter }}" target="_blank" data-placement="bottom" title=""
+                        data-original-title="Sponsor Twitter profile"> <i class="fa fa-twitter-square fa-2x"> </i> </a>
+                    </li>
                 {% endif %}
 
                 {% if sponsor.google_plus %}
-                <li>
-                    <a href="{{ sponsor.google_plus }}" target="_blank" rel="publisher" data-placement="bottom" title=""
-                    data-original-title="Sponsor Google+ profile"> <i class="fa fa-google-plus-square fa-2x"> </i> </a>
-                </li>
+                    <li>
+                        <a href="{{ sponsor.google_plus }}" target="_blank" rel="publisher" data-placement="bottom" title=""
+                        data-original-title="Sponsor Google+ profile"> <i class="fa fa-google-plus-square fa-2x"> </i> </a>
+                    </li>
                 {% endif %}
 
                 {% if sponsor.linkedin %}
-                <li>
-                    <a href="{{ sponsor.linked_in }}" target="_blank" rel="publisher" data-placement="bottom" title=""
-                    data-original-title="Sponsor LinkedIn profile"> <i class="fa fa-linkedin-square fa-2x"> </i> </a>
-                </li>
+                    <li>
+                        <a href="{{ sponsor.linked_in }}" target="_blank" rel="publisher" data-placement="bottom" title=""
+                        data-original-title="Sponsor LinkedIn profile"> <i class="fa fa-linkedin-square fa-2x"> </i> </a>
+                    </li>
+                {% endif %}
+            </ul>
+
+            <ul class="sponsor-details">
+                {% if sponsor.speciality %}
+                    <li>
+                        <label>Speciality: </label> {{ sponsor.speciality }}
+                    </li>
+                {% endif %}
+
+                {% if sponsor.location %}
+                    <li>
+                        <label>Location: </label> <a href="http://maps.google.com/?q={{ sponsor.location }}" target="_blank" id="sponsor-location">{{ sponsor.location }}</a>
+                    </li>
+                {% endif %}
+
+                {% if sponsor.phone %}
+                    <li>
+                        <label>Phone: </label> {{ sponsor.phone }}
+                    </li>
+                {% endif %}
+
+                {% if sponsor.email %}
+                    <li>
+                        <label>E-mail: </label> <a href="mailto:{{ sponsor.email }}">{{ sponsor.email }}</a>
+                    </li>
+                {% endif %}
+
+                {% if sponsor.website %}
+                    <li>
+                        <label>Website: </label> <a href="{{ sponsor.website }}">{{ sponsor.website }}</a>
+                    </li>
+                {% endif %}
+
+                {% if sponsor.video %}
+                    <li>
+                        <label>Video: </label> <a href="{{ sponsor.video }}">Sponsor video</a>
+                    </li>
+                {% endif %}
+
+                {% if sponsor.fax %}
+                    <li>
+                        <label>Fax: </label> {{ sponsor.fax }}
+                    </li>
                 {% endif %}
             </ul>
         </div>
-
-        <ul class="folio-detail offer-details">
-            {% if sponsor.speciality %}
-            <li>
-                <label>Speciality: </label> {{ sponsor.speciality }}
-            </li>
-            {% endif %}
-
-            {% if sponsor.location %}
-            <li>
-                <label>Location: </label> <a href="http://maps.google.com/?q={{ sponsor.location }}" target="_blank" id="sponsor-location">{{ sponsor.location }}</a>
-            </li>
-            {% endif %}
-
-            {% if sponsor.phone %}
-            <li>
-                <label>Phone: </label> {{ sponsor.phone }}
-            </li>
-            {% endif %}
-
-            {% if sponsor.email %}
-            <li>
-                <label>E-mail: </label> <a href="mailto:{{ sponsor.email }}">{{ sponsor.email }}</a>
-            </li>
-            {% endif %}
-
-            {% if sponsor.website %}
-            <li>
-                <label>Website: </label> <a href="{{ sponsor.website }}">{{ sponsor.website }}</a>
-            </li>
-            {% endif %}
-
-            {% if sponsor.fax %}
-            <li>
-                <label>Fax: </label> {{ sponsor.fax }}
-            </li>
-            {% endif %}
-        </ul>
     </div>
     {% endif %}
 {% endblock %}
