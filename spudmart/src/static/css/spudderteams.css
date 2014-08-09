@@ -13800,55 +13800,36 @@ legend {
   font-weight: bold;
   color: #000000;
 }
-.input-required {
+.fan-page-form .input-required {
   color: #ff0000;
 }
-.sponsor-page-form #map_canvas {
+.fan-page-form #map_canvas {
   width: 100%;
   height: 350px;
   margin-bottom: 10px;
 }
-.sponsor-page-form #location {
+.fan-page-form #location {
   width: 90%;
   margin-top: 10px;
 }
 input[type="file"] {
   display: block;
 }
-.sponsor-page-form .thumbnail {
-  text-align: center;
+.fan-jumbotron-default {
+  background-image: url("/static/img/spudderspuds/button-spuds-large.png");
+  opacity: 0.2;
+  height: 100%;
+  background-size: 12%;
 }
-.sponsor-page-form .thumbnail a {
-  margin-top: 10px;
+.input-required {
+  color: #ff0000;
 }
-.sponsor-page-form .page-thumbail {
-  margin-top: 10px;
-  width: 25%;
-}
-.sponsor-page-form .remove-image-container {
+#map_canvas {
+  width: 100%;
+  height: 350px;
   margin-bottom: 10px;
 }
-#sponsor-page-details-container {
-  border-left: 1px solid lightgray;
-  margin-top: 20px;
-}
-#sponsor-page-thumbnail {
-  width: 40%;
-  margin-bottom: 20px;
-}
-#support-your-sponsor {
-  border-top: 1px solid lightgray;
-  padding-top: 10px;
-  font-size: 16px;
-  font-weight: bold;
-  margin-right: 20px;
-}
-ul.folio-detail.offer-details {
-  padding-left: 20px;
-}
-#sponsor-page-carousel {
-  margin-bottom: 30px;
-}
-.offer-description {
-  text-align: justify;
+#location {
+  width: 90%;
+  margin-top: 10px;
 }

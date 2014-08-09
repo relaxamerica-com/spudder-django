@@ -1,10 +1,10 @@
-{% extends 'spudderfans/pages/dashboard.html' %}
+{% extends 'spudderteams/base.html' %}
 
 {% block google_analytics_additions %}
     ga('set', 'contentGroup1', 'TEAMS - TEAM PAGE EDIT');
 {% endblock %}
 
-{% block dashboard_page %}
+{% block body %}
     <div class="page-header">
         <h1>
             <i class="fa fa-fw fa-pencil"></i> Team Page <small>Manage your team: {{ team.name }}</small>
@@ -14,7 +14,7 @@
     <div class="row">
         <div class="col-sm-8">
             <div class="edit-mode well" style="display: block;">
-                <form action="{{ upload_url }}" method="post" id="create-team-form" class="sponsor-page-form" enctype="multipart/form-data" role="form">
+                <form action="" method="post" id="create-team-form" class="sponsor-page-form" enctype="multipart/form-data" role="form">
                     <div class="form-group edit-mode edit-mode-team" style="display: block;">
                         <label>Name:</label>
                         <span class="input-required">*required</span>
@@ -31,8 +31,10 @@
                     </div>
                     <div class="form-group edit-mode" style="display: block;">
                         <label>Location:</label>
-                        <span class="input-required">*required</span>
-                        <input name="location" id="location" class="form-control" value="{{form.location.value|default:"" }}" />
+                        <input id="location" name="location" class="controls" type="text" placeholder="Enter a location">
+                        <input id="infoWindow" name="infoWindow" type="hidden" {% if info_window %}value="{{ info_window }}"{% endif %}>
+                        <input id="location_info" name="location_info" type="hidden" />
+                        <div id="map_canvas" class="google-map-canvas"></div>
                     </div>
                     <div class="form-group edit-mode" style="display: block;">
                         <label>Contact details:</label>
@@ -42,23 +44,8 @@
                         <label>Describe your team:</label>
                         <textarea name="free_text" id="free_text" class="form-control">{{form.free_text.value|default:"" }}</textarea>
                     </div>
-                    <div class="form-group">
-                        <label>Image:</label>
-                        {% if page and page.image %}
-                            <div class="thumbnail" id="image-preview">
-                                <img src="/file/serve/{{ page.image.id }}" class="page-thumbail"/>
-                                <div class="remove-image-container">
-                                    <a href="javascript:void(0)" class="btn btn-small btn-danger">Remove</a>
-                                </div>
-                            </div>
-                        {% endif %}
-                        <div>
-                            <input type="file" id="file" name="file" class="form-control" accept="image/*" />
-                        </div>
-                    </div>
 
                     <button type="submit" class="btn btn-primary edit-mode" style="display: inline">Save</button>
-                    <a class="btn btn-primary edit-mode" href="/team/{{ page.id }}" style="display: inline" target="_blank">Preview</a>
                 </form>
             </div>
         </div>
@@ -70,25 +57,29 @@
     <script src="/media/dashboard/js/additional-methods.min.js"></script>
     <script src="/media/dashboard/js/jquery.validate.spudder.rules.js"></script>
     <script type="text/javascript" src="/media/js/jquery.serialize.file.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key={{ places_api_key }}&v=3.exp&sensor=false&libraries=places"></script>
+    <script src="/static/js/google_maps_helpers.js"></script>
 
     <script type="text/javascript">
+        {% if page.location %}
+            {% autoescape off %}
+                initializeGoogleMaps('{{ page.location.address }}', '{{ page.location.info_window }}');
+            {% endautoescape %}
+        {% else %}
+            initializeGoogleMaps();
+        {% endif %}
+
         $(document).ready(function () {
             var $form = $('form');
 
             $form.validate({
                 rules: {
-                    username: "required",
-                    phone: { required: false, phoneUS: true },
+                    name: "required"
                 },
 
                 errorPlacement: function(error, element) {
                     error.appendTo( element.parent() );
                 }
-            });
-            
-            $('.remove-image-container .btn').click(function() {
-            	var response = $.get('/team/remove_image');
-            	$('#image-preview').hide();
             });
         });
     </script>

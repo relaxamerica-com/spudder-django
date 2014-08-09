@@ -130,15 +130,65 @@ class _TeamWithNameAlreadyExistsError(Exception):
     pass
 
 
+def _update_location_from_post_data(location, post_data):
+    """
+        :param location: Location entity for update
+        :param post_data: string containing comma separated data (lat;lng;info_window;address)
+        :return: updated Location entity
+    """
+
+    location.post_data = post_data
+
+    if post_data:
+        lng, lat, info_window, address = post_data.split(';')
+
+        location.latitude = float(lat)
+        location.longitude = float(lng)
+        location.info_window = info_window
+        location.address = address
+
+    location.save()
+
+    return location
+
+
+class Location(models.Model):
+    latitude = models.FloatField(default=0, null=True, blank=True)
+    longitude = models.FloatField(default=0, null=True, blank=True)
+    post_data = models.CharField(max_length=255, default='', blank=True)
+    info_window = models.CharField(max_length=255, default='', blank=True)
+    address = models.CharField(max_length=255, default='', blank=True)
+
+    @staticmethod
+    def from_post_data(post_data):
+        location = Location()
+        location = _update_location_from_post_data(location, post_data)
+
+        return location
+
+    def update_from_post_data(self, post_data):
+        _update_location_from_post_data(self, post_data)
+
+
 class TeamPage(models.Model):
     name = models.CharField(max_length=255)
-    location = models.CharField(max_length=255, blank=True)
+    location = models.ForeignKey(Location, null=True, blank=True)
     contact_details = models.CharField(max_length=255, blank=True)
     free_text = models.CharField(max_length=255, blank=True)
     sport = models.CharField(max_length=100)
-    image = models.ForeignKey(UploadedFile, null=True)
+    image = models.ForeignKey(UploadedFile, null=True, blank=True)
 
     TeamWithNameAlreadyExistsError = _TeamWithNameAlreadyExistsError
+
+    def update_location(self, location_info):
+        if not location_info:
+            self.location = None
+            return
+
+        if not self.location:
+            self.location = Location.from_post_data(location_info)
+        else:
+            self.location.update_from_post_data(location_info)
 
 
 class TeamAdministrator(models.Model):

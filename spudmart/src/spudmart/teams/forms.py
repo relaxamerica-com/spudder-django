@@ -1,4 +1,5 @@
 from django import forms
+from django.forms.models import ModelForm
 from spudderdomain.models import TeamPage
 from spudmart.venues.models import SPORTS
 
@@ -20,3 +21,8 @@ class CreateTeamForm(forms.Form):
             raise forms.ValidationError("The team name you are using is already taken, try adding the town or city?")
         return cleaned_data
 
+
+class TeamPageForm(ModelForm):
+    class Meta:
+        model = TeamPage
+        exclude = ('image', 'location')

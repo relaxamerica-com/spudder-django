@@ -1,8 +1,9 @@
 from django.shortcuts import render, redirect
+import settings
 from spudderdomain.controllers import TeamsController
-from spudderdomain.models import TeamPage
+from spudderdomain.models import TeamPage, Location
 # from spudderdomain.forms import TeamPageForm
-from spudmart.teams.forms import CreateTeamForm
+from spudmart.teams.forms import CreateTeamForm, TeamPageForm
 from spudmart.upload.forms import UploadForm
 from google.appengine.api import blobstore
 from django.http import HttpResponseRedirect, HttpResponse
@@ -38,29 +39,40 @@ def create_team(request):
         {'form': form, 'upload_url': blobstore.create_upload_url('/team/create')})
 
 
+def _update_team_page_location(page, location):
+    if location:
+        if not page.location:
+            page.location = Location.from_post_data(location)
+        else:
+            page.location.update_from_post_data(location)
+    else:
+        page.location = None
+
+
 def team_page(request, page_id):
     page = TeamPage.objects.get(pk=page_id)
+
     if request.method == 'POST':
-        pass
-        # form = TeamPageForm(request.POST, instance=page)
-        # logging.info(form.errors)
-        # page_model = form.save(False)
-        # page_model.team = request.user
-        # if len(request.FILES) > 0:
-        #     avatar_form = UploadForm(request.POST, request.FILES)
-        #     avatar = avatar_form.save()
-        #     page_model.avatar = avatar
-        # page_model.save()
-        # return HttpResponseRedirect('/team/page/%s' % page_model.id)
-    # form = TeamPageForm(instance=page)
-    return render(
-        request,
-        'spudderteams/pages/team_page_edit.html',
-        {
-            'upload_url' : blobstore.create_upload_url('/team/page/%s' % page.id),
-            'page' : page,
-            'sports' : SPORTS
-        })
+        form = TeamPageForm(request.POST, instance=page)
+
+        if form.is_valid():
+            updated_page = form.save(commit=False)
+
+            location_info = request.POST['location_info']
+            updated_page.update_location(location_info)
+
+            updated_page.save()
+
+            return HttpResponseRedirect('/team/page/%s' % page_id)
+
+    form = TeamPageForm(instance=page)
+
+    return render(request, 'spudderteams/pages/team_page_edit.html', {
+        'places_api_key': settings.GOOGLE_PLACES_API_KEY,
+        'page': page,
+        'form': form,
+        'sports': SPORTS
+    })
 
 
 def public_view(request, page_id):
