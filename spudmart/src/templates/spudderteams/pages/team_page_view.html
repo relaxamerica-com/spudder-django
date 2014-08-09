@@ -1,89 +1,216 @@
-{% extends 'spudderfans/pages/dashboard.html' %}
+{% extends 'spudderteams/public_page_base.html' %}
 
-{% block google_analytics_additions %}
-    ga('set', 'contentGroup1', 'FANS - FAN PAGE VIEW');
+{% load accounts %}
+
+{% block title %}
+    {{ page.name }}
 {% endblock %}
 
-{% block side_nav %}{% endblock side_nav %}
+{% block meta %}
+	{{ block.super }}
+	<meta property="og:title" content="{{ page.name }} | Spudder - Sports Updates Made Simple">
+	<meta property="og:description" content="Check out this super team's page - {{ page.name }} - See the great Sports Updates they have shared!">
+	{% if page.avatar %} <meta property="og:image" content="http://{{ request.META.HTTP_HOST }}/file/serve/{{ page.image.id }}">
+        {% else %}<meta property="og:image" content="http://{{ request.META.HTTP_HOST }}/static/img/spudderfans/button-fans-large.png">
+	{% endif %}
+{% endblock %}
 
-{% block dashboard_page %}
-    <div class="row">
-        <div class="col-sm-8">
-            <div class="post-heading">
-                <h3 class="team-name">
-                    {{ page.username }}
-                    
-                    <div class="pull-right">
-                	{% if page.facebook %}
-                		<a href="{{ page.facebook }}">
-                			<i class="fa fa-facebook"> </i>
-                		</a>
-                	{% endif %}
-                	{% if page.instagram %}
-                		<a href="{{ page.instagram }}">
-                			<i class="fa fa-instagram"> </i>
-                		</a>
-                	{% endif %}
-                	{% if page.google_plus %}
-                		<a href="{{ page.google_plus }}">
-                			<i class="fa fa-google-plus"> </i>
-                		</a>
-                	{% endif %}
-                	{% if page.twitter %}
-                		<a href="{{ page.twitter }}">
-                			<i class="fa fa-twitter"> </i>
-                		</a>
-                	{% endif %}
-                	{% if page.linkedin %}
-                		<a href="{{ page.linkedin }}">
-                			<i class="fa fa-linkedin"> </i>
-                		</a>
-                	{% endif %}
-                </div>
-                </h3>
+{% block cover_image %}
+    {% if page.cover_image %}
+        <div id="cover-image-container" style="text-align:center;">
+            <img src=/file/serve/{{ page.cover_image.id }} height="400px" />
+        </div>
+    {% else %}
+        {% if page.location %}
+            <div class="row">
+                <div style="height:400px; margin-top: -18px;" id="jumbo-map-container"></div>
+            </div>
+        {% else %}
+            <div class="team-jumbotron-default"></div>
+        {% endif %}
+    {% endif %}
+
+    {% if can_edit %}
+        <div style="position:absolute; top:20px; right:20px;">
+            <a class="btn btn-primary" href="/team/{{ page.id }}/edit_cover">Edit Cover Image</a>
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block cover_title %}
+    {% if page.image %}
+        <img id="student-logo" src="/file/serve/{{ page.image.id }}" height="100px" style="margin-top:10px" />
+    {% else %}
+        <img id="student-logo" src="/static/img/spudderteams/button-teams-medium.png" style="margin-top:10px" />
+    {% endif %}
+
+    <span id="display-name">
+        {{ page.name }}
+    </span>
+    {% if can_edit %}
+        <div class="pull-right" style="position:absolute; bottom: -20px; right: 10px;">
+            <div class="btn btn-primary" id="edit">
+                Edit Mode
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block main_page %}
+    <div class="edit-mode well">
+        <h2>Edit Your Information</h2>
+        <form method="post" enctype="multipart/form-data" role="form">
+            <div class="form-group edit-mode">
+                <label>Upload a profile image (logo):</label>
+                <input type="file" name="avatar" id="logo-input" class="form-control" />
             </div>
 
-            <div id="fan-page-carousel" class="carousel slide" data-ride="carousel">
-                <!-- Wrapper for slides -->
-                <div class="carousel-inner">
-                    {% if page.images|length > 0 %}
-                        {% for image in page.images %}
-                            <div class="item {% if forloop.counter0 == 0 %}active{% endif %}">
-                                <img src="/file/serve/{{ image }}" />
-                            </div>
-                        {% endfor %}
-                    {% else %}
-                        <div class="item active">
-                            <img src="/static/img/spudderspuds/button-spuds-large.png" height="300px"/>
-                            <div class="carousel-caption">
-                                <div class="alert alert-info">
-                                    <h4>No images yet</h4>
-                                    <p>Stay tuned, there will soon be images for this fan!</p>
+            <a class="btn btn-primary" id="save-logo">Save</a>
+            <div class="alert" id="logo-name-alert" style="margin-top:10px"></div>
+        </form>
+    </div>
+
+    <div style="min-height: 362px; margin: 0 auto; width: 100%; vertical-align: middle; text-align: center; padding:15px;">
+        <div class="row-fluid" style="height:100%;">
+            <div class="col-md-12 contents" style="height:100%;">
+                <div class="alert"></div>
+                <div class="content active" id="spuds">
+                    <div style="padding-bottom: 30px">
+                        <h4 style="margin-bottom: 0"><abbr title="Sports Updates">SPUDS</abbr> from this team</h4>
+                        <p class="help-block">Here are the SPUDS created by this team!</p>
+                    </div>
+                    <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+                        <div class="carousel-inner">
+                            <div class="item active">
+                                <img src="/static/img/spudderspuds/button-spuds-large.png" height="300px"/>
+                                <div class="carousel-caption">
+                                    <div class="alert alert-info">
+                                        <h4>No SPUDS Yet</h4>
+                                        <p>Stay tuned, there will soon be SPUDS for this team!</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    {% endif %}
-                </div>
 
-                <!-- Controls -->
-                <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
-                    <span class="icon-prev"></span>
-                </a>
-                <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
-                    <span class="icon-next"></span>
-                </a>
-            </div>
-
-            <div class="top-wrapper">
-                <div class="offer-description">
-                    <p>{{ page.free_text }}</p>
+                        <!-- Controls -->
+                        <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
+                            <span class="icon-prev"></span>
+                        </a>
+                        <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
+                            <span class="icon-next"></span>
+                        </a>
+                    </div>
                 </div>
             </div>
-        </div>
-
-        <div class="col-sm-4" id="fan-page-details-container">
-            {% include 'spudderfans/parts/fan_page_details.html' %}
         </div>
     </div>
-
 {% endblock %}
+
+{% block js %}
+    {{ block.super }}
+
+    <script type="text/javascript" src="/static/js/libs/jquery.serialize.file.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=true&libraries=geometry"></script>
+    <script type="text/javascript" src="/static/js/libs/google.map.js"></script>
+
+    <script type="text/javascript">
+        window.isEditMode = false;
+
+        $('.content').not('.active').hide();
+
+        $(document).ready(function(){
+            var editMode = $('.edit-mode'),
+                viewMode = $('.view-mode');
+
+            $('.alert').each(function(i, alert) {
+               var $alert = $(alert);
+               if ($alert.html() == "")
+                   $alert.hide();
+            });
+
+            $('#edit').click(function(){
+                if (window.isEditMode){
+                    editMode.hide();
+                    viewMode.show();
+                    $(this).html('Edit Mode');
+                    window.isEditMode = false;
+                } else{
+                    viewMode.hide();
+                    editMode.show();
+                    $(this).html('Show Mode');
+                    window.isEditMode = true;
+                }
+            });
+
+            $('#save-logo').click(function() {
+                console.log('Save logo click...');
+                var form = $(this).parents('form'),
+                    files = $(form).serializeFiles(),
+                    alert = $('#logo-name-alert');
+
+                $.get('/upload/get_upload_url', function(data) {
+                    $.ajax({
+                        url : data,
+                        data : files,
+                        cache : false,
+                        contentType : false,
+                        processData : false,
+                        type : 'POST',
+                        success : function(data) {
+                            var parsed = JSON.parse(data),
+                                response = $.post('/team/{{ page.id }}/save_avatar', {
+                                    'avatar' : parsed['uploaded_files'][0]
+                                });
+
+                            response.done(function(data) {
+                                if (parsed['uploaded_files'].length > 0){
+                                    showAlert(alert, 'Your new logo have been saved.', 'success', true);
+                                    $('#student-logo').attr('src', parsed['uploaded_files'][0]);
+                                }
+                            });
+                        }
+                    });
+                });
+            });
+
+            $('#nav-btn-wrapper').find('a').not('[title="School Page"]').click(function(){
+                if(!$(this).hasClass('active')) {
+                    var currentTab = $(this).attr('openTab');
+
+                    $('.alert').not('.alert-info').hide();
+
+                    $('#nav-btn-wrapper').find('.active').removeClass('active');
+
+                    hide($('.contents > div.content'));
+
+                    $(this).addClass('active');
+
+                    show(currentTab);
+                }
+            });
+
+            function show(element) {
+                $('.contents > .active').removeClass('active');
+                $(element).addClass('active');
+                $(element).show();
+            }
+
+            function hide(elements) {
+                $.each(elements, function() {
+                    $(this).hide();
+                });
+            }
+        });
+    </script>
+
+    <script type="text/javascript">
+        window.twitterPopupText = "See the great Sports Updates that this fan has shared on their page!";
+
+        {% if page.location %}
+            $(document).ready(function () {
+                initWithCoords(parseFloat("{{ page.location.latitude }}"), parseFloat("{{ page.location.longitude }}"))
+            });
+        {% endif %}
+    </script>
+{% endblock %}
+

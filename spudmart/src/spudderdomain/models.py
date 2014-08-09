@@ -177,6 +177,7 @@ class TeamPage(models.Model):
     free_text = models.CharField(max_length=255, blank=True)
     sport = models.CharField(max_length=100)
     image = models.ForeignKey(UploadedFile, null=True, blank=True)
+    cover_image = models.ForeignKey(UploadedFile, blank=True, null=True, related_name='team_page_cover_image')
 
     TeamWithNameAlreadyExistsError = _TeamWithNameAlreadyExistsError
 
