@@ -23,17 +23,14 @@
                 <form action="" method="post" id="create-team-form" class="fan-page-form" enctype="multipart/form-data" role="form">
                     <div class="form-group edit-mode edit-mode-fan" style="display: block;">
                         <label>Name:</label>
-                        <span class="input-required">*required</span>
                         <input  name="name" id="name" class="form-control" value="{{form.name.value|default:"" }}"/>
                     </div>
                     <div class="form-group edit-mode" style="display: block;">
                         <label>Last name:</label>
-                        <span class="input-required">*required</span>
                         <input  name="last_name" id="last_name" class="form-control" value="{{form.last_name.value|default:"" }}" />
                     </div>
                     <div class="form-group edit-mode" style="display: block;">
                         <label>Day of Birth:</label>
-                        <span class="input-required">*required</span>
                         <input type="date" name="date_of_birth" id="date_of_birth" class="form-control" value="{{form.date_of_birth.value|date:"m/d/Y" }}" />
                     </div>
                     <div class="form-group">
@@ -66,10 +63,7 @@
 
             $form.validate({
                 rules: {
-                    name: "required",
-                    last_name: "required",
-                    email: { required: true, email: true },
-                    date_of_birth: "required"
+                    email: { email: true, required: true }
                 },
 
                 errorPlacement: function(error, element) {
