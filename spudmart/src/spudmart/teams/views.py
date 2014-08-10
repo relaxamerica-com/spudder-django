@@ -27,13 +27,17 @@ def create_team(request):
             if image_form.is_valid():
                 image = image_form.save()
 
-            TeamsController.CreateTeam(
+            team = TeamsController.CreateTeam(
                 request.current_role,
                 name=form.cleaned_data.get('team_name'),
                 contact_details=form.cleaned_data.get('contact_details'),
                 free_text=form.cleaned_data.get('free_text'),
                 sport=dict(form.fields['sport'].choices)[form.cleaned_data.get('sport')],
                 image=image)
+
+            location_info = request.POST['location_info']
+            team.update_location(location_info)
+            team.save()
 
             return redirect('/team/list')
     return render(request, 'spudderspuds/teams/pages/create_team.html', {

@@ -18,8 +18,8 @@
             <div class="form-group">
                 <label class="control-label">Team name</label>
                 <span class="input-required">*required</span>
-                <input name="team_name" title="The name of your team must be unique."
-                     placeholder="Team name" required="required" class="form-control"
+                <input name="team_name"
+                     placeholder="Team name" class="form-control"
                      maxlength="255" id="id_team_name" type="text">
                 <span class="help-block">The name of your team must be unique.</span>
             </div>
@@ -28,33 +28,20 @@
             <div class="form-group">
                 <label class="control-label" for="id_sport">Sport</label>
                 <span class="input-required">*required</span>
-                <select name="sport" title="" required="required" class="form-control" id="id_sport">
+                <select name="sport" class="form-control" id="id_sport">
                     {% for sport in SPORTS %}
                         <option value="{{ forloop.counter0 }}">{{ sport }}</option>
                     {% endfor %}
                 </select>
             </div>
 
-            <div class="form-group">
-                <label class="control-label">Contact details</label>
-                <input name="contact_details"
-                       title="How should people contact you and your team? Leave instructions, number and emails addresses here!"
-                       placeholder="Contact details" class="form-control" maxlength="255"
-                       id="id_contact_details" type="text">
-                <span class="help-block">
-                    How should people contact you and your team? Leave instructions, number and emails addresses here!
-                </span>
-            </div>
-
-            <div class="form-group">
-                <label class="control-label">Contact details</label>
-                <input name="contact_details"
-                       title="How should people contact you and your team? Leave instructions, number and emails addresses here!"
-                       placeholder="Contact details" class="form-control" maxlength="255"
-                       id="id_contact_details" type="text">
-                <span class="help-block">
-                    How should people contact you and your team? Leave instructions, number and emails addresses here!
-                </span>
+            <div class="form-group edit-mode" style="display: block;">
+                <label>Location:</label>
+                <span class="input-required">*required</span>
+                <input id="location" name="location" class="controls" type="text" placeholder="Enter a location">
+                <input id="infoWindow" name="infoWindow" type="hidden" {% if info_window %}value="{{ info_window }}"{% endif %}>
+                <input id="location_info" name="location_info" type="hidden" {% if page.location %}value="{{ page.location.post_data }}"{% endif %}/>
+                <div id="map_canvas" class="google-map-canvas"></div>
             </div>
 
             {% buttons %}
@@ -68,3 +55,45 @@
         </fieldset>
     </form>
 {% endblock %}
+
+{% block js %}
+    <script src="/media/dashboard/js/jquery.validate.js"></script>
+    <script src="/media/dashboard/js/additional-methods.min.js"></script>
+    <script src="/media/dashboard/js/jquery.validate.spudder.rules.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key={{ places_api_key }}&v=3.exp&sensor=false&libraries=places"></script>
+    <script src="/static/js/google_maps/init.js"></script>
+
+    <script type="text/javascript">
+        initializeGoogleMaps();
+
+        $(document).ready(function () {
+            var $form = $('form');
+
+            $form.validate({
+                rules: {
+                    team_name: "required"
+                },
+
+                errorPlacement: function(error, element) {
+                    error.appendTo( element.parent() );
+                },
+
+                submitHandler: function (form) {
+                    var $locationInfo = $('#location_info');
+
+                    if ($locationInfo.val()) {
+                        form.submit();
+                    } else {
+                        var $error = $(document.createElement('label'));
+
+                        $error.addClass('error').attr('for', 'location');
+                        $error.text('This field is required');
+                        $error.css('display', 'block');
+
+                        $('#map_canvas').before($error);
+                    }
+                }
+            });
+        });
+    </script>
+{% endblock js %}

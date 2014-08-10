@@ -21,13 +21,9 @@
             <img src=/file/serve/{{ page.cover_image.id }} height="400px" />
         </div>
     {% else %}
-        {% if page.location %}
-            <div class="row">
-                <div style="height:400px; margin-top: -18px;" id="jumbo-map-container"></div>
-            </div>
-        {% else %}
-            <div class="team-jumbotron-default"></div>
-        {% endif %}
+        <div class="row">
+            <div style="height:400px; margin-top: -18px;" id="jumbo-map-container"></div>
+        </div>
     {% endif %}
 
     {% if can_edit %}

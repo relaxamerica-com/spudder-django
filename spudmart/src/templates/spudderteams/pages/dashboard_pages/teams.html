@@ -38,11 +38,11 @@
                 {% endfor %}
             </tbody>
         </table>
-        <a href="/team/create/" class="btn btn-primary" style="margin-bottom: 20px;">
+        <a href="/team/create" class="btn btn-primary" style="margin-bottom: 20px;">
             <i class="fa fa-fw fa-plus"></i> Create another team!
         </a>
     {% else %}
-        {% include 'spudderteams/parts/../../quotes/quote_teams_empty_list.html' %}
+        {% include 'spudderteams/quotes/quote_teams_empty_list.html' %}
     {% endif %}
 
 {% endblock %}
