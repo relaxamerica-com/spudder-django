@@ -6,12 +6,15 @@ from spudmart.venues.models import SPORTS
 
 class CreateTeamForm(forms.Form):
     team_name = forms.CharField(max_length=255, help_text='The name of your team must be unique.')
+    sport = forms.ChoiceField(choices=[('%s' % x, SPORTS[x]) for x in range(len(SPORTS))])
     contact_details = forms.CharField(
         max_length=255,
         help_text='How should people contact you and your team? Leave instructions, number and emails '
-                  'addresses here!')
-    free_text = forms.CharField(max_length=255, help_text='Say something about your team!')
-    sport = forms.ChoiceField(choices=[('%s' % x, SPORTS[x]) for x in range(len(SPORTS))])
+                  'addresses here!',
+        required=False)
+    free_text = forms.CharField(
+        max_length=255, help_text='Say something about your team!',
+        required=False)
     file = forms.FileField(required=False, label="Image")
 
     def clean(self):

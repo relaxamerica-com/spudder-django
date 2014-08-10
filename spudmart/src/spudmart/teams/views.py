@@ -26,17 +26,20 @@ def create_team(request):
             if image_form.is_valid():
                 image = image_form.save()
 
-            team = TeamsController.CreateTeam(
+            TeamsController.CreateTeam(
                 request.current_role,
                 name=form.cleaned_data.get('team_name'),
                 contact_details=form.cleaned_data.get('contact_details'),
                 free_text=form.cleaned_data.get('free_text'),
                 sport=dict(form.fields['sport'].choices)[form.cleaned_data.get('sport')],
                 image=image)
-            return redirect('/team/page/%s' % team.id)
-    return render(
-        request, 'spudderspuds/teams/pages/create_team.html',
-        {'form': form, 'upload_url': blobstore.create_upload_url('/team/create')})
+
+            return redirect('/team/list')
+    return render(request, 'spudderspuds/teams/pages/create_team.html', {
+        'form': form,
+        'upload_url': blobstore.create_upload_url('/team/create'),
+        'SPORTS': SPORTS
+    })
 
 
 def _update_team_page_location(page, location):
