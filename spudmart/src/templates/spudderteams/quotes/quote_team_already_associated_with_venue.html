@@ -1,0 +1,15 @@
+{% extends 'spudderteams/quotes/base_quote_message.html' %}
+
+{% block quote_class %}centered-quote{% endblock %}
+
+{% block alert_style %}display: inline-block{% endblock %}
+
+{% block content %}
+    <h4>Your team is already associated with {{ associated_venue }} venue!</h4>
+    <p>If you want to associate your team with different venue first you have to remove existing association.</p>
+    <p class="button-container">
+        <a class="btn btn-primary" href="/team/associate/{{ page.id }}/remove">
+            Remove association
+        </a>
+    </p>
+{% endblock %}

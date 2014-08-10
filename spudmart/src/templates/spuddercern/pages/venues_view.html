@@ -654,7 +654,20 @@
                 {% endif %}
             </ul>
         </div>
-    </div>
+    {% endif %}
+
+    {% if teams %}
+        <div style="border-top: 1px solid lightgray;">
+            <h3>
+                Associated teams
+            </h3>
+
+            <ul class="associated-teams">
+                {% for team in teams %}
+                    <li><a href="/team/{{ team.id }}" target="_blank">{{ team }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
     {% endif %}
 {% endblock %}
 

@@ -1,0 +1,63 @@
+{% extends 'spudderfans/pages/dashboard.html' %}
+
+{% block google_analytics_additions %}
+    ga('set', 'contentGroup1', 'TEAMS - Teams');
+{% endblock %}
+
+{% block css %}
+    {{ block.super }}
+
+    <link rel="stylesheet" href="/static/css/spudderteams.css" />
+{% endblock %}
+
+{% block dashboard_page %}
+    <div class="page-header">
+        <h1>
+            <i class="fa fa-fw fa-map-marker"></i> Venues <small>Associate your Team with the Venue!</small>
+        </h1>
+    </div>
+
+    {% if is_associated %}
+        {% include 'spudderteams/quotes/quote_team_already_associated_with_venue.html' %}
+    {% else %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Venue</th>
+                    <th style="width: 70px;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for venue in venues %}
+                    <tr>
+                        <td>{{forloop.counter0|add:start}}</td>
+                        <td><a href="/venues/view/{{ venue.id }}" target="_blank">{{ venue }}</a></td>
+                        <td style="white-space: nowrap">
+                            <a class="btn btn-xs btn-primary" href="/team/associate/{{ page.id }}/{{ venue.id }}" title="Associate with Venue">
+                                Associate
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        {% if total_pages > 1 %}
+            <div id="paginator-wrapper">
+                <div id="paginator"></div>
+            </div>
+        {% endif %}
+    {% endif %}
+
+{% endblock %}
+
+{% block js %}
+    <script src="/static/js/libs/bootstrap-paginator.js"></script>
+    <script src="/static/js/paginator-helpers.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            initializePaginator({{ total_pages|floatformat:0 }}, {{ paginator_page|floatformat:0 }});
+        });
+    </script>
+{% endblock js %}

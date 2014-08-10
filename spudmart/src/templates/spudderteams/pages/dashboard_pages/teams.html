@@ -29,7 +29,10 @@
                         <td style="white-space: nowrap">
                             <a class="btn btn-xs btn-primary" href="/team/page/{{ team.id }}" title="Edit">
                                 <i class="fa fa-fw fa-edit"> </i>
-                            </a>
+                                </a>
+                                <a class="btn btn-xs btn-primary" href="/team/associate/{{ team.id }}" title="Associate with Venue">
+                                    <i class="fa fa-fw fa-map-marker"> </i>
+                                </a>
                         </td>
                     </tr>
                 {% endfor %}
@@ -39,7 +42,7 @@
             <i class="fa fa-fw fa-plus"></i> Create another team!
         </a>
     {% else %}
-        {% include 'spudderteams/parts/quote_teams_empty_list.html' %}
+        {% include 'spudderteams/parts/../../quotes/quote_teams_empty_list.html' %}
     {% endif %}
 
 {% endblock %}

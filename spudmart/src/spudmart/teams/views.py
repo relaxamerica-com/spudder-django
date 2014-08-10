@@ -1,14 +1,15 @@
 from django.shortcuts import render, redirect, get_object_or_404
 import settings
 from spudderdomain.controllers import TeamsController
-from spudderdomain.models import TeamPage, Location, TeamAdministrator
+from spudderdomain.models import TeamPage, Location, TeamAdministrator, TeamVenueAssociation
 from spudmart.teams.forms import CreateTeamForm, TeamPageForm
 from spudmart.upload.forms import UploadForm
 from google.appengine.api import blobstore
 from django.http import HttpResponseRedirect, HttpResponse
 from spudmart.upload.models import UploadedFile
+from spudmart.utils.Paginator import EntitiesPaginator
 from spudmart.utils.cover_image import save_cover_image_from_request, reset_cover_image
-from spudmart.venues.models import SPORTS
+from spudmart.venues.models import SPORTS, Venue
 
 
 def teams_list(request):
@@ -92,11 +93,14 @@ def public_view(request, page_id):
 
         return len(admins) > 0
 
-    page = TeamPage.objects.get(pk = page_id)
+    page = get_object_or_404(TeamPage, pk=page_id)
+    is_associated, associated_venue = _check_if_team_is_associated(page)
 
     return render(request, 'spudderteams/pages/team_page_view.html',{
         'page': page,
-        'can_edit': can_edit(request.user, request.current_role, page)
+        'can_edit': can_edit(request.user, request.current_role, page),
+        'is_associated': is_associated,
+        'venue': associated_venue,
     })
 
 
@@ -134,3 +138,54 @@ def reset_cover(request, page_id):
     reset_cover_image(page)
 
     return HttpResponse('OK')
+
+
+def _check_if_team_is_associated(page):
+    is_associated = TeamVenueAssociation.objects.filter(team_page=page).count() > 0
+
+    if is_associated:
+        associated_venue = TeamVenueAssociation.objects.get(team_page=page).venue
+    else:
+        associated_venue = None
+
+    return is_associated, associated_venue
+
+
+def associate_with_venue(request, page_id):
+    page = get_object_or_404(TeamPage, pk=page_id)
+    venues = Venue.objects.all().order_by('name')
+    is_associated, associated_venue = _check_if_team_is_associated(page)
+
+    # Pagination
+    current_page = int(request.GET.get('page',1))
+    venues_paginator = EntitiesPaginator(venues, 20)
+    venue_page = venues_paginator.page(current_page)
+
+    return render(request, 'spudderteams/pages/dashboard_pages/associate_with_venue.html', {
+        'page': page,
+        'is_associated': is_associated,
+        'associated_venue': associated_venue,
+        'venues': venue_page.object_list,
+        'total_pages': venues_paginator.num_pages,
+        'paginator_page': venue_page.number,
+        'start': venue_page.start_index(),
+    })
+
+
+def remove_association_with_venue(request, page_id):
+    page = get_object_or_404(TeamPage, pk=page_id)
+    TeamVenueAssociation.objects.get(team_page=page).delete()
+
+    return HttpResponseRedirect('/team/associate/%s' % page_id)
+
+
+def associate_team_with_venue(request, page_id, venue_id):
+    page = get_object_or_404(TeamPage, pk=page_id)
+    venue = get_object_or_404(Venue, pk=venue_id)
+
+    TeamVenueAssociation(
+        team_page=page,
+        venue=venue
+    ).save()
+
+    return HttpResponseRedirect('/team/list')

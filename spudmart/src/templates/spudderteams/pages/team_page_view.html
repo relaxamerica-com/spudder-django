@@ -104,7 +104,73 @@
             </div>
         </div>
     </div>
+
+    {% if page.free_text %}
+        <div class="clearfix"></div>
+        <div>
+            <h3 style="text-align: center">Description:</h3>
+            <p style="margin-left: 30px; margin-right: 30px; text-align: justify;">{{ page.free_text }}</p>
+        </div>
+    {% endif %}
 {% endblock %}
+
+{% block sidebar %}
+    <div id="venue-sponsor-container">
+        <h3>
+            Details
+        </h3>
+
+        <ul class="sponsor-details">
+            <li>
+                <label>Sport: </label> {{ page.sport }}
+            </li>
+
+            {% if page.contact_details %}
+                <li>
+                    <label>Contact details: </label> {{ page.contact_details }}
+                </li>
+            {% endif %}
+
+            {% if page.location %}
+                <li>
+                    <label>Location: </label> <a href="{{ page.location.external_link }}" target="_blank">{{ page.location }}</a>
+                </li>
+            {% endif %}
+        </ul>
+    </div>
+
+    {% if not is_associated %}
+        {% include 'spudderteams/quotes/quote_team_not_associated_with_venue.html' %}
+    {% else %}
+        <div id="venue-sponsor-container" style="border-top: 1px solid lightgray; padding-top: 20px">
+            {% if venue.logo %}
+                <img id="venue-logo" src="/file/serve/{{ venue.logo.id }}" height="100px"
+                     onclick="window.open('/venues/view/{{ venue.id }}')" style="cursor: pointer"/>
+            {% else %}
+                <img id="venue-logo" src="/static/img/spuddersponsors/button-sponsors-medium.png"
+                    onclick="window.open('/venues/view/{{ venue.id }}')" style="cursor: pointer"/>
+            {% endif %}
+
+            <h3>
+                Associated Venue
+            </h3>
+
+            <ul class="sponsor-details">
+                <li>
+                    <label>Name: </label> {{ venue }}
+                </li>
+
+                <li>
+                    <label>Page: </label> <a href="/venues/view/{{ venue.id }}" target="_blank">View Venue page</a>
+                </li>
+
+                <li>
+                    <label>Tag: </label> @{{ venue.name }}
+                </li>
+            </ul>
+        </div>
+    {% endif %}
+{% endblock sidebar %}
 
 {% block js %}
     {{ block.super }}

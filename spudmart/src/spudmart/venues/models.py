@@ -87,6 +87,12 @@ class Venue(models.Model):
         deleted_venue(self)
         super(Venue, self).delete(using)
 
+    def __unicode__(self):
+        return unicode(self.aka_name)
+
+    def __str__(self):
+        return unicode(self).encode('utf-8')
+
 
 class PendingVenueRental(models.Model):
     venue = models.ForeignKey(Venue)

@@ -1,0 +1,14 @@
+{% extends 'spudderteams/quotes/base_quote_message.html' %}
+
+{% block alert_style %}display: inline-block{% endblock %}
+
+{% block content %}
+    <h4>This team is not associated with any venue!</h4>
+    {% if can_edit %}
+        <p>If you want to associate your team, please go to 'My Teams' page in your Dashboard.</p>
+        <a class="btn   btn-primary" href="/team/associate/{{ page.id }}" title="Associate with Venue"
+            style="margin: 20px auto 0; display: table;">
+            <i class="fa fa-fw fa-map-marker"> </i> Associate with Venue
+        </a>
+    {% endif %}
+{% endblock %}

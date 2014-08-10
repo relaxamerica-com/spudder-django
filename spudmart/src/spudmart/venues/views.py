@@ -1,6 +1,7 @@
 import json
 from django.shortcuts import render, get_object_or_404
 from django.template.loader import render_to_string
+from spudderdomain.models import TeamVenueAssociation
 from spudmart.utils.cover_image import reset_cover_image, save_cover_image_from_request
 from spudmart.utils.emails import send_email
 from spudmart.venues.models import Venue, SPORTS, PendingVenueRental
@@ -70,10 +71,12 @@ def view(request, venue_id):
             sponsor_info = True
     
     storage = KrowdIOStorage.GetOrCreateForVenue(venue_id)
-    
     venue_spuds = get_user_mentions_activity(storage)
+    teams = [team.team_page for team in TeamVenueAssociation.objects.filter(venue=venue)]
+
     return render(request, 'spuddercern/pages/venues_view.html', {
         'venue': venue,
+        'teams': teams,
         'sports': SPORTS,
         'medical_address': medical_address,
         'is_recipient': is_recipient,

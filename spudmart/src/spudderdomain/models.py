@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.db import models
 from djangotoolbox.fields import DictField, ListField
 from spudmart.upload.models import UploadedFile
-from spudmart.venues.models import SPORTS
+from spudmart.venues.models import SPORTS, Venue
 
 
 class LinkedServiceTypeExistsForThisRole(Exception):
@@ -169,12 +169,25 @@ class Location(models.Model):
     def update_from_post_data(self, post_data):
         _update_location_from_post_data(self, post_data)
 
+    @property
+    def external_link(self):
+        start_index = self.info_window.index('href="') + 6
+        end_index = self.info_window.index(' target') - 1
+
+        return self.info_window[start_index:end_index]
+
+    def __unicode__(self):
+        return unicode(self.address)
+
+    def __str__(self):
+        return unicode(self).encode('utf-8')
+
 
 class TeamPage(models.Model):
     name = models.CharField(max_length=255)
     location = models.ForeignKey(Location, null=True, blank=True)
     contact_details = models.CharField(max_length=255, blank=True)
-    free_text = models.CharField(max_length=255, blank=True)
+    free_text = models.TextField(blank=True)
     sport = models.CharField(max_length=100)
     image = models.ForeignKey(UploadedFile, null=True, blank=True)
     cover_image = models.ForeignKey(UploadedFile, blank=True, null=True, related_name='team_page_cover_image')
@@ -191,8 +204,19 @@ class TeamPage(models.Model):
         else:
             self.location.update_from_post_data(location_info)
 
+    def __unicode__(self):
+        return unicode(self.name)
+
+    def __str__(self):
+        return unicode(self).encode('utf-8')
+
 
 class TeamAdministrator(models.Model):
     entity_type = models.CharField(max_length=255)
     entity_id = models.CharField(max_length=255)
     team_page = models.ForeignKey(TeamPage, related_name='team_administrator_team_page')
+
+
+class TeamVenueAssociation(models.Model):
+    team_page = models.ForeignKey(TeamPage, related_name='team_venue_team_page')
+    venue = models.ForeignKey(Venue, related_name='team_venue_venue')
