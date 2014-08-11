@@ -23,7 +23,7 @@
 {% block cover_image %}
     {% if page.cover_image %}
         <div id="cover-image-container" style="text-align:center;">
-            <img src=/file/serve/{{ page.cover_image.id }} height="400px" />
+            <img src="/file/serve/{{ page.cover_image.id }}" class="jumbotron-img"/>
         </div>
     {% else %}
         <div class="fan-jumbotron-default"></div>
@@ -51,11 +51,9 @@
 	    {% endif %}
     </span>
     {% if can_edit %}
-        <div class="pull-right" style="position:absolute; bottom: -20px; right: 10px;">
-            <div class="btn btn-primary" id="edit">
-                Edit Mode
-            </div>
-        </div>
+        <button class="btn btn-primary" id="edit">
+            Edit Mode
+        </button>
     {% endif %}
 {% endblock %}
 
@@ -114,6 +112,8 @@
 <script type="text/javascript" src="/static/js/libs/jquery.serialize.file.js"></script>
 <script type="text/javascript">
     window.isEditMode = false;
+    window.twitterPopupText = "See the great Sports Updates that this fan has shared on their page!";
+    if($('.jumbotron').height() > $('.jumbotron-img').height()) {% if page.cover_image %}$('.jumbotron').css('height', $('.jumbotron-img').height() + "px");{% endif %}
 
     $('.content').not('.active').hide();
 
@@ -200,10 +200,6 @@
 			});
 		}
     });
-</script>
-{{ block.super }}
-<script type="text/javascript">
-	window.twitterPopupText = "See the great Sports Updates that this fan has shared on their page!";
 </script>
 {% endblock %}
 

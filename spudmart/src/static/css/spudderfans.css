@@ -13841,14 +13841,7 @@ legend {
   }
 }
 .jumbotron-img {
-  max-height: 100%;
-  max-width: 100%;
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  margin: auto;
+  width: 100%;
 }
 .jumbotron {
   height: 250px;
@@ -13930,8 +13923,11 @@ input[type="file"] {
   display: block;
 }
 .fan-jumbotron-default {
-  background-image: url("/static/img/spudderspuds/button-spuds-large.png");
+  background-image: url("/static/img/spudderfans/button-fans-large.png");
   opacity: 0.2;
   height: 100%;
   background-size: 12%;
+}
+.jumbotron-img {
+  width: 100%;
 }

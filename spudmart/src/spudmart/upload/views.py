@@ -60,8 +60,7 @@ def get_croppic_upload(request):
 
 def croppic_upload_endpoint(request):
     json_dict = {'status': 'success'}
-    files_dict = {}
-    files_dict['file'] = [request.FILES['img']]
+    files_dict = {'file': [request.FILES['img']]}
     FILES = MultiValueDict(files_dict)
     form = UploadForm(request.POST, FILES)
     model = form.save(False)
@@ -70,7 +69,7 @@ def croppic_upload_endpoint(request):
     model.save()
     blob_key = str(model.file.file.blobstore_info.key())
     i = images.Image(blob_key=blob_key)
-    i.im_feeling_lucky()
+    i.rotate(0)
     i.execute_transforms()
     json_dict['width'] = i.width / 2
     json_dict['height'] = i.height / 2
@@ -130,7 +129,7 @@ def croppic_crop(request):
     blob_key = str(old.file.file.blobstore_info.key())
 
     if imgW >= cropW and imgH >= cropH:
-        i = images.Image(image_data=BlobReader(blob_key).read())
+        i = images.Image(blob_key=blob_key)
         i.crop(X1 / imgW, Y1 / imgH, (cropW + X1) / imgW, (cropH + Y1) / imgH)
         resized = i.execute_transforms()
         file_name = files.blobstore.create(mime_type='image/png')

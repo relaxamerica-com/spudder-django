@@ -264,6 +264,8 @@
 <script type="text/javascript">
     window.isEditMode = false;
 
+    {% if venue.cover_image %}if($('.jumbotron').height() > $('.jumbotron-img').height()) $('.jumbotron').css('height', $('.jumbotron-img').height() + "px");{% endif %}
+
     $('.content').not('.active').hide();
 
     $(document).ready(function(){

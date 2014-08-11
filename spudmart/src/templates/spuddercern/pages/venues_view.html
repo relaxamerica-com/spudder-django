@@ -25,7 +25,7 @@
 
 {% block cover_image %}
     <div {% if not venue.cover_image %}class="hidden"{% endif %} id="cover-image-container" style="text-align:center;">
-        <img src=/file/serve/{{ venue.cover_image.id }} height="400px" />
+        <img src="/file/serve/{{ venue.cover_image.id }}" class="jumbotron-img"/>
     </div>
     <div {% if venue.cover_image %}class="hidden"{% endif %} style="height:400px" id="jumbo-map-container"></div>
     {% if can_edit %}
@@ -37,19 +37,17 @@
 {% block cover_title %}
     <p>Sponsored By:</p>
     {% if venue.logo %}
-        <img id="venue-logo" src="/file/serve/{{ venue.logo.id }}" height="100px"/>
+        <img id="venue-logo" src="/file/serve/{{ venue.logo.id }}" class="logo"/>
     {% else %}
-        <img id="venue-logo" src="/static/img/spuddersponsors/button-sponsors-medium.png" height="100px"/>
+        <img id="venue-logo" src="/static/img/spuddersponsors/button-sponsors-medium.png" class="logo"/>
     {% endif %}
-    {% if sponsor %}{{ sponsor.tag }}{% else %}@postspud{% endif %}
+    @{% if sponsor %}{{ sponsor.tag }}{% else %}postspud{% endif %}
     <br/>
     <a href="https://www.google.com/maps/dir/Current+Location/{{ venue.latitude }},{{ venue.longitude }}" target="_blank" style="text-decoration:none;"><small>{{ venue.aka_name }}</small></a>
     {% if can_edit %}
-        <div class="pull-right" style="position:relative; bottom: 0; right: 10px;">
-            <div class="btn btn-primary" id="edit">
-                Edit Mode
-            </div>
-        </div>
+        <button class="btn btn-primary" id="edit">
+            Edit Mode
+        </button>
     {% endif %}
 {% endblock %}
 
@@ -688,7 +686,7 @@
 	window.currentSelectedSport = '{{ venue.sport }}';
     window.twitterPopupText = "Checkout all the action happening near you at {{ venue.aka_name }}!";
 
-
+    {% if venue.cover_image %}if($('.jumbotron').height() > $('.jumbotron-img').height()) $('.jumbotron').css('height', $('.jumbotron-img').height() + "px");{% endif %}
 
     $('.content').hide();
     $('.active').show();

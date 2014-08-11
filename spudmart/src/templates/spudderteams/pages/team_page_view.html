@@ -18,7 +18,7 @@
 {% block cover_image %}
     {% if page.cover_image %}
         <div id="cover-image-container" style="text-align:center;">
-            <img src=/file/serve/{{ page.cover_image.id }} height="400px" />
+            <img src="/file/serve/{{ page.cover_image.id }}" class="jumbotron-img"/>
         </div>
     {% else %}
         <div class="row">
@@ -177,6 +177,8 @@
 
     <script type="text/javascript">
         window.isEditMode = false;
+
+        {% if page.cover_image %}if($('.jumbotron').height() > $('.jumbotron-img').height()) $('.jumbotron').css('height', $('.jumbotron-img').height() + "px");{% endif %}
 
         $('.content').not('.active').hide();
 

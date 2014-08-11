@@ -188,6 +188,10 @@
     {% if head %}window.ownerId = {{ head.user.id }}{% endif %}
     window.isEditMode = false;
 
+    {% if school.cover_image %}
+        if($('.jumbotron').height() > $('.jumbotron-img').height()) $('.jumbotron').css('height', $('.jumbotron-img').height() + "px");
+    {% endif %}
+
     $(document).ready(function(){
         if ($('#jumbo-map-container').is(':visible')) {
             console.log('{{ school.full_address }}, {{ school.verbose_state }}');
