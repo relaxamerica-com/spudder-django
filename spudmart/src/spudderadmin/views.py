@@ -211,8 +211,8 @@ def send_email(request):
         (ode 405) if not a POST request
     """
     if request.method == "POST":
-        body = request.POST.get('message', '')
-        to = [request.POST.get('email', '')]
+        body = request.POST.get('body', '')
+        to = [request.POST.get('to', '')]
         subject = request.POST.get('subject', '')
         sender = settings.SUPPORT_EMAIL
 
