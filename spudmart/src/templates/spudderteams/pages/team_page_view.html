@@ -9,9 +9,9 @@
 {% block meta %}
 	{{ block.super }}
 	<meta property="og:title" content="{{ page.name }} | Spudder - Sports Updates Made Simple">
-	<meta property="og:description" content="Check out this super team's page - {{ page.name }} - See the great Sports Updates they have shared!">
+	<meta property="og:description" content="Check out the latest updates about {{ page.name }}. If you are a fan of {{ page.name }}, you need to see this@">
 	{% if page.avatar %} <meta property="og:image" content="http://{{ request.META.HTTP_HOST }}/file/serve/{{ page.image.id }}">
-        {% else %}<meta property="og:image" content="http://{{ request.META.HTTP_HOST }}/static/img/spudderfans/button-fans-large.png">
+        {% else %}<meta property="og:image" content="http://{{ request.META.HTTP_HOST }}/static/img/spudderteams/button-teams-large.png">
 	{% endif %}
 {% endblock %}
 
@@ -266,7 +266,7 @@
     </script>
 
     <script type="text/javascript">
-        window.twitterPopupText = "See the great Sports Updates that this fan has shared on their page!";
+        window.twitterPopupText = "Follow {{ page.name }} and check out all the Sports Updates shared and posted about them!";
 
         {% if page.location %}
             $(document).ready(function () {
