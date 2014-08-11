@@ -2,6 +2,7 @@ from django import forms
 from django.forms.models import ModelForm
 from spudderdomain.models import TeamPage
 from spudmart.venues.models import SPORTS
+from spudmart.CERN.models import STATES
 
 
 class CreateTeamForm(forms.Form):
@@ -16,6 +17,7 @@ class CreateTeamForm(forms.Form):
         max_length=255, help_text='Say something about your team!',
         required=False)
     file = forms.FileField(required=False, label="Image")
+    state = forms.ChoiceField(choices=[('%s' % x, x) for x in STATES])
 
     def clean(self):
         cleaned_data = super(CreateTeamForm, self).clean()

@@ -9,6 +9,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from spudmart.upload.models import UploadedFile
 from spudmart.utils.Paginator import EntitiesPaginator
 from spudmart.utils.cover_image import save_cover_image_from_request, reset_cover_image
+from spudmart.CERN.models import STATES
 from spudmart.venues.models import SPORTS, Venue
 
 
@@ -33,6 +34,7 @@ def create_team(request):
                 contact_details=form.cleaned_data.get('contact_details'),
                 free_text=form.cleaned_data.get('free_text'),
                 sport=dict(form.fields['sport'].choices)[form.cleaned_data.get('sport')],
+                state=dict(form.fields['state'].choices)[form.cleaned_data.get('state')],
                 image=image)
 
             location_info = request.POST['location_info']
@@ -79,7 +81,9 @@ def team_page(request, page_id):
         'places_api_key': settings.GOOGLE_PLACES_API_KEY,
         'page': page,
         'form': form,
-        'sports': SPORTS
+        'sports': SPORTS,
+        'selected_state' : STATES[page.state],
+        'states' : STATES
     })
 
 
@@ -119,6 +123,25 @@ def save_avatar(request, page_id):
     return HttpResponse('ok')
 
 
+def search_teams(request):
+    filters = {}
+    state = request.GET.get('state', None)
+    sport = request.GET.get('sport', None)
+    if state or sport:
+        filters['state']= state
+        filters['sport'] = sport
+        teams = TeamPage.objects.filter(sport = sport, state = state)
+    else:
+        teams = TeamPage.objects.all()
+    context = {
+       'teams' : teams,
+       'sports' : SPORTS,
+       'states' : STATES,
+       'filters' : filters
+    }
+    return render(request, 'spudderteams/pages/search_teams.html', context)
+    
+
 def edit_cover(request, page_id):
     page = get_object_or_404(TeamPage, pk=page_id)
 
@@ -142,6 +165,13 @@ def reset_cover(request, page_id):
     reset_cover_image(page)
 
     return HttpResponse('OK')
+
+
+def remove_image(request):
+    page = TeamPage.objects.get(team = request.user)
+    page.image = None
+    page.save()
+    return HttpResponse('ok')
 
 
 def _check_if_team_is_associated(page):

@@ -191,6 +191,7 @@ class TeamPage(models.Model):
     sport = models.CharField(max_length=100)
     image = models.ForeignKey(UploadedFile, null=True, blank=True)
     cover_image = models.ForeignKey(UploadedFile, blank=True, null=True, related_name='team_page_cover_image')
+    state = models.CharField(max_length=2)
 
     TeamWithNameAlreadyExistsError = _TeamWithNameAlreadyExistsError
 

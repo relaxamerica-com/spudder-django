@@ -29,10 +29,13 @@
                         	{% endfor %}
                         </select>
                     </div>
+                    
+                    <input name="state" id="state" type="hidden" value="{{ form.state.value }}" />
+                    
                     <div class="form-group edit-mode" style="display: block;">
                         <label>Location:</label>
                         <span class="input-required">*required</span>
-                        <input id="location" name="location" class="controls" type="text" placeholder="Enter a location">
+                        <input id="location" name="location" class="controls" type="text" placeholder="Enter a location" value="{{ selected_state }}">
                         <input id="infoWindow" name="infoWindow" type="hidden" {% if info_window %}value="{{ info_window }}"{% endif %}>
                         <input id="location_info" name="location_info" type="hidden" {% if page.location %}value="{{ page.location.post_data }}"{% endif %}/>
                         <div id="map_canvas" class="google-map-canvas"></div>
@@ -67,7 +70,7 @@
                 initializeGoogleMaps('{{ page.location.address }}', '{{ page.location.info_window }}');
             {% endautoescape %}
         {% else %}
-            initializeGoogleMaps();
+            initializeGoogleMaps('{{ selected_state }}, United States', createInfoWindow('{{ selected_state }}', '{{ selected_state }}'));
         {% endif %}
 
         $(document).ready(function () {

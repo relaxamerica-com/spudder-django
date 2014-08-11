@@ -30,6 +30,10 @@ function initialize() {
                     (place.address_components[2] && place.address_components[2].short_name || '')
                 ].join(' ');
             }
+           
+           $.when(getLatLongDetail(location)).then(function(data) {
+	           $('[name="state"]').val(data.state.short_name);
+           });
 
             var infoWindowContent = '<div><strong>' + place.name + '</strong><br>' + address +
                 '<br><a href="http://maps.google.com/?q=' + encodeURIComponent(address) + '" target="_new">External map</a>';
@@ -114,4 +118,65 @@ function initializeGoogleMaps(address, infoWindow) {
     initialInfoWindowContent = infoWindow;
 
     google.maps.event.addDomListener(window, 'load', initialize);
+}
+
+function createInfoWindow(name, address) {
+	return '<div><strong>' + name + '</strong><br>' + address +
+            '<br><a href="http://maps.google.com/?q=' + encodeURIComponent(address) + '" target="_new">External map</a>';
+}
+
+function getLatLongDetail(myLatlng) {
+    var geocoder = new google.maps.Geocoder(),
+    	deferred = new $.Deferred();
+    	
+    geocoder.geocode({ 'latLng': myLatlng },
+      function (results, status) {
+          if (status == google.maps.GeocoderStatus.OK) {
+              if (results[0]) {
+				  
+				var address = "", city = "", state = "", zip = "", country = "", formattedAddress = "";
+				var lat;
+				var lng;
+
+				for (var i = 0; i < results[0].address_components.length; i++) {
+					var addr = results[0].address_components[i];
+					// check if this entry in address_components has a type of country
+					if (addr.types[0] == 'country')
+						country = addr.long_name;
+					else if (addr.types[0] == 'street_address')// address 1
+						address = address + addr.long_name;
+					else if (addr.types[0] == 'establishment')
+						address = address + addr.long_name;
+					else if (addr.types[0] == 'route')// address 2
+						address = address + addr.long_name;
+					else if (addr.types[0] == 'postal_code')// Zip
+						zip = addr.short_name;
+					else if (addr.types[0] == ['administrative_area_level_1']) {
+						state = { 'long_name' : addr.long_name, 'short_name' : addr.short_name };
+					}
+					else if (addr.types[0] == ['locality'])// City
+						city = addr.long_name;
+				}
+
+				if (results[0].formatted_address != null) {
+					formattedAddress = results[0].formatted_address;
+				}
+
+				var location = results[0].geometry.location;
+
+				lat = location.lat();
+				lng = location.lng(); 
+
+
+				deferred.resolve({
+					'state' : state
+				});
+
+              }
+
+          }
+
+      });
+      
+  return deferred.promise();
 }
