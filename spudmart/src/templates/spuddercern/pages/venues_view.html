@@ -43,7 +43,7 @@
     {% endif %}
     @{% if sponsor %}{{ sponsor.tag }}{% else %}postspud{% endif %}
     <br/>
-    <a href="https://www.google.com/maps/dir/Current+Location/{{ venue.latitude }},{{ venue.longitude }}" target="_blank" style="text-decoration:none;"><small>{{ venue.aka_name }}</small></a>
+    <a href="https://www.google.com/maps/dir/Current+Location/{{ venue.latitude }},{{ venue.longitude }}" target="_blank" style="text-decoration:none;"><small id="venue-name">{{ venue.aka_name }}</small></a>
     {% if can_edit %}
         <button class="btn btn-primary" id="edit">
             Edit Mode
@@ -73,7 +73,7 @@
                 <input type="text" name="aka_name" value="{{ venue.aka_name }}" id="venue-aka-name-input"  class="form-control"/>
             </div>
 
-            <a class="btn btn-primary edit-mode" id="save-name">Save</a>
+            <a class="btn btn-primary edit-mode" id="save-name"><i class="fa fa-fw fa-save"></i> Save</a>
         </form>
         <div class="alert" id="logo-name-alert" style="margin-top:10px"></div>
     </div>
@@ -1005,38 +1005,45 @@
 				files = $(form).serializeFiles(),
 				name = $('#venue-name-input').val(),
 				akaName = $('#venue-aka-name-input').val(),
-                alert = $('#logo-name-alert');
+                alert = $('#logo-name-alert'),
+                icon = $('#save-name .fa-save');
 
-			$.get('/upload/get_upload_url', function(data) {
-				$.ajax({
-					url : data,
-					data : files,
-					cache : false,
-					contentType : false,
-					processData : false,
-					type : 'POST',
-					success : function(data) {
-						var parsed = JSON.parse(data);
+            if (name.match(/[\w]*/) == name){
+                icon.removeClass('fa-save').addClass('fa-spin fa-spinner');
 
-						var response = $.post('/venues/save_logo_and_name/{{ venue.id }}', {
-							'logo' : parsed['uploaded_files'],
-							'name' : name,
-							'aka_name' : akaName,
-						});
+                $.get('/upload/get_upload_url', function (data) {
+                    $.ajax({
+                        url: data,
+                        data: files,
+                        cache: false,
+                        contentType: false,
+                        processData: false,
+                        type: 'POST',
+                        success: function (data) {
+                            var parsed = JSON.parse(data);
 
-						response.done(function(data) {
-                            showAlert(alert, "Venue name and logo have been saved.", 'success', true);
+                            var response = $.post('/venues/save_logo_and_name/{{ venue.id }}', {
+                                'logo': parsed['uploaded_files'],
+                                'name': name,
+                                'aka_name': akaName,
+                            });
 
-							$('#venue-name, #venue-name2').html(name);
-							$('#venue-aka-name, #venue-aka-name2').html(akaName);
-							if (parsed['uploaded_files'].length > 0) {
-								$('#venue-logo, #venue-logo2').attr('src', parsed['uploaded_files'][0]);
-							}
+                            response.done(function (data) {
+                                icon.removeClass('fa-spin fa-spinner').addClass('fa-save');
+                                showAlert(alert, "Venue name and logo have been saved.", 'success', true);
 
-						});
-					}
-				});
-			});
+                                $('#venue-name').html(akaName);
+                                if (parsed['uploaded_files'].length > 0) {
+                                    $('#venue-logo').attr('src', parsed['uploaded_files'][0]);
+                                }
+
+                            });
+                        }
+                    });
+                });
+            } else{
+                showAlert(alert, 'The @tag name contains invalid characters. Only letters and numbers are allowed.', 'danger', true);
+            }
 		});
 
 		$('#upload-playing-surface').click(function() {
@@ -1341,30 +1348,34 @@
 		$('#prize-this-venue').click(function() {
             {% if not is_recipient %}
 				document.location = '/venues/recipient/{{ venue.id }}';
-				return;
-			{% endif %}
+            {% else %}
+                var priceInput = $('#price'), textSpan = $(this).find('span'), currentPrice = $('#current-price'), icon = $(this).find('i'), input = $('.input-prepend');
 
-			var priceInput = $('#price'), button = $(this), currentPrice = $('#current-price');
+                currentPrice.hide();
+                input.show();
 
-			currentPrice.hide();
+                if (textSpan.text() == 'Save') {
+                    icon.removeClass('fa-save').addClass('fa-spin fa-spinner');
+                    var response = $.post('/venues/save_price/{{ venue.id }}', {
+                        'price' : priceInput.val() ? priceInput.val() : '0'
+                    });
 
-			if ($(this).html() == 'Save') {
-				var response = $.post('/venues/save_price/{{ venue.id }}', {
-					'price' : priceInput.val() ? priceInput.val() : '0'
-				});
+                    response.done(function() {
+                        icon.removeClass('fa-spin fa-spinner').addClass('fa-usd');
+                        textSpan.text('Price this Venue');
+                        input.hide();
+                        currentPrice.show();
+                        currentPrice.find('span').html(priceInput.val());
+                        priceInput.parent().css('display', 'none');
+                    });
 
-				response.done(function() {
-					$(button).text('Price this Venue');
-					currentPrice.show();
-					currentPrice.find('span').html(priceInput.val());
-					priceInput.parent().css('display', 'none');
-				});
-
-			} else {
-				priceInput.parent().css('display', 'table');
-				$(this).data('original_text', $(this).html());
-                $(this).html('Save');
-			}
+                } else {
+                    priceInput.parent().css('display', 'table');
+                    $(this).data('original_text', $(this).html());
+                    textSpan.text('Save');
+                    icon.removeClass('fa-usd').addClass('fa-save');
+                }
+            {% endif %}
 		});
 
 		$('#send-message').click(function() {
@@ -1447,6 +1458,8 @@
 			    setPinButtonPosition($(this).attr('id'));
 			}
 		});
+
+{#    });#}
 
     function click_nav_button(name){
         // To get the correct button, since we have two rows of buttons which toggle being shown/hidden (gets not hidden button)

@@ -17,7 +17,7 @@ class Venue(models.Model):
     user = models.ForeignKey(User, related_name="owner_user", null=True)
     student = models.ForeignKey(Student, null=True)
     renter = models.ForeignKey(SponsorPage, null=True)
-    name = models.CharField(max_length=200, default="Venue yet to be Named")
+    name = models.CharField(max_length=200, default="VenueTagName")
     aka_name = models.CharField(max_length=200, default="Venue yet to be Named")
     sport = models.CharField(max_length=100)
     logo = models.ForeignKey(UploadedFile, null=True, related_name="logo_file")

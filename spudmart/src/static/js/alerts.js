@@ -1,5 +1,6 @@
 function showAlert(alert, msg, type, isAutoHide) {
 	$(alert).html(msg);
+    $(alert).removeClass('alert-info alert-success alert-danger alert-warning');
 	$(alert).addClass('alert-' + type);
 	$(alert).css({
 		'display' : 'block'
