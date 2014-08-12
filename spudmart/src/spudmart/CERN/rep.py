@@ -55,8 +55,8 @@ def add_marketing_points(student, points):
     student.marketing_points += points
     student.save()
 
-    if student.referred_by is not None:
-        referrer = Student.objects.get(user=student.referred_by)
+    if student.referred_id is not None:
+        referrer = Student.objects.get(id=student.referred_id)
         add_referral_points(referrer, points)
 
     # Check if student should auto-brag
@@ -85,8 +85,8 @@ def add_social_media_points(student, points):
     student.social_media_points += points
     student.save()
 
-    if student.referred_by is not None:
-        referrer = Student.objects.get(user=student.referred_by)
+    if student.referred_id is not None:
+        referrer = Student.objects.get(user=student.referred_id)
         add_referral_points(referrer, points)
 
     # Check if student should auto-brag

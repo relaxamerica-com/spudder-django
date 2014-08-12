@@ -226,6 +226,7 @@ class Student(models.Model):
     
     referred_by = models.ForeignKey(User, blank=True, null=True,
                                     related_name="referred_by_user")
+    referred_id = models.CharField(max_length=200, null=True)
     
     marketing_points = models.IntegerField(default=0)
     social_media_points = models.IntegerField(default=0)
@@ -335,7 +336,7 @@ class Student(models.Model):
 
     def referrals(self):
         students = []
-        for s in Student.objects.filter(referred_by=self.user):
+        for s in Student.objects.filter(referred_id=self.id):
             students.append(s)
         return students
 

@@ -96,7 +96,7 @@ def create_student(user, school_id, referrer_id):
     #  so put all referral stuff together
     if referrer_id:
         referrer = Student.objects.get(id=referrer_id)
-        student.referred_by = referrer.user
+        student.referred_id = referrer_id
         student.save()
         recruited_new_student(referrer, school)
     return student

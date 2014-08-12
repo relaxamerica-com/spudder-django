@@ -11,7 +11,7 @@ from spudmart.upload.models import UploadedFile
 from spudmart.CERN.models import School, Student, STATES, MailingList
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils.datastructures import MultiValueDictKeyError
-from spudmart.CERN.utils import import_schools, strip_invalid_chars, add_school_address
+from spudmart.CERN.utils import import_schools, strip_invalid_chars, add_school_address, convert_referrals
 from django.contrib.auth.decorators import login_required, user_passes_test
 from spudmart.CERN.rep import recruited_new_student, created_venue
 from spudmart.utils.cover_image import save_cover_image_from_request, reset_cover_image
@@ -1137,3 +1137,24 @@ def edit_student_cover(request, student_id):
         'post_url': '/cern/student/%s/save_cover' % stu.id,
         'reset_url': '/cern/student/%s/reset_cover' % stu.id
     })
+
+
+def translate_referrals(request):
+    trigger_backend_task('/cern/translate_referrals_async')
+
+    return HttpResponse('Referrals are being translated in the background')
+
+
+def translate_referrals_async(request):
+    """
+    Translates old user-based referrals to new Role-consistent ones
+
+    :param request: request to run import script
+    :return: HttpResponseNotAllowed (code 405) if not POST request
+    """
+    if request.method != 'POST':
+        return HttpResponseNotAllowed(['POST'])
+
+    convert_referrals()
+
+    return HttpResponse('OK')

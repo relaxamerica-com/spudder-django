@@ -1,5 +1,5 @@
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
-from spudmart.CERN.models import School
+from spudmart.CERN.models import School, Student
 import csv
 from django.conf import settings
 import os
@@ -56,3 +56,23 @@ def add_school_address():
             except Exception as e:
                 print school
                 raise e
+
+
+def convert_referrals():
+    """
+    Translates all existing Student referrals to Roles system
+    """
+    for s in Student.objects.all().exclude(referred_by=None):
+        referrer = None
+        try:
+            referrer = Student.objects.get(user=s.referred_by)
+        except MultipleObjectsReturned:
+            referrer = Student.objects.filter(user=s.referred_by)[0]
+        except ObjectDoesNotExist:
+            pass
+
+        if referrer:
+            s.referred_id = referrer.id
+
+        s.referred_by = None
+        s.save()
