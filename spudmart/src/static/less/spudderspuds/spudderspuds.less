@@ -1,2 +1,44 @@
 // Core variables and mixins
 @import "../libs/spudder-bootstrap/spudder-bootstrap.less";
+
+#main-splash {
+
+    .jumbotron {
+        background-image: url('/static/img/footballfield.jpg');
+        background-position: center center;
+        height: 600px;
+        background-size: cover;
+
+        @media (max-width: @screen-xs) {
+            height:200px;
+        }
+        @media (max-width: @screen-sm) {
+            height:300px;
+        }
+        @media (max-width: @screen-md) {
+            height:500px;
+        }
+
+        .caption {
+            position: relative;
+            background: rgba(255,255,255,0.6);
+            padding: 20px;
+            margin-top: 60px;
+        }
+    }
+
+    .spudder-section-panel {
+        .media {
+            img {
+                margin-right: 20px;
+            }
+            .media-body {
+                .btn {
+                    .btn-lg {
+                        margin-top: 20px;
+                    }
+                }
+            }
+        }
+    }
+}

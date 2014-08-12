@@ -1,6 +1,9 @@
 {% extends 'base.html' %}
+{% load spudderaccountstags %}
 
 {% block title %}Spudder Sports Updates Made Simple{% endblock %}
+
+{% block logout_next_url %}/spuds{% endblock %}
 
 {% block css %}
     <link rel="stylesheet" href="/static/css/spudderspuds.css" />
@@ -18,7 +21,18 @@
     </style>
 {% endblock %}
 
-{% block nav_brand %}<a href="/"><img src="/static/img/spudderspuds/logo-spuds-small.png" style="height:35px;margin-top:2px;"/> </a>{% endblock %}
+{% block nav_brand %}<a href="/spuds"><img src="/static/img/spudderspuds/logo-spuds-small.png" style="height:35px;margin-top:2px;"/> </a>{% endblock %}
+
+{% block nav %}
+    {% if not request.current_role %}
+        <li>
+            <a href="/spuds/register">register</a>
+        </li>
+        <li>
+            <a href="/spuds/signin">signin</a>
+        </li>
+    {% endif %}
+{% endblock %}
 
 {% block body %}
 {% endblock %}

@@ -9,8 +9,8 @@ class FanSigninForm(forms.Form):
 
     def clean(self):
         cleaned_data = super(FanSigninForm, self).clean()
-        email_address = cleaned_data.get('email_address')
-        if not User.objects.filter(username__iexact=email_address).count():
+        email_address = cleaned_data.get('email_address', '')
+        if not User.objects.filter(username=email_address).count():
             raise forms.ValidationError('Email address not recognized. Have you registered?')
         password = cleaned_data.get('password')
         user = authenticate(username=email_address, password=password)

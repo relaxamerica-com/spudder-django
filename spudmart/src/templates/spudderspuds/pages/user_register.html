@@ -1,0 +1,25 @@
+{% extends 'spudderspuds/base_single_well.html' %}
+{% load bootstrap3 %}
+
+
+{% block well_content %}
+    <h2>
+        <img src="/static/img/spudderspuds/button-fans-small.png" />
+        Register to become a fan in Spudder
+    </h2>
+    <p>Becoming a fan means you have access to the entire network of Teams, Coaches, Playes and Sports Updates!</p>
+    <form method="post" role="form">
+        <fieldset>
+            {% csrf_token %}
+            {% bootstrap_form form %}
+            {% buttons %}
+                <button type="submit" class="btn btn-primary">
+                    Register
+                </button>
+                <a class="btn btn-default" href="/spuds">
+                    Cancel
+                </a>
+            {% endbuttons %}
+        </fieldset>
+    </form>
+{% endblock %}

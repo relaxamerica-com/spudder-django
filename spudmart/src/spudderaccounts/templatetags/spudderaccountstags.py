@@ -33,5 +33,5 @@ def is_sponsor(role):
 
 @register.filter
 def is_fan(role):
-    return role.entity_type == RoleController.ENTITY_FAN
+    return role and role.entity_type == RoleController.ENTITY_FAN
 

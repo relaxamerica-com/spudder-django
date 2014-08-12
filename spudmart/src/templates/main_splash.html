@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load bootstrap3 %}
+
 {% block title %}Spudder - Sports Updated Made Simple!{% endblock %}
 
 {% block google_analytics_additions %}
@@ -7,75 +8,162 @@
 {% endblock %}
 
 {% block css %}
-    <link rel="stylesheet" href="/static/css/spudderaccounts.css" />
+    <link rel="stylesheet" href="/static/css/spudderspuds.css" />
 {% endblock %}
 
+{% block header %}{% endblock %}
+
+{% block body_id %}main-splash{% endblock %}
+
 {% block body %}
+    <div class="jumbotron">
+        <div class="container">
+            <div class="caption text-center">
+                <h1>
+                    <img src="/static/img/spudderspuds/button-spuds-medium.png" class="hidden-xs"/>
+                    <img src="/static/img/spudderspuds/button-spuds-small.png" class="hidden-sm hidden-md hidden-lg"/>
+                    Spudder <small>Sports updates made simple</small>
+                </h1>
+                <h2>Spudder has forever changed the face of youth sports</h2>
+            </div>
+        </div>
+    </div>
+
     <div class="container">
-        <div class="page-header">
-            <h1>
-                THE BIG UNVEIL IS ALMOST HERE
-                <small>Spudder will forever change the landscape of amateur sports.</small>
-            </h1>
-        </div>
-        <div class="row" style="padding: 40px 0;">
-            <div class="col-sm-3">
-                <div class="panel panel-default">
-                    <div class="panel-body text-center" style="height: 350px;">
-                        <span class="fa-stack" style="font-size: 53px;">
-                            <i class="fa fa-circle fa-stack-2x text-primary"></i>
-                            <i class="fa fa-camera fa-stack-1x fa-inverse"></i>
-                        </span>
-                        <h2>Fans</h2>
-                        <p>Post, share, interact and CHEER! Everyone is a FAN!</p>
-                        <a href="http://info.spudder.com/fan/" class="btn btn-primary">
-                            read more
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-3">
-                <div class="panel panel-default">
-                    <div class="panel-body text-center" style="height: 350px;">
-                        <span class="fa-stack" style="font-size: 53px;">
-                            <i class="fa fa-circle fa-stack-2x text-primary"></i>
-                            <i class="fa fa-users fa-stack-1x fa-inverse"></i>
-                        </span>
-                        <h2>Teams</h2>
-                        <p>Build your community, manage your TEAMS and get your own Sponsors. Join Spudder to become an official TEAM and use our easy fundraising and communication tools.</p>
-                        <a href="http://info.spudder.com/teams/" class="btn btn-primary">
-                            read more
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-3">
-                <div class="panel panel-default">
-                    <div class="panel-body text-center" style="height: 350px;">
-                        <span class="fa-stack" style="font-size: 53px;">
-                            <i class="fa fa-circle fa-stack-2x text-primary"></i>
-                            <i class="fa fa-money fa-stack-1x fa-inverse"></i>
-                        </span>
-                        <h2>Sponsors</h2>
-                        <p>Are you already sponsoring a team in your community or looking to promote your business? Get more value from the money you give. SPONSOR through SPUDDER.</p>
-                        <a href="http://info.spudder.com/sponsors/" class="btn btn-primary">
-                            read more
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-3">
-                <div class="panel panel-default">
-                    <div class="panel-body text-center" style="height: 350px;">
-                        <img src="/static/img/spuddercern/button-cern-medium.png" />
-                        <h2>Students</h2>
-                        <p>Looking for a smart way to improve your resume while you earn extra income? Join your schools CERN team, only available through Spudder!</p>
-                        <a href="/cern/" class="btn btn-primary">
-                            get started
-                        </a>
+
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="panel panel-default spudder-section-panel">
+                    <div class="panel-body">
+                        <div class="media">
+                            <img src="/static/img/spudderspuds/button-spuds-large.png" class="media-object pull-left"/>
+                            <div class="media-body">
+                                <h2 class="media-heading">
+                                    Title for the main social section here!
+                                </h2>
+                                <h3>
+                                    Subtitle for the main social section here!
+                                </h3>
+                                <a class="btn btn-primary btn-lg" href="/spuds">
+                                    Enter spudder!
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+
+        <hr />
+
+        <div class="rwo">
+            <div class="col-sm-6">
+                <div class="panel panel-default spudder-section-panel">
+                    <div class="panel-body">
+                        <div class="media">
+                            <img src="/static/img/spuddercern/button-cern-medium.png" class="media-object pull-left"/>
+                            <div class="media-body">
+                                <h4 class="media-heading">
+                                    Title for CERN Here
+                                </h4>
+                                <h5>
+                                    Subtitle for CERN here!
+                                </h5>
+                                <button class="btn btn-primary">
+                                    Enter CERN!
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="panel panel-default spudder-section-panel">
+                    <div class="panel-body">
+                        <div class="media">
+                            <img src="/static/img/spuddersponsors/button-sponsors-medium.png" class="media-object pull-left"/>
+                            <div class="media-body">
+                                <h4 class="media-heading">
+                                    Title for Sponsors Here
+                                </h4>
+                                <h5>
+                                    Subtitle for Sponsors here!
+                                </h5>
+                                <button class="btn btn-primary">
+                                    Enter Spudder Sponsors Network!
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+{##}
+{#        <div class="page-header">#}
+{#            <h1>#}
+{#                THE BIG UNVEIL IS ALMOST HERE#}
+{#                <small>Spudder will forever change the landscape of amateur sports.</small>#}
+{#            </h1>#}
+{#        </div>#}
+{#        <div class="row" style="padding: 40px 0;">#}
+{#            <div class="col-sm-3">#}
+{#                <div class="panel panel-default">#}
+{#                    <div class="panel-body text-center" style="height: 350px;">#}
+{#                        <span class="fa-stack" style="font-size: 53px;">#}
+{#                            <i class="fa fa-circle fa-stack-2x text-primary"></i>#}
+{#                            <i class="fa fa-camera fa-stack-1x fa-inverse"></i>#}
+{#                        </span>#}
+{#                        <h2>Fans</h2>#}
+{#                        <p>Post, share, interact and CHEER! Everyone is a FAN!</p>#}
+{#                        <a href="http://info.spudder.com/fan/" class="btn btn-primary">#}
+{#                            read more#}
+{#                        </a>#}
+{#                    </div>#}
+{#                </div>#}
+{#            </div>#}
+{#            <div class="col-sm-3">#}
+{#                <div class="panel panel-default">#}
+{#                    <div class="panel-body text-center" style="height: 350px;">#}
+{#                        <span class="fa-stack" style="font-size: 53px;">#}
+{#                            <i class="fa fa-circle fa-stack-2x text-primary"></i>#}
+{#                            <i class="fa fa-users fa-stack-1x fa-inverse"></i>#}
+{#                        </span>#}
+{#                        <h2>Teams</h2>#}
+{#                        <p>Build your community, manage your TEAMS and get your own Sponsors. Join Spudder to become an official TEAM and use our easy fundraising and communication tools.</p>#}
+{#                        <a href="http://info.spudder.com/teams/" class="btn btn-primary">#}
+{#                            read more#}
+{#                        </a>#}
+{#                    </div>#}
+{#                </div>#}
+{#            </div>#}
+{#            <div class="col-sm-3">#}
+{#                <div class="panel panel-default">#}
+{#                    <div class="panel-body text-center" style="height: 350px;">#}
+{#                        <span class="fa-stack" style="font-size: 53px;">#}
+{#                            <i class="fa fa-circle fa-stack-2x text-primary"></i>#}
+{#                            <i class="fa fa-money fa-stack-1x fa-inverse"></i>#}
+{#                        </span>#}
+{#                        <h2>Sponsors</h2>#}
+{#                        <p>Are you already sponsoring a team in your community or looking to promote your business? Get more value from the money you give. SPONSOR through SPUDDER.</p>#}
+{#                        <a href="http://info.spudder.com/sponsors/" class="btn btn-primary">#}
+{#                            read more#}
+{#                        </a>#}
+{#                    </div>#}
+{#                </div>#}
+{#            </div>#}
+{#            <div class="col-sm-3">#}
+{#                <div class="panel panel-default">#}
+{#                    <div class="panel-body text-center" style="height: 350px;">#}
+{#                        <img src="/static/img/spuddercern/button-cern-medium.png" />#}
+{#                        <h2>Students</h2>#}
+{#                        <p>Looking for a smart way to improve your resume while you earn extra income? Join your schools CERN team, only available through Spudder!</p>#}
+{#                        <a href="/cern/" class="btn btn-primary">#}
+{#                            get started#}
+{#                        </a>#}
+{#                    </div>#}
+{#                </div>#}
+{#            </div>#}
+{#        </div>#}
     </div>
 {% endblock %}

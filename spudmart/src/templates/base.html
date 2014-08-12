@@ -32,174 +32,170 @@
     </head>
     <body class="{% block body_class %}{% endblock %}" id="{% block body_id %}{% endblock %}">
         {% block flag-modal %}{% endblock %}
-        <nav class="navbar navbar-masthead navbar-default navbar-static-top" role="navigation">
-            <div class="container-fluid">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    {% block nav_brand %}<a href="/"><img src="/static/img/spudderspuds/logo-spuds-small.png" style="height:35px;margin-top:2px;"/> </a>{% endblock %}
-                </div>
-                {% block masterhead %}{% endblock %}
-                
-                <div class="navbar-collapse collapse">
-                    <ul class="nav navbar-nav navbar-right">
-{#		            	<li class="dropdown">#}
-{#						    <a class="dropdown-toggle" href="#" data-toggle="dropdown">#}
-{#						        <i class="fa fa-eye" style="margin-right: 5px;"> </i>Discover <i class="fa fa-caret-down"> </i>#}
-{#						    </a>#}
-{#						    <ul class="dropdown-menu">#}
-{#						        <li><a href="/team/search"><i class="fa fa-fw fa-search"></i> Find Team</a></li>#}
-{#						    </ul>#}
-{#						</li>#}
-                        {% block support_nav %}
-                            {% if current_role %}
-                                <li class="dropdown">
-                                    <a class="dropdown-toggle" href="#" data-toggle="dropdown">
-                                        Support <i class="fa fa-caret-down"></i>
-                                    </a>
-                                    <ul class="dropdown-menu">
-                                        <li><a href="http://spudder.zendesk.com/account/dropboxes/20176994" onClick="Zenbox.show(); return false;">Support Ticket</a></li>
-                                        <li><a href="#" data-toggle="modal" data-target="#flag-modal" class="{% block flag-page-class %}hidden{% endblock %}">Flag Page</a></li>
-                                    </ul>
-                                </li>
-                            {% endif %}
-                        {% endblock %}
-                        {% block nav %}{% endblock %}
-                        {% block current_role_nav %}
-                            {% if current_role and current_role|is_cern_student %}
-                                <li class="dropdown">
-                                    <a class="dropdown-toggle" href="#" data-toggle="dropdown">
-                                        CERN Menu <i class="fa fa-caret-down"></i>
-                                    </a>
-                                    <ul class="dropdown-menu">
-                                        <li><a href="/cern/"><i class="fa fa-fw fa-bar-chart-o"></i> Scoreboard</a></li>
-                                        <li><a href="{% current_student_page %}"><i class="fa fa-fw fa-user"></i> Student Page</a></li>
-                                        <li><a href="/cern/venues/"><i class="fa fa-fw fa-map-marker"></i> Venues</a></li>
-                                        <li><a href="/cern/social_media/"><i class="fa fa-fw fa-rss"></i> Social Media</a></li>
-                                        <li><a href="/cern/content/"><i class="fa fa-fw fa-edit"></i> Content</a></li>
-                                        <li><a href="/cern/design/"><i class="fa fa-fw fa-pencil"></i> Design</a></li>
-                                        <li><a href="/cern/testing/"><i class="fa fa-fw fa-bug"></i> QA Testing</a></li>
-                                        <li><a href="/cern/mobile/"><i class="fa fa-fw fa-mobile-phone"></i> Mobile App</a></li>
-                                        <li><a href="/team/list"><i class="fa fa-fw fa-group"></i> My Teams</a></li>
-                                    </ul>
-                                </li>
-                            {% endif %}
-                            {% if current_role and current_role|is_sponsor %}
-                                {% include 'spuddersponsors/parts/sponsors_menu.html' %}
-                            {% endif %}
-                            {% if current_role and current_role|is_fan %}
-                                {% include 'spudderfans/parts/fans_menu.html' %}
-                            {% endif %}
-                        {% endblock %}
-                        {% block user_account_nav %}
-                            {% if current_role %}
-                                <li class="dropdown">
-                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                        My roles <i class="fa fa-caret-down"></i>
-                                    </a>
-                                    <ul class="dropdown-menu">
-                                        <li style=" padding: 5px 30px; min-width: 350px;">
-                                            <div class="panel panel-default">
-                                                <div class="panel-body">
-                                                    <div class="media">
-                                                        <img class="media-object pull-left" src="{{ current_role.image }}" style="height: 40px;" />
-                                                        <div class="media-body">
-                                                            <p class="media-heading">{{ current_role.title|safe }}</p>
-                                                            <span class="label label-success">Current role</span>
+        {% block header %}
+            <nav class="navbar navbar-masthead navbar-default navbar-static-top" role="navigation">
+                <div class="container-fluid">
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        {% block nav_brand %}<a href="/"><img src="/static/img/spudderspuds/logo-spuds-small.png" style="height:35px;margin-top:2px;"/> </a>{% endblock %}
+                    </div>
+                    {% block masterhead %}{% endblock %}
+
+                    <div class="navbar-collapse collapse">
+                        <ul class="nav navbar-nav navbar-right">
+    {#		            	<li class="dropdown">#}
+    {#						    <a class="dropdown-toggle" href="#" data-toggle="dropdown">#}
+    {#						        <i class="fa fa-eye" style="margin-right: 5px;"> </i>Discover <i class="fa fa-caret-down"> </i>#}
+    {#						    </a>#}
+    {#						    <ul class="dropdown-menu">#}
+    {#						        <li><a href="/team/search"><i class="fa fa-fw fa-search"></i> Find Team</a></li>#}
+    {#						    </ul>#}
+    {#						</li>#}
+                            {% block support_nav %}
+                                {% if current_role %}
+                                    <li class="dropdown">
+                                        <a class="dropdown-toggle" href="#" data-toggle="dropdown">
+                                            Support <i class="fa fa-caret-down"></i>
+                                        </a>
+                                        <ul class="dropdown-menu">
+                                            <li><a href="http://spudder.zendesk.com/account/dropboxes/20176994" onClick="Zenbox.show(); return false;">Support Ticket</a></li>
+                                            <li><a href="#" data-toggle="modal" data-target="#flag-modal" class="{% block flag-page-class %}hidden{% endblock %}">Flag Page</a></li>
+                                        </ul>
+                                    </li>
+                                {% endif %}
+                            {% endblock %}
+                            {% block nav %}{% endblock %}
+                            {% block current_role_nav %}
+                                {% if current_role and current_role|is_cern_student %}
+                                    <li class="dropdown">
+                                        <a class="dropdown-toggle" href="#" data-toggle="dropdown">
+                                            CERN Menu <i class="fa fa-caret-down"></i>
+                                        </a>
+                                        <ul class="dropdown-menu">
+                                            <li><a href="/cern/"><i class="fa fa-fw fa-bar-chart-o"></i> Scoreboard</a></li>
+                                            <li><a href="{% current_student_page %}"><i class="fa fa-fw fa-user"></i> Student Page</a></li>
+                                            <li><a href="/cern/venues/"><i class="fa fa-fw fa-map-marker"></i> Venues</a></li>
+                                            <li><a href="/cern/social_media/"><i class="fa fa-fw fa-rss"></i> Social Media</a></li>
+                                            <li><a href="/cern/content/"><i class="fa fa-fw fa-edit"></i> Content</a></li>
+                                            <li><a href="/cern/design/"><i class="fa fa-fw fa-pencil"></i> Design</a></li>
+                                            <li><a href="/cern/testing/"><i class="fa fa-fw fa-bug"></i> QA Testing</a></li>
+                                            <li><a href="/cern/mobile/"><i class="fa fa-fw fa-mobile-phone"></i> Mobile App</a></li>
+                                            <li><a href="/team/list"><i class="fa fa-fw fa-group"></i> My Teams</a></li>
+                                        </ul>
+                                    </li>
+                                {% endif %}
+                                {% if current_role and current_role|is_sponsor %}
+                                    {% include 'spuddersponsors/parts/sponsors_menu.html' %}
+                                {% endif %}
+                                {% if current_role and current_role|is_fan %}
+                                    {% include 'spudderfans/parts/fans_menu.html' %}
+                                {% endif %}
+                            {% endblock %}
+                            {% block user_account_nav %}
+                                {% if current_role %}
+                                    <li class="dropdown">
+                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                            My roles <i class="fa fa-caret-down"></i>
+                                        </a>
+                                        <ul class="dropdown-menu">
+                                            <li style=" padding: 5px 30px; min-width: 350px;">
+                                                <div class="panel panel-default">
+                                                    <div class="panel-body">
+                                                        <div class="media">
+                                                            <img class="media-object pull-left" src="{{ current_role.image }}" style="height: 40px;" />
+                                                            <div class="media-body">
+                                                                <p class="media-heading">{{ current_role.title|safe }}</p>
+                                                                <span class="label label-success">Current role</span>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            {% if other_roles %}
-                                                <hr />
-                                                <p>My {% if other_roles|length > 2 %}top{% else %}other{% endif %} role{% if other_roles|length > 1 %}s{% endif %}</p>
-                                                <div style="margin-left:10px;">
-                                                    {% for role in other_roles %}
-                                                        {% if forloop.counter < 3 %}
-                                                            <hr />
-                                                            <div class="media">
-                                                                <img class="media-object pull-left" src="{{ role.image }}" style="height: 40px;" />
-                                                                <div class="media-body">
-                                                                    <p class="media-heading"><small>{{ role.title|safe }}</small></p>
-                                                                    <a href="{% link_to_change_role_and_return role %}" class="btn btn-default btn-xs" style="margin:0;">
-                                                                        Activate this role
-                                                                    </a>
+                                                {% if other_roles %}
+                                                    <hr />
+                                                    <p>My {% if other_roles|length > 2 %}top{% else %}other{% endif %} role{% if other_roles|length > 1 %}s{% endif %}</p>
+                                                    <div style="margin-left:10px;">
+                                                        {% for role in other_roles %}
+                                                            {% if forloop.counter < 3 %}
+                                                                <hr />
+                                                                <div class="media">
+                                                                    <img class="media-object pull-left" src="{{ role.image }}" style="height: 40px;" />
+                                                                    <div class="media-body">
+                                                                        <p class="media-heading"><small>{{ role.title|safe }}</small></p>
+                                                                        <a href="{% link_to_change_role_and_return role %}" class="btn btn-default btn-xs" style="margin:0;">
+                                                                            Activate this role
+                                                                        </a>
+                                                                    </div>
                                                                 </div>
-                                                            </div>
-                                                        {% endif %}
-                                                    {% endfor %}
-                                                </div>
-                                                <hr />
-                                                <div class="btn-group">
-                                                    <a class="btn btn-primary btn-sm" href="/users/roles/add">
-                                                        <i class="fa fa-plus"></i> Add a new role
-                                                    </a>
-                                                    <a class="btn btn-default btn-sm" href="/users">
-                                                        Manage your account
-                                                    </a>
-                                                </div>
-                                            {% else %}
-                                                <div class="btn-group">
-                                                    <a class="btn btn-primary btn-sm" href="/users/roles/add">
-                                                        <i class="fa fa-plus"></i> Add a new role
-                                                    </a>
-                                                    <a class="btn btn-default btn-sm" href="/users">
-                                                        Manage your account
-                                                    </a>
-                                                </div>
-                                            {% endif %}
-                                        </li>
-                                        <li><a href="/accounts/logout?next=/"><i class="fa fa-fw fa-power-off"></i> Logout</a></li>
-                                    </ul>
-                                </li>
-                                <li class="dropdown">
-                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                        <i class="fa fa-share-alt"></i> <i class="fa fa-caret-down"></i>
-                                    </a>
-                                    <ul class="dropdown-menu" style="min-width: 1px">
-                                        <li>
-                                            <a data-original-title="Share on Facebook" data-placement="bottom" href="JavaScript:facebookPopup()">
-                                                <i class="fa fa-facebook-square fa-2x"></i>
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a data-original-title="Share on Twitter" data-placement="bottom" href="javascript:twitterPopup()">
-                                                <i class="fa fa-twitter-square fa-2x"></i>
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a data-original-title="Share on LinkedIn" data-placement="bottom"href="Javascript:linkedinPopup()">
-                                                <i class="fa fa-linkedin-square fa-2x"></i>
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a data-original-title="Share on Google+" data-placement="bottom" href="javascript:googlePopup()">
-                                                <i class="fa fa-google-plus-square fa-2x"></i>
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a data-original-title="Share via Email" data-placement="bottom" href="mailto:?subject=Check out this Spudder page!&body=Check out this cool page I saw on Spudder: http://{{ request.META.HTTP_HOST }}{{ request.get_full_path }}">
-                                            <i class="fa fa-envelope-square fa-2x"></i>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </li>
-                            {% else %}
-                                <li>
-                                    <a href="/users/account/signin">
-                                        <i class="fa fa-sign-in"></i> sign in
-                                    </a>
-                                </li>
-                            {% endif %}
-                        {% endblock %}
-                    </ul>
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    </div>
+                                                    <hr />
+                                                    <div class="btn-group">
+{#                                                        <a class="btn btn-primary btn-sm" href="/users/roles/add">#}
+{#                                                            <i class="fa fa-plus"></i> Add a new role#}
+{#                                                        </a>#}
+                                                        <a class="btn btn-default btn-sm" href="/users">
+                                                            Manage your account
+                                                        </a>
+                                                    </div>
+                                                {% else %}
+                                                    <div class="btn-group">
+{#                                                        <a class="btn btn-primary btn-sm" href="/users/roles/add">#}
+{#                                                            <i class="fa fa-plus"></i> Add a new role#}
+{#                                                        </a>#}
+                                                        <a class="btn btn-default btn-sm" href="/users">
+                                                            Manage your account
+                                                        </a>
+                                                    </div>
+                                                {% endif %}
+                                            </li>
+                                            <li><a href="/accounts/logout?next={% block logout_next_url %}/{% endblock %}"><i class="fa fa-fw fa-power-off"></i> Logout</a></li>
+                                        </ul>
+                                    </li>
+                                    <li class="dropdown">
+                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                            <i class="fa fa-share-alt"></i> <i class="fa fa-caret-down"></i>
+                                        </a>
+                                        <ul class="dropdown-menu" style="min-width: 1px">
+                                            <li>
+                                                <a data-original-title="Share on Facebook" data-placement="bottom" href="JavaScript:facebookPopup()">
+                                                    <i class="fa fa-facebook-square fa-2x"></i>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a data-original-title="Share on Twitter" data-placement="bottom" href="javascript:twitterPopup()">
+                                                    <i class="fa fa-twitter-square fa-2x"></i>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a data-original-title="Share on LinkedIn" data-placement="bottom"href="Javascript:linkedinPopup()">
+                                                    <i class="fa fa-linkedin-square fa-2x"></i>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a data-original-title="Share on Google+" data-placement="bottom" href="javascript:googlePopup()">
+                                                    <i class="fa fa-google-plus-square fa-2x"></i>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a data-original-title="Share via Email" data-placement="bottom" href="mailto:?subject=Check out this Spudder page!&body=Check out this cool page I saw on Spudder: http://{{ request.META.HTTP_HOST }}{{ request.get_full_path }}">
+                                                <i class="fa fa-envelope-square fa-2x"></i>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                {% endif %}
+                            {% endblock %}
+                        </ul>
+                    </div>
                 </div>
-            </div>
-        </nav>
+            </nav>
+        {% endblock %}
 
         <div class="container">
             {% bootstrap_messages %}
@@ -259,7 +255,7 @@
                         </ul>
                         <div class="copyright">
                             <p>
-                                <span>&copy; Spudder LLC 2013 All right reserved.</span>
+                                <span>&copy; Spudder LLC 2014 All right reserved.</span>
                             </p>
                         </div>
                         <div class="hidden-md hidden-lg text-center">

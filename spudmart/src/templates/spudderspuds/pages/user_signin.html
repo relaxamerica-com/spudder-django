@@ -1,0 +1,24 @@
+{% extends 'spudderspuds/base_single_well.html' %}
+{% load bootstrap3 %}
+
+
+{% block well_content %}
+    <h2>
+        <img src="/static/img/spudderspuds/button-fans-small.png" />
+        Login to you Fan account
+    </h2>
+    <form method="post" role="form">
+        <fieldset>
+            {% csrf_token %}
+            {% bootstrap_form form %}
+            {% buttons %}
+                <button type="submit" class="btn btn-primary">
+                    Signin
+                </button>
+                <a class="btn btn-default" href="/spuds">
+                    Cancel
+                </a>
+            {% endbuttons %}
+        </fieldset>
+    </form>
+{% endblock %}
