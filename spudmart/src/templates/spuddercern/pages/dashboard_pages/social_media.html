@@ -14,63 +14,13 @@
         <h1><i class="fa fa-fw fa-rss"></i> Social Media <small>Promote your CERN team and earn cred and real business experience!</small></h1>
     </div>
 
-    {% if need_saving %}
-    <script>
-      function appendResults(text, elementid) {
-        $("#" + elementid).attr('href', text)
-      }
-
-      function sendRequest(longUrl, elementId){
-          var request = gapi.client.urlshortener.url.insert({
-              'resource': {'longUrl':longUrl,},
-          })
-          request.execute(function(response){
-              $.post('/CERN/save_short_url/', { elementId : response.id })
-              appendResults(response.id, elementId)
-          })
-      }
-
-      function createUrls(){
-          sendRequest('{{ referral_url }}', 'referral-url');
-          sendRequest('{{ same_referral_url }}', 'same-referral-url')
-      }
-
-      function load() {
-        gapi.client.setApiKey('AIzaSyDDSFnHOspc8Xx-RKMS6qiVASBMk-4ehRk');
-        gapi.client.load('urlshortener', 'v1', createUrls);
-      }
-    </script>
-    {% endif %}
-    <script type="text/javascript">
-      function newPopup(url){
-          window.open(url, 'popup', 'height=500, width=500, left=100, top-10, scrollbars=yes,toolbar=no,menubar=no');
-      }
-
-      function facebookPopup(id){
-          var url = $('#' + id).attr('href');
-          newPopup('http://www.facebook.com/sharer/sharer.php?u=' + url);
-      }
-
-      function linkedinPopup(id){
-          var url = $('#' + id).attr('href');
-          newPopup('http://www.linkedin.com/shareArticle?mini=true&url=' + url);
-      }
-
-      function twitterPopup(id){
-          var url = escape($('#' + id).attr('href'));
-          newPopup('http://twitter.com/intent/tweet?text=Join%20my%20CERN%20team:%20' + url);
-      }
-
-      function googlePopup(id){
-          var url = $('#' + id).attr('href');
-          newPopup('https://plus.google.com/share?url=' + url);
-      }
-    </script>
-    <script src="https://apis.google.com/js/client.js?onload=load"></script>
-
     {% with info_message_id="social_media_info" %}
         {% if info_message_id not in student.hidden_info_messages %}
-            {% include 'spuddercern/quote_messages/quote_social_media_instructions.html' %}
+            <div class="row">
+                <div class="col-md-8 col-md-offset-2">
+                    {% include 'spuddercern/quote_messages/quote_social_media_instructions.html' %}
+                </div>
+            </div>
         {% endif %}
     {% endwith %}
 
@@ -114,4 +64,61 @@
             {% endif %}
         </div>
     </div>
+{% endblock %}
+
+{% block js %}
+{{ block.super }}
+{% if need_saving %}
+    <script>
+      function appendResults(text, elementid) {
+        $("#" + elementid).attr('href', text)
+      }
+
+      function sendRequest(longUrl, elementId){
+          var request = gapi.client.urlshortener.url.insert({
+              'resource': {'longUrl':longUrl}
+          });
+          request.execute(function(response){
+              $.post('/CERN/save_short_url/', { elementId : response.id });
+              appendResults(response.id, elementId)
+          })
+      }
+
+      function createUrls(){
+          sendRequest('{{ referral_url }}', 'referral-url');
+          sendRequest('{{ same_referral_url }}', 'same-referral-url')
+      }
+
+      function load() {
+        gapi.client.setApiKey('AIzaSyDDSFnHOspc8Xx-RKMS6qiVASBMk-4ehRk');
+        gapi.client.load('urlshortener', 'v1', createUrls);
+      }
+    </script>
+    {% endif %}
+    <script type="text/javascript">
+      function newPopup(url){
+          window.open(url, 'popup', 'height=500, width=500, left=100, top-10, scrollbars=yes,toolbar=no,menubar=no');
+      }
+
+      function facebookPopup(id){
+          var url = $('#' + id).attr('href');
+          newPopup('http://www.facebook.com/sharer/sharer.php?u=' + url);
+      }
+
+      function linkedinPopup(id){
+          var url = $('#' + id).attr('href');
+          newPopup('http://www.linkedin.com/shareArticle?mini=true&url=' + url);
+      }
+
+      function twitterPopup(id){
+          var url = escape($('#' + id).attr('href'));
+          newPopup('http://twitter.com/intent/tweet?text=Join%20my%20CERN%20team:%20' + url);
+      }
+
+      function googlePopup(id){
+          var url = $('#' + id).attr('href');
+          newPopup('https://plus.google.com/share?url=' + url);
+      }
+    </script>
+    <script src="https://apis.google.com/js/client.js?onload=load"></script>
 {% endblock %}
