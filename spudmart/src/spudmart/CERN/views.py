@@ -1,7 +1,8 @@
+from django.template import RequestContext
 from google.appengine.api import mail
 import os
 from urllib2 import urlopen
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, render_to_response
 from django.http import HttpResponseRedirect, HttpResponse, \
     HttpResponseNotAllowed, HttpResponseForbidden
 import simplejson
@@ -32,6 +33,13 @@ def user_is_student(user):
     :return: True if user is student and False if not
     """
     return bool(Student.objects.filter(user=user).count())
+
+
+def user_signin(request):
+    return render_to_response(
+        'spuddercern/pages/user_signin.html',
+        {},
+        context_instance=RequestContext(request))
 
 
 def register(request, referral_id=None):
@@ -262,7 +270,7 @@ def display_cern(request):
                 if request.current_role.entity_type == RoleController.ENTITY_STUDENT:
                     student = request.current_role.entity
                 else:
-                    return user_not_student_error_page
+                    return redirect('/cern/non-student')
         except ObjectDoesNotExist:
             # In the future, we can create a custom "join spuddercern" page
             #  for existing users
@@ -287,7 +295,7 @@ def cern_splash(request):
     return render(request, 'spuddercern/pages/splash.html')
 
 
-@login_required
+# @login_required
 @user_passes_test(user_is_student, '/cern/non-student/')
 def dashboard(request):
     """
@@ -339,7 +347,7 @@ def dashboard(request):
                   })
 
 
-@login_required
+# @login_required
 @user_passes_test(user_is_student, '/cern/non-student/')
 def social_media(request):
     """
@@ -384,7 +392,7 @@ def social_media(request):
                   })
 
 
-@login_required
+# @login_required
 @user_passes_test(user_is_student, '/cern/non-student/')
 def content(request):
     """
@@ -410,7 +418,7 @@ def content(request):
                   })
 
 
-@login_required
+# @login_required
 @user_passes_test(user_is_student, '/cern/non-student/')
 def design(request):
     """
@@ -438,7 +446,7 @@ def design(request):
                   })
 
 
-@login_required
+# @login_required
 @user_passes_test(user_is_student, '/cern/non-student/')
 def testing(request):
     """
@@ -473,7 +481,7 @@ def testing(request):
                   'student': student
                   })
 
-@login_required
+# @login_required
 @user_passes_test(user_is_student, '/cern/non-student/')
 def mobile(request):
     """
@@ -501,7 +509,7 @@ def mobile(request):
                   })
 
 
-@login_required
+# @login_required
 @user_passes_test(user_is_student, '/cern/non-student/')
 def venues(request):
     stu = request.current_role.entity
@@ -509,7 +517,7 @@ def venues(request):
     return render(request, 'spuddercern/pages/dashboard_pages/venues.html', template_data)
 
 
-@login_required
+# @login_required
 @user_passes_test(user_is_student, '/cern/non-student/')
 def venues_new(request):
     if request.method == 'POST':
@@ -528,7 +536,7 @@ def venues_new(request):
     return render(request, 'spuddercern/pages/venues_new.html', template_data)
 
 
-@login_required
+# @login_required
 @user_passes_test(user_is_student, '/cern/non-student/')
 def delete_venue(request, venue_id):
     """
@@ -866,6 +874,7 @@ def reset_school_cover(request, school_id):
     reset_cover_image(school)
 
     return HttpResponse()
+
 
 def student_page(request, student_id):
     """

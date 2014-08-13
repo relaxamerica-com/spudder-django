@@ -41,4 +41,3 @@ class FanRegisterForm(forms.Form):
         if raise_error:
             raise forms.ValidationError('There was a problem creating your account.')
         return data
-

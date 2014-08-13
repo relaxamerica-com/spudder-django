@@ -59,6 +59,10 @@ class RoleBase(EntityBase):
     def home_page_path(self):
         return '/'
 
+    @abc.abstractproperty
+    def home_domain(self):
+        raise NotImplementedError
+
     @abc.abstractmethod
     def user_is_owner(self, user):
         pass
@@ -111,6 +115,10 @@ class RoleStudent(RoleBase):
     @property
     def home_page_path(self):
         return '/cern'
+
+    @property
+    def home_domain(self):
+        return 'cern'
 
     def user_is_owner(self, user):
         return self.entity.user == user
@@ -169,6 +177,10 @@ class RoleSponsor(RoleBase):
     def home_page_path(self):
         return '/sponsor'
 
+    @property
+    def home_domain(self):
+        return 'sponsor'
+
     def user_is_owner(self, user):
         return self.entity.user == user
 
@@ -194,7 +206,7 @@ class RoleFan(RoleBase):
         if self.entity.avatar:
             return '/file/serve/%s' % self.entity.avatar.id
 
-        return '/static/img/spudderfans/button-fans-small.png'
+        return '/static/img/spudderspuds/button-fans-small.png'
 
     @property
     def title(self):
@@ -220,7 +232,11 @@ class RoleFan(RoleBase):
 
     @property
     def home_page_path(self):
-        return '/fan/dashboard'
+        return '/spuds'
+
+    @property
+    def home_domain(self):
+        return 'spuds'
 
     def user_is_owner(self, user):
         return self.entity.fan == user

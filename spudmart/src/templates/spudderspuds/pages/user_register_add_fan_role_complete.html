@@ -1,0 +1,14 @@
+{% extends 'spudderspuds/base_single_well.html' %}
+
+
+{% block well_content %}
+    <h2>
+        <img src="/static/img/spudderspuds/button-fans-small.png" />
+        Registered to become a fan in Spudder!
+    </h2>
+    <p>You have completed the registration process to become a Fan in spudder and your new fan role is active!</p>
+    <p>Next time you sign into Spudder, please use the email address: {{ request.user.email }} and the password you previously created!</p>
+    <a href="/spuds" class="btn btn-primary">
+        Continue as a Fan
+    </a>
+{% endblock %}

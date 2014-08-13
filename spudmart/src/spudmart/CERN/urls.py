@@ -59,8 +59,7 @@ urlpatterns = patterns(
     # url(r'^amazon_login/$', 'amazon_login'),
     url(r'^join_school/(?P<school_id>\d+)/(?P<referral_id>\d+)$', 'join_school'),
     url(r'^join_school/(?P<school_id>\d+)/$', 'join_school'),
-
-    url(r'login/$', 'login', {'SSL': True}),
+    url(r'^join_cern$', 'cern_splash'),
 
     # Link for queue url(it's protected)
     url(r'^import_schools$', 'import_school_data'),
@@ -74,4 +73,5 @@ urlpatterns = patterns(
     url(r'^compensation$', 'compensation'),
     url(r'^redeem_points$', 'redeem_points'),
     url(r'^after_college$', 'after_college'),
+    url(r'^signin$', 'user_signin', {'SSL': True}),
 )

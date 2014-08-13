@@ -34,6 +34,9 @@ class RolesMiddleware:
     def process_request(self, request):
         self._add_current_role(request)
         self._add_all_roles(request)
+        if request.all_roles and len(request.all_roles) > 1:
+            if not request.user.spudder_user.has_set_password:
+                request.user.spudder_user.mark_as_password_required()
 
 
 class AccountPasswordMiddleware:

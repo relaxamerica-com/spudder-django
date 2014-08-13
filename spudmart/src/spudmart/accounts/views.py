@@ -405,10 +405,10 @@ def login_fake(request):
     if not bool(os.environ['SERVER_SOFTWARE'].startswith('Development')):
         raise Http404
 
-    amazon_user_id = "somemadeupid1"
+    amazon_user_id = "somemadseupid2"
     amazon_user_name = "Test"
     amazon_user_email = "test@test.com"
-    access_token = "someaccesstoken"
+    access_token = "someacceesaastoken"
     
     # fan_page, created = FanPage.objects.get_or_create(fan = request.user)
     # if created:

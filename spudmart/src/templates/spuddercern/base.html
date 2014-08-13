@@ -16,6 +16,16 @@
 <meta property="og:description" content="Attention Students! CERN is a program to earn money as you learn all about marketing, public relations, and social media. Click to learn more.">
 {% endblock %}
 
+{% block nav %}
+    {% if not request.current_role %}
+        <li>
+            <a href="/cern/register">register</a>
+        </li>
+        <li>
+            <a href="/cern/signin">signin</a>
+        </li>
+    {% endif %}
+{% endblock %}
 
 {% block body %}
 {% endblock %}

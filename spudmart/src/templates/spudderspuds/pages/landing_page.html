@@ -1,4 +1,5 @@
 {% extends 'spudderspuds/base.html' %}
+{% load spudderaccountstags %}
 
 {% block body %}
     <div class="container">
@@ -10,6 +11,27 @@
         <div class="row">
 
             <div class="col-md-9">
+
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <div class="media">
+                            <img src="/static/img/spudderspuds/button-fans-large.png" class="media-object pull-left"/>
+                            <div class="media-body">
+                                <h2 class="media-heading">Fans in spudder</h2>
+                                <p>top fans can be shown here!!!</p>
+                                {% if not request.current_role|is_fan %}
+                                    {% if request|user_has_fan_role %}
+                                        <p>Switch to your fan role in the roles menu get the best out of Spudder!</p>
+                                    {% endif %}
+                                {% else %}
+                                    <a href="/spuds/register" class="btn btn-primary">
+                                        Register as a fan
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
             </div>
 
