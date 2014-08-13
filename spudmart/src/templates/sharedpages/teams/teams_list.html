@@ -1,4 +1,4 @@
-{% extends 'spudderfans/pages/dashboard.html' %}
+{% extends role_dashboard %}
 
 {% block google_analytics_additions %}
     ga('set', 'contentGroup1', 'TEAMS - Teams');
@@ -29,10 +29,7 @@
                         <td style="white-space: nowrap">
                             <a class="btn btn-xs btn-primary" href="/team/page/{{ team.id }}" title="Edit">
                                 <i class="fa fa-fw fa-edit"> </i>
-                                </a>
-                                <a class="btn btn-xs btn-primary" href="/team/associate/{{ team.id }}" title="Associate with Venue">
-                                    <i class="fa fa-fw fa-map-marker"> </i>
-                                </a>
+                            </a>
                         </td>
                     </tr>
                 {% endfor %}

@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 import settings
-from spudderdomain.controllers import TeamsController
+from spudderdomain.controllers import TeamsController, RoleController
 from spudderdomain.models import TeamPage, Location, TeamAdministrator, TeamVenueAssociation
 from spudmart.teams.forms import CreateTeamForm, TeamPageForm
 from spudmart.upload.forms import UploadForm
@@ -15,7 +15,15 @@ from spudmart.venues.models import SPORTS, Venue
 
 def teams_list(request):
     teams = TeamsController.TeamsAdministeredByRole(request.current_role)
-    return render(request, 'spudderteams/pages/dashboard_pages/teams.html', {'teams': teams})
+
+    role_dashboard = ''
+    if request.current_role.entity_type == RoleController.ENTITY_STUDENT:
+        role_dashboard = 'spuddercern/pages/dashboard_pages/dashboard.html'
+    elif request.current_role.entity_type == RoleController.ENTITY_FAN:
+        role_dashboard = 'spudderfans/pages/dashboard.html'
+    return render(request, 'sharedpages/teams/teams_list.html',
+                  {'teams': teams,
+                   'role_dashboard': role_dashboard})
 
 
 def create_team(request):
@@ -23,28 +31,30 @@ def create_team(request):
     if request.method == "POST":
         form = CreateTeamForm(request.POST)
         if form.is_valid():
-            image_form = UploadForm(request.POST, request.FILES)
-            image = None
-            if image_form.is_valid():
-                image = image_form.save()
+            # image_form = UploadForm(request.POST, request.FILES)
+            # image = None
+            # if image_form.is_valid():
+            #     image = image_form.save()
 
             team = TeamsController.CreateTeam(
                 request.current_role,
                 name=form.cleaned_data.get('team_name'),
-                contact_details=form.cleaned_data.get('contact_details'),
-                free_text=form.cleaned_data.get('free_text'),
+                # contact_details=form.cleaned_data.get('contact_details'),
+                # free_text=form.cleaned_data.get('free_text'),
                 sport=dict(form.fields['sport'].choices)[form.cleaned_data.get('sport')],
                 state=dict(form.fields['state'].choices)[form.cleaned_data.get('state')],
-                image=image)
+                # image=image
+            )
 
             location_info = request.POST['location_info']
             team.update_location(location_info)
             team.save()
 
             return redirect('/team/list')
+        return HttpResponse(str(form.errors) + '<br><br>' + request.POST['location_info'])
     return render(request, 'spudderspuds/teams/pages/create_team.html', {
         'form': form,
-        'upload_url': blobstore.create_upload_url('/team/create'),
+        # 'upload_url': blobstore.create_upload_url('/team/create'),
         'SPORTS': SPORTS
     })
 
@@ -195,7 +205,14 @@ def associate_with_venue(request, page_id):
     venues_paginator = EntitiesPaginator(venues, 20)
     venue_page = venues_paginator.page(current_page)
 
-    return render(request, 'spudderteams/pages/dashboard_pages/associate_with_venue.html', {
+    role_dashboard = ''
+    if request.current_role.entity_type == RoleController.ENTITY_STUDENT:
+        role_dashboard = 'spuddercern/pages/dashboard_pages/dashboard.html'
+    elif request.current_role.entity_type == RoleController.ENTITY_FAN:
+        role_dashboard = 'spudderfans/pages/dashboard.html'
+
+    return render(request,
+                  'sharedpages/teams/associate_with_venue.html', {
         'page': page,
         'is_associated': is_associated,
         'associated_venue': associated_venue,
@@ -203,6 +220,7 @@ def associate_with_venue(request, page_id):
         'total_pages': venues_paginator.num_pages,
         'paginator_page': venue_page.number,
         'start': venue_page.start_index(),
+        'role_dashboard': role_dashboard,
     })
 
 
@@ -222,4 +240,4 @@ def associate_team_with_venue(request, page_id, venue_id):
         venue=venue
     ).save()
 
-    return HttpResponseRedirect('/team/list')
+    return HttpResponseRedirect('/team/%s' + page_id)

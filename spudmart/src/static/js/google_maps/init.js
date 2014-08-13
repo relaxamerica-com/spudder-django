@@ -1,5 +1,6 @@
 var initialAddress,
-    initialInfoWindowContent;
+    initialInfoWindowContent,
+    maplocation;
 
 function initialize() {
     function addPlaceChangedListener() {
@@ -46,7 +47,7 @@ function initialize() {
             var locationInfoInput = document.getElementById('location_info'),
                 locationInfo;
 
-            locationInfo = location.B + ';' + location.k + ';';
+            locationInfo = location.lng() + ';' + location.lat() + ';';
             locationInfo += infoWindowContent + ';';
             locationInfo += address;
 
@@ -88,7 +89,7 @@ function initialize() {
     }
 
     var mapOptions = {
-            zoom: 6, center: new google.maps.LatLng(-34.397, 150.644),
+            zoom: 3, center: new google.maps.LatLng(39.8282, -98.5795),
                 mapTypeControl: false, streetViewControl: false
         },
         canvas = document.getElementById('map_canvas'),

@@ -33,6 +33,10 @@
                         <option value="{{ forloop.counter0 }}">{{ sport }}</option>
                     {% endfor %}
                 </select>
+             </div>
+
+            <div class="form-group hidden">
+                <input name="state" type="text">
             </div>
 
             <div class="form-group edit-mode" style="display: block;">
@@ -64,7 +68,12 @@
     <script src="/static/js/google_maps/init.js"></script>
 
     <script type="text/javascript">
-        initializeGoogleMaps();
+{#        var state = 'New Jersey';#}
+{#        initializeGoogleMaps('United States', createInfoWindow('United States', 'US'));#}
+{#        initializeGoogleMaps('United States, US');#}
+        window.bigGlobalVariable = null;
+
+        initialize();
 
         $(document).ready(function () {
             var $form = $('form');

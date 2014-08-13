@@ -16,7 +16,7 @@ class CreateTeamForm(forms.Form):
     free_text = forms.CharField(
         max_length=255, help_text='Say something about your team!',
         required=False)
-    file = forms.FileField(required=False, label="Image")
+    # file = forms.FileField(required=False, label="Image")
     state = forms.ChoiceField(choices=[('%s' % x, x) for x in STATES])
 
     def clean(self):
