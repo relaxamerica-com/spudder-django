@@ -1,0 +1,63 @@
+{% extends 'spuddersponsors/base_single_well.html' %}
+
+{% block well_content %}
+    {% if register %}
+        <h2>
+            <img src="/static/img/spuddersponsors/button-sponsors-small.png" />
+            Register to join the Spudder Sponsors Network
+        </h2>
+        <p>Becoming a sponsor will allow you to sponsor local teams and venues and reach sports fans with your marketing.</p>
+        <p>At Spudder® a Sponsor is an entity that uses Spudder® to donate to a Team, League or Tournament. Spudder® uses the most trusted ecommerce provider in the world, AMAZON®, to facilitate these transactions. So not only can you trust that the donation happens in a safe and secure transaction, but your donation will be recorded in your AMAZON® account and your Spudder® account for record keeping purposes.</p>
+        <p>Press the Login With Amazon button below and after you have linked your amazon account (note you can create a new amazon account by clicking the button too) you will be asked to create your Sponsor Profile here on the Spudder Sponsor Network.</p>
+    {% else %}
+        <h2>
+            <img src="/static/img/spuddersponsors/button-sponsors-small.png" />
+            Login to the Spudder Sponsors Network
+        </h2>
+        <p>Click the login with Amazon button below and enter you amazon account details to access the Spudder Sponsor Network.</p>
+    {% endif %}
+    <p class="text-center">
+        <a href="#" id="LoginWithAmazon">
+            <img border="0" alt="Login with Amazon"
+                src="https://images-na.ssl-images-amazon.com/images/G/01/lwa/btnLWA_gold_156x32.png"
+                width="156" height="32" />
+        </a>
+    </p>
+    <p style="margin-top: 20px;">
+        {% if register %}
+            Already have an account? click <a href="/sponsor/signin">here</a> to signin.
+        {% else %}
+            Don't have a Sponsors account? click <a href="/sponsor/register">here</a> to register.
+        {% endif %}
+    </p>
+{% endblock %}
+
+{% block js %}
+    {{ block.super }}
+    {% include 'spudderaccounts/parts/amazon_login_js.html' %}
+    <script type="text/javascript" language="javascript">
+        $(document).ready(function () {
+            if (typeof amazon == undefined) return;
+
+            var $logoutBtn = $('#logout-button');
+
+            if ($logoutBtn.length) {
+                $logoutBtn.click(function (event) {
+                    event.preventDefault();
+                    amazon.Login.logout();
+                    window.location = $logoutBtn.attr('href');
+                });
+            }
+            var loginWithAmazon = document.getElementById('LoginWithAmazon'),
+                returnUrl = '/accounts/login/amazon?next=/sponsor/page&account_type=sponsor';
+
+            if (loginWithAmazon) {
+                loginWithAmazon.onclick = function() {
+                    options = { scope : 'profile', interactive: 'always' };
+                    amazon.Login.authorize(options, returnUrl);
+                    return false;
+                };
+            }
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends 'spuddersponsors/base_single_well.html' %}
+
+{% block google_analytics_additions %}
+    ga('set', 'contentGroup1', 'SPONSOR Login - Non Sponsor');
+{% endblock %}
+
+{% block well_content %}
+    <h2><img src="/static/img/spuddersponsors/button-sponsors-small.png"/> Spudder Sponsor Network</h2>
+    <div class="alert alert-warning">
+        <h4><i class="fa fa-warning"></i> You need to be a Sponsor to access the Sponsor Network</h4>
+    </div>
+    <p>If you have a Sponsor role, use the <b>My Roles</b> Menu to activate it.</p>
+    <p>If you do not have a Sponsor role, you'll have to register before continuing. To register as a Sponsor click <a href="/sponsor/splash">here</a>.</p>
+{% endblock %}

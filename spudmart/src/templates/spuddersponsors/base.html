@@ -8,7 +8,18 @@
 
 {% block favicon %}"/static/img/spuddersponsors/button-sponsors-tiny.png"{% endblock %}
 
-{% block nav_brand %}<a href="/"><img src="/static/img/spuddersponsors/logo-sponsors-small.png" style="height:35px;margin-top:2px;"/> </a>{% endblock %}
+{% block nav_brand %}<a href="/"><img src="/static/img/spuddersponsors/logo-sponsors-small.png" style="height:35px;margin-top:4px;"/> </a>{% endblock %}
+
+{% block nav %}
+    {% if not request.current_role %}
+        <li>
+            <a href="/sponsor/register">register</a>
+        </li>
+        <li>
+            <a href="/sponsor/signin">signin</a>
+        </li>
+    {% endif %}
+{% endblock %}
 
 {% block meta %}{% endblock %}
 

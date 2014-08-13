@@ -145,7 +145,7 @@ class RoleSponsor(RoleBase):
         if self.entity.thumbnail:
             return '/file/serve/%s' % self.entity.thumbnail
 
-        return '/static/img/spuddercern/button-cern-small.png'
+        return '/static/img/spuddersponsors/button-sponsors-small.png'
 
     @property
     def title(self):
@@ -191,13 +191,6 @@ class RoleFan(RoleBase):
         return self.entity.fan
 
     @property
-    def _amazon_id(self):
-        return LinkedService.objects.get(
-                role_id=self.entity.id,
-                role_type=self.entity_type,
-                service_type=LinkedServiceController.SERVICE_AMAZON).configuration.get('amazon_user_email')
-
-    @property
     def entity_type(self):
         return RoleController.ENTITY_FAN
 
@@ -210,14 +203,11 @@ class RoleFan(RoleBase):
 
     @property
     def title(self):
-        return '<abbr title="Fan %s">Fan</abbr> with Amazon ID %s' % (self.user, self._amazon_id)
+        return '<abbr title="Fan %s">Fan</abbr> with email: ' % (self.user, self.user.email)
 
     @property
     def subtitle(self):
-        role_subtitle = 'Tied to Amazon ID: %s <br />' % (
-            self._amazon_id
-        )
-
+        role_subtitle = ''
         return role_subtitle
 
     @property
@@ -228,7 +218,7 @@ class RoleFan(RoleBase):
 
     @property
     def breadcrumb_name(self):
-        return "Fan: %s" % self._amazon_id
+        return "Fan: %s" % self.user.email
 
     @property
     def home_page_path(self):

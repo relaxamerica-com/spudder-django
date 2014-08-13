@@ -22,11 +22,11 @@
                                 {% if not request.current_role|is_fan %}
                                     {% if request|user_has_fan_role %}
                                         <p>Switch to your fan role in the roles menu get the best out of Spudder!</p>
+                                    {% else %}
+                                        <a href="/spuds/register" class="btn btn-primary">
+                                            Register as a fan
+                                        </a>
                                     {% endif %}
-                                {% else %}
-                                    <a href="/spuds/register" class="btn btn-primary">
-                                        Register as a fan
-                                    </a>
                                 {% endif %}
                             </div>
                         </div>

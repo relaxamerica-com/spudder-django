@@ -2,6 +2,8 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.decorators import user_passes_test, login_required
 from django.shortcuts import render, get_object_or_404
 import settings
+from spudderdomain.controllers import RoleController
+from spudmart.sponsors.decorators import current_role_is_sponsor
 from spudmart.sponsors.forms import SponsorPageForm
 from spudmart.sponsors.models import SponsorPage
 from spudmart.accounts.utils import is_sponsor
@@ -35,8 +37,34 @@ def _get_images_from_post(post_data):
     return images
 
 
-@login_required
-@user_passes_test(lambda user: is_sponsor(user))
+def user_signin(request):
+    return render(request, 'spuddersponsors/pages/register_signin.html')
+
+
+def user_register(request):
+    return render(request, 'spuddersponsors/pages/register_signin.html', {'register': True})
+
+
+def sponsors_splash(request):
+    return render(request, 'spuddersponsors/pages/splash.html')
+
+
+def public_view(request, page_id):
+    page = get_object_or_404(SponsorPage, pk=page_id)
+    page.images = filter(lambda image: image != "", page.images)
+    longitude = None
+    latitude = None
+
+    if page.map_info:
+        longitude, latitude, _ = page.map_info.split(';')
+
+    return render(request, 'spuddersponsors/pages/dashboard_pages/sponsor_page_view.html', {
+        'page': page,
+        'latitude': latitude,
+        'longitude': longitude
+    })
+
+
 def sponsor_page(request):
     sponsor_page_instances = SponsorPage.objects.filter(sponsor=request.user)
     lat = None
@@ -77,30 +105,13 @@ def sponsor_page(request):
     })
 
 
-def public_view(request, page_id):
-    page = get_object_or_404(SponsorPage, pk=page_id)
-    page.images = filter(lambda image: image != "", page.images)
-    longitude = None
-    latitude = None
-
-    if page.map_info:
-        longitude, latitude, _ = page.map_info.split(';')
-
-    return render(request, 'spuddersponsors/pages/dashboard_pages/sponsor_page_view.html', {
-        'page': page,
-        'latitude': latitude,
-        'longitude': longitude
-    })
-
-
+@current_role_is_sponsor
 def sponsors_dashboard(request):
     return render(request, 'spuddersponsors/pages/dashboard_pages/dashboard.html')
 
 
+@current_role_is_sponsor
 def sponsors_venues(request):
     sponsor = request.current_role.entity
     venues = Venue.objects.filter(renter=sponsor)
-
-    return render(request, 'spuddersponsors/pages/dashboard_pages/venues.html', {
-        'venues': venues
-    })
+    return render(request, 'spuddersponsors/pages/dashboard_pages/venues.html', {'venues': venues})
