@@ -13809,9 +13809,14 @@ legend {
   padding: 20px;
   margin-top: 60px;
 }
-#main-splash .spudder-section-panel .media img {
-  margin-right: 20px;
+#main-splash .role-callout .role-callout-body {
+  padding-left: 10px;
 }
-#main-splash .spudder-section-panel .media .media-body .btn .btn-lg {
-  margin-top: 20px;
+#main-splash .role-callout .role-callout-body h2 {
+  margin-top: 0;
+}
+@media (max-width: 768px) {
+  #main-splash .role-callout {
+    margin-top: 30px;
+  }
 }
