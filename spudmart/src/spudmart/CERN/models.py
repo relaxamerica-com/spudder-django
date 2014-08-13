@@ -229,11 +229,13 @@ class Student(models.Model):
     referred_id = models.CharField(max_length=200, null=True)
     
     marketing_points = models.IntegerField(default=0)
+    _venue_points = models.IntegerField(default=0)
+    team_points = models.IntegerField(default=0)
     social_media_points = models.IntegerField(default=0)
+    testing_points = models.IntegerField(default=0)
     content_points = models.IntegerField(default=0)
     design_points = models.IntegerField(default=0)
-    testing_points = models.IntegerField(default=0)
-    
+
     show_CERN = models.BooleanField(default=True)
     show_social_media = models.BooleanField(default=True)
 
@@ -260,6 +262,10 @@ class Student(models.Model):
     _qa_status = models.CharField(max_length=8, null=True)
     resume = models.TextField(null=True)
     applied_qa = models.BooleanField(default=False)
+
+    @property
+    def venue_points(self):
+        return self.marketing_points + self._venue_points
 
     def __str__(self):
         something = str(self.user.username)
@@ -311,26 +317,28 @@ class Student(models.Model):
                                               STUDENT_REP_LEVEL_MODIFIER)
 
     def rep(self):
-        points = (self.marketing_points + self.social_media_points +
-                  self.content_points + self.design_points + 
-                  self.testing_points)
+        points = (self.venue_points + self.team_points +
+                  self.social_media_points + self.testing_points +
+                  self.content_points + self.design_points)
         return points
     
     def top_project(self):
-        max_points = max(self.marketing_points, self.social_media_points,
-                         self.content_points, self.design_points,
-                         self.testing_points)
+        max_points = max(self.venue_points, self.team_points,
+                         self.social_media_points, self.testing_points,
+                         self.content_points, self.design_points)
         if max_points != 0:
-            if max_points == self.marketing_points:
-                return 'Marketing'
+            if max_points == self.venue_points:
+                return 'Marketing (Venues)'
+            elif max_points == self.team_points:
+                return 'Marketing (Teams)'
             elif max_points == self.social_media_points:
                 return 'Social Media'
+            elif max_points == self.testing_points:
+                return 'Testing'
             elif max_points == self.content_points:
                 return 'Content'
             elif max_points == self.design_points:
                 return 'Design'
-            elif max_points == self.testing_points:
-                return 'Testing'
 
         return 'No Project Started'
 
@@ -341,12 +349,14 @@ class Student(models.Model):
         return students
 
     def top_project_verbose(self):
-        max_points = max(self.marketing_points, self.social_media_points,
-                         self.content_points, self.design_points,
-                         self.testing_points)
+        max_points = max(self.venue_points, self.team_points,
+                         self.social_media_points, self.testing_points,
+                         self.content_points, self.design_points)
         if max_points != 0:
-            if max_points == self.marketing_points:
-                return 'Marketing (%s pts)' % max_points
+            if max_points == self.venue_points:
+                return 'Marketing - Venues (%s pts)' % max_points
+            elif max_points == self.team_points:
+                return 'Marketing - Teams (%s pts)' % max_points
             elif max_points == self.social_media_points:
                 return 'Social Media (%s pts)' % max_points
             elif max_points == self.content_points:
@@ -385,14 +395,14 @@ class Student(models.Model):
 
         return urlopen(request).read()
 
-    def brag_marketing(self):
+    def brag_venue(self):
         """
         Posts the student's current marketing score to LinkedIn.
 
         :return: the response from the LinkedIn API
         """
-        points = self.marketing_points
-        return self.brag("My score for the Marketing project as a part of " +
+        points = self.venue_points
+        return self.brag("My score for Marketing Venues as a part of " +
                          "CERN on Spudder is now %s points." % points)
 
     def brag_social_media(self):
@@ -405,7 +415,7 @@ class Student(models.Model):
         return self.brag("My score for the Social Media PR project as a " +
                          "part of CERN on Spudder is now %s points." % points)
 
-    def marketing_level(self):
+    def venue_level(self):
         """
         Determines the marketing level of the student.
 
@@ -415,7 +425,7 @@ class Student(models.Model):
 
         :return: an integer representing the level.
         """
-        points = self.marketing_points
+        points = self.venue_points
         if points < 50:
             if points == 0:
                 return 0
@@ -443,14 +453,14 @@ class Student(models.Model):
         else:
             return ((points - 50) / 1000) + 1
 
-    def brag_marketing_level(self):
+    def brag_venue_level(self):
         """
-        Sends a post to LinkedIn about the new Marketing level.
+        Sends a post to LinkedIn about the new Marketing (Venue) level.
 
         :return: the response from the LinkedIn Share API
         """
         return self.brag("I just reached Level " + str(self.marketing_level()) +
-                         " in Marketing for CERN on Spudder.")
+                         " in Marketing Venues for CERN on Spudder.")
 
     def brag_social_media_level(self):
         """

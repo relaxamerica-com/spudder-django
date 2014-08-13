@@ -37,10 +37,10 @@ def add_venue_rep(venue, points):
     venue.rep += points
     venue.save()
 
-    add_marketing_points(venue.student, points)
+    add_venue_points(venue.student, points)
 
 
-def add_marketing_points(student, points):
+def add_venue_points(student, points):
     """
     Adds to (or subtracts from) the marketing points of a student.
 
@@ -51,8 +51,8 @@ def add_marketing_points(student, points):
     :param points: the amount points change
         can be positive or negative
     """
-    old_level = student.marketing_level()
-    student.marketing_points += points
+    old_level = student.venue_level()
+    student._venue_points += points
     student.save()
 
     if student.referred_id is not None:
@@ -61,13 +61,13 @@ def add_marketing_points(student, points):
 
     # Check if student should auto-brag
     if student.auto_brag_marketing:
-            if student.marketing_points % 100 < points:
-                student.brag_marketing()
+        if student.venue_points % 100 < points:
+            student.brag_venue()
 
     # Check level bragging
     if student.level_brag_marketing:
-        if old_level < student.marketing_level():
-            student.brag_marketing_level()
+        if old_level < student.venue_level():
+            student.brag_venue_level()
 
 
 def add_social_media_points(student, points):
@@ -263,7 +263,7 @@ def created_venue(student):
 
     :param student: the student who created the venue
     """
-    add_marketing_points(student, CREATED_VENUE)
+    add_venue_points(student, CREATED_VENUE)
 
 
 def added_basic_info(venue):
@@ -315,4 +315,4 @@ def deleted_venue(venue):
         managing the venue.
     :param venue: The venue about to be deleted.
     """
-    add_marketing_points(venue.student, -venue.rep)
+    add_venue_points(venue.student, -venue.rep)

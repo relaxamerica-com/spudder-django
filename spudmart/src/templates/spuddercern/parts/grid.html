@@ -1,12 +1,12 @@
 <div class="row">
-    <div class="col-md-2 col-sm-4">
+    <div class="col-md-2 col-sm-4 col-md-offset-1">
         <div class="cern-dashboard-project" id="marketing">
             <div class="cern-dashboard-project-header">
                 <i class="fa fa-fw fa-map-marker"></i>
                 <h3>Marketing <br/>(Venues)</h3>
             </div>
             <div class="cern-dashboard-project-points">
-                <h3>{{ student.marketing_points }} pts</h3>
+                <h3>{{ student.venue_points }} pts</h3>
             </div>
             <div class="cern-dashboard-project-content">
                 <ul class="list-unstyled" >
@@ -14,7 +14,34 @@
                     <li>Earn a percentage of your venue's sponsorship</li>
                     <li>
                         <a class="btn btn-default btn-primary" href="/cern/venues">
-                            {% if student.marketing_points > 0 %}
+                            {% if student.venue_points > 0 %}
+                                Go to this project
+                            {% else %}
+                                Start this project!
+                            {% endif %}
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-2 col-sm-4">
+        <div class="cern-dashboard-project" id="marketing">
+            <div class="cern-dashboard-project-header">
+                <i class="fa fa-fw fa-users"></i>
+                <h3>Marketing <br/>(Teams)</h3>
+            </div>
+            <div class="cern-dashboard-project-points">
+                <h3>{{ student.team_points }} pts</h3>
+            </div>
+            <div class="cern-dashboard-project-content">
+                <ul class="list-unstyled" >
+                    <li>Learn proven techniques to drive traffic to your Team page</li>
+                    <li>Soon, you can earn points to be redeemed for prizes!</li>
+                    <li>
+                        <a class="btn btn-default btn-primary" href="/cern/venues">
+                            {% if student.venue_points > 0 %}
                                 Go to this project
                             {% else %}
                                 Start this project!
@@ -54,51 +81,53 @@
 
     </div>
 
-    <div class="col-md-2 col-sm-4">
-        <div class="cern-dashboard-project" id="blogging">
-            <div class="cern-dashboard-project-header">
-                <i class="fa fa-fw fa-edit"></i>
-                <h3>Content Management</h3>
-            </div>
-            <div class="cern-dashboard-project-points">
-                <h3>{{ student.content_points }} pts</h3>
-            </div>
-            <div class="cern-dashboard-project-content">
-                <ul class="list-unstyled" >
-                    <li>Manage a blog and even earn a featured column on Spudder's main site</li>
-                    <li>This feature isn't ready yet. Sign up below to be alerted when it is.</li>
-                    {% if content %}
-                    <li><button class="btn btn-default btn-primary" id='content-btn'>Join mailing list</button></li>
-                    {% else %}
-                    <li><button class="btn btn-default">You're on the list</button></li>
-                    {% endif %}
-                </ul>
-            </div>
-        </div>
-    </div>
+{#    <div class="col-md-2 col-sm-4">#}
+{#        <div class="cern-dashboard-project" id="blogging">#}
+{#            <div class="cern-dashboard-project-header">#}
+{#                <i class="fa fa-fw fa-edit"></i>#}
+{#                <h3>Content Management</h3>#}
+{#            </div>#}
+{#            <div class="cern-dashboard-project-points">#}
+{#                <h3>{{ student.content_points }} pts</h3>#}
+{#            </div>#}
+{#            <div class="cern-dashboard-project-content">#}
+{#                <ul class="list-unstyled" >#}
+{#                    <li>Manage a blog and even earn a featured column on Spudder's main site</li>#}
+{#                    <li>This feature isn't ready yet. Sign up below to be alerted when it is.</li>#}
+{#                    {% if content %}#}
+{#                    <li><button class="btn btn-default btn-primary" id='content-btn'>Join mailing list</button></li>#}
+{#                    {% else %}#}
+{#                    <li><button class="btn btn-default">You're on the list</button></li>#}
+{#                    {% endif %}#}
+{#                </ul>#}
+{#            </div>#}
+{#        </div>#}
+{#    </div>#}
+{##}
+{#    <div class="col-md-2 col-sm-4">#}
+{#        <div class="cern-dashboard-project" id="design">#}
+{#            <div class="cern-dashboard-project-header">#}
+{#                <i class="fa fa-fw fa-pencil"></i>#}
+{#                <h3>Design UX/UI</h3>#}
+{#            </div>#}
+{#            <div class="cern-dashboard-project-points">#}
+{#                <h3>{{ student.design_points }} pts</h3>#}
+{#            </div>#}
+{#            <div class="cern-dashboard-project-content">#}
+{#                <ul class="list-unstyled" >#}
+{#                    <li>Help sponsors (small businesses) manage their Spudder pages</li>#}
+{#                    <li>This feature isn't ready yet. Sign up below to be alerted when it is.</li>#}
+{#                    {% if design %}#}
+{#                    <li><button class="btn btn-default btn-primary" id='design-btn'>Join mailing list</button></li>#}
+{#                    {% else %}#}
+{#                    <li><button class="btn btn-default">You're on the list</button></li>#}
+{#                    {% endif %}#}
+{#                </ul>#}
+{#            </div>#}
+{#        </div>#}
+{#    </div>#}
 
-    <div class="col-md-2 col-sm-4">
-        <div class="cern-dashboard-project" id="design">
-            <div class="cern-dashboard-project-header">
-                <i class="fa fa-fw fa-pencil"></i>
-                <h3>Design UX/UI</h3>
-            </div>
-            <div class="cern-dashboard-project-points">
-                <h3>{{ student.design_points }} pts</h3>
-            </div>
-            <div class="cern-dashboard-project-content">
-                <ul class="list-unstyled" >
-                    <li>Help sponsors (small businesses) manage their Spudder pages</li>
-                    <li>This feature isn't ready yet. Sign up below to be alerted when it is.</li>
-                    {% if design %}
-                    <li><button class="btn btn-default btn-primary" id='design-btn'>Join mailing list</button></li>
-                    {% else %}
-                    <li><button class="btn btn-default">You're on the list</button></li>
-                    {% endif %}
-                </ul>
-            </div>
-        </div>
-    </div>
+    <div class="col-sm-2 visible-sm"></div>
 
     <div class="col-md-2 col-sm-4">
         <div class="cern-dashboard-project" id="quality-assurance">
