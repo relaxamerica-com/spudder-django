@@ -203,7 +203,7 @@ class RoleFan(RoleBase):
 
     @property
     def title(self):
-        return '<abbr title="Fan %s">Fan</abbr> with email: ' % (self.user, self.user.email)
+        return '<abbr title="Fan %s">Fan</abbr> with email: %s' % (self.user, self.user.email)
 
     @property
     def subtitle(self):

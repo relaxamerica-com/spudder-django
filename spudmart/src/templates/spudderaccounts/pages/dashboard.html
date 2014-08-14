@@ -63,12 +63,12 @@
                                             <h4 class="media-heading">{{ current_role.title|safe }}</h4>
                                             <p>{{ current_role.subtitle|safe }}</p>
                                             <p><span class="label label-success">Current role</span></p>
-                                            <a href="{% link_to_delete_role_and_return current_role %}" title="delete" class="pull-right" style="margin-top: 5px">
-                                                <i class="fa fa-trash-o"></i>
-                                            </a>
-                                            <a href="{% link_to_role_management_page current_role %}" class="btn btn-default btn-sm">
-                                                <i class="fa fa-cog"></i> Manage this role
-                                            </a>
+{#                                            <a href="{% link_to_delete_role_and_return current_role %}" title="delete" class="pull-right" style="margin-top: 5px">#}
+{#                                                <i class="fa fa-trash-o"></i>#}
+{#                                            </a>#}
+{#                                            <a href="{% link_to_role_management_page current_role %}" class="btn btn-default btn-sm">#}
+{#                                                <i class="fa fa-cog"></i> Manage this role#}
+{#                                            </a>#}
                                         </div>
                                     </div>
                                 </div>
@@ -82,13 +82,13 @@
                                         <div class="media-body">
                                             <h4 class="media-heading">{{ role.title|safe }}</h4>
                                             <p>{{ role.subtitle|safe }}</p>
-                                            <a href="{% link_to_delete_role_and_return role %}" title="delete" class="pull-right" style="margin-top: 5px">
-                                                <i class="fa fa-trash-o"></i>
-                                            </a>
+{#                                            <a href="{% link_to_delete_role_and_return role %}" title="delete" class="pull-right" style="margin-top: 5px">#}
+{#                                                <i class="fa fa-trash-o"></i>#}
+{#                                            </a>#}
                                             <div class="btn-group">
-                                                <a href="{% link_to_role_management_page role %}" class="btn btn-default btn-sm">
-                                                    <i class="fa fa-cog"></i> Manage this role
-                                                </a>
+{#                                                <a href="{% link_to_role_management_page role %}" class="btn btn-default btn-sm">#}
+{#                                                    <i class="fa fa-cog"></i> Manage this role#}
+{#                                                </a>#}
                                                 <a href="{% link_to_change_role_and_return role %}" class="btn btn-default btn-sm">
                                                     Activate this role
                                                 </a>
