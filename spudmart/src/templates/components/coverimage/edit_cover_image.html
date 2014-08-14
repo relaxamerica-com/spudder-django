@@ -8,6 +8,7 @@
         <p>A good image is about 3 times as wide as it is tall. We recommend a resolution of 1200px by 400px or greater.</p>
         <p>Use the <b>Select Image to Upload</b> button to select an image. When it loads into the box below, you can use the + and - buttons to zoom in or out, and drag the image within the black box to get the correct position to crop. Only what is inside the black box will be preserved.</p>
         <p>When the image has been cropped to your satisfaction, use the green button to save your changes. If you are happy with the final image, you can then click <b>Save New Cover</b> to save and return to your page.</p>
+        <p>If your image does not fill the box in either dimension, the entire image will be saved and potentially distorted. It will be cropped from the top down.</p>
         <a class="btn btn-default" id="select">Select Image to Upload</a>
         <div id="croppic" style="width:600px;height:200px;position:relative;margin:20px auto;border-color:black"></div>
         <div id="croppedURL" class="hidden"></div>
@@ -30,15 +31,16 @@
             cropUrl:'/upload/croppic_crop',
             customUploadButtonId:'select',
             outputUrlId: 'croppedURL',
-            loaderHtml: '<div class="loader"><i class="fa fa-fw fa-spin fa-spinner" style="font-size:200px"></i></div>'
+            loaderHtml: '<div class="loader"><i class="fa fa-fw fa-spin fa-spinner" style="font-size:200px"></i></div>',
+            onAfterImgCrop: function(){
+                $('.croppedImg').attr('width', 600);
+                $('.croppedImg').parent().css('overflow', 'hidden');
+                $('.cropControlRemoveCroppedImage').hide();
+                $('#select').hide()
+            }
         };
-            try{
-                window.croppic.destroy();
-            }
-            catch (TypeError){
 
-            }
-            window.croppic = new Croppic('croppic', croppicHeaderOptions);
+        window.croppic = new Croppic('croppic', croppicHeaderOptions);
     });
 
     $('#save-cover').click(function(){

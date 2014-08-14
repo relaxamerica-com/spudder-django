@@ -73,9 +73,12 @@ def user_add_fan_role(request):
 
 def fan_profile_view(request, page_id):
     page = get_object_or_404(FanPage, pk=page_id)
+    entity_id = None
+    if request.current_role:
+        entity_id = request.current_role.entity.id
     return render(request, 'spudderspuds/fans/pages/fan_page_view.html', {
         'page': page,
-        'can_edit': request.current_role.entity.id == page.id
+        'can_edit': entity_id == page.id
     })
 
 

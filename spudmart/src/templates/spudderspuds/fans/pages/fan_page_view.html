@@ -115,11 +115,11 @@
 <script type="text/javascript">
     window.isEditMode = false;
     window.twitterPopupText = "See the great Sports Updates that this fan has shared on their page!";
-    if($('.jumbotron').height() > $('.jumbotron-img').height()) {% if page.cover_image %}$('.jumbotron').css('height', $('.jumbotron-img').height() + "px");{% endif %}
 
     $('.content').not('.active').hide();
 
     $(document).ready(function(){
+        {% if page.cover_image %}if($('.jumbotron').height() > $('.jumbotron-img').height()) $('.jumbotron').css('height', $('.jumbotron-img').height() + "px");{% endif %}
         var editMode = $('.edit-mode'),
 	        viewMode = $('.view-mode');
 
