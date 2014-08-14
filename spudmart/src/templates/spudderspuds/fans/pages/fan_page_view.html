@@ -1,4 +1,4 @@
-{% extends 'spudderfans/public_page_base.html' %}
+{% extends 'spudderspuds/public_page_base.html' %}
 
 {% load accounts %}
 {% load CERN %}
@@ -16,8 +16,10 @@
 	{{ block.super }}
 	<meta property="og:title" content="{% fan_page_name page %} | Spudder - Sports Updates Made Simple">
 	<meta property="og:description" content="Check out this super fan's page - {% fan_page_name page %} - See the great Sports Updates they have shared!">
-	{% if page.avatar %} <meta property="og:image" content="http://{{ request.META.HTTP_HOST }}/file/serve/{{ page.avatar.id }}">
-        {% else %}<meta property="og:image" content="http://{{ request.META.HTTP_HOST }}/static/img/spudderfans/button-fans-large.png">
+	{% if page.avatar %}
+        <meta property="og:image" content="http://{{ request.META.HTTP_HOST }}/file/serve/{{ page.avatar.id }}">
+    {% else %}
+        <meta property="og:image" content="http://{{ request.META.HTTP_HOST }}/static/img/spudderfans/button-fans-large.png">
 	{% endif %}
 {% endblock %}
 

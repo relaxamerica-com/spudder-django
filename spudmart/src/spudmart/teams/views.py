@@ -27,7 +27,7 @@ def teams_list(request):
 
 
 def create_team(request):
-    form = CreateTeamForm
+    form = CreateTeamForm(initial={'next_url': request.GET.get('next_url')})
     if request.method == "POST":
         form = CreateTeamForm(request.POST)
         if form.is_valid():
@@ -47,8 +47,7 @@ def create_team(request):
             location_info = request.POST.get('location_info', None)
             team.update_location(location_info)
             team.save()
-
-            return redirect('/team/list')
+            return redirect(request.POST.get('next_url', '/team/list'))
     return render(request, 'spudderspuds/teams/pages/create_team.html', {
         'form': form,
         # 'upload_url': blobstore.create_upload_url('/team/create'),
@@ -84,7 +83,7 @@ def team_page(request, page_id):
 
     form = TeamPageForm(instance=page)
 
-    return render(request, 'spudderteams/pages/dashboard_pages/team_page_edit.html', {
+    return render(request, 'spudderspuds/teams/pages/dashboard_pages/team_page_edit.html', {
         'places_api_key': settings.GOOGLE_PLACES_API_KEY,
         'page': page,
         'form': form,
@@ -111,7 +110,7 @@ def public_view(request, page_id):
     page = get_object_or_404(TeamPage, pk=page_id)
     is_associated, associated_venue = _check_if_team_is_associated(page)
 
-    return render(request, 'spudderteams/pages/team_page_view.html',{
+    return render(request, 'spudderspuds/teams/pages/team_page_view.html',{
         'page': page,
         'can_edit': can_edit(request.user, request.current_role, page),
         'is_associated': is_associated,
@@ -146,7 +145,7 @@ def search_teams(request):
        'states' : STATES,
        'filters' : filters
     }
-    return render(request, 'spudderteams/pages/search_teams.html', context)
+    return render(request, 'spudderspuds/teams/pages/search_teams.html', context)
     
 
 def edit_cover(request, page_id):

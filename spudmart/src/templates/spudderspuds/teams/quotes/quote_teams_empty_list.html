@@ -1,4 +1,4 @@
-{% extends 'spuddercern/quote_messages/base_quote_message.html' %}
+{% extends 'spudderspuds/components/base_quote_message.html' %}
 
 {% block alert_style %}display: inline-block{% endblock %}
 
@@ -6,7 +6,7 @@
     <h4>You haven't created any teams yet!</h4>
     <p>Once you have created some teams, you can manage them here.</p>
     <p>
-    <a class="btn btn-primary" style="margin: 30px;" href="/team/create">
+    <a class="btn btn-primary" style="margin: 30px;" href="/team/create?next_url={{ request.path }}">
         Create your first Team
     </a>
 {% endblock %}
