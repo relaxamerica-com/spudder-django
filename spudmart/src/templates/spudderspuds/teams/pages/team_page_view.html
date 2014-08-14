@@ -15,6 +15,13 @@
 	{% endif %}
 {% endblock %}
 
+{% block nav %}
+    {% if current_role and current_role.entity_type == 'fan' %}
+        {% include 'spudderspuds/components/main_nav.html' %}
+        {{ block.super }}
+    {% endif %}
+{% endblock %}
+
 {% block cover_image %}
     {% if page.cover_image %}
         <div id="cover-image-container" style="text-align:center;">

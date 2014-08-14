@@ -5,7 +5,7 @@ from django.shortcuts import render, render_to_response, redirect, get_object_or
 from django.template import RequestContext
 from django.template.loader import render_to_string
 from spudderaccounts.templatetags.spudderaccountstags import is_fan, user_has_fan_role
-from spudderdomain.controllers import TeamsController
+from spudderdomain.controllers import TeamsController, RoleController
 from spudderdomain.models import FanPage
 from spudderspuds.forms import FanSigninForm, FanRegisterForm, FanPageForm
 from spudderspuds.utils import create_and_activate_fan_role
@@ -18,6 +18,8 @@ def landing_page(request):
 
 
 def fan_signin(request):
+    if request.current_role and request.current_role.entity_type == RoleController.ENTITY_FAN:
+        return redirect('/spuds')
     template_data = {}
     if request.method == "POST":
         form = FanSigninForm(request.POST)
@@ -37,6 +39,8 @@ def fan_signin(request):
 
 
 def fan_register(request):
+    if request.current_role and request.current_role.entity_type == RoleController.ENTITY_FAN:
+        return redirect('/spuds')
     if request.current_role and not is_fan(request.current_role) and not user_has_fan_role(request):
         return redirect('/spuds/register_add_fan_role')
     template_data = {}

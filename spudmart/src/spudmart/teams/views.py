@@ -88,8 +88,8 @@ def team_page(request, page_id):
         'page': page,
         'form': form,
         'sports': SPORTS,
-        'selected_state' : STATES[page.state],
-        'states' : STATES
+        # 'selected_state' : STATES[page.state],
+        # 'states' : STATES
     })
 
 
