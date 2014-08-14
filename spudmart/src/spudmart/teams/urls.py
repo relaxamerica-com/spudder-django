@@ -15,5 +15,5 @@ urlpatterns = patterns(
     (r'^(?P<page_id>\d+)/save_avatar$', 'save_avatar'),
     (r'^associate/(?P<page_id>\d+)$', 'associate_with_venue'),
     (r'^associate/(?P<page_id>\d+)/(?P<venue_id>\d+)$', 'associate_team_with_venue'),
-    (r'^associate/(?P<page_id>\d+)/remove$', 'remove_association_with_venue'),
+    (r'^associate/(?P<page_id>\d+)/remove/(?P<venue_id>\d+)$', 'remove_association_with_venue'),
 )

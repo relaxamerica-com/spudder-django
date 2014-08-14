@@ -108,13 +108,13 @@ def public_view(request, page_id):
         return len(admins) > 0
 
     page = get_object_or_404(TeamPage, pk=page_id)
-    is_associated, associated_venue = _check_if_team_is_associated(page)
+    is_associated, associated_venues = _check_if_team_is_associated(page)
 
     return render(request, 'spudderspuds/teams/pages/team_page_view.html',{
         'page': page,
         'can_edit': can_edit(request.user, request.current_role, page),
         'is_associated': is_associated,
-        'venue': associated_venue,
+        'venues': associated_venues,
     })
 
 
@@ -182,19 +182,25 @@ def remove_image(request):
 
 def _check_if_team_is_associated(page):
     is_associated = TeamVenueAssociation.objects.filter(team_page=page).count() > 0
+    associated_venues = []
 
     if is_associated:
-        associated_venue = TeamVenueAssociation.objects.get(team_page=page).venue
-    else:
-        associated_venue = None
+        for association in TeamVenueAssociation.objects.filter(team_page=page):
+            associated_venues.append(association.venue)
 
-    return is_associated, associated_venue
+    return is_associated, associated_venues
 
 
 def associate_with_venue(request, page_id):
     page = get_object_or_404(TeamPage, pk=page_id)
-    venues = Venue.objects.all().order_by('name')
-    is_associated, associated_venue = _check_if_team_is_associated(page)
+    venues_objects = Venue.objects.all().order_by('name')
+    is_associated, associated_venues = _check_if_team_is_associated(page)
+    venues = []
+
+    for venue in venues_objects:
+        if venue not in associated_venues:
+            venues.append(venue)
+
 
     # Pagination
     current_page = int(request.GET.get('page',1))
@@ -210,8 +216,6 @@ def associate_with_venue(request, page_id):
     return render(request,
                   'components/sharedpages/teams/associate_with_venue.html', {
         'page': page,
-        'is_associated': is_associated,
-        'associated_venue': associated_venue,
         'venues': venue_page.object_list,
         'total_pages': venues_paginator.num_pages,
         'paginator_page': venue_page.number,
@@ -220,11 +224,12 @@ def associate_with_venue(request, page_id):
     })
 
 
-def remove_association_with_venue(request, page_id):
+def remove_association_with_venue(request, page_id, venue_id):
     page = get_object_or_404(TeamPage, pk=page_id)
-    TeamVenueAssociation.objects.get(team_page=page).delete()
+    venue = get_object_or_404(Venue, pk=venue_id)
+    TeamVenueAssociation.objects.get(team_page=page, venue=venue).delete()
 
-    return HttpResponseRedirect('/team/associate/%s' % page_id)
+    return HttpResponseRedirect('/team/%s' % page_id)
 
 
 def associate_team_with_venue(request, page_id, venue_id):
