@@ -9,7 +9,7 @@
 {% block meta %}
 	{{ block.super }}
 	<meta property="og:title" content="{{ page.name }} | Spudder - Sports Updates Made Simple">
-	<meta property="og:description" content="Check out the latest updates about {{ page.name }}. If you are a fan of {{ page.name }}, you need to see this@">
+	<meta property="og:description" content="Check out the latest updates about {{ page.name }}. If you are a fan of {{ page.name }}, you need to see this!">
 	{% if page.avatar %} <meta property="og:image" content="http://{{ request.META.HTTP_HOST }}/file/serve/{{ page.image.id }}">
         {% else %}<meta property="og:image" content="http://{{ request.META.HTTP_HOST }}/static/img/spudderteams/button-teams-large.png">
 	{% endif %}
@@ -185,6 +185,10 @@
         $(document).ready(function(){
             var editMode = $('.edit-mode'),
                 viewMode = $('.view-mode');
+
+            $('#mailto').attr('href',
+                              'mailto:?subject={{ page.name }} on Spudder' +
+                              '&body=Check out the latest updates about {{ page.name }}. If you are a fan of {{ page.name }}, you need to see this! ' + url)
 
             $('.alert').each(function(i, alert) {
                var $alert = $(alert);

@@ -70,9 +70,18 @@
 
 .jumbotron-img {
   width: 100%;
+
+  //  To center image in div, since horizontal-align:center isn't working
+    position:absolute;
+    left:0;
+    right:0;
+    top:0;
+    bottom:0;
+    margin:auto;
 }
 
 .jumbotron{
+  overflow: hidden;
   height: 250px;
 
   @media (min-width: @screen-sm) {

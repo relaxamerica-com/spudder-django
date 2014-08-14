@@ -3,6 +3,8 @@ from spudderaccounts.wrappers import RoleStudent
 from spudderdomain.controllers import RoleController
 from spudmart.CERN.utils import strip_invalid_chars
 from spudmart.CERN.models import Student
+from spudmart.accounts.templatetags.accounts import user_name
+
 register = template.Library()
 
 
@@ -107,3 +109,16 @@ def student_email(student):
     r = RoleStudent(student)
     email = r._amazon_id
     return email
+
+
+@register.simple_tag()
+def display_name(student):
+    """
+    Gets either the display name or the username for the student
+    :param student: any Student object
+    :return: a name as string
+    """
+    if student.display_name:
+        return student.display_name
+    else:
+        return user_name(student.user)

@@ -6,6 +6,8 @@
 
 {% block side_nav %}{% endblock side_nav %}
 
+{% block title %}{{ page.name }} | Spudder - Sports Updates Made Simple{% endblock %}
+
 {% block meta %}
 {{ block.super }}
 <meta property="og:title" content="{{ page.name }} | Spudder - Sports Updates Made Simple">
@@ -90,6 +92,9 @@
 
     <script type="text/javascript">
         window.twitterPopupText = "Here is a business that gives back to the community. Let's all click here and support them.";
+        $('#mailto').attr('href',
+                          'mailto:?subject={{ page.name }} on Spudder' +
+                          "&body=Check out this awesome sponsor: {{ page.name }}! Here is a business that gives back to the community. Let's all click here and support them! " + url);
 
         {% if latitude and longitude %}
             $(document).ready(function () {

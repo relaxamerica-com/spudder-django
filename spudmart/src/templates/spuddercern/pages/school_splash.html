@@ -8,13 +8,12 @@
 
 {% block title %}{{ school.name }} on CERN{% endblock %}
 
-{% block meta %}
-{{ block.super }}
-<meta property="og:title" content="{{ school.name }} | Spudder - Sports Updates Made Simple">
-<meta property="og:description" content="Check out the newest team from {{ school.name }}! They are making it better for YOUR local sports team!">
-{% if school.logo %} <meta property="og:image" content="http://{{ request.META.HTTP_HOST }}/file/serve/{{ school.logo.id }}">
-    {% else %}<meta property="og:image" content="http://{{ request.META.HTTP_HOST }}/static/img/spuddercern/button-cern-large.png">
-{% endif %}
+{% block page_meta %}
+    <meta property="og:title" content="{{ school.name }} | Spudder - Sports Updates Made Simple">
+    <meta property="og:description" content="Check out the newest team from {{ school.name }}! They are making it better for YOUR local sports team!">
+    {% if school.logo %} <meta property="og:image" content="http://{{ request.META.HTTP_HOST }}/file/serve/{{ school.logo.id }}">
+        {% else %}<meta property="og:image" content="http://{{ request.META.HTTP_HOST }}/static/img/spuddercern/button-cern-large.png">
+    {% endif %}
 {% endblock %}
 
 {% block favicon %}"/static/img/spuddercern/button-cern-tiny.png"{% endblock %}
@@ -187,14 +186,18 @@
 <script type="text/javascript">
     {% if head %}window.ownerId = {{ head.user.id }}{% endif %}
     window.isEditMode = false;
+    window.twitterPopupText = 'Check out the latest CERN team at {{ school.name }} on Spudder.com - click here:';
 
     {% if school.cover_image %}
         if($('.jumbotron').height() > $('.jumbotron-img').height()) $('.jumbotron').css('height', $('.jumbotron-img').height() + "px");
     {% endif %}
 
     $(document).ready(function(){
+        $('#mailto').attr('href',
+                          'mailto:?subject={{ school.name }} on CERN' +
+                          "&body=Check out the newest team from {{ school.name }}! They are making it better for YOUR local sports team! " + url);
+
         if ($('#jumbo-map-container').is(':visible')) {
-            console.log('{{ school.full_address }}, {{ school.verbose_state }}');
             initWithAddr('{{ school.full_address }}, {{ school.verbose_state }}')
         }
 

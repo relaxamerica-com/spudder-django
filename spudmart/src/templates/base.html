@@ -11,7 +11,7 @@
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
         <title>{% block title %}{% endblock %}</title>
-        <meta name="description" content="{% block description %}{% endblock %}">
+{#        <meta name="description" content="{% block description %}{% endblock %}">#}
         <meta name="viewport" content="width=device-width, initial-scale=1">
         {% block meta %}
             <!-- Base facebook meta tags -->
@@ -180,8 +180,8 @@
                                                 </a>
                                             </li>
                                             <li>
-                                                <a data-original-title="Share via Email" data-placement="bottom" href="mailto:?subject=Check out this Spudder page!&body=Check out this cool page I saw on Spudder: http://{{ request.META.HTTP_HOST }}{{ request.get_full_path }}">
-                                                <i class="fa fa-envelope-square fa-2x"></i>
+                                                <a data-original-title="Share via Email" data-placement="bottom" id="mailto" href="mailto:?subject=Check out this Spudder page!&body=<Check out this cool page I saw on Spudder: http://{{ request.META.HTTP_HOST }}{{ request.get_full_path }}">
+                                                    <i class="fa fa-envelope-square fa-2x"></i>
                                                 </a>
                                             </li>
                                         </ul>

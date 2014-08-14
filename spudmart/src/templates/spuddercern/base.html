@@ -11,10 +11,13 @@
 {% block nav_brand %}<a href="/"><img src="/static/img/spuddercern/logo-cern-small.png" style="height:35px;margin-top:2px;"/> </a>{% endblock %}
 
 {% block meta %}
-{{ block.super }}
-<meta property="og:title" content="Campus Entrepreneur Recruiting Network | Spudder - Sports Updates Made Simple">
-<meta property="og:description" content="Attention Students! CERN is a program to earn money as you learn all about marketing, public relations, and social media. Click to learn more.">
+    {{ block.super }}
+    {% block page_meta %}
+        <meta property="og:title" content="{% if og_title %}{{ og_title }}{% else %}Campus Entrepreneur Recruiting Network{% endif %} | Spudder - Sports Updates Made Simple">
+        <meta property="og:description" content="{% if og_description %}{{ og_description }}{% else %}Attention Students! CERN is a program to earn money as you learn all about marketing, public relations, and social media. Click to learn more.{% endif %}">
+    {% endblock %}
 {% endblock %}
+
 
 {% block nav %}
     {% if not request.current_role %}

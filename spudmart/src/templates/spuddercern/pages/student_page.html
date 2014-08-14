@@ -4,19 +4,15 @@
 {% load CERN %}
 
 {% block title %}
-    {% if student.display_name %}
-        {{ student.display_name }}
-    {% else %}
-        {% user_name student.user %}
-    {% endif %}
-    ({{ student.school.name }}) on CERN
+    {% display_name student %} ({{ student.school.name }}) on CERN
 {% endblock %}
 
-{% block meta %}
-{{ block.super }}
-{% if student.logo %} <meta property="og:image" content="http://{{ request.META.HTTP_HOST }}/file/serve/{{ student.logo.id }}">
-    {% else %}<meta property="og:image" content="http://{{ request.META.HTTP_HOST }}/static/img/spuddercern/button-cern-large.png">
-{% endif %}
+{% block page_meta %}
+    <meta property="og:title" content="{% display_name student %} | Spudder - Sports Updates Made Simple">
+    <meta property="og:description" content="Check out {% display_name student %}'s great work on the {{ student.school.name }} CERN Team, proving their skills while improving local sports.">
+    {% if student.logo %} <meta property="og:image" content="http://{{ request.META.HTTP_HOST }}/file/serve/{{ student.logo.id }}">
+        {% else %}<meta property="og:image" content="http://{{ request.META.HTTP_HOST }}/static/img/spuddercern/button-cern-large.png">
+    {% endif %}
 {% endblock %}
 
 {% block favicon %}"/static/img/spuddercern/button-cern-tiny.png"{% endblock %}
@@ -263,6 +259,7 @@
 <script type="text/javascript" src="/static/js/libs/jquery.serialize.file.js"></script>
 <script type="text/javascript">
     window.isEditMode = false;
+    window.twitterPopupText = "(Say something about your Student page here)";
 
     {% if venue.cover_image %}if($('.jumbotron').height() > $('.jumbotron-img').height()) $('.jumbotron').css('height', $('.jumbotron-img').height() + "px");{% endif %}
 
@@ -271,6 +268,10 @@
     $(document).ready(function(){
         var editMode = $('.edit-mode'),
 	        viewMode = $('.view-mode');
+
+        $('#mailto').attr('href',
+                         'mailto:?subject={% display_name student %} on CERN' +
+                         "&body=Check out {% display_name student %}'s great work on the {{ student.school.name }} CERN Team, proving their skills while improving local sports. " + url);
 
         $('.alert').each(function(i, alert) {
            var $alert = $(alert);

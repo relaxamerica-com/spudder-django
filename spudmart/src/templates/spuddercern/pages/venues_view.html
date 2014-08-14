@@ -8,17 +8,15 @@
 
 {% block title %}{{ venue.aka_name }} ({{ venue.sport }}) | Spudder - Sports Updates Made Simple{% endblock %}
 
-{% block meta %}
-{{ block.super }}
-<!--Facebook meta tags-->
-{% if venue.aka_name and venue.sport %}
-<meta property="og:title" content="{{ venue.aka_name }} | Spudder - Sports Updates Made Simple">
-<meta property="og:description" content="Need directions, closest hospital information, details on seating, or playing conditions? Everything about {{ venue.aka_name }} in one place!">
-{% endif %}
-{% if venue.logo %}<meta property="og:image" content="http://{{ request.META.HTTP_HOST }}/file/serve/{{ venue.logo.id }}">
-    {% else %}<meta property="og:image" content="http://{{ request.META.HTTP_HOST }}/static/img/spuddersponsors/button-sponsors-large.png">
-{% endif %}
-{% endblock meta %}
+{% block page_meta %}
+    {% if venue.aka_name and venue.sport %}
+    <meta property="og:title" content="{{ venue.aka_name }} | Spudder - Sports Updates Made Simple">
+    <meta property="og:description" content="Need directions, closest hospital information, details on seating, or playing conditions? Everything about {{ venue.aka_name }} in one place!">
+    {% endif %}
+    {% if venue.logo %}<meta property="og:image" content="http://{{ request.META.HTTP_HOST }}/file/serve/{{ venue.logo.id }}">
+        {% else %}<meta property="og:image" content="http://{{ request.META.HTTP_HOST }}/static/img/spuddersponsors/button-sponsors-large.png">
+    {% endif %}
+{% endblock %}
 
 {% block favicon %}"/media/ico/favicon.png"{% endblock %}
 {% block nav_brand %}<a href="/"><img src="/static/img/spudderspuds/logo-spuds-small.png" style="height:35px;margin-top:2px;"/> </a>{% endblock %}
@@ -693,6 +691,10 @@
 
 	$(document).ready(function() {
         $('.progress').hide();
+
+        $('#mailto').attr('href',
+                          'mailto:?subject={{ venue.aka_name }} on Spudder' +
+                          '&body=Need directions, closest hospital information, details on seating, or playing conditions? Everything about {{ venue.aka_name }} in one place! ' + url);
 
         $('#venue-property-buttons a').click(function(){
             if (window.isEditMode){
