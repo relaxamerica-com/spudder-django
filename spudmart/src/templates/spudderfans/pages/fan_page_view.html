@@ -4,17 +4,13 @@
 {% load CERN %}
 
 {% block title %}
-    {% if page.name or page.last_name %}
-        {{ page.name }} {{ page.last_name }}
-    {% else %}
-        {% user_name page.fan %}
-    {% endif %}
+    {% fan_page_name page %}
 {% endblock %}
 
 {% block meta %}
 	{{ block.super }}
-	<meta property="og:title" content="{{ page.username }} | Spudder - Sports Updates Made Simple">
-	<meta property="og:description" content="Check out this super fan's page - {{ page.user }} - See the great Sports Updates they have shared!">
+	<meta property="og:title" content="{% fan_page_name page %} | Spudder - Sports Updates Made Simple">
+	<meta property="og:description" content="Check out this super fan's page - {% fan_page_name page %} - See the great Sports Updates they have shared!">
 	{% if page.avatar %} <meta property="og:image" content="http://{{ request.META.HTTP_HOST }}/file/serve/{{ page.avatar.id }}">
         {% else %}<meta property="og:image" content="http://{{ request.META.HTTP_HOST }}/static/img/spudderfans/button-fans-large.png">
 	{% endif %}
@@ -44,11 +40,7 @@
     {% endif %}
 
     <span id="display-name">
-        {% if page.name or page.last_name %}
-        	{{ page.name }} {{ page.last_name }}
-	    {% else %}
-	        {% user_name page.fan %}
-	    {% endif %}
+        {% fan_page_name page %}
     </span>
     {% if can_edit %}
         <button class="btn btn-primary" id="edit">
@@ -120,6 +112,10 @@
     $(document).ready(function(){
         var editMode = $('.edit-mode'),
 	        viewMode = $('.view-mode');
+
+        $('#mailto').attr('href',
+                          'mailto:?subject={% fan_page_name page %} on Spudder' +
+                          "&body=Check out this super fan's page - {% fan_page_name page %} - See the great Sports Updates they have shared! " + url);
 
         $('.alert').each(function(i, alert) {
            var $alert = $(alert);

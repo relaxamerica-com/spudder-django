@@ -33,3 +33,16 @@ def is_sponsor(user):
     :return: boolean whether user is sponsor
     """
     return is_sponsor_util(user)
+
+
+@register.simple_tag()
+def fan_page_name(fan_page):
+    """
+    Gets the display name for a fan page
+    :param fan_page: any FanPage object
+    :return: a name as str
+    """
+    if fan_page.name or fan_page.last_name:
+        return fan_page.name + " " + fan_page.last_name
+    else:
+        return user_name(fan_page.fan)
