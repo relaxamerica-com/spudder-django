@@ -6,7 +6,6 @@ threadsafe: false
 
 builtins:
 - remote_api: on
-# - appstats: on # uncomment to enable http://localhost:8000/_ah/stats
 
 inbound_services:
 - warmup
