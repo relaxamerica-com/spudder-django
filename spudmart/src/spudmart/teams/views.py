@@ -234,10 +234,5 @@ def remove_association_with_venue(request, page_id):
 def associate_team_with_venue(request, page_id, venue_id):
     page = get_object_or_404(TeamPage, pk=page_id)
     venue = get_object_or_404(Venue, pk=venue_id)
-
-    TeamVenueAssociation(
-        team_page=page,
-        venue=venue
-    ).save()
-
-    return HttpResponseRedirect('/team/%s' + page_id)
+    TeamVenueAssociation(team_page=page, venue=venue).save()
+    return HttpResponseRedirect('/team/%s' % page_id)
