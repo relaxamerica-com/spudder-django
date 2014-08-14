@@ -59,7 +59,9 @@
             </tbody>
         </table>
     {% else %}
-        {% include 'spuddercern/quote_messages/quote_venues_empty_list.html' %}
+        <div class="centered-venue-alert">
+            {% include 'spuddercern/quote_messages/quote_venues_empty_list.html' %}
+        </div>
 
     {% endif %}
 

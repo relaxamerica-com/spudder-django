@@ -16,9 +16,11 @@
 
     {% with info_message_id="social_media_info" %}
         {% if info_message_id not in student.hidden_info_messages %}
-            <div class="row">
-                <div class="col-md-8 col-md-offset-2">
-                    {% include 'spuddercern/quote_messages/quote_social_media_instructions.html' %}
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-8 col-md-offset-2">
+                        {% include 'spuddercern/quote_messages/quote_social_media_instructions.html' %}
+                    </div>
                 </div>
             </div>
         {% endif %}

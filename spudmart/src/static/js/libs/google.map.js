@@ -49,7 +49,7 @@ function initialize(tryGeolocation, alertContainer, filter, successHandler) {
 										+ '">'
 										+ otherVenueInRange.aka_name
 										+ '</a>';
-						showAlert(alertContainer, 'Venue already exists near your current location: ' + venueLink, 'warning', false);
+						showAlert(alertContainer, 'A ' + $('#venue-sport').val() + ' venue already exists near your current location: ' + venueLink, 'warning', false);
 					} else {
 						successHandler(pos.latitude, pos.longitude);
 					}

@@ -524,6 +524,7 @@ def venues_new(request):
         venue = Venue(user=request.user, sport=request.POST['sport'], student=request.current_role.entity)
         venue.latitude = float(request.POST['latitude'])
         venue.longitude = float(request.POST['longitude'])
+        venue.state = request.POST['state']
         venue.save()
 
         # Reward the student for creating the venue
@@ -531,8 +532,8 @@ def venues_new(request):
         created_venue(owner)
 
         return redirect('/venues/view/%s' % venue.id)
-
-    template_data = {'sports': SPORTS}
+    sorted_states = sorted(STATES.items(), key=lambda x: x[1])
+    template_data = {'sports': SPORTS, 'states': sorted_states}
     return render(request, 'spuddercern/pages/venues_new.html', template_data)
 
 

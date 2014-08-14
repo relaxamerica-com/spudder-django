@@ -24,10 +24,21 @@
     <form action="" method="post" id="create-team-form" class="form-horizontal" enctype="multipart/form-data">
 
         <div class="form-group">
+            <label for="state">State:</label>
+            <select name="state" for="state" class="form-control" id="venue-state">
+                <option disabled selected>Select your current state...</option>
+               {% for abbr, full in states %}
+                   <option value="{{ abbr }}">{{ full }}</option>
+               {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
             <label for="sport">Sport:</label>
             <select name="sport" id="venue-sport" class="form-control">
+                <option selected disabled>Select a sport...</option>
                 {% for sport in sports %}
-                    <option value="{{ sport }}" {% if venue.sport == sport %}selected{% endif %}>{{ sport }}</option>
+                    <option value="{{ sport }}">{{ sport }}</option>
                 {% endfor %}
             </select>
         </div>
@@ -40,7 +51,7 @@
             <input name="latitude" type="hidden" />
             <div id="map">
                 <div id="map-canvas" class="create-venue-map">
-
+                    <p>You must select both the state and sport to continue.</p>
                 </div>
             </div>
         </div>
@@ -69,13 +80,13 @@
                 });
             }
 
-            init();
-
             $('#venue-sport').change(function(){
-                console.log('changed');
-                $('#save').addClass('hidden');
-                $('.alert').hide();
-               init();
+                if (($('#venue-state').val() != "") && ($('#venue-sport').val() != '')) {
+                    $('#map-canvas').children().remove();
+                    init();
+                    $('#save').addClass('hidden');
+                    $('.alert').not('.alert-info').hide();
+                }
             });
 		});
 	</script>

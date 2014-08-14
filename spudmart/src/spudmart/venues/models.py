@@ -4,7 +4,7 @@ from spudmart.sponsors.models import SponsorPage
 from spudmart.upload.models import UploadedFile
 from djangotoolbox.fields import ListField
 from spudmart.CERN.rep import deleted_venue
-from spudmart.CERN.models import Student
+from spudmart.CERN.models import Student, STATES
 
 SPORTS = ['Baseball', 'Basketball', 'Field Hockey', 'Football',
           'Ice Hockey', 'Lacrosse', 'Rugby', 'Soccer', 'Softball',
@@ -49,6 +49,7 @@ class Venue(models.Model):
     price = models.DecimalField(default=0.0, decimal_places=2, max_digits=10)
     fax = models.CharField(max_length=200)
     cover_image = models.ForeignKey(UploadedFile, null=True, related_name="cover_image")
+    state = models.CharField(max_length=2)
 
     # Just to stay consistent with fcns created in spuddercern.rep
     rep = models.IntegerField(default=0)
@@ -92,6 +93,9 @@ class Venue(models.Model):
 
     def __str__(self):
         return unicode(self).encode('utf-8')
+
+    def verbose_state(self):
+        return STATES[self.state]
 
 
 class PendingVenueRental(models.Model):

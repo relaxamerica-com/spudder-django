@@ -14092,6 +14092,34 @@ fieldset[disabled] .navbar-masthead.navbar-inverse .btn-link:focus {
 legend {
   font-size: 14.3px;
 }
+.jumbotron-img {
+  width: 100%;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+}
+.jumbotron {
+  overflow: hidden;
+  height: 250px;
+}
+@media (min-width: 768px) {
+  .jumbotron {
+    height: 300px;
+  }
+}
+@media (min-width: 992px) {
+  .jumbotron {
+    height: 350px;
+  }
+}
+@media (min-width: 1200px) {
+  .jumbotron {
+    height: 400px;
+  }
+}
 .create-venue-map {
   min-height: 100px;
 }
