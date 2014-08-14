@@ -56,19 +56,6 @@
     {#						        <li><a href="/team/search"><i class="fa fa-fw fa-search"></i> Find Team</a></li>#}
     {#						    </ul>#}
     {#						</li>#}
-                            {% block support_nav %}
-                                {% if current_role %}
-                                    <li class="dropdown">
-                                        <a class="dropdown-toggle" href="#" data-toggle="dropdown">
-                                            Support <i class="fa fa-caret-down"></i>
-                                        </a>
-                                        <ul class="dropdown-menu">
-                                            <li><a href="http://spudder.zendesk.com/account/dropboxes/20176994" onClick="Zenbox.show(); return false;">Support Ticket</a></li>
-                                            <li><a href="#" data-toggle="modal" data-target="#flag-modal" class="{% block flag-page-class %}hidden{% endblock %}">Flag Page</a></li>
-                                        </ul>
-                                    </li>
-                                {% endif %}
-                            {% endblock %}
                             {% block nav %}{% endblock %}
                             {% block current_role_nav %}
                                 {% if current_role and current_role|is_cern_student %}
@@ -89,9 +76,9 @@
                                 {% if current_role and current_role|is_sponsor %}
                                     {% include 'spuddersponsors/parts/sponsors_menu.html' %}
                                 {% endif %}
-                                {% if current_role and current_role|is_fan %}
-                                    {% include 'spudderfans/parts/fans_menu.html' %}
-                                {% endif %}
+{#                                {% if current_role and current_role|is_fan %}#}
+{#                                    {% include 'spudderfans/parts/fans_menu.html' %}#}
+{#                                {% endif %}#}
                             {% endblock %}
                             {% block user_account_nav %}
                                 {% if current_role %}
@@ -154,6 +141,19 @@
                                             <li><a href="/accounts/logout?next={% block logout_next_url %}/{% endblock %}"><i class="fa fa-fw fa-power-off"></i> Logout</a></li>
                                         </ul>
                                     </li>
+                                    {% block support_nav %}
+                                        {% if current_role %}
+                                            <li class="dropdown">
+                                                <a class="dropdown-toggle" href="#" data-toggle="dropdown">
+                                                    Support <i class="fa fa-caret-down"></i>
+                                                </a>
+                                                <ul class="dropdown-menu">
+                                                    <li><a href="http://spudder.zendesk.com/account/dropboxes/20176994" onClick="Zenbox.show(); return false;">Contact Spudder Support</a></li>
+                                                    <li><a href="#" data-toggle="modal" data-target="#flag-modal" class="{% block flag-page-class %}hidden{% endblock %}">Flag Page</a></li>
+                                                </ul>
+                                            </li>
+                                        {% endif %}
+                                    {% endblock %}
                                     <li class="dropdown">
                                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                             <i class="fa fa-share-alt"></i> <i class="fa fa-caret-down"></i>
@@ -224,7 +224,7 @@
                             </ul>
                         </div>
                         <div class="col-md-2">
-                            <h3>Our Ecosystem</h3>
+                            <h3>Our Platform</h3>
                             <ul class="list-unstyled">
                                 <li style="margin-bottom: 10px;"><a href="/spuds"><img src="/static/img/spudderspuds/button-spuds-tiny.png" style="height:18px;"/> Spudder</a></li>
                                 <li style="margin-bottom: 10px;"><a href="/cern"><img src="/static/img/spuddercern/button-cern-tiny.png" style="height:18px;"/> CERN</a></li>

@@ -1,0 +1,13 @@
+<li class="{% if active == "explore" %}active{% endif %}">
+    <a href="/spuds">Explore</a>
+</li>
+{% if current_role and current_role.entity_type == "fan" %}
+    <li class="{% if active == "profile" %}active{% endif %}">
+        {% if request.current_role.entity_type == 'fan' %}
+            <a href="/fan/{{ current_role.entity.id }}">My Fan Profile</a>
+        {% endif %}
+    </li>
+    <li class="{% if active == "teams" %}active{% endif %}">
+        <a href="/fan/{{ current_role.entity.id }}/teams">My Teams</a>
+    </li>
+{% endif %}

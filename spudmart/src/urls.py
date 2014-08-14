@@ -48,7 +48,6 @@ urlpatterns = patterns(
     (r'^spudder/', include('spudmart.spudder.urls')),
     (r'^upload/', include('spudmart.upload.urls')),
     (r'^sponsor/', include('spudmart.sponsors.urls')),
-    (r'^fan/', include('spudmart.fans.urls')),
     (r'^team/', include('spudmart.teams.urls')),
     (r'^hospitals/', include('spudmart.hospitals.urls')),
     (r'^file/serve/(?P<file_id>\d+)$', 'spudmart.upload.views.serve_uploaded_file'),
@@ -57,6 +56,7 @@ urlpatterns = patterns(
     url(r'^cern/', include('spudmart.CERN.urls')),
     url(r'^users/', include('spudderaccounts.urls')),
     url(r'^spuds/', include('spudderspuds.urls')),
+    url(r'^fan/', include('spudderspuds.urls')),
     url(r'^flag/', include('spudmart.flags.urls')),
 
     # Spudder Admin site

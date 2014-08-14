@@ -4,6 +4,12 @@
     ga('set', 'contentGroup1', 'TEAMS - Teams');
 {% endblock %}
 
+{% block nav %}
+    {{ additional_nav|safe }}
+    {{ block.super }}
+{% endblock %}
+
+
 {% block dashboard_page %}
     <div class="page-header">
         <h1>

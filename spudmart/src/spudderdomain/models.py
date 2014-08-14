@@ -185,6 +185,7 @@ class Location(models.Model):
 
 class TeamPage(models.Model):
     name = models.CharField(max_length=255)
+    at_name = models.CharField(max_length=255)
     location = models.ForeignKey(Location, null=True, blank=True)
     contact_details = models.CharField(max_length=255, blank=True)
     free_text = models.TextField(blank=True)

@@ -226,7 +226,7 @@ class RoleFan(RoleBase):
 
     @property
     def home_domain(self):
-        return 'spuds'
+        return 'fan'
 
     def user_is_owner(self, user):
         return self.entity.fan == user

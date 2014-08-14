@@ -21,7 +21,7 @@ def teams_list(request):
         role_dashboard = 'spuddercern/pages/dashboard_pages/dashboard.html'
     elif request.current_role.entity_type == RoleController.ENTITY_FAN:
         role_dashboard = 'spudderfans/pages/dashboard.html'
-    return render(request, 'sharedpages/teams/teams_list.html',
+    return render(request, 'components/sharedpages/teams/teams_list.html',
                   {'teams': teams,
                    'role_dashboard': role_dashboard})
 
@@ -35,23 +35,20 @@ def create_team(request):
             # image = None
             # if image_form.is_valid():
             #     image = image_form.save()
-
             team = TeamsController.CreateTeam(
                 request.current_role,
                 name=form.cleaned_data.get('team_name'),
-                # contact_details=form.cleaned_data.get('contact_details'),
-                # free_text=form.cleaned_data.get('free_text'),
+                contact_details=form.cleaned_data.get('contact_details'),
+                free_text=form.cleaned_data.get('free_text'),
                 sport=dict(form.fields['sport'].choices)[form.cleaned_data.get('sport')],
                 state=dict(form.fields['state'].choices)[form.cleaned_data.get('state')],
                 # image=image
             )
-
-            location_info = request.POST['location_info']
+            location_info = request.POST.get('location_info', None)
             team.update_location(location_info)
             team.save()
 
             return redirect('/team/list')
-        return HttpResponse(str(form.errors) + '<br><br>' + request.POST['location_info'])
     return render(request, 'spudderspuds/teams/pages/create_team.html', {
         'form': form,
         # 'upload_url': blobstore.create_upload_url('/team/create'),
@@ -212,7 +209,7 @@ def associate_with_venue(request, page_id):
         role_dashboard = 'spudderfans/pages/dashboard.html'
 
     return render(request,
-                  'sharedpages/teams/associate_with_venue.html', {
+                  'components/sharedpages/teams/associate_with_venue.html', {
         'page': page,
         'is_associated': is_associated,
         'associated_venue': associated_venue,

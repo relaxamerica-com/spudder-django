@@ -1,4 +1,6 @@
+import datetime
 from django import forms
+from django.forms.extras import SelectDateWidget
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 
@@ -41,3 +43,10 @@ class FanRegisterForm(forms.Form):
         if raise_error:
             raise forms.ValidationError('There was a problem creating your account.')
         return data
+
+
+class FanPageForm(forms.Form):
+    YEARS = range(datetime.datetime.now().date().year, datetime.datetime.now().date().year - 40, -1)
+    name = forms.CharField(label='First Name')
+    last_name = forms.CharField()
+    date_of_birth = forms.DateField(widget=SelectDateWidget(years=YEARS))

@@ -1,5 +1,5 @@
 from spudderaccounts.utils import change_current_role
-from spudderaccounts.wrappers import RoleBase
+from spudderaccounts.wrappers import RoleBase, RoleFan
 from spudderdomain.controllers import RoleController
 from spudderdomain.models import FanPage
 
@@ -13,3 +13,4 @@ def create_and_activate_fan_role(request, user):
         fan.id,
         RoleBase.RoleWrapperByEntityType(RoleController.ENTITY_FAN))
     change_current_role(request, RoleController.ENTITY_FAN, fan.id)
+    return RoleFan(fan)
