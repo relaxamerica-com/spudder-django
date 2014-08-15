@@ -32,6 +32,8 @@
     </div>
     {% endif %}
 {% endblock %}
+
+
 {% block cover_title %}
     <p>Sponsored By:</p>
     {% if venue.logo %}
@@ -107,46 +109,7 @@
             <div class="col-md-12 contents" style="height:100%;">
                 <div class="alert"></div>
                 <div class="content active" id="spuds">
-                    <div style="padding-bottom: 30px">
-                        <h4 style="margin-bottom: 0"><abbr title="Sports Updates">SPUDS</abbr> from this venue</h4>
-                        <p class="help-block">Follow your favorite teams and players by following this venue!</p>
-                    </div>
-                    <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
-                        <!-- Wrapper for slides -->
-                        <div class="carousel-inner">
-                            {% for spud in venue_spuds %}
-                                <div class="item {% if forloop.counter0 == 0 %}active{% endif %}">
-{#                                        <img src="{{ spud.target.json.media.0.raw.url }}" />#}
-{#                                        <div class="carousel-caption">#}
-{#                                            {{ spud.target.title }}#}
-{##}
-{#                                            {% for tag in spud.target.usertext %}#}
-{#                                                <a href="#">{{ tag }}</a> &nbsp;#}
-{#                                            {% endfor %}#}
-{#                                        </div>#}
-                                    {% include 'spudderspuds/components/spuds/spud.html' %}
-                                </div>
-                            {% empty %}
-                                <div class="item active">
-                                    <img src="/static/img/spudderspuds/button-spuds-large.png" height="300px"/>
-                                    <div class="carousel-caption">
-                                        <div class="alert alert-info">
-                                            <h4>No SPUDS Yet</h4>
-                                            <p>Stay tuned, there will soon be SPUDS for this venue!</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            {% endfor %}
-                        </div>
-
-                        <!-- Controls -->
-                        <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
-                            <span class="icon-prev"></span>
-                        </a>
-                        <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
-                            <span class="icon-next"></span>
-                        </a>
-                    </div>
+                    {% include 'components/spuds/spud_carousel.html' with spud=venue_spuds title='<abbr title="Sports Updates">SPUDS</abbr> from this venue' %}
                 </div>
                 <div class="content" id="map">
                     <div id="map-canvas" class="view-venue-map">

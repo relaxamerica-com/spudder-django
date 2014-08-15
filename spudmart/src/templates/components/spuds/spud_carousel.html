@@ -1,0 +1,28 @@
+<div style="padding-bottom: 30px">
+    <h4 style="margin-bottom: 0">{{ title|safe }}</h4>
+</div>
+<div class="carousel slide" data-ride="carousel">
+    <div class="carousel-inner">
+        {% for spud in spuds %}
+            <div class="item {% if forloop.counter0 == 0 %}active{% endif %}">
+                {% include 'components/spuds/spud.html' %}
+            </div>
+        {% empty %}
+            <div class="item active">
+                <img src="/static/img/spudderspuds/button-spuds-large.png" height="300px"/>
+                <div class="carousel-caption">
+                    <div class="alert alert-info">
+                        <h4>No SPUDS Yet</h4>
+                        <p>Stay tuned, there will soon be SPUDS here!</p>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
+        <span class="icon-prev"></span>
+    </a>
+    <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
+        <span class="icon-next"></span>
+    </a>
+</div>

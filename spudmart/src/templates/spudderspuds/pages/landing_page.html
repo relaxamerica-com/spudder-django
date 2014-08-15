@@ -17,6 +17,14 @@
 
             <div class="col-md-9">
 
+                {% if current_role|is_fan %}
+                    {% include 'components/spuds/spud_carousel.html' with title='Your <b>SPUDS</b>' %}
+                {% else %}
+                    {% include 'components/spuds/spud_carousel.html' with title='Popular <b>SPUDS</b>' %}
+                {% endif %}
+
+                <hr/>
+
                 {% include 'spudderspuds/quote_messages/quote_landingpage_comingsoon.html' %}
 
             </div>
