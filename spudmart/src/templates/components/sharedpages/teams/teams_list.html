@@ -17,7 +17,7 @@
         </h1>
     </div>
     {% if teams %}
-        <table class="table">
+        <table class="table {% if teams %}datatable{% endif %}">
             <thead>
                 <tr>
                     <th>Sport</th>
@@ -31,7 +31,7 @@
                     <tr>
                         <td>{{ team.sport }}</td>
                         <td><a href="/team/{{ team.id }}">{{ team.name }}</a></td>
-                        <td>@{{ team.name }}</td>
+                        <td>@{{ team.at_name }}</td>
                         <td style="white-space: nowrap">
                             <a class="btn btn-xs btn-primary" href="/team/page/{{ team.id }}" title="Edit">
                                 <i class="fa fa-fw fa-edit"> </i>
