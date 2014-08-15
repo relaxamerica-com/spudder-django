@@ -9,13 +9,14 @@ from django.http import HttpResponse, HttpResponseNotAllowed
 from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 from spudderaccounts.models import SpudderUser
-from spudderaccounts.wrappers import RoleStudent
+from spudderaccounts.wrappers import RoleStudent, RoleFan
 from spudderadmin.decorators import admin_login_required
 from spudderadmin.utils import encoded_admin_session_variable_name
 from spudderdomain.models import FanPage, LinkedService, TeamAdministrator, TeamPage
 from spudderkrowdio.models import KrowdIOStorage
 from spuddersocialengine.models import SpudFromSocialMedia, InstagramDataProcessor
 from spudmart.CERN.models import Student, School
+from spudmart.accounts.templatetags.accounts import user_name
 from spudmart.donations.models import RentVenue
 from spudmart.recipients.models import VenueRecipient
 from spudmart.sponsors.models import SponsorPage
@@ -221,6 +222,7 @@ def send_email(request):
     else:
         return HttpResponseNotAllowed(['POST'])
 
+
 @admin_login_required
 def send_student_email(request, student_id):
     """
@@ -232,3 +234,46 @@ def send_student_email(request, student_id):
     stu = Student.objects.get(id=student_id)
     return render_to_response('spudderadmin/pages/cern/send_student_email.html',
         {'student': stu})
+
+
+@admin_login_required
+def fan_reports(request):
+    """
+    Displays a general report on all fans (with search)
+    :param request: any request
+    :return: a table of all fans with some basic info, plus functional
+        search box
+    """
+    fans = FanPage.objects.all()
+    return render_to_response('spudderadmin/pages/reports/fans.html',
+        {'fans': [RoleFan(fan) for fan in fans]})
+
+
+@admin_login_required
+def send_fan_email(request, fan_id):
+    """
+    Allows admin to compose an email to the fan
+    :param request: any request
+    :param fan_id: a valid FanPage ID
+    :return: simple page to compose email to fan
+    """
+    fan = FanPage.objects.get(id=fan_id)
+    if fan.name or fan.last_name:
+        name = fan.name + " " + fan.last_name
+    else:
+        name = user_name(RoleFan(fan).user)
+    return render_to_response('spudderadmin/pages/reports/send_email.html',
+        {'name': name,
+         'email': RoleFan(fan).user.email,
+         'profile': '/fan/%s' % fan.id
+        })
+
+
+@admin_login_required
+def user_reports_dashboard(request):
+    """
+    A simple splash page for user reports
+    :param request: any request
+    :return: a very minimal admin page inside the User Reports
+    """
+    return render_to_response('spudderadmin/pages/reports/dashboard.html')

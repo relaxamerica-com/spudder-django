@@ -1,0 +1,59 @@
+{% extends 'spudderadmin/pages/reports/_reports_base.html' %}
+
+{% load accounts %}
+{% load CERN %}
+
+{% block reports_nav %}
+    {% include 'spudderadmin/pages/reports/sidenav.html' %}
+{% endblock %}
+
+{% block reports_body %}
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <div class="panel-title">
+                <h4>Compose Email to: <a href="{{ profile }}">{{ name }} ({{ email }})</a></h4>
+            </div>
+            <div class="panel-body well">
+                <form role="form">
+                    <div class="form-group">
+                        <label>Email Subject:</label>
+                        <input type="text" id="subject" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Email Content:</label>
+                        <textarea id="body" class="form-control"></textarea>
+                    </div>
+                    <a class="btn btn-primary" id="send"><i class="fa fa-fw fa-send-o"></i> Send Email</a>
+                </form>
+                <div class="alert" style="display:none; margin-top: 15px"></div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+{{ block.super }}
+<script type="text/javascript">
+    $('#send').click(function(){
+        var subj = $('#subject').val(),
+            body = $('#body').val(),
+            icon = $('.fa-send-o');
+
+        if (subj == "" || body == "")alert('You must supply a subject and content to the email.');
+        else{
+            icon.removeClass('fa-send-o').addClass('fa-spin fa-spinner');
+
+            var response = $.post('/spudderadmin/send_email', {
+                                to: '{{ email }}',
+                                subject: subj,
+                                body: body
+                            });
+
+            response.done(function(){
+                icon.removeClass('fa-spin fa-spinner').addClass('fa-send-o');
+                showAlert($('.alert'), 'Email has been sent!', 'success', true);
+            })
+        }
+    });
+</script>
+{% endblock %}

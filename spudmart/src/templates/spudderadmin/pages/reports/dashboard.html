@@ -1,0 +1,20 @@
+{% extends 'spudderadmin/pages/reports/_reports_base.html' %}
+
+{% load accounts %}
+
+{% block reports_nav %}
+    {% include 'spudderadmin/pages/reports/sidenav.html' with active="dashboard" %}
+{% endblock %}
+
+{% block reports_body %}
+<div class="panel panel-default">
+        <div class="panel-heading">
+            <div class="panel-title">
+                <h4>User Reports Dashboard</h4>
+            </div>
+            <div class="panel-body">
+                <p>Use the navication on the left to see reports.</p>
+            </div>
+        </div>
+    </div>
+{% endblock %}
