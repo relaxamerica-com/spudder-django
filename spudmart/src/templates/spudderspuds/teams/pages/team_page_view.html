@@ -73,48 +73,126 @@
         </form>
     </div>
 
-    <div style="min-height: 362px; margin: 0 auto; width: 100%; vertical-align: middle; text-align: center; padding:15px;">
-        <div class="row-fluid" style="height:100%;">
-            <div class="col-md-12 contents" style="height:100%;">
-                <div class="alert"></div>
-                <div class="content active" id="spuds">
-                    <div style="padding-bottom: 30px">
-                        <h4 style="margin-bottom: 0"><abbr title="Sports Updates">SPUDS</abbr> from this team</h4>
-                        <p class="help-block">Here are the SPUDS created by this team!</p>
-                    </div>
-                    <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
-                        <div class="carousel-inner">
-                            <div class="item active">
-                                <img src="/static/img/spudderspuds/button-spuds-large.png" height="300px"/>
-                                <div class="carousel-caption">
-                                    <div class="alert alert-info">
-                                        <h4>No SPUDS Yet</h4>
-                                        <p>Stay tuned, there will soon be SPUDS for this team!</p>
+    <div id="venue-property-buttons">
+        <div class="btn-group hidden-sm hidden-xs btn-group-justified" style="margin: 0 auto;">
+            {% include 'spudderspuds/teams/parts/team_view_buttons.html' %}
+        </div>
+    </div>
+
+    <div class="tab-content">
+        <div class="tab-pane active" id="spuds">
+            <div style="min-height: 362px; margin: 0 auto; width: 100%; vertical-align: middle; text-align: center; padding:15px;">
+                <div class="row-fluid" style="height:100%;">
+                    <div class="col-md-12 contents" style="height:100%;">
+                        <div class="alert"></div>
+                        <div class="content active" id="spuds">
+                            <div style="padding-bottom: 30px">
+                                <h4 style="margin-bottom: 0"><abbr title="Sports Updates">SPUDS</abbr> from this team</h4>
+                                <p class="help-block">Here are the SPUDS created by this team!</p>
+                            </div>
+                            <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+                                <div class="carousel-inner">
+                                    <div class="item active">
+                                        <img src="/static/img/spudderspuds/button-spuds-large.png" height="300px"/>
+                                        <div class="carousel-caption">
+                                            <div class="alert alert-info">
+                                                <h4>No SPUDS Yet</h4>
+                                                <p>Stay tuned, there will soon be SPUDS for this team!</p>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
+
+                                <!-- Controls -->
+                                <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
+                                    <span class="icon-prev"></span>
+                                </a>
+                                <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
+                                    <span class="icon-next"></span>
+                                </a>
                             </div>
                         </div>
-
-                        <!-- Controls -->
-                        <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
-                            <span class="icon-prev"></span>
-                        </a>
-                        <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
-                            <span class="icon-next"></span>
-                        </a>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    {% if page.free_text %}
-        <div class="clearfix"></div>
-        <div>
-            <h3 style="text-align: center">Description:</h3>
-            <p style="margin-left: 30px; margin-right: 30px; text-align: justify;">{{ page.free_text }}</p>
+        <div class="tab-pane" id="venues">
+            {% if not is_associated %}
+                {% include 'spudderspuds/teams/quotes/quote_team_not_associated_with_venue.html' %}
+            {% else %}
+                <div id="associated-venue-container" class="text-center" style="border-top: 1px solid lightgray; padding-top: 20px" class="text-center">
+                    {% if can_edit %}
+                        <a class="btn   btn-primary" href="/team/associate/{{ page.id }}" title="Associate with Another Venue"
+                            style="margin: 20px auto 0; display: table;">
+                            <i class="fa fa-fw fa-map-marker"> </i> Associate with Another Venue
+                        </a>
+                    {% endif %}
+                    <h3>
+                        Associated Venue{% if venues|length > 1 %}s{% endif %}
+                    </h3>
+                    {% for venue in venues %}
+                        <div id="associated-venue-{{ forloop.counter }}" {% if not forloop.first %}style="display:none"{% endif %}>
+                            <div style="font-size:100px;">
+                                {% if venues|length > 1 %}
+                                    {% if forloop.first %}
+                                        <a id="previous-venue" nextVenue="{{ venues|length }}"><i class="fa fa-angle-left"></i></a>
+                                    {% else %}
+                                        <a id="previous-venue" nextVenue="{{ forloop.counter0 }}"><i class="fa fa-angle-left"></i></a>
+                                    {% endif %}
+                                {% endif %}
+
+                                <a href="/venues/view/{{ venue.id }}" style="text-decoration: none;">
+                                    {% if venue.logo %}
+                                        <img id="venue-logo" src="/file/serve/{{ venue.logo.id }}" height="100px"/>
+                                    {% else %}
+                                        <img id="venue-logo" src="/static/img/spuddersponsors/button-sponsors-medium.png" />
+                                    {% endif %}
+                                </a>
+
+                                {% if venues|length > 1 %}
+                                    {% if forloop.last %}
+                                        <a id="next-venue" nextVenue="1"><i class="fa fa-angle-right"></i></a>
+                                    {% else %}
+                                        <a id="next-venue" nextVenue="{{ forloop.counter|add:1 }}"><i class="fa fa-angle-right"></i></a>
+                                    {% endif %}
+                                {% endif %}
+                            </div>
+                            <ul class="list-unstyled" style="display:inline-block">
+                                <li class="text-left">
+                                    <label>Name: </label> {{ venue }}
+                                </li>
+
+                                <li class="text-left">
+                                    <label>Page: </label> <a href="/venues/view/{{ venue.id }}">View Venue page</a>
+                                </li>
+
+                                <li class="text-left">
+                                    <label>Tag: </label> @{{ venue.name }}
+                                </li>
+                            </ul>
+                            <div style="margin-bottom:25px">
+                                <a class="btn btn-danger" href="javascript:removeAssociation('{{ venue.id }}', '{{ venue.aka_name }}');">
+                                    Remove association
+                                </a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
         </div>
-    {% endif %}
+
+        <div class="tab-pane" id="about">
+            {% if page.free_text %}
+                <div>
+                    <h3 style="text-align: center">Description:</h3>
+                    <p style="margin-left: 30px; margin-right: 30px; text-align: justify;">{{ page.free_text }}</p>
+                </div>
+             {% else %}
+                {% include 'spudderspuds/teams/quotes/quote_no_free_text.html' %}
+            {% endif %}
+        </div>
+    </div>
 {% endblock %}
 
 {% block sidebar %}
@@ -141,71 +219,6 @@
             {% endif %}
         </ul>
     </div>
-
-    {% if not is_associated %}
-        {% if can_edit %}
-            {% include 'spudderteams/quotes/quote_team_not_associated_with_venue.html' %}
-        {% endif %}
-    {% else %}
-        <div id="associated-venue-container" class="text-center" style="border-top: 1px solid lightgray; padding-top: 20px" class="text-center">
-            {% if can_edit %}
-                <a class="btn   btn-primary" href="/team/associate/{{ page.id }}" title="Associate with Another Venue"
-                    style="margin: 20px auto 0; display: table;">
-                    <i class="fa fa-fw fa-map-marker"> </i> Associate with Another Venue
-                </a>
-            {% endif %}
-            <h3>
-                Associated Venue{% if venues|length > 1 %}s{% endif %}
-            </h3>
-            {% for venue in venues %}
-                <div id="associated-venue-{{ forloop.counter }}" {% if not forloop.first %}style="display:none"{% endif %}>
-                    <div style="font-size:100px;">
-                        {% if venues|length > 1 %}
-                            {% if forloop.first %}
-                                <a id="previous-venue" nextVenue="{{ venues|length }}"><i class="fa fa-angle-left"></i></a>
-                            {% else %}
-                                <a id="previous-venue" nextVenue="{{ forloop.counter0 }}"><i class="fa fa-angle-left"></i></a>
-                            {% endif %}
-                        {% endif %}
-
-                        <a href="/venues/view/{{ venue.id }}" style="text-decoration: none;">
-                            {% if venue.logo %}
-                                <img id="venue-logo" src="/file/serve/{{ venue.logo.id }}" height="100px"/>
-                            {% else %}
-                                <img id="venue-logo" src="/static/img/spuddersponsors/button-sponsors-medium.png" />
-                            {% endif %}
-                        </a>
-
-                        {% if venues|length > 1 %}
-                            {% if forloop.last %}
-                                <a id="next-venue" nextVenue="1"><i class="fa fa-angle-right"></i></a>
-                            {% else %}
-                                <a id="next-venue" nextVenue="{{ forloop.counter|add:1 }}"><i class="fa fa-angle-right"></i></a>
-                            {% endif %}
-                        {% endif %}
-                    </div>
-                    <ul class="list-unstyled" style="display:inline-block">
-                        <li class="text-left">
-                            <label>Name: </label> {{ venue }}
-                        </li>
-
-                        <li class="text-left">
-                            <label>Page: </label> <a href="/venues/view/{{ venue.id }}">View Venue page</a>
-                        </li>
-
-                        <li class="text-left">
-                            <label>Tag: </label> @{{ venue.name }}
-                        </li>
-                    </ul>
-                    <div style="margin-bottom:25px">
-                        <a class="btn btn-danger" href="javascript:removeAssociation('{{ venue.id }}', '{{ venue.aka_name }}');">
-                            Remove association
-                        </a>
-                    </div>
-                </div>
-            {% endfor %}
-        </div>
-    {% endif %}
 {% endblock sidebar %}
 
 {% block js %}
@@ -320,6 +333,13 @@
                 window.location = '/team/associate/{{ page.id }}/remove/' + venueID;
             }
         }
+
+        $('a[role="tab"]').click(function () {
+            $('a[role="tab"]').removeClass('active');
+
+            $(this).addClass('active');
+            $(this).tab('show');
+        })
     </script>
 
     <script type="text/javascript">

@@ -1,0 +1,14 @@
+{% extends 'spudderspuds/components/base_quote_message.html' %}
+
+{% block alert_style %}display: block; margin-top: 20px;{% endblock %}
+
+{% block content %}
+    <h4>This team has no additional information!</h4>
+    {% if can_edit %}
+        <p>If you want to tell more about your team please go to Team profile page.</p>
+        <a class="btn   btn-primary" href="/team/page/{{ page.id }}" title="Edit Team profile"
+            style="margin: 20px auto 0; display: table;">
+            <i class="fa fa-fw fa-edit"> </i> Edit Team profile
+        </a>
+    {% endif %}
+{% endblock %}
