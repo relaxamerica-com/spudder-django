@@ -136,7 +136,7 @@
 
             {% if page.location %}
                 <li>
-                    <label>Location: </label> <a href="{{ page.location.external_link }}" target="_blank">{{ page.location }}</a>
+                    <label>Location: </label> <a href="{{ page.location.external_link }}">{{ page.location }}</a>
                 </li>
             {% endif %}
         </ul>
@@ -168,13 +168,13 @@
                             {% endif %}
                         {% endif %}
 
-                        {% if venue.logo %}
-                            <img id="venue-logo" src="/file/serve/{{ venue.logo.id }}" height="100px"
-                                 onclick="window.open('/venues/view/{{ venue.id }}')" style="cursor: pointer"/>
-                        {% else %}
-                            <img id="venue-logo" src="/static/img/spuddersponsors/button-sponsors-medium.png"
-                                onclick="window.open('/venues/view/{{ venue.id }}')" style="cursor: pointer"/>
-                        {% endif %}
+                        <a href="/venues/view/{{ venue.id }}" style="text-decoration: none;">
+                            {% if venue.logo %}
+                                <img id="venue-logo" src="/file/serve/{{ venue.logo.id }}" height="100px"/>
+                            {% else %}
+                                <img id="venue-logo" src="/static/img/spuddersponsors/button-sponsors-medium.png" />
+                            {% endif %}
+                        </a>
 
                         {% if venues|length > 1 %}
                             {% if forloop.last %}
@@ -190,7 +190,7 @@
                         </li>
 
                         <li class="text-left">
-                            <label>Page: </label> <a href="/venues/view/{{ venue.id }}" target="_blank">View Venue page</a>
+                            <label>Page: </label> <a href="/venues/view/{{ venue.id }}">View Venue page</a>
                         </li>
 
                         <li class="text-left">

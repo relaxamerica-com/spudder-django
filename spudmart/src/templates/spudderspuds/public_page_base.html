@@ -15,8 +15,14 @@
 </div>
 <div class="container clearfix" id="venue-view">
 	<div class="row">
-		<div class="col-sm-12" style="margin-top:20px; margin-bottom: 20px;">
+		<div class="col-sm-8" style="margin-top:20px; margin-bottom: 20px;">
             {% block main_page %}{% endblock %}
+		</div>
+
+        <div class="col-md-4">
+			<aside class="right-sidebar">
+                {% block sidebar %}{% endblock %}
+			</aside>
 		</div>
 	</div>
 </div>
