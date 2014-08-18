@@ -9,7 +9,7 @@ from django.http import HttpResponse, HttpResponseNotAllowed
 from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 from spudderaccounts.models import SpudderUser
-from spudderaccounts.wrappers import RoleStudent, RoleFan
+from spudderaccounts.wrappers import RoleStudent, RoleFan, RoleSponsor
 from spudderadmin.decorators import admin_login_required
 from spudderadmin.utils import encoded_admin_session_variable_name
 from spudderdomain.models import FanPage, LinkedService, TeamAdministrator, TeamPage
@@ -276,4 +276,78 @@ def user_reports_dashboard(request):
     :param request: any request
     :return: a very minimal admin page inside the User Reports
     """
-    return render_to_response('spudderadmin/pages/reports/dashboard.html')
+    fans = len(FanPage.objects.all())
+    sponsors = len(SponsorPage.objects.all())
+    venues = len(Venue.objects.all().exclude(renter=None))
+    total_venues = len(Venue.objects.all())
+    return render_to_response('spudderadmin/pages/reports/dashboard.html',
+        {'fans': fans,
+         'sponsors': sponsors,
+         'venues': venues,
+         'total_venues': total_venues})
+
+
+@admin_login_required
+def sponsor_reports(request):
+    """
+    A table of all sponsors with some basic info
+    :param request: any request
+    :return: a simple table with basic info about sponsors and links to
+        more detailed sponsor pages
+    """
+    sponsors = [RoleSponsor(s) for s in SponsorPage.objects.all()]
+    return render_to_response('spudderadmin/pages/reports/sponsors.html',
+        {'sponsors': sponsors})
+
+
+@admin_login_required
+def send_sponsor_email(request, sponsor_id):
+    """
+    Allows admin to compose an email to the sponsor
+    :param request: any request
+    :param sponsor_id: a valid SponsorPage ID
+    :return: simple page to compose email to sponsor
+    """
+    sponsor = SponsorPage.objects.get(id=sponsor_id)
+    if sponsor.email:
+        email = sponsor.email
+    else:
+        email = RoleSponsor(sponsor).user.email
+    return render_to_response('spudderadmin/pages/reports/send_email.html',
+        {'name': sponsor.name,
+         'email': email,
+         'profile': '/sponsor/%s' % sponsor.id
+        })
+
+
+@admin_login_required
+def sponsorships(request, sponsor_id):
+    """
+    Provides details on a sponsor's sponsorships
+    :param request: any request
+    :param sponsor_id: the valid ID of a SponsorPage object
+    :return: a table of information about the venues sponsored by the
+        given sponsor, and the actual transactions
+    """
+    sponsor = SponsorPage.objects.get(id=sponsor_id)
+    venues = Venue.objects.filter(renter=sponsor)
+    sponsorships = [(v, RentVenue.objects.get(venue=v)) for v in venues]
+
+    return render_to_response('spudderadmin/pages/reports/sponsorships.html',
+        {'name': sponsor.name,
+         'sponsorships': sponsorships})
+
+
+@admin_login_required
+def all_sponsorships(request):
+    """
+    Provides details on all Spudder sponsorships
+    :param request: any request
+    :return: a table of information about sponsored venues, including
+        transaction details and venue's sponsor
+    """
+    venues = Venue.objects.all().exclude(renter=None)
+    sponsorships = [(v, RentVenue.objects.get(venue=v)) for v in venues]
+
+    return render_to_response('spudderadmin/pages/reports/all_sponsorships.html',
+                              {'sponsorships': sponsorships})

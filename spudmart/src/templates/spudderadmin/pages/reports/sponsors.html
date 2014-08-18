@@ -1,0 +1,50 @@
+{% extends 'spudderadmin/pages/reports/_reports_base.html' %}
+
+{% load accounts %}
+
+{% block reports_nav %}
+    {% include 'spudderadmin/pages/reports/sidenav.html' with active="sponsors" %}
+{% endblock %}
+
+{% block reports_body %}
+<div class="panel panel-default">
+        <div class="panel-heading">
+            <div class="panel-title">
+                <h4>Spudder Sponsors ({{ sponsors|length }} total)</h4>
+            </div>
+            <div class="panel-body">
+                <table class="table table-striped {% if sponsors %}datatable{% endif %}">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th class="no-sort"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for s in sponsors %}
+                            <tr>
+                                <td>{{ s.entity.name }}</td>
+                                <td>{% if s.entity.email %}{{ s.entity.email }}{% else %}{{ s.user.email }}{% endif %}</td>
+                                <td class="actions">
+                                    <a class="btn btn-primary btn-small" href="/sponsor/{{ s.entity.id }}"><i class="fa fa-fw fa-share-square-o"></i><span class="hidden-xs"> Profile</span></a>
+                                    <a class="btn btn-primary btn-small" href="/spudderadmin/reports/sponsors/{{ s.entity.id }}/send_email"><i class="fa fa-fw fa-envelope-o"></i><span class="hidden-xs"> Send Email</span></a>
+                                    <a class="btn btn-primary btn-small" href="/spudderadmin/reports/sponsors/{{ s.entity.id }}/sponsorships"><i class="fa fa-fw fa-usd"></i><span class="hidden-xs"> Sponsorships</span></a>
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="3">
+                                    <div class="alert alert-warning">
+                                        <p>There are no sponsors to show.</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -21,6 +21,9 @@ urlpatterns = patterns(
     url(r'^/reports$','user_reports_dashboard'),
     url(r'^/reports/fans$', 'fan_reports'),
     url(r'^/reports/fans/(?P<fan_id>\d+)/send_email','send_fan_email'),
+    url(r'^/reports/sponsors$', 'sponsor_reports'),
+    url(r'^/reports/sponsors/(?P<sponsor_id>\d+)/sponsorships', 'sponsorships'),
+    url(r'^/reports/sponsors/all_sponsorships', 'all_sponsorships'),
 
     url(r'^/send_email$', 'send_email'),
 
