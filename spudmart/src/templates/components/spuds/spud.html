@@ -4,7 +4,13 @@
         <div class="user media">
             <img src="{{ spud.target.json.extra.user.profile_picture }}" class="media-object pull-left" style="margin: 10px; width:25px;" />
             <div class="media-body text-left" style="padding:10px;">
-                <p>{{ spud.target.json.extra.user.username }} <i class="fa fa-instagram"></i></p>
+                <p>
+                    {% if spud.target.json.extra.service == 'INSTAGRAM' %}
+                    <a href="http://instagram.com/{{ spud.target.json.extra.user.username }}" target="_blank">
+                        {{ spud.target.json.extra.user.username }} <i class="fa fa-instagram"></i>
+                    </a>
+                    {% endif %}
+                </p>
                 <p class="text">{{ spud.target.json.extra.text|join:"<br/>" }}</p>
             </div>
         </div>

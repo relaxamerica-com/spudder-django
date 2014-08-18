@@ -1,7 +1,7 @@
 <div style="padding-bottom: 30px">
     <h4 style="margin-bottom: 0">{{ title|safe }}</h4>
 </div>
-<div class="carousel slide" data-ride="carousel">
+<div class="carousel slide" data-ride="carousel" id="spud-carousel">
     <div class="carousel-inner">
         {% for spud in spuds %}
             <div class="item {% if forloop.counter0 == 0 %}active{% endif %}">
@@ -19,10 +19,10 @@
             </div>
         {% endfor %}
     </div>
-    <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
+    <a class="left carousel-control" href="#spud-carousel" role="button" data-slide="prev">
         <span class="icon-prev"></span>
     </a>
-    <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
+    <a class="right carousel-control" href="#spud-carousel" role="button" data-slide="next">
         <span class="icon-next"></span>
     </a>
 </div>
