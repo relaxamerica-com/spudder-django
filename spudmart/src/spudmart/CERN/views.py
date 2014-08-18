@@ -23,6 +23,19 @@ from datetime import timedelta, datetime
 from json import loads
 
 
+def role_is_student(request):
+    """
+    Determines whether current role is a Student
+
+    Helper method to use with user_passes_test view decorator
+
+    :param request: the full request
+    :return: True if role is student and False if not
+    """
+
+    return request.current_role.entity_type == RoleController.ENTITY_STUDENT
+
+
 def user_is_student(user):
     """
     Determines whether user is associated with a student
@@ -513,7 +526,8 @@ def mobile(request):
 @user_passes_test(user_is_student, '/cern/non-student/')
 def venues(request):
     stu = request.current_role.entity
-    template_data = {'venues': Venue.objects.filter(student=stu)}
+    template_data = {'venues': Venue.objects.filter(student=stu),
+                     'student': stu}
     return render(request, 'spuddercern/pages/dashboard_pages/venues.html', template_data)
 
 

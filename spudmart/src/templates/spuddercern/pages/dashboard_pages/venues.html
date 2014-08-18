@@ -15,6 +15,17 @@
         </h1>
     </div>
     {% if venues %}
+        {% with info_message_id="venue_list_instructions" %}
+            {% if info_message_id not in student.hidden_info_messages %}
+{#                <div class="container">#}
+                    <div class="row">
+                        <div class="col-md-8 col-md-offset-2">
+                            {% include 'spuddercern/quote_messages/venue_list_instructions.html' %}
+                        </div>
+                    </div>
+{#                </div>#}
+            {% endif %}
+        {% endwith %}
         <table class="table">
             <thead>
                 <tr>

@@ -1,0 +1,17 @@
+{% extends 'spuddercern/quote_messages/base_quote_message.html' %}
+
+{% block alert_style %}display: inline-block{% endblock %}
+
+{% block content %}
+    <h4>What should I do with my Venues?</h4>
+    <p><b>Venues</b> are locations where sports games get played. They have are tied to a physical location, so that we can find posts on other social media sites that you can turn into <abbr title="Sports Updates">SPUDS</abbr>.</p>
+    <p>The first thing you should do is give your venue a name and a custom @tag. The @tag is how people will be able to reference your venue in social media posts that you can turn into SPUDS.</p>
+    <p>While you're on the venue page, you should also fill out as much <abbr title="Details like bathrooms, concessions, seating and more">additional information</abbr> as you can. The more you have filled out, the more likely it is that a local business will <abbr title="They get advertising space, and you get money!">pay for a sponsorship</abbr>. When your venue gets sponsored, you earn a percentage of the sponsorship!</p>
+    <p><b>SPUDS:</b> On the far right you will see a button with a small camera (Instagram) icon. When you click on it, you will be directed to a page where you can accept or reject SPUDS for the given venue.</p>
+
+    <br/>
+    <div class="btn-group">
+        <button class="btn btn-default dismiss-for-now-button">Hide for now</button>
+        <button id="submit" class="btn btn-primary dismiss-for-good-button">Hide Forever</button>
+    </div>
+{% endblock %}
