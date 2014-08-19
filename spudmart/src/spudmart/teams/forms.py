@@ -21,7 +21,7 @@ class CreateTeamForm(forms.Form):
         required=False)
     free_text = forms.CharField(
         max_length=255, help_text='Say something about your team!',
-        required=False)
+        required=False, label="About us")
     # file = forms.FileField(required=False, label="Image")
     state = forms.ChoiceField(choices=[(k, v) for k, v in STATES.items()])
 
