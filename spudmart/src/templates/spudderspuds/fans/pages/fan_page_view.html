@@ -50,13 +50,12 @@
         {% fan_page_name page %}
     </span>
     {% if can_edit %}
-{#        <button class="btn btn-primary" id="edit">#}
-{#            Edit Mode#}
-{#        </button>#}
         <a class="btn btn-primary" href="/fan/{{ page.id }}/edit">
             Edit Mode
         </a>
     {% endif %}
+
+    {% include 'components/coverimage/social_links.html' with twitter=page.twitter %}
 {% endblock %}
 
 {% block main_page %}

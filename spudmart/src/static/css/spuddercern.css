@@ -14113,6 +14113,13 @@ legend {
     height: 400px;
   }
 }
+form fieldset legend {
+  font-size: 150%;
+  padding-top: 20px;
+}
+form fieldset .form-group {
+  margin-left: 20px;
+}
 .create-venue-map {
   min-height: 100px;
 }

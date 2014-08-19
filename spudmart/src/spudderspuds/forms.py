@@ -47,6 +47,13 @@ class FanRegisterForm(forms.Form):
 
 class FanPageForm(forms.Form):
     YEARS = range(datetime.datetime.now().date().year, datetime.datetime.now().date().year - 40, -1)
-    name = forms.CharField(label='First Name')
-    last_name = forms.CharField()
+
+    name = forms.CharField(label='User Name', help_text='This can be your real name or something made up!')
     date_of_birth = forms.DateField(widget=SelectDateWidget(years=YEARS))
+
+
+class FanPageSocialMediaForm(forms.Form):
+    twitter = forms.CharField(max_length=256, required=False, label="Twitter Username")
+    facebook = forms.CharField(max_length=256, required=False, label="Facebook Username")
+    google_plus = forms.CharField(max_length=256, required=False, label="Google+ Username")
+    instagram = forms.CharField(max_length=256, required=False, label="Instagram Username")

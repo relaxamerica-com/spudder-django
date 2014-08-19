@@ -258,14 +258,14 @@ def send_fan_email(request, fan_id):
     :return: simple page to compose email to fan
     """
     fan = FanPage.objects.get(id=fan_id)
-    if fan.name or fan.last_name:
-        name = fan.name + " " + fan.last_name
-    else:
-        name = user_name(RoleFan(fan).user)
-    return render_to_response('spudderadmin/pages/reports/send_email.html',
-        {'name': name,
-         'email': RoleFan(fan).user.email,
-         'profile': '/fan/%s' % fan.id
+    email = RoleFan(fan).user.email
+    name = fan.name or email
+    return render_to_response(
+        'spudderadmin/pages/reports/send_email.html',
+        {
+            'name': name,
+            'email': email,
+            'profile': '/fan/%s' % fan.id
         })
 
 

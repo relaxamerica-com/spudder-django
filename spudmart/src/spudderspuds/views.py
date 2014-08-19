@@ -7,7 +7,7 @@ from django.template.loader import render_to_string
 from spudderaccounts.templatetags.spudderaccountstags import is_fan, user_has_fan_role
 from spudderdomain.controllers import TeamsController, RoleController
 from spudderdomain.models import FanPage
-from spudderspuds.forms import FanSigninForm, FanRegisterForm, FanPageForm
+from spudderspuds.forms import FanSigninForm, FanRegisterForm, FanPageForm, FanPageSocialMediaForm
 from spudderspuds.utils import create_and_activate_fan_role
 from spudmart.upload.models import UploadedFile
 from spudmart.utils.cover_image import reset_cover_image, save_cover_image_from_request
@@ -84,21 +84,21 @@ def fan_profile_view(request, page_id):
 
 def fan_profile_edit(request, page_id):
     fan_page = get_object_or_404(FanPage, pk=page_id)
-    form = FanPageForm(initial=fan_page.__dict__)
+    profile_form = FanPageForm(initial=fan_page.__dict__)
+    social_accounts_form = FanPageSocialMediaForm(initial=fan_page.__dict__)
     if request.method == 'POST':
-        form = FanPageForm(request.POST)
-        if form.is_valid():
-            for attr in ('name', 'last_name', 'date_of_birth', ):
-                fan_page.__setattr__(attr, form.cleaned_data[attr])
+        profile_form = FanPageForm(request.POST)
+        social_accounts_form = FanPageSocialMediaForm(request.POST)
+        if profile_form.is_valid() and social_accounts_form.is_valid():
+            for attr in ('name', 'date_of_birth', ):
+                fan_page.__setattr__(attr, profile_form.cleaned_data[attr])
+            for attr in ('twitter', 'facebook', 'google_plus', 'instagram', ):
+                fan_page.__setattr__(attr, social_accounts_form.cleaned_data.get(attr, ''))
             fan_page.save()
         return redirect('/fan/%s' % fan_page.id)
-    #     updated_page = form.save(False)
-    #     updated_page.fan = request.user
-    #     updated_page.save()
-    #     next_url = request.POST.get('next_url', '')
-    # page = get_object_or_404(FanPage, pk=page_id)
     return render(request, 'spudderspuds/fans/pages/fan_page_edit.html', {
-        'form': form,
+        'profile_form': profile_form,
+        'social_accounts_form': social_accounts_form,
         # 'page': page,
         'new_registration': request.GET.get('new_registration', False)
     })

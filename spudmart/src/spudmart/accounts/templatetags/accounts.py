@@ -8,10 +8,7 @@ register = template.Library()
 
 @register.simple_tag
 def user_name(user):
-    try:
-        return str(user.first_name) + " " + str(user.last_name)
-    except Exception:
-        return ''
+    return user.first_name or user.email
 
 
 @register.filter
@@ -42,7 +39,4 @@ def fan_page_name(fan_page):
     :param fan_page: any FanPage object
     :return: a name as str
     """
-    if fan_page.name or fan_page.last_name:
-        return fan_page.name + " " + fan_page.last_name
-    else:
-        return user_name(fan_page.fan)
+    return fan_page.name or ''

@@ -53,6 +53,7 @@ INSTALLED_APPS = (
     'spudderdomain',
     'spudderkrowdio',
     'spuddersocialengine',
+    'spudderspuds',
 )
 
 MIDDLEWARE_CLASSES = (
