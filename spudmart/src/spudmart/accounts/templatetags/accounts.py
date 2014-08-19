@@ -8,7 +8,7 @@ register = template.Library()
 
 @register.simple_tag
 def user_name(user):
-    return user.first_name or user.email
+    return "%s %s" % (user.first_name, user.last_name) or user.email
 
 
 @register.filter

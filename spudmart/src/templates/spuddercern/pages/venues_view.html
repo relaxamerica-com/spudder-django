@@ -26,7 +26,7 @@
         <img src="/file/serve/{{ venue.cover_image.id }}" class="jumbotron-img"/>
     </div>
     <div {% if venue.cover_image %}class="hidden"{% endif %} style="height:400px" id="jumbo-map-container"></div>
-    {% if can_edit %}
+    {% if request.can_edit %}
     <div style="position:absolute; top:20px; right:20px;">
         <a class="btn btn-primary" href="/venues/edit_cover/{{ venue.id }}">Edit Cover Image</a>
     </div>
@@ -44,11 +44,6 @@
     @{% if sponsor %}{{ sponsor.tag }}{% else %}postspud{% endif %}
     <br/>
     <a href="https://www.google.com/maps/dir/Current+Location/{{ venue.latitude }},{{ venue.longitude }}" target="_blank" style="text-decoration:none;"><small id="venue-name">{{ venue.aka_name }}</small></a>
-    {% if can_edit %}
-        <button class="btn btn-primary" id="edit">
-            Edit Mode
-        </button>
-    {% endif %}
 {% endblock %}
 
 {% block main_page %}
@@ -78,7 +73,7 @@
         <div class="alert" id="logo-name-alert" style="margin-top:10px"></div>
     </div>
 
-    {% if can_edit %}
+    {% if request.can_edit %}
         {% with info_message_id="venues_can_edit" %}
             {% if info_message_id not in student.hidden_info_messages %}
                 {% include 'spuddercern/quote_messages/quote_venue_instructions.html' %}
@@ -643,7 +638,6 @@
 	window.currentVenueLatitude = parseFloat("{{ venue.latitude }}");
 	window.preloadedOrange = $('<img src="/media/img/ajax-loader-orange.gif" />');
 	window.preloadedBlack = $('<img src="/media/img/ajax-loader-black.gif" />');
-	window.isEditMode = false;
 	window.currentSelectedSport = '{{ venue.sport }}';
     window.twitterPopupText = "Checkout all the action happening near you at {{ venue.aka_name }}!";
 
@@ -700,25 +694,8 @@
 			interval : false
 		});
 
-		var editMode = $('.edit-mode'),
-			viewMode = $('.view-mode'),
-			buttons = $('#venue-property-buttons'),
+		var buttons = $('#venue-property-buttons'),
 			icons = buttons.find('.btn');
-
-		$('#edit').click(function() {
-			if ($(this).html() == 'Show Mode') {
-				editMode.hide();
-				viewMode.show();
-				$(this).html('Edit Mode');
-				window.isEditMode = false;
-			} else {
-				editMode.show();
-				viewMode.hide();
-				$(this).html('Show Mode');
-				window.isEditMode = true;
-			}
-		});
-
 
 		function show(element) {
 			$('.contents > .active').removeClass('active');

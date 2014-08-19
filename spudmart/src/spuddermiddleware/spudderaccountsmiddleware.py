@@ -1,7 +1,12 @@
+import re
 from django.shortcuts import redirect
 from spudderaccounts.utils import select_user_role_if_only_one_role_exists, select_all_user_roles, change_current_role
 from spudderaccounts.wrappers import RoleBase
 from spudderdomain.controllers import RoleController
+from spudderkrowdio.models import KrowdIOStorage
+from spudderkrowdio.utils import get_following
+from spudmart.CERN.models import School
+from spudmart.venues.models import Venue
 
 
 class RolesMiddleware:
@@ -46,3 +51,68 @@ class AccountPasswordMiddleware:
             spudder_user = request.user.spudder_user
             if spudder_user.needs_to_set_password and not spudder_user.has_set_password:
                 return redirect("%s?next=%s" % (path, request.get_full_path()))
+
+
+class EditPageMiddleware:
+    def process_request(self, request):
+        path = str(request.path)
+        can_edit = False
+        if re.match(r'/cern/student/\d+', path):
+            if request.current_role.entity_type == RoleController.ENTITY_STUDENT:
+                if str(request.current_role.entity.id) == str.split(path, '/')[-1]:
+                    can_edit = True
+        elif re.match(r'/cern/\w{2}/\d+/\w+', path):
+            if request.current_role.entity_type == RoleController.ENTITY_STUDENT:
+                sch = School.objects.get(id=str.split(path, '/')[-3])
+                if request.current_role.entity == sch.get_head_student():
+                    can_edit = True
+        elif re.match(r'/venues/view/\d+', path):
+            if request.current_role.entity_type == RoleController.ENTITY_STUDENT:
+                ven = Venue.objects.get(id=str.split(path, '/')[-1])
+                if request.current_role.entity == ven.student:
+                    can_edit = True
+
+        request.can_edit = can_edit
+
+
+class KrowdIO(object):
+    pass
+
+
+class FollowMiddleware:
+    def check_can_follow(self, request):
+        path = str(request.path)
+        can_follow = False
+        if request.user.is_authenticated and request.current_role:
+            if request.current_role.entity_type == RoleController.ENTITY_FAN:
+                if re.match(r'/fan/\d+', path) or \
+                        re.match(r'/venues/view/\d+', path) or \
+                        re.match(r'/team/page/\d+', path):
+                    can_follow = True
+
+        request.can_follow = can_follow
+
+    def check_following_page(self, request):
+        followers = get_following(request.current_role)
+        following = False
+        if followers['totalItems'] > 0:
+            for user in followers['data']:
+                item = KrowdIOStorage.objects.get(krowdio_user_id=user['_id'])
+                path = str(request.path)
+                if re.match('/venues/view/\d+', path):
+                    if str(item.venue.id) == str.split(path, '/')[-1]:
+                        following = True
+                elif re.match('/fan/\d+', path):
+                    if str(item.role_id) == str.split(path, '/')[-1]:
+                        following = True
+                elif re.match('/team/page/\d+', path):
+                    if str(item.team.id) == str.split(path, '/')[-1]:
+                        following = True
+        request.following = following
+
+    def process_request(self, request):
+        self.check_can_follow(request)
+        if request.can_follow:
+            self.check_following_page(request)
+        else:
+            request.following = False

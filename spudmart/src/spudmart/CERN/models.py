@@ -275,9 +275,6 @@ class Student(models.Model):
             something += ", "
         something += str(self.school.name)
         return something
-
-    def __eq__(self, other):
-        return self.user == other.user
     
     def check_contest_head(self):
         ''' Method to determine whether a given student can contest the current "head student".

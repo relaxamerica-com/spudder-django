@@ -9,6 +9,17 @@
         <div class="page-header" style="background: rgba(255, 255, 255, .7); position:absolute; bottom: 10px; padding: 10px;">
             <h1 style="position:relative">
                 {% block cover_title %}{% endblock %}
+                {% if request.can_edit %}
+                    <button class="btn btn-primary" id="edit">
+                        Edit Mode
+                    </button>
+                {% else %}
+                    {% if request.can_follow %}
+                        <button class="btn btn-primary" id="follow">
+                            <i class="fa fa-fw fa-plus"></i> Follow
+                        </button>
+                    {% endif %}
+                {% endif %}
             </h1>
         </div>
     </div>
@@ -30,6 +41,30 @@
 
 {% block js %}
     {{ block.super }}
-
     <script type="text/javascript" src="/static/js/google_maps/jumbotron.js"></script>
+    <script type="text/javascript">
+        {% if request.can_edit %}
+            window.isEditMode = false;
+
+            $('#edit').click(function() {
+                var editMode = $('.edit-mode'),
+                        viewMode = $('.view-mode');
+
+                if ($(this).html() == 'Show Mode') {
+                    editMode.hide();
+                    viewMode.show();
+                    $(this).html('Edit Mode');
+                    window.isEditMode = false;
+                } else {
+                    editMode.show();
+                    viewMode.hide();
+                    $(this).html('Show Mode');
+                    window.isEditMode = true;
+                }
+            });
+        {% endif %}
+        {% if request.can_follow %}
+            console.log('Followed: {{ request.followed }}');
+        {% endif %}
+    </script>
 {% endblock %}

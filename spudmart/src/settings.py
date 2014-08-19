@@ -68,6 +68,8 @@ MIDDLEWARE_CLASSES = (
     'spuddermiddleware.staffmiddleware.StaffMiddleware',
     'spuddermiddleware.spudderaccountsmiddleware.RolesMiddleware',
     'spuddermiddleware.spudderaccountsmiddleware.AccountPasswordMiddleware',
+    'spuddermiddleware.spudderaccountsmiddleware.EditPageMiddleware',
+    'spuddermiddleware.spudderaccountsmiddleware.FollowMiddleware',
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (

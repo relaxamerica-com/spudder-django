@@ -55,13 +55,6 @@
         <a href="{{ student.google_link }}" title="Google+ Profile" {% if not student.google_link %}class="hidden"{% endif %}><i class="fa fa-fw fa-google-plus-square" style="display:inline;"></i></a>
         <a href="{{ student.instagram_link }}" title="Instagram Profile" {% if not student.instagram_link %}class="hidden"{% endif %}><i class="fa fa-fw fa-instagram" style="display:inline;"></i></a>
     </p>
-    {% if request.can_edit %}
-        <div class="pull-right" style="position:absolute; bottom: -20px; right: 10px;">
-            <div class="btn btn-primary" id="edit">
-                Edit Mode
-            </div>
-        </div>
-    {% endif %}
 {% endblock %}
 
 {% block main_page %}
@@ -260,14 +253,13 @@
 <script type="text/javascript">
     window.isEditMode = false;
     window.twitterPopupText = "(Say something about your Student page here)";
+    console.log('{{ request.can_edit }}');
 
 {#    {% if venue.cover_image %}if($('.jumbotron').height() > $('.jumbotron-img').height()) $('.jumbotron').css('height', $('.jumbotron-img').height() + "px");{% endif %}#}
 
     $('.content').not('.active').hide();
 
     $(document).ready(function(){
-        var editMode = $('.edit-mode'),
-	        viewMode = $('.view-mode');
 
         $('#mailto').attr('href',
                          'mailto:?subject={% display_name student %} on CERN' +
@@ -277,20 +269,6 @@
            var $alert = $(alert);
            if ($alert.html() == "")
                $alert.hide();
-        });
-
-        $('#edit').click(function(){
-            if (window.isEditMode){
-                editMode.hide();
-                viewMode.show();
-                $(this).html('Edit Mode');
-                window.isEditMode = false;
-            } else{
-                viewMode.hide();
-                editMode.show();
-                $(this).html('Show Mode');
-                window.isEditMode = true;
-            }
         });
 
         $('#save-logo').click(function() {

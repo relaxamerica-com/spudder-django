@@ -35,7 +35,7 @@
             <div class="cern-jumbotron-default"></div>
         {% endif %}
     {% endif %}
-    {% if user_is_head %}
+    {% if request.can_edit %}
     <div style="position:absolute; top:20px; right:20px;">
         <a class="btn btn-primary hidden-xs" href="/cern/{{ school.id }}/edit_cover_image">Edit Cover Image</a>
     </div>
@@ -48,13 +48,6 @@
         <img id="school-logo" src="/static/img/spuddercern/button-cern-medium.png" class="logo"/>
     {% endif %}
     {{ school.name }}
-    {% if user_is_head %}
-        <div class="pull-right" style="position:relative; bottom: 0; right: 10px;">
-            <div class="btn btn-primary" id="edit">
-                Edit Mode
-            </div>
-        </div>
-    {% endif %}
 {% endblock %}
 
 {% block main_page %}
@@ -84,7 +77,7 @@
 
     <div id="school-body">
         <div class="quotes">
-            {% if user_is_head  %}
+            {% if request.can_edit %}
                 {% with info_message_id="cern_team_welcome_head" %}
                     {% if info_message_id not in student.hidden_info_messages %}
                         {% include 'spuddercern/quote_messages/quote_cern_team_welcome_head.html' %}
@@ -109,7 +102,7 @@
                     </div>
                 </div>
                 {% if not school.description %}
-                    {% if user_is_head %}
+                    {% if request.can_edit %}
                         {% include 'spuddercern/quote_messages/quote_no_team_description_head.html' %}
                     {% else %}
                         {% include 'spuddercern/quote_messages/quote_no_team_description.html' %}
@@ -201,27 +194,10 @@
             initWithAddr('{{ school.full_address }}, {{ school.verbose_state }}')
         }
 
-        var editMode = $('.edit-mode'),
-	        viewMode = $('.view-mode');
-
         $('.alert').each(function(i, alert) {
            var $alert = $(alert);
            if ($alert.html() == "")
                $alert.hide();
-        });
-
-        $('#edit').click(function(){
-            if (window.isEditMode){
-                editMode.hide();
-                viewMode.show();
-                $(this).html('Edit Mode');
-                window.isEditMode = false;
-            } else{
-                viewMode.hide();
-                editMode.show();
-                $(this).html('Show Mode');
-                window.isEditMode = true;
-            }
         });
 
         $('#save').click(function() {
