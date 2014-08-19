@@ -1,13 +1,16 @@
+import re
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.models import User
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseNotAllowed
 from django.shortcuts import render, render_to_response, redirect, get_object_or_404
 from django.template import RequestContext
 from django.template.loader import render_to_string
+import simplejson
 from spudderaccounts.templatetags.spudderaccountstags import is_fan, user_has_fan_role
 from spudderaccounts.utils import change_current_role
 from spudderdomain.controllers import TeamsController, RoleController, SpudsController
 from spudderdomain.models import FanPage
+from spudderkrowdio.utils import stop_following, start_following
 from spuddersocialengine.models import SpudFromSocialMedia
 from spudderspuds.forms import FanSigninForm, FanRegisterForm, FanPageForm, FanPageSocialMediaForm
 from spudderspuds.utils import create_and_activate_fan_role, is_signin_claiming_spud
@@ -196,3 +199,54 @@ def claim_atpostspud(request, spud_id):
         template_data,
         context_instance=RequestContext(request))
 
+
+def start_following_view(request):
+    """
+    Current role (fan) starts following entity in request
+    :param request: a POST request
+    :return: the response from the KrowdIO API on success,
+        or an HttpResponseNotAllowed response
+    """
+    if request.method == 'POST':
+        origin = str(request.POST.get('origin', ''))
+        entity_id = entity_type = None
+        if re.match(r'/venues/view/\d+', origin):
+            entity_type = 'Venue'
+            entity_id = str.split(origin, '/')[-1]
+        elif re.match(r'/fan/\d+', origin):
+            entity_type = 'fan'
+            entity_id = str.split(origin, '/')[-1]
+        elif re.match(r'/team/page/\d+', origin):
+            entity_type = 'Team'
+            entity_id = str.split(origin, '/')[-1]
+
+        json = start_following(request.current_role, entity_type, entity_id)
+        return HttpResponse(simplejson.dumps(json))
+    else:
+        return HttpResponseNotAllowed(['POST'])
+
+
+def stop_following_view(request):
+    """
+    Current role (fan) stopsfollowing entity in request
+    :param request: a POST request
+    :return: the response from the KrowdIO API on success,
+        or an HttpResponseNotAllowed response
+    """
+    if request.method == 'POST':
+        origin = str(request.POST.get('origin', ''))
+        entity_id = entity_type = None
+        if re.match(r'/venues/view/\d+', origin):
+            entity_type = 'Venue'
+            entity_id = str.split(origin, '/')[-1]
+        elif re.match(r'/fan/\d+', origin):
+            entity_type = 'fan'
+            entity_id = str.split(origin, '/')[-1]
+        elif re.match(r'/team/page/\d+', origin):
+            entity_type = 'Team'
+            entity_id = str.split(origin, '/')[-1]
+
+        json = stop_following(request.current_role, entity_type, entity_id)
+        return HttpResponse(simplejson.dumps(json))
+    else:
+        return HttpResponseNotAllowed(['POST'])

@@ -10,6 +10,8 @@ urlpatterns = patterns(
     (r'^(?P<page_id>\d+)/reset_cover$', 'fan_profile_reset_cover'),
     (r'^(?P<page_id>\d+)/save_avatar$', 'fan_profile_save_avatar'),
     (r'^(?P<page_id>\d+)/teams$', 'fan_my_teams'),
+    (r'^start_following', 'start_following_view'),
+    (r'^stop_following', 'stop_following_view'),
     url(r'', 'landing_page'),
 )
 

@@ -4,6 +4,19 @@ import settings
 import simplejson
 import time
 import logging
+from spudderdomain.models import FanPage, TeamPage
+from spudderkrowdio.models import KrowdIOStorage
+from spudmart.venues.models import Venue
+
+ENTITY_TYPES = ['sponsor', 'fan', 'student']
+
+
+def _update_entity(entity, krowdio_data):
+    entity.krowdio_access_token = krowdio_data['access_token']
+    entity.krowdio_access_token_expires = krowdio_data['expires_in']
+    entity.krowdio_user_id = krowdio_data['user']['_id']
+    entity.krowdio_email = '%s@spudder.com' % krowdio_data['user']['username']
+    entity.save()
 
 
 def _get(url, data, headers={}):
@@ -33,28 +46,6 @@ def _delete(url, data, headers={}):
                             method=urlfetch.DELETE,
                             headers=headers)
     return result
-    
-
-def register_entity(entity):
-    data = {
-        'client_id': settings.KROWDIO_CLIENT_KEY,
-        'username':  entity.type + str(entity._id),
-        'email': entity.type + str(entity._id) + "@spudder.com",
-        'password': settings.KROWDIO_GLOBAL_PASSWORD
-    }
-    
-    response = _post('http://auth.krowd.io/user/register', data)
-    krowdio_data = simplejson.loads(response.content)
-    
-    _update_entity(entity, krowdio_data)
-    
-    
-def _update_entity(entity, krowdio_data):
-    entity.krowdio_access_token = krowdio_data['access_token']
-    entity.krowdio_access_token_expires = krowdio_data['expires_in']
-    entity.krowdio_user_id = krowdio_data['user']['_id']
-    entity.krowdio_email = '%s@spudder.com' % krowdio_data['user']['username']
-    entity.save()
     
     
 def _ensure_oAuth_token(entity):
@@ -140,4 +131,82 @@ def get_spud_comments(entity, spud_id, page=1):
     
     response = _get('http://api.krowd.io/comment/%s?limit=5&page=%s&newpage=1&startid=&direction=None' % (spud_id, str(page)), {}, { 'Authorization' : token })
     
+    return simplejson.loads(response.content)
+
+
+def start_following(current_role, entity_type, entity_id):
+    """
+    Adds a KrowdIO User to a Fan's followers
+    :param current_role: any Role<Type> object (the Fan)
+    :param entity_type: a KrowdIOStorage type string ('Venue', 'Team',
+        or 'fan')
+    :param entity_id: the ID of the original object to be followed (the
+        Venue id, the Team id, or the Fan id)
+    :return: the json response from the KrowdIO API
+    """
+    entity = KrowdIOStorage.GetOrCreateForCurrentUserRole(user_role=current_role)
+    token = _ensure_oAuth_token(entity)
+
+    following_id = None
+    if entity_type == 'Venue':
+        following_id = KrowdIOStorage.GetOrCreateForVenue(entity_id).krowdio_user_id
+    elif entity_type == 'Team':
+        following_id = KrowdIOStorage.GetOrCreateForTeam(entity_id).krowdio_user_id
+    elif entity_type in EN:
+        following_id = KrowdIOStorage.objects.get(role=role).krowdio_user_id
+
+    response = _post(
+        'http://api.krowd.io/user/%s/relationship' % following_id,
+        {'action': 'follow'},
+        {'Authorization': token})
+
+    return simplejson.loads(response.content)
+
+
+def stop_following(current_role, entity_type, entity_id):
+    """
+    Removes a KrowdIO User from a Fan's followers
+    :param current_role: any Role<Type> object (the Fan)
+    :param entity_type: a KrowdIOStorage type string ('Venue' or value
+        in RoleController.ENTITY_TYPES)
+    :param entity_id: the ID of the original object followed (the Venue
+        id, the Team id, or the Fan id)
+    :return: the json response from the KrowdIO API
+    """
+    entity = KrowdIOStorage.GetOrCreateForCurrentUserRole(user_role=current_role)
+    token = _ensure_oAuth_token(entity)
+
+    following_id = None
+    if entity_type == 'Venue':
+        ven = Venue.objects.get(id=entity_id)
+        following_id = KrowdIOStorage.objects.get(venue=ven).krowdio_user_id
+    elif entity_type == 'Team':
+        team = TeamPage.objects.get(id=entity_id)
+        following_id = KrowdIOStorage.objects.get(team=team).krowdio_user_id
+    elif entity_type is 'fan':
+        role = FanPage.objects.get(id=entity_id)
+        following_id = KrowdIOStorage.objects.get(role=role).krowdio_user_id
+
+    response = _post(
+        'http://api.krowd.io/user/%s/relationship' % following_id,
+        {'action': 'unfollow'},
+        {'Authorization': token})
+
+    return simplejson.loads(response.content)
+
+
+def get_following(current_role):
+    """
+    Gets KrowdIO users that a Fan is following
+    :param current_role: any Role<Type> object (a Fan)
+    :return: the json response from the KrowdIO API
+    """
+    entity = KrowdIOStorage.GetOrCreateForCurrentUserRole(user_role=current_role)
+    token = _ensure_oAuth_token(entity)
+
+    response = _get(
+        'http://api.krowd.io/user/%s/following' % entity.krowdio_user_id,
+        {},
+        {'Authorization': token})
+
     return simplejson.loads(response.content)
