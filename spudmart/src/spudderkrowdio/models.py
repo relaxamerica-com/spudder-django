@@ -63,10 +63,21 @@ class KrowdIOStorage(models.Model):
             storage.type = storage.role_type
             register_entity(storage)
         return storage
-    
+
+
+    @classmethod
+    def GetOrCreateFromRoleEntity(cls, role_id, role_type):
+        storage, created = KrowdIOStorage.objects.get_or_create(role_type=role_type, role_id=role_id)
+        if created:
+            storage._id = storage.role_id
+            storage.type = storage.role_type
+            register_entity(storage)
+        return storage
+
+
     @classmethod
     def GetOrCreateForVenue(cls, venue_id):
-        venue = get_object_or_404(Venue, pk = venue_id)
+        venue = get_object_or_404(Venue, pk=venue_id)
         storage, created = KrowdIOStorage.objects.get_or_create(venue=venue)
         if created:
             storage._id = venue.id

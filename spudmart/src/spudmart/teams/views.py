@@ -20,7 +20,7 @@ def teams_list(request):
     if request.current_role.entity_type == RoleController.ENTITY_STUDENT:
         role_dashboard = 'spuddercern/pages/dashboard_pages/dashboard.html'
     elif request.current_role.entity_type == RoleController.ENTITY_FAN:
-        role_dashboard = 'spudderfans/pages/dashboard.html'
+        role_dashboard = 'spudderspuds/fans/pages/dashboard.html'
     return render(request, 'components/sharedpages/teams/teams_list.html',
                   {'teams': teams,
                    'role_dashboard': role_dashboard})
@@ -38,6 +38,7 @@ def create_team(request):
                 free_text=form.cleaned_data.get('free_text'),
                 sport=dict(form.fields['sport'].choices)[form.cleaned_data.get('sport')],
                 state=dict(form.fields['state'].choices)[form.cleaned_data.get('state')],
+                at_name=form.cleaned_data.get('at_name'),
             )
             location_info = request.POST.get('location_info', None)
             team.update_location(location_info)

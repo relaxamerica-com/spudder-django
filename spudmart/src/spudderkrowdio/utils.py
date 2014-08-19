@@ -152,8 +152,8 @@ def start_following(current_role, entity_type, entity_id):
         following_id = KrowdIOStorage.GetOrCreateForVenue(entity_id).krowdio_user_id
     elif entity_type == 'Team':
         following_id = KrowdIOStorage.GetOrCreateForTeam(entity_id).krowdio_user_id
-    elif entity_type in EN:
-        following_id = KrowdIOStorage.objects.get(role=role).krowdio_user_id
+    elif entity_type == 'fan':
+        following_id = KrowdIOStorage.GetOrCreateFromRoleEntity(entity_id, entity_type).krowdio_user_id
 
     response = _post(
         'http://api.krowd.io/user/%s/relationship' % following_id,
@@ -184,8 +184,7 @@ def stop_following(current_role, entity_type, entity_id):
         team = TeamPage.objects.get(id=entity_id)
         following_id = KrowdIOStorage.objects.get(team=team).krowdio_user_id
     elif entity_type is 'fan':
-        role = FanPage.objects.get(id=entity_id)
-        following_id = KrowdIOStorage.objects.get(role=role).krowdio_user_id
+        following_id = KrowdIOStorage.objects.get(role_id=entity_id).krowdio_user_id
 
     response = _post(
         'http://api.krowd.io/user/%s/relationship' % following_id,

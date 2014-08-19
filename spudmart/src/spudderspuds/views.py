@@ -1,4 +1,3 @@
-import re
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.models import User
 from django.http import HttpResponse, HttpResponseNotAllowed
@@ -10,12 +9,12 @@ from spudderaccounts.templatetags.spudderaccountstags import is_fan, user_has_fa
 from spudderaccounts.utils import change_current_role
 from spudderdomain.controllers import TeamsController, RoleController, SpudsController
 from spudderdomain.models import FanPage
-from spudderkrowdio.utils import stop_following, start_following
 from spuddersocialengine.models import SpudFromSocialMedia
 from spudderspuds.forms import FanSigninForm, FanRegisterForm, FanPageForm, FanPageSocialMediaForm
 from spudderspuds.utils import create_and_activate_fan_role, is_signin_claiming_spud
 from spudmart.upload.models import UploadedFile
 from spudmart.utils.cover_image import reset_cover_image, save_cover_image_from_request
+from spudderkrowdio.utils import start_following, stop_following
 
 
 def landing_page(request):
@@ -208,7 +207,7 @@ def start_following_view(request):
         or an HttpResponseNotAllowed response
     """
     if request.method == 'POST':
-        origin = str(request.POST.get('origin', ''))
+        origin = request.POST.get('origin', '')
         entity_id = entity_type = None
         if re.match(r'/venues/view/\d+', origin):
             entity_type = 'Venue'
@@ -216,7 +215,7 @@ def start_following_view(request):
         elif re.match(r'/fan/\d+', origin):
             entity_type = 'fan'
             entity_id = str.split(origin, '/')[-1]
-        elif re.match(r'/team/page/\d+', origin):
+        elif re.match(r'/team/\d+', origin):
             entity_type = 'Team'
             entity_id = str.split(origin, '/')[-1]
 
@@ -234,7 +233,7 @@ def stop_following_view(request):
         or an HttpResponseNotAllowed response
     """
     if request.method == 'POST':
-        origin = str(request.POST.get('origin', ''))
+        origin = request.POST.get('origin', '')
         entity_id = entity_type = None
         if re.match(r'/venues/view/\d+', origin):
             entity_type = 'Venue'
@@ -242,7 +241,7 @@ def stop_following_view(request):
         elif re.match(r'/fan/\d+', origin):
             entity_type = 'fan'
             entity_id = str.split(origin, '/')[-1]
-        elif re.match(r'/team/page/\d+', origin):
+        elif re.match(r'/team/\d+', origin):
             entity_type = 'Team'
             entity_id = str.split(origin, '/')[-1]
 
@@ -250,3 +249,4 @@ def stop_following_view(request):
         return HttpResponse(simplejson.dumps(json))
     else:
         return HttpResponseNotAllowed(['POST'])
+
