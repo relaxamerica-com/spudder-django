@@ -5,10 +5,12 @@ from django.shortcuts import render, render_to_response, redirect, get_object_or
 from django.template import RequestContext
 from django.template.loader import render_to_string
 from spudderaccounts.templatetags.spudderaccountstags import is_fan, user_has_fan_role
-from spudderdomain.controllers import TeamsController, RoleController
+from spudderaccounts.utils import change_current_role
+from spudderdomain.controllers import TeamsController, RoleController, SpudsController
 from spudderdomain.models import FanPage
+from spuddersocialengine.models import SpudFromSocialMedia
 from spudderspuds.forms import FanSigninForm, FanRegisterForm, FanPageForm, FanPageSocialMediaForm
-from spudderspuds.utils import create_and_activate_fan_role
+from spudderspuds.utils import create_and_activate_fan_role, is_signin_claiming_spud
 from spudmart.upload.models import UploadedFile
 from spudmart.utils.cover_image import reset_cover_image, save_cover_image_from_request
 
@@ -28,9 +30,16 @@ def fan_signin(request):
             password = form.cleaned_data.get('password')
             user = authenticate(username=username, password=password)
             login(request, user)
+            fan = FanPage.objects.filter(fan=user)[0]
+            change_current_role(request, RoleController.ENTITY_FAN, fan.id)
+            is_signin_claiming_spud(
+                request,
+                fan,
+                form.cleaned_data.get('twitter', None),
+                form.cleaned_data.get('spud_id', None))
             return redirect('/spuds')
     else:
-        form = FanSigninForm()
+        form = FanSigninForm(initial=request.GET)
     template_data["form"] = form
     return render_to_response(
         'spudderspuds/pages/user_signin.html',
@@ -42,7 +51,12 @@ def fan_register(request):
     if request.current_role and request.current_role.entity_type == RoleController.ENTITY_FAN:
         return redirect('/spuds')
     if request.current_role and not is_fan(request.current_role) and not user_has_fan_role(request):
-        return redirect('/spuds/register_add_fan_role')
+        if request.GET.get('twitter', None) and request.GET.get('spud_id', None):
+            return redirect(
+                '/spuds/register_add_fan_role?twitter=%s&spud_id=%s' %
+                (request.GET['twitter'], request.GET['spud_id']))
+        else:
+            return redirect('/spuds/register_add_fan_role')
     template_data = {}
     if request.method == "POST":
         form = FanRegisterForm(request.POST)
@@ -54,6 +68,11 @@ def fan_register(request):
             user.spudder_user.mark_password_as_done()
             fan_role = create_and_activate_fan_role(request, user)
             login(request, authenticate(username=username, password=password))
+            is_signin_claiming_spud(
+                request,
+                fan_role.entity,
+                form.cleaned_data.get('twitter', None),
+                form.cleaned_data.get('spud_id', None))
             return redirect('/fan/%s/edit?new_registration=true' % fan_role.entity.id)
     else:
         form = FanRegisterForm(initial=request.GET)
@@ -78,6 +97,7 @@ def fan_profile_view(request, page_id):
         entity_id = request.current_role.entity.id
     return render(request, 'spudderspuds/fans/pages/fan_page_view.html', {
         'page': page,
+        'fan_spuds': SpudsController.GetSpudsForFan(page),
         'can_edit': entity_id == page.id
     })
 
@@ -149,4 +169,30 @@ def fan_my_teams(request, page_id):
             {'active': 'teams'},
             context_instance=RequestContext(request))}
     return render(request, 'components/sharedpages/teams/teams_list.html', template_data)
+
+
+def claim_atpostspud(request, spud_id):
+    try:
+        spud = SpudFromSocialMedia.objects.get(id=spud_id)
+    except SpudFromSocialMedia.DoesNotExist:
+        spud = None
+    template_data = {
+        'spud': spud.expanded_data if spud else None,
+        'spud_id': spud.id if spud else None
+    }
+    if request.method == "POST":
+        action = request.POST.get('action', None)
+        if action == "change_twitter" or action == "set_twitter":
+            new_username = spud.expanded_data['user']['username']
+            fan = request.current_role.entity
+            fan.twitter = new_username
+            fan.save()
+            controller = SpudsController(request.current_role)
+            controller.add_spud_from_fan(spud)
+            template_data['username_changed'] = action == "change_twitter"
+            template_data['username_set'] = action == "set_twitter"
+    return render_to_response(
+        'spudderspuds/pages/claim_atpostspud.html',
+        template_data,
+        context_instance=RequestContext(request))
 

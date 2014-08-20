@@ -9,7 +9,7 @@
             <p>Choose one of the business areas below to begin managing the spudder universe.</p>
         </div>
 
-        <div class="row">
+        <div class="row" id="admin-sections">
             <div class="col-md-3">
                 <div class="panel panel-default">
                     <div class="panel-body">
@@ -67,4 +67,13 @@
             </div>
         </div>
     </div>
+{% endblock %}
+
+{% block js %}
+    {{ block.super }}
+    <script type="text/javascript" language="javascript">
+        $(document).ready(function(){
+            balance_element_height("#admin-sections .panel-body");
+        })
+    </script>
 {% endblock %}

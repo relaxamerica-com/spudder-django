@@ -13,7 +13,10 @@ urlpatterns = patterns(
     url('^/cern/student/(?P<student_id>\d+)/waitlist$', 'waitlist_student'),
     url('^/cern/student/(?P<student_id>\d+)/send_email$','send_student_email'),
 
-    url(r'^/socialengine$', 'socialengine_dashboard'),
+
+    url(r'^/socialengine/atpostspud', 'socialengine_atpostspud'),
+    url(r'^/socialengine', 'socialengine_dashboard'),
+
     url(r'^/system/nukedb$', 'system_nukedb'),
     url(r'^/system/school_covers$', 'system_remove_school_cover_images'),
     url(r'^/system', 'system_dashboard'),

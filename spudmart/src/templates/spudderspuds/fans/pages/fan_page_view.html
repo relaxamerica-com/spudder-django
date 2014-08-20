@@ -72,40 +72,46 @@
         </form>
     </div>
 
-    <div style="min-height: 362px; margin: 0 auto; width: 100%; vertical-align: middle; text-align: center; padding:15px;">
-        <div class="row-fluid" style="height:100%;">
-            <div class="col-md-12 contents" style="height:100%;">
-                <div class="alert"></div>
-                <div class="content active" id="spuds">
-                    <div style="padding-bottom: 30px">
-                        <h4 style="margin-bottom: 0"><abbr title="Sports Updates">SPUDS</abbr> from this fan</h4>
-                        <p class="help-block">Here are the SPUDS created by this fan!</p>
-                    </div>
-                    <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
-                        <div class="carousel-inner">
-                            <div class="item active">
-                                <img src="/static/img/spudderspuds/button-spuds-large.png" height="300px"/>
-                                <div class="carousel-caption">
-                                    <div class="alert alert-info">
-                                        <h4>No SPUDS Yet</h4>
-                                        <p>Stay tuned, there will soon be SPUDS for this fan!</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Controls -->
-                        <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
-                            <span class="icon-prev"></span>
-                        </a>
-                        <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
-                            <span class="icon-next"></span>
-                        </a>
-                    </div>
-                </div>
-            </div>
+    <div class="row">
+        <div class="col-md-8" style="border-right: 1px solid #DDD">
+            {% include 'components/spuds/spud_carousel.html' with spuds=fan_spuds %}
         </div>
     </div>
+
+{#    <div style="min-height: 362px; margin: 0 auto; width: 100%; vertical-align: middle; text-align: center; padding:15px;">#}
+{#        <div class="row-fluid" style="height:100%;">#}
+{#            <div class="col-md-12 contents" style="height:100%;">#}
+{#                <div class="alert"></div>#}
+{#                <div class="content active" id="spuds">#}
+{#                    <div style="padding-bottom: 30px">#}
+{#                        <h4 style="margin-bottom: 0"><abbr title="Sports Updates">SPUDS</abbr> from this fan</h4>#}
+{#                        <p class="help-block">Here are the SPUDS created by this fan!</p>#}
+{#                    </div>#}
+{#                    <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">#}
+{#                        <div class="carousel-inner">#}
+{#                            <div class="item active">#}
+{#                                <img src="/static/img/spudderspuds/button-spuds-large.png" height="300px"/>#}
+{#                                <div class="carousel-caption">#}
+{#                                    <div class="alert alert-info">#}
+{#                                        <h4>No SPUDS Yet</h4>#}
+{#                                        <p>Stay tuned, there will soon be SPUDS for this fan!</p>#}
+{#                                    </div>#}
+{#                                </div>#}
+{#                            </div>#}
+{#                        </div>#}
+{##}
+{#                        <!-- Controls -->#}
+{#                        <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">#}
+{#                            <span class="icon-prev"></span>#}
+{#                        </a>#}
+{#                        <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">#}
+{#                            <span class="icon-next"></span>#}
+{#                        </a>#}
+{#                    </div>#}
+{#                </div>#}
+{#            </div>#}
+{#        </div>#}
+{#    </div>#}
 {% endblock %}
 
 {% block js %}

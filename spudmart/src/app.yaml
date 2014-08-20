@@ -1,4 +1,4 @@
-application: spudmart1
+application: spudmartmatt
 version: 1-3-0
 runtime: python27
 api_version: 1
@@ -41,4 +41,7 @@ handlers:
 
 libraries:
 - name: PIL
+  version: latest
+
+- name: ssl
   version: latest

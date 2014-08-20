@@ -16,30 +16,6 @@
             {% csrf_token %}
             {% bootstrap_form form %}
 
-{#            <div class="form-group">#}
-{#                <label class="control-label">Team name</label>#}
-{#                <span class="input-required">*required</span>#}
-{#                <input name="team_name"#}
-{#                     placeholder="Team name" class="form-control"#}
-{#                     maxlength="255" id="id_team_name" type="text">#}
-{#                <span class="help-block">The name of your team must be unique.</span>#}
-{#            </div>#}
-{##}
-{##}
-{#            <div class="form-group">#}
-{#                <label class="control-label" for="id_sport">Sport</label>#}
-{#                <span class="input-required">*required</span>#}
-{#                <select name="sport" class="form-control" id="id_sport">#}
-{#                    {% for sport in SPORTS %}#}
-{#                        <option value="{{ forloop.counter0 }}">{{ sport }}</option>#}
-{#                    {% endfor %}#}
-{#                </select>#}
-{#             </div>#}
-{##}
-{#            <div class="form-group hidden">#}
-{#                <input name="state" type="text">#}
-{#            </div>#}
-
             <div class="form-group edit-mode" style="display: block;">
                 <label>Location:</label>
                 <span class="input-required">*required</span>

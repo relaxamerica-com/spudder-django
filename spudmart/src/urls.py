@@ -65,6 +65,9 @@ urlpatterns = patterns(
     # Spudder Social Engine Urls
     (r'^socialengine/', include('spuddersocialengine.urls')),
 
+    # @postspud short urls
+    (r'^s/', include('spudderspuds.urls_spuds')),
+
     # Legacy URL mapping
     (r'^campusrep', RedirectView.as_view(url="/cern/")),
     (r'^privacy', RedirectView.as_view(url="http://info.spudder.com/privacy/")),

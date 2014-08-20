@@ -31,10 +31,6 @@ def create_team(request):
     if request.method == "POST":
         form = CreateTeamForm(request.POST)
         if form.is_valid():
-            # image_form = UploadForm(request.POST, request.FILES)
-            # image = None
-            # if image_form.is_valid():
-            #     image = image_form.save()
             team = TeamsController.CreateTeam(
                 request.current_role,
                 name=form.cleaned_data.get('team_name'),
@@ -42,7 +38,6 @@ def create_team(request):
                 free_text=form.cleaned_data.get('free_text'),
                 sport=dict(form.fields['sport'].choices)[form.cleaned_data.get('sport')],
                 state=dict(form.fields['state'].choices)[form.cleaned_data.get('state')],
-                # image=image
             )
             location_info = request.POST.get('location_info', None)
             team.update_location(location_info)

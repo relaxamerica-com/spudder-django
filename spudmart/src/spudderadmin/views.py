@@ -1,28 +1,30 @@
-import settings
-from google.appengine.api import mail
 import urllib2
-from django.conf import settings
+
+from google.appengine.api import mail
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.http import Http404
 from django.http import HttpResponse, HttpResponseNotAllowed
 from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
+
+import settings
 from spudderaccounts.models import SpudderUser
 from spudderaccounts.wrappers import RoleStudent, RoleFan, RoleSponsor
 from spudderadmin.decorators import admin_login_required
+from spudderadmin.forms import AtPostSpudTwitterAPIForm
 from spudderadmin.utils import encoded_admin_session_variable_name
 from spudderdomain.models import FanPage, LinkedService, TeamAdministrator, TeamPage
 from spudderkrowdio.models import KrowdIOStorage
-from spuddersocialengine.models import SpudFromSocialMedia, InstagramDataProcessor
+from spuddersocialengine.atpostspud.models import AtPostSpudTwitterAuthentication, AtPostSpudTwitterCounter, AtPostSpudServiceConfiguration
+from spuddersocialengine.models import SpudFromSocialMedia
 from spudmart.CERN.models import Student, School
-from spudmart.accounts.templatetags.accounts import user_name
 from spudmart.donations.models import RentVenue
 from spudmart.recipients.models import VenueRecipient
 from spudmart.sponsors.models import SponsorPage
 from spudmart.upload.models import UploadedFile
 from spudmart.venues.models import PendingVenueRental, Venue
-from spudmart.CERN.models import Student, STATUS_ACCEPTED, STATUS_REJECTED, \
+from spudmart.CERN.models import STATUS_ACCEPTED, STATUS_REJECTED, \
     STATUS_WAITLIST
 
 
@@ -60,11 +62,54 @@ def cern_dashboard(request):
 
 @admin_login_required
 def socialengine_dashboard(request):
+    template_data = {
+        'twitter_auth': AtPostSpudTwitterAuthentication.GetForSite(),
+        'at_post_spud_service': AtPostSpudServiceConfiguration.GetForSite()
+    }
     return render_to_response(
         'spudderadmin/pages/socialengine/dashboard.html',
-        {
-            'spuds': SpudFromSocialMedia.objects.all()[:10]
-        },
+        template_data,
+        context_instance=RequestContext(request))
+
+
+@admin_login_required
+def socialengine_atpostspud(request):
+    template_data = {}
+    twitter_auth_model = AtPostSpudTwitterAuthentication.GetForSite()
+    at_post_spud_api_form = AtPostSpudTwitterAPIForm(initial=twitter_auth_model.__dict__)
+    if request.method == "POST":
+        action = request.POST.get('action', None)
+        if action == "twitter_api_1":
+            at_post_spud_api_form = AtPostSpudTwitterAPIForm(request.POST)
+            if at_post_spud_api_form.is_valid():
+                for attr in ('api_key', 'api_secret', ):
+                    twitter_auth_model.__setattr__(attr, at_post_spud_api_form.cleaned_data.get(attr, ''))
+                twitter_auth_model.save()
+        if action == "twitter_api_reset":
+            twitter_auth_model.reset()
+            at_post_spud_api_form = AtPostSpudTwitterAPIForm(initial=twitter_auth_model.__dict__)
+        if action == "twitter_api_2":
+            pin = request.POST.get('pin', None)
+            request_token_key = request.POST.get('request_token_key', None)
+            request_token_secret = request.POST.get('request_token_secret', None)
+            twitter_auth_model.update_with_pin(pin, request_token_key, request_token_secret)
+        if action == "twitter_counter_reset":
+            AtPostSpudTwitterCounter.SetLastProcessedId(1)
+        if action == 'service_deactivate':
+            AtPostSpudServiceConfiguration.GetForSite().deactivate()
+        if action == 'service_activate':
+            AtPostSpudServiceConfiguration.GetForSite().activate()
+    template_data['twitter_auth_model'] = twitter_auth_model
+    template_data['at_post_spud_api_form'] = at_post_spud_api_form
+    auth_url, request_token_key, request_token_secret = twitter_auth_model.get_authorization_url_and_request_token()
+    template_data['twitter_auth_url'] = auth_url
+    template_data['request_token_key'] = request_token_key
+    template_data['request_token_secret'] = request_token_secret
+    template_data['twitter_since_id'] = AtPostSpudTwitterCounter.GetLastProcessedId()
+    template_data['at_post_spud_service'] = AtPostSpudServiceConfiguration.GetForSite()
+    return render_to_response(
+        'spudderadmin/pages/socialengine/at_post_spud.html',
+        template_data,
         context_instance=RequestContext(request))
 
 

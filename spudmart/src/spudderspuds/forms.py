@@ -8,6 +8,8 @@ from django.contrib.auth.models import User
 class FanSigninForm(forms.Form):
     email_address = forms.EmailField(required=True)
     password = forms.CharField(widget=forms.PasswordInput)
+    spud_id = forms.CharField(max_length=256, required=False, widget=forms.HiddenInput)
+    twitter = forms.CharField(max_length=256, required=False, widget=forms.HiddenInput)
 
     def clean(self):
         cleaned_data = super(FanSigninForm, self).clean()
@@ -25,6 +27,8 @@ class FanRegisterForm(forms.Form):
     email_address = forms.EmailField(required=True)
     password = forms.CharField(widget=forms.PasswordInput)
     password_again = forms.CharField(widget=forms.PasswordInput)
+    spud_id = forms.CharField(max_length=256, required=False, widget=forms.HiddenInput)
+    twitter = forms.CharField(max_length=256, required=False, widget=forms.HiddenInput)
 
     def clean(self):
         data = super(FanRegisterForm, self).clean()

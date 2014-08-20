@@ -279,6 +279,35 @@
                 }, 500);
             }
 
+            function balance_element_height(selector) {
+                var max_height = 0;
+                $(selector).each(function(i, el){
+                    var $el = $(el);
+                    if ($el.height() > max_height)
+                        max_height = $el.height();
+                });
+                if (max_height == 0)
+                    return;
+                $(selector).each(function(i, el){
+                    $(el).height(max_height);
+                });
+            }
+
+
+            function balance_element_width(selector) {
+                var max_width = 0;
+                $(selector).each(function(i, el){
+                    var $el = $(el);
+                    if ($el.width() > max_width)
+                        max_width = $el.width();
+                });
+                if (max_width == 0)
+                    return;
+                $(selector).each(function(i, el){
+                    $(el).width(max_width + 10);
+                });
+            }
+
 
             $(document).ready(function(){
 

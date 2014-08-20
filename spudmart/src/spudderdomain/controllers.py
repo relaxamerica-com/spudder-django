@@ -1,13 +1,10 @@
+from datetime import datetime, timedelta
 from spudderdomain.models import LinkedService, FanPage, TeamPage, TeamAdministrator
+from spuddersocialengine.models import SpudFromSocialMedia
 from spudmart.CERN.models import Student
 from spudmart.sponsors.models import SponsorPage
-from spuddersocialengine.models import InstagramDataProcessor, SpudFromSocialMedia
-import logging
-import simplejson
-from spudmart.venues.models import Venue
-from spudderkrowdio.utils import post_spud
+from spudderkrowdio.utils import post_spud, get_user_mentions_activity
 from spudderkrowdio.models import KrowdIOStorage
-from datetime import datetime, timedelta
 
 
 class RoleController(object):
@@ -147,6 +144,11 @@ class TeamsController(object):
 
 class SpudsController(object):
 
+    @classmethod
+    def GetSpudsForFan(cls, fan_page):
+        from spudderaccounts.wrappers import RoleFan
+        return get_user_mentions_activity(KrowdIOStorage.GetOrCreateForCurrentUserRole(RoleFan(fan_page)))
+
     def __init__(self, role):
         self.role = role
 
@@ -267,6 +269,16 @@ class SpudsController(object):
                     'usertext': '@Venue%s' % venue_id,
                     'extra': spud.data
                 })
+
+    def add_spud_from_fan(self, spud):
+        data = {
+            'type': 'image',
+            'url': spud.expanded_data['image']['standard_resolution']['url'],
+            'title': ' '.join([s.encode('ascii', 'ignore') for s in spud.expanded_data['text']]),
+            'usertext': '@%s%s' % (RoleController.ENTITY_FAN, self.role.entity.id),
+            'extra': spud.data}
+        krowd_io_storage = KrowdIOStorage.GetOrCreateForCurrentUserRole(self.role)
+        post_spud(krowd_io_storage, data)
 
     def reject_spuds(self, spud_ids):
         """

@@ -1,51 +1,68 @@
 {% extends 'spudderadmin/pages/socialengine/_sociaengine_base.html' %}
 
-{% block cern_nav %}
+{% load bootstrap3 %}
+
+{% block admin_nav %}
     {% include 'spudderadmin/pages/socialengine/sidenav.html' with active="dashboard" %}
 {% endblock %}
 
-{% block cern_body %}
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <div class="panel-title">
-                <h4>Social Media Collected Spuds</h4>
-            </div>
-            <div class="panel-body">
-                {% for spud in spuds %}
-                    {{ spud.data }}
-                {% endfor %}
-{#                <table class="table table-striped {% if students %}datatable{% endif %}">#}
-{#                    <thead>#}
-{#                        <tr>#}
-{#                            <th>Email Address</th>#}
-{#                            <th>School</th>#}
-{#                            <th class="no-sort"></th>#}
-{#                        </tr>#}
-{#                    </thead>#}
-{#                    <tbody>#}
-{#                        {% for s in students %}#}
-{#                            <tr>#}
-{#                                <td>{{ s.title|safe }}</td>#}
-{#                                <td>{{ s.entity.school.name }}</td>#}
-{#                                <td class="actions" style="white-space: nowrap">#}
-{#                                    <a class="btn btn-danger btn-sm" href="javascript:alert('In Development')" title="Delete">#}
-{#                                        <i class="fa fa-fw fa-trash-o"></i> <span class="hidden-xs">delete</span>#}
-{#                                    </a>#}
-{#                                </td>#}
-{#                            </tr>#}
-{#                        {% empty %}#}
-{#                            <tr>#}
-{#                                <td colspan="3">#}
-{#                                    <div class="alert alert-warning">#}
-{#                                        <p>There are no students to show.</p>#}
-{#                                    </div>#}
-{#                                </td>#}
-{#                            </tr>#}
-{#                        {% endfor %}#}
-{#                    </tbody>#}
-{#                </table>#}
+{% block css %}
+    {{ block.super }}
+    <style type="text/css">
+        #atpostspud-panel p > b {
+            display: inline-block;
+            margin-right: 10px;
+        }
+    </style>
+{% endblock %}
 
+{% block admin_body %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default" id="atpostspud-panel">
+                <div class="panel-body">
+                    <h2 style="margin-top: 0;">
+                        <a href="/spudderadmin/socialengine/atpostspud" class="btn btn-default pull-right">
+                            manage
+                        </a>
+                        @postspud
+                    </h2>
+                    <hr/>
+                    <p>
+                        <b>Activation Status:</b>
+                        {% if at_post_spud_service.active %}
+                            <span class="label label-success">
+                                <i class="fa fa-check"></i> Up and running
+                            </span>
+                        {% else %}
+                            <span class="label label-danger">
+                                <i class="fa fa-warning"></i> Inactive
+                            </span>
+                        {% endif %}
+                    </p>
+                    <p>
+                        <b>Twitter Authentication:</b>
+                        {% if twitter_auth.authorized %}
+                            <span class="label label-success">
+                                <i class="fa fa-check"></i> Authorized and active
+                            </span>
+                        {% else %}
+                            <span class="label label-danger">
+                                <i class="fa fa-warning"></i> Inactive
+                            </span>
+                        {% endif %}
+                    </p>
+                </div>
             </div>
         </div>
     </div>
+{% endblock %}
+
+{% block js %}
+    {{ block.super }}
+    <script type="text/javascript" language="JavaScript">
+        $(document).ready(function(){
+            balance_element_width("#atpostspud-panel p > b");
+        })
+    </script>
 {% endblock %}

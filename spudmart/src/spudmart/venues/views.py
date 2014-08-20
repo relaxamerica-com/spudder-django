@@ -86,7 +86,7 @@ def view(request, venue_id):
         'sponsor_info': sponsor_info,
         'is_sponsor': venue.is_renter(role),
         'student': student,
-        'venue_spuds': venue_spuds['items']
+        'venue_spuds': venue_spuds
     })
 
 def index(request):

@@ -102,9 +102,13 @@ def get_user_mentions_activity(entity):
     
     user_id = entity.krowdio_user_id
     
-    response = _get('http://api.krowd.io/activity/mentions?userid=%s' % (user_id), {}, { 'Authorization' : token })
-    
-    return simplejson.loads(response.content)
+    response = _get('http://api.krowd.io/activity/mentions?userid=%s' % user_id, {}, {'Authorization': token})
+
+    response = simplejson.loads(response.content)
+
+    items = response.get('items', [])
+
+    return [i.get('target', {}).get('json', {}).get('extra', {}) for i in items]
 
 
 def post_comment(entity, spud_id, text):

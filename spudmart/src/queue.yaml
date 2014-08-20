@@ -6,3 +6,7 @@ queue:
 - name: instagramcallback
   rate: 1/m
   max_concurrent_requests: 1
+
+- name: atpostspud-getspuds
+  rate: 1/m
+  max_concurrent_requests: 1

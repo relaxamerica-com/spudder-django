@@ -1,0 +1,91 @@
+{% extends 'spudderspuds/base.html' %}
+{% load spudderaccountstags %}
+
+{% block nav %}
+    {% include 'spudderspuds/components/main_nav.html' %}
+    {{ block.super }}
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+
+        <div class="page-header">
+            <h1><img src="/static/img/spudderspuds/button-spuds-small.png" /> Claim your SPUD!</h1>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4 col-md-offset-4">
+                <div style="max-width: 500px; margin: 20px auto;">
+                    {% if spud %}
+                        {% include 'components/spuds/spud.html'  %}
+                    {% else %}
+                        <div class="alert alert-warning">
+                            <h4><i class="fa fa-warning"></i> Gone!</h4>
+                            <p>Sorry but the SPUD you are trying to claim has gone :(</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% if spud %}
+                {% if username_changed or username_set%}
+                    <div class="col-md-4">
+                        <div class="alert alert-success">
+                            <h4><i class="fa fa-check"></i> We did it!</h4>
+                            <p>We {% if username_changed %}changed{% else %}set{% endif %} your linked twitter username and you have claimed this spud!</p>
+                            <p>
+                                <a class="btn btn-primary" href="/fan/{{ request.current_role.entity.id }}">
+                                    Go to your profile
+                                </a>
+                            </p>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="col-md-4">
+                        <h3><i class="fa fa-hand-o-left"></i> Is this Yours?</h3>
+                        <p>Is this your spud?</p>
+                        {% if request.current_role|is_fan %}
+                            {% if request.current_role.entity.twitter %}
+                                <p class="text-success"><b>You already have a twitter username attached to your Fan profile</b></p>
+                                <p>
+                                    <b style="display: inline-block; margin-right: 10px;">
+                                        Your current twitter username is:
+                                    </b>
+                                    {{ request.current_role.entity.twitter }}
+                                </p>
+                                <p>Do you want to change your twitter username to <b>{{ spud.user.username }}</b> and claim this spud?</p>
+                                <form method="post">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="action" value="change_twitter"/>
+                                    <button type="submit" class="btn btn-primary">
+                                        Yes, change it!
+                                    </button>
+                                </form>
+                            {% else %}
+                                <p class="text-success"><b>Your account does not have a twitter username set up!</b></p>
+                                <p>Do you want to set your twitter username to <b>{{ spud.user.username }}</b> and claim this spud?</p>
+                                <form method="post">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="action" value="set_twitter"/>
+                                    <button type="submit" class="btn btn-primary">
+                                        Yes, change it!
+                                    </button>
+                                </form>
+                            {% endif %}
+                        {% else %}
+                            <p class="text-success">We got your SPUD!</p>
+                            <p>Now sigin or register to claim it!</p>
+                            <a class="btn-primary btn" href="/spuds/register?spud_id={{ spud_id }}&twitter={{ spud.user.username }}">
+                                register
+                            </a>
+                            <a class="btn-default btn" href="/spuds/signin?spud_id={{ spud_id }}&twitter={{ spud.user.username }}">
+                                signin
+                            </a>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            {% endif %}
+        </div>
+
+    </div>
+
+{% endblock %}
