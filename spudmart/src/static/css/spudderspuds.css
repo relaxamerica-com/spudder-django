@@ -14096,7 +14096,7 @@ legend {
 }
 .jumbotron {
   overflow: hidden;
-  height: 250px;
+  max-height: 250px;
 }
 @media (min-width: 768px) {
   .jumbotron {
