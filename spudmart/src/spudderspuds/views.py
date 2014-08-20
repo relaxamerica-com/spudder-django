@@ -101,7 +101,7 @@ def fan_profile_view(request, page_id):
     return render(request, 'spudderspuds/fans/pages/fan_page_view.html', {
         'page': page,
         'fan_spuds': SpudsController.GetSpudsForFan(page),
-        'can_edit': entity_id == page.id
+        'base_url': 'spudderspuds/base.html',
     })
 
 

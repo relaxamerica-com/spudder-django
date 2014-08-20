@@ -81,12 +81,12 @@ def view(request, venue_id):
         'medical_address': medical_address,
         'is_recipient': is_recipient,
         'rent_venue_url': rent_venue_url,
-        'can_edit': can_edit,
         'sponsor': sponsor,
         'sponsor_info': sponsor_info,
         'is_sponsor': venue.is_renter(role),
         'student': student,
-        'venue_spuds': venue_spuds
+        'venue_spuds': venue_spuds['items'],
+        'base_url': 'spuddercern/base.html',
     })
 
 def index(request):

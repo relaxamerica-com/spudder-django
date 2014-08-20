@@ -177,13 +177,13 @@ def school(request, state, school_id, name, referral_id=None):
             'school': sch,
             'student': student,
             'head': head,
-            'user_is_head': bool(head and student and head == student),
             'user_is_team_member': bool(request.user in ranked_students),
             'referrer': referrer,
             'top_students': top_students,
             'remaining_students': remaining_students,
             'text_fields': texts,
-            'img_fields': imgs
+            'img_fields': imgs,
+            'base_url': 'spuddercern/base.html',
         })
 
 
@@ -902,12 +902,6 @@ def student_page(request, student_id):
         other profile pages on Spudder
     """
     student = Student.objects.get(id=student_id)
-    can_edit = False
-
-    # Double layering to handle unauthenticated users
-    if request.current_role:
-        if request.current_role.entity == student:
-            can_edit = True
 
     venues = Venue.objects.filter(student=student)
 
@@ -917,10 +911,10 @@ def student_page(request, student_id):
 
     return render(request, 'spuddercern/pages/student_page.html', {
                   'student': student,
-                  'can_edit': can_edit,
                   'venues': venues,
                   'num_referred': num_referred,
-                  'top_five': all_referrals[:5]
+                  'top_five': all_referrals[:5],
+                  'base_url': 'spuddercern/base.html',
                   })
 
 

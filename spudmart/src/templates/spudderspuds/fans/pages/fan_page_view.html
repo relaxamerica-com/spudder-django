@@ -1,4 +1,4 @@
-{% extends 'spudderspuds/public_page_base.html' %}
+{% extends 'components/sharedpages/public_page_base.html' %}
 
 {% load accounts %}
 {% load CERN %}
@@ -32,7 +32,7 @@
         <div class="fan-jumbotron-default"></div>
     {% endif %}
 
-    {% if can_edit %}
+    {% if request.can_edit %}
         <div style="position:absolute; top:20px; right:20px;">
             <a class="btn btn-primary" href="/fan/{{ page.id }}/edit_cover">Edit Cover Image</a>
         </div>
@@ -49,11 +49,6 @@
     <span id="display-name">
         {% fan_page_name page %}
     </span>
-    {% if can_edit %}
-        <a class="btn btn-primary" href="/fan/{{ page.id }}/edit">
-            Edit Mode
-        </a>
-    {% endif %}
 
     {% include 'components/coverimage/social_links.html' with twitter=page.twitter %}
 {% endblock %}
@@ -124,9 +119,7 @@
     $('.content').not('.active').hide();
 
     $(document).ready(function(){
-{#        {% if page.cover_image %}if($('.jumbotron').height() > $('.jumbotron-img').height()) $('.jumbotron').css('height', $('.jumbotron-img').height() + "px");{% endif %}#}
-        var editMode = $('.edit-mode'),
-	        viewMode = $('.view-mode');
+        {% if page.cover_image %}if($('.jumbotron').height() > $('.jumbotron-img').height()) $('.jumbotron').css('height', $('.jumbotron-img').height() + "px");{% endif %}
 
         $('#mailto').attr('href',
                           'mailto:?subject={% fan_page_name page %} on Spudder' +
@@ -136,20 +129,6 @@
            var $alert = $(alert);
            if ($alert.html() == "")
                $alert.hide();
-        });
-
-        $('#edit').click(function(){
-            if (window.isEditMode){
-                editMode.hide();
-                viewMode.show();
-                $(this).html('Edit Mode');
-                window.isEditMode = false;
-            } else{
-                viewMode.hide();
-                editMode.show();
-                $(this).html('Show Mode');
-                window.isEditMode = true;
-            }
         });
 
         $('#save-logo').click(function() {

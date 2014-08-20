@@ -89,27 +89,14 @@ def team_page(request, page_id):
 
 
 def public_view(request, page_id):
-    def can_edit(user, current_role, page):
-        if not user.is_authenticated():
-            return False
-
-        if not current_role:
-            return False
-
-        entity_id = current_role.entity.id
-        entity_type = current_role.entity_type
-        admins = TeamAdministrator.objects.filter(team_page=page, entity_type=entity_type, entity_id=entity_id)
-
-        return len(admins) > 0
-
     page = get_object_or_404(TeamPage, pk=page_id)
     is_associated, associated_venues = _check_if_team_is_associated(page)
 
     return render(request, 'spudderspuds/teams/pages/team_page_view.html',{
         'page': page,
-        'can_edit': can_edit(request.user, request.current_role, page),
         'is_associated': is_associated,
         'venues': associated_venues,
+        'base_url': 'spudderspuds/base.html',
     })
 
 
