@@ -4,11 +4,9 @@ import settings
 import simplejson
 import time
 import logging
-from spudderdomain.models import FanPage, TeamPage
+from spudderdomain.models import TeamPage
 from spudderkrowdio.models import KrowdIOStorage
 from spudmart.venues.models import Venue
-
-ENTITY_TYPES = ['sponsor', 'fan', 'student']
 
 
 def _update_entity(entity, krowdio_data):

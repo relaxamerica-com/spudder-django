@@ -1,0 +1,45 @@
+{% extends base_well_url %}
+
+{% block well_content %}
+    <h4>Begin following {{ name }}:</h4>
+
+    {% include 'components/sharedpages/following/quote_why_hashtag_following.html' %}
+
+    <form role="form">
+        <div class="form-group">
+            <label>Custom #tag:</label>
+            <div class="input-group">
+                <div class="input-group-addon">#</div>
+                <input type="text" id="tag" class="form-control" value="{{ tag }}"/>
+            </div>
+        </div>
+    </form>
+    <button id="follow" class="btn btn-primary">Save #tag and Follow {{ name }}</button>
+
+    <div class="alert"></div>
+
+{% endblock %}
+
+{% block js %}
+    {{ block.super }}
+
+    <script type="text/javascript">
+        $('#follow').click(function(){
+            var tag = $('#tag').val();
+
+            if (tag == tag.match(/[a-z\d]*/)) {
+                var response = $.post('/fan/start_following', {
+                    'origin': '{{ origin }}',
+                    'tag': tag
+                });
+
+                response.done(function(){
+                    alert('Successfully followed {{ name }}! You will now be redirected back to their page.');
+                    window.location = '{{ origin }}';
+                });
+            } else{
+                showAlert($('.alert'), 'Your #tag can only contain lowercase letters and numbers.', 'danger', true)
+            }
+        });
+    </script>
+{% endblock %}

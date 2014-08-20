@@ -15,13 +15,15 @@
                     </button>
                 {% else %}
                     {% if request.can_follow %}
-                        <button class="btn btn-primary" id="follow">
-                            {% if request.following %}
+                        {% if request.following %}
+                            <a class="btn btn-primary" id="follow">
                                 <i class="fa fa-fw fa-minus"></i> <span>Unfollow</span>
-                            {% else %}
-                                <i class="fa fa-fw fa-plus"></i> <span>Follow</span>
-                            {% endif %}
-                        </button>
+                            </a>
+                        {% else %}
+                            <a class="btn btn-primary" href="/fan/follow?origin={{ request.path }}">
+                                <i class="fa fa-fw fa-plus"></i> Follow
+                            </a>
+                        {% endif %}
                     {% endif %}
                 {% endif %}
             </h1>
@@ -67,31 +69,19 @@
                 }
             });
         {% endif %}
-        {% if request.can_follow %}
+        {% if request.can_follow and not request.following %}
             $('#follow').click(function(){
                 var span = $(this).find('span'),
                     icon = $(this).find('i');
 
-                if (span.html() == 'Follow'){
-                    icon.removeClass('plus').addClass('fa-spin fa-spinner');
-                    span.html('Following...');
-                    var response = $.post('/fan/start_following',
-                            {'origin': '{{ request.path }}'});
-                    response.done(function(){
-                        span.html('Followed!');
-                        icon.removeClass('fa-spin fa-spinner').addClass('fa-check');
-                    })
-                }
-                else if (span.html() == 'Unfollow'){
-                    icon.removeClass('plus').addClass('fa-spin fa-spinner');
-                    span.html('Unfollowing...');
-                    var response = $.post('/fan/stop_following',
-                            {'origin': '{{ request.path }}'});
-                    response.done(function(){
-                        span.html('Unfollowed!');
-                        icon.removeClass('fa-spin fa-spinner').addClass('fa-check');
-                    })
-                }
+                icon.removeClass('plus').addClass('fa-spin fa-spinner');
+                span.html('Unfollowing...');
+                var response = $.post('/fan/stop_following',
+                        {'origin': '{{ request.path }}'});
+                response.done(function(){
+                    span.html('Unfollowed!');
+                    icon.removeClass('fa-spin fa-spinner').addClass('fa-check');
+                })
             });
         {% endif %}
     </script>

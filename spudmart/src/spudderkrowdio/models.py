@@ -3,9 +3,12 @@ from google.appengine.api import urlfetch
 from django.db import models
 import settings
 import simplejson
-from spudderdomain.models import TeamPage
+from spudderdomain.models import TeamPage, FanPage
 from spudmart.venues.models import Venue
 from django.shortcuts import get_object_or_404
+
+
+FOLLOWABLE_ENTITY_TYPES = ['Venue', 'Team', 'fan']
 
 
 def _post(url, data, headers={}):
@@ -99,3 +102,18 @@ class KrowdIOStorage(models.Model):
             storage.type = 'Team'
             register_entity(storage)
         return storage
+
+
+class FanFollowingEntityTag(models.Model):
+    """
+    Hold the custom #tag for each entity a Fan follows
+
+    This structure means each entity a fan follows must have a custom
+    #tag, but two fans can have the same #tag for an entity to follow
+
+    Uses the same entity_type (and IDs) as the KrowdIOStorage model
+    """
+    fan = models.ForeignKey(FanPage)
+    tag = models.CharField(max_length=256)
+    entity_id = models.CharField(max_length=256)
+    entity_type = models.CharField(max_length=256)

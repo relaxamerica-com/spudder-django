@@ -950,7 +950,7 @@
                 alert = $('#logo-name-alert'),
                 icon = $('#save-name .fa-save');
 
-            if (name.match(/[\w]*/) == name){
+            if (name.match(/[a-z\d]*/) == name){
                 icon.removeClass('fa-save').addClass('fa-spin fa-spinner');
 
                 $.get('/upload/get_upload_url', function (data) {
@@ -984,7 +984,7 @@
                     });
                 });
             } else{
-                showAlert(alert, 'The @tag name contains invalid characters. Only letters and numbers are allowed.', 'danger', true);
+                showAlert(alert, 'The @tag name contains invalid characters. Only lowercase letters and numbers are allowed.', 'danger', true);
             }
 		});
 

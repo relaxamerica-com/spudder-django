@@ -8,13 +8,16 @@ import simplejson
 from spudderaccounts.templatetags.spudderaccountstags import is_fan, user_has_fan_role
 from spudderaccounts.utils import change_current_role
 from spudderdomain.controllers import TeamsController, RoleController, SpudsController
-from spudderdomain.models import FanPage
+from spudderdomain.models import FanPage, TeamPage
+from spudderkrowdio.models import FanFollowingEntityTag
 from spuddersocialengine.models import SpudFromSocialMedia
 from spudderspuds.forms import FanSigninForm, FanRegisterForm, FanPageForm, FanPageSocialMediaForm
 from spudderspuds.utils import create_and_activate_fan_role, is_signin_claiming_spud
+from spudmart.accounts.templatetags.accounts import fan_page_name
 from spudmart.upload.models import UploadedFile
 from spudmart.utils.cover_image import reset_cover_image, save_cover_image_from_request
 from spudderkrowdio.utils import start_following, stop_following
+from spudmart.venues.models import Venue
 
 
 def landing_page(request):
@@ -199,6 +202,50 @@ def claim_atpostspud(request, spud_id):
         context_instance=RequestContext(request))
 
 
+def follow(request):
+    """
+    A page allowing the Fan to create a custom #tag for entity
+    :param request: a GET request
+    :return: a single well with form for entity #tag, or an
+        HTTPResponseNotAllowed
+    """
+    if request.method == 'GET':
+        origin = str(request.GET.get('origin', ''))
+        name = tag = base_well_url = base_quote_url = None
+
+        if re.match(r'/venues/view/\d+', origin):
+            ven = Venue.objects.get(id=str.split(origin, '/')[-1])
+            name = ven.aka_name
+            tag = ven.name
+            base_well_url = 'spuddercern/base_single_well.html'
+            base_quote_url = 'spuddercern/quote_messages/base_quote_message.html'
+
+        elif re.match(r'/fan/\d+', origin):
+            fan = FanPage.objects.get(id=str.split(origin, '/')[-1])
+            name = fan_page_name(fan)
+            tag = fan.username
+            base_well_url = 'spudderspuds/base_single_well.html'
+            base_quote_url = 'spudderspuds/components/base_quote_message.html'
+
+        elif re.match(r'/team/\d+', origin):
+            team = TeamPage.objects.get(id=str.split(origin, '/')[-1])
+            name = team.name
+            tag = team.at_name
+            base_well_url = 'spudderspuds/base_single_well.html'
+            base_quote_url = 'spudderspuds/components/base_quote_message.html'
+
+        return render_to_response(
+            'components/sharedpages/following/start_following.html', {
+                'name': name,
+                'tag': tag,
+                'base_well_url': base_well_url,
+                'base_quote_url': base_quote_url,
+                'origin': origin})
+
+    else:
+        return HttpResponseNotAllowed(['GET'])
+
+
 def start_following_view(request):
     """
     Current role (fan) starts following entity in request
@@ -207,7 +254,8 @@ def start_following_view(request):
         or an HttpResponseNotAllowed response
     """
     if request.method == 'POST':
-        origin = request.POST.get('origin', '')
+        origin = str(request.POST.get('origin', ''))
+        tag = str(request.POST.get('tag', ''))
         entity_id = entity_type = None
         if re.match(r'/venues/view/\d+', origin):
             entity_type = 'Venue'
@@ -219,6 +267,11 @@ def start_following_view(request):
             entity_type = 'Team'
             entity_id = str.split(origin, '/')[-1]
 
+        entity_tag = FanFollowingEntityTag(fan=request.current_role.entity,
+                                           tag=tag, entity_id=entity_id,
+                                           entity_type=entity_type)
+        entity_tag.save()
+
         json = start_following(request.current_role, entity_type, entity_id)
         return HttpResponse(simplejson.dumps(json))
     else:
@@ -227,13 +280,13 @@ def start_following_view(request):
 
 def stop_following_view(request):
     """
-    Current role (fan) stopsfollowing entity in request
+    Current role (fan) stops following entity in request
     :param request: a POST request
     :return: the response from the KrowdIO API on success,
         or an HttpResponseNotAllowed response
     """
     if request.method == 'POST':
-        origin = request.POST.get('origin', '')
+        origin = str(request.POST.get('origin', ''))
         entity_id = entity_type = None
         if re.match(r'/venues/view/\d+', origin):
             entity_type = 'Venue'
