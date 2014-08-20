@@ -99,6 +99,9 @@ def socialengine_atpostspud(request):
             AtPostSpudServiceConfiguration.GetForSite().deactivate()
         if action == 'service_activate':
             AtPostSpudServiceConfiguration.GetForSite().activate()
+        if action == "twitter_test_tweet":
+            tweet = request.POST.get('tweet', '')
+            twitter_auth_model.api().update_status(tweet)
     template_data['twitter_auth_model'] = twitter_auth_model
     template_data['at_post_spud_api_form'] = at_post_spud_api_form
     auth_url, request_token_key, request_token_secret = twitter_auth_model.get_authorization_url_and_request_token()

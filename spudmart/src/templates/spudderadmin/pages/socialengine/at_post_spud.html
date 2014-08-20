@@ -167,6 +167,27 @@
                             </button>
                         </form>
                     </div>
+
+                    {% if twitter_auth_model.authorized %}
+                        <div class="well">
+                            <h4 style="margin-top: 0"><i class="fa fa-twitter"></i> Test Twitter Messaging</h4>
+                            <form method="post">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="twitter_test_tweet" />
+                                <div class="form-group">
+                                    <label>Your tweet</label>
+                                    <textarea name="tweet" class="form-control"></textarea>
+                                    <p class="help-block">This tweet will be sent from the account <b>{{ twitter_auth_model.api.me.screen_name }}</b></p>
+                                </div>
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fa fa-twitter"></i> Tweet
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+                    {% endif %}
                 </div>
             </div>
         </div>
