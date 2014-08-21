@@ -1,3 +1,4 @@
+import re
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.models import User
 from django.http import HttpResponse, HttpResponseNotAllowed
@@ -9,14 +10,16 @@ from spudderaccounts.templatetags.spudderaccountstags import is_fan, user_has_fa
 from spudderaccounts.utils import change_current_role
 from spudderdomain.controllers import TeamsController, RoleController, SpudsController
 from spudderdomain.models import FanPage, TeamPage
-from spudderkrowdio.models import FanFollowingEntityTag
+from spudderkrowdio.models import FanFollowingEntityTag, KrowdIOStorage
 from spuddersocialengine.models import SpudFromSocialMedia
 from spudderspuds.forms import FanSigninForm, FanRegisterForm, FanPageForm, FanPageSocialMediaForm
 from spudderspuds.utils import create_and_activate_fan_role, is_signin_claiming_spud
-from spudmart.accounts.templatetags.accounts import fan_page_name
+from spudmart.CERN.models import Student
+from spudmart.accounts.templatetags.accounts import fan_page_name, user_name
+from spudmart.sponsors.models import SponsorPage
 from spudmart.upload.models import UploadedFile
 from spudmart.utils.cover_image import reset_cover_image, save_cover_image_from_request
-from spudderkrowdio.utils import start_following, stop_following
+from spudderkrowdio.utils import start_following, stop_following, get_following
 from spudmart.venues.models import Venue
 
 
@@ -26,6 +29,9 @@ def landing_page(request):
     template_data['find_fans'] = FanPage.objects.all()[:10]
     if is_fan(request.current_role):
         template_data['spuds'] = SpudsController.GetSpudsForFan(request.current_role.entity)
+        krowdio_response = get_following(request.current_role)
+        template_data['teams'] = krowdio_users_to_links(krowdio_response['data'], 'team')
+        template_data['fans'] = krowdio_users_to_links(krowdio_response['data'], 'fan')
     return render(request, 'spudderspuds/pages/landing_page.html', template_data)
 
 
@@ -235,7 +241,7 @@ def follow(request):
         elif re.match(r'/fan/\d+', origin):
             fan = FanPage.objects.get(id=str.split(origin, '/')[-1])
             name = fan_page_name(fan)
-            tag = fan.username
+            tag = name
             base_well_url = 'spudderspuds/base_single_well.html'
             base_quote_url = 'spudderspuds/components/base_quote_message.html'
 
@@ -314,4 +320,64 @@ def stop_following_view(request):
         return HttpResponse(simplejson.dumps(json))
     else:
         return HttpResponseNotAllowed(['POST'])
+
+
+def krowdio_users_to_links(krowdio_dict, filter=None):
+    """
+    Translates KrowdIO users into a list of dicts about Spudder entities
+    :param krowdio_dict: the 'users' part of a response from the
+        KrowdIO API (intended for use with followers/following)
+    :return: a list of dicts, where the dict contains the icon link,
+        profile link, and name of each Spudder entity followed
+    """
+    users = []
+    for user in krowdio_dict:
+        krowdio_id = user['_id']
+        storage_obj = KrowdIOStorage.objects.get(krowdio_user_id=krowdio_id)
+        if storage_obj.role_id:
+            if storage_obj.role_type == 'fan' and (filter == 'fan' or filter is None):
+                fan = FanPage.objects.get(id=storage_obj.role_id)
+                if fan.avatar:
+                    icon_link = '/file/serve/%s' % fan.avatar.id
+                else:
+                    icon_link = '/static/img/spudderfans/button-fans-tiny.png'
+                users.append({'name': fan.name,
+                              'profile': '/fan/%s' % fan.id,
+                              'icon_link': icon_link})
+            elif storage_obj.role_type == 'sponsor' and (filter == 'sponsor' or filter is None):
+                sponsor = SponsorPage.objects.get(id=storage_obj.role_id)
+                if sponsor.thumbnail:
+                    icon_link = '/file/serve/%s' % sponsor.thumbnail
+                else:
+                    icon_link = '/static/img/spuddersponsors/button-sponsors-tiny.png'
+                users.append({'name': sponsor.name,
+                              'profile': '/sponsor/%s' % sponsor.id,
+                              'icon_link': icon_link})
+            elif storage_obj.role_type == 'student' and (filter == 'student' or filter is None):
+                stu = Student.objects.get(id=storage_obj.role_id)
+                if stu.logo:
+                    icon_link = '/file/serve/%s' % stu.logo
+                else:
+                    icon_link = 'static/img/spuddercern/button-cern-tiny.png'
+                users.append({'name': user_name(stu.user),
+                              'profile': '/cern/student/%s' % stu.id,
+                              'icon_link': icon_link})
+        elif storage_obj.venue:
+            if storage_obj.venue.logo and (filter == 'venue' or filter is None):
+                icon_link = '/file/serve/%s' % storage_obj.venue.logo.id
+            else:
+                icon_link = '/static/img/spudderspuds/button-spuds-tiny.png'
+            users.append({'name': storage_obj.venue.aka_name,
+                          'profile': '/venues/view/%s' % storage_obj.venue.id,
+                          'icon_link': icon_link})
+        elif storage_obj.team and (filter == 'team' or filter is None):
+            if storage_obj.team.image:
+                icon_link = '/file/serve/%s' % storage_obj.team.image.id
+            else:
+                icon_link = '/static/img/spudderspuds/button-teams-tiny.png'
+            users.append({'name': storage_obj.team.name,
+                          'profile': '/team/%s' % storage_obj.team.id,
+                          'icon_link': icon_link})
+    return users
+
 

@@ -65,7 +65,7 @@
                 }
             });
         {% endif %}
-        {% if request.can_follow and not request.following %}
+        {% if request.can_follow %}
             $('#follow').click(function(){
                 var span = $(this).find('span'),
                     icon = $(this).find('i');

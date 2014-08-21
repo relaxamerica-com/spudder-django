@@ -37,17 +37,28 @@
             <div class="col-md-6">
                 {% include 'components/spuds/spud_carousel.html' with spuds=spuds %}
             </div>
-            <div class="col-md-6">
+            <div class="col-md-6" style="height:263px">
                 {% if request.current_role|is_fan %}
-                    <div class="page-header">
-                        <a href="/spuds/search/teams" class="btn btn-primary pull-right"><i class="fa fa-search"></i> Find more teams</a>
-                        <h3><img src="/static/img/spudderspuds/button-teams-tiny.png"/> Teams you follow</h3>
-                    </div>
-
-                    <div class="page-header">
-                        <a href="/spuds/search/fans" class="btn btn-primary pull-right"><i class="fa fa-search"></i> Find more fans</a>
-                        <h3><img src="/static/img/spudderspuds/button-fans-tiny.png"/> Fans you follow</h3>
-                    </div>
+                    {% if teams and fans %}
+                        <div class="row">
+                            <div class="col-md-6" style="height:263px">
+                                {% include 'components/following_table.html' with title="Teams You Follow" following=teams%}
+                            </div>
+                            <div class="col-md-6" style="height:263px">
+                                {% include 'components/following_table.html' with title="Fans You Follow" following=fans %}
+                            </div>
+                        </div>
+                    {% else %}
+                        {% if fans %}
+                            {% include 'components/following_table.html' with title="Fans You Follow" following=fans %}
+                        {% else %}
+                            {% if teams %}
+                                {% include 'components/following_table.html' with title="Teams You Follow" following=teams %}
+                            {% else %}
+                                {% include 'spudderspuds/quote_messages/quote_not_following_anyone.html' %}
+                            {% endif %}
+                        {% endif %}
+                    {% endif %}
 
                 {% else %}
 

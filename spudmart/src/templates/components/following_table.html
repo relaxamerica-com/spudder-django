@@ -1,0 +1,21 @@
+<h4>{{ title }}</h4>
+<div style="overflow-y:scroll;height:100%">
+    <table class="table table-striped {% if following %}datatable{% endif %}">
+        <tbody>
+            {% for f in following %}
+                <tr>
+                    <td style="width:41px;"><img src="{{ f.icon_link }}" height="25px" /></td>
+                    <td style="vertical-align:inherit"><a href={{ f.profile }}>{{ f.name }}</a></td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="3">
+                        <div class="alert alert-warning">
+                            <p>You are not following anyone.</p>
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>

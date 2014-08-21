@@ -117,19 +117,23 @@ class FollowMiddleware:
             for user in followers['data']:
                 item = KrowdIOStorage.objects.get(krowdio_user_id=user['_id'])
                 path = str(request.path)
-                if re.match('/venues/view/\d+', path):
+                if re.match('/venues/view/\d+', path) and item.venue:
                     if str(item.venue.id) == str.split(path, '/')[-1]:
                         following = True
-                elif re.match('/fan/\d+', path):
+                elif re.match('/fan/\d+', path) and item.role_type == 'fan':
                     if str(item.role_id) == str.split(path, '/')[-1]:
                         following = True
-                elif re.match('/team/\d+', path):
+                elif re.match('/team/\d+', path) and item.team:
                     if str(item.team.id) == str.split(path, '/')[-1]:
                         following = True
         request.following = following
 
     def process_request(self, request):
-        self.check_can_follow(request)
+        if request.can_edit:
+            request.can_follow = False
+        else:
+            self.check_can_follow(request)
+
         if request.can_follow:
             self.check_following_page(request)
         else:
