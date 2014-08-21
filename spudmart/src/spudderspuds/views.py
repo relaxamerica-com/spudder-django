@@ -230,6 +230,7 @@ def follow(request):
     if request.method == 'GET':
         origin = str(request.GET.get('origin', ''))
         name = tag = base_well_url = base_quote_url = None
+        fan_tags = FanFollowingEntityTag.objects.filter(fan=request.current_role.entity)
 
         if re.match(r'/venues/view/\d+', origin):
             ven = Venue.objects.get(id=str.split(origin, '/')[-1])
@@ -258,7 +259,8 @@ def follow(request):
                 'tag': tag,
                 'base_well_url': base_well_url,
                 'base_quote_url': base_quote_url,
-                'origin': origin})
+                'origin': origin,
+                'fan_tags': fan_tags})
 
     else:
         return HttpResponseNotAllowed(['GET'])
@@ -315,6 +317,12 @@ def stop_following_view(request):
         elif re.match(r'/team/\d+', origin):
             entity_type = 'Team'
             entity_id = str.split(origin, '/')[-1]
+
+        fan_tag = FanFollowingEntityTag.objects.get(
+            fan=request.current_role.entity,
+            entity_type=entity_type,
+            entity_id=entity_id)
+        fan_tag.delete()
 
         json = stop_following(request.current_role, entity_type, entity_id)
         return HttpResponse(simplejson.dumps(json))

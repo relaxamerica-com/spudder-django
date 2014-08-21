@@ -16,7 +16,7 @@
     </form>
     <button id="follow" class="btn btn-primary">Save #tag and Follow {{ name }}</button>
 
-    <div class="alert"></div>
+    <div class="alert" id="tag-alert"></div>
 
 {% endblock %}
 
@@ -28,17 +28,27 @@
             var tag = $('#tag').val();
 
             if (tag == tag.match(/[a-z\d]*/)) {
-                var response = $.post('/fan/start_following', {
-                    'origin': '{{ origin }}',
-                    'tag': tag
-                });
+                var tags = [
+                        {% for tag in fan_tags %}
+                            '{{ tag.tag }}',
+                        {% endfor %}
+                    ];
+                if ($.inArray(tag, tags) > -1){
+                    showAlert($('.alert'), 'You have already used that tag! Each tag must be unique. Try adding some numbers to the end.', 'danger', true);
+                }
+                else {
+                    var response = $.post('/fan/start_following', {
+                        'origin': '{{ origin }}',
+                        'tag': tag
+                    });
 
-                response.done(function(){
-                    alert('Successfully followed {{ name }}! You will now be redirected back to their page.');
-                    window.location = '{{ origin }}';
-                });
+                    response.done(function () {
+                        alert('Successfully followed {{ name }}! You will now be redirected back to their page.');
+                        window.location = '{{ origin }}';
+                    });
+                }
             } else{
-                showAlert($('.alert'), 'Your #tag can only contain lowercase letters and numbers.', 'danger', true)
+                showAlert($('#tag-alert'), 'Your #tag can only contain lowercase letters and numbers.', 'danger', true)
             }
         });
     </script>

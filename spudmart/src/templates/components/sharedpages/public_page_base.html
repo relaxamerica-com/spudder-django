@@ -70,13 +70,18 @@
                 var span = $(this).find('span'),
                     icon = $(this).find('i');
 
-                icon.removeClass('plus').addClass('fa-spin fa-spinner');
+                icon.removeClass('fa-minus').addClass('fa-spin fa-spinner');
                 span.html('Unfollowing...');
                 var response = $.post('/fan/stop_following',
                         {'origin': '{{ request.path }}'});
                 response.done(function(){
                     span.html('Unfollowed!');
                     icon.removeClass('fa-spin fa-spinner').addClass('fa-check');
+                    setTimeout(function(){
+                        span.html('Follow');
+                        span.parent('a').attr('href', "/fan/follow?origin={{ request.path }}");
+                        icon.removeClass('fa-check').addClass('fa-plus');
+                    }, 2000);
                 })
             });
         {% endif %}
