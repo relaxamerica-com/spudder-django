@@ -21,7 +21,12 @@ from spudmart.venues.models import Venue
 
 
 def landing_page(request):
-    return render(request, 'spudderspuds/pages/landing_page.html')
+    template_data = {}
+    if is_fan(request.current_role):
+        template_data['spuds'] = SpudsController.GetSpudsForFan(request.current_role.entity)
+        template_data['find_teams'] = TeamPage.objects.all()[:10]
+        template_data['find_fans'] = FanPage.objects.all()[:10]
+    return render(request, 'spudderspuds/pages/landing_page.html', template_data)
 
 
 def fan_signin(request):
@@ -97,9 +102,6 @@ def user_add_fan_role(request):
 
 def fan_profile_view(request, page_id):
     page = get_object_or_404(FanPage, pk=page_id)
-    entity_id = None
-    if request.current_role:
-        entity_id = request.current_role.entity.id
     return render(request, 'spudderspuds/fans/pages/fan_page_view.html', {
         'page': page,
         'fan_spuds': SpudsController.GetSpudsForFan(page),

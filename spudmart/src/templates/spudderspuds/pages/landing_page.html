@@ -6,6 +6,26 @@
     {{ block.super }}
 {% endblock %}
 
+{% block css %}
+    {{ block.super }}
+    <style type="text/css">
+        .embedded-entity-thumbnail {
+            width: 100px;
+            margin: 0 10px 10px 0;
+            text-align: center;
+        }
+    </style>
+{% endblock %}
+
+{% block js %}
+    {{ block.super }}
+    <script type="text/javascript" language="JavaScript">
+        $(document).ready(function(){
+            balance_element_height(".embedded-entity-thumbnail");
+        })
+    </script>
+{% endblock %}
+
 {% block body %}
     <div class="container">
 
@@ -14,29 +34,77 @@
         </div>
 
         <div class="row">
+            <div class="col-md-6">
+                {% include 'components/spuds/spud_carousel.html' with spuds=spuds %}
+            </div>
+            <div class="col-md-6">
+                {% if request.current_role|is_fan %}
+                    <div class="page-header">
+                        <a href="/spuds/search/teams" class="btn btn-primary pull-right"><i class="fa fa-search"></i> Find more teams</a>
+                        <h3><img src="/static/img/spudderspuds/button-teams-tiny.png"/> Teams you follow</h3>
+                    </div>
 
-            <div class="col-md-9">
+                    <div class="page-header">
+                        <a href="/spuds/search/fans" class="btn btn-primary pull-right"><i class="fa fa-search"></i> Find more fans</a>
+                        <h3><img src="/static/img/spudderspuds/button-fans-tiny.png"/> Fans you follow</h3>
+                    </div>
 
-                {% if current_role|is_fan %}
-                    {% include 'components/spuds/spud_carousel.html' with title='Your <b>SPUDS</b>' %}
                 {% else %}
-                    {% include 'components/spuds/spud_carousel.html' with title='Popular <b>SPUDS</b>' %}
+
+                    {% include 'spudderspuds/quote_messages/quote_landingpage_welcome.html' %}
+
                 {% endif %}
+            </div>
+        </div>
 
+        <div class="row">
+            <div class="col-xs-12">
                 <hr/>
-
-                {% include 'spudderspuds/quote_messages/quote_landingpage_comingsoon.html' %}
-
+                <div class="page-header">
+                    <a href="/spuds/search/teams" class="btn btn-primary pull-right"><i class="fa fa-search"></i> Find more teams</a>
+                    <h3><img src="/static/img/spudderspuds/button-teams-tiny.png"/> Find Teams on Spudder</h3>
+                </div>
+                <ul class="list-inline">
+                    {% for team in find_teams %}
+                        <li>
+                            <div class="thumbnail embedded-entity-thumbnail">
+                                <img src="{% if team.image %}/file/serve/{{ team.image.id }}{% else %}/static/img/spudderspuds/button-teams-medium.png{% endif %}" class="img-responsive"/>
+                                <div class="caption">
+                                    <h5>{{ team.name }}</h5>
+                                    <p>
+                                        <a href="/team/{{ team.id }}" class="btn btn-default btn-block btn-sm">
+                                            View
+                                        </a>
+                                    </p>
+                                </div>
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+                <hr/>
+                <div class="page-header">
+                    <a href="/spuds/search/fans" class="btn btn-primary pull-right"><i class="fa fa-search"></i> Find more fans</a>
+                    <h3><img src="/static/img/spudderspuds/button-fans-tiny.png"/> Find Fans on Spudder</h3>
+                </div>
+                <ul class="list-inline">
+                    {% for fan in find_fans %}
+                        <li>
+                            <div class="thumbnail embedded-entity-thumbnail">
+                                <img src="{% if fan.image %}/file/serve/{{ fan.image.id }}{% else %}/static/img/spudderspuds/button-fans-medium.png{% endif %}" class="img-responsive"/>
+                                <div class="caption">
+                                    <h5>{{ fan.name }}</h5>
+                                    <p>
+                                        <a href="/fan/{{ fan.id }}" class="btn btn-default btn-block btn-sm">
+                                            View
+                                        </a>
+                                    </p>
+                                </div>
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
             </div>
-
-            <div class="col-md-3">
-
-                {% include 'spudderspuds/quote_messages/quote_landingpage_welcome.html' %}
-
-            </div>
-
         </div>
 
     </div>
-
 {% endblock %}
