@@ -22,11 +22,21 @@ from spudmart.venues.models import Venue
 
 def landing_page(request):
     template_data = {}
+    template_data['find_teams'] = TeamPage.objects.all()[:10]
+    template_data['find_fans'] = FanPage.objects.all()[:10]
     if is_fan(request.current_role):
         template_data['spuds'] = SpudsController.GetSpudsForFan(request.current_role.entity)
-        template_data['find_teams'] = TeamPage.objects.all()[:10]
-        template_data['find_fans'] = FanPage.objects.all()[:10]
     return render(request, 'spudderspuds/pages/landing_page.html', template_data)
+
+
+def entity_search(request, entity_type):
+    template_data = {'entity_type': entity_type}
+    if entity_type == "fan":
+        fans = FanPage.objects
+        template_data['entities'] = fans.exclude(fan=request.user) if request.current_role else fans.all()
+    if entity_type == "team":
+        template_data['entities'] = TeamPage.objects.all()
+    return render(request, 'spudderspuds/pages/entity_search.html', template_data)
 
 
 def fan_signin(request):
@@ -117,7 +127,7 @@ def fan_profile_edit(request, page_id):
         profile_form = FanPageForm(request.POST)
         social_accounts_form = FanPageSocialMediaForm(request.POST)
         if profile_form.is_valid() and social_accounts_form.is_valid():
-            for attr in ('name', 'date_of_birth', ):
+            for attr in ('name', 'date_of_birth', 'state', ):
                 fan_page.__setattr__(attr, profile_form.cleaned_data[attr])
             for attr in ('twitter', 'facebook', 'google_plus', 'instagram', ):
                 fan_page.__setattr__(attr, social_accounts_form.cleaned_data.get(attr, ''))

@@ -121,6 +121,7 @@ class FanPage(models.Model):
     google_plus = models.CharField(max_length=255, blank=True)
     instagram = models.CharField(max_length=255, blank=True)
     linkedin = models.CharField(max_length=255, blank=True)
+    state = models.CharField(max_length=2, blank=True)
 
     def was_edited(self):
         return self.email is not None and self.email != ""

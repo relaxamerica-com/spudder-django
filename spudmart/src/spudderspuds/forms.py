@@ -3,6 +3,7 @@ from django import forms
 from django.forms.extras import SelectDateWidget
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
+from spudmart.CERN.models import STATES
 
 
 class FanSigninForm(forms.Form):
@@ -54,6 +55,7 @@ class FanPageForm(forms.Form):
 
     name = forms.CharField(label='User Name', help_text='This can be your real name or something made up!')
     date_of_birth = forms.DateField(widget=SelectDateWidget(years=YEARS))
+    state = forms.ChoiceField(choices=[(k, v) for k, v in STATES.items()], label="Where do you live?")
 
 
 class FanPageSocialMediaForm(forms.Form):

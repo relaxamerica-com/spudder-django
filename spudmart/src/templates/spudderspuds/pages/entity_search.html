@@ -1,0 +1,83 @@
+{% extends 'spudderspuds/base.html' %}
+{% load spudderspudstags %}
+
+{% block nav %}
+    {% include 'spudderspuds/components/main_nav.html' %}
+    {{ block.super }}
+{% endblock %}
+
+{% block css %}
+    {{ block.super }}
+    <style type="text/css">
+        table img {
+            width: 30px;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="page-header">
+            <h1>
+                {% if entity_type == "team" %}
+                    <img src="/static/img/spudderspuds/button-teams-small.png" />
+                    Search for Teams in Spudder!
+                {% endif %}
+                {% if entity_type == "fan" %}
+                    <img src="/static/img/spudderspuds/button-fans-small.png" />
+                    Search for Fans in Spudder!
+                {% endif %}
+            </h1>
+        </div>
+
+        <table class="table {% if entities %}datatable{% endif %}">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Name</th>
+                    <th>State</th>
+                    {% if entity_type == "team" %}
+                        <th>Sport</th>
+                    {% endif %}
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for e in entities %}
+                    <tr>
+                        <td style="width: 35px;">
+                            {% if entity_type == "team" %}
+                                <img src="{% if e.image %}/file/serve/{{ e.image.id }}{% else %}/static/img/spudderspuds/button-teams-medium.png{% endif %}" class="img-responsive"/>
+                            {% endif %}
+                            {% if entity_type == "fan" %}
+                                <img src="{% if e.image %}/file/serve/{{ e.image.id }}{% else %}/static/img/spudderspuds/button-fans-medium.png{% endif %}" class="img-responsive"/>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="/{{ entity_type }}/{{ e.id }}">{{ e.name }}</a>
+                        </td>
+                        <td>
+                            {{ e.state|format_state }}
+                        </td>
+                        {% if entity_type == 'team' %}
+                            <td>{{ e.sport }}</td>
+                        {% endif %}
+                        <td>
+                            <a href="/{{ entity_type }}/{{ e.id }}" class="btn btn-sm btn-default">View this {{ entity_type }}</a>
+
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="3">
+                            <div class="alert alert-warning">
+                                <p>There are no {{ entity_type|pluralize }} to show.</p>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+{% endblock %}

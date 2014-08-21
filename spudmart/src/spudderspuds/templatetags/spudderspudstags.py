@@ -1,4 +1,5 @@
 from django.template.defaulttags import register
+from spudmart.CERN.models import STATES
 
 
 @register.simple_tag
@@ -9,3 +10,10 @@ def link_to_twitter_profile(twitter_username):
 @register.simple_tag
 def link_to_facebook_profile(facebook_username):
     return 'http://facebook.com/%s' % (facebook_username or '')
+
+
+@register.filter
+def format_state(state):
+    if not state or state not in STATES.keys():
+        return 'Not set'
+    return STATES[state]
