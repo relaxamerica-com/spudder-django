@@ -17,44 +17,43 @@
 
 {% block favicon %}"/static/img/spuddercern/button-cern-tiny.png"{% endblock %}
 
-{% block cover_image %}
-    {% if student.cover_image %}
-        <div id="cover-image-container" style="text-align:center;">
-            <img src="/file/serve/{{ student.cover_image.id }}" class="jumbotron-img"/>
-        </div>
+{% block cover_image_container_id %}{% if not student.cover_image %}cern-jumbotron-default{% endif %}{% endblock %}
+
+{% block cover_image_css_background %}{% if student.cover_image %}/file/serve/{{ student.cover_image.id }}{% endif %}{% endblock %}
+
+{% block cover_image_edit_url %}/cern/student/{{ student.id }}/edit_cover{% endblock %}
+
+{% block cover_title_profile_image_url %}{% if student.logo %}/file/serve/{{ student.logo.id }}{% else %}/static/img/spuddercern/button-cern-medium.png{% endif %}{% endblock %}
+
+{% block cover_title_display_name %}
+    {% if student.display_name %}
+        {{ student.display_name }}{% if student.append_points %} ({{ student.rep }} points){% endif %}
     {% else %}
-        <div class="cern-jumbotron-default"></div>
-    {% endif %}
-    {% if request.can_edit %}
-    <div style="position:absolute; top:20px; right:20px;">
-        <a class="btn btn-primary" href="/cern/student/{{ student.id }}/edit_cover">Edit Cover Image</a>
-    </div>
+        {% user_name student.user %} ({{ student.rep }} points)
     {% endif %}
 {% endblock %}
-{% block cover_title %}
-    {% if student.logo %}
-        <img id="student-logo" src="/file/serve/{{ student.logo.id }}" height="100px" style="margin-top:10px" />
-    {% else %}
-        <img id="student-logo" src="/static/img/spuddercern/button-cern-medium.png"style="margin-top:10px" />
+
+{% block cover_title_action_buttons %}
+    {% if student.linkedin_link %}
+        <a href="{{ student.linkedin_link }}" title="LinkedIn Profile" class="social-link"><i class="fa fa-fw fa-linkedin-square" ></i></a>
     {% endif %}
-
-    <a href="#" title="Student Account"><img src="/static/img/spuddercern/button-cern-tiny.png" style="position:absolute;margin-top:-20px;left:0"></a>
-    <a href="#" title="Sponsor Account"><img src="/static/img/spuddersponsors/button-sponsors-tiny.png" style="position:absolute;margin-top:-20px;left:30px"></a>
-
-    <span id="display-name">
-        {% if student.display_name %}
-            {{ student.display_name }}{% if student.append_points %} ({{ student.rep }} points){% endif %}
-        {% else %}
-            {% user_name student.user %} ({{ student.rep }} points)
-        {% endif %}
-    </span>
-    <p style="font-size:25px">
-        <a href="{{ student.linkedin_link }}" title="LinkedIn Profile" {% if not student.linkedin_link %}class="hidden"{% endif %}><i class="fa fa-fw fa-linkedin-square" style="display:inline;"></i></a>
-        <a href="{{ student.facebook_link }}" title="Facebook Profile" {% if not student.facebook_link %}class="hidden"{% endif %}><i class="fa fa-fw fa-facebook-square" style="display:inline;"></i></a>
-        <a href="{{ student.twitter_link }}" title="Twitter Profile" {% if not student.twitter_link %}class="hidden"{% endif %}><i class="fa fa-fw fa-twitter-square" style="display:inline;"></i></a>
-        <a href="{{ student.google_link }}" title="Google+ Profile" {% if not student.google_link %}class="hidden"{% endif %}><i class="fa fa-fw fa-google-plus-square" style="display:inline;"></i></a>
-        <a href="{{ student.instagram_link }}" title="Instagram Profile" {% if not student.instagram_link %}class="hidden"{% endif %}><i class="fa fa-fw fa-instagram" style="display:inline;"></i></a>
-    </p>
+    {% if student.facebook_link %}
+        <a href="{{ student.facebook_link }}" title="Facebook Profile" class="social-link"><i class="fa fa-fw fa-facebook-square" ></i></a>
+    {% endif %}
+    {% if student.twitter_link %}
+        <a href="{{ student.twitter_link }}" title="Twitter Profile" class="social-link"><i class="fa fa-fw fa-twitter-square" ></i></a>
+    {% endif %}
+    {% if student.google_link %}
+        <a href="{{ student.google_link }}" title="Google+ Profile" class="social-link"><i class="fa fa-fw fa-google-plus-square" ></i></a>
+    {% endif %}
+    {% if student.instagram_link %}
+        <a href="{{ student.instagram_link }}" title="Instagram Profile" class="social-link"><i class="fa fa-fw fa-instagram" ></i></a>
+    {% endif %}
+    {% if request.can_edit %}
+        <button class="btn btn-primary" id="edit">
+            Edit Mode
+        </button>
+    {% endif %}
 {% endblock %}
 
 {% block main_page %}
@@ -115,7 +114,7 @@
     </div>
 
     <div class="text-center" id="nav-btn-wrapper">
-        <div class="btn-group" style="margin: 0 auto;">
+        <div class="btn-group btn-group-justified" style="margin: 0 auto;">
             <a class="btn btn-primary" openTab="#venues" title="Venues">
                 <i class="fa fa-2x fa-map-marker" title="Venues"></i>
             </a>

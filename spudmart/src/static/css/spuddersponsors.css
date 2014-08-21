@@ -14088,30 +14088,48 @@ fieldset[disabled] .navbar-masthead.navbar-inverse .btn-link:hover,
 fieldset[disabled] .navbar-masthead.navbar-inverse .btn-link:focus {
   color: #777777;
 }
-legend {
-  font-size: 14.3px;
-}
-.jumbotron-img {
-  width: 100%;
-}
-.jumbotron {
+.spudder-jumbotron {
+  position: relative;
+  top: -20px;
+  padding: 0;
   overflow: hidden;
-  max-height: 250px;
+  height: 400px;
+  background-position: center center;
+  background-size: cover;
 }
-@media (min-width: 768px) {
-  .jumbotron {
+@media (max-width: 767px) {
+  .spudder-jumbotron {
     height: 300px;
   }
 }
-@media (min-width: 992px) {
-  .jumbotron {
+@media (max-width: 991px) {
+  .spudder-jumbotron {
+    height: 300px;
+  }
+}
+@media (max-width: 1199px) {
+  .spudder-jumbotron {
     height: 350px;
   }
 }
-@media (min-width: 1200px) {
-  .jumbotron {
-    height: 400px;
+.spudder-jumbotron-caption {
+  background: rgba(255, 255, 255, 0.7);
+  position: absolute;
+  bottom: 10px;
+  padding: 10px;
+  width: 50%;
+}
+@media (max-width: 991px) {
+  .spudder-jumbotron-caption {
+    width: 90%;
   }
+}
+.spudder-jumbotron-caption h1 {
+  position: relative;
+}
+.spudder-jumbotron-caption .social-link {
+  font-size: 30px;
+  float: left;
 }
 form fieldset legend {
   font-size: 150%;
@@ -14208,10 +14226,14 @@ form fieldset .form-group {
     height: 300px;
   }
 }
-.cern-jumbotron-default {
-  background-image: url("/static/img/spuddercern/button-cern-large.png");
-  opacity: 0.2;
-  height: 100%;
+#cern-jumbotron-default {
+  background: -moz-linear-gradient(top, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.85) 100%), url(bg.png) repeat 0 0, url(/static/img/spuddercern/button-cern-medium.png) repeat 0 0 !important;
+  background: -moz-linear-gradient(top, rgba(255, 255, 255, 0.85) 0%, rgba(255, 255, 255, 0.85) 100%), url(/static/img/spuddercern/button-cern-medium.png) repeat 0 0 !important;
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, rgba(255, 255, 255, 0.85)), color-stop(100%, rgba(255, 255, 255, 0.85))), url(/static/img/spuddercern/button-cern-medium.png) repeat 0 0 !important;
+  background: -webkit-linear-gradient(top, rgba(255, 255, 255, 0.85) 0%, rgba(255, 255, 255, 0.85) 100%), url(/static/img/spuddercern/button-cern-medium.png) repeat 0 0 !important;
+  background: -o-linear-gradient(top, rgba(255, 255, 255, 0.85) 0%, rgba(255, 255, 255, 0.85) 100%), url(/static/img/spuddercern/button-cern-medium.png) repeat 0 0 !important;
+  background: -ms-linear-gradient(top, rgba(255, 255, 255, 0.85) 0%, rgba(255, 255, 255, 0.85) 100%), url(/static/img/spuddercern/button-cern-medium.png) repeat 0 0 !important;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.85) 0%, rgba(255, 255, 255, 0.85) 100%), url(/static/img/spuddercern/button-cern-medium.png) repeat 0 0 !important;
 }
 .logo {
   max-width: 50px;

@@ -14088,30 +14088,48 @@ fieldset[disabled] .navbar-masthead.navbar-inverse .btn-link:hover,
 fieldset[disabled] .navbar-masthead.navbar-inverse .btn-link:focus {
   color: #777777;
 }
-legend {
-  font-size: 14.3px;
-}
-.jumbotron-img {
-  width: 100%;
-}
-.jumbotron {
+.spudder-jumbotron {
+  position: relative;
+  top: -20px;
+  padding: 0;
   overflow: hidden;
-  max-height: 250px;
+  height: 400px;
+  background-position: center center;
+  background-size: cover;
 }
-@media (min-width: 768px) {
-  .jumbotron {
+@media (max-width: 767px) {
+  .spudder-jumbotron {
     height: 300px;
   }
 }
-@media (min-width: 992px) {
-  .jumbotron {
+@media (max-width: 991px) {
+  .spudder-jumbotron {
+    height: 300px;
+  }
+}
+@media (max-width: 1199px) {
+  .spudder-jumbotron {
     height: 350px;
   }
 }
-@media (min-width: 1200px) {
-  .jumbotron {
-    height: 400px;
+.spudder-jumbotron-caption {
+  background: rgba(255, 255, 255, 0.7);
+  position: absolute;
+  bottom: 10px;
+  padding: 10px;
+  width: 50%;
+}
+@media (max-width: 991px) {
+  .spudder-jumbotron-caption {
+    width: 90%;
   }
+}
+.spudder-jumbotron-caption h1 {
+  position: relative;
+}
+.spudder-jumbotron-caption .social-link {
+  font-size: 30px;
+  float: left;
 }
 form fieldset legend {
   font-size: 150%;

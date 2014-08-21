@@ -3,30 +3,26 @@
 {% load displays %}
 
 {% block body %}
-<div class="jumbotron" style="position:relative; top: -20px; padding: 0;">
-    {% block cover_image %}{% endblock %}
+<div class="jumbotron spudder-jumbotron {% block cover_image_container_class %}{% endblock %}"
+     style="background-image:url({% block cover_image_css_background %}{% endblock %})"
+     id="{% block cover_image_container_id %}{% endblock %}">
+
+    {% if request.can_edit %}
+        <a class="btn btn-primary" href="{% block cover_image_edit_url %}{% endblock %}" style="position:absolute; top:20px; right:20px;">Edit Cover Image</a>
+    {% endif %}
+
     <div class="container">
-        <div class="page-header" style="background: rgba(255, 255, 255, .7); position:absolute; bottom: 10px; padding: 10px;">
-            <h1 style="position:relative">
-                {% block cover_title %}{% endblock %}
-                {% if request.can_edit %}
-                    <button class="btn btn-primary" id="edit">
-                        Edit Mode
-                    </button>
-                {% else %}
-                    {% if request.can_follow %}
-                        {% if request.following %}
-                            <a class="btn btn-primary" id="follow">
-                                <i class="fa fa-fw fa-minus"></i> <span>Unfollow</span>
-                            </a>
-                        {% else %}
-                            <a class="btn btn-primary" href="/fan/follow?origin={{ request.path }}">
-                                <i class="fa fa-fw fa-plus"></i> Follow
-                            </a>
-                        {% endif %}
-                    {% endif %}
-                {% endif %}
-            </h1>
+        <div class="spudder-jumbotron-caption">
+            <div class="media">
+                <img src="{% block cover_title_profile_image_url %}{% endblock %}" class="media-object pull-left img-responsive"/>
+                <div class="media-body">
+                    <h1 class="media-heading">{% block cover_title_display_name %}{% endblock %}</h1>
+                    {% block cover_title_additions %}{% endblock %}
+                    <p class="text-right">
+                        {% block cover_title_action_buttons %}{% endblock %}
+                    </p>
+                </div>
+            </div>
         </div>
     </div>
 </div>

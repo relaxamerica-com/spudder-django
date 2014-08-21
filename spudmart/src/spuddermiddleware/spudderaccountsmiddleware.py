@@ -73,7 +73,7 @@ class EditPageMiddleware:
                     ven = Venue.objects.get(id=str.split(path, '/')[-1])
                     if request.current_role.entity == ven.student:
                         can_edit = True
-            elif re.match(r'/team/\d+', path):
+            elif re.match(r'/team/\d+$', path):
                 entity_id = request.current_role.entity.id
                 entity_type = request.current_role.entity_type
                 page = TeamPage.objects.get(id=str.split(path, '/')[-1])

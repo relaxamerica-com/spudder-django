@@ -19,31 +19,30 @@
 {% endblock %}
 
 {% block favicon %}"/media/ico/favicon.png"{% endblock %}
+
 {% block nav_brand %}<a href="/"><img src="/static/img/spudderspuds/logo-spuds-small.png" style="height:35px;margin-top:2px;"/> </a>{% endblock %}
 
-{% block cover_image %}
-    <div {% if not venue.cover_image %}class="hidden"{% endif %} id="cover-image-container" style="text-align:center;">
-        <img src="/file/serve/{{ venue.cover_image.id }}" class="jumbotron-img"/>
-    </div>
-    <div {% if venue.cover_image %}class="hidden"{% endif %} style="height:400px" id="jumbo-map-container"></div>
-    {% if request.can_edit %}
-    <div style="position:absolute; top:20px; right:20px;">
-        <a class="btn btn-primary" href="/venues/edit_cover/{{ venue.id }}">Edit Cover Image</a>
-    </div>
-    {% endif %}
+{% block cover_image_container_id %}{% if not venue.cover_image %}jumbo-map-container{% endif %}{% endblock %}
+
+{% block cover_image_css_background %}{% if venue.cover_image %}/file/serve/{{ venue.cover_image.id }}{% endif %}{% endblock %}
+
+{% block cover_image_edit_url %}/venues/edit_cover/{{ venue.id }}{% endblock %}
+
+{% block cover_title_profile_image_url %}{% if venue.logo %}/file/serve/{{ venue.logo.id }}{% else %}/static/img/spuddersponsors/button-sponsors-medium.png{% endif %}{% endblock %}
+
+{% block cover_title_display_name %}{{ venue.name }}{% endblock %}
+
+{% block cover_title_additions %}
+    <p>Sponsored By: <b>@{% if sponsor %}{{ sponsor.tag }}{% else %}postspud{% endif %}</b></p>
 {% endblock %}
 
-
-{% block cover_title %}
-    <p>Sponsored By:</p>
-    {% if venue.logo %}
-        <img id="venue-logo" src="/file/serve/{{ venue.logo.id }}" class="logo"/>
-    {% else %}
-        <img id="venue-logo" src="/static/img/spuddersponsors/button-sponsors-medium.png" class="logo"/>
+{% block cover_title_action_buttons %}
+    <a href="https://www.google.com/maps/dir/Current+Location/{{ venue.latitude }},{{ venue.longitude }}" target="_blank" class="social-link"><i class="fa fa-map-marker"></i></a>
+    {% if request.can_edit %}
+        <button class="btn btn-primary" id="edit">
+            Edit Mode
+        </button>
     {% endif %}
-    @{% if sponsor %}{{ sponsor.tag }}{% else %}postspud{% endif %}
-    <br/>
-    <a href="https://www.google.com/maps/dir/Current+Location/{{ venue.latitude }},{{ venue.longitude }}" target="_blank" style="text-decoration:none;"><small id="venue-name">{{ venue.aka_name }}</small></a>
 {% endblock %}
 
 {% block main_page %}

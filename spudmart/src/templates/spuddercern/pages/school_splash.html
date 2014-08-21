@@ -23,32 +23,15 @@
 {% include 'spuddercern/flag-modals/school-flag-modal.html' %}
 {% endblock %}
 
-{% block cover_image %}
-    {% if school.cover_image %}
-        <div id="cover-image-container" style="text-align:center;">
-            <img src="/file/serve/{{ school.cover_image.id }}" class="jumbotron-img"/>
-        </div>
-    {% else %}
-        {% if school.full_address %}
-            <div id="jumbo-map-container" style="height:100%"></div>
-        {% else %}
-            <div class="cern-jumbotron-default"></div>
-        {% endif %}
-    {% endif %}
-    {% if request.can_edit %}
-    <div style="position:absolute; top:20px; right:20px;">
-        <a class="btn btn-primary hidden-xs" href="/cern/{{ school.id }}/edit_cover_image">Edit Cover Image</a>
-    </div>
-    {% endif %}
-{% endblock %}
-{% block cover_title %}
-    {% if school.logo %}
-        <img id="school-logo" src="/file/serve/{{ school.logo.id }}" class="logo"/>
-    {% else %}
-        <img id="school-logo" src="/static/img/spuddercern/button-cern-medium.png" class="logo"/>
-    {% endif %}
-    {{ school.name }}
-{% endblock %}
+{% block cover_image_container_id %}{% if not school.cover_image %}{% if school.full_address %}jumbo-map-container{% else %}cern-jumbotron-default{% endif %}{% endif %}{% endblock %}
+
+{% block cover_image_css_background %}{% if school.cover_image %}/file/serve/{{ school.cover_image.id }}{% endif %}{% endblock %}
+
+{% block cover_image_edit_url %}/cern/{{ school.id }}/edit_cover_image{% endblock %}
+
+{% block cover_title_profile_image_url %}{% if school.logo %}/file/serve/{{ school.logo.id }}{% else %}/static/img/spuddercern/button-cern-medium.png{% endif %}{% endblock %}
+
+{% block cover_title_display_name %}{{ school.name }}{% endblock %}
 
 {% block main_page %}
     <div class="edit-mode well">

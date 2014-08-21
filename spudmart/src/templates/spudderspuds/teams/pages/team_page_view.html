@@ -22,40 +22,33 @@
     {% endif %}
 {% endblock %}
 
-{% block cover_image %}
-    {% if page.cover_image %}
-        <div id="cover-image-container" style="text-align:center;">
-            <img src="/file/serve/{{ page.cover_image.id }}" class="jumbotron-img"/>
-        </div>
+{% block cover_image_container_id %}{% if not page.cover_image %}jumbo-map-container{% endif %}{% endblock %}
+
+{% block cover_image_css_background %}{% if page.cover_image %}/file/serve/{{ page.cover_image.id }}{% endif %}{% endblock %}
+
+{% block cover_image_edit_url %}/team/{{ page.id }}/edit_cover{% endblock %}
+
+{% block cover_title_profile_image_url %}{% if page.image %}/file/serve/{{ page.image.id }}{% else %}/static/img/spudderspuds/button-teams-medium.png{% endif %}{% endblock %}
+
+{% block cover_title_display_name %}{{ page.name }}{% endblock %}
+
+{% block cover_title_action_buttons %}
+    {% if request.can_edit %}
+        <button class="btn btn-primary" id="edit">
+            Edit Mode
+        </button>
     {% else %}
-        <div class="row">
-            <div style="height:400px; margin-top: -18px;" id="jumbo-map-container"></div>
-        </div>
-    {% endif %}
-
-    {% if can_edit %}
-        <div style="position:absolute; top:20px; right:20px;">
-            <a class="btn btn-primary" href="/team/{{ page.id }}/edit_cover">Edit Cover Image</a>
-        </div>
-    {% endif %}
-{% endblock %}
-
-{% block cover_title %}
-    {% if page.image %}
-        <img id="student-logo" src="/file/serve/{{ page.image.id }}" height="100px" style="margin-top:10px" />
-    {% else %}
-        <img id="student-logo" src="/static/img/spudderspuds/button-teams-medium.png" style="margin-top:10px" />
-    {% endif %}
-
-    <span id="display-name">
-        {{ page.name }}
-    </span>
-    {% if can_edit %}
-        <div class="pull-right" style="position:absolute; bottom: -20px; right: 10px;">
-            <div class="btn btn-primary" id="edit">
-                Edit Mode
-            </div>
-        </div>
+        {% if request.can_follow %}
+            {% if request.following %}
+                <a class="btn btn-primary" id="follow">
+                    <i class="fa fa-fw fa-minus"></i> <span>Unfollow</span>
+                </a>
+            {% else %}
+                <a class="btn btn-primary" href="/fan/follow?origin={{ request.path }}">
+                    <i class="fa fa-fw fa-plus"></i> Follow
+                </a>
+            {% endif %}
+        {% endif %}
     {% endif %}
 {% endblock %}
 

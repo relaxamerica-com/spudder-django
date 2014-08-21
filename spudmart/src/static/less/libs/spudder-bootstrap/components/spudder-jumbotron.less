@@ -1,25 +1,42 @@
-legend {
-    font-size: (@font-size-base * 1.1);
+.spudder-jumbotron{
+    position:relative;
+    top: -20px;
+    padding: 0;
+    overflow: hidden;
+    height: 400px;
+    background-position: center center;
+    background-size: cover;
+
+    @media (max-width: @screen-xs-max) {
+        height:300px;
+    }
+
+    @media (max-width: @screen-sm-max) {
+        height:300px;
+    }
+
+    @media (max-width: @screen-md-max) {
+        height:350px;
+    }
 }
 
-.jumbotron-img {
-  width: 100%;
+.spudder-jumbotron-caption {
+    background: rgba(255, 255, 255, .7);
+    position:absolute;
+    bottom: 10px;
+    padding: 10px;
+    width: 50%;
+
+    @media (max-width: @screen-sm-max) {
+        width:90%;
+    }
+
+    h1 {
+        position: relative;
+    }
+
+    .social-link {
+        font-size: 30px;
+        float: left;
+    }
 }
-
-.jumbotron{
-  overflow: hidden;
-  max-height: 250px;
-
-  @media (min-width: @screen-sm) {
-    height:300px;
-  }
-
-  @media (min-width: @screen-md) {
-    height:350px;
-  }
-
-  @media (min-width: @screen-lg) {
-    height:400px;
-  }
-}
-

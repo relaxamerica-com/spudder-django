@@ -1,12 +1,8 @@
 {% load spudderspudstags %}
 
-{% if twitter or facebook or google_plus or instagram %}
-    <ul class="social_links list-inline text-right" style="font-size: 28px; margin-top: 10px; ">
-        {% if twitter %}
-            <li><a href="{% link_to_twitter_profile twitter %}" target="_blank" title="View Twitter profile"><i class="fa fa-fw fa-twitter-square"></i></a></li>
-        {% endif %}
-        {% if facebook %}
-            <li><a href="{% link_to_facebook_profile facebook %}" target="_blank" title="View Facebook profile"><i class="fa fa-fw fa-facebook-square"></i></a></li>
-        {% endif %}
-    </ul>
+{% if twitter %}
+    <a href="{% link_to_twitter_profile twitter %}" target="_blank" title="View Twitter profile" class="social-link"><i class="fa fa-fw fa-twitter-square"></i></a>
+{% endif %}
+{% if facebook %}
+    <a href="{% link_to_facebook_profile facebook %}" target="_blank" title="View Facebook profile" class="social-link"><i class="fa fa-fw fa-facebook-square"></i></a>
 {% endif %}
