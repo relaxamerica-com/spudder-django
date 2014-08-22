@@ -6,6 +6,8 @@
     {% include 'components/sharedpages/following/quote_why_hashtag_following.html' %}
 
     <form role="form">
+        {% csrf_token %}
+        <input type="hidden" name="base_tag" value="{{ tag }}" />
         <div class="form-group">
             <label>Custom #tag:</label>
             <div class="input-group">

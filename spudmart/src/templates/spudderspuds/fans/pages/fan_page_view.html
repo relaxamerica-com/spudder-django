@@ -56,7 +56,7 @@
 {% endblock %}
 
 
-{% block main_page %}
+{% block full_page %}
     <div class="edit-mode well">
         <h2>Edit Your Information</h2>
         <form method="post" enctype="multipart/form-data" role="form">
@@ -71,11 +71,16 @@
     </div>
 
     <div class="row">
-        <div class="col-md-8" style="border-right: 1px solid #DDD">
+        <div class="col-md-6">
             {% include 'components/spuds/spud_carousel.html' with spuds=fan_spuds %}
+        </div>
+        <div class="col-md-6">
+            {% include 'components/following_table.html' with title=following_teams_title following=folowing_teams entity_type='team' show_find_button=request.can_edit %}
+            {% include 'components/following_table.html' with title=following_fans_title following=following_fans entity_type='fan' show_find_button=request.can_edit%}
         </div>
     </div>
 
+    <hr/>
 {% endblock %}
 
 {% block js %}

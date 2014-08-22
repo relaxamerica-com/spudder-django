@@ -2,7 +2,7 @@
     <a href="/spuds">Explore</a>
 </li>
 {% if current_role and current_role.entity_type == "fan" %}
-    <li class="{% if active == "profile" %}active{% endif %}">
+    <li class="{% if active == "profile" and request.can_edit %}active{% endif %}">
         {% if request.current_role.entity_type == 'fan' %}
             <a href="/fan/{{ current_role.entity.id }}">My Fan Profile</a>
         {% endif %}

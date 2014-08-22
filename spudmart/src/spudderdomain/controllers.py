@@ -3,8 +3,29 @@ from spudderdomain.models import LinkedService, FanPage, TeamPage, TeamAdministr
 from spuddersocialengine.models import SpudFromSocialMedia
 from spudmart.CERN.models import Student
 from spudmart.sponsors.models import SponsorPage
-from spudderkrowdio.utils import post_spud, get_user_mentions_activity
-from spudderkrowdio.models import KrowdIOStorage
+from spudderkrowdio.utils import post_spud, get_user_mentions_activity, get_spud_stream_for_entity
+from spudderkrowdio.models import KrowdIOStorage, FanFollowingEntityTag
+from spudmart.venues.models import Venue
+
+
+class EntityController(object):
+    ENTITY_VENUE = "Venue"
+    ENTITY_TEAM = "Team"
+    ENTITY_TYPES = (ENTITY_VENUE, ENTITY_TEAM, )
+    
+    @classmethod
+    def GetEntityByTypeAndId(cls, entity_type, entity_id):
+        if entity_type == cls.ENTITY_TEAM:
+            try:
+                TeamPage.objects.get(id=entity_id)
+            except TeamPage.DoesNotExist:
+                return None
+        if entity_type == cls.ENTITY_VENUE:
+            try:
+                Venue.objects.get(id=entity_id)
+            except Venue.DoesNotExist:
+                return None
+        return None
 
 
 class RoleController(object):
@@ -18,24 +39,28 @@ class RoleController(object):
     ENTITY_TYPES = (ENTITY_STUDENT, ENTITY_SPONSOR, ENTITY_FAN)
 
     @classmethod
-    def GetRoleForEntityTypeAndID(cls, entity_type, entity_id, entity_wrapper):
+    def GetEntityByTypeAndId(cls, entity_type, entity_id):
         if entity_type == cls.ENTITY_STUDENT:
             try:
-                return entity_wrapper(Student.objects.get(id=entity_id))
+                return Student.objects.get(id=entity_id)
             except Student.DoesNotExist:
                 return None
         elif entity_type == cls.ENTITY_SPONSOR:
             try:
-                return entity_wrapper(SponsorPage.objects.get(id=entity_id))
+                return SponsorPage.objects.get(id=entity_id)
             except SponsorPage.DoesNotExist:
                 return None
         elif entity_type == cls.ENTITY_FAN:
             try:
-                return entity_wrapper(FanPage.objects.get(id=entity_id))
+                return FanPage.objects.get(id=entity_id)
             except FanPage.DoesNotExist:
                 return None
         else:
             raise NotImplementedError("The entity_type: %s is not yet supported" % entity_type)
+
+    @classmethod
+    def GetRoleForEntityTypeAndID(cls, entity_type, entity_id, entity_wrapper):
+        return entity_wrapper(cls.GetEntityByTypeAndId(entity_type, entity_id))
 
     def __init__(self, user):
         """
@@ -271,14 +296,21 @@ class SpudsController(object):
                 })
 
     def add_spud_from_fan(self, spud):
+        spud_text = ' '.join([s.encode('ascii', 'ignore') for s in spud.expanded_data['text']])
+        tagged_entities = []
+        for tag in FanFollowingEntityTag.objects.filter(fan=self.role.entity):
+            if tag.tag and tag.tag in spud_text:
+                tagged_entities.append("@%s%s" % (tag.entity_type, tag.entity_id))
         data = {
             'type': 'image',
             'url': spud.expanded_data['image']['standard_resolution']['url'],
-            'title': ' '.join([s.encode('ascii', 'ignore') for s in spud.expanded_data['text']]),
-            'usertext': '@%s%s' % (RoleController.ENTITY_FAN, self.role.entity.id),
+            'title': spud_text,
+            'usertext': '@%s%s %s' % (RoleController.ENTITY_FAN, self.role.entity.id, ' '.join(tagged_entities)),
             'extra': spud.data}
         krowd_io_storage = KrowdIOStorage.GetOrCreateForCurrentUserRole(self.role)
         post_spud(krowd_io_storage, data)
+        spud.state = SpudFromSocialMedia.STATE_ACCEPTED
+        spud.save()
 
     def reject_spuds(self, spud_ids):
         """
@@ -297,3 +329,6 @@ class SpudsController(object):
 
     def date_time_to_seconds(self, date):
         return int((date - datetime(1970, 1, 1)).total_seconds())
+
+    def get_spud_stream(self):
+        return get_spud_stream_for_entity(KrowdIOStorage.GetOrCreateForCurrentUserRole(self.role))

@@ -83,7 +83,23 @@ def get_spuds_for_entity(entity, page=1):
     
     response = _get('http://api.krowd.io/stream/%s?limit=10&page=%s' % (entity.krowdio_user_id, str(page)), {}, { 'Authorization' : token })
     
-    return simplejson.loads(response.content)
+    response = simplejson.loads(response.content)
+
+    items = response.get('items', [])
+
+    return [i.get('extra', {}) for i in items]
+
+
+def get_spud_stream_for_entity(entity, page=1):
+    token = _ensure_oAuth_token(entity)
+
+    response = _get('http://api.krowd.io/stream?limit=10&page=%s' % page, {}, {'Authorization': token})
+
+    response = simplejson.loads(response.content)
+
+    items = response.get('items', [])
+
+    return [i.get('extra', {}) for i in items]
 
 
 def get_user_mentions_activity(entity):

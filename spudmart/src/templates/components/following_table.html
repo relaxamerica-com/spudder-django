@@ -1,21 +1,27 @@
-<h4>{{ title }}</h4>
-<div style="overflow-y:scroll;height:100%">
-    <table class="table table-striped {% if following %}datatable{% endif %}">
-        <tbody>
-            {% for f in following %}
-                <tr>
-                    <td style="width:41px;"><img src="{{ f.icon_link }}" height="25px" /></td>
-                    <td style="vertical-align:inherit"><a href={{ f.profile }}>{{ f.name }}</a></td>
-                </tr>
-            {% empty %}
-                <tr>
-                    <td colspan="3">
-                        <div class="alert alert-warning">
-                            <p>You are not following anyone.</p>
-                        </div>
-                    </td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
+<h4>{{ title|safe }}</h4>
+<table class="table table-striped">
+    <tbody style="max-height: 130px; overflow:hidden; overflow-y: auto">
+        {% for f in following %}
+            <tr>
+                <td style="width:41px;"><img src="{{ f.icon_link }}" height="25px" /></td>
+                <td style="vertical-align:inherit"><a href={{ f.profile }}>{{ f.name }}</a></td>
+                <td>#{{ f.custom_tag }}</td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="3">
+                    <div class="alert alert-warning">
+                        <p>No {{ entity_type }}s being followed!</p>
+                        {% if show_find_button %}
+                        <p>
+                            <a href="/spuds/search/{{ entity_type }}s" class="btn btn-primary">
+                                <i class="fa fa-search"></i> Find {{ entity_type }}s to follow!
+                            </a>
+                        </p>
+                        {% endif %}
+                    </div>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

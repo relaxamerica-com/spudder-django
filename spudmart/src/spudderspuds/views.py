@@ -1,4 +1,5 @@
 import re
+from random import shuffle
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.models import User
 from django.http import HttpResponse, HttpResponseNotAllowed
@@ -8,7 +9,8 @@ from django.template.loader import render_to_string
 import simplejson
 from spudderaccounts.templatetags.spudderaccountstags import is_fan, user_has_fan_role
 from spudderaccounts.utils import change_current_role
-from spudderdomain.controllers import TeamsController, RoleController, SpudsController
+from spudderaccounts.wrappers import RoleFan
+from spudderdomain.controllers import TeamsController, RoleController, SpudsController, EntityController
 from spudderdomain.models import FanPage, TeamPage
 from spudderkrowdio.models import FanFollowingEntityTag, KrowdIOStorage
 from spuddersocialengine.models import SpudFromSocialMedia
@@ -28,10 +30,12 @@ def landing_page(request):
     template_data['find_teams'] = TeamPage.objects.all()[:10]
     template_data['find_fans'] = FanPage.objects.all()[:10]
     if is_fan(request.current_role):
-        template_data['spuds'] = SpudsController.GetSpudsForFan(request.current_role.entity)
+        stream = SpudsController(request.current_role).get_spud_stream() + SpudsController.GetSpudsForFan(request.current_role.entity)
+        shuffle(stream)
+        template_data['spuds'] = stream
         krowdio_response = get_following(request.current_role)
-        template_data['teams'] = krowdio_users_to_links(krowdio_response['data'], 'team')
-        template_data['fans'] = krowdio_users_to_links(krowdio_response['data'], 'fan')
+        template_data['teams'] = krowdio_users_to_links(request.current_role, krowdio_response['data'], 'team')
+        template_data['fans'] = krowdio_users_to_links(request.current_role, krowdio_response['data'], 'fan')
     return render(request, 'spudderspuds/pages/landing_page.html', template_data)
 
 
@@ -118,11 +122,20 @@ def user_add_fan_role(request):
 
 def fan_profile_view(request, page_id):
     page = get_object_or_404(FanPage, pk=page_id)
-    return render(request, 'spudderspuds/fans/pages/fan_page_view.html', {
+    krowdio_response = get_following(RoleFan(page))
+    template_data = {
         'page': page,
         'fan_spuds': SpudsController.GetSpudsForFan(page),
         'base_url': 'spudderspuds/base.html',
-    })
+        'following_teams':  krowdio_users_to_links(request.current_role, krowdio_response['data'], 'team'),
+        'following_fans':  krowdio_users_to_links(request.current_role, krowdio_response['data'], 'fan')}
+    if request.can_edit:
+        template_data['following_teams_title'] = "<img src='/static/img/spudderspuds/button-teams-tiny.png' /> Teams You Follow"
+        template_data['following_fans_title'] = "<img src='/static/img/spudderspuds/button-fans-tiny.png' /> Fans You Follow"
+    else:
+        template_data['following_teams_title'] = "<img src='/static/img/spudderspuds/button-teams-tiny.png' /> Teams %s Follows" % page.name
+        template_data['following_fans_title'] = "<img src='/static/img/spudderspuds/button-fans-tiny.png' /> Fans %s Follows" % page.name
+    return render(request, 'spudderspuds/fans/pages/fan_page_view.html', template_data)
 
 
 def fan_profile_edit(request, page_id):
@@ -199,6 +212,8 @@ def claim_atpostspud(request, spud_id):
         spud = SpudFromSocialMedia.objects.get(id=spud_id)
     except SpudFromSocialMedia.DoesNotExist:
         spud = None
+    if spud.state == SpudFromSocialMedia.STATE_ACCEPTED:  # Don't allow dupes!
+        spud = None
     template_data = {
         'spud': spud.expanded_data if spud else None,
         'spud_id': spud.id if spud else None
@@ -230,7 +245,7 @@ def follow(request):
     if request.method == 'GET':
         origin = str(request.GET.get('origin', ''))
         name = tag = base_well_url = base_quote_url = None
-        fan_tags = FanFollowingEntityTag.objects.filter(fan=request.current_role.entity)
+        fan_tags = FanFollowingEntityTag.objectss.filter(fan=request.current_role.entity)
 
         if re.match(r'/venues/view/\d+', origin):
             ven = Venue.objects.get(id=str.split(origin, '/')[-1])
@@ -275,21 +290,23 @@ def start_following_view(request):
     """
     if request.method == 'POST':
         origin = str(request.POST.get('origin', ''))
-        tag = str(request.POST.get('tag', ''))
         entity_id = entity_type = None
+        tag = str(request.POST.get('tag', None)) or request.POST['base_tag']  # if empty use the entity name
         if re.match(r'/venues/view/\d+', origin):
-            entity_type = 'Venue'
+            entity_type = EntityController.ENTITY_VENUE
             entity_id = str.split(origin, '/')[-1]
         elif re.match(r'/fan/\d+', origin):
-            entity_type = 'fan'
+            entity_type = RoleController.ENTITY_FAN
             entity_id = str.split(origin, '/')[-1]
         elif re.match(r'/team/\d+', origin):
-            entity_type = 'Team'
+            entity_type = EntityController.ENTITY_TEAM
             entity_id = str.split(origin, '/')[-1]
 
-        entity_tag = FanFollowingEntityTag(fan=request.current_role.entity,
-                                           tag=tag, entity_id=entity_id,
-                                           entity_type=entity_type)
+        entity_tag = FanFollowingEntityTag(
+            fan=request.current_role.entity,
+            tag=tag,
+            entity_id=entity_id,
+            entity_type=entity_type)
         entity_tag.save()
 
         json = start_following(request.current_role, entity_type, entity_id)
@@ -309,16 +326,16 @@ def stop_following_view(request):
         origin = str(request.POST.get('origin', ''))
         entity_id = entity_type = None
         if re.match(r'/venues/view/\d+', origin):
-            entity_type = 'Venue'
+            entity_type = EntityController.ENTITY_VENUE
             entity_id = str.split(origin, '/')[-1]
         elif re.match(r'/fan/\d+', origin):
-            entity_type = 'fan'
+            entity_type = RoleController.ENTITY_FAN
             entity_id = str.split(origin, '/')[-1]
         elif re.match(r'/team/\d+', origin):
-            entity_type = 'Team'
+            entity_type = EntityController.ENTITY_TEAM
             entity_id = str.split(origin, '/')[-1]
 
-        fan_tag = FanFollowingEntityTag.objects.get(
+        fan_tag = FanFollowingEntityTag.objectss.get(
             fan=request.current_role.entity,
             entity_type=entity_type,
             entity_id=entity_id)
@@ -330,7 +347,7 @@ def stop_following_view(request):
         return HttpResponseNotAllowed(['POST'])
 
 
-def krowdio_users_to_links(krowdio_dict, filter=None):
+def krowdio_users_to_links(current_role, krowdio_dict, filter=None):
     """
     Translates KrowdIO users into a list of dicts about Spudder entities
     :param krowdio_dict: the 'users' part of a response from the
@@ -349,43 +366,73 @@ def krowdio_users_to_links(krowdio_dict, filter=None):
                     icon_link = '/file/serve/%s' % fan.avatar.id
                 else:
                     icon_link = '/static/img/spudderfans/button-fans-tiny.png'
-                users.append({'name': fan.name,
-                              'profile': '/fan/%s' % fan.id,
-                              'icon_link': icon_link})
+                users.append({
+                    'name': fan.name,
+                    'profile': '/fan/%s' % fan.id,
+                    'icon_link': icon_link,
+                    'custom_tag': FanFollowingEntityTag.objects.get(
+                        fan=current_role.entity,
+                        entity_id=fan.id,
+                        entity_type=RoleController.ENTITY_FAN).tag
+                })
             elif storage_obj.role_type == 'sponsor' and (filter == 'sponsor' or filter is None):
                 sponsor = SponsorPage.objects.get(id=storage_obj.role_id)
                 if sponsor.thumbnail:
                     icon_link = '/file/serve/%s' % sponsor.thumbnail
                 else:
                     icon_link = '/static/img/spuddersponsors/button-sponsors-tiny.png'
-                users.append({'name': sponsor.name,
-                              'profile': '/sponsor/%s' % sponsor.id,
-                              'icon_link': icon_link})
+                users.append({
+                    'name': sponsor.name,
+                    'profile': '/sponsor/%s' % sponsor.id,
+                    'icon_link': icon_link,
+                    'custom_tag': FanFollowingEntityTag.objects.get(
+                        fan=current_role.entity,
+                        entity_id=sponsor.id,
+                        entity_type=RoleController.ENTITY_SPONSOR).tag
+                })
             elif storage_obj.role_type == 'student' and (filter == 'student' or filter is None):
                 stu = Student.objects.get(id=storage_obj.role_id)
                 if stu.logo:
                     icon_link = '/file/serve/%s' % stu.logo
                 else:
                     icon_link = 'static/img/spuddercern/button-cern-tiny.png'
-                users.append({'name': user_name(stu.user),
-                              'profile': '/cern/student/%s' % stu.id,
-                              'icon_link': icon_link})
+                users.append({
+                    'name': user_name(stu.user),
+                    'profile': '/cern/student/%s' % stu.id,
+                    'icon_link': icon_link,
+                    'custom_tag': FanFollowingEntityTag.objects.get(
+                        fan=current_role.entity,
+                        entity_id=stu.id,
+                        entity_type=RoleController.ENTITY_STUDENT).tag
+                })
         elif storage_obj.venue:
             if storage_obj.venue.logo and (filter == 'venue' or filter is None):
                 icon_link = '/file/serve/%s' % storage_obj.venue.logo.id
             else:
                 icon_link = '/static/img/spudderspuds/button-spuds-tiny.png'
-            users.append({'name': storage_obj.venue.aka_name,
-                          'profile': '/venues/view/%s' % storage_obj.venue.id,
-                          'icon_link': icon_link})
+            users.append({
+                'name': storage_obj.venue.aka_name,
+                'profile': '/venues/view/%s' % storage_obj.venue.id,
+                'icon_link': icon_link,
+                'custom_tag': FanFollowingEntityTag.objects.get(
+                    fan=current_role.entity,
+                    entity_id=storage_obj.venue.id,
+                    entity_type=EntityController.ENTITY_VENUE).tag
+            })
         elif storage_obj.team and (filter == 'team' or filter is None):
             if storage_obj.team.image:
                 icon_link = '/file/serve/%s' % storage_obj.team.image.id
             else:
                 icon_link = '/static/img/spudderspuds/button-teams-tiny.png'
-            users.append({'name': storage_obj.team.name,
-                          'profile': '/team/%s' % storage_obj.team.id,
-                          'icon_link': icon_link})
+            users.append({
+                'name': storage_obj.team.name,
+                'profile': '/team/%s' % storage_obj.team.id,
+                'icon_link': icon_link,
+                'custom_tag': FanFollowingEntityTag.objects.get(
+                    fan=current_role.entity,
+                    entity_id=storage_obj.team.id,
+                    entity_type=EntityController.ENTITY_TEAM).tag
+            })
     return users
 
 
