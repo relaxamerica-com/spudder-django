@@ -12,7 +12,7 @@
 {{ block.super }}
 <meta property="og:title" content="{{ page.name }} | Spudder - Sports Updates Made Simple">
 <meta property="og:description" content="Check out this awesome sponsor: {{ page.name }}! Here is a business that gives back to the community. Let's all click here and support them!">
-{% if page.logo %} <meta property="og:image" content="http://{{ request.META.HTTP_HOST }}/file/serve/{{ page.logo.id }}">
+{% if page.thumbnail %} <meta property="og:image" content="http://{{ request.META.HTTP_HOST }}/file/serve/{{ page.thumbnail }}">
 {% endif %}
 {% endblock %}
 
@@ -60,10 +60,10 @@
                 </div>
 
                 <!-- Controls -->
-                <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
+                <a class="left carousel-control" href="#sponsor-page-carousel" role="button" data-slide="prev">
                     <span class="icon-prev"></span>
                 </a>
-                <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
+                <a class="right carousel-control" href="#sponsor-page-carousel" role="button" data-slide="next">
                     <span class="icon-next"></span>
                 </a>
             </div>
