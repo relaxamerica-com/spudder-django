@@ -245,7 +245,7 @@ def follow(request):
     if request.method == 'GET':
         origin = str(request.GET.get('origin', ''))
         name = tag = base_well_url = base_quote_url = None
-        fan_tags = FanFollowingEntityTag.objectss.filter(fan=request.current_role.entity)
+        fan_tags = FanFollowingEntityTag.objects.filter(fan=request.current_role.entity)
 
         if re.match(r'/venues/view/\d+', origin):
             ven = Venue.objects.get(id=str.split(origin, '/')[-1])
@@ -335,7 +335,7 @@ def stop_following_view(request):
             entity_type = EntityController.ENTITY_TEAM
             entity_id = str.split(origin, '/')[-1]
 
-        fan_tag = FanFollowingEntityTag.objectss.get(
+        fan_tag = FanFollowingEntityTag.objects.get(
             fan=request.current_role.entity,
             entity_type=entity_type,
             entity_id=entity_id)
