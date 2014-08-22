@@ -113,6 +113,17 @@ class FanFollowingEntityTag(models.Model):
 
     Uses the same entity_type (and IDs) as the KrowdIOStorage model
     """
+
+    @classmethod
+    def GetTag(cls, fan, entity_id, entity_type):
+        try:
+            return FanFollowingEntityTag.objects.get(
+                fan=fan,
+                entity_id=entity_id,
+                entity_type=entity_type).tag
+        except FanFollowingEntityTag.DoesNotExist:
+            return None
+
     fan = models.ForeignKey(FanPage)
     tag = models.CharField(max_length=256)
     entity_id = models.CharField(max_length=256)

@@ -174,6 +174,10 @@ class SpudsController(object):
         from spudderaccounts.wrappers import RoleFan
         return get_user_mentions_activity(KrowdIOStorage.GetOrCreateForCurrentUserRole(RoleFan(fan_page)))
 
+    @classmethod
+    def GetSpudsForTeam(cls, team_page):
+        return get_user_mentions_activity(KrowdIOStorage.GetOrCreateForTeam(team_page.id))
+
     def __init__(self, role):
         self.role = role
 

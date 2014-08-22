@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 import settings
-from spudderdomain.controllers import TeamsController, RoleController
+from spudderdomain.controllers import TeamsController, RoleController, SpudsController
 from spudderdomain.models import TeamPage, Location, TeamAdministrator, TeamVenueAssociation
 from spudmart.teams.forms import CreateTeamForm, TeamPageForm
 from spudmart.upload.forms import UploadForm
@@ -92,13 +92,13 @@ def team_page(request, page_id):
 def public_view(request, page_id):
     page = get_object_or_404(TeamPage, pk=page_id)
     is_associated, associated_venues = _check_if_team_is_associated(page)
-
-    return render(request, 'spudderspuds/teams/pages/team_page_view.html',{
+    template_data = {
         'page': page,
         'is_associated': is_associated,
         'venues': associated_venues,
         'base_url': 'spudderspuds/base.html',
-    })
+        'team_spuds': SpudsController.GetSpudsForTeam(page)}
+    return render(request, 'spudderspuds/teams/pages/team_page_view.html', template_data)
 
 
 def save_avatar(request, page_id):

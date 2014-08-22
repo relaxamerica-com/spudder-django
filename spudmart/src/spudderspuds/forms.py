@@ -1,5 +1,6 @@
 import datetime
 from django import forms
+from django.core.validators import validate_ipv4_address
 from django.forms.extras import SelectDateWidget
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
@@ -60,6 +61,6 @@ class FanPageForm(forms.Form):
 
 class FanPageSocialMediaForm(forms.Form):
     twitter = forms.CharField(max_length=256, required=False, label="Twitter Username")
-    facebook = forms.CharField(max_length=256, required=False, label="Facebook Username")
-    google_plus = forms.CharField(max_length=256, required=False, label="Google+ Username")
+    facebook = forms.CharField(max_length=256, required=False, label="Facebook Profile Url")
+    google_plus = forms.CharField(max_length=256, required=False, label="Google+ Profile Url")
     instagram = forms.CharField(max_length=256, required=False, label="Instagram Username")

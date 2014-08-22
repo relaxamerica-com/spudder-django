@@ -4,5 +4,11 @@
     <a href="{% link_to_twitter_profile twitter %}" target="_blank" title="View Twitter profile" class="social-link"><i class="fa fa-fw fa-twitter-square"></i></a>
 {% endif %}
 {% if facebook %}
-    <a href="{% link_to_facebook_profile facebook %}" target="_blank" title="View Facebook profile" class="social-link"><i class="fa fa-fw fa-facebook-square"></i></a>
+    <a href="{{ facebook }}" target="_blank" title="View Facebook profile" class="social-link"><i class="fa fa-fw fa-facebook-square"></i></a>
+{% endif %}
+{% if google_plus %}
+    <a href="{{ google_plus }}" target="_blank" title="View Google+ profile" class="social-link"><i class="fa fa-fw fa-google-plus-square"></i></a>
+{% endif %}
+{% if instagram %}
+    <a href="{% link_to_instagram_profile instagram %}" target="_blank" title="View Instagram profile" class="social-link"><i class="fa fa-fw fa-instagram"></i></a>
 {% endif %}

@@ -370,10 +370,10 @@ def krowdio_users_to_links(current_role, krowdio_dict, filter=None):
                     'name': fan.name,
                     'profile': '/fan/%s' % fan.id,
                     'icon_link': icon_link,
-                    'custom_tag': FanFollowingEntityTag.objects.get(
+                    'custom_tag': FanFollowingEntityTag.GetTag(
                         fan=current_role.entity,
                         entity_id=fan.id,
-                        entity_type=RoleController.ENTITY_FAN).tag
+                        entity_type=RoleController.ENTITY_FAN)
                 })
             elif storage_obj.role_type == 'sponsor' and (filter == 'sponsor' or filter is None):
                 sponsor = SponsorPage.objects.get(id=storage_obj.role_id)
@@ -385,10 +385,10 @@ def krowdio_users_to_links(current_role, krowdio_dict, filter=None):
                     'name': sponsor.name,
                     'profile': '/sponsor/%s' % sponsor.id,
                     'icon_link': icon_link,
-                    'custom_tag': FanFollowingEntityTag.objects.get(
+                    'custom_tag': FanFollowingEntityTag.GetTag(
                         fan=current_role.entity,
                         entity_id=sponsor.id,
-                        entity_type=RoleController.ENTITY_SPONSOR).tag
+                        entity_type=RoleController.ENTITY_SPONSOR)
                 })
             elif storage_obj.role_type == 'student' and (filter == 'student' or filter is None):
                 stu = Student.objects.get(id=storage_obj.role_id)
@@ -400,10 +400,10 @@ def krowdio_users_to_links(current_role, krowdio_dict, filter=None):
                     'name': user_name(stu.user),
                     'profile': '/cern/student/%s' % stu.id,
                     'icon_link': icon_link,
-                    'custom_tag': FanFollowingEntityTag.objects.get(
+                    'custom_tag': FanFollowingEntityTag.GetTag(
                         fan=current_role.entity,
                         entity_id=stu.id,
-                        entity_type=RoleController.ENTITY_STUDENT).tag
+                        entity_type=RoleController.ENTITY_STUDENT)
                 })
         elif storage_obj.venue:
             if storage_obj.venue.logo and (filter == 'venue' or filter is None):
@@ -414,10 +414,10 @@ def krowdio_users_to_links(current_role, krowdio_dict, filter=None):
                 'name': storage_obj.venue.aka_name,
                 'profile': '/venues/view/%s' % storage_obj.venue.id,
                 'icon_link': icon_link,
-                'custom_tag': FanFollowingEntityTag.objects.get(
+                'custom_tag': FanFollowingEntityTag.GetTag(
                     fan=current_role.entity,
                     entity_id=storage_obj.venue.id,
-                    entity_type=EntityController.ENTITY_VENUE).tag
+                    entity_type=EntityController.ENTITY_VENUE)
             })
         elif storage_obj.team and (filter == 'team' or filter is None):
             if storage_obj.team.image:
@@ -428,10 +428,10 @@ def krowdio_users_to_links(current_role, krowdio_dict, filter=None):
                 'name': storage_obj.team.name,
                 'profile': '/team/%s' % storage_obj.team.id,
                 'icon_link': icon_link,
-                'custom_tag': FanFollowingEntityTag.objects.get(
+                'custom_tag': FanFollowingEntityTag.GetTag(
                     fan=current_role.entity,
                     entity_id=storage_obj.team.id,
-                    entity_type=EntityController.ENTITY_TEAM).tag
+                    entity_type=EntityController.ENTITY_TEAM)
             })
     return users
 

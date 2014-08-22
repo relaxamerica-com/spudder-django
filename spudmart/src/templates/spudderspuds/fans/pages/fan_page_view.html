@@ -35,7 +35,7 @@
 {% block cover_title_display_name %}{% fan_page_name page %}{% endblock %}
 
 {% block cover_title_action_buttons %}
-    {% include 'components/coverimage/social_links.html' with twitter=page.twitter %}
+    {% include 'components/coverimage/social_links.html' with twitter=page.twitter facebook=page.facebook google_plus=page.google_plus instagram=page.instagram %}
     {% if request.can_edit %}
         <a class="btn btn-primary" href="{{ request.path }}/edit">
             Edit Mode
