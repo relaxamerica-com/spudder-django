@@ -436,3 +436,13 @@ def krowdio_users_to_links(current_role, krowdio_dict, filter=None):
     return users
 
 
+def test_spuds(request):
+    template_data = {}
+    if is_fan(request.current_role):
+        stream = SpudsController(request.current_role).get_spud_stream() + SpudsController.GetSpudsForFan(
+            request.current_role.entity)
+        shuffle(stream)
+        template_data['spuds'] = stream
+        tags = FanFollowingEntityTag.objects.filter(fan=request.current_role.entity)
+        template_data['tags'] = [(t.tag, t.get_entity_icon()) for t in tags]
+    return render(request, 'spudderspuds/pages/test_spuds.html', template_data)

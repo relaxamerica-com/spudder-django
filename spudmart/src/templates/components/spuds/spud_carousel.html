@@ -1,8 +1,9 @@
+{% load spudderspudstags %}
 <div class="carousel slide spud-carousel" data-ride="carousel" id="spud-carousel"">
     <div class="carousel-inner">
-        {% for spud in spuds %}
+        {% for full_spud in spuds %}
             <div class="item {% if forloop.counter0 == 0 %}active{% endif %}">
-                {% include 'components/spuds/spud.html' %}
+                {% include 'components/spuds/spud.html' with spud=full_spud.extra %}
             </div>
         {% empty %}
             <div class="item active empty">
@@ -23,3 +24,27 @@
         <span class="icon-next"></span>
     </a>
 </div>
+<link rel="stylesheet" href="/static/css/select2.css">
+<script type="text/javascript" src="/static/js/libs/select2.min.js"></script>
+<script type="text/javascript">
+    function format(tag){
+        return "<img src='" + $(tag.element).data('img') + "' height=25px/> " + tag.text;
+    }
+    $('#spud-carousel').find('.spud-add-tags').click(function(){
+        if ($(this).hasClass('btn-sm')){
+            $(this).siblings('#original-spud-data').hide();
+            $(this).siblings("#add-tags-div").children("#select2").select2({
+                formatResult: format,
+                formatSelection: format,
+                escapeMarkup: function(m) { return m; }
+            });
+            $(this).removeClass('btn-sm').addClass('btn-lg').css('bottom','8px').css('top', '');
+            $(this).siblings('#add-tags-div').show();
+        }
+        else{
+            $(this).siblings('#add-tags-div').hide();
+            $(this).removeClass('btn-lg').addClass('btn-sm').css('bottom', '').css('top', '8px');
+            $(this).siblings('#original-spud-data').show();
+        }
+    })
+</script>

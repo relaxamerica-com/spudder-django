@@ -184,6 +184,12 @@ shared_settings = {
         'linkedin_api_key': '77rqz7l270vhsb',
         'linkedin_secret_key': '5PcKrcRI2m5q4zWP',
         'support_email': 'lucy@spuder.com',
+        'instagram_client_id': '3888eac365f7468dabd5bf9ad06c8930',
+        'instagram_client_secret': 'b1bc01bf1a9944e2834288484f450ab2',
+        'twitter_client_secret': 'DOyZkpOBVlmF4hyusZDyEhZqtM2FYvLWkhu7560tCIqCeUANmI',
+        'twitter_client_id': 'eNsFMF33Gs0p6P0KIWj0WizvW',
+        'twitter_access_token': '2573288766-Z27sWN4Hi812Nqt0yQ4foKTVr4njfXX2DeP4MTa',
+        'twitter_access_token_secret': 'aIRQheX0medxdnXLG2MXfebNB78ftRFf97pe8hUvHtr75',
     },
     'spudmartmatt': {  # mg@metalayer.com
         'server_email': 'mg@metalayer.com',

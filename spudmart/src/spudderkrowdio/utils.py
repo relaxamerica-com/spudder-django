@@ -99,7 +99,8 @@ def get_spud_stream_for_entity(entity, page=1):
 
     items = response.get('items', [])
 
-    return [i.get('extra', {}) for i in items]
+    # return [i.get('extra', {}) for i in items]
+    return items
 
 
 def get_user_mentions_activity(entity):

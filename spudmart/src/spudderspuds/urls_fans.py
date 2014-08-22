@@ -13,7 +13,7 @@ urlpatterns = patterns(
     (r'^start_following$', 'start_following_view'),
     (r'^stop_following$', 'stop_following_view'),
     (r'^follow$', 'follow'),
-    # (r'^test$', 'test_followers_view'),
+    (r'^test$', 'test_spuds'),
     url(r'', 'landing_page'),
 )
 

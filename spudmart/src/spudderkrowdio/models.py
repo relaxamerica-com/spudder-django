@@ -4,6 +4,7 @@ from django.db import models
 import settings
 import simplejson
 from spudderdomain.models import TeamPage, FanPage
+from spudmart.sponsors.models import SponsorPage
 from spudmart.venues.models import Venue
 from django.shortcuts import get_object_or_404
 
@@ -128,3 +129,30 @@ class FanFollowingEntityTag(models.Model):
     tag = models.CharField(max_length=256)
     entity_id = models.CharField(max_length=256)
     entity_type = models.CharField(max_length=256)
+
+    def get_entity_icon(self):
+        img = '/static/img/spudderspuds/button-spuds-large.png'
+        if self.entity_type == 'fan':
+            fan = FanPage.objects.get(id=self.entity_id)
+            if fan.avatar:
+                img = '/file/serve/%s' % fan.avatar.id
+        elif self.entity_type == 'sponsor':
+            sponsor = SponsorPage.objects.get(id=self.entity_id)
+            if sponsor.thumbnail:
+                img = '/file/serve/%s' % sponsor.thumbnail
+            else:
+                img = '/static/img/spuddersponsors/button-sponsors-large.png'
+        elif self.entity_type == 'Venue':
+            ven = Venue.objects.get(id=self.entity_id)
+            if ven.logo:
+                img = '/file/serve/%s' % ven.logo.id
+            else:
+                img = '/static/img/spuddervenues/button-venues-large.png'
+        elif self.entity_type == 'Team':
+            team = TeamPage.objects.get(id=self.entity_id)
+            if team.image:
+                img = '/file/serve/%s' % team.image.id
+            else:
+                img = '/static/img/spudderspuds/button-teams-large.png'
+
+        return img

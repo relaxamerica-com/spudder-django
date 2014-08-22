@@ -14168,6 +14168,12 @@ form fieldset .form-group {
   font-weight: bold;
   text-decoration: underline;
 }
+.spud-add-tags {
+  opacity: 0.7;
+  position: absolute;
+  right: 8px;
+  z-index: 1;
+}
 .create-venue-map {
   min-height: 100px;
 }
