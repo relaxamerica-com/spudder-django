@@ -79,10 +79,12 @@
                                                 <div class="panel panel-default">
                                                     <div class="panel-body">
                                                         <div class="media">
-                                                            <img class="media-object pull-left" src="{{ current_role.image }}" style="height: 40px;" />
+                                                            <a href="{{ current_role.home_page_path }}" class="media-object pull-left">
+                                                                <img src="{{ current_role.image }}" style="height: 40px;" />
+                                                            </a>
                                                             <div class="media-body">
                                                                 <p class="media-heading">{{ current_role.title|safe }}</p>
-                                                                <span class="label label-success">Current role</span>
+                                                                <span class="label label-success"><a href="{{ current_role.home_page_path }}" style="color:white;">Current role</a></span>
                                                             </div>
                                                         </div>
                                                     </div>
