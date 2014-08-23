@@ -61,7 +61,8 @@ def public_view(request, page_id):
     return render(request, 'spuddersponsors/pages/dashboard_pages/sponsor_page_view.html', {
         'page': page,
         'latitude': latitude,
-        'longitude': longitude
+        'longitude': longitude,
+        'base_url': 'spuddercern/base.html'
     })
 
 

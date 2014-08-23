@@ -1,86 +1,172 @@
-{% extends 'spuddersponsors/pages/dashboard_pages/dashboard.html' %}
+{% extends 'components/sharedpages/public_page_base.html' %}
+
+{% load sponsors %}
+
+{% block css %}
+    <link rel="stylesheet" href="/static/css/spuddersponsors.css" />
+{% endblock %}
 
 {% block google_analytics_additions %}
     ga('set', 'contentGroup1', 'SPONSORS - SPONSOR PAGE VIEW');
 {% endblock %}
 
-{% block side_nav %}{% endblock side_nav %}
-
 {% block title %}{{ page.name }} | Spudder - Sports Updates Made Simple{% endblock %}
 
 {% block meta %}
-{{ block.super }}
-<meta property="og:title" content="{{ page.name }} | Spudder - Sports Updates Made Simple">
-<meta property="og:description" content="Check out this awesome sponsor: {{ page.name }}! Here is a business that gives back to the community. Let's all click here and support them!">
-{% if page.thumbnail %} <meta property="og:image" content="http://{{ request.META.HTTP_HOST }}/file/serve/{{ page.thumbnail }}">
-{% endif %}
+    {{ block.super }}
+    <meta property="og:title" content="{{ page.name }} | Spudder - Sports Updates Made Simple">
+    <meta property="og:description" content="Check out this awesome sponsor: {{ page.name }}! Here is a business that gives back to the community. Let's all click here and support them!">
+    {% if page.thumbnail %}
+        <meta property="og:image" content="http://{{ request.META.HTTP_HOST }}/file/serve/{{ page.thumbnail }}">
+    {% endif %}
 {% endblock %}
 
-{% block dashboard_page %}
-    {% if latitude and longitude %}
-        <div class="row">
-            <div style="height:400px; margin-top: -18px;" id="jumbo-map-container"></div>
-        </div>
-    {% endif %}
+{% block favicon %}"/media/ico/favicon.png"{% endblock %}
 
-    <div class="row">
-        <div class="col-sm-8">
-            <div class="post-heading">
-                <h3 class="team-name">
-                    {% if page.website %}
-                        <a href="{{ page.website }}" target="_blank">
-                            {{ page.name }}
-                        </a>
-                    {% else %}
-                        {{ page.name }}
-                    {% endif %}
-                </h3>
-            </div>
+{% block nav_brand %}<a href="/"><img src="/static/img/spuddersponsors/logo-sponsors-small.png" style="height:35px;margin-top:2px;"/></a>{% endblock %}
 
-            <div id="sponsor-page-carousel" class="carousel slide" data-ride="carousel">
-                <!-- Wrapper for slides -->
-                <div class="carousel-inner">
-                    {% if page.images|length > 0 %}
-                        {% for image in page.images %}
-                            <div class="item {% if forloop.counter0 == 0 %}active{% endif %}">
-                                <img src="/file/serve/{{ image }}" />
-                            </div>
-                        {% endfor %}
-                    {% else %}
-                        <div class="item active">
-                            <img src="/static/img/spudderspuds/button-spuds-large.png" height="300px"/>
-                            <div class="carousel-caption">
-                                <div class="alert alert-info">
-                                    <h4>No images yet</h4>
-                                    <p>Stay tuned, there will soon be images for this sponsor!</p>
+{% block cover_image_container_id %}jumbo-map-container{% endblock %}
+
+{% block cover_title_profile_image_url %}{% if page.thumbnail %}/file/serve/{{ page.thumbnail }}{% else %}/static/img/spuddersponsors/button-sponsors-medium.png{% endif %}{% endblock %}
+
+{% block cover_title_display_name %}{{ page.name }}{% endblock %}
+
+{% block main_page %}
+    <div style="min-height: 362px; margin: 0 auto; width: 100%; vertical-align: middle; text-align: center; padding:15px;">
+        <div class="row-fluid" style="height:100%;">
+            <div class="col-md-12 contents" style="height:100%;">
+                <div id="sponsor-page-carousel" class="carousel slide" data-ride="carousel">
+                    <!-- Wrapper for slides -->
+                    <div class="carousel-inner">
+                        {% if page.images|length > 0 %}
+                            {% for image in page.images %}
+                                <div class="item {% if forloop.counter0 == 0 %}active{% endif %}">
+                                    <img src="/file/serve/{{ image }}" />
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="item active">
+                                <img src="/static/img/spudderspuds/button-spuds-large.png" height="300px"/>
+                                <div class="carousel-caption">
+                                    <div class="alert alert-info">
+                                        <h4>No images yet</h4>
+                                        <p>Stay tuned, there will soon be images for this sponsor!</p>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    {% endif %}
-                </div>
+                        {% endif %}
+                    </div>
 
-                <!-- Controls -->
-                <a class="left carousel-control" href="#sponsor-page-carousel" role="button" data-slide="prev">
-                    <span class="icon-prev"></span>
-                </a>
-                <a class="right carousel-control" href="#sponsor-page-carousel" role="button" data-slide="next">
-                    <span class="icon-next"></span>
-                </a>
-            </div>
-
-            <div class="top-wrapper">
-                <div class="offer-description">
-                    <p>{{ page.description }}</p>
+                    <!-- Controls -->
+                    <a class="left carousel-control" href="#sponsor-page-carousel" role="button" data-slide="prev">
+                        <span class="icon-prev"></span>
+                    </a>
+                    <a class="right carousel-control" href="#sponsor-page-carousel" role="button" data-slide="next">
+                        <span class="icon-next"></span>
+                    </a>
                 </div>
             </div>
         </div>
 
-        <div class="col-sm-4" id="sponsor-page-details-container">
-            {% include 'spuddersponsors/parts/sponsor_page_details.html' %}
+        <div class="row-fluid" style="height:100%;">
+            <div class="col-md-12 contents" style="height:100%;">
+                <p class="sponsor-description">{{ page.description }}</p>
+            </div>
         </div>
     </div>
+{% endblock main_page %}
 
-{% endblock %}
+{% block sidebar %}
+    <div id="details-container">
+        <h3>
+            Support Your Sponsor
+        </h3>
+
+        <ul class="social-network">
+            {% if page.instagram %}
+                <li>
+                    <a href="{{ page.instagram }}" target="_blank" data-placement="bottom" title=""
+                    data-original-title="Sponsor Instagram profile"> <i class="fa fa-instagram fa-2x"> </i> </a>
+                </li>
+            {% endif %}
+
+            {% if page.facebook %}
+                <li>
+                    <a href="{{ page.facebook }}" target="_blank" data-placement="bottom" title=""
+                    data-original-title="Sponsor Facebook profile"> <i class="fa fa-facebook-square fa-2x"> </i> </a>
+                </li>
+            {% endif %}
+
+            {% if page.twitter %}
+                <li>
+                    <a href="{{ page.twitter }}" target="_blank" data-placement="bottom" title=""
+                    data-original-title="Sponsor Twitter profile"> <i class="fa fa-twitter-square fa-2x"> </i> </a>
+                </li>
+            {% endif %}
+
+            {% if page.google_plus %}
+                <li>
+                    <a href="{{ page.google_plus }}" target="_blank" rel="publisher" data-placement="bottom" title=""
+                    data-original-title="Sponsor Google+ profile"> <i class="fa fa-google-plus-square fa-2x"> </i> </a>
+                </li>
+            {% endif %}
+
+            {% if page.linkedin %}
+                <li>
+                    <a href="{{ page.linked_in }}" target="_blank" rel="publisher" data-placement="bottom" title=""
+                    data-original-title="Sponsor LinkedIn profile"> <i class="fa fa-linkedin-square fa-2x"> </i> </a>
+                </li>
+            {% endif %}
+        </ul>
+
+        <ul class="sponsor-details">
+            {% if page.speciality %}
+                <li>
+                    <label>Speciality: </label> {{ page.speciality }}
+                </li>
+            {% endif %}
+
+            {% if page.location %}
+                <li>
+                    <label>Location: </label>
+                    <a href="{{ page.map_info|location_external_link }}" target="_blank">
+                        {{ page.location }}
+                    </a>
+                </li>
+            {% endif %}
+
+            {% if page.phone %}
+                <li>
+                    <label>Phone: </label> {{ page.phone }}
+                </li>
+            {% endif %}
+
+            {% if page.email %}
+                <li>
+                    <label>E-mail: </label> <a href="mailto:{{ page.email }}">{{ page.email }}</a>
+                </li>
+            {% endif %}
+
+            {% if page.website %}
+                <li>
+                    <label>Website: </label> <a href="{{ page.website }}">{{ page.website }}</a>
+                </li>
+            {% endif %}
+
+            {% if page.video %}
+                <li>
+                    <label>Video: </label> <a href="{{ page.video }}">Sponsor video</a>
+                </li>
+            {% endif %}
+
+            {% if page.fax %}
+                <li>
+                    <label>Fax: </label> {{ page.fax }}
+                </li>
+            {% endif %}
+        </ul>
+    </div>
+{% endblock sidebar %}
 
 {% block js %}
     {{ block.super }}
