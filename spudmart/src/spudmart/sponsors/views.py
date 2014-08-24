@@ -66,23 +66,18 @@ def public_view(request, page_id):
     })
 
 
+@current_role_is_sponsor
 def sponsor_page(request):
-    sponsor_page_instances = SponsorPage.objects.filter(sponsor=request.user)
+    page = SponsorPage.objects.get(pk=request.current_role.entity.id)
     lat = None
     lng = None
     info_window = None
-    page = None
 
-    if len(sponsor_page_instances):
-        page = sponsor_page_instances[0]
-        form = SponsorPageForm(instance=page)
-        if page.map_info:
-            lat, lng, info_window = page.map_info.split(';')
-    else:
-        form = SponsorPageForm()
+    form = SponsorPageForm(instance=page)
+    if page.map_info:
+        lat, lng, info_window = page.map_info.split(';')
 
-    if page:
-        page.images = filter(lambda image: image != "", page.images)
+    page.images = filter(lambda image: image != "", page.images)
 
     if request.method == "POST":
         form = SponsorPageForm(request.POST, instance=page)

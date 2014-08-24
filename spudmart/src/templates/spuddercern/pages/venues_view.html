@@ -28,12 +28,18 @@
 
 {% block cover_image_edit_url %}/venues/edit_cover/{{ venue.id }}{% endblock %}
 
-{% block cover_title_profile_image_url %}{% if venue.logo %}/file/serve/{{ venue.logo.id }}{% else %}/static/img/spuddersponsors/button-sponsors-medium.png{% endif %}{% endblock %}
+{% block cover_title_profile_image_url %}
+    {% if sponsor %}
+        /file/serve/{{ sponsor.thumbnail }}
+    {% else %}
+        {% if venue.logo %}/file/serve/{{ venue.logo.id }}{% else %}/static/img/spuddersponsors/button-sponsors-medium.png{% endif %}
+    {% endif %}
+{% endblock %}
 
 {% block cover_title_display_name %}{{ venue.name }}{% endblock %}
 
 {% block cover_title_additions %}
-    <p>Sponsored By: <b>@{% if sponsor %}{{ sponsor.tag }}{% else %}postspud{% endif %}</b></p>
+    <p>Sponsored By: <b>{% if sponsor %}<a href="/sponsor/{{ sponsor.id }}">@{{ sponsor.tag }}</a>{% else %}@postspud{% endif %}</b></p>
 {% endblock %}
 
 {% block cover_title_action_buttons %}
