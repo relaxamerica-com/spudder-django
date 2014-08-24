@@ -32,9 +32,9 @@ function initialize() {
                 ].join(' ');
             }
            
-           $.when(getLatLongDetail(location)).then(function(data) {
-	           $('[name="state"]').val(data.state.short_name);
-           });
+//           $.when(getLatLongDetail(location)).then(function(data) {
+//	           $('[name="state"]').val(data.state.short_name);
+//           });
 
             var infoWindowContent = '<div><strong>' + place.name + '</strong><br>' + address +
                 '<br><a href="http://maps.google.com/?q=' + encodeURIComponent(address) + '" target="_new">External map</a>';

@@ -198,16 +198,9 @@
     <script type="text/javascript" src="/static/js/libs/google.map.js"></script>
 
     <script type="text/javascript">
-        window.isEditMode = false;
-
-{#        {% if page.cover_image %}if($('.jumbotron').height() > $('.jumbotron-img').height()) $('.jumbotron').css('height', $('.jumbotron-img').height() + "px");{% endif %}#}
-
         $('.content').not('.active').hide();
 
         $(document).ready(function(){
-            var editMode = $('.edit-mode'),
-                viewMode = $('.view-mode');
-
             $('#mailto').attr('href',
                               'mailto:?subject={{ page.name }} on Spudder' +
                               '&body=Check out the latest updates about {{ page.name }}. If you are a fan of {{ page.name }}, you need to see this! ' + url)
@@ -216,20 +209,6 @@
                var $alert = $(alert);
                if ($alert.html() == "")
                    $alert.hide();
-            });
-
-            $('#edit').click(function(){
-                if (window.isEditMode){
-                    editMode.hide();
-                    viewMode.show();
-                    $(this).html('Edit Mode');
-                    window.isEditMode = false;
-                } else{
-                    viewMode.hide();
-                    editMode.show();
-                    $(this).html('Show Mode');
-                    window.isEditMode = true;
-                }
             });
 
             $('#save-logo').click(function() {
@@ -255,7 +234,7 @@
                             response.done(function(data) {
                                 if (parsed['uploaded_files'].length > 0){
                                     showAlert(alert, 'Your new logo have been saved.', 'success', true);
-                                    $('#student-logo').attr('src', parsed['uploaded_files'][0]);
+                                    $('.spudder-jumbotron-caption .media img').attr('src', parsed['uploaded_files'][0]);
                                 }
                             });
                         }

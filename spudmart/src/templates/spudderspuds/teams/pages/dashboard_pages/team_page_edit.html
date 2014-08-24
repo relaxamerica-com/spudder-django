@@ -21,6 +21,14 @@
                         <input name="name" id="name" class="form-control" value="{{form.name.value|default:"" }}"/>
                     </div>
                     <div class="form-group edit-mode edit-mode-team" style="display: block;">
+                        <label>Tag:</label>
+                        <span class="input-required">*required</span>
+                        <div class="input-group">
+                            <div class="input-group-addon">@</div>
+                            <input  name="at_name" id="at_name" class="form-control" value="{{form.at_name.value|default:"" }}"/>
+                        </div>
+                    </div>
+                    <div class="form-group edit-mode edit-mode-team" style="display: block;">
                         <label>Sport:</label>
                         <span class="input-required">*required</span>
                         <select name="sport" id="sport" class="form-control">
@@ -29,13 +37,19 @@
                         	{% endfor %}
                         </select>
                     </div>
-                    
-{#                    <input name="state" id="state" type="hidden" value="{{ form.state.value }}" />#}
-                    
+                    <div class="form-group edit-mode edit-mode-team" style="display: block;">
+                        <label>State:</label>
+                        <select name="state" id="state" class="form-control">
+                        	{% for state, full_name in states.items %}
+                                <option {% if form.state.value == state %}selected{% endif %} value="{{ state }}">{{ full_name }}</option>
+                        	{% endfor %}
+                        </select>
+                    </div>
+
                     <div class="form-group edit-mode" style="display: block;">
                         <label>Location:</label>
                         <span class="input-required">*required</span>
-                        <input id="location" name="location" class="controls" type="text" placeholder="Enter a location" value="{{ selected_state }}">
+                        <input id="location" name="location" class="controls" type="text" placeholder="Enter a location">
                         <input id="infoWindow" name="infoWindow" type="hidden" {% if info_window %}value="{{ info_window }}"{% endif %}>
                         <input id="location_info" name="location_info" type="hidden" {% if page.location %}value="{{ page.location.post_data }}"{% endif %}/>
                         <div id="map_canvas" class="google-map-canvas"></div>
@@ -70,7 +84,7 @@
                 initializeGoogleMaps('{{ page.location.address }}', '{{ page.location.info_window }}');
             {% endautoescape %}
         {% else %}
-            initializeGoogleMaps('{{ selected_state }}, United States', createInfoWindow('{{ selected_state }}', '{{ selected_state }}'));
+            initializeGoogleMaps();
         {% endif %}
 
         $(document).ready(function () {
@@ -78,7 +92,8 @@
 
             $form.validate({
                 rules: {
-                    name: "required"
+                    name: "required",
+                    at_name: { required: true, tag: true }
                 },
 
                 errorPlacement: function(error, element) {

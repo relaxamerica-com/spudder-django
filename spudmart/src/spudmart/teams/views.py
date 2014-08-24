@@ -1,10 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 import settings
 from spudderdomain.controllers import TeamsController, RoleController, SpudsController
-from spudderdomain.models import TeamPage, Location, TeamAdministrator, TeamVenueAssociation
+from spudderdomain.models import TeamPage, Location, TeamVenueAssociation
 from spudmart.teams.forms import CreateTeamForm, TeamPageForm
-from spudmart.upload.forms import UploadForm
-from google.appengine.api import blobstore
 from django.http import HttpResponseRedirect, HttpResponse
 from spudmart.upload.models import UploadedFile
 from spudmart.utils.Paginator import EntitiesPaginator
@@ -84,8 +82,7 @@ def team_page(request, page_id):
         'page': page,
         'form': form,
         'sports': SPORTS,
-        # 'selected_state' : STATES[page.state],
-        # 'states' : STATES
+        'states': STATES
     })
 
 
