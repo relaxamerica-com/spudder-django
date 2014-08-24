@@ -176,7 +176,7 @@ def _check_if_team_is_associated(page):
 
 def associate_with_venue(request, page_id):
     page = get_object_or_404(TeamPage, pk=page_id)
-    venues_objects = Venue.objects.all().order_by('name')
+    venues_objects = Venue.objects.filter(sport=page.sport).order_by('name')
     is_associated, associated_venues = _check_if_team_is_associated(page)
     venues = []
 

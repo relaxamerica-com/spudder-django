@@ -24,3 +24,8 @@ indexes:
   - name: state
   - name: created
     direction: desc
+
+- kind: venues_venue
+  properties:
+  - name: sport
+  - name: name
