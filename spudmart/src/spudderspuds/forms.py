@@ -52,7 +52,7 @@ class FanRegisterForm(forms.Form):
 
 
 class FanPageForm(forms.Form):
-    YEARS = range(datetime.datetime.now().date().year, datetime.datetime.now().date().year - 40, -1)
+    YEARS = range(datetime.datetime.now().date().year, datetime.datetime.now().date().year - 100, -1)
 
     name = forms.CharField(label='User Name', help_text='This can be your real name or something made up!')
     date_of_birth = forms.DateField(widget=SelectDateWidget(years=YEARS))
