@@ -75,5 +75,15 @@
 
             return isValidRange && isValidCode;
         }, "The specified US ZIP Code is invalid");
+
+        $.validator.addMethod(
+            "tag",
+            function(value) {
+                var pattern = new RegExp("^[a-z0-9]+$");
+
+                return pattern.test(value);
+            },
+            "Invalid tag format. Lowercase letters and numbers only"
+        );
     });
 }(jQuery));

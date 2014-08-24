@@ -24,7 +24,7 @@
                         <label>Company Tag:</label>
                         <span class="input-required">*required</span>
                         <div class="input-group">
-                            <div class="input-group-addon">#</div>
+                            <div class="input-group-addon">@</div>
                             <input  name="tag" id="tag" class="form-control" value="{{form.tag.value|default:"" }}"/>
                         </div>
                     </div>
@@ -279,7 +279,7 @@
                 rules: {
                     name: "required",
                     speciality: "required",
-                    tag: "required",
+                    tag: { required: true, tag: true },
                     phone: { required: true, phoneUS: true },
                     fax: { phoneUS: true }
                 },
