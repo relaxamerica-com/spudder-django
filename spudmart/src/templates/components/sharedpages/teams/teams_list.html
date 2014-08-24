@@ -16,6 +16,9 @@
             <i class="fa fa-fw fa-group"></i> Teams <small>Manage your Teams!</small>
         </h1>
     </div>
+
+    {% include 'spudderspuds/teams/quotes/quote_teams_what_they_are.html' %}
+
     {% if teams %}
         <table class="table {% if teams %}datatable{% endif %}">
             <thead>
