@@ -10,9 +10,21 @@ DATABASES['native'] = DATABASES['default']
 DATABASES['default'] = {'ENGINE': 'dbindexer', 'TARGET': 'native', 'HIGH_REPLICATION' : True}
 AUTOLOAD_SITECONF = 'indexes'
 
+
+class Environments:
+    LIVE = 'live'
+    STAGE = 'stage'
+    DEV = 'dev'
+
+ENVIRONMENT = Environments.DEV
+
 DEBUG = True
+
 if socket.gethostname() == 'www.spudder.com':
+    ENVIRONMENT = Environments.LIVE
     DEBUG = False
+elif 'spudmart1' in socket.gethostname():
+    ENVIRONMENT = Environments.STAGE
 else:
     DEBUG = True
 
@@ -260,3 +272,5 @@ KROWDIO_CLIENT_KEY = '52769e9ff1f70e0552df58a4'
 KROWDIO_GLOBAL_PASSWORD = 'spudtastic'
 
 LOGIN_URL = '/users/account/signin'
+
+from features import *
