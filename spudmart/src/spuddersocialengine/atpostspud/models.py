@@ -1,4 +1,5 @@
 import tweepy
+from django.conf import settings
 from django.db import models
 
 
@@ -80,7 +81,8 @@ class AtPostSpudTwitterCounter(models.Model):
     @classmethod
     def GetForSite(cls):
         counter, created = AtPostSpudTwitterCounter.objects.get_or_create(
-            site_unique_id=cls.SITE_UNIQUE_ID, defaults={'last_processed_id': 1})
+            site_unique_id=cls.SITE_UNIQUE_ID,
+            defaults={'last_processed_id': settings.AT_POST_SPUD_BASE_TWEET_ID})
         return counter
 
     @classmethod

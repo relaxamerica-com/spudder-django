@@ -5,7 +5,7 @@
             <tr>
                 <td style="width:41px;"><img src="{{ f.icon_link }}" height="25px" /></td>
                 <td style="vertical-align:inherit"><a href={{ f.profile }}>{{ f.name }}</a></td>
-                <td>#{{ f.custom_tag }}</td>
+                <td>{% if f.custom_tag %}#{{ f.custom_tag }}{% endif %}</td>
             </tr>
         {% empty %}
             <tr>

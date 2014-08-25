@@ -16,3 +16,14 @@ class AtPostSpudTwitterAPIForm(forms.Form):
             raise forms.ValidationError("The api key and api secret you entered do not match a Twitter app.")
         return data
 
+
+class SystemDeleteTeamsForm(forms.Form):
+    password = forms.CharField(max_length=256, widget=forms.PasswordInput)
+    action = forms.CharField(max_length=256, widget=forms.HiddenInput)
+
+    def clean_password(self):
+        data = super(SystemDeleteTeamsForm, self).clean()
+        password = data.get('password', None)
+        if password != "spudmart2":
+            raise forms.ValidationError("You don't know the password, should you be doing this?")
+        return password

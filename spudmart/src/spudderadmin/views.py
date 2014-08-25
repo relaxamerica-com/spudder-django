@@ -12,9 +12,9 @@ import settings
 from spudderaccounts.models import SpudderUser
 from spudderaccounts.wrappers import RoleStudent, RoleFan, RoleSponsor
 from spudderadmin.decorators import admin_login_required
-from spudderadmin.forms import AtPostSpudTwitterAPIForm
+from spudderadmin.forms import AtPostSpudTwitterAPIForm, SystemDeleteTeamsForm
 from spudderadmin.utils import encoded_admin_session_variable_name
-from spudderdomain.models import FanPage, LinkedService, TeamAdministrator, TeamPage
+from spudderdomain.models import FanPage, LinkedService, TeamAdministrator, TeamPage, TeamVenueAssociation
 from spudderkrowdio.models import KrowdIOStorage
 from spuddersocialengine.atpostspud.models import AtPostSpudTwitterAuthentication, AtPostSpudTwitterCounter, AtPostSpudServiceConfiguration
 from spuddersocialengine.models import SpudFromSocialMedia
@@ -122,6 +122,25 @@ def system_dashboard(request):
         'spudderadmin/pages/system/dashboard.html',
         {},
         context_instance=RequestContext(request))
+
+
+@admin_login_required
+def system_teams(request):
+    template_data = {}
+    delete_teams_form = SystemDeleteTeamsForm(initial={'action': "teams_delete"})
+    if request.method == "POST":
+        action = request.POST['action']
+        if action == "teams_delete":
+            delete_teams_form = SystemDeleteTeamsForm(request.POST)
+            if delete_teams_form.is_valid():
+                for team in TeamPage.objects.all():
+                    TeamAdministrator.objects.filter(team_page=team).delete()
+                    TeamVenueAssociation.objects.filter(team_page=team).delete()
+                TeamPage.objects.all().delete()
+                messages.success(request, 'Teams deleted')
+    template_data['delete_teams_form'] = delete_teams_form
+    return render_to_response(
+        'spudderadmin/pages/system/teams.html', template_data, context_instance=RequestContext(request))
 
 
 @admin_login_required

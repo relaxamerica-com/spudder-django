@@ -263,6 +263,7 @@ TWITTER_CLIENT_ID = shared_settings[app_name].get('twitter_client_id', '')
 TWITTER_ACCESS_TOKEN = shared_settings[app_name].get('twitter_access_token', '')
 TWITTER_ACCESS_TOKEN_SECRET = shared_settings[app_name].get('twitter_access_token_secret', '')
 SUPPORT_EMAIL = shared_settings[app_name]['support_email']
+AT_POST_SPUD_BASE_TWEET_ID = 503359742325321728
 
 # Configuration shared across all applications
 AWS_ACCESS_KEY_ID = 'AKIAIEUN2XKQF4ZU7UDA'

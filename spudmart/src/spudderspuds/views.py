@@ -122,13 +122,13 @@ def user_add_fan_role(request):
 
 def fan_profile_view(request, page_id):
     page = get_object_or_404(FanPage, pk=page_id)
-    krowdio_response = get_following(RoleFan(page))
+    fan_role = RoleFan(page)
+    krowdio_response = get_following(fan_role)
     template_data = {
-        'page': page,
-        'fan_spuds': SpudsController.GetSpudsForFan(page),
+        'page': page, 'fan_spuds': SpudsController.GetSpudsForFan(page),
         'base_url': 'spudderspuds/base.html',
-        'following_teams':  krowdio_users_to_links(request.current_role, krowdio_response['data'], 'team'),
-        'following_fans':  krowdio_users_to_links(request.current_role, krowdio_response['data'], 'fan')}
+        'following_teams': krowdio_users_to_links(fan_role, krowdio_response['data'], 'team'),
+        'following_fans': krowdio_users_to_links(fan_role, krowdio_response['data'], 'fan')}
     if request.can_edit:
         template_data['following_teams_title'] = "<img src='/static/img/spudderspuds/button-teams-tiny.png' /> Teams You Follow"
         template_data['following_fans_title'] = "<img src='/static/img/spudderspuds/button-fans-tiny.png' /> Fans You Follow"

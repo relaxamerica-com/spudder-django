@@ -1,0 +1,36 @@
+{% extends 'spudderadmin/pages/system/_system_base.html' %}
+{% load bootstrap3 %}
+
+{% block admin_nav %}
+    {% include 'spudderadmin/pages/system/sidenav.html' with active="teams" %}
+{% endblock %}
+
+{% block admin_body %}
+    <div class="page-header">
+        <h1>
+            <i class="fa fa-users"></i>
+            Teams
+        </h1>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <h4>Delete All Teams</h4>
+                    <div class="alert alert-warning">
+                        <p>Note that this can not be undone!</p>
+                    </div>
+                    <form method="post">
+                        {% csrf_token %}
+                        {% bootstrap_form delete_teams_form %}
+                        {% buttons %}
+                            <button class="btn btn-danger" type="submit">
+                                <i class="fa fa-trash-o"></i> Delete all teams
+                            </button>
+                        {% endbuttons %}
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
