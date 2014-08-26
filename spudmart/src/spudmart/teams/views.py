@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 import settings
+from spudderaccounts.templatetags.spudderaccountstags import is_fan
 from spudderdomain.controllers import TeamsController, RoleController, SpudsController
 from spudderdomain.models import TeamPage, Location, TeamVenueAssociation
 from spudmart.teams.forms import CreateTeamForm, TeamPageForm
@@ -41,12 +42,14 @@ def create_team(request):
             location_info = request.POST.get('location_info', None)
             team.update_location(location_info)
             team.save()
-            return redirect(request.POST.get('next_url', '/team/list'))
-    return render(request, 'spudderspuds/teams/pages/create_team.html', {
-        'form': form,
-        # 'upload_url': blobstore.create_upload_url('/team/create'),
-        'SPORTS': SPORTS
-    })
+            if is_fan(request.current_role):
+                redirect_url = "/fan/follow?origin=/team/create&team_id=%s" % team.id
+            else:
+                redirect_url = "/team/%s" % team.id
+
+            return redirect(redirect_url)
+    template_data = {'form': form, 'SPORTS': SPORTS}
+    return render(request, 'spudderspuds/teams/pages/create_team.html', template_data)
 
 
 def _update_team_page_location(page, location):

@@ -1,5 +1,6 @@
 import re
 from random import shuffle
+from django.contrib import messages
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.models import User
 from django.http import HttpResponse, HttpResponseNotAllowed
@@ -268,14 +269,26 @@ def follow(request):
             base_well_url = 'spudderspuds/base_single_well.html'
             base_quote_url = 'spudderspuds/components/base_quote_message.html'
 
-        return render_to_response(
-            'components/sharedpages/following/start_following.html', {
-                'name': name,
-                'tag': tag,
-                'base_well_url': base_well_url,
-                'base_quote_url': base_quote_url,
-                'origin': origin,
-                'fan_tags': fan_tags})
+        elif re.match(r'/team/create', origin):
+            team = TeamPage.objects.get(id=request.GET.get('team_id'))
+            name = team.name
+            tag = team.at_name
+            base_well_url = 'spudderspuds/base_single_well.html'
+            base_quote_url = 'spudderspuds/components/base_quote_message.html'
+            origin = "/team/%s" % team.id
+            messages.success(
+                request,
+                "<h4><i class='fa fa-check'></i> Team %s successfully created!</h4>"
+                "<p>You successfully create your new team, now please give them a custom #tag</p>" % team.name)
+
+        template_data = {
+            'name': name,
+            'tag': tag,
+            'base_well_url': base_well_url,
+            'base_quote_url': base_quote_url,
+            'origin': origin,
+            'fan_tags': fan_tags}
+        return render(request, 'components/sharedpages/following/start_following.html', template_data)
 
     else:
         return HttpResponseNotAllowed(['GET'])
