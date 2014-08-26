@@ -5,7 +5,6 @@ urlpatterns = patterns(
 
     url('^/dashboard', 'admin_dashboard'),
     
-    url('^/cern/$', 'cern_dashboard'),
     url('^/cern/qa_job_board$', 'qa_job_board'),
     url('^/cern/students$', 'students'),
     url('^/cern/student/(?P<student_id>\d+)/resume$', 'student_resume'),
@@ -14,9 +13,10 @@ urlpatterns = patterns(
     url('^/cern/student/(?P<student_id>\d+)/waitlist$', 'waitlist_student'),
     url('^/cern/student/(?P<student_id>\d+)/send_email$','send_student_email'),
     url('^/cern/schools$', 'schools'),
+    url('^/cern', 'cern_dashboard'),
 
 
-    url(r'^/socialengine/atpostspud', 'socialengine_atpostspud'),
+    url(r'^/socialengine/atpostspud$', 'socialengine_atpostspud'),
     url(r'^/socialengine', 'socialengine_dashboard'),
 
     url(r'^/system/teams$', 'system_teams'),
@@ -27,10 +27,12 @@ urlpatterns = patterns(
 
     url(r'^/reports$','user_reports_dashboard'),
     url(r'^/reports/fans$', 'fan_reports'),
-    url(r'^/reports/fans/(?P<fan_id>\d+)/send_email','send_fan_email'),
+    url(r'^/reports/fans/(?P<fan_id>\d+)/send_email$','send_fan_email'),
     url(r'^/reports/sponsors$', 'sponsor_reports'),
-    url(r'^/reports/sponsors/(?P<sponsor_id>\d+)/sponsorships', 'sponsorships'),
-    url(r'^/reports/sponsors/all_sponsorships', 'all_sponsorships'),
+    url(r'^/reports/sponsors/(?P<sponsor_id>\d+)/sponsorships$', 'sponsorships'),
+    url(r'^/reports/sponsors/all_sponsorship$s', 'all_sponsorships'),
+    url(r'^/reports/teams$', 'teams'),
+    url(r'^/reports/teams/(?P<admin_id>\d+)/send_admin_email$','send_team_admin_email'),
 
     url(r'^/send_email$', 'send_email'),
 

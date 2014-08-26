@@ -122,3 +122,4 @@ def display_name(student):
         return student.display_name
     else:
         return user_name(student.user)
+

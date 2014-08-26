@@ -19,6 +19,8 @@ from spudderkrowdio.models import KrowdIOStorage
 from spuddersocialengine.atpostspud.models import AtPostSpudTwitterAuthentication, AtPostSpudTwitterCounter, AtPostSpudServiceConfiguration
 from spuddersocialengine.models import SpudFromSocialMedia
 from spudmart.CERN.models import Student, School, STATES
+from spudmart.CERN.templatetags.CERN import student_email
+from spudmart.accounts.templatetags.accounts import fan_page_name, user_name
 from spudmart.donations.models import RentVenue
 from spudmart.recipients.models import VenueRecipient
 from spudmart.sponsors.models import SponsorPage
@@ -366,7 +368,7 @@ def user_reports_dashboard(request):
          'sponsors': SponsorPage.objects.all().count(),
          'venues': Venue.objects.all().exclude(renter=None).count(),
          'total_venues': Venue.objects.all().count(),
-         })
+         'teams': TeamPage.objects.all().count()})
 
 
 @admin_login_required
@@ -462,3 +464,48 @@ def students(request):
                'students': Student.objects.all()
            },
            context_instance=RequestContext(request))
+
+
+    @admin_login_required
+    def teams(request):
+        """
+        Overview of Spudder Teams
+        :param request: any request
+        :return: a table of all Teams with Team Administrator
+        """
+        return render_to_response('spudderadmin/pages/reports/teams.html',
+                                  {
+                                      'teams': TeamAdministrator.objects.all().select_related('team_page')
+                                  },
+                                  context_instance=RequestContext(request))
+
+
+    @admin_login_required
+    def send_team_admin_email(request, admin_id):
+        """
+        Renders simple page for emailing the a Team admin
+        :param request: any request
+        :param admin_id: a valid id of a TeamAdministrator object
+        :return: a very simple form
+        """
+        admin = TeamAdministrator.objects.get(id=admin_id)
+        profile = name = email = ""
+
+        if admin.entity_type == 'fan':
+            profile = "/fan/%s" % admin.entity_id
+            fan = FanPage.objects.get(id=admin.entity_id)
+            name = fan_page_name(fan)
+            email = fan.fan.email
+        elif admin.entity_type == 'student':
+            profile = "/cern/student/%s" % admin.entity_id
+            stu = Student.objects.get(id=admin.entity_id)
+            name = user_name(stu.user) or stu.display_name or 'No Name'
+            email = student_email(stu)
+
+        return render_to_response('spudderadmin/pages/reports/send_email.html',
+                                  {
+                                      'profile': profile,
+                                      'name': name,
+                                      'email': email
+                                  },
+                                  context_instance=RequestContext(request))
