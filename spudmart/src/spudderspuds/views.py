@@ -35,8 +35,8 @@ def landing_page(request):
         shuffle(stream)
         template_data['spuds'] = stream
         krowdio_response = get_following(request.current_role)
-        template_data['teams'] = krowdio_users_to_links(request.current_role, krowdio_response['data'], 'team')
-        template_data['fans'] = krowdio_users_to_links(request.current_role, krowdio_response['data'], 'fan')
+        template_data['teams'] = krowdio_users_to_links(request.can_edit, request.current_role, krowdio_response['data'], 'team')
+        template_data['fans'] = krowdio_users_to_links(request.can_edit, request.current_role, krowdio_response['data'], 'fan')
         tags = FanFollowingEntityTag.objects.filter(fan=request.current_role.entity)
         template_data['tags'] = [(t.tag, t.get_entity_icon()) for t in tags]
     return render(request, 'spudderspuds/pages/landing_page.html', template_data)
