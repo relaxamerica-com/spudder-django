@@ -45,7 +45,7 @@ def user_is_student(user):
     :param user: any user
     :return: True if user is student and False if not
     """
-    return bool(Student.objects.filter(user=user).count())
+    return user.is_authenticated() and Student.objects.filter(user=user).count()
 
 
 def user_signin(request):

@@ -34,8 +34,8 @@ def landing_page(request):
         shuffle(stream)
         template_data['spuds'] = stream
         krowdio_response = get_following(request.current_role)
-        template_data['teams'] = krowdio_users_to_links(request.current_role, krowdio_response['data'], 'team')
-        template_data['fans'] = krowdio_users_to_links(request.current_role, krowdio_response['data'], 'fan')
+        template_data['teams'] = krowdio_users_to_links(request.can_edit, request.current_role, krowdio_response['data'], 'team')
+        template_data['fans'] = krowdio_users_to_links(request.can_edit, request.current_role, krowdio_response['data'], 'fan')
     return render(request, 'spudderspuds/pages/landing_page.html', template_data)
 
 
@@ -127,8 +127,8 @@ def fan_profile_view(request, page_id):
     template_data = {
         'page': page, 'fan_spuds': SpudsController.GetSpudsForFan(page),
         'base_url': 'spudderspuds/base.html',
-        'following_teams': krowdio_users_to_links(fan_role, krowdio_response['data'], 'team'),
-        'following_fans': krowdio_users_to_links(fan_role, krowdio_response['data'], 'fan')}
+        'following_teams': krowdio_users_to_links(request.can_edit, fan_role, krowdio_response['data'], 'team'),
+        'following_fans': krowdio_users_to_links(request.can_edit, fan_role, krowdio_response['data'], 'fan')}
     if request.can_edit:
         template_data['following_teams_title'] = "<img src='/static/img/spudderspuds/button-teams-tiny.png' /> Teams You Follow"
         template_data['following_fans_title'] = "<img src='/static/img/spudderspuds/button-fans-tiny.png' /> Fans You Follow"
@@ -347,7 +347,7 @@ def stop_following_view(request):
         return HttpResponseNotAllowed(['POST'])
 
 
-def krowdio_users_to_links(current_role, krowdio_dict, filter=None):
+def krowdio_users_to_links(can_edit, current_role, krowdio_dict, filter=None):
     """
     Translates KrowdIO users into a list of dicts about Spudder entities
     :param krowdio_dict: the 'users' part of a response from the
@@ -373,7 +373,7 @@ def krowdio_users_to_links(current_role, krowdio_dict, filter=None):
                     'custom_tag': FanFollowingEntityTag.GetTag(
                         fan=current_role.entity,
                         entity_id=fan.id,
-                        entity_type=RoleController.ENTITY_FAN)
+                        entity_type=RoleController.ENTITY_FAN) if can_edit else None
                 })
             elif storage_obj.role_type == 'sponsor' and (filter == 'sponsor' or filter is None):
                 sponsor = SponsorPage.objects.get(id=storage_obj.role_id)
@@ -388,7 +388,7 @@ def krowdio_users_to_links(current_role, krowdio_dict, filter=None):
                     'custom_tag': FanFollowingEntityTag.GetTag(
                         fan=current_role.entity,
                         entity_id=sponsor.id,
-                        entity_type=RoleController.ENTITY_SPONSOR)
+                        entity_type=RoleController.ENTITY_SPONSOR) if can_edit else None
                 })
             elif storage_obj.role_type == 'student' and (filter == 'student' or filter is None):
                 stu = Student.objects.get(id=storage_obj.role_id)
@@ -403,7 +403,7 @@ def krowdio_users_to_links(current_role, krowdio_dict, filter=None):
                     'custom_tag': FanFollowingEntityTag.GetTag(
                         fan=current_role.entity,
                         entity_id=stu.id,
-                        entity_type=RoleController.ENTITY_STUDENT)
+                        entity_type=RoleController.ENTITY_STUDENT) if can_edit else None
                 })
         elif storage_obj.venue:
             if storage_obj.venue.logo and (filter == 'venue' or filter is None):
@@ -417,7 +417,7 @@ def krowdio_users_to_links(current_role, krowdio_dict, filter=None):
                 'custom_tag': FanFollowingEntityTag.GetTag(
                     fan=current_role.entity,
                     entity_id=storage_obj.venue.id,
-                    entity_type=EntityController.ENTITY_VENUE)
+                    entity_type=EntityController.ENTITY_VENUE) if can_edit else None
             })
         elif storage_obj.team and (filter == 'team' or filter is None):
             if storage_obj.team.image:
@@ -431,7 +431,7 @@ def krowdio_users_to_links(current_role, krowdio_dict, filter=None):
                 'custom_tag': FanFollowingEntityTag.GetTag(
                     fan=current_role.entity,
                     entity_id=storage_obj.team.id,
-                    entity_type=EntityController.ENTITY_TEAM)
+                    entity_type=EntityController.ENTITY_TEAM) if can_edit else None
             })
     return users
 
