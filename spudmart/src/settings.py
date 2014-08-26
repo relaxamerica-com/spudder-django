@@ -149,7 +149,7 @@ shared_settings = {
         'twitter_access_token': '481249312-aFVuYa0HUCTKV7bc3Xrnk2twNHXwLV6r3uteKwe0',
         'twitter_access_token_secret': 'hHPebsFws3AcWyDrAvjnxapUJ95JI15NjZ7TwiXgF5f3v',
         'support_email': 'support@spudder.com',
-        'krowdio_client_key': '53fc72a6f1f70e3fc79f0876',
+        'krowdio_client_key': '52769e9ff1f70e0552df58a4',
 
     },
     'sharp-avatar-587': {  # lukasz@spuder.com
