@@ -14,6 +14,7 @@ urlpatterns = patterns(
     (r'^stop_following$', 'stop_following_view'),
     (r'^follow$', 'follow'),
     (r'^test$', 'test_spuds'),
+    (r'^add_spud_comment', 'add_spud_comment'),
     url(r'', 'landing_page'),
 )
 

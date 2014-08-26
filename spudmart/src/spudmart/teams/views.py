@@ -3,6 +3,7 @@ import settings
 from spudderaccounts.templatetags.spudderaccountstags import is_fan
 from spudderdomain.controllers import TeamsController, RoleController, SpudsController
 from spudderdomain.models import TeamPage, Location, TeamVenueAssociation
+from spudderkrowdio.models import FanFollowingEntityTag
 from spudmart.teams.forms import CreateTeamForm, TeamPageForm
 from django.http import HttpResponseRedirect, HttpResponse
 from spudmart.upload.models import UploadedFile
@@ -98,6 +99,10 @@ def public_view(request, page_id):
         'venues': associated_venues,
         'base_url': 'spudderspuds/base.html',
         'team_spuds': SpudsController.GetSpudsForTeam(page)}
+
+    if is_fan(request.current_role):
+        tags = FanFollowingEntityTag.objects.filter(fan=request.current_role.entity)
+        template_data['tags'] = [(t.tag, t.get_entity_icon()) for t in tags]
     return render(request, 'spudderspuds/teams/pages/team_page_view.html', template_data)
 
 

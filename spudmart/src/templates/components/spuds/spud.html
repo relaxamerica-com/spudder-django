@@ -3,8 +3,7 @@
 <div class="spud-container" style="background-image: url({{ spud.image.standard_resolution.url}})">
     <div class="caption">
 {#        <div class="user media">#}
-
-            {% if 'spud_tagging'|feature_is_enabled %}
+            {% if 'spud_tagging'|feature_is_enabled and tags%}
                 <a class="btn btn-primary btn-sm spud-add-tags" title="Add Tags" id="add-spud-tags" style="top:8px"><i class="fa fa-fw fa-tags"></i></a>
                 <div class="user media" id="add-tags-div" style="color:black !important;display:none;">
                     <p style="color:white !important">Tag someone you follow:</p>

@@ -1,6 +1,7 @@
 import json
 from django.shortcuts import render, get_object_or_404
 from django.template.loader import render_to_string
+from spudderaccounts.templatetags.spudderaccountstags import is_fan
 from spudderdomain.models import TeamVenueAssociation
 from spudmart.utils.cover_image import reset_cover_image, save_cover_image_from_request
 from spudmart.utils.emails import send_email
@@ -25,7 +26,7 @@ from spudmart.CERN.rep import added_basic_info, added_photos, added_logo, \
 from spudmart.CERN.models import Student
 
 from spudderdomain.controllers import SpudsController, RoleController
-from spudderkrowdio.models import KrowdIOStorage
+from spudderkrowdio.models import KrowdIOStorage, FanFollowingEntityTag
 from spudderkrowdio.utils import get_user_mentions_activity, delete_spud
 import logging
 import datetime
@@ -74,6 +75,11 @@ def view(request, venue_id):
     venue_spuds = get_user_mentions_activity(storage)
     teams = [team.team_page for team in TeamVenueAssociation.objects.filter(venue=venue)]
 
+    tags = []
+    if is_fan(request.current_role):
+        fan_tags = FanFollowingEntityTag.objects.filter(fan=request.current_role.entity)
+        tags = [(t.tag, t.get_entity_icon()) for t in fan_tags]
+
     return render(request, 'spuddercern/pages/venues_view.html', {
         'venue': venue,
         'teams': teams,
@@ -87,7 +93,9 @@ def view(request, venue_id):
         'student': student,
         'venue_spuds': venue_spuds,
         'base_url': 'spuddercern/base.html',
+        'tags': tags
     })
+
 
 def index(request):
     return render(request, 'spuddercern/pages/venue_index.html')

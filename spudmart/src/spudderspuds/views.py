@@ -22,7 +22,7 @@ from spudmart.accounts.templatetags.accounts import fan_page_name, user_name
 from spudmart.sponsors.models import SponsorPage
 from spudmart.upload.models import UploadedFile
 from spudmart.utils.cover_image import reset_cover_image, save_cover_image_from_request
-from spudderkrowdio.utils import start_following, stop_following, get_following
+from spudderkrowdio.utils import start_following, stop_following, get_following, get_following, post_comment
 from spudmart.venues.models import Venue
 
 
@@ -35,8 +35,10 @@ def landing_page(request):
         shuffle(stream)
         template_data['spuds'] = stream
         krowdio_response = get_following(request.current_role)
-        template_data['teams'] = krowdio_users_to_links(request.can_edit, request.current_role, krowdio_response['data'], 'team')
-        template_data['fans'] = krowdio_users_to_links(request.can_edit, request.current_role, krowdio_response['data'], 'fan')
+        template_data['teams'] = krowdio_users_to_links(request.current_role, krowdio_response['data'], 'team')
+        template_data['fans'] = krowdio_users_to_links(request.current_role, krowdio_response['data'], 'fan')
+        tags = FanFollowingEntityTag.objects.filter(fan=request.current_role.entity)
+        template_data['tags'] = [(t.tag, t.get_entity_icon()) for t in tags]
     return render(request, 'spudderspuds/pages/landing_page.html', template_data)
 
 
@@ -129,13 +131,18 @@ def fan_profile_view(request, page_id):
         'page': page, 'fan_spuds': SpudsController.GetSpudsForFan(page),
         'base_url': 'spudderspuds/base.html',
         'following_teams': krowdio_users_to_links(request.can_edit, fan_role, krowdio_response['data'], 'team'),
-        'following_fans': krowdio_users_to_links(request.can_edit, fan_role, krowdio_response['data'], 'fan')}
+                'following_fans': krowdio_users_to_links(request.can_edit, fan_role, krowdio_response['data'], 'fan')}
     if request.can_edit:
         template_data['following_teams_title'] = "<img src='/static/img/spudderspuds/button-teams-tiny.png' /> Teams You Follow"
         template_data['following_fans_title'] = "<img src='/static/img/spudderspuds/button-fans-tiny.png' /> Fans You Follow"
     else:
         template_data['following_teams_title'] = "<img src='/static/img/spudderspuds/button-teams-tiny.png' /> Teams %s Follows" % page.name
         template_data['following_fans_title'] = "<img src='/static/img/spudderspuds/button-fans-tiny.png' /> Fans %s Follows" % page.name
+
+    if is_fan(request.current_role):
+        tags = FanFollowingEntityTag.objects.filter(fan=request.current_role.entity)
+        template_data['tags'] = [(t.tag, t.get_entity_icon()) for t in tags]
+
     return render(request, 'spudderspuds/fans/pages/fan_page_view.html', template_data)
 
 
@@ -458,4 +465,28 @@ def test_spuds(request):
         template_data['spuds'] = stream
         tags = FanFollowingEntityTag.objects.filter(fan=request.current_role.entity)
         template_data['tags'] = [(t.tag, t.get_entity_icon()) for t in tags]
-    return render(request, 'spudderspuds/pages/test_spuds.html', template_data)
+        return render(request, 'spudderspuds/pages/test_spuds.html', template_data)
+
+
+def add_spud_comment(request):
+    """
+    Adds a comment to a SPUD (KrowdIO post)
+    :param request: a POST request
+    :return: response from KrowdIO or HttpResponseNotAllowed
+    """
+    if request.method == 'POST':
+        entity = KrowdIOStorage.GetOrCreateForCurrentUserRole(
+            user_role=request.current_role)
+        spud_id = request.POST.get('spud_id')
+        tags = request.POST.getlist('tags[]')
+
+        text = ""
+        fan = request.current_role.entity
+        for t in tags:
+            tag = FanFollowingEntityTag.objects.get(fan=fan, tag=t)
+            text += "@%s%s" % (tag.entity_type, tag.entity_id)
+
+        json = post_comment(entity, spud_id, text)
+        return HttpResponse(simplejson.dumps(json))
+    else:
+        return HttpResponseNotAllowed(['POST'])

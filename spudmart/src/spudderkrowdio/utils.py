@@ -85,9 +85,7 @@ def get_spuds_for_entity(entity, page=1):
     
     response = simplejson.loads(response.content)
 
-    items = response.get('items', [])
-
-    return [i.get('extra', {}) for i in items]
+    return response.get('items', [])
 
 
 def get_spud_stream_for_entity(entity, page=1):
@@ -97,10 +95,7 @@ def get_spud_stream_for_entity(entity, page=1):
 
     response = simplejson.loads(response.content)
 
-    items = response.get('items', [])
-
-    # return [i.get('extra', {}) for i in items]
-    return items
+    return response.get('items', [])
 
 
 def get_user_mentions_activity(entity):
@@ -114,7 +109,15 @@ def get_user_mentions_activity(entity):
 
     items = response.get('items', [])
 
-    return [i.get('target', {}).get('json', {}).get('extra', {}) for i in items]
+    returned_spuds = []
+    for i in items:
+        target = i.get('target')
+        if target['objectType'] == 'image':
+            returned_spuds.append(target['json'])
+        elif target['objectType'] == 'comment':
+            returned_spuds.append(i.get('object').get('json'))
+
+    return returned_spuds
 
 
 def post_comment(entity, spud_id, text):

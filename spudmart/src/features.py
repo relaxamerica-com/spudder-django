@@ -3,9 +3,9 @@ FEATURES = {
         'spud_tagging'
     ],
     'stage': [
-
+        'spud_tagging'
     ],
     'live': [
-
+        'spud_tagging'
     ]
 }
