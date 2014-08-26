@@ -1,0 +1,45 @@
+{% extends 'spudderadmin/pages/reports/_reports_base.html' %}
+
+{% load spudderspudstags %}
+
+{% block reports_nav %}
+    {% include 'spudderadmin/pages/reports/sidenav.html'%}
+{% endblock %}
+
+{% block reports_body %}
+<div class="panel panel-default">
+        <div class="panel-heading">
+            <div class="panel-title">
+                <h4>Spuds for {{ name }} ({{ spuds|length }} total)</h4>
+            </div>
+            <div class="panel-body">
+                <table class="table table-striped {% if spuds %}datatable{% endif %}">
+                    <thead>
+                        <tr>
+                            <th>SPUD</th>
+{#                            <th>Text (for searching)</th>#}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for s in spuds %}
+                            <tr>
+                                <td>
+                                    {% include 'components/spuds/spud.html' with spud=s.extra %}
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="3">
+                                    <div class="alert alert-warning">
+                                        <p>There are no SPUDS to show for this venue.</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}

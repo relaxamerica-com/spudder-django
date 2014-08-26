@@ -1,34 +1,34 @@
 {% extends 'spudderadmin/pages/reports/_reports_base.html' %}
 
-{% load spudderspudstags %}
-
 {% block reports_nav %}
-    {% include 'spudderadmin/pages/reports/sidenav.html' with active="teams" %}
+    {% include 'spudderadmin/pages/reports/sidenav.html' with active="all_venues" %}
 {% endblock %}
 
 {% block reports_body %}
 <div class="panel panel-default">
         <div class="panel-heading">
             <div class="panel-title">
-                <h4>Spudder Teams ({{ teams|length }} total)</h4>
+                <h4>Spudder Venues ({{ venues|length }} total)</h4>
             </div>
             <div class="panel-body">
-                <table class="table table-striped {% if teams %}datatable{% endif %}">
+                <table class="table table-striped {% if venues %}datatable{% endif %}">
                     <thead>
                         <tr>
-                            <th>Team Name</th>
-                            <th>Team Admin</th>
+                            <th>Name</th>
+                            <th>@tag</th>
+                            <th>Sport</th>
                             <th class="no-sort"></th>
                         </tr>
                     </thead>
                     <tbody>
-                        {% for t in teams %}
+                        {% for v in venues %}
                             <tr>
-                                <td><a href="/team/{{ t.team_page.id }}">{{ t.team_page.name }}</a></td>
-                                <td><a href="{% get_team_admin_profile t %}">{% get_team_admin_name t %}</a></td>
+                                <td><a href="/venues/view/{{ v.id }}">{{ v.aka_name }}</a></td>
+                                <td>{{ v.name }}</td>
+                                <td>{{ v.sport }}</td>
                                 <td class="actions" style="white-space: nowrap">
-                                    <a class="btn btn-primary" title="Send Email" href="/spudderadmin/reports/teams/{{ t.id }}/send_admin_email">
-                                        <i class="fa fa-fw fa-envelope-o"></i> <span class="hidden-xs">Send Email</span>
+                                    <a class="btn btn-primary" title="See SPUDS" href="/spudderadmin/reports/venues/{{ v.id }}/spuds">
+                                        <i class="fa fa-fw fa-microphone"></i> <span class="hidden-xs">See SPUDS</span>
                                     </a>
                                 </td>
                             </tr>
@@ -36,7 +36,7 @@
                             <tr>
                                 <td colspan="3">
                                     <div class="alert alert-warning">
-                                        <p>There are no teams to show.</p>
+                                        <p>There are no venues to show.</p>
                                     </div>
                                 </td>
                             </tr>

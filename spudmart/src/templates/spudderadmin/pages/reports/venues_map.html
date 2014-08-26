@@ -1,0 +1,25 @@
+{% extends 'spudderadmin/pages/reports/_reports_base.html' %}
+
+{% load accounts %}
+
+{% block reports_nav %}
+    {% include 'spudderadmin/pages/reports/sidenav.html' with active="venues_map" %}
+{% endblock %}
+
+{% block reports_body %}
+<div class="panel panel-default">
+        <div class="panel-heading">
+            <div class="panel-title">
+                <h4>Venues By Sport</h4>
+            </div>
+            <div class="panel-body">
+                <h4>Click on a sport below, and you will be taken to a page with the national venues for that sport.</h4>
+                <ul class="list-unstyled">
+                {% for sport in sports %}
+                    <li><a href="/spudderadmin/reports/venues/{{ sport }}/map">{{ sport }}</a></li>
+                {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endblock %}

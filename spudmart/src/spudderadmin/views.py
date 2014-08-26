@@ -16,6 +16,7 @@ from spudderadmin.forms import AtPostSpudTwitterAPIForm, SystemDeleteTeamsForm, 
 from spudderadmin.utils import encoded_admin_session_variable_name
 from spudderdomain.models import FanPage, LinkedService, TeamAdministrator, TeamPage, TeamVenueAssociation
 from spudderkrowdio.models import KrowdIOStorage
+from spudderkrowdio.utils import get_user_mentions_activity
 from spuddersocialengine.atpostspud.models import AtPostSpudTwitterAuthentication, AtPostSpudTwitterCounter, AtPostSpudServiceConfiguration
 from spuddersocialengine.models import SpudFromSocialMedia
 from spudmart.CERN.models import Student, School, STATES
@@ -25,7 +26,7 @@ from spudmart.donations.models import RentVenue
 from spudmart.recipients.models import VenueRecipient
 from spudmart.sponsors.models import SponsorPage
 from spudmart.upload.models import UploadedFile
-from spudmart.venues.models import PendingVenueRental, Venue
+from spudmart.venues.models import PendingVenueRental, Venue, SPORTS
 from spudmart.CERN.models import STATUS_ACCEPTED, STATUS_REJECTED, \
     STATUS_WAITLIST
 
@@ -466,46 +467,104 @@ def students(request):
            context_instance=RequestContext(request))
 
 
-    @admin_login_required
-    def teams(request):
-        """
-        Overview of Spudder Teams
-        :param request: any request
-        :return: a table of all Teams with Team Administrator
-        """
-        return render_to_response('spudderadmin/pages/reports/teams.html',
-                                  {
-                                      'teams': TeamAdministrator.objects.all().select_related('team_page')
-                                  },
-                                  context_instance=RequestContext(request))
+@admin_login_required
+def teams(request):
+    """
+    Overview of Spudder Teams
+    :param request: any request
+    :return: a table of all Teams with Team Administrator
+    """
+    return render_to_response('spudderadmin/pages/reports/teams.html',
+                              {
+                                  'teams': TeamAdministrator.objects.all().select_related('team_page')
+                              },
+                              context_instance=RequestContext(request))
 
 
-    @admin_login_required
-    def send_team_admin_email(request, admin_id):
-        """
-        Renders simple page for emailing the a Team admin
-        :param request: any request
-        :param admin_id: a valid id of a TeamAdministrator object
-        :return: a very simple form
-        """
-        admin = TeamAdministrator.objects.get(id=admin_id)
-        profile = name = email = ""
+@admin_login_required
+def send_team_admin_email(request, admin_id):
+    """
+    Renders simple page for emailing the a Team admin
+    :param request: any request
+    :param admin_id: a valid id of a TeamAdministrator object
+    :return: a very simple form
+    """
+    admin = TeamAdministrator.objects.get(id=admin_id)
+    profile = name = email = ""
 
-        if admin.entity_type == 'fan':
-            profile = "/fan/%s" % admin.entity_id
-            fan = FanPage.objects.get(id=admin.entity_id)
-            name = fan_page_name(fan)
-            email = fan.fan.email
-        elif admin.entity_type == 'student':
-            profile = "/cern/student/%s" % admin.entity_id
-            stu = Student.objects.get(id=admin.entity_id)
-            name = user_name(stu.user) or stu.display_name or 'No Name'
-            email = student_email(stu)
+    if admin.entity_type == 'fan':
+        profile = "/fan/%s" % admin.entity_id
+        fan = FanPage.objects.get(id=admin.entity_id)
+        name = fan_page_name(fan)
+        email = fan.fan.email
+    elif admin.entity_type == 'student':
+        profile = "/cern/student/%s" % admin.entity_id
+        stu = Student.objects.get(id=admin.entity_id)
+        name = user_name(stu.user) or stu.display_name or 'No Name'
+        email = student_email(stu)
 
-        return render_to_response('spudderadmin/pages/reports/send_email.html',
-                                  {
-                                      'profile': profile,
-                                      'name': name,
-                                      'email': email
-                                  },
-                                  context_instance=RequestContext(request))
+    return render_to_response('spudderadmin/pages/reports/send_email.html',
+                              {
+                                  'profile': profile,
+                                  'name': name,
+                                  'email': email
+                              },
+                              context_instance=RequestContext(request))
+
+
+@admin_login_required
+def all_venues(request):
+    """
+    Basic info about all active Spudder venues
+    :param request: any request
+    :return: a table with search of all venues
+    """
+    return render_to_response('spudderadmin/pages/reports/all_venues.html',
+        {
+            'venues': Venue.objects.all()
+        },
+        context_instance=RequestContext(request))
+
+
+@admin_login_required
+def spuds_for_venue(request, venue_id):
+    """
+    Displays the SPUDS for the supplied venue
+    :param request: any request
+    :param venue_id: a valid ID of a Venue object
+    :return: a table of SPUDs
+    """
+    storage = KrowdIOStorage.GetOrCreateForVenue(venue_id)
+    venue_spuds = get_user_mentions_activity(storage)
+    return render_to_response('spudderadmin/pages/reports/spuds.html',
+        {
+            'name': Venue.objects.get(id=venue_id).name,
+            'spuds': venue_spuds
+        },
+        context_instance=RequestContext(request))
+
+
+@admin_login_required
+def venues_map_landing(request):
+    """
+    Landing page to get to venue maps
+    :param request: any request
+    :return: a page with a list of links to sport-specific map pages
+    """
+    return render_to_response('spudderadmin/pages/reports/venues_map.html',
+        {'sports': SPORTS},
+        context_instance=RequestContext(request))
+
+
+@admin_login_required
+def venues_map_by_sport(request, sport):
+    """
+    Displays a US map with all venues marked
+    :param request: any request
+    :param sport: a string from SPORTS
+    :return: a simple admin page w/large map
+    """
+    return render_to_response('spudderadmin/pages/reports/venues_map_by_sport.html',
+        {'places_api_key': settings.GOOGLE_PLACES_API_KEY,
+        'venues': Venue.objects.filter(sport=sport)},
+        context_instance=RequestContext(request))

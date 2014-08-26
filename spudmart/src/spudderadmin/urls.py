@@ -25,14 +25,18 @@ urlpatterns = patterns(
     url(r'^/system/school_covers$', 'system_remove_school_cover_images'),
     url(r'^/system', 'system_dashboard'),
 
-    url(r'^/reports$','user_reports_dashboard'),
     url(r'^/reports/fans$', 'fan_reports'),
     url(r'^/reports/fans/(?P<fan_id>\d+)/send_email$','send_fan_email'),
     url(r'^/reports/sponsors$', 'sponsor_reports'),
     url(r'^/reports/sponsors/(?P<sponsor_id>\d+)/sponsorships$', 'sponsorships'),
-    url(r'^/reports/sponsors/all_sponsorship$s', 'all_sponsorships'),
+    url(r'^/reports/sponsors/all_sponsorships$', 'all_sponsorships'),
     url(r'^/reports/teams$', 'teams'),
     url(r'^/reports/teams/(?P<admin_id>\d+)/send_admin_email$','send_team_admin_email'),
+    url(r'^/reports/venues$', 'all_venues'),
+    url(r'^/reports/venues/(?P<venue_id>\d+)/spuds','spuds_for_venue'),
+    url(r'^/reports/venues/map', 'venues_map_landing'),
+    url(r'^/reports/venues/(?P<sport>.+)/map', 'venues_map_by_sport'),
+    url(r'^/reports', 'user_reports_dashboard'),
 
     url(r'^/send_email$', 'send_email'),
 
