@@ -77,6 +77,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     # 'spudmart.accounts.middleware.SponsorMiddleware',
     'spuddermiddleware.SSL_Middleware.SSLRedirect',
+    'spuddermiddleware.spuddersharedsettingsmiddleware.EnsureSharedSettingsMiddleware',
     'spuddermiddleware.staffmiddleware.StaffMiddleware',
     'spuddermiddleware.spudderaccountsmiddleware.RolesMiddleware',
     'spuddermiddleware.spudderaccountsmiddleware.AccountPasswordMiddleware',
@@ -148,6 +149,7 @@ shared_settings = {
         'twitter_access_token': '481249312-aFVuYa0HUCTKV7bc3Xrnk2twNHXwLV6r3uteKwe0',
         'twitter_access_token_secret': 'hHPebsFws3AcWyDrAvjnxapUJ95JI15NjZ7TwiXgF5f3v',
         'support_email': 'support@spudder.com',
+        'krowdio_client_key': '53fc72a6f1f70e3fc79f0876',
 
     },
     'sharp-avatar-587': {  # lukasz@spuder.com
@@ -215,6 +217,7 @@ shared_settings = {
         'instagram_client_id': '3888eac365f7468dabd5bf9ad06c8930',
         'instagram_client_secret': 'b1bc01bf1a9944e2834288484f450ab2',
         'support_email': 'mg@metalayer.com',
+        'krowdio_client_key': '53fc715cf1f70e3fc79f0873',
 
     },
     'spudder-live': {  #mg@metalayer.com
@@ -245,6 +248,7 @@ shared_settings = {
         'twitter_access_token': '',
         'twitter_access_token_secret': '',
         'support_email': 'support@spudder.com',
+        'krowdio_client_key': '52769e9ff1f70e0552df58a4',
     },
 }
 
@@ -263,13 +267,14 @@ TWITTER_CLIENT_ID = shared_settings[app_name].get('twitter_client_id', '')
 TWITTER_ACCESS_TOKEN = shared_settings[app_name].get('twitter_access_token', '')
 TWITTER_ACCESS_TOKEN_SECRET = shared_settings[app_name].get('twitter_access_token_secret', '')
 SUPPORT_EMAIL = shared_settings[app_name]['support_email']
+KROWDIO_CLIENT_KEY = shared_settings[app_name].get('krowdio_client_key', None)
 AT_POST_SPUD_BASE_TWEET_ID = 503359742325321728
+
 
 # Configuration shared across all applications
 AWS_ACCESS_KEY_ID = 'AKIAIEUN2XKQF4ZU7UDA'
 AWS_SECRET_KEY_ID = 'CIwpNtDm6OBGUiOGxjZ+XqdOjMPhhaFgTi7c1Ah/'
 GOOGLE_PLACES_API_KEY = 'AIzaSyBY2lT_31eUX7yTH90gyPXxcJvM4pqSycs'
-KROWDIO_CLIENT_KEY = '52769e9ff1f70e0552df58a4'
 KROWDIO_GLOBAL_PASSWORD = 'spudtastic'
 
 LOGIN_URL = '/users/account/signin'

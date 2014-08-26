@@ -18,6 +18,7 @@ urlpatterns = patterns(
     url(r'^/socialengine', 'socialengine_dashboard'),
 
     url(r'^/system/teams$', 'system_teams'),
+    url(r'^/system/venues$', 'system_venues'),
     url(r'^/system/nukedb$', 'system_nukedb'),
     url(r'^/system/school_covers$', 'system_remove_school_cover_images'),
     url(r'^/system', 'system_dashboard'),
@@ -31,5 +32,5 @@ urlpatterns = patterns(
 
     url(r'^/send_email$', 'send_email'),
 
-    url(r'^$', 'admin_login'),
+    url(r'^', 'admin_login'),
 )

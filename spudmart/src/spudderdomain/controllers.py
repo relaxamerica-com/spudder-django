@@ -1,9 +1,10 @@
 from datetime import datetime, timedelta
 from spudderdomain.models import LinkedService, FanPage, TeamPage, TeamAdministrator
+from spudderdomain.wrappers import EntityTeam, EntityVenue
 from spuddersocialengine.models import SpudFromSocialMedia
 from spudmart.CERN.models import Student
 from spudmart.sponsors.models import SponsorPage
-from spudderkrowdio.utils import post_spud, get_user_mentions_activity, get_spud_stream_for_entity
+from spudderkrowdio.utils import post_spud, get_user_mentions_activity, get_spud_stream_for_entity, start_following
 from spudderkrowdio.models import KrowdIOStorage, FanFollowingEntityTag
 from spudmart.venues.models import Venue
 
@@ -17,12 +18,12 @@ class EntityController(object):
     def GetEntityByTypeAndId(cls, entity_type, entity_id):
         if entity_type == cls.ENTITY_TEAM:
             try:
-                TeamPage.objects.get(id=entity_id)
+                return TeamPage.objects.get(id=entity_id)
             except TeamPage.DoesNotExist:
                 return None
         if entity_type == cls.ENTITY_VENUE:
             try:
-                Venue.objects.get(id=entity_id)
+                return Venue.objects.get(id=entity_id)
             except Venue.DoesNotExist:
                 return None
         return None
@@ -336,3 +337,16 @@ class SpudsController(object):
 
     def get_spud_stream(self):
         return get_spud_stream_for_entity(KrowdIOStorage.GetOrCreateForCurrentUserRole(self.role))
+
+
+class SocialController(object):
+
+    @classmethod
+    def AssociateTeamWithVenue(cls, team, venue):
+        """
+        Start a two way following between team and venue
+        """
+        team_entity = EntityTeam(team)
+        venue_entity = EntityVenue(venue)
+        start_following(team_entity, venue_entity.entity_type, venue_entity.entity.id)
+        start_following(venue_entity, team_entity.entity_type, team_entity.entity.id)

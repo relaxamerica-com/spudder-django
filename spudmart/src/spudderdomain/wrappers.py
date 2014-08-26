@@ -1,3 +1,6 @@
+import abc
+
+
 class EntityBase(object):
     """
     Base class for all entity wrappers
@@ -8,6 +11,26 @@ class EntityBase(object):
     @property
     def entity(self):
         return self._entity
+
+    @abc.abstractproperty
+    def entity_type(self):
+        pass
+
+
+class EntityVenue(EntityBase):
+
+    @property
+    def entity_type(self):
+        from spudderdomain.controllers import EntityController
+        return EntityController.ENTITY_VENUE
+
+
+class EntityTeam(EntityBase):
+
+    @property
+    def entity_type(self):
+        from spudderdomain.controllers import EntityController
+        return EntityController.ENTITY_TEAM
 
 
 class LinkedServiceBase(object):

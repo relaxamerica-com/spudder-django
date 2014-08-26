@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 import settings
 from spudderaccounts.templatetags.spudderaccountstags import is_fan
-from spudderdomain.controllers import TeamsController, RoleController, SpudsController
+from spudderdomain.controllers import TeamsController, RoleController, SpudsController, SocialController
 from spudderdomain.models import TeamPage, Location, TeamVenueAssociation
 from spudderkrowdio.models import FanFollowingEntityTag
 from spudmart.teams.forms import CreateTeamForm, TeamPageForm
@@ -220,7 +220,8 @@ def remove_association_with_venue(request, page_id, venue_id):
 
 
 def associate_team_with_venue(request, page_id, venue_id):
-    page = get_object_or_404(TeamPage, pk=page_id)
+    team = get_object_or_404(TeamPage, pk=page_id)
     venue = get_object_or_404(Venue, pk=venue_id)
-    TeamVenueAssociation(team_page=page, venue=venue).save()
+    TeamVenueAssociation.objects.get_or_create(team_page=team, venue=venue)[0].save()
+    SocialController.AssociateTeamWithVenue(team, venue)
     return HttpResponseRedirect('/team/%s' % page_id)

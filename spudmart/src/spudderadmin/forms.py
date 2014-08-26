@@ -27,3 +27,7 @@ class SystemDeleteTeamsForm(forms.Form):
         if password != "spudmart2":
             raise forms.ValidationError("You don't know the password, should you be doing this?")
         return password
+
+
+class SystemDeleteVenuesForm(SystemDeleteTeamsForm):
+    pass

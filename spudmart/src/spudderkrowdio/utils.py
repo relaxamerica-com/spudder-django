@@ -47,19 +47,18 @@ def _delete(url, data, headers={}):
     
     
 def _ensure_oAuth_token(entity):
-    expires = entity.krowdio_access_token_expires
-    seconds = int(round(time.time()))
+    # expires = entity.krowdio_access_token_expires
+    # seconds = int(round(time.time()))
     
-    if seconds > expires + 10:
-        data = {
-            'client_id': settings.KROWDIO_CLIENT_KEY,
-            'email': entity.krowdio_email,
-            'password': settings.KROWDIO_GLOBAL_PASSWORD
-        }
-        response = _post('http://auth.krowd.io/user/login', data)
-        krowdio_data = simplejson.loads(response.content)
-        
-        _update_entity(entity, krowdio_data)
+    data = {
+        'client_id': settings.KROWDIO_CLIENT_KEY,
+        'email': entity.krowdio_email,
+        'password': settings.KROWDIO_GLOBAL_PASSWORD
+    }
+    response = _post('http://auth.krowd.io/user/login', data)
+    krowdio_data = simplejson.loads(response.content)
+
+    _update_entity(entity, krowdio_data)
     
     return 'Token token="' + entity.krowdio_access_token + '"'
     
@@ -85,7 +84,7 @@ def get_spuds_for_entity(entity, page=1):
     
     response = simplejson.loads(response.content)
 
-    return response.get('items', [])
+    return [i.get('extra', {}) for i in response.get('items', [])]
 
 
 def get_spud_stream_for_entity(entity, page=1):
@@ -152,32 +151,23 @@ def get_spud_comments(entity, spud_id, page=1):
     return simplejson.loads(response.content)
 
 
-def start_following(current_role, entity_type, entity_id):
+def start_following(current_entity, entity_type, entity_id):
     """
     Adds a KrowdIO User to a Fan's followers
-    :param current_role: any Role<Type> object (the Fan)
+    :param current_entity: any instance of EntityBase
     :param entity_type: a KrowdIOStorage type string ('Venue', 'Team',
         or 'fan')
     :param entity_id: the ID of the original object to be followed (the
         Venue id, the Team id, or the Fan id)
     :return: the json response from the KrowdIO API
     """
-    entity = KrowdIOStorage.GetOrCreateForCurrentUserRole(user_role=current_role)
+    entity = KrowdIOStorage.GetOrCreateFromEntity(current_entity.entity.id, current_entity.entity_type)
     token = _ensure_oAuth_token(entity)
-
-    following_id = None
-    if entity_type == 'Venue':
-        following_id = KrowdIOStorage.GetOrCreateForVenue(entity_id).krowdio_user_id
-    elif entity_type == 'Team':
-        following_id = KrowdIOStorage.GetOrCreateForTeam(entity_id).krowdio_user_id
-    elif entity_type == 'fan':
-        following_id = KrowdIOStorage.GetOrCreateFromRoleEntity(entity_id, entity_type).krowdio_user_id
-
+    following_id = KrowdIOStorage.GetOrCreateFromEntity(entity_id, entity_type).krowdio_user_id
     response = _post(
         'http://api.krowd.io/user/%s/relationship' % following_id,
         {'action': 'follow'},
         {'Authorization': token})
-
     return simplejson.loads(response.content)
 
 

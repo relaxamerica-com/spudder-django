@@ -27,8 +27,8 @@ def _post(url, data, headers={}):
 def register_entity(entity):
     data = {
         'client_id': settings.KROWDIO_CLIENT_KEY,
-        'username':  entity.type + str(entity._id),
-        'email': entity.type + str(entity._id) + "@spudder.com",
+        'username':  "%s%s" % (entity.type, entity._id),
+        'email': "%s%s@spudder.com" % (entity.type, entity._id),
         'password': settings.KROWDIO_GLOBAL_PASSWORD
     }
 
@@ -68,16 +68,21 @@ class KrowdIOStorage(models.Model):
             register_entity(storage)
         return storage
 
-
     @classmethod
-    def GetOrCreateFromRoleEntity(cls, role_id, role_type):
-        storage, created = KrowdIOStorage.objects.get_or_create(role_type=role_type, role_id=role_id)
+    def GetOrCreateFromEntity(cls, entity_id, entity_type):
+        # if there is a specific handler for this entity type then use it
+        from spudderdomain.controllers import EntityController
+        if entity_type == EntityController.ENTITY_VENUE:
+            return cls.GetOrCreateForVenue(entity_id)
+        if entity_type == EntityController.ENTITY_TEAM:
+            return cls.GetOrCreateForTeam(entity_id)
+
+        storage, created = KrowdIOStorage.objects.get_or_create(role_type=entity_type, role_id=entity_id)
         if created:
             storage._id = storage.role_id
             storage.type = storage.role_type
             register_entity(storage)
         return storage
-
 
     @classmethod
     def GetOrCreateForVenue(cls, venue_id):
@@ -87,6 +92,10 @@ class KrowdIOStorage(models.Model):
             storage._id = venue.id
             storage.type = 'Venue'
             register_entity(storage)
+        if not storage.role_type or not storage.role_id:
+            storage.role_type = 'Venue'
+            storage.role_id = venue_id
+            storage.save()
         return storage
 
     @classmethod
@@ -102,6 +111,10 @@ class KrowdIOStorage(models.Model):
             storage._id = team.id
             storage.type = 'Team'
             register_entity(storage)
+        if not storage.role_type or not storage.role_id:
+            storage.role_type = 'Team'
+            storage.role_id = team_id
+            storage.save()
         return storage
 
 

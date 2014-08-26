@@ -4,7 +4,7 @@
 
 {% block content %}
     <h4>This team is not associated with any venue!</h4>
-    {% if can_edit %}
+    {% if request.can_edit %}
         <p>If you want to associate your team with a venue where it plays, use the button below!</p>
         <p>A team can be associated with an unlimited number of venues.</p>
         <a class="btn   btn-primary" href="/team/associate/{{ page.id }}" title="Associate with Venue"

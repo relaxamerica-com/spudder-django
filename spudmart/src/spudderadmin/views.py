@@ -12,7 +12,7 @@ import settings
 from spudderaccounts.models import SpudderUser
 from spudderaccounts.wrappers import RoleStudent, RoleFan, RoleSponsor
 from spudderadmin.decorators import admin_login_required
-from spudderadmin.forms import AtPostSpudTwitterAPIForm, SystemDeleteTeamsForm
+from spudderadmin.forms import AtPostSpudTwitterAPIForm, SystemDeleteTeamsForm, SystemDeleteVenuesForm
 from spudderadmin.utils import encoded_admin_session_variable_name
 from spudderdomain.models import FanPage, LinkedService, TeamAdministrator, TeamPage, TeamVenueAssociation
 from spudderkrowdio.models import KrowdIOStorage
@@ -141,6 +141,22 @@ def system_teams(request):
     template_data['delete_teams_form'] = delete_teams_form
     return render_to_response(
         'spudderadmin/pages/system/teams.html', template_data, context_instance=RequestContext(request))
+
+
+@admin_login_required
+def system_venues(request):
+    template_data = {}
+    delete_venues_form = SystemDeleteVenuesForm(initial={'action': "venues_delete"})
+    if request.method == "POST":
+        action = request.POST['action']
+        if action == "venues_delete":
+            delete_venues_form = SystemDeleteVenuesForm(request.POST)
+            if delete_venues_form.is_valid():
+                Venue.objects.all().delete()
+                messages.success(request, 'Venues deleted')
+    template_data['delete_venues_form'] = delete_venues_form
+    return render_to_response(
+        'spudderadmin/pages/system/venues.html', template_data, context_instance=RequestContext(request))
 
 
 @admin_login_required

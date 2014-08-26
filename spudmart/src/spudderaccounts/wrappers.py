@@ -32,10 +32,6 @@ class RoleBase(EntityBase):
         pass
 
     @abc.abstractproperty
-    def entity_type(self):
-        pass
-
-    @abc.abstractproperty
     def image(self):
         pass
 

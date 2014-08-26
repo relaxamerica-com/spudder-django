@@ -43,12 +43,12 @@
     {% else %}
         {% if request.can_follow %}
             {% if request.following %}
-                <a class="btn btn-primary" id="follow">
-                    <i class="fa fa-fw fa-minus"></i> <span>Unfollow</span>
-                </a>
+                <span class="label label-success">
+                    <i class="fa fa-check"></i> following
+                </span>
             {% else %}
-                <a class="btn btn-primary" href="/fan/follow?origin={{ request.path }}">
-                    <i class="fa fa-fw fa-plus"></i> Follow
+                <a class="btn btn-default" href="/fan/follow?origin={{ request.path }}">
+                    <img src="/static/img/spudderspuds/button-spuds-tiny.png" /> Start following
                 </a>
             {% endif %}
         {% endif %}

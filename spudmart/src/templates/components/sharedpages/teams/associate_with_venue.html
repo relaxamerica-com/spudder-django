@@ -20,7 +20,7 @@
     {% if is_associated %}
         {% include 'spudderteams/quotes/quote_team_already_associated_with_venue.html' %}
     {% else %}
-        <table class="table">
+        <table class="table {% if venues %}datatable{% endif %}">
             <thead>
                 <tr>
                     <th>#</th>
@@ -37,6 +37,15 @@
                             <a class="btn btn-xs btn-primary" href="/team/associate/{{ page.id }}/{{ venue.id }}" title="Associate with Venue">
                                 Associate
                             </a>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="3">
+                            <div class="alert alert-warning" style="width:90%; margin: 20px auto;">
+                                <h4><i class="fa fa-warning"></i> No venues matching your sport!</h4>
+                                <p>There are no venues matching the sport of your team.</p>
+                            </div>
                         </td>
                     </tr>
                 {% endfor %}
