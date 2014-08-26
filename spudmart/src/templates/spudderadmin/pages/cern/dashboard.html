@@ -8,40 +8,15 @@
     <div class="panel panel-default">
         <div class="panel-heading">
             <div class="panel-title">
-                <h4>Students</h4>
+                <h4>CERN Overview</h4>
             </div>
             <div class="panel-body">
-                <table class="table table-striped {% if students %}datatable{% endif %}">
-                    <thead>
-                        <tr>
-                            <th>Email Address</th>
-                            <th>School</th>
-                            <th class="no-sort"></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for s in students %}
-                            <tr>
-                                <td>{{ s.title|safe }}</td>
-                                <td>{{ s.entity.school.name }}</td>
-                                <td class="actions" style="white-space: nowrap">
-                                    <a class="btn btn-primary btn-sm" title="Send Email" href="/spudderadmin/cern/student/{{ s.entity.id }}/send_email">
-                                        <i class="fa fa-fw fa-envelope-o"></i><span class="hidden-xs"> Send Email</span>
-                                    </a>
-                                </td>
-                            </tr>
-                        {% empty %}
-                            <tr>
-                                <td colspan="3">
-                                    <div class="alert alert-warning">
-                                        <p>There are no students to show.</p>
-                                    </div>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-
+                <h4>Quick Metrics</h4>
+                <ul>
+                    <li>Total Active Schools: {{ schools }}</li>
+                    <li>Total Active Students: {{ students }}</li>
+                </ul>
+                <p>Use the navigation on the left to see detailed reports.</p>
             </div>
         </div>
     </div>

@@ -1,12 +1,14 @@
 {% extends 'spudderadmin/base.html' %}
 
+{% block title %}CERN Reports - Spudder Admin{% endblock %}
+
 {% block body %}
 
     <div class="container">
         <div class="row">
             <div class="col-sm-3">
                 <div class="text-center">
-                    <h3><img src="/static/img/spuddercern/button-cern-small.png" /> Manage CERN</h3>
+                    <h3><a href="/spudderadmin/dashboard"><img src="/static/img/spuddercern/button-cern-small.png" /> CERN Reports</a></h3>
                 </div>
                 <div class="list-group" style="margin-top: 20px;">
                     {% block cern_nav %}{% endblock %}

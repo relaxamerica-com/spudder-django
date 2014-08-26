@@ -18,7 +18,7 @@ from spudderdomain.models import FanPage, LinkedService, TeamAdministrator, Team
 from spudderkrowdio.models import KrowdIOStorage
 from spuddersocialengine.atpostspud.models import AtPostSpudTwitterAuthentication, AtPostSpudTwitterCounter, AtPostSpudServiceConfiguration
 from spuddersocialengine.models import SpudFromSocialMedia
-from spudmart.CERN.models import Student, School
+from spudmart.CERN.models import Student, School, STATES
 from spudmart.donations.models import RentVenue
 from spudmart.recipients.models import VenueRecipient
 from spudmart.sponsors.models import SponsorPage
@@ -55,7 +55,9 @@ def cern_dashboard(request):
     return render_to_response(
         'spudderadmin/pages/cern/dashboard.html',
         {
-            'students': [RoleStudent(s) for s in Student.objects.all()]
+            'students': Student.objects.all().count(),
+            'schools': Student.objects.filter(isHead=True).count(),
+
         },
         context_instance=RequestContext(request))
 
@@ -359,15 +361,12 @@ def user_reports_dashboard(request):
     :param request: any request
     :return: a very minimal admin page inside the User Reports
     """
-    fans = len(FanPage.objects.all())
-    sponsors = len(SponsorPage.objects.all())
-    venues = len(Venue.objects.all().exclude(renter=None))
-    total_venues = len(Venue.objects.all())
     return render_to_response('spudderadmin/pages/reports/dashboard.html',
-        {'fans': fans,
-         'sponsors': sponsors,
-         'venues': venues,
-         'total_venues': total_venues})
+        {'fans': FanPage.objects.all().count(),
+         'sponsors': SponsorPage.objects.all().count(),
+         'venues': Venue.objects.all().exclude(renter=None).count(),
+         'total_venues': Venue.objects.all().count(),
+         })
 
 
 @admin_login_required
@@ -433,4 +432,33 @@ def all_sponsorships(request):
     sponsorships = [(v, RentVenue.objects.get(venue=v)) for v in venues]
 
     return render_to_response('spudderadmin/pages/reports/all_sponsorships.html',
-                              {'sponsorships': sponsorships})
+                              {'sponsorships': sponsorships},
+                              context_instance=RequestContext(request))
+
+
+@admin_login_required
+def schools(request):
+    """
+    Overview of all active schools
+    :param request: any request
+    :return: a table of all schools
+    """
+    return render_to_response('spudderadmin/pages/cern/schools.html',
+           {
+               'students': Student.objects.filter(isHead=True).select_related('school')
+           },
+           context_instance=RequestContext(request))
+
+
+@admin_login_required
+def students(request):
+    """
+    Overview of all active students
+    :param request: any request
+    :return: a table of all students
+    """
+    return render_to_response('spudderadmin/pages/cern/students.html',
+           {
+               'students': Student.objects.all()
+           },
+           context_instance=RequestContext(request))

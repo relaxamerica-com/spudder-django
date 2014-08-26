@@ -7,11 +7,13 @@ urlpatterns = patterns(
     
     url('^/cern/$', 'cern_dashboard'),
     url('^/cern/qa_job_board$', 'qa_job_board'),
+    url('^/cern/students$', 'students'),
     url('^/cern/student/(?P<student_id>\d+)/resume$', 'student_resume'),
     url('^/cern/student/(?P<student_id>\d+)/accept$', 'accept_student'),
     url('^/cern/student/(?P<student_id>\d+)/reject$', 'reject_student'),
     url('^/cern/student/(?P<student_id>\d+)/waitlist$', 'waitlist_student'),
     url('^/cern/student/(?P<student_id>\d+)/send_email$','send_student_email'),
+    url('^/cern/schools$', 'schools'),
 
 
     url(r'^/socialengine/atpostspud', 'socialengine_atpostspud'),

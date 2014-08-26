@@ -1,4 +1,5 @@
 from urllib2 import Request, urlopen
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 import uuid
 from django.contrib.auth.models import User
@@ -115,7 +116,6 @@ class School(models.Model):
     cover_image = models.ForeignKey(UploadedFile, null=True, related_name="school_cover_image")
     full_address = models.CharField(max_length=200, null=True)
 
-    
     def level(self):
         return get_max_triangle_num_less_than(self.get_rep() / SCHOOL_REP_LEVEL_MODIFIER)
 
@@ -132,16 +132,22 @@ class School(models.Model):
         return int(rep)
     
     def get_students(self):
-        ''' Convenience method which returns a standard list of students associated with
-            the school.
-        '''
+        """
+        A list of all students associated w/school
+        :return: a standard List object of all students
+        """
         students = []
         for stud in Student.objects.filter(school=self):
             students.append(stud) 
         return students
     
     def get_head_student(self):
-        return Student.objects.get(school=self, isHead=True)
+        try:
+            s = Student.objects.get(school=self, isHead=True)
+        except ObjectDoesNotExist:
+            return None
+        else:
+            return s
     
     def verbose_state(self):
         return STATES[self.state]
