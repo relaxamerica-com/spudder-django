@@ -29,7 +29,7 @@
 {% block cover_image_edit_url %}/venues/edit_cover/{{ venue.id }}{% endblock %}
 
 {% block cover_title_profile_image_url %}
-    {% if sponsor %}
+    {% if sponsor and sponsor.thumbnail %}
         /file/serve/{{ sponsor.thumbnail }}
     {% else %}
         {% if venue.logo %}/file/serve/{{ venue.logo.id }}{% else %}/static/img/spuddersponsors/button-sponsors-medium.png{% endif %}

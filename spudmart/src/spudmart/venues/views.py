@@ -598,7 +598,8 @@ def get_instagram_stream(request, venue_id):
     controller = SpudsController(request.current_role)
     filters = request.GET.get('filter', None)
     results = controller.get_unapproved_spuds(venue_id, filters=filters)
-    template_data = {'results': results, 'venue_id': venue_id}
+    ven = Venue.objects.get(id=venue_id)
+    template_data = {'results': results, 'venue': ven}
     if filters == "day-0":
         template_data['filter_message'] = "Showing posts from today"
     elif filters == "day-1":
