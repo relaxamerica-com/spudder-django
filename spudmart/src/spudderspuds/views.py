@@ -12,17 +12,18 @@ from spudderaccounts.templatetags.spudderaccountstags import is_fan, user_has_fa
 from spudderaccounts.utils import change_current_role
 from spudderaccounts.wrappers import RoleFan
 from spudderdomain.controllers import TeamsController, RoleController, SpudsController, EntityController
-from spudderdomain.models import FanPage, TeamPage
+from spudderdomain.models import FanPage, TeamPage, TeamAdministrator
 from spudderkrowdio.models import FanFollowingEntityTag, KrowdIOStorage
 from spuddersocialengine.models import SpudFromSocialMedia
 from spudderspuds.forms import FanSigninForm, FanRegisterForm, FanPageForm, FanPageSocialMediaForm
 from spudderspuds.utils import create_and_activate_fan_role, is_signin_claiming_spud
 from spudmart.CERN.models import Student
+from spudmart.CERN.rep import team_gained_follower, team_tagged_in_spud
 from spudmart.accounts.templatetags.accounts import fan_page_name, user_name
 from spudmart.sponsors.models import SponsorPage
 from spudmart.upload.models import UploadedFile
 from spudmart.utils.cover_image import reset_cover_image, save_cover_image_from_request
-from spudderkrowdio.utils import start_following, stop_following, get_following, get_following, post_comment
+from spudderkrowdio.utils import start_following, stop_following, get_following, post_comment
 from spudmart.venues.models import Venue
 
 
@@ -321,6 +322,10 @@ def start_following_view(request):
         elif re.match(r'/team/\d+', origin):
             entity_type = EntityController.ENTITY_TEAM
             entity_id = str.split(origin, '/')[-1]
+            team = TeamPage.objects.get(id=entity_id)
+            admin = TeamAdministrator.objects.get(team_page=team)
+            stu = Student.objects.get(id=admin.entity_id)
+            team_gained_follower(stu)
 
         entity_tag = FanFollowingEntityTag(
             fan=request.current_role.entity,
@@ -470,7 +475,7 @@ def test_spuds(request):
 
 def add_spud_comment(request):
     """
-    Adds a comment to a SPUD (KrowdIO post)
+    Adds a comment to a SPUD (KrowdIO post) that tags Spudder entities
     :param request: a POST request
     :return: response from KrowdIO or HttpResponseNotAllowed
     """
@@ -484,7 +489,13 @@ def add_spud_comment(request):
         fan = request.current_role.entity
         for t in tags:
             tag = FanFollowingEntityTag.objects.get(fan=fan, tag=t)
-            text += "@%s%s" % (tag.entity_type, tag.entity_id)
+            text += "@%s%s " % (tag.entity_type, tag.entity_id)
+            if tag.entity_type == 'Team':
+                team = TeamPage.objects.get(id=tag.entity_id)
+                admin = TeamAdministrator.objects.get(team_page=team)
+                if admin.entity_type == 'student':
+                    stu = Student.objects.get(id=admin.entity_id)
+                    team_tagged_in_spud(stu)
 
         json = post_comment(entity, spud_id, text)
         return HttpResponse(simplejson.dumps(json))

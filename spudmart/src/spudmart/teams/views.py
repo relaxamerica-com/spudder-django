@@ -1,15 +1,16 @@
 from django.shortcuts import render, redirect, get_object_or_404
 import settings
-from spudderaccounts.templatetags.spudderaccountstags import is_fan
+from spudderaccounts.templatetags.spudderaccountstags import is_fan, is_cern_student
 from spudderdomain.controllers import TeamsController, RoleController, SpudsController, SocialController
-from spudderdomain.models import TeamPage, Location, TeamVenueAssociation
+from spudderdomain.models import TeamPage, Location, TeamVenueAssociation, TeamAdministrator
 from spudderkrowdio.models import FanFollowingEntityTag
+from spudmart.CERN.rep import created_team, team_associated_with_venue
 from spudmart.teams.forms import CreateTeamForm, TeamPageForm
 from django.http import HttpResponseRedirect, HttpResponse
 from spudmart.upload.models import UploadedFile
 from spudmart.utils.Paginator import EntitiesPaginator
 from spudmart.utils.cover_image import save_cover_image_from_request, reset_cover_image
-from spudmart.CERN.models import STATES
+from spudmart.CERN.models import STATES, Student
 from spudmart.venues.models import SPORTS, Venue
 
 
@@ -46,6 +47,8 @@ def create_team(request):
             if is_fan(request.current_role):
                 redirect_url = "/fan/follow?origin=/team/create&team_id=%s" % team.id
             else:
+                if is_cern_student(request.current_role):
+                    created_team(request.current_role.entity)
                 redirect_url = "/team/%s" % team.id
 
             return redirect(redirect_url)
@@ -224,4 +227,8 @@ def associate_team_with_venue(request, page_id, venue_id):
     venue = get_object_or_404(Venue, pk=venue_id)
     TeamVenueAssociation.objects.get_or_create(team_page=team, venue=venue)[0].save()
     SocialController.AssociateTeamWithVenue(team, venue)
+    admin = TeamAdministrator.objects.get(team_page=team)
+    if admin.entity_type == 'student':
+        stu = Student.objects.get(id=admin.entity_id)
+        team_associated_with_venue(stu)
     return HttpResponseRedirect('/team/%s' % page_id)

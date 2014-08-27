@@ -3,6 +3,7 @@ from spudderdomain.models import LinkedService, FanPage, TeamPage, TeamAdministr
 from spudderdomain.wrappers import EntityTeam, EntityVenue
 from spuddersocialengine.models import SpudFromSocialMedia
 from spudmart.CERN.models import Student
+from spudmart.CERN.rep import team_tagged_in_spud
 from spudmart.sponsors.models import SponsorPage
 from spudderkrowdio.utils import post_spud, get_user_mentions_activity, get_spud_stream_for_entity, start_following
 from spudderkrowdio.models import KrowdIOStorage, FanFollowingEntityTag
@@ -306,6 +307,12 @@ class SpudsController(object):
         for tag in FanFollowingEntityTag.objects.filter(fan=self.role.entity):
             if tag.tag and tag.tag in spud_text:
                 tagged_entities.append("@%s%s" % (tag.entity_type, tag.entity_id))
+                if tag.entity_type == 'Team':
+                    team = TeamPage.objects.get(id=tag.entity_id)
+                    admin = TeamAdministrator.objects.get(team)
+                    if admin.entity_type == 'student':
+                        stu = Student.objects.get(id=admin.entity_id)
+                        team_tagged_in_spud(stu)
         data = {
             'type': 'image',
             'url': spud.expanded_data['image']['standard_resolution']['url'],

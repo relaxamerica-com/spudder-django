@@ -1,3 +1,4 @@
+# from spudderdomain.models import TeamAdministrator
 from spudmart.CERN.models import Student
 
 # Rep values for various tasks, grouped like the methods
@@ -23,9 +24,13 @@ VIDEO = 10
 PHOTOS = 3
 LOGO = 2
 
+CREATED_TEAM = 5
+FOLLOWER = 2
+TEAM_VENUE_ASSOCIATED = 10
+TEAM_SPUD = 1
+
 
 #Basic rep modifying methods
-
 def add_venue_rep(venue, points):
     """
     Adds to (or subtracts from) the reputation score of a venue.
@@ -69,6 +74,23 @@ def add_venue_points(student, points):
         if old_level < student.venue_level():
             student.brag_venue_level()
 
+
+def add_team_points(student, points):
+    """
+    Adds to (or subtracts from) the marketing points of a student.
+
+    If student was referred by someone, adds points to referrer.
+
+    :param student: the student who owns the team
+    :param points: the amount points change
+        can be positive or negative
+    """
+    student.team_points += points
+    student.save()
+
+    if student.referred_id is not None:
+        referrer = Student.objects.get(id=student.referred_id)
+        add_referral_points(referrer, points)
 
 def add_social_media_points(student, points):
     """
@@ -316,3 +338,38 @@ def deleted_venue(venue):
     :param venue: The venue about to be deleted.
     """
     add_venue_points(venue.student, -venue.rep)
+
+
+def created_team(student):
+    """
+    Rewards a student for creating a team.
+    :param student: any Student
+    """
+    add_team_points(student, CREATED_TEAM)
+
+
+def team_gained_follower(student):
+    """
+    Rewards a student when their team gains a follower.
+
+    :param student: the student who manages team
+    """
+    add_team_points(student, FOLLOWER)
+
+
+def team_associated_with_venue(student):
+    """
+    Rewards a student when they associate their team with a venue
+
+    :param student: the student who manages the team
+    """
+    add_team_points(student, TEAM_VENUE_ASSOCIATED)
+
+
+def team_tagged_in_spud(student):
+    """
+    Rewards a student when anyone tags their team in a SPUD.
+
+    :param student: the student who manages the team
+    """
+    add_team_points(student, TEAM_SPUD)
