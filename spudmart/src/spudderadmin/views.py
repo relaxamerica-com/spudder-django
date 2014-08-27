@@ -568,3 +568,21 @@ def venues_map_by_sport(request, sport):
         {'places_api_key': settings.GOOGLE_PLACES_API_KEY,
         'venues': Venue.objects.filter(sport=sport)},
         context_instance=RequestContext(request))
+
+
+@admin_login_required
+def send_sponsor_email(request, sponsor_id):
+    """
+    Simple page for emailing sponsor
+    :param request: any request
+    :param sponsor_id: a valid ID of a SponsorPage object
+    :return: the email form optimized for sponsor
+    """
+    sponsor = SponsorPage.objects.get(id=sponsor_id)
+    return render_to_response('spudderadmin/pages/reports/send_email.html',
+        {
+            'name': sponsor.name,
+            'email': sponsor.email or RoleSponsor(sponsor).user.email,
+            'profile': "/sponsor/%s" % sponsor.id
+        },
+        context_instance=RequestContext(request))

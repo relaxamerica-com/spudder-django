@@ -30,6 +30,7 @@ urlpatterns = patterns(
     url(r'^/reports/sponsors$', 'sponsor_reports'),
     url(r'^/reports/sponsors/(?P<sponsor_id>\d+)/sponsorships$', 'sponsorships'),
     url(r'^/reports/sponsors/all_sponsorships$', 'all_sponsorships'),
+    url(r'^/reports/sponsors/(?P<sponsor_id>\d+)/send_email', 'send_sponsor_email'),
     url(r'^/reports/teams$', 'teams'),
     url(r'^/reports/teams/(?P<admin_id>\d+)/send_admin_email$','send_team_admin_email'),
     url(r'^/reports/venues$', 'all_venues'),
