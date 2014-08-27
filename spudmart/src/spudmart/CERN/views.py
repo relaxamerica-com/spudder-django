@@ -7,6 +7,7 @@ from django.http import HttpResponseRedirect, HttpResponse, \
     HttpResponseNotAllowed, HttpResponseForbidden
 import simplejson
 from spudderdomain.controllers import RoleController
+from spudderdomain.models import TeamAdministrator
 from spudmart.upload.models import UploadedFile
 from spudmart.CERN.models import School, Student, STATES, MailingList
 from django.core.exceptions import ObjectDoesNotExist
@@ -905,6 +906,9 @@ def student_page(request, student_id):
 
     venues = Venue.objects.filter(student=student)
 
+    teams = TeamAdministrator.objects.filter(entity_id=student.id,
+                                             entity_type='student').select_related('team_page')
+
     all_referrals = sorted(student.referrals(), key=lambda s: s.rep(),
                        reverse=True)
     num_referred = len(all_referrals)
@@ -915,6 +919,7 @@ def student_page(request, student_id):
                   'num_referred': num_referred,
                   'top_five': all_referrals[:5],
                   'base_url': 'spuddercern/base.html',
+                  'teams': teams
                   })
 
 
