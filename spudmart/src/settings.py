@@ -149,7 +149,7 @@ shared_settings = {
         'twitter_access_token': '481249312-aFVuYa0HUCTKV7bc3Xrnk2twNHXwLV6r3uteKwe0',
         'twitter_access_token_secret': 'hHPebsFws3AcWyDrAvjnxapUJ95JI15NjZ7TwiXgF5f3v',
         'support_email': 'support@spudder.com',
-        'krowdio_client_key': '52769e9ff1f70e0552df58a4',
+        'krowdio_client_key': '53fc72a6f1f70e3fc79f0876',
 
     },
     'sharp-avatar-587': {  # lukasz@spuder.com
@@ -204,6 +204,7 @@ shared_settings = {
         'twitter_client_id': 'eNsFMF33Gs0p6P0KIWj0WizvW',
         'twitter_access_token': '2573288766-Z27sWN4Hi812Nqt0yQ4foKTVr4njfXX2DeP4MTa',
         'twitter_access_token_secret': 'aIRQheX0medxdnXLG2MXfebNB78ftRFf97pe8hUvHtr75',
+        'krowdio_client_key': '53ff5196f1f70e3fc79f136c',
     },
     'spudmartmatt': {  # mg@metalayer.com
         'server_email': 'mg@metalayer.com',
@@ -217,7 +218,7 @@ shared_settings = {
         'instagram_client_id': '3888eac365f7468dabd5bf9ad06c8930',
         'instagram_client_secret': 'b1bc01bf1a9944e2834288484f450ab2',
         'support_email': 'mg@metalayer.com',
-        'krowdio_client_key': '53fc715cf1f70e3fc79f0873',
+        'krowdio_client_key': '53ff5196f1f70e3fc79f136c',
 
     },
     'spudder-live': {  #mg@metalayer.com
