@@ -13,7 +13,7 @@ class CreateTeamForm(forms.Form):
         max_length=255,
         label="Teams @name",
         help_text="Used to identify this team and link spuds to it! <b>lowercase letters and numbers only please</b>")
-    sport = forms.ChoiceField(choices=[('%s' % x, SPORTS[x]) for x in range(len(SPORTS))])
+    sport = forms.ChoiceField(choices=[('', 'Select a sport...')] + [('%s' % x, SPORTS[x]) for x in range(len(SPORTS))])
     contact_details = forms.CharField(
         max_length=255,
         help_text='How should people contact you and your team? Leave instructions, number and emails '
@@ -23,7 +23,7 @@ class CreateTeamForm(forms.Form):
         max_length=255, help_text='Say something about your team!',
         required=False, label="About us")
     # file = forms.FileField(required=False, label="Image")
-    state = forms.ChoiceField(choices=[(k, v) for k, v in STATES.items()])
+    state = forms.ChoiceField(choices=[('', 'Select a state...')] + sorted([(k, v) for k, v in STATES.items()], key=lambda x:x[1]))
 
     def clean_team_name(self):
         cleaned_data = super(CreateTeamForm, self).clean()

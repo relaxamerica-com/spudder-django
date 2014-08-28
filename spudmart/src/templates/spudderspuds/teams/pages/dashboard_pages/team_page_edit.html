@@ -12,7 +12,7 @@
     </div>
 
     <div class="row">
-        <div class="col-sm-8">
+        <div class="col-sm-8 col-sm-offset-2">
             <div class="edit-mode well" style="display: block;">
                 <form action="" method="post" id="create-team-form" class="sponsor-page-form" enctype="multipart/form-data" role="form">
                     <div class="form-group edit-mode edit-mode-team" style="display: block;">
@@ -40,7 +40,7 @@
                     <div class="form-group edit-mode edit-mode-team" style="display: block;">
                         <label>State:</label>
                         <select name="state" id="state" class="form-control">
-                        	{% for state, full_name in states.items %}
+                        	{% for state, full_name in states %}
                                 <option {% if form.state.value == state %}selected{% endif %} value="{{ state }}">{{ full_name }}</option>
                         	{% endfor %}
                         </select>

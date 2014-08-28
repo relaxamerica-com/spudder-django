@@ -10,7 +10,7 @@
 
 {% block well_content %}
     <h3>You are creating a new Team in Spudder!</h3>
-    <form method="post" enctype="multipart/form-data" action="{{ upload_url }}">
+    <form method="post" enctype="multipart/form-data">
         <fieldset>
             <legend>Please fill out the form below and hit 'create'.</legend>
             {% csrf_token %}
@@ -38,48 +38,10 @@
 {% endblock %}
 
 {% block js %}
-{#    <script src="/media/dashboard/js/jquery.validate.js"></script>#}
-{#    <script src="/media/dashboard/js/additional-methods.min.js"></script>#}
-{#    <script src="/media/dashboard/js/jquery.validate.spudder.rules.js"></script>#}
     <script src="https://maps.googleapis.com/maps/api/js?key={{ places_api_key }}&v=3.exp&sensor=false&libraries=places"></script>
     <script src="/static/js/google_maps/init.js"></script>
 
     <script type="text/javascript">
-{#        var state = 'New Jersey';#}
-{#        initializeGoogleMaps('United States', createInfoWindow('United States', 'US'));#}
-{#        initializeGoogleMaps('United States, US');#}
-        window.bigGlobalVariable = null;
-
         initialize();
-
-{#        $(document).ready(function () {#}
-{#            var $form = $('form');#}
-{##}
-{#            $form.validate({#}
-{#                rules: {#}
-{#                    team_name: "required"#}
-{#                },#}
-{##}
-{#                errorPlacement: function(error, element) {#}
-{#                    error.appendTo( element.parent() );#}
-{#                },#}
-{##}
-{#                submitHandler: function (form) {#}
-{#                    var $locationInfo = $('#location_info');#}
-{##}
-{#                    if ($locationInfo.val()) {#}
-{#                        form.submit();#}
-{#                    } else {#}
-{#                        var $error = $(document.createElement('label'));#}
-{##}
-{#                        $error.addClass('error').attr('for', 'location');#}
-{#                        $error.text('This field is required');#}
-{#                        $error.css('display', 'block');#}
-{##}
-{#                        $('#map_canvas').before($error);#}
-{#                    }#}
-{#                }#}
-{#            });#}
-{#        });#}
     </script>
 {% endblock js %}

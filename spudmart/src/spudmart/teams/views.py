@@ -38,7 +38,7 @@ def create_team(request):
                 contact_details=form.cleaned_data.get('contact_details'),
                 free_text=form.cleaned_data.get('free_text'),
                 sport=dict(form.fields['sport'].choices)[form.cleaned_data.get('sport')],
-                state=dict(form.fields['state'].choices)[form.cleaned_data.get('state')],
+                state=form.cleaned_data.get('state'),
                 at_name=form.cleaned_data.get('at_name'),
             )
             location_info = request.POST.get('location_info', None)
@@ -89,7 +89,7 @@ def team_page(request, page_id):
         'page': page,
         'form': form,
         'sports': SPORTS,
-        'states': STATES
+        'states': sorted([(k, v) for k, v in STATES.items()], key=lambda x:x[1])
     })
 
 
