@@ -75,8 +75,8 @@
             {% include 'components/spuds/spud_carousel.html' with spuds=fan_spuds %}
         </div>
         <div class="col-md-6">
-            {% include 'components/following_table.html' with title=following_teams_title following=folowing_teams entity_type='team' show_find_button=request.can_edit %}
-            {% include 'components/following_table.html' with title=following_fans_title following=following_fans entity_type='fan' show_find_button=request.can_edit%}
+            {% include 'components/following_table.html' with title=following_teams_title following=following_teams entity_type='team' show_find_button=request.can_edit datatable=1 %}
+            {% include 'components/following_table.html' with title=following_fans_title following=following_fans entity_type='fan' show_find_button=request.can_edit datatable=1%}
         </div>
     </div>
 
