@@ -64,8 +64,6 @@
             <a class="btn btn-primary" id="save-logo">Save</a>
             <div class="alert" id="logo-name-alert" style="margin-top:10px"></div>
 
-            <p>Use the bu</p>
-
             <a class="btn btn-primary" href="/team/associate/{{ page.id }}" title="Associate with {% if is_associated %}Another {% endif %}Venue"
                 style="margin: 20px auto 0; display: table;">
                 <i class="fa fa-fw fa-map-marker"> </i> Associate with {% if is_associated %}Another {% endif %}Venue
@@ -74,7 +72,7 @@
     </div>
 
     <div id="venue-property-buttons">
-        <div class="btn-group hidden-sm hidden-xs btn-group-justified" style="margin: 0 auto;">
+        <div class="btn-group btn-group-justified" style="margin: 0 auto;">
             {% include 'spudderspuds/teams/parts/team_view_buttons.html' %}
         </div>
     </div>
