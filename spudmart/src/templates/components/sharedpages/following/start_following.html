@@ -45,7 +45,7 @@
                     });
 
                     response.done(function () {
-                        alert('Successfully followed {{ name }}! You will now be redirected back to their page.');
+                        alert('Successfully followed {{ name|escape }}! You will now be redirected back to their page.');
                         window.location = '{{ origin }}';
                     });
                 }
