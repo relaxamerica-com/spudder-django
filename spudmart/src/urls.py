@@ -3,6 +3,7 @@ from django.conf.urls.defaults import *
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.views.generic import RedirectView
+from spudderdomain.controllers import RoleController
 
 handler404 = 'django.views.defaults.page_not_found'
 handler500 = 'djangotoolbox.errorviews.server_error'
@@ -32,6 +33,15 @@ def temp_redirect_view(request):
                     return HttpResponseRedirect(redirect_url)
         except KeyError:
             pass  # request META dict doesn't have HTTP_HOST key (f.i. in tests)
+
+    # Deal with current role if one exists
+    if request.current_role:
+        if request.current_role.entity_type == RoleController.ENTITY_FAN:
+            return HttpResponseRedirect('/spuds')
+        if request.current_role.entity_type == RoleController.ENTITY_STUDENT:
+            return HttpResponseRedirect('/cern')
+        if request.current_role.entity_type == RoleController.ENTITY_SPONSOR:
+            return HttpResponseRedirect('/sponsor')
 
     return render_to_response('main_splash.html')
 

@@ -71,8 +71,7 @@ def view(request, venue_id):
         if sponsor.name != "":
             sponsor_info = True
     
-    storage = KrowdIOStorage.GetOrCreateForVenue(venue_id)
-    venue_spuds = get_user_mentions_activity(storage)
+    venue_spuds = SpudsController.GetSpudsForVenue(venue)
     teams = [team.team_page for team in TeamVenueAssociation.objects.filter(venue=venue)]
 
     tags = []

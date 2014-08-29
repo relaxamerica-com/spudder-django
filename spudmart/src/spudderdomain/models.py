@@ -74,6 +74,7 @@ class LinkedService(models.Model):
     def configuration(self, config_object):
         self._service_configuration = json.dumps(config_object or '{}')
 
+
 class SpudType():
     TEXT = 1
     VIDEO = 2
