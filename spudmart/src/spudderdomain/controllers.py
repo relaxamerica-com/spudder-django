@@ -406,3 +406,15 @@ class SocialController(object):
         venue_entity = EntityVenue(venue)
         start_following(team_entity, venue_entity.entity_type, venue_entity.entity.id)
         start_following(venue_entity, team_entity.entity_type, team_entity.entity.id)
+
+    @classmethod
+    def AtNameIsUniqueAcrossThePlatform(cls, at_name):
+        if TeamPage.objects.filter(at_name=at_name).count():
+            return False
+        if FanPage.objects.filter(username=at_name).count():
+            return False
+        if Venue.objects.filter(name=at_name).count():
+            return False
+        if SponsorPage.objects.filter(tag=at_name).count():
+            return False
+        return True

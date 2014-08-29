@@ -2,6 +2,7 @@ from django import forms
 from django.forms import HiddenInput
 from django.forms.models import ModelForm
 import simplejson
+from spudderdomain.controllers import SocialController
 from spudderdomain.models import TeamPage
 from spudderspuds.views import get_at_names
 from spudmart.venues.models import SPORTS
@@ -27,17 +28,10 @@ class CreateTeamForm(forms.Form):
     # file = forms.FileField(required=False, label="Image")
     state = forms.ChoiceField(choices=[('', 'Select a state...')] + sorted([(k, v) for k, v in STATES.items()], key=lambda x:x[1]))
 
-    def clean_team_name(self):
-        cleaned_data = super(CreateTeamForm, self).clean()
-        name = cleaned_data.get('team_name').strip()
-        if TeamPage.objects.filter(name=name).count():
-            raise forms.ValidationError("The team name you are using is already taken, try adding the town or city?")
-        return name
-
     def clean_at_name(self):
         cleaned_data = super(CreateTeamForm, self).clean()
         at_name = cleaned_data.get('at_name', '').strip()
-        if TeamPage.objects.filter(at_name=at_name).count():
+        if not SocialController.AtNameIsUniqueAcrossThePlatform(at_name):
             raise forms.ValidationError("The @name you are trying to use is already taken, please choose another.")
         for c in at_name:
             if c not in 'abcdefghijklmnopqrstuvwxyz0123456789':
