@@ -1,9 +1,10 @@
 import datetime
 import abc
-from spudderdomain.controllers import RoleController, LinkedServiceController
+from spudderdomain.controllers import RoleController, LinkedServiceController, EntityController
 from spudderdomain.models import LinkedService
-from spudderdomain.wrappers import EntityBase, LinkedServiceBase
+from spudderdomain.wrappers import EntityBase, LinkedServiceBase, EntityTeam
 import logging
+from spudderkrowdio.models import FanFollowingEntityTag
 
 """
     Roles
@@ -32,10 +33,6 @@ class RoleBase(EntityBase):
         pass
 
     @abc.abstractproperty
-    def image(self):
-        pass
-
-    @abc.abstractproperty
     def title(self):
         pass
 
@@ -58,6 +55,14 @@ class RoleBase(EntityBase):
     @abc.abstractproperty
     def home_domain(self):
         raise NotImplementedError
+
+    @abc.abstractproperty
+    def is_following_other_entities(self):
+        return False
+
+    @abc.abstractmethod
+    def get_following_entities_by_entity_type(self, entity_type):
+        return []
 
     @abc.abstractmethod
     def user_is_owner(self, user):
@@ -82,7 +87,10 @@ class RoleStudent(RoleBase):
 
     @property
     def image(self):
-        return '/static/img/spuddercern/button-cern-small.png'
+        if self.entity.logo:
+            return '/file/serve/%s' % self.entity.logo.id
+        else:
+            return '/static/img/spuddercern/button-cern-medium.png'
 
     @property
     def title(self):
@@ -116,6 +124,13 @@ class RoleStudent(RoleBase):
     def home_domain(self):
         return 'cern'
 
+    @property
+    def icon(self):
+        if self.entity.logo:
+            return '/file/serve/%s' % self.entity.logo.id
+        else:
+            return '/static/img/spuddercern/button-cern-tiny.png'
+
     def user_is_owner(self, user):
         return self.entity.user == user
 
@@ -141,7 +156,7 @@ class RoleSponsor(RoleBase):
         if self.entity.thumbnail:
             return '/file/serve/%s' % self.entity.thumbnail
 
-        return '/static/img/spuddersponsors/button-sponsors-small.png'
+        return '/static/img/spuddersponsors/button-sponsors-medium.png'
 
     @property
     def title(self):
@@ -177,6 +192,13 @@ class RoleSponsor(RoleBase):
     def home_domain(self):
         return 'sponsor'
 
+    @property
+    def icon(self):
+        if self.entity.thumbnail:
+            return '/file/serve/%s' % self.entity.thumbnail
+        else:
+            return '/static/img/spuddersponsors/button-sponsors-tiny.png'
+
     def user_is_owner(self, user):
         return self.entity.user == user
 
@@ -195,7 +217,7 @@ class RoleFan(RoleBase):
         if self.entity.avatar:
             return '/file/serve/%s' % self.entity.avatar.id
 
-        return '/static/img/spudderspuds/button-fans-small.png'
+        return '/static/img/spudderspuds/button-fans-medium.png'
 
     @property
     def title(self):
@@ -224,8 +246,38 @@ class RoleFan(RoleBase):
     def home_domain(self):
         return 'fan'
 
+    @property
+    def is_following_other_entities(self):
+        return bool(FanFollowingEntityTag.objects.filter(fan=self.entity))
+
+    @property
+    def icon(self):
+        if self.entity.avatar:
+            return '/file/serve/%s' % self.entity.avatar.id
+        else:
+            return '/static/img/spudderspuds/button-fans-tiny.png'
+
     def user_is_owner(self, user):
         return self.entity.fan == user
+
+    def get_following_entities_by_entity_type(self, entity_type=None):
+        tags_and_entities = []
+        for tag in FanFollowingEntityTag.objects.filter(fan=self.entity):
+            if entity_type and not entity_type == tag.entity_type:
+                continue
+            if tag.entity_type == EntityController.ENTITY_TEAM:
+                tags_and_entities.append({
+                    'tag': tag.tag,
+                    'entity': EntityController.GetWrappedEntityByTypeAndId(
+                        tag.entity_type, tag.entity_id, EntityTeam)
+                })
+            if tag.entity_type == RoleController.ENTITY_FAN:
+                tags_and_entities.append({
+                    'tag': tag.tag,
+                    'entity': RoleController.GetRoleForEntityTypeAndID(
+                        tag.entity_type, tag.entity_id, RoleFan)
+                })
+        return tags_and_entities
 
 
 """

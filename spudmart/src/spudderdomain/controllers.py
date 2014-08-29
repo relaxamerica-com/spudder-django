@@ -30,6 +30,10 @@ class EntityController(object):
                 return None
         return None
 
+    @classmethod
+    def GetWrappedEntityByTypeAndId(cls, entity_type, entity_id, entity_wrapper):
+        return entity_wrapper(cls.GetEntityByTypeAndId(entity_type, entity_id))
+
 
 class RoleController(object):
     """

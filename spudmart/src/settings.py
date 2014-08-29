@@ -221,18 +221,6 @@ shared_settings = {
         'krowdio_client_key': '53ff5196f1f70e3fc79f136c',
 
     },
-    'spudder-live': {  #mg@metalayer.com
-        'server_email': 'help@spuder.com',
-        'spudder_application_id': '',
-        'spudder_rest_api_key': '',
-        'spudder_base_url': 'https://spudmart.parseapp.com',
-        'spudmart_base_url': 'https://spudder-live.appspot.com',
-        'amazon_login_client_id': 'amzn1.application-oa2-client.47892dcda29f4d3d8c437b7c44f1b6e6',
-        'linkedin_api_key': '77acg7pe6xdqfo',
-        'linkedin_secret_key': 'Eh1uPylFg3RMSOu9',
-        'support_email': 'support@spudder.com',
-
-    },
     'livespudder': {  #mg@metalayer.com
         'server_email': 'help@spuder.com',
         'spudder_application_id': '',

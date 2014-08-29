@@ -103,9 +103,6 @@ def public_view(request, page_id):
         'base_url': 'spudderspuds/base.html',
         'team_spuds': SpudsController.GetSpudsForTeam(page)}
 
-    if is_fan(request.current_role):
-        tags = FanFollowingEntityTag.objects.filter(fan=request.current_role.entity)
-        template_data['tags'] = [(t.tag, t.get_entity_icon()) for t in tags]
     return render(request, 'spudderspuds/teams/pages/team_page_view.html', template_data)
 
 

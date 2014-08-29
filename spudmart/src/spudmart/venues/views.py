@@ -74,11 +74,6 @@ def view(request, venue_id):
     venue_spuds = SpudsController.GetSpudsForVenue(venue)
     teams = [team.team_page for team in TeamVenueAssociation.objects.filter(venue=venue)]
 
-    tags = []
-    if is_fan(request.current_role):
-        fan_tags = FanFollowingEntityTag.objects.filter(fan=request.current_role.entity)
-        tags = [(t.tag, t.get_entity_icon()) for t in fan_tags]
-
     return render(request, 'spuddercern/pages/venues_view.html', {
         'venue': venue,
         'teams': teams,
@@ -91,8 +86,7 @@ def view(request, venue_id):
         'is_sponsor': venue.is_renter(role),
         'student': student,
         'venue_spuds': venue_spuds,
-        'base_url': 'spuddercern/base.html',
-        'tags': tags
+        'base_url': 'spuddercern/base.html'
     })
 
 
