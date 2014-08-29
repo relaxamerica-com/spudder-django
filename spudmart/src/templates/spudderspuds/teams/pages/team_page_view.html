@@ -38,17 +38,7 @@
             Edit Mode
         </button>
     {% else %}
-        {% if request.can_follow %}
-            {% if request.following %}
-                <a class="btn btn-primary" id="follow">
-                    <i class="fa fa-fw fa-minus"></i> <span>Unfollow</span>
-                </a>
-            {% else %}
-                <a class="btn btn-primary" href="/fan/follow?origin={{ request.path }}">
-                    <i class="fa fa-fw fa-plus"></i> Follow
-                </a>
-            {% endif %}
-        {% endif %}
+        {% include 'spudderspuds/components/follow_button.html' %}
     {% endif %}
 {% endblock %}
 

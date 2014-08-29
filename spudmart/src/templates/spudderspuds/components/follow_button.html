@@ -1,0 +1,11 @@
+{% if request.can_follow %}
+    {% if request.following %}
+        <span class="label label-success">
+            <i class="fa fa-check"></i> following
+        </span>
+    {% else %}
+        <a class="btn btn-default" href="/fan/follow?origin={{ request.path }}">
+            <img src="/static/img/spudderspuds/button-spuds-tiny.png" /> follow
+        </a>
+    {% endif %}
+{% endif %}
