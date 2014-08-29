@@ -15,16 +15,17 @@ from spudmart.venues.models import SPORTS, Venue
 
 
 def teams_list(request):
-    teams = TeamsController.TeamsAdministeredByRole(request.current_role)
-
-    role_dashboard = ''
+    template_data = {
+        'teams': TeamsController.TeamsAdministeredByRole(request.current_role),
+        'role_dashboard': ''
+    }
     if request.current_role.entity_type == RoleController.ENTITY_STUDENT:
-        role_dashboard = 'spuddercern/pages/dashboard_pages/dashboard.html'
+        template_data['role_dashboard'] = 'spuddercern/pages/dashboard_pages/dashboard.html'
     elif request.current_role.entity_type == RoleController.ENTITY_FAN:
-        role_dashboard = 'spudderspuds/fans/pages/dashboard.html'
+        template_data['role_dashboard'] = 'spudderspuds/fans/pages/dashboard.html'
+        template_data['fan_nav_active'] = 'teams'
     return render(request, 'components/sharedpages/teams/teams_list.html',
-                  {'teams': teams,
-                   'role_dashboard': role_dashboard})
+                  template_data)
 
 
 def create_team(request):

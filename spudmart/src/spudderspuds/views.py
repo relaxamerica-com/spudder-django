@@ -48,6 +48,9 @@ def landing_page(request):
             request.current_role,
             krowdio_response['data'],
             RoleController.ENTITY_FAN)
+        tags = FanFollowingEntityTag.objects.filter(fan=request.current_role.entity)
+        template_data['tags'] = [(t.tag, t.get_entity_icon()) for t in tags]
+        template_data['fan_nav_active'] = "explore"
     return render(request, 'spudderspuds/pages/landing_page.html', template_data)
 
 
@@ -156,6 +159,11 @@ def fan_profile_view(request, page_id):
         template_data['following_teams_title'] = "<img src='/static/img/spudderspuds/button-teams-tiny.png' /> Teams %s Follows" % page.name
         template_data['following_fans_title'] = "<img src='/static/img/spudderspuds/button-fans-tiny.png' /> Fans %s Follows" % page.name
 
+    if is_fan(request.current_role):
+        tags = FanFollowingEntityTag.objects.filter(fan=request.current_role.entity)
+        template_data['tags'] = [(t.tag, t.get_entity_icon()) for t in tags]
+        template_data['fan_nav_active'] = 'profile'
+
     return render(request, 'spudderspuds/fans/pages/fan_page_view.html', template_data)
 
 
@@ -221,9 +229,7 @@ def fan_my_teams(request, page_id):
     template_data = {
         'teams': TeamsController.TeamsAdministeredByRole(request.current_role),
         'role_dashboard': 'spudderspuds/base.html',
-        'additional_nav': render_to_string(
-            'spudderspuds/components/main_nav.html',
-            {'active': 'teams'},
+        'fan_nav_active': 'teams'},
             context_instance=RequestContext(request))}
     return render(request, 'components/sharedpages/teams/teams_list.html', template_data)
 
@@ -487,6 +493,8 @@ def test_spuds(request):
             request.current_role.entity)
         shuffle(stream)
         template_data['spuds'] = stream
+        tags = FanFollowingEntityTag.objects.filter(fan=request.current_role.entity)
+        template_data['tags'] = [(t.tag, t.get_entity_icon()) for t in tags]
         return render(request, 'spudderspuds/pages/test_spuds.html', template_data)
 
 

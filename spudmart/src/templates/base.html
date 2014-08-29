@@ -51,23 +51,28 @@
                         <ul class="nav navbar-nav navbar-right">
                             {% block nav %}{% endblock %}
                             {% block current_role_nav %}
-                                {% if current_role and current_role|is_cern_student %}
-                                    <li class="dropdown">
-                                        <a class="dropdown-toggle" href="#" data-toggle="dropdown">
-                                            CERN Menu <i class="fa fa-caret-down"></i>
-                                        </a>
-                                        <ul class="dropdown-menu">
-                                            <li><a href="/cern/"><i class="fa fa-fw fa-bar-chart-o"></i> Scoreboard</a></li>
-                                            <li><a href="{% current_student_page %}"><i class="fa fa-fw fa-user"></i> Student Page</a></li>
-                                            <li><a href="/cern/venues/"><i class="fa fa-fw fa-map-marker"></i> Venues</a></li>
-                                            <li><a href="/team/list"><i class="fa fa-fw fa-group"></i> My Teams</a></li>
-                                            <li><a href="/cern/social_media/"><i class="fa fa-fw fa-rss"></i> Social Media</a></li>
-                                            <li><a href="/cern/testing/"><i class="fa fa-fw fa-bug"></i> QA Testing</a></li>
-                                        </ul>
-                                    </li>
-                                {% endif %}
-                                {% if current_role and current_role|is_sponsor %}
-                                    {% include 'spuddersponsors/parts/sponsors_menu.html' %}
+                                {% if current_role %}
+                                    {% if current_role|is_cern_student %}
+                                        <li class="dropdown">
+                                            <a class="dropdown-toggle" href="#" data-toggle="dropdown">
+                                                CERN Menu <i class="fa fa-caret-down"></i>
+                                            </a>
+                                            <ul class="dropdown-menu">
+                                                <li><a href="/cern/"><i class="fa fa-fw fa-bar-chart-o"></i> Scoreboard</a></li>
+                                                <li><a href="{% current_student_page %}"><i class="fa fa-fw fa-user"></i> Student Page</a></li>
+                                                <li><a href="/cern/venues/"><i class="fa fa-fw fa-map-marker"></i> Venues</a></li>
+                                                <li><a href="/team/list"><i class="fa fa-fw fa-group"></i> My Teams</a></li>
+                                                <li><a href="/cern/social_media/"><i class="fa fa-fw fa-rss"></i> Social Media</a></li>
+                                                <li><a href="/cern/testing/"><i class="fa fa-fw fa-bug"></i> QA Testing</a></li>
+                                            </ul>
+                                        </li>
+                                    {% endif %}
+                                    {% if current_role|is_sponsor %}
+                                        {% include 'spuddersponsors/parts/sponsors_menu.html' %}
+                                    {% endif %}
+                                    {% if current_role|is_fan %}
+                                        {% include 'spudderspuds/components/main_nav.html' %}
+                                    {% endif %}
                                 {% endif %}
                             {% endblock %}
                             {% block user_account_nav %}

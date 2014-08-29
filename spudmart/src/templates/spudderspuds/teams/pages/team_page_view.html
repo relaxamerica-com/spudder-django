@@ -15,13 +15,6 @@
 	{% endif %}
 {% endblock %}
 
-{% block nav %}
-    {% if current_role and current_role.entity_type == 'fan' %}
-        {% include 'spudderspuds/components/main_nav.html' %}
-        {{ block.super }}
-    {% endif %}
-{% endblock %}
-
 {% block cover_image_container_id %}{% if not page.cover_image %}jumbo-map-container{% endif %}{% endblock %}
 
 {% block cover_image_css_background %}{% if page.cover_image %}/file/serve/{{ page.cover_image.id }}{% endif %}{% endblock %}

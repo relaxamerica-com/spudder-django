@@ -3,11 +3,6 @@
 {% load accounts %}
 {% load CERN %}
 
-{% block nav %}
-    {% include 'spudderspuds/components/main_nav.html' with active="profile" %}
-    {{ block.super }}
-{% endblock %}
-
 {% block title %}
     {% fan_page_name page %}
 {% endblock %}
