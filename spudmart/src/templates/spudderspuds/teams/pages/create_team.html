@@ -12,11 +12,22 @@
     <h3>You are creating a new Team in Spudder!</h3>
     <form method="post" enctype="multipart/form-data">
         <fieldset>
-            <legend>Please fill out the form below and hit 'create'.</legend>
+            {% if errors %}
+                <legend>
+                    <div class="alert alert-danger">
+                        {{ form.errors }}
+                    </div>
+                    <div class="alert alert-danger">
+                        {{ errors }}
+                    </div>
+                </legend>
+            {% else %}
+                <legend>Please fill out the form below and hit 'create'.</legend>
+            {% endif %}
             {% csrf_token %}
             {% bootstrap_form form %}
 
-            <div class="form-group edit-mode" style="display: block;">
+            <div class="form-group edit-mode" style="display: block;" required="required">
                 <label>Location:</label>
                 <span class="input-required">*required</span>
                 <input id="location" name="location" class="controls" type="text" placeholder="Enter a location">
@@ -38,10 +49,32 @@
 {% endblock %}
 
 {% block js %}
+    {{ block.super }}
     <script src="https://maps.googleapis.com/maps/api/js?key={{ places_api_key }}&v=3.exp&sensor=false&libraries=places"></script>
     <script src="/static/js/google_maps/init.js"></script>
 
     <script type="text/javascript">
         initialize();
+        var response = $.get('/spuds/at_names');
+        response.done(function(){
+            window.at_names = JSON.parse(response.responseText);
+        });
+        $('#id_at_name').bind('keyup', function (e) {
+            var alert = $('#at_name_alert'),
+                val = $(this).val();
+            if (window.at_names.indexOf(val) != -1){
+                alert.show();
+                alert.html('The @name ' + val + ' has already been taken. Try another one.');
+            }
+            else{
+                if (val.match(/[a-z0-9]+/)){
+                    alert.hide();
+                }
+                else{
+                    alert.show();
+                    alert.html('Only lowercase letters and numbers are allowed in the @name');
+                }
+            }
+        });
     </script>
 {% endblock js %}

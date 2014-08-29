@@ -1,7 +1,9 @@
 from django import forms
 from django.forms import HiddenInput
 from django.forms.models import ModelForm
+import simplejson
 from spudderdomain.models import TeamPage
+from spudderspuds.views import get_at_names
 from spudmart.venues.models import SPORTS
 from spudmart.CERN.models import STATES
 
@@ -12,7 +14,7 @@ class CreateTeamForm(forms.Form):
     at_name = forms.CharField(
         max_length=255,
         label="Teams @name",
-        help_text="Used to identify this team and link spuds to it! <b>lowercase letters and numbers only please</b>")
+        help_text="Used to identify this team and link spuds to it! <b>lowercase letters and numbers only please</b><div class='alert alert-danger' style='display:none;' id='at_name_alert'></div>")
     sport = forms.ChoiceField(choices=[('', 'Select a sport...')] + [('%s' % x, SPORTS[x]) for x in range(len(SPORTS))])
     contact_details = forms.CharField(
         max_length=255,
@@ -41,6 +43,10 @@ class CreateTeamForm(forms.Form):
             if c not in 'abcdefghijklmnopqrstuvwxyz0123456789':
                 raise forms.ValidationError("At names can only contain lowercase letters and numbers!")
         return at_name
+
+    # def is_valid(self):
+    #     names = simplejson.loads(get_at_names(None))
+    #     if self.
 
 
 class TeamPageForm(ModelForm):

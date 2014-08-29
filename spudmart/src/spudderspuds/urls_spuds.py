@@ -14,6 +14,8 @@ urlpatterns = patterns(
     # /s/ urls - unclaimed atpostspuds
     (r'^(?P<spud_id>\d+)$', 'claim_atpostspud'),
 
+    (r'^at_names', 'get_at_names'),
+
     url(r'', 'landing_page'),
 )
 

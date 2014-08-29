@@ -229,9 +229,9 @@ def fan_my_teams(request, page_id):
     template_data = {
         'teams': TeamsController.TeamsAdministeredByRole(request.current_role),
         'role_dashboard': 'spudderspuds/base.html',
-        'fan_nav_active': 'teams'},
-            context_instance=RequestContext(request))}
-    return render(request, 'components/sharedpages/teams/teams_list.html', template_data)
+        'fan_nav_active': 'teams'}
+    return render(request, 'components/sharedpages/teams/teams_list.html', template_data,
+                  context_instance=RequestContext(request))
 
 
 def claim_atpostspud(request, spud_id):
@@ -526,3 +526,20 @@ def add_spud_comment(request):
         return HttpResponse(simplejson.dumps(json))
     else:
         return HttpResponseNotAllowed(['POST'])
+
+
+def get_at_names(request):
+    """
+    Gets all the currently used @names
+    :param request: a POST request
+    :return: a list of strings
+    """
+    at_names = []
+    for v in Venue.objects.all().exclude(name="VenueTagName"):
+        at_names.append(v.name)
+    for s in SponsorPage.objects.all():
+        at_names.append(s.tag)
+    for t in TeamPage.objects.all().exclude(at_name=None):
+        at_names.append(t.at_name)
+
+    return HttpResponse(simplejson.dumps(at_names))

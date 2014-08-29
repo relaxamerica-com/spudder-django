@@ -30,6 +30,7 @@ def teams_list(request):
 
 def create_team(request):
     form = CreateTeamForm(initial={'next_url': request.GET.get('next_url')})
+    template_data = {'SPORTS': SPORTS}
     if request.method == "POST":
         form = CreateTeamForm(request.POST)
         if form.is_valid():
@@ -53,7 +54,8 @@ def create_team(request):
                 redirect_url = "/team/%s" % team.id
 
             return redirect(redirect_url)
-    template_data = {'form': form, 'SPORTS': SPORTS}
+
+    template_data['form'] = form
     return render(request, 'spudderspuds/teams/pages/create_team.html', template_data)
 
 
