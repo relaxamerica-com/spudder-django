@@ -45,4 +45,6 @@ urlpatterns = patterns('spudmart.venues.views',
     (r'^accept_instagram_media/(?P<venue_id>\d+)$', 'accept_instagram_media'),
     (r'^delete_spud/(?P<venue_id>\d+)$', 'delete_spud_endpoint'),
 #     (r'^flag_spud/(?P<venue_id>\d+)$', 'flag_spud_endpoint'),
+
+    (r'^search$', 'search'),
 )

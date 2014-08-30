@@ -149,6 +149,12 @@
                     {% endfor %}
                 </table>
             {% endif %}
+
+            {% if request.can_edit %}
+                <a class="btn btn-primary" href="/venues/search" title="Sponsor another Venues" style="margin: 20px 0;">
+                    <i class="fa fa-fw fa-map-marker"> </i> Sponsor another Venue!
+                </a>
+            {% endif %}
         </div>
 
         <div class="tab-pane" id="about">

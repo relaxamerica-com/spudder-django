@@ -663,3 +663,10 @@ def edit_cover(request, venue_id):
         'post_url': '/venues/save_cover/%s' % venue.id,
         'reset_url': '/venues/reset_cover/%s' % venue.id
     })
+
+
+def search(request):
+    return render(request, 'spudderspuds/pages/entity_search.html', {
+        'entity_type': "venue",
+        'entities': Venue.objects.all()
+    })
