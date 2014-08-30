@@ -75,46 +75,91 @@
         <div class="alert" id="logo-name-alert" style="margin-top:10px"></div>
     </div>
 
-    <div style="min-height: 362px; margin: 0 auto; width: 100%; vertical-align: middle; text-align: center; padding:15px;">
-        <div class="row-fluid" style="height:100%;">
-            <div class="col-md-12 contents" style="height:100%;">
-                <div id="sponsor-page-carousel" class="carousel slide" data-ride="carousel">
-                    <!-- Wrapper for slides -->
-                    <div class="carousel-inner">
-                        {% if page.images|length > 0 %}
-                            {% for image in page.images %}
-                                <div class="item {% if forloop.counter0 == 0 %}active{% endif %}">
-                                    <img src="/file/serve/{{ image }}" />
-                                </div>
-                            {% endfor %}
-                        {% else %}
-                            <div class="item active">
-                                <img src="/static/img/spudderspuds/button-spuds-large.png" height="300px"/>
-                                <div class="carousel-caption">
-                                    <div class="alert alert-info">
-                                        <h4>No images yet</h4>
-                                        <p>Stay tuned, there will soon be images for this sponsor!</p>
-                                    </div>
-                                </div>
-                            </div>
-                        {% endif %}
-                    </div>
+    <div id="venue-property-buttons">
+        <div class="btn-group btn-group-justified" style="margin: 0 auto;">
+            {% include 'spuddersponsors/parts/sponsor_page_view_buttons.html' %}
+        </div>
+    </div>
 
-                    <!-- Controls -->
-                    <a class="left carousel-control" href="#sponsor-page-carousel" role="button" data-slide="prev">
-                        <span class="icon-prev"></span>
-                    </a>
-                    <a class="right carousel-control" href="#sponsor-page-carousel" role="button" data-slide="next">
-                        <span class="icon-next"></span>
-                    </a>
+    <div class="tab-content">
+        <div class="tab-pane active" id="images">
+            <div style="min-height: 362px; margin: 0 auto; width: 100%; vertical-align: middle; text-align: center; padding:15px;">
+                <div class="row-fluid" style="height:100%;">
+                    <div class="col-md-12 contents" style="height:100%;">
+                        <div id="sponsor-page-carousel" class="carousel slide" data-ride="carousel">
+                            <!-- Wrapper for slides -->
+                            <div class="carousel-inner">
+                                {% if page.images|length > 0 %}
+                                    {% for image in page.images %}
+                                        <div class="item {% if forloop.counter0 == 0 %}active{% endif %}">
+                                            <img src="/file/serve/{{ image }}" />
+                                        </div>
+                                    {% endfor %}
+                                {% else %}
+                                    <div class="item active">
+                                        <img src="/static/img/spudderspuds/button-spuds-large.png" height="300px"/>
+                                        <div class="carousel-caption">
+                                            <div class="alert alert-info">
+                                                <h4>No images yet</h4>
+                                                <p>Stay tuned, there will soon be images for this sponsor!</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Controls -->
+                            <a class="left carousel-control" href="#sponsor-page-carousel" role="button" data-slide="prev">
+                                <span class="icon-prev"></span>
+                            </a>
+                            <a class="right carousel-control" href="#sponsor-page-carousel" role="button" data-slide="next">
+                                <span class="icon-next"></span>
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="row-fluid" style="height:100%;">
-            <div class="col-md-12 contents" style="height:100%;">
-                <p class="sponsor-description">{{ page.description }}</p>
+        <div class="tab-pane" id="venues">
+            <div class="page-header">
+                <h2><i class="fa fa-map-marker"></i> Venues sponsored by this company</h2>
             </div>
+
+            {% if not venues %}
+                {% include 'spudderspuds/teams/quotes/quote_team_not_associated_with_venue.html' %}
+            {% else %}
+                <table class="table table-striped" style="margin-top: 20px;">
+                    {% for venue in venues %}
+                        <tr>
+                            <td style="width:40px;vertical-align: middle;">
+                                <a href="/venues/view/{{ venue.id }}" style="text-decoration: none;">
+                                    <img src="{% if venue.logo %}/file/serve/{{ venue.logo.id }}{% else %}/static/img/spuddersponsors/button-sponsors-medium.png{% endif %}" height="30px;"/>
+                                </a>
+                            </td>
+                            <td style="vertical-align: middle;">
+                                <a href="/venues/view/{{ venue.id }}" style="text-decoration: none;">
+                                    {{ venue }}
+                                </a>
+                            </td>
+                            <td style="vertical-align: middle;" class="hidden-xs">
+                                @{{ venue.name }}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            {% endif %}
+        </div>
+
+        <div class="tab-pane" id="about">
+            {% if page.description %}
+                <div>
+                    <h3 style="text-align: center">Description:</h3>
+                    <p style="margin-left: 30px; margin-right: 30px; text-align: justify;">{{ page.description }}</p>
+                </div>
+             {% else %}
+                {% include 'spuddersponsors/quotes/no_description.html' %}
+            {% endif %}
         </div>
     </div>
 {% endblock main_page %}
@@ -266,6 +311,13 @@
                 } else{
                     showAlert(alert, 'The @tag name contains invalid characters. Only lowercase letters and numbers are allowed.', 'danger', false);
                 }
+            });
+
+            $('a[role="tab"]').click(function () {
+                $('a[role="tab"]').removeClass('active');
+
+                $(this).addClass('active');
+                $(this).tab('show');
             });
         });
     </script>

@@ -1,0 +1,13 @@
+{% extends 'spuddersponsors/quotes/base_message.html' %}
+
+{% block content %}
+    <h4>This company has no additional information!</h4>
+    {% if can_edit %}
+        <p>If you want to tell more about your company please go to Edit Sponsor Page page.</p>
+        <a class="btn btn-primary" href="/sponsor/page/" title="Edit Team profile"
+            style="margin: 20px auto 0; display: table;">
+            <i class="fa fa-fw fa-edit"> </i> Edit Sponsor Page
+        </a>
+    {% endif %}
+{% endblock %}
+

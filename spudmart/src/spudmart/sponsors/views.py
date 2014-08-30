@@ -56,10 +56,13 @@ def public_view(request, page_id):
     if page.map_info:
         longitude, latitude, _ = page.map_info.split(';')
 
+    venues = Venue.objects.filter(renter=page)
+
     return render(request, 'spuddersponsors/pages/dashboard_pages/sponsor_page_view.html', {
         'page': page,
         'latitude': latitude,
         'longitude': longitude,
+        'venues': venues,
         'base_url': 'spuddercern/base.html'
     })
 
