@@ -3,7 +3,6 @@ import settings
 from spudderaccounts.templatetags.spudderaccountstags import is_fan, is_cern_student
 from spudderdomain.controllers import TeamsController, RoleController, SpudsController, SocialController
 from spudderdomain.models import TeamPage, Location, TeamVenueAssociation, TeamAdministrator
-from spudderkrowdio.models import FanFollowingEntityTag
 from spudmart.CERN.rep import created_team, team_associated_with_venue
 from spudmart.teams.forms import CreateTeamForm, TeamPageForm
 from django.http import HttpResponseRedirect, HttpResponse
@@ -92,7 +91,7 @@ def team_page(request, page_id):
         'page': page,
         'form': form,
         'sports': SPORTS,
-        'states': sorted([(k, v) for k, v in STATES.items()], key=lambda x:x[1])
+        'states': sorted([(k, v) for k, v in STATES.items()], key=lambda x: x[1])
     })
 
 
@@ -131,10 +130,10 @@ def search_teams(request):
     else:
         teams = TeamPage.objects.all()
     context = {
-       'teams' : teams,
-       'sports' : SPORTS,
-       'states' : STATES,
-       'filters' : filters
+        'teams': teams,
+        'sports': SPORTS,
+        'states': STATES,
+        'filters': filters
     }
     return render(request, 'spudderspuds/teams/pages/search_teams.html', context)
     

@@ -1,12 +1,12 @@
 from urllib2 import Request, urlopen
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
-import uuid
 from django.contrib.auth.models import User
 from datetime import timedelta, datetime
 from spudmart.upload.models import UploadedFile
 from djangotoolbox.fields import ListField
 from django.db.models.fields import CharField
+from collections import OrderedDict
 
 # 100 points to get from level 1 to 2 for venues
 VENUE_REP_LEVEL_MODIFIER = 100
@@ -72,6 +72,8 @@ STATES = {
         'WV': 'West Virginia',
         'WY': 'Wyoming'
 }
+
+SORTED_STATES = OrderedDict(sorted(STATES.items()))
 
 STATUS_ACCEPTED = "accepted"
 STATUS_REJECTED = "rejected"

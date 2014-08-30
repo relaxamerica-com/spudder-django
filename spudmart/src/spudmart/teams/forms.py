@@ -1,12 +1,10 @@
 from django import forms
 from django.forms import HiddenInput
 from django.forms.models import ModelForm
-import simplejson
 from spudderdomain.controllers import SocialController
 from spudderdomain.models import TeamPage
-from spudderspuds.views import get_at_names
 from spudmart.venues.models import SPORTS
-from spudmart.CERN.models import STATES
+from spudmart.CERN.models import SORTED_STATES
 
 
 class CreateTeamForm(forms.Form):
@@ -26,7 +24,7 @@ class CreateTeamForm(forms.Form):
         max_length=255, help_text='Say something about your team!',
         required=False, label="About us")
     # file = forms.FileField(required=False, label="Image")
-    state = forms.ChoiceField(choices=[('', 'Select a state...')] + sorted([(k, v) for k, v in STATES.items()], key=lambda x:x[1]))
+    state = forms.ChoiceField(choices=[('', 'Select a state...')] + sorted([(k, v) for k, v in SORTED_STATES.items()], key=lambda x:x[1]))
 
     def clean_at_name(self):
         cleaned_data = super(CreateTeamForm, self).clean()

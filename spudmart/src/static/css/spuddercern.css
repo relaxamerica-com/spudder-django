@@ -14094,7 +14094,6 @@ fieldset[disabled] .navbar-masthead.navbar-inverse .btn-link:focus {
   padding: 0;
   overflow: hidden;
   height: 400px;
-  background-position: center center;
   background-size: cover;
 }
 @media (max-width: 767px) {

@@ -161,7 +161,8 @@ shared_settings = {
         'amazon_login_client_id': 'amzn1.application-oa2-client.de78cbafe055444aa00e07a445644d16',
         'linkedin_api_key': '',
         'linkedin_secret_key': '',
-        'support_email': 'lukasz@spuder.com'
+        'support_email': 'lukasz@spuder.com',
+        'krowdio_client_key': '5401e324e9b6cc56dbe43f55'
 
     },
     'essential-hawk-597': {  # karol@spuder.com
