@@ -146,7 +146,9 @@
                         </div>
                     </div>
 
-                    <button type="submit" class="btn btn-primary edit-mode" style="display: inline">Save</button>
+                    <button type="submit" class="btn btn-primary edit-mode" style="display: inline">
+                        <i class="fa fa-fw fa-save"></i>Save
+                    </button>
                 </form>
             </div>
         </div>
@@ -290,8 +292,8 @@
                 submitHandler: function (form) {
                     var $formSubmit = $(form).find('button[type="submit"]');
 
-                    $formSubmit.text('Saving...');
                     $formSubmit.attr('disabled', 'disabled');
+                    $formSubmit.find('i').removeClass('fa-save').addClass('fa-spin fa-spinner');
 
                     var offerImage1 = $(form).find('input[name="image1"]'),
                         fileUploadControl1 = $("#image-input1")[0],
