@@ -91,6 +91,10 @@ class EditPageMiddleware:
                 if request.current_role.entity_type == RoleController.ENTITY_FAN:
                     if str(request.current_role.entity.id) == str.split(path, '/')[-1]:
                         can_edit = True
+            elif re.match(r'/sponsor/\d+', path):
+                if request.current_role.entity_type == RoleController.ENTITY_SPONSOR:
+                    if str(request.current_role.entity.id) == str.split(path, '/')[-1]:
+                        can_edit = True
 
         request.can_edit = can_edit
 

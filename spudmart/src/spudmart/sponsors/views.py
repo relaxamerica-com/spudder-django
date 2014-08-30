@@ -1,13 +1,11 @@
 from django.http import HttpResponseRedirect, HttpResponse
-from django.contrib.auth.decorators import user_passes_test, login_required
 from django.shortcuts import render, get_object_or_404
 import settings
-from spudderdomain.controllers import RoleController
 from spudmart.sponsors.decorators import current_role_is_sponsor
 from spudmart.sponsors.forms import SponsorPageForm
 from spudmart.sponsors.models import SponsorPage
-from spudmart.accounts.utils import is_sponsor
 from spudmart.venues.models import Venue
+from spudmart.utils.cover_image import reset_cover_image, save_cover_image_from_request
 
 
 def _get_map_info(post_data):
@@ -99,6 +97,46 @@ def sponsor_page(request):
         'page': page,
         'images_range': range(3)
     })
+
+
+def edit_cover(request, page_id):
+    page = SponsorPage.objects.get(id=page_id)
+
+    return render(request, 'components/coverimage/edit_cover_image.html', {
+        'name': page.name,
+        'return_url': "/sponsor/%s" % page.id,
+        'post_url': '/sponsor/save_cover/%s' % page.id,
+        'reset_url': '/sponsor/reset_cover/%s' % page.id
+    })
+
+
+def save_cover(request, page_id):
+    page = SponsorPage.objects.get(id=page_id)
+    save_cover_image_from_request(page, request)
+
+    return HttpResponse()
+
+
+def reset_cover(request, page_id):
+    page = SponsorPage.objects.get(pk=page_id)
+    reset_cover_image(page)
+
+    return HttpResponse('OK')
+
+
+def save_logo_and_name(request, page_id):
+    page = SponsorPage.objects.get(pk=page_id)
+
+    request_logo = request.POST.getlist('logo[]')
+    if len(request_logo):
+        thumbnail_id = request_logo[0].split('/')[3]
+        page.thumbnail = thumbnail_id
+
+    page.name = request.POST['name']
+    page.tag = request.POST['tag']
+    page.save()
+
+    return HttpResponse('OK')
 
 
 @current_role_is_sponsor

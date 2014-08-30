@@ -1,7 +1,8 @@
 import json
+import logging
+
 from django.shortcuts import render, get_object_or_404
 from django.template.loader import render_to_string
-from spudderaccounts.templatetags.spudderaccountstags import is_fan
 from spudderdomain.models import TeamVenueAssociation
 from spudmart.utils.cover_image import reset_cover_image, save_cover_image_from_request
 from spudmart.utils.emails import send_email
@@ -24,12 +25,9 @@ from spudmart.accounts.utils import is_sponsor
 from spudmart.CERN.rep import added_basic_info, added_photos, added_logo, \
                             added_video
 from spudmart.CERN.models import Student
-
 from spudderdomain.controllers import SpudsController, RoleController
-from spudderkrowdio.models import KrowdIOStorage, FanFollowingEntityTag
-from spudderkrowdio.utils import get_user_mentions_activity, delete_spud
-import logging
-import datetime
+from spudderkrowdio.models import KrowdIOStorage
+from spudderkrowdio.utils import delete_spud
 
 
 def view(request, venue_id):

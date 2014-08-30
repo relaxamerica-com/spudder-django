@@ -5,6 +5,10 @@ from django.views.generic import TemplateView
 urlpatterns = patterns(
     'spudmart.sponsors.views',
     (r'^page$', 'sponsor_page'),
+    (r'^save_cover/(?P<page_id>\d+)$', 'save_cover'),
+    (r'^reset_cover/(?P<page_id>\d+)$', 'reset_cover'),
+    (r'^edit_cover/(?P<page_id>\d+)$', 'edit_cover'),
+    (r'^save_logo_and_name/(?P<page_id>\d+)$', 'save_logo_and_name'),
     (r'^(?P<page_id>\d+)$', 'public_view'),
     (r'^venues/$', 'sponsors_venues'),
     (r'^splash$', 'sponsors_splash'),

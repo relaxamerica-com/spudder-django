@@ -25,13 +25,56 @@
 
 {% block nav_brand %}<a href="/"><img src="/static/img/spuddersponsors/logo-sponsors-small.png" style="height:35px;margin-top:2px;"/></a>{% endblock %}
 
-{% block cover_image_container_id %}jumbo-map-container{% endblock %}
-
 {% block cover_title_profile_image_url %}{% if page.thumbnail %}/file/serve/{{ page.thumbnail }}{% else %}/static/img/spuddersponsors/button-sponsors-medium.png{% endif %}{% endblock %}
 
 {% block cover_title_display_name %}{{ page.name }}{% endblock %}
 
+{% block cover_image_container_id %}{% if not page.cover_image %}jumbo-map-container{% endif %}{% endblock %}
+
+{% block cover_image_css_background %}{% if page.cover_image %}/file/serve/{{ page.cover_image.id }}{% endif %}{% endblock %}
+
+{% block cover_image_edit_url %}/sponsor/edit_cover/{{ page.id }}{% endblock %}
+
+{% block cover_title_action_buttons %}
+    <a href="https://www.google.com/maps/dir/Current+Location/{{ latitude }},{{ longitude }}" target="_blank" class="social-link"><i class="fa fa-map-marker"></i></a>
+    {% if request.can_edit %}
+        <button class="btn btn-primary" id="edit">
+            Edit Mode
+        </button>
+    {% endif %}
+{% endblock %}
+
+{% block cover_title_additions %}
+    <p><b>@{{ page.tag }}</b></p>
+{% endblock %}
+
 {% block main_page %}
+    <div class="edit-mode well">
+        <h2>Edit basic compamy details</h2>
+        <form method="post" enctype="multipart/form-data" role="form">
+            <div class="form-group edit-mode edit-mode-sponsor">
+                <label>Upload a profile image (logo):</label>
+                <input type="file" name="file" id="edit-logo" class="form-control" />
+            </div>
+
+            <div class="form-group edit-mode">
+                <label>Company @tag Name:</label>
+                <div class="input-group">
+                    <div class="input-group-addon">@</div>
+                    <input type="text" name="tag" value="{{ page.tag }}" id="sponsor-tag-input"  class="form-control"/>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Company Name:</label>
+                <input type="text" name="name" value="{{ page.name }}" id="sponsor-name-input"  class="form-control"/>
+            </div>
+
+            <a class="btn btn-primary edit-mode" id="save-name"><i class="fa fa-fw fa-save"></i> Save</a>
+        </form>
+        <div class="alert" id="logo-name-alert" style="margin-top:10px"></div>
+    </div>
+
     <div style="min-height: 362px; margin: 0 auto; width: 100%; vertical-align: middle; text-align: center; padding:15px;">
         <div class="row-fluid" style="height:100%;">
             <div class="col-md-12 contents" style="height:100%;">
@@ -170,11 +213,62 @@
 
 {% block js %}
     {{ block.super }}
+
     <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=true&libraries=geometry"></script>
     <script type="text/javascript" src="/static/js/libs/google.map.js"></script>
-    <script type="text/javascript" src="/static/js/google_maps/jumbotron.js"></script>
+    <script type="text/javascript" src="/static/js/libs/jquery.serialize.file.js"></script>
 
-    {{ block.super }}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#save-name').click(function() {
+                var form = $('#edit-logo').parents('form'),
+                    files = $(form).serializeFiles(),
+                    tag = $('#sponsor-tag-input').val(),
+                    name = $('#sponsor-name-input').val(),
+                    alert = $('#logo-name-alert'),
+                    icon = $('#save-name').find('.fa-save');
+
+                if (tag.match(/[a-z\d]*/) == tag){
+                    icon.removeClass('fa-save').addClass('fa-spin fa-spinner');
+
+                    $.get('/upload/get_upload_url', function (data) {
+                        $.ajax({
+                            url: data,
+                            data: files,
+                            cache: false,
+                            contentType: false,
+                            processData: false,
+                            type: 'POST',
+                            success: function (data) {
+                                var parsed = JSON.parse(data);
+
+                                var response = $.post('/sponsor/save_logo_and_name/{{ page.id }}', {
+                                    'logo': parsed['uploaded_files'],
+                                    'tag': tag,
+                                    'name': name
+                                });
+
+                                response.done(function (data) {
+                                    icon.removeClass('fa-spin fa-spinner').addClass('fa-save');
+                                    showAlert(alert, "Company name and logo have been saved.", 'success', true);
+
+                                    $('.spudder-jumbotron-caption .media-heading').text(name);
+                                    $('.spudder-jumbotron-caption .media-body p b').text('@' + tag);
+
+                                    if (parsed['uploaded_files'].length > 0) {
+                                        $('.spudder-jumbotron-caption .media .logo').attr('src', parsed['uploaded_files'][0]);
+                                    }
+
+                                });
+                            }
+                        });
+                    });
+                } else{
+                    showAlert(alert, 'The @tag name contains invalid characters. Only lowercase letters and numbers are allowed.', 'danger', false);
+                }
+            });
+        });
+    </script>
 
     <script type="text/javascript">
         window.twitterPopupText = "Here is a business that gives back to the community. Let's all click here and support them.";
