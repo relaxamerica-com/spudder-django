@@ -97,11 +97,13 @@
                             <td style="vertical-align: middle;" class="hidden-xs">
                                 @{{ venue.name }}
                             </td>
-                            <td style="width:100px; vertical-align: middle;">
-                                <a class="btn btn-danger btn-sm" href="javascript:removeAssociation('{{ venue.id }}', '{{ venue.aka_name }}');">
-                                    Remove association
-                                </a>
-                            </td>
+                            {% if request.can_edit %}
+                                <td style="width:100px; vertical-align: middle;">
+                                    <a class="btn btn-danger btn-sm" href="javascript:removeAssociation('{{ venue.id }}', '{{ venue.aka_name }}');">
+                                        Remove association
+                                    </a>
+                                </td>
+                            {% endif %}
                         </tr>
                     {% endfor %}
                 </table>
