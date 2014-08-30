@@ -496,6 +496,34 @@
                         </div>
                     </div>
                 </div>
+                <div id="teams" class="content">
+                    <div class="page-header">
+                        <h2><i class="fa fa-group"></i> Teams associated with this venue</h2>
+                    </div>
+                    {% if not teams %}
+                        {% include 'spuddercern/quote_messages/quote_no_teams_associated_with_venue.html' %}
+                    {% else %}
+                        <table class="table table-striped" style="margin-top: 20px;">
+                            {% for team in teams %}
+                                <tr>
+                                    <td style="width:40px;vertical-align: middle;">
+                                        <a href="/team/{{ team.id }}" style="text-decoration: none;">
+                                            <img src="{% if team.logo %}/file/serve/{{ team.image.id }}{% else %}/static/img/spudderspuds/button-teams-medium.png{% endif %}" height="30px;"/>
+                                        </a>
+                                    </td>
+                                    <td style="vertical-align: middle;">
+                                        <a href="/team/{{ team.id }}" style="text-decoration: none;">
+                                            {{ team }}
+                                        </a>
+                                    </td>
+                                    <td style="vertical-align: middle;" class="hidden-xs">
+                                        @{{ team.at_name }}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </table>
+                    {% endif %}
+                </div>
             </div>
         </div>
 
@@ -611,20 +639,6 @@
                         <label>Fax: </label> {{ sponsor.fax }}
                     </li>
                 {% endif %}
-            </ul>
-        </div>
-    {% endif %}
-
-    {% if teams %}
-        <div style="border-top: 1px solid lightgray;">
-            <h3>
-                Associated teams
-            </h3>
-
-            <ul class="associated-teams">
-                {% for team in teams %}
-                    <li><a href="/team/{{ team.id }}">{{ team }}</a></li>
-                {% endfor %}
             </ul>
         </div>
     {% endif %}
