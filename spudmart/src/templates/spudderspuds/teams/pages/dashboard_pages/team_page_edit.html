@@ -63,6 +63,32 @@
                         <textarea name="free_text" id="free_text" class="form-control" rows="5">{{form.free_text.value|default:"" }}</textarea>
                     </div>
 
+                    <div class="form-group">
+                        <label>Instagram:</label>
+                        <input id="instagram" name="instagram" type="url" class="form-control" placeholder="http://instagram.com/your.name"
+                               value="{{social_media.instagram.value|default:"" }}" />
+                    </div>
+                    <div class="form-group">
+                        <label>Facebook:</label>
+                        <input id="facebook" name="facebook" type="url" class="form-control" placeholder="https://www.facebook.com/your.name"
+                               value="{{social_media.facebook.value|default:"" }}" />
+                    </div>
+                    <div class="form-group">
+                        <label>Twitter:</label>
+                        <input id="twitter" name="twitter" type="url" class="form-control" placeholder="http://www.twitter.com/your.name"
+                               value="{{social_media.twitter.value|default:"" }}" />
+                    </div>
+                    <div class="form-group">
+                        <label>Google+:</label>
+                        <input id="google_plus" name="google_plus" type="url" class="form-control" placeholder="https://plus.google.com/u/0/your.id"
+                               value="{{social_media.google_plus.value|default:"" }}" />
+                    </div>
+                    <div class="form-group">
+                        <label>LinkedIn:</label>
+                        <input id="linkedin" name="linkedin" type="url" class="form-control" placeholder="https://www.linkedin.com/company/company-name"
+                               value="{{social_media.linkedin.value|default:"" }}" />
+                    </div>
+
                     <button type="submit" class="btn btn-primary edit-mode" style="display: inline">Save</button>
                 </form>
             </div>

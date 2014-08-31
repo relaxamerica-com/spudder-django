@@ -15,8 +15,8 @@ from spudderdomain.controllers import TeamsController, RoleController, SpudsCont
 from spudderdomain.models import FanPage, TeamPage, TeamAdministrator
 from spudderkrowdio.models import FanFollowingEntityTag, KrowdIOStorage
 from spuddersocialengine.models import SpudFromSocialMedia
-from spudderspuds.forms import FanSigninForm, FanRegisterForm, FanPageForm, FanPageSocialMediaForm
-from spudderspuds.utils import create_and_activate_fan_role, is_signin_claiming_spud
+from spudderspuds.forms import FanSigninForm, FanRegisterForm, FanPageForm, BasicSocialMediaForm
+from spudderspuds.utils import create_and_activate_fan_role, is_signin_claiming_spud, set_social_media
 from spudmart.CERN.models import Student
 from spudmart.CERN.rep import team_gained_follower, team_tagged_in_spud
 from spudmart.accounts.templatetags.accounts import fan_page_name, user_name
@@ -164,15 +164,16 @@ def fan_profile_view(request, page_id):
 def fan_profile_edit(request, page_id):
     fan_page = get_object_or_404(FanPage, pk=page_id)
     profile_form = FanPageForm(initial=fan_page.__dict__)
-    social_accounts_form = FanPageSocialMediaForm(initial=fan_page.__dict__)
+    social_accounts_form = BasicSocialMediaForm(initial=fan_page.__dict__)
     if request.method == 'POST':
         profile_form = FanPageForm(request.POST)
-        social_accounts_form = FanPageSocialMediaForm(request.POST)
+        social_accounts_form = BasicSocialMediaForm(request.POST)
         if profile_form.is_valid() and social_accounts_form.is_valid():
             for attr in ('name', 'date_of_birth', 'state', ):
                 fan_page.__setattr__(attr, profile_form.cleaned_data[attr])
-            for attr in ('twitter', 'facebook', 'google_plus', 'instagram', ):
-                fan_page.__setattr__(attr, social_accounts_form.cleaned_data.get(attr, ''))
+
+            set_social_media(fan_page, social_accounts_form)
+
             fan_page.save()
         return redirect('/fan/%s' % fan_page.id)
     return render(request, 'spudderspuds/fans/pages/fan_page_edit.html', {

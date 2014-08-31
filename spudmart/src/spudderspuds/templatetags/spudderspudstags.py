@@ -92,3 +92,8 @@ def entity_view_link(entity, entity_type):
         return '/venues/view/%s' % entity.id
     else:
         return '/%s/%s' % (entity_type, entity.id)
+
+
+@register.inclusion_tag('components/social_media_list.html')
+def social_media_list(entity):
+    return {'entity': entity}

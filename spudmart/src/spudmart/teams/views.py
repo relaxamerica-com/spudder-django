@@ -3,6 +3,8 @@ import settings
 from spudderaccounts.templatetags.spudderaccountstags import is_fan, is_cern_student
 from spudderdomain.controllers import TeamsController, RoleController, SpudsController, SocialController
 from spudderdomain.models import TeamPage, Location, TeamVenueAssociation, TeamAdministrator
+from spudderspuds.forms import LinkedInSocialMediaForm
+from spudderspuds.utils import set_social_media
 from spudmart.CERN.rep import created_team, team_associated_with_venue
 from spudmart.teams.forms import CreateTeamForm, TeamPageForm
 from django.http import HttpResponseRedirect, HttpResponse, HttpResponseNotAllowed
@@ -34,10 +36,13 @@ def teams_list(request):
 
 def create_team(request):
     form = CreateTeamForm(initial={'next_url': request.GET.get('next_url')})
+    social_media_form = LinkedInSocialMediaForm()
     template_data = {'SPORTS': SPORTS}
     if request.method == "POST":
         form = CreateTeamForm(request.POST)
-        if form.is_valid():
+        social_media_form = LinkedInSocialMediaForm(request.POST)
+
+        if form.is_valid() and social_media_form.is_valid():
             team = TeamsController.CreateTeam(
                 request.current_role,
                 name=form.cleaned_data.get('team_name'),
@@ -47,8 +52,12 @@ def create_team(request):
                 state=form.cleaned_data.get('state'),
                 at_name=form.cleaned_data.get('at_name'),
             )
+
             location_info = request.POST.get('location_info', None)
             team.update_location(location_info)
+
+            set_social_media(team, social_media_form)
+
             team.save()
             if is_fan(request.current_role):
                 redirect_url = "/fan/follow?origin=/team/create&team_id=%s" % team.id
@@ -60,6 +69,7 @@ def create_team(request):
             return redirect(redirect_url)
 
     template_data['form'] = form
+    template_data['social_media'] = social_media_form
     return render(request, 'spudderspuds/teams/pages/create_team.html', template_data)
 
 
@@ -75,15 +85,19 @@ def _update_team_page_location(page, location):
 
 def team_page(request, page_id):
     page = TeamPage.objects.get(pk=page_id)
+    social_media_form = LinkedInSocialMediaForm(initial=page.__dict__)
 
     if request.method == 'POST':
         form = TeamPageForm(request.POST, instance=page)
+        social_media_form = LinkedInSocialMediaForm(request.POST)
 
-        if form.is_valid():
+        if form.is_valid() and social_media_form.is_valid():
             updated_page = form.save(commit=False)
 
             location_info = request.POST['location_info']
             updated_page.update_location(location_info)
+
+            set_social_media(page, social_media_form)
 
             updated_page.save()
 
@@ -95,6 +109,7 @@ def team_page(request, page_id):
         'places_api_key': settings.GOOGLE_PLACES_API_KEY,
         'page': page,
         'form': form,
+        'social_media': social_media_form,
         'sports': SPORTS,
         'states': sorted([(k, v) for k, v in STATES.items()], key=lambda x: x[1])
     })

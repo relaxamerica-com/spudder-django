@@ -14173,6 +14173,18 @@ form fieldset .form-group {
   right: 8px;
   z-index: 1;
 }
+ul.social-network {
+  list-style-type: none;
+  margin: 0 0 10px;
+  padding: 0;
+  text-align: left;
+}
+ul.social-network li {
+  display: inline;
+}
+ul.social-network li a {
+  text-decoration: none;
+}
 #main-splash .jumbotron {
   background-image: url('/static/img/footballfield.jpg');
   background-position: center center;

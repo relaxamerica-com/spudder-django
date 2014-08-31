@@ -1,6 +1,7 @@
 {% extends 'components/sharedpages/public_page_base.html' %}
 
 {% load accounts %}
+{% load spudderspudstags %}
 
 {% block title %}
     {{ page.name }}
@@ -133,6 +134,8 @@
         <h3>
             Team Details
         </h3>
+
+        {% social_media_list page %}
 
         <ul class="list-unstyled">
             <li>

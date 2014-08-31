@@ -58,8 +58,20 @@ class FanPageForm(forms.Form):
     state = forms.ChoiceField(choices=[(k, v) for k, v in SORTED_STATES.items()], label="Where do you live?")
 
 
-class FanPageSocialMediaForm(forms.Form):
+class BasicSocialMediaForm(forms.Form):
     twitter = forms.CharField(max_length=256, required=False, label="Twitter Username")
     facebook = forms.CharField(max_length=256, required=False, label="Facebook Profile Url")
     google_plus = forms.CharField(max_length=256, required=False, label="Google+ Profile Url")
     instagram = forms.CharField(max_length=256, required=False, label="Instagram Username")
+
+    @staticmethod
+    def get_social_media():
+        return 'twitter', 'facebook', 'google_plus', 'instagram',
+
+
+class LinkedInSocialMediaForm(BasicSocialMediaForm):
+    linkedin = forms.CharField(max_length=256, required=False, label="LinkedIn Username")
+
+    @staticmethod
+    def get_social_media():
+        return 'twitter', 'facebook', 'google_plus', 'instagram', 'linkedin',

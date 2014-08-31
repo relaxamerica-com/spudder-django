@@ -29,3 +29,8 @@ def is_signin_claiming_spud(request, fan, twitter, spud_id):
             messages.success(
                 request,
                 "You twitter name to <b>%s</b> and you claimed your SPUD!" % twitter)
+
+
+def set_social_media(entity, form):
+    for attr in form.get_social_media():
+        entity.__setattr__(attr, form.cleaned_data.get(attr, ''))

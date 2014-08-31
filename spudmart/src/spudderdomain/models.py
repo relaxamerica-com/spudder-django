@@ -205,6 +205,12 @@ class TeamPage(models.Model):
     cover_image = models.ForeignKey(UploadedFile, blank=True, null=True, related_name='team_page_cover_image')
     state = models.CharField(max_length=2)
 
+    facebook = models.CharField(max_length=255, blank=True)
+    twitter = models.CharField(max_length=255, blank=True)
+    google_plus = models.CharField(max_length=255, blank=True)
+    instagram = models.CharField(max_length=255, blank=True)
+    linkedin = models.CharField(max_length=255, blank=True)
+
     TeamWithNameAlreadyExistsError = _TeamWithNameAlreadyExistsError
 
     def update_location(self, location_info):
