@@ -56,6 +56,9 @@ def get_latest_at_post_spuds(dev=False):
                 api.update_status(status_message, s.id)
     elif service_config.active:
         # Here the service is active twitter is not authenticated
+        logging.error(
+            "atpostspud/api/get_latest_at_post_spuds: Twitter auth failed, the service will be shut down "
+            "and a support email sent.")
         service_config.deactivate()
         message = "The twitter authentication in the @postspudservice for %s is out of " \
             "date and the service is not running" % settings.SPUDMART_BASE_URL
@@ -66,4 +69,5 @@ def get_latest_at_post_spuds(dev=False):
             [settings.SUPPORT_EMAIL])
     else:
         # Here the service is not active, assume an email has been sent and quit
+        logging.warning("atpostspud/api/get_latest_at_post_spuds: The service is not active.")
         pass
