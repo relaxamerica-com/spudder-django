@@ -223,9 +223,26 @@ def fan_my_teams(request, page_id):
     template_data = {
         'teams': TeamsController.TeamsAdministeredByRole(request.current_role),
         'role_dashboard': 'spudderspuds/base.html',
-        'fan_nav_active': 'teams'}
+        'fan_nav_active': 'teams',
+        'info_message_id': 'teams_list',
+        'info_message_url': '/fan/disable_about/'
+    }
     return render(request, 'components/sharedpages/teams/teams_list.html', template_data,
                   context_instance=RequestContext(request))
+
+
+def disable_about(request):
+    """
+    Disables 'about X' part of given page for given fan
+    """
+    if request.method == 'POST':
+        fan = request.current_role.entity
+        message_id = request.POST.get('message_id')
+        if message_id:
+            fan.dismiss_info_message(message_id)
+        return HttpResponse(fan.info_messages_dismissed)
+    else:
+        return HttpResponseNotAllowed(['POST'])
 
 
 def claim_atpostspud(request, spud_id):

@@ -1,10 +1,22 @@
-<div class="quote">
-    <div class="alert alert-info">
-        <h4>What are Teams </h4>
-        <p>
-            As a Spudder Teams, Coaches can communicate easly with team players and parents. It's also a way to gain sponsors and run fundraising. This way, coaches can focus on coaching, players on simply playing and Spudder takes care of all other. Spudder Teams are also an easy way for fans to follow team progress and achievements, latest updates (SPUDS) and many more!
-        </p>
-        <i class="fa fa-caret-down"></i>
+{% extends 'components/quote/base_quote.html' %}
+
+{% block content %}
+    <h4><i class="fa fa-fw fa-bullhorn"></i> Why Create Teams?</h4>
+    <p>
+        <b>Teams</b> need to be created in order to Tag Spuds to a team, So if you can not find the Team you are looking for, you are going to need to create.
+        The information For creating the Team is very simple and straightforward.
+    </p>
+    <br/>
+    <p>
+        <b>NOTE:</b> Creating a team doesn't give you the right to fundraise on that teams behalf.
+        Only teams that are associated with a CLUB - (the legal entity approved to fundraise can fundraise on behalf of a team)
+        The team you're creating is a Social Page that holds the SPUDs and basic information about the TEAM
+    </p>
+    <br/>
+    <div class="btn-group">
+        <button class="btn btn-default dismiss-for-now-button">Hide for now</button>
+        <button id="submit" class="btn btn-primary dismiss-for-good-button">Hide Forever</button>
     </div>
-    <img src="/static/img/spudderspuds/button-teams-small.png" class="button" />
-</div>
+{% endblock %}
+
+{% block button_image_src %}/static/img/spudderspuds/button-teams-small.png{% endblock %}

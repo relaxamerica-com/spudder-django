@@ -336,7 +336,13 @@
                     $(this).unbind('click').on('click', function(){
                         var $container = $(this).parents('.quote');
                         $container.remove();
-                        $.post('/cern/disable_about/', {message_id: $container.data('id')});
+
+                        var dismissURL = '{{ info_message_url }}';
+                        if (!dismissURL) {
+                            dismissURL = '/cern/disable_about/';
+                        }
+
+                        $.post(dismissURL, {message_id: $container.data('id')});
                     });
                 });
             });

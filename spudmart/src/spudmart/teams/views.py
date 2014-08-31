@@ -5,7 +5,7 @@ from spudderdomain.controllers import TeamsController, RoleController, SpudsCont
 from spudderdomain.models import TeamPage, Location, TeamVenueAssociation, TeamAdministrator
 from spudmart.CERN.rep import created_team, team_associated_with_venue
 from spudmart.teams.forms import CreateTeamForm, TeamPageForm
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponse, HttpResponseNotAllowed
 from spudmart.upload.models import UploadedFile
 from spudmart.utils.Paginator import EntitiesPaginator
 from spudmart.utils.cover_image import save_cover_image_from_request, reset_cover_image
@@ -17,13 +17,17 @@ from spudmart.venues.models import SPORTS, Venue
 def teams_list(request):
     template_data = {
         'teams': TeamsController.TeamsAdministeredByRole(request.current_role),
-        'role_dashboard': ''
+        'role_dashboard': '',
+        'info_message_id': 'teams_list'
     }
+
     if request.current_role.entity_type == RoleController.ENTITY_STUDENT:
         template_data['role_dashboard'] = 'spuddercern/pages/dashboard_pages/dashboard.html'
+        template_data['info_message_url'] = '/cern/disable_about/'
     elif request.current_role.entity_type == RoleController.ENTITY_FAN:
         template_data['role_dashboard'] = 'spudderspuds/fans/pages/dashboard.html'
         template_data['fan_nav_active'] = 'teams'
+        template_data['info_message_url'] = '/fan/disable_about/'
     return render(request, 'components/sharedpages/teams/teams_list.html',
                   template_data)
 
@@ -232,3 +236,14 @@ def associate_team_with_venue(request, page_id, venue_id):
         stu = Student.objects.get(id=admin.entity_id)
         team_associated_with_venue(stu)
     return HttpResponseRedirect('/team/%s' % page_id)
+
+
+def disable_about(request):
+    if request.method == 'POST':
+        team = request.current_role.entity
+        message_id = request.POST.get('message_id')
+        if message_id:
+            team.dismiss_info_message(message_id)
+        return HttpResponse(team.info_messages_dismissed)
+    else:
+        return HttpResponseNotAllowed(['POST'])
