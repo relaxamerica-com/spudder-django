@@ -6,8 +6,11 @@ register = template.Library()
 
 
 @register.simple_tag
-def link_to_change_role_and_return(role):
-    return '%s?next=%s' % (change_role_url(role), role.home_page_path)
+def link_to_change_role_and_return(role, next_url=None):
+    if not next_url:
+        next_url = role.home_page_path
+
+    return '%s?next=%s' % (change_role_url(role), next_url)
 
 
 @register.simple_tag

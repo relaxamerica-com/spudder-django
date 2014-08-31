@@ -202,6 +202,9 @@ class RoleSponsor(RoleBase):
     def user_is_owner(self, user):
         return self.entity.user == user
 
+    def get_amazon_id(self):
+        return self._amazon_id
+
 
 class RoleFan(RoleBase):
     @property

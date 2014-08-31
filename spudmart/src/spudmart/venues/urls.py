@@ -47,4 +47,5 @@ urlpatterns = patterns('spudmart.venues.views',
 #     (r'^flag_spud/(?P<venue_id>\d+)$', 'flag_spud_endpoint'),
 
     (r'^search$', 'search'),
+    (r'^multiply_venue/(?P<venue_id>\d+)$', 'multiply_venue'),
 )

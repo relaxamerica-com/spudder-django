@@ -3,6 +3,7 @@ import logging
 
 from django.shortcuts import render, get_object_or_404
 from django.template.loader import render_to_string
+from spudderaccounts.wrappers import RoleSponsor
 from spudderdomain.models import TeamVenueAssociation
 from spudmart.utils.cover_image import reset_cover_image, save_cover_image_from_request
 from spudmart.utils.emails import send_email
@@ -509,9 +510,15 @@ def rent_sign_in(request):
     if request.user.is_authenticated() and request.current_role.entity_type is RoleController.ENTITY_SPONSOR:
         return _handle_sign_in_complete(request)
 
+    sponsor_roles = []
+    for role in request.all_roles:
+        if isinstance(role, RoleSponsor):
+            sponsor_roles.append(role)
+
     return render(request, 'spuddercern/pages/rent_venue_signin.html', {
         'client_id': settings.AMAZON_LOGIN_CLIENT_ID,
-        'base_url': settings.SPUDMART_BASE_URL
+        'base_url': settings.SPUDMART_BASE_URL,
+        'sponsor_roles': sponsor_roles
     })
 
 
@@ -670,3 +677,20 @@ def search(request):
         'entity_type': "venue",
         'entities': Venue.objects.all()
     })
+
+
+def multiply_venue(request, venue_id):
+    """
+    Creates 5 copies of venue without sponsorship
+
+    :param request: request to delete venue
+    :param venue_id: venue to be multiplied
+    :return: redirect to venues list
+    """
+    venue = Venue.objects.get(id=venue_id)
+    for _ in range(5):
+        venue.pk = None
+        venue.renter = None
+        venue.save()
+
+    return HttpResponseRedirect('/venues/view/%s' % venue_id)
