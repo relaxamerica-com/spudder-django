@@ -10,6 +10,7 @@ from spudmart.upload.models import UploadedFile
 from spudmart.utils.Paginator import EntitiesPaginator
 from spudmart.utils.cover_image import save_cover_image_from_request, reset_cover_image
 from spudmart.CERN.models import STATES, Student
+from spudmart.utils.url import get_return_url
 from spudmart.venues.models import SPORTS, Venue
 
 
@@ -218,7 +219,7 @@ def remove_association_with_venue(request, page_id, venue_id):
     venue = get_object_or_404(Venue, pk=venue_id)
     TeamVenueAssociation.objects.get(team_page=page, venue=venue).delete()
 
-    return HttpResponseRedirect('/team/%s' % page_id)
+    return HttpResponseRedirect(get_return_url(request, '/team/%s' % page_id))
 
 
 def associate_team_with_venue(request, page_id, venue_id):

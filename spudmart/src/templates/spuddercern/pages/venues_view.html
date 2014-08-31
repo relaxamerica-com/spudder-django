@@ -519,6 +519,13 @@
                                     <td style="vertical-align: middle;" class="hidden-xs">
                                         @{{ team.at_name }}
                                     </td>
+                                    {% if request.can_edit %}
+                                        <td style="width:100px; vertical-align: middle;">
+                                            <a class="btn btn-danger btn-sm" href="javascript:removeAssociation('{{ team.id }}', '{{ team.name }}');">
+                                                Remove association
+                                            </a>
+                                        </td>
+                                    {% endif %}
                                 </tr>
                             {% endfor %}
                         </table>
@@ -1457,5 +1464,12 @@
         else if (active == "medical-details") click_nav_button('#handicap-details');
     });
     })
+
+
+    function removeAssociation(teamID, teamName){
+        if (confirm('This will remove the association with the team ' + teamName + '. Are you sure you want to do that?')){
+            window.location = '/team/associate/' + teamID + '/remove/' + {{ venue.id }} + '?next={{ request.get_full_path }}';
+        }
+    }
 </script>
 {% endblock %}
