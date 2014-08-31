@@ -39,6 +39,7 @@
                     </div>
                     <div class="form-group edit-mode edit-mode-team" style="display: block;">
                         <label>State:</label>
+                        <span class="input-required">*required</span>
                         <select name="state" id="state" class="form-control">
                         	{% for state, full_name in states %}
                                 <option {% if form.state.value == state %}selected{% endif %} value="{{ state }}">{{ full_name }}</option>
@@ -119,7 +120,8 @@
             $form.validate({
                 rules: {
                     name: "required",
-                    at_name: { required: true, tag: true }
+                    at_name: { required: true, tag: true },
+                    contact_details: { required: true, email: true }
                 },
 
                 errorPlacement: function(error, element) {

@@ -9,13 +9,16 @@ from spudmart.CERN.models import SORTED_STATES
 
 class CreateTeamForm(forms.Form):
     next_url = forms.CharField(max_length=255, widget=HiddenInput)
-    team_name = forms.CharField(max_length=255, help_text='The name of your team must be unique.')
+    team_name = forms.CharField(max_length=255, help_text='The name of your team must be unique.',
+                                label="Team name <span class=\"input-required\">*required</span>")
     at_name = forms.CharField(
         max_length=255,
-        label="Teams @name",
+        label="Teams @name <span class=\"input-required\">*required</span>",
         help_text="Used to identify this team and link spuds to it! <b>lowercase letters and numbers only please</b><div class='alert alert-danger' style='display:none;' id='at_name_alert'></div>")
-    sport = forms.ChoiceField(choices=[('', 'Select a sport...')] + [('%s' % x, SPORTS[x]) for x in range(len(SPORTS))])
-    contact_details = forms.CharField(
+    sport = forms.ChoiceField(
+        choices=[('', 'Select a sport...')] + [('%s' % x, SPORTS[x]) for x in range(len(SPORTS))],
+        label="Sport <span class=\"input-required\">*required</span>")
+    contact_details = forms.EmailField(
         max_length=255,
         help_text='How should people contact you and your team? Leave instructions, number and emails '
                   'addresses here!',
@@ -24,7 +27,9 @@ class CreateTeamForm(forms.Form):
         max_length=255, help_text='Say something about your team!',
         required=False, label="About us")
     # file = forms.FileField(required=False, label="Image")
-    state = forms.ChoiceField(choices=[('', 'Select a state...')] + sorted([(k, v) for k, v in SORTED_STATES.items()], key=lambda x:x[1]))
+    state = forms.ChoiceField(
+        choices=[('', 'Select a state...')] + sorted([(k, v) for k, v in SORTED_STATES.items()], key=lambda x:x[1]),
+        label="State <span class=\"input-required\">*required</span>")
 
     def clean_at_name(self):
         cleaned_data = super(CreateTeamForm, self).clean()
