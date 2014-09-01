@@ -8,7 +8,7 @@ from spudmart.CERN.models import SORTED_STATES
 
 
 class BaseTeamForm(forms.Form):
-    team_name = forms.CharField(max_length=255, help_text='The name of your team must be unique.',
+    name = forms.CharField(max_length=255, help_text='The name of your team must be unique.',
                                 label="Team name <span class=\"input-required\">*required</span>")
     contact_details = forms.EmailField(
         max_length=255,
@@ -19,9 +19,9 @@ class BaseTeamForm(forms.Form):
         max_length=255, help_text='Say something about your team!',
         required=False, label="About us")
 
-    def clean_team_name(self):
+    def clean_name(self):
         cleaned_data = super(BaseTeamForm, self).clean()
-        name = cleaned_data.get('team_name').strip()
+        name = cleaned_data.get('name').strip()
         if TeamPage.objects.filter(name=name).count():
             raise forms.ValidationError("The team name you are using is already taken, try adding the town or city?")
         return name
@@ -63,9 +63,9 @@ class EditTeamForm(BaseTeamForm):
         self.team_id = team_id
         super(EditTeamForm, self).__init__(*args, **kwargs)
 
-    def clean_team_name(self):
+    def clean_name(self):
         cleaned_data = super(EditTeamForm, self).clean()
-        name = cleaned_data.get('team_name').strip()
+        name = cleaned_data.get('name').strip()
         if TeamPage.objects.exclude(id=self.team_id).filter(name=name).count():
             raise forms.ValidationError("The team name you are using is already taken, try adding the town or city?")
         return name

@@ -37,24 +37,6 @@
 {% endblock %}
 
 {% block main_page %}
-    <div class="edit-mode well">
-        <h2>Edit Your Information</h2>
-        <form method="post" enctype="multipart/form-data" role="form">
-            <div class="form-group edit-mode">
-                <label>Upload a profile image (logo):</label>
-                <input type="file" name="avatar" id="logo-input" class="form-control" />
-            </div>
-
-            <a class="btn btn-primary" id="save-logo">Save</a>
-            <div class="alert" id="logo-name-alert" style="margin-top:10px"></div>
-
-            <a class="btn btn-primary" href="/team/associate/{{ page.id }}" title="Associate with {% if is_associated %}Another {% endif %}Venue"
-                style="margin: 20px auto 0; display: table;">
-                <i class="fa fa-fw fa-map-marker"> </i> Associate with {% if is_associated %}Another {% endif %}Venue
-            </a>
-        </form>
-    </div>
-
     <div id="venue-property-buttons">
         <div class="btn-group btn-group-justified" style="margin: 0 auto;">
             {% include 'spudderspuds/teams/parts/team_view_buttons.html' %}
@@ -179,37 +161,6 @@
                var $alert = $(alert);
                if ($alert.html() == "")
                    $alert.hide();
-            });
-
-            $('#save-logo').click(function() {
-                console.log('Save logo click...');
-                var form = $(this).parents('form'),
-                    files = $(form).serializeFiles(),
-                    alert = $('#logo-name-alert');
-
-                $.get('/upload/get_upload_url', function(data) {
-                    $.ajax({
-                        url : data,
-                        data : files,
-                        cache : false,
-                        contentType : false,
-                        processData : false,
-                        type : 'POST',
-                        success : function(data) {
-                            var parsed = JSON.parse(data),
-                                response = $.post('/team/{{ page.id }}/save_avatar', {
-                                    'avatar' : parsed['uploaded_files'][0]
-                                });
-
-                            response.done(function(data) {
-                                if (parsed['uploaded_files'].length > 0){
-                                    showAlert(alert, 'Your new logo have been saved.', 'success', true);
-                                    $('.spudder-jumbotron-caption .media img').attr('src', parsed['uploaded_files'][0]);
-                                }
-                            });
-                        }
-                    });
-                });
             });
 
             $('#nav-btn-wrapper').find('a').not('[title="School Page"]').click(function(){

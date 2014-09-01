@@ -45,7 +45,7 @@ def create_team(request):
         if form.is_valid() and social_media_form.is_valid():
             team = TeamsController.CreateTeam(
                 request.current_role,
-                name=form.cleaned_data.get('team_name'),
+                name=form.cleaned_data.get('name'),
                 contact_details=form.cleaned_data.get('contact_details'),
                 free_text=form.cleaned_data.get('free_text'),
                 sport=dict(form.fields['sport'].choices)[form.cleaned_data.get('sport')],
@@ -118,7 +118,6 @@ def team_page(request, page_id):
 def edit_team_page(request, page_id):
     team_page = TeamPage.objects.get(pk=page_id)
     initial_dict = team_page.__dict__
-    initial_dict['team_name'] = initial_dict.get('name')
     form = EditTeamForm(initial=team_page.__dict__)
 
     if request.method == 'POST':
@@ -126,7 +125,7 @@ def edit_team_page(request, page_id):
 
         if form.is_valid():
             data = form.cleaned_data
-            team_page.name = data.get('team_name')
+            team_page.name = data.get('name')
             team_page.contact_details = data.get('contact_details')
             team_page.free_text = data.get('free_text')
             team_page.save()
