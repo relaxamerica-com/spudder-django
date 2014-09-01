@@ -117,7 +117,6 @@ def team_page(request, page_id):
 
 def edit_team_page(request, page_id):
     team_page = TeamPage.objects.get(pk=page_id)
-    initial_dict = team_page.__dict__
     form = EditTeamForm(initial=team_page.__dict__)
 
     if request.method == 'POST':

@@ -67,6 +67,8 @@
         $('#id_at_name').bind('keyup', function (e) {
             var alert = $('#at_name_alert'),
                 val = $(this).val();
+            if (val == null || val.length == 0)
+                return;
             if (window.at_names.indexOf(val) != -1){
                 alert.show();
                 alert.html('The @name ' + val + ' has already been taken. Try another one.');

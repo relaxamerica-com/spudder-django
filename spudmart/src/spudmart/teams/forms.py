@@ -38,7 +38,7 @@ class CreateTeamForm(BaseTeamForm):
         label="Sport <span class=\"input-required\">*required</span>")
     # file = forms.FileField(required=False, label="Image")
     state = forms.ChoiceField(
-        choices=[('', 'Select a state...')] + sorted([(k, v) for k, v in SORTED_STATES.items()], key=lambda x:x[1]),
+        choices=[('', 'Select a state...')] + sorted([(k, v) for k, v in SORTED_STATES.items()], key=lambda x: x[1]),
         label="State <span class=\"input-required\">*required</span>")
 
     def clean_at_name(self):
