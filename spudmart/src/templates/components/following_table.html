@@ -1,5 +1,12 @@
 <h4>{{ title|safe }}</h4>
-<table class="table table-striped">
+<table class="table table-striped {% if datatable and following %}datatable{% endif %}">
+    <thead class="hidden">
+        <tr>
+            <th></th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
     <tbody style="max-height: 130px; overflow:hidden; overflow-y: auto">
         {% for f in following %}
             <tr>

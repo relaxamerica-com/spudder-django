@@ -1,12 +1,5 @@
 {% extends 'spudderadmin/pages/reports/_reports_base.html' %}
 
-{% load accounts %}
-{% load CERN %}
-
-{% block reports_nav %}
-    {% include 'spudderadmin/pages/reports/sidenav.html' %}
-{% endblock %}
-
 {% block reports_body %}
     <div class="panel panel-default">
         <div class="panel-heading">
@@ -51,7 +44,8 @@
 
             response.done(function(){
                 icon.removeClass('fa-spin fa-spinner').addClass('fa-send-o');
-                showAlert($('.alert'), 'Email has been sent!', 'success', true);
+                alert('Email has been sent! You will now be redirect back to the previous page.');
+                window.history.back();
             })
         }
     });

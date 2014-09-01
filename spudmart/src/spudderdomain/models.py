@@ -74,6 +74,7 @@ class LinkedService(models.Model):
     def configuration(self, config_object):
         self._service_configuration = json.dumps(config_object or '{}')
 
+
 class SpudType():
     TEXT = 1
     VIDEO = 2
@@ -123,8 +124,17 @@ class FanPage(models.Model):
     linkedin = models.CharField(max_length=255, blank=True)
     state = models.CharField(max_length=2, blank=True)
 
+    info_messages_dismissed = models.TextField(blank=True, null=True)
+
     def was_edited(self):
         return self.email is not None and self.email != ""
+
+    def hidden_info_messages(self):
+        return (self.info_messages_dismissed or '').split(',')
+
+    def dismiss_info_message(self, message_id):
+        self.info_messages_dismissed = "%s,%s" % (self.info_messages_dismissed or '', message_id)
+        self.save()
 
 
 class _TeamWithNameAlreadyExistsError(Exception):
@@ -194,6 +204,12 @@ class TeamPage(models.Model):
     image = models.ForeignKey(UploadedFile, null=True, blank=True)
     cover_image = models.ForeignKey(UploadedFile, blank=True, null=True, related_name='team_page_cover_image')
     state = models.CharField(max_length=2)
+
+    facebook = models.CharField(max_length=255, blank=True)
+    twitter = models.CharField(max_length=255, blank=True)
+    google_plus = models.CharField(max_length=255, blank=True)
+    instagram = models.CharField(max_length=255, blank=True)
+    linkedin = models.CharField(max_length=255, blank=True)
 
     TeamWithNameAlreadyExistsError = _TeamWithNameAlreadyExistsError
 

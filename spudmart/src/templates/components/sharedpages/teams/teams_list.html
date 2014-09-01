@@ -17,7 +17,9 @@
         </h1>
     </div>
 
-    {% include 'spudderspuds/teams/quotes/quote_teams_what_they_are.html' %}
+    {% if info_message_id not in request.current_role.entity.hidden_info_messages %}
+        {% include 'spudderspuds/teams/quotes/quote_teams_what_they_are.html' %}
+    {% endif %}
 
     {% if teams %}
         <table class="table {% if teams %}datatable{% endif %}">

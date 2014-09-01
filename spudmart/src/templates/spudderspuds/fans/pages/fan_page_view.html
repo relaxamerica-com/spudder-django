@@ -3,11 +3,6 @@
 {% load accounts %}
 {% load CERN %}
 
-{% block nav %}
-    {% include 'spudderspuds/components/main_nav.html' with active="profile" %}
-    {{ block.super }}
-{% endblock %}
-
 {% block title %}
     {% fan_page_name page %}
 {% endblock %}
@@ -41,17 +36,7 @@
             Edit Mode
         </a>
     {% else %}
-        {% if request.can_follow %}
-            {% if request.following %}
-                <span class="label label-success">
-                    <i class="fa fa-check"></i> following
-                </span>
-            {% else %}
-                <a class="btn btn-default" href="/fan/follow?origin={{ request.path }}">
-                    <img src="/static/img/spudderspuds/button-spuds-tiny.png" /> Start following
-                </a>
-            {% endif %}
-        {% endif %}
+        {% include 'spudderspuds/components/follow_button.html' %}
     {% endif %}
 {% endblock %}
 
@@ -75,8 +60,8 @@
             {% include 'components/spuds/spud_carousel.html' with spuds=fan_spuds %}
         </div>
         <div class="col-md-6">
-            {% include 'components/following_table.html' with title=following_teams_title following=folowing_teams entity_type='team' show_find_button=request.can_edit %}
-            {% include 'components/following_table.html' with title=following_fans_title following=following_fans entity_type='fan' show_find_button=request.can_edit%}
+            {% include 'components/following_table.html' with title=following_teams_title following=following_teams entity_type='team' show_find_button=request.can_edit datatable=1 %}
+            {% include 'components/following_table.html' with title=following_fans_title following=following_fans entity_type='fan' show_find_button=request.can_edit datatable=1%}
         </div>
     </div>
 

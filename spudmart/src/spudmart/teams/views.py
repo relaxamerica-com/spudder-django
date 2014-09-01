@@ -1,55 +1,75 @@
 from django.shortcuts import render, redirect, get_object_or_404
 import settings
-from spudderaccounts.templatetags.spudderaccountstags import is_fan
+from spudderaccounts.templatetags.spudderaccountstags import is_fan, is_cern_student
 from spudderdomain.controllers import TeamsController, RoleController, SpudsController, SocialController
-from spudderdomain.models import TeamPage, Location, TeamVenueAssociation
-from spudderkrowdio.models import FanFollowingEntityTag
-from spudmart.teams.forms import CreateTeamForm, TeamPageForm, EditTeamForm
-from django.http import HttpResponseRedirect, HttpResponse
+from spudderdomain.models import TeamPage, Location, TeamVenueAssociation, TeamAdministrator
+from spudderspuds.forms import LinkedInSocialMediaForm
+from spudderspuds.utils import set_social_media
+from spudmart.CERN.rep import created_team, team_associated_with_venue
+from spudmart.teams.forms import CreateTeamForm, TeamPageForm
+from django.http import HttpResponseRedirect, HttpResponse, HttpResponseNotAllowed
 from spudmart.upload.models import UploadedFile
 from spudmart.utils.Paginator import EntitiesPaginator
 from spudmart.utils.cover_image import save_cover_image_from_request, reset_cover_image
-from spudmart.CERN.models import STATES
+from spudmart.CERN.models import STATES, Student
+from spudmart.utils.url import get_return_url
 from spudmart.venues.models import SPORTS, Venue
 
 
 def teams_list(request):
-    teams = TeamsController.TeamsAdministeredByRole(request.current_role)
+    template_data = {
+        'teams': TeamsController.TeamsAdministeredByRole(request.current_role),
+        'role_dashboard': '',
+        'info_message_id': 'teams_list'
+    }
 
-    role_dashboard = ''
     if request.current_role.entity_type == RoleController.ENTITY_STUDENT:
-        role_dashboard = 'spuddercern/pages/dashboard_pages/dashboard.html'
+        template_data['role_dashboard'] = 'spuddercern/pages/dashboard_pages/dashboard.html'
+        template_data['info_message_url'] = '/cern/disable_about/'
     elif request.current_role.entity_type == RoleController.ENTITY_FAN:
-        role_dashboard = 'spudderspuds/fans/pages/dashboard.html'
+        template_data['role_dashboard'] = 'spudderspuds/fans/pages/dashboard.html'
+        template_data['fan_nav_active'] = 'teams'
+        template_data['info_message_url'] = '/fan/disable_about/'
     return render(request, 'components/sharedpages/teams/teams_list.html',
-                  {'teams': teams,
-                   'role_dashboard': role_dashboard})
+                  template_data)
 
 
 def create_team(request):
     form = CreateTeamForm(initial={'next_url': request.GET.get('next_url')})
+    social_media_form = LinkedInSocialMediaForm()
+    template_data = {'SPORTS': SPORTS}
     if request.method == "POST":
         form = CreateTeamForm(request.POST)
-        if form.is_valid():
+        social_media_form = LinkedInSocialMediaForm(request.POST)
+
+        if form.is_valid() and social_media_form.is_valid():
             team = TeamsController.CreateTeam(
                 request.current_role,
                 name=form.cleaned_data.get('team_name'),
                 contact_details=form.cleaned_data.get('contact_details'),
                 free_text=form.cleaned_data.get('free_text'),
                 sport=dict(form.fields['sport'].choices)[form.cleaned_data.get('sport')],
-                state=dict(form.fields['state'].choices)[form.cleaned_data.get('state')],
+                state=form.cleaned_data.get('state'),
                 at_name=form.cleaned_data.get('at_name'),
             )
+
             location_info = request.POST.get('location_info', None)
             team.update_location(location_info)
+
+            set_social_media(team, social_media_form)
+
             team.save()
             if is_fan(request.current_role):
                 redirect_url = "/fan/follow?origin=/team/create&team_id=%s" % team.id
             else:
+                if is_cern_student(request.current_role):
+                    created_team(request.current_role.entity)
                 redirect_url = "/team/%s" % team.id
 
             return redirect(redirect_url)
-    template_data = {'form': form, 'SPORTS': SPORTS}
+
+    template_data['form'] = form
+    template_data['social_media'] = social_media_form
     return render(request, 'spudderspuds/teams/pages/create_team.html', template_data)
 
 
@@ -65,15 +85,19 @@ def _update_team_page_location(page, location):
 
 def team_page(request, page_id):
     page = TeamPage.objects.get(pk=page_id)
+    social_media_form = LinkedInSocialMediaForm(initial=page.__dict__)
 
     if request.method == 'POST':
         form = TeamPageForm(request.POST, instance=page)
+        social_media_form = LinkedInSocialMediaForm(request.POST)
 
-        if form.is_valid():
+        if form.is_valid() and social_media_form.is_valid():
             updated_page = form.save(commit=False)
 
             location_info = request.POST['location_info']
             updated_page.update_location(location_info)
+
+            set_social_media(page, social_media_form)
 
             updated_page.save()
 
@@ -85,8 +109,9 @@ def team_page(request, page_id):
         'places_api_key': settings.GOOGLE_PLACES_API_KEY,
         'page': page,
         'form': form,
+        'social_media': social_media_form,
         'sports': SPORTS,
-        'states': STATES
+        'states': sorted([(k, v) for k, v in STATES.items()], key=lambda x: x[1])
     })
 
 
@@ -123,9 +148,6 @@ def public_view(request, page_id):
         'base_url': 'spudderspuds/base.html',
         'team_spuds': SpudsController.GetSpudsForTeam(page)}
 
-    if is_fan(request.current_role):
-        tags = FanFollowingEntityTag.objects.filter(fan=request.current_role.entity)
-        template_data['tags'] = [(t.tag, t.get_entity_icon()) for t in tags]
     return render(request, 'spudderspuds/teams/pages/team_page_view.html', template_data)
 
 
@@ -151,10 +173,10 @@ def search_teams(request):
     else:
         teams = TeamPage.objects.all()
     context = {
-       'teams' : teams,
-       'sports' : SPORTS,
-       'states' : STATES,
-       'filters' : filters
+        'teams': teams,
+        'sports': SPORTS,
+        'states': STATES,
+        'filters': filters
     }
     return render(request, 'spudderspuds/teams/pages/search_teams.html', context)
     
@@ -239,7 +261,7 @@ def remove_association_with_venue(request, page_id, venue_id):
     venue = get_object_or_404(Venue, pk=venue_id)
     TeamVenueAssociation.objects.get(team_page=page, venue=venue).delete()
 
-    return HttpResponseRedirect('/team/%s' % page_id)
+    return HttpResponseRedirect(get_return_url(request, '/team/%s' % page_id))
 
 
 def associate_team_with_venue(request, page_id, venue_id):
@@ -247,4 +269,19 @@ def associate_team_with_venue(request, page_id, venue_id):
     venue = get_object_or_404(Venue, pk=venue_id)
     TeamVenueAssociation.objects.get_or_create(team_page=team, venue=venue)[0].save()
     SocialController.AssociateTeamWithVenue(team, venue)
+    admin = TeamAdministrator.objects.get(team_page=team)
+    if admin.entity_type == 'student':
+        stu = Student.objects.get(id=admin.entity_id)
+        team_associated_with_venue(stu)
     return HttpResponseRedirect('/team/%s' % page_id)
+
+
+def disable_about(request):
+    if request.method == 'POST':
+        team = request.current_role.entity
+        message_id = request.POST.get('message_id')
+        if message_id:
+            team.dismiss_info_message(message_id)
+        return HttpResponse(team.info_messages_dismissed)
+    else:
+        return HttpResponseNotAllowed(['POST'])

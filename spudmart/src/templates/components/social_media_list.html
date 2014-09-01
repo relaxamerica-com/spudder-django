@@ -1,0 +1,36 @@
+<ul class="social-network">
+    {% if entity.instagram %}
+        <li>
+            <a href="{{ entity.instagram }}" target="_blank" data-placement="bottom" title=""
+            data-original-title="Sponsor Instagram profile"> <i class="fa fa-instagram fa-2x"> </i> </a>
+        </li>
+    {% endif %}
+
+    {% if entity.facebook %}
+        <li>
+            <a href="{{ entity.facebook }}" target="_blank" data-placement="bottom" title=""
+            data-original-title="Sponsor Facebook profile"> <i class="fa fa-facebook-square fa-2x"> </i> </a>
+        </li>
+    {% endif %}
+
+    {% if entity.twitter %}
+        <li>
+            <a href="{{ entity.twitter }}" target="_blank" data-placement="bottom" title=""
+            data-original-title="Sponsor Twitter profile"> <i class="fa fa-twitter-square fa-2x"> </i> </a>
+        </li>
+    {% endif %}
+
+    {% if entity.google_plus %}
+        <li>
+            <a href="{{ entity.google_plus }}" target="_blank" rel="publisher" data-placement="bottom" title=""
+            data-original-title="Sponsor Google+ profile"> <i class="fa fa-google-plus-square fa-2x"> </i> </a>
+        </li>
+    {% endif %}
+
+    {% if entity.linkedin %}
+        <li>
+            <a href="{{ entity.linkedin }}" target="_blank" rel="publisher" data-placement="bottom" title=""
+            data-original-title="Sponsor LinkedIn profile"> <i class="fa fa-linkedin-square fa-2x"> </i> </a>
+        </li>
+    {% endif %}
+</ul>

@@ -1,4 +1,5 @@
 import tweepy
+import logging
 from django.conf import settings
 from django.db import models
 
@@ -28,6 +29,7 @@ class AtPostSpudTwitterAuthentication(models.Model):
     api_secret = models.CharField(max_length=256)
     access_key = models.CharField(max_length=256)
     access_secret = models.CharField(max_length=256)
+    authorized_retry_counter = models.IntegerField(default=0)
 
     @classmethod
     def GetForSite(cls):
@@ -40,7 +42,10 @@ class AtPostSpudTwitterAuthentication(models.Model):
             return False
         try:
             return bool(self.api().rate_limit_status())  # We user ratelimit to check as the limit for this call is high
-        except:
+        except Exception as ex:
+            logging.error(
+                "AtPostSpudTwitterAuthentication.authorized: Attempting to call tweepy.api().rate_limit_status() "
+                "returned the following error %s" % ex)
             return False
 
     def api(self):
@@ -70,6 +75,16 @@ class AtPostSpudTwitterAuthentication(models.Model):
         auth.get_access_token(pin)
         self.access_key = auth.access_token.key
         self.access_secret = auth.access_token.secret
+        self.save()
+
+    def reset_authorization_counter(self):
+        self.authorized_retry_counter = 0
+        self.save()
+
+    def record_unsuccessful_authorization(self):
+        if not self.authorized_retry_counter:
+            self.authorized_retry_counter = 0
+        self.authorized_retry_counter += 1
         self.save()
 
 

@@ -1,8 +1,10 @@
+import logging
 from datetime import datetime, timedelta
-from spudderdomain.models import LinkedService, FanPage, TeamPage, TeamAdministrator
+from spudderdomain.models import LinkedService, FanPage, TeamPage, TeamAdministrator, TeamVenueAssociation
 from spudderdomain.wrappers import EntityTeam, EntityVenue
 from spuddersocialengine.models import SpudFromSocialMedia
 from spudmart.CERN.models import Student
+from spudmart.CERN.rep import team_tagged_in_spud
 from spudmart.sponsors.models import SponsorPage
 from spudderkrowdio.utils import post_spud, get_user_mentions_activity, get_spud_stream_for_entity, start_following
 from spudderkrowdio.models import KrowdIOStorage, FanFollowingEntityTag
@@ -27,6 +29,10 @@ class EntityController(object):
             except Venue.DoesNotExist:
                 return None
         return None
+
+    @classmethod
+    def GetWrappedEntityByTypeAndId(cls, entity_type, entity_id, entity_wrapper):
+        return entity_wrapper(cls.GetEntityByTypeAndId(entity_type, entity_id))
 
 
 class RoleController(object):
@@ -171,13 +177,33 @@ class TeamsController(object):
 class SpudsController(object):
 
     @classmethod
+    def MergeSpudLists(cls, *args):
+        return_list = []
+        for arg in args:
+            return_list += arg
+        return return_list
+
+    @classmethod
     def GetSpudsForFan(cls, fan_page):
         from spudderaccounts.wrappers import RoleFan
         return get_user_mentions_activity(KrowdIOStorage.GetOrCreateForCurrentUserRole(RoleFan(fan_page)))
 
     @classmethod
     def GetSpudsForTeam(cls, team_page):
-        return get_user_mentions_activity(KrowdIOStorage.GetOrCreateForTeam(team_page.id))
+        team_spuds = get_user_mentions_activity(KrowdIOStorage.GetOrCreateForTeam(team_page.id))
+        spud_stream = get_spud_stream_for_entity(
+            KrowdIOStorage.GetOrCreateFromEntity(
+                team_page.id,
+                EntityController.ENTITY_TEAM
+            ))
+        return cls.MergeSpudLists(team_spuds, spud_stream)
+
+    @classmethod
+    def GetSpudsForVenue(cls, venue):
+        krowdio_entity = KrowdIOStorage.GetOrCreateFromEntity(venue.id, EntityController.ENTITY_VENUE)
+        venue_spuds = get_user_mentions_activity(krowdio_entity)
+        spud_stream = get_spud_stream_for_entity(krowdio_entity)
+        return cls.MergeSpudLists(venue_spuds, spud_stream)
 
     def __init__(self, role):
         self.role = role
@@ -303,14 +329,44 @@ class SpudsController(object):
     def add_spud_from_fan(self, spud):
         spud_text = ' '.join([s.encode('ascii', 'ignore') for s in spud.expanded_data['text']])
         tagged_entities = []
-        for tag in FanFollowingEntityTag.objects.filter(fan=self.role.entity):
+        tags = FanFollowingEntityTag.objects.filter(fan=self.role.entity)
+        logging.debug("SpudsController add_spud_from_fan: Found %s tags for fan: %s" % (
+            len(tags or []), self.role.entity.id))
+        for tag in tags:
             if tag.tag and tag.tag in spud_text:
-                tagged_entities.append("@%s%s" % (tag.entity_type, tag.entity_id))
+                mention = "@%s%s" % (tag.entity_type, tag.entity_id)
+                logging.debug("SpudsController add_spud_from_fan: Adding mention: %s" % mention)
+                tagged_entities.append(mention)
+                if tag.entity_type == 'Team':
+                    try:
+                        team = TeamPage.objects.get(id=tag.entity_id)
+                    except TeamPage.DoesNotExist:
+                        logging.error("SpudsController add_spud_from_fan: No Team with id: %s" % tag.entity_id)
+                        continue
+
+                    # Check if there are Student points that need awarding
+                    try:
+                        admin = TeamAdministrator.objects.get(team_page=team)
+                        if admin.entity_type == 'student':
+                            stu = Student.objects.get(id=admin.entity_id)
+                            team_tagged_in_spud(stu)
+                    except Exception as e:
+                        logging.error("%s" % e)
+
+                    # Also mention any associated venues
+                    for association in TeamVenueAssociation.objects.filter(team_page=team):
+                        mention = "@%s%s" % (EntityController.ENTITY_VENUE, association.venue.id)
+                        logging.debug(
+                            "SpudsController add_spud_from_fan: Adding associated venue mention: %s" % mention)
+                        tagged_entities.append(mention)
+
+        user_text = '@%s%s %s' % (RoleController.ENTITY_FAN, self.role.entity.id, ' '.join(tagged_entities))
+        logging.debug("SpudsController add_spud_from_fan: Adding spud with user_text: %s" % user_text)
         data = {
             'type': 'image',
             'url': spud.expanded_data['image']['standard_resolution']['url'],
             'title': spud_text,
-            'usertext': '@%s%s %s' % (RoleController.ENTITY_FAN, self.role.entity.id, ' '.join(tagged_entities)),
+            'usertext': user_text,
             'extra': spud.data}
         krowd_io_storage = KrowdIOStorage.GetOrCreateForCurrentUserRole(self.role)
         post_spud(krowd_io_storage, data)
@@ -350,3 +406,15 @@ class SocialController(object):
         venue_entity = EntityVenue(venue)
         start_following(team_entity, venue_entity.entity_type, venue_entity.entity.id)
         start_following(venue_entity, team_entity.entity_type, team_entity.entity.id)
+
+    @classmethod
+    def AtNameIsUniqueAcrossThePlatform(cls, at_name):
+        if TeamPage.objects.filter(at_name=at_name).count():
+            return False
+        if FanPage.objects.filter(username=at_name).count():
+            return False
+        if Venue.objects.filter(name=at_name).count():
+            return False
+        if SponsorPage.objects.filter(tag=at_name).count():
+            return False
+        return True

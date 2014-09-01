@@ -127,6 +127,10 @@ class FanFollowingEntityTag(models.Model):
 
     Uses the same entity_type (and IDs) as the KrowdIOStorage model
     """
+    fan = models.ForeignKey(FanPage)
+    tag = models.CharField(max_length=256)
+    entity_id = models.CharField(max_length=256)
+    entity_type = models.CharField(max_length=256)
 
     @classmethod
     def GetTag(cls, fan, entity_id, entity_type):
@@ -137,35 +141,3 @@ class FanFollowingEntityTag(models.Model):
                 entity_type=entity_type).tag
         except FanFollowingEntityTag.DoesNotExist:
             return None
-
-    fan = models.ForeignKey(FanPage)
-    tag = models.CharField(max_length=256)
-    entity_id = models.CharField(max_length=256)
-    entity_type = models.CharField(max_length=256)
-
-    def get_entity_icon(self):
-        img = '/static/img/spudderspuds/button-spuds-large.png'
-        if self.entity_type == 'fan':
-            fan = FanPage.objects.get(id=self.entity_id)
-            if fan.avatar:
-                img = '/file/serve/%s' % fan.avatar.id
-        elif self.entity_type == 'sponsor':
-            sponsor = SponsorPage.objects.get(id=self.entity_id)
-            if sponsor.thumbnail:
-                img = '/file/serve/%s' % sponsor.thumbnail
-            else:
-                img = '/static/img/spuddersponsors/button-sponsors-large.png'
-        elif self.entity_type == 'Venue':
-            ven = Venue.objects.get(id=self.entity_id)
-            if ven.logo:
-                img = '/file/serve/%s' % ven.logo.id
-            else:
-                img = '/static/img/spuddervenues/button-venues-large.png'
-        elif self.entity_type == 'Team':
-            team = TeamPage.objects.get(id=self.entity_id)
-            if team.image:
-                img = '/file/serve/%s' % team.image.id
-            else:
-                img = '/static/img/spudderspuds/button-teams-large.png'
-
-        return img

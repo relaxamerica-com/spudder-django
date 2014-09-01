@@ -1,26 +1,27 @@
-from django.template import RequestContext
-from google.appengine.api import mail
 import os
 from urllib2 import urlopen
+from datetime import timedelta, datetime
+from json import loads
+
+from django.template import RequestContext
+from google.appengine.api import mail
 from django.shortcuts import render, redirect, render_to_response
 from django.http import HttpResponseRedirect, HttpResponse, \
     HttpResponseNotAllowed, HttpResponseForbidden
-import simplejson
 from spudderdomain.controllers import RoleController
+from spudderdomain.models import TeamAdministrator
 from spudmart.upload.models import UploadedFile
 from spudmart.CERN.models import School, Student, STATES, MailingList
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils.datastructures import MultiValueDictKeyError
 from spudmart.CERN.utils import import_schools, strip_invalid_chars, add_school_address, convert_referrals
-from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.decorators import user_passes_test
 from spudmart.CERN.rep import recruited_new_student, created_venue
 from spudmart.utils.cover_image import save_cover_image_from_request, reset_cover_image
 from spudmart.utils.queues import trigger_backend_task
 from spudmart.utils.url import get_return_url, get_request_param
 import settings
 from spudmart.venues.models import Venue, SPORTS
-from datetime import timedelta, datetime
-from json import loads
 
 
 def role_is_student(request):
@@ -905,6 +906,9 @@ def student_page(request, student_id):
 
     venues = Venue.objects.filter(student=student)
 
+    teams = TeamAdministrator.objects.filter(entity_id=student.id,
+                                             entity_type='student').select_related('team_page')
+
     all_referrals = sorted(student.referrals(), key=lambda s: s.rep(),
                        reverse=True)
     num_referred = len(all_referrals)
@@ -915,6 +919,7 @@ def student_page(request, student_id):
                   'num_referred': num_referred,
                   'top_five': all_referrals[:5],
                   'base_url': 'spuddercern/base.html',
+                  'teams': teams
                   })
 
 

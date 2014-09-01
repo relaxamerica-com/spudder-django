@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from django.db import models
 from djangotoolbox.fields import ListField
+from spudmart.upload.models import UploadedFile
 
 
 class SponsorPage(models.Model):
@@ -23,3 +24,4 @@ class SponsorPage(models.Model):
     linkedin = models.CharField(max_length=255, blank=True)
     images = ListField()
     tag = models.CharField(max_length=255, blank=False)
+    cover_image = models.ForeignKey(UploadedFile, null=True, related_name="sponsor_cover_image")

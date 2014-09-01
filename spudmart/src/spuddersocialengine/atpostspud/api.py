@@ -14,6 +14,7 @@ def get_latest_at_post_spuds(dev=False):
     twitter_auth = AtPostSpudTwitterAuthentication.GetForSite()
     if (service_config.active and twitter_auth.authorized()) or dev:
         # The service is running and twitter is authenticated
+        twitter_auth.reset_authorization_counter()
         api = twitter_auth.api()
         since_id = AtPostSpudTwitterCounter.GetLastProcessedId()
         statuses = api.mentions_timeline(since_id=since_id)
@@ -56,14 +57,27 @@ def get_latest_at_post_spuds(dev=False):
                 api.update_status(status_message, s.id)
     elif service_config.active:
         # Here the service is active twitter is not authenticated
-        service_config.deactivate()
-        message = "The twitter authentication in the @postspudservice for %s is out of " \
-            "date and the service is not running" % settings.SPUDMART_BASE_URL
-        mail.send_mail(
-            "@postspud service error - Twitter authentication",
-            message,
-            settings.SUPPORT_EMAIL,
-            [settings.SUPPORT_EMAIL])
+        retry_limit = 10
+        if twitter_auth.authorized_retry_counter < retry_limit:
+            twitter_auth.record_unsuccessful_authorization()
+            logging.warning(
+                "atpostspud/api/get_latest_at_post_spuds: Twitter auth failed for the %s time in a row, %s more "
+                "attempts will be made before the @postspud service is disabled" % (
+                    twitter_auth.authorized_retry_counter, (retry_limit - twitter_auth.authorized_retry_counter)))
+        else:
+            logging.error(
+                "atpostspud/api/get_latest_at_post_spuds: Twitter auth failed %s times, the service will be shut down "
+                "and a support email sent." % retry_limit)
+            twitter_auth.reset_authorization_counter()
+            service_config.deactivate()
+            message = "The twitter authentication in the @postspudservice for %s is out of " \
+                "date and the service is not running" % settings.SPUDMART_BASE_URL
+            mail.send_mail(
+                "@postspud service error - Twitter authentication",
+                message,
+                settings.SUPPORT_EMAIL,
+                [settings.SUPPORT_EMAIL])
     else:
         # Here the service is not active, assume an email has been sent and quit
+        logging.warning("atpostspud/api/get_latest_at_post_spuds: The service is not active.")
         pass

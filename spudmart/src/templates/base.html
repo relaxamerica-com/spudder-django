@@ -1,6 +1,7 @@
 {% load bootstrap3 %}
 {% load spudderaccountstags %}
 {% load CERN %}
+{% load featuretags %}
 
 <!DOCTYPE html>
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
@@ -23,6 +24,7 @@
         {% endblock %}
         {% block css %}{% endblock %}
         <link rel="shortcut icon" href={% block favicon %}"/static/img/spudderspuds/button-spuds-tiny.png"{% endblock %} />
+        <link rel="stylesheet" href="/static/css/select2.css">
         <script src="/static/js/libs/modernizr-2.6.2-respond-1.1.0.min.js"></script>
         <script type="text/javascript" language="javascript" src="/static/js/libs/jquery-1.11.0.min.js"></script>
         <script type="text/javascript" language="javascript" src="/static/js/libs/bootstrap.min.js"></script>
@@ -49,23 +51,28 @@
                         <ul class="nav navbar-nav navbar-right">
                             {% block nav %}{% endblock %}
                             {% block current_role_nav %}
-                                {% if current_role and current_role|is_cern_student %}
-                                    <li class="dropdown">
-                                        <a class="dropdown-toggle" href="#" data-toggle="dropdown">
-                                            CERN Menu <i class="fa fa-caret-down"></i>
-                                        </a>
-                                        <ul class="dropdown-menu">
-                                            <li><a href="/cern/"><i class="fa fa-fw fa-bar-chart-o"></i> Scoreboard</a></li>
-                                            <li><a href="{% current_student_page %}"><i class="fa fa-fw fa-user"></i> Student Page</a></li>
-                                            <li><a href="/cern/venues/"><i class="fa fa-fw fa-map-marker"></i> Venues</a></li>
-                                            <li><a href="/team/list"><i class="fa fa-fw fa-group"></i> My Teams</a></li>
-                                            <li><a href="/cern/social_media/"><i class="fa fa-fw fa-rss"></i> Social Media</a></li>
-                                            <li><a href="/cern/testing/"><i class="fa fa-fw fa-bug"></i> QA Testing</a></li>
-                                        </ul>
-                                    </li>
-                                {% endif %}
-                                {% if current_role and current_role|is_sponsor %}
-                                    {% include 'spuddersponsors/parts/sponsors_menu.html' %}
+                                {% if current_role %}
+                                    {% if current_role|is_cern_student %}
+                                        <li class="dropdown">
+                                            <a class="dropdown-toggle" href="#" data-toggle="dropdown">
+                                                CERN Menu <i class="fa fa-caret-down"></i>
+                                            </a>
+                                            <ul class="dropdown-menu">
+                                                <li><a href="/cern/"><i class="fa fa-fw fa-bar-chart-o"></i> Scoreboard</a></li>
+                                                <li><a href="{% current_student_page %}"><i class="fa fa-fw fa-user"></i> Student Page</a></li>
+                                                <li><a href="/cern/venues/"><i class="fa fa-fw fa-map-marker"></i> Venues</a></li>
+                                                <li><a href="/team/list"><i class="fa fa-fw fa-group"></i> My Teams</a></li>
+                                                <li><a href="/cern/social_media/"><i class="fa fa-fw fa-rss"></i> Social Media</a></li>
+                                                <li><a href="/cern/testing/"><i class="fa fa-fw fa-bug"></i> QA Testing</a></li>
+                                            </ul>
+                                        </li>
+                                    {% endif %}
+                                    {% if current_role|is_sponsor %}
+                                        {% include 'spuddersponsors/parts/sponsors_menu.html' %}
+                                    {% endif %}
+                                    {% if current_role|is_fan %}
+                                        {% include 'spudderspuds/components/main_nav.html' %}
+                                    {% endif %}
                                 {% endif %}
                             {% endblock %}
                             {% block user_account_nav %}
@@ -223,7 +230,7 @@
                         </div>
                         <div class="col-md-3">
                             <div class="embed-responsive embed-responsive-16by9">
-                                <iframe width="300" height="200" src="//www.youtube.com/embed/Fde3tYVcuGc?rel=0" allowfullscreen class="embed-responsive-item"></iframe>
+                                <iframe width="560" height="315" src="//www.youtube.com/embed/liJrY694jKw" frameborder="0" allowfullscreen></iframe>
                             </div>
                         </div>
                         <div class="col-md-3">
@@ -329,7 +336,13 @@
                     $(this).unbind('click').on('click', function(){
                         var $container = $(this).parents('.quote');
                         $container.remove();
-                        $.post('/cern/disable_about/', {message_id: $container.data('id')});
+
+                        var dismissURL = '{{ info_message_url }}';
+                        if (!dismissURL) {
+                            dismissURL = '/cern/disable_about/';
+                        }
+
+                        $.post(dismissURL, {message_id: $container.data('id')});
                     });
                 });
             });
@@ -415,6 +428,50 @@
           }
         </script>
         <script src="https://apis.google.com/js/client.js?onload=load"></script>
+        <script type="text/javascript" src="/static/js/libs/select2.min.js"></script>
+
+        {% if 'spud_tagging'|feature_is_enabled %}
+            <script type="text/javascript">
+                function format(tag){
+                    return "<img src='" + $(tag.element).data('img') + "' height=25px/> " + tag.text;
+                }
+                $(document).ready(function(){
+                    $('#spud-carousel').find('.spud-add-tags').click(function(){
+                        if ($(this).hasClass('btn-sm')){
+                            $(this).parents('.carousel').carousel('pause');
+                            $(this).siblings('#original-spud-data').hide();
+                            $(this).siblings("#add-tags-div").children("#select2").select2({
+                                formatResult: format,
+                                formatSelection: format,
+                                formatNoMatches: "No one else to tag!",
+                                escapeMarkup: function(m) { return m; }
+                            });
+                            $(this).removeClass('btn-sm').addClass('btn-lg').css('bottom','8px').css('top', '');
+                            $(this).siblings('#add-tags-div').show();
+                        }
+                        else{
+                            var tags = $('.select2-container:visible').siblings('select').val(),
+                                icon = $(this).find('.fa'),
+                                btn = $(this);
+                            icon.removeClass('fa-tags').addClass('fa-spin fa-spinner');
+                            var response = $.post('/fan/add_spud_comment',{
+                                'spud_id': $('.select2-container:visible').siblings('select').attr('krowdioID'),
+                                'tags': tags
+                            });
+                            response.done(function(){
+                                icon.removeClass('fa-spin fa-spinner').addClass('fa-tags');
+                                console.log($(this))
+                                btn.parents('.carousel').carousel('cycle');
+                                btn.siblings('#add-tags-div').hide();
+                                btn.removeClass('btn-lg').addClass('btn-sm').css('bottom', '').css('top', '8px');
+                                btn.siblings('#original-spud-data').show();
+                            });
+                        }
+                    })
+                })
+            </script>
+        {% endif %}
+
         {% block js %}
         {% endblock %}
     </body>

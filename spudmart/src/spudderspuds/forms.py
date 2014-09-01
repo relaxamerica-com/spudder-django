@@ -1,10 +1,9 @@
 import datetime
 from django import forms
-from django.core.validators import validate_ipv4_address
 from django.forms.extras import SelectDateWidget
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
-from spudmart.CERN.models import STATES
+from spudmart.CERN.models import SORTED_STATES
 
 
 class FanSigninForm(forms.Form):
@@ -56,11 +55,23 @@ class FanPageForm(forms.Form):
 
     name = forms.CharField(label='User Name', help_text='This can be your real name or something made up!')
     date_of_birth = forms.DateField(widget=SelectDateWidget(years=YEARS))
-    state = forms.ChoiceField(choices=[(k, v) for k, v in STATES.items()], label="Where do you live?")
+    state = forms.ChoiceField(choices=[(k, v) for k, v in SORTED_STATES.items()], label="Where do you live?")
 
 
-class FanPageSocialMediaForm(forms.Form):
+class BasicSocialMediaForm(forms.Form):
     twitter = forms.CharField(max_length=256, required=False, label="Twitter Username")
     facebook = forms.CharField(max_length=256, required=False, label="Facebook Profile Url")
     google_plus = forms.CharField(max_length=256, required=False, label="Google+ Profile Url")
     instagram = forms.CharField(max_length=256, required=False, label="Instagram Username")
+
+    @staticmethod
+    def get_social_media():
+        return 'twitter', 'facebook', 'google_plus', 'instagram',
+
+
+class LinkedInSocialMediaForm(BasicSocialMediaForm):
+    linkedin = forms.CharField(max_length=256, required=False, label="LinkedIn Username")
+
+    @staticmethod
+    def get_social_media():
+        return 'twitter', 'facebook', 'google_plus', 'instagram', 'linkedin',

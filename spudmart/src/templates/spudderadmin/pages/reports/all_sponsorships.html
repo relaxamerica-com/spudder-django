@@ -1,11 +1,5 @@
 {% extends 'spudderadmin/pages/reports/_reports_base.html' %}
 
-{% load accounts %}
-
-{% block reports_nav %}
-    {% include 'spudderadmin/pages/reports/sidenav.html' with active="sponsorships"%}
-{% endblock %}
-
 {% block reports_body %}
 <div class="panel panel-default">
         <div class="panel-heading">
@@ -26,7 +20,7 @@
                         {% for venue, rentvenue in sponsorships %}
                             <tr>
                                 <td><a href="/venues/view/{{ venue.id }}">{{ venue.aka_name }}</a></td>
-                                <td><a href="/sponsor/{{ venue.renter.id }}"</td>
+                                <td><a href="/sponsor/{{ venue.renter.id }}">{{ venue.renter.name }}</a></td>
                                 <td>{{ rentvenue.created_date|date:"m/d/y" }}</td>
                                 <td>${{ venue.price }}</td>
                             </tr>

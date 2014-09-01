@@ -2,6 +2,120 @@
 
 {% block title %}Spudder Admin{% endblock %}
 
+{% block nav %}
+<li class="dropdown">
+    <a class="dropdown-toggle" href="#" data-toggle="dropdown">
+        CERN <i class="fa fa-caret-down"></i>
+    </a>
+    <ul class="dropdown-menu">
+        <li>
+            <a href="/spudderadmin/cern/">
+               <i class="fa fa-fw fa-bar-chart-o"></i> Dashboard
+            </a>
+        </li>
+        <li>
+            <a href="/spudderadmin/cern/students">
+               <i class="fa fa-fw fa-users"></i> Students
+            </a>
+        </li>
+        <li>
+            <a href="/spudderadmin/cern/qa_job_board">
+                <i class="fa fa-fw fa-tasks"></i> Job Board (QA)
+            </a>
+        </li>
+        <li>
+            <a href="/spudderadmin/cern/schools">
+                <i class="fa fa-fw fa-university"></i> Schools
+            </a>
+        </li>
+    </ul>
+</li>
+<li class="dropdown">
+    <a class="dropdown-toggle" href="#" data-toggle="dropdown">
+        SocialEngine <i class="fa fa-caret-down"></i>
+    </a>
+    <ul class="dropdown-menu">
+        <li>
+            <a href="/spudderadmin/socialengine/">
+               <i class="fa fa-fw fa-bar-chart-o"></i> Dashboard
+            </a>
+        </li>
+        <li>
+            <a href="/spudderadmin/socialengine/atpostspud">
+               <b>@</b>postspud
+            </a>
+        </li>
+    </ul>
+</li>
+<li class="dropdown">
+    <a class="dropdown-toggle" href="#" data-toggle="dropdown">
+        System <i class="fa fa-caret-down"></i>
+    </a>
+    <ul class="dropdown-menu">
+        <li>
+            <a href="/spudderadmin/system">
+               <i class="fa fa-fw fa-bar-chart-o"></i> Dashboard
+            </a>
+        </li>
+        <li>
+            <a href="/spudderadmin/system/teams">
+               <i class="fa fa-fw fa-users"></i> Teams
+            </a>
+        </li>
+        <li>
+            <a href="/spudderadmin/system/venues">
+               <i class="fa fa-fw fa-map-marker"></i> Venues
+            </a>
+        </li>
+    </ul>
+</li>
+<li class="dropdown">
+    <a class="dropdown-toggle" href="#" data-toggle="dropdown">
+        Reports <i class="fa fa-caret-down"></i>
+    </a>
+    <ul class="dropdown-menu">
+        <li>
+            <a href="/spudderadmin/reports">
+               <i class="fa fa-fw fa-bar-chart-o"></i> Dashboard
+            </a>
+        </li>
+        <li>
+            <a href="/spudderadmin/reports/fans">
+                <i class="fa fa-fw fa-camera"></i> Fans
+            </a>
+        </li>
+        <li>
+            <a href="/spudderadmin/reports/sponsors">
+                <i class="fa fa-fw fa-money"></i> Sponsors
+            </a>
+        </li>
+        <li>
+            <a href="/spudderadmin/reports/sponsors/all_sponsorships">
+                <i class="fa fa-fw fa-map-marker"></i> Sponsored Venues
+            </a>
+        </li>
+        <li>
+            <a href="/spudderadmin/reports/teams">
+                <i class="fa fa-fw fa-users"></i> Teams
+            </a>
+        </li>
+        <li>
+            <a href="/spudderadmin/reports/venues">
+                <i class="fa fa-fw fa-map-marker"></i> All Venues
+            </a>
+        </li>
+        <li>
+            <a href="/spudderadmin/reports/venues/map">
+                <i class="fa fa-fw fa-bullseye"></i> Venue Map
+            </a>
+        </li>
+    </ul>
+</li>
+<li>
+    <a href="/">Logout</a>
+</li>
+{% endblock %}
+
 {% block css %}
     <link rel="stylesheet" href="/static/css/spudderadmin.css" />
     <style type="text/css">

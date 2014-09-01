@@ -149,7 +149,7 @@ shared_settings = {
         'twitter_access_token': '481249312-aFVuYa0HUCTKV7bc3Xrnk2twNHXwLV6r3uteKwe0',
         'twitter_access_token_secret': 'hHPebsFws3AcWyDrAvjnxapUJ95JI15NjZ7TwiXgF5f3v',
         'support_email': 'support@spudder.com',
-        'krowdio_client_key': '52769e9ff1f70e0552df58a4',
+        'krowdio_client_key': '53fc72a6f1f70e3fc79f0876',
 
     },
     'sharp-avatar-587': {  # lukasz@spuder.com
@@ -161,7 +161,8 @@ shared_settings = {
         'amazon_login_client_id': 'amzn1.application-oa2-client.de78cbafe055444aa00e07a445644d16',
         'linkedin_api_key': '',
         'linkedin_secret_key': '',
-        'support_email': 'lukasz@spuder.com'
+        'support_email': 'lukasz@spuder.com',
+        'krowdio_client_key': '5401e324e9b6cc56dbe43f55'
 
     },
     'essential-hawk-597': {  # karol@spuder.com
@@ -204,6 +205,7 @@ shared_settings = {
         'twitter_client_id': 'eNsFMF33Gs0p6P0KIWj0WizvW',
         'twitter_access_token': '2573288766-Z27sWN4Hi812Nqt0yQ4foKTVr4njfXX2DeP4MTa',
         'twitter_access_token_secret': 'aIRQheX0medxdnXLG2MXfebNB78ftRFf97pe8hUvHtr75',
+        'krowdio_client_key': '53ff5196f1f70e3fc79f136c',
     },
     'spudmartmatt': {  # mg@metalayer.com
         'server_email': 'mg@metalayer.com',
@@ -217,19 +219,7 @@ shared_settings = {
         'instagram_client_id': '3888eac365f7468dabd5bf9ad06c8930',
         'instagram_client_secret': 'b1bc01bf1a9944e2834288484f450ab2',
         'support_email': 'mg@metalayer.com',
-        'krowdio_client_key': '53fc715cf1f70e3fc79f0873',
-
-    },
-    'spudder-live': {  #mg@metalayer.com
-        'server_email': 'help@spuder.com',
-        'spudder_application_id': '',
-        'spudder_rest_api_key': '',
-        'spudder_base_url': 'https://spudmart.parseapp.com',
-        'spudmart_base_url': 'https://spudder-live.appspot.com',
-        'amazon_login_client_id': 'amzn1.application-oa2-client.47892dcda29f4d3d8c437b7c44f1b6e6',
-        'linkedin_api_key': '77acg7pe6xdqfo',
-        'linkedin_secret_key': 'Eh1uPylFg3RMSOu9',
-        'support_email': 'support@spudder.com',
+        'krowdio_client_key': '53ff5196f1f70e3fc79f136c',
 
     },
     'livespudder': {  #mg@metalayer.com

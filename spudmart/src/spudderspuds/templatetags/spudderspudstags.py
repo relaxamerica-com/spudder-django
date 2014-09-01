@@ -56,3 +56,44 @@ def get_team_admin_profile(team_admin):
         return '/cern/student/%s' % team_admin.entity_id
     else:
         return '/'
+
+
+@register.simple_tag
+def entity_static_button(entity_type, size='small'):
+    if entity_type == "team":
+        return '/static/img/spudderspuds/button-teams-%s.png' % size
+    elif entity_type == "fan":
+        return '/static/img/spudderspuds/button-fans-%s.png' % size
+    elif entity_type == "venue":
+        return '/static/img/spuddervenues/button-venues-%s.png' % size
+
+@register.simple_tag
+def entity_button(entity, entity_type, size='small'):
+    if entity_type == "team":
+        if entity.image:
+            return '/file/serve/%s' % entity.image.id
+        else:
+            return '/static/img/spudderspuds/button-teams-%s.png' % size
+    elif entity_type == "fan":
+        if entity.image:
+            return '/file/serve/%s' % entity.image.id
+        else:
+            return '/static/img/spudderspuds/button-fans-%s.png' % size
+    elif entity_type == "venue":
+        if entity.logo:
+            return '/file/serve/%s' % entity.logo.id
+        else:
+            return '/static/img/spuddervenues/button-venues-%s.png' % size
+
+
+@register.simple_tag
+def entity_view_link(entity, entity_type):
+    if entity_type == "venue":
+        return '/venues/view/%s' % entity.id
+    else:
+        return '/%s/%s' % (entity_type, entity.id)
+
+
+@register.inclusion_tag('components/social_media_list.html')
+def social_media_list(entity):
+    return {'entity': entity}

@@ -12,33 +12,43 @@ from spudderaccounts.templatetags.spudderaccountstags import is_fan, user_has_fa
 from spudderaccounts.utils import change_current_role
 from spudderaccounts.wrappers import RoleFan
 from spudderdomain.controllers import TeamsController, RoleController, SpudsController, EntityController
-from spudderdomain.models import FanPage, TeamPage
+from spudderdomain.models import FanPage, TeamPage, TeamAdministrator
 from spudderkrowdio.models import FanFollowingEntityTag, KrowdIOStorage
 from spuddersocialengine.models import SpudFromSocialMedia
-from spudderspuds.forms import FanSigninForm, FanRegisterForm, FanPageForm, FanPageSocialMediaForm
-from spudderspuds.utils import create_and_activate_fan_role, is_signin_claiming_spud
+from spudderspuds.forms import FanSigninForm, FanRegisterForm, FanPageForm, BasicSocialMediaForm
+from spudderspuds.utils import create_and_activate_fan_role, is_signin_claiming_spud, set_social_media
 from spudmart.CERN.models import Student
+from spudmart.CERN.rep import team_gained_follower, team_tagged_in_spud
 from spudmart.accounts.templatetags.accounts import fan_page_name, user_name
 from spudmart.sponsors.models import SponsorPage
 from spudmart.upload.models import UploadedFile
 from spudmart.utils.cover_image import reset_cover_image, save_cover_image_from_request
-from spudderkrowdio.utils import start_following, stop_following, get_following, get_following, post_comment
+from spudderkrowdio.utils import start_following, stop_following, get_following, post_comment
 from spudmart.venues.models import Venue
 
 
 def landing_page(request):
-    template_data = {}
-    template_data['find_teams'] = TeamPage.objects.all()[:10]
-    template_data['find_fans'] = FanPage.objects.all()[:10]
+    template_data = {
+        'find_teams': TeamPage.objects.all()[:10],
+        'find_fans': FanPage.objects.all()[:10]}
     if is_fan(request.current_role):
-        stream = SpudsController(request.current_role).get_spud_stream() + SpudsController.GetSpudsForFan(request.current_role.entity)
+        spud_stream = SpudsController(request.current_role).get_spud_stream()
+        fan_spuds = SpudsController.GetSpudsForFan(request.current_role.entity)
+        stream = SpudsController.MergeSpudLists(spud_stream, fan_spuds)
         shuffle(stream)
         template_data['spuds'] = stream
         krowdio_response = get_following(request.current_role)
-        template_data['teams'] = krowdio_users_to_links(request.can_edit, request.current_role, krowdio_response['data'], 'team')
-        template_data['fans'] = krowdio_users_to_links(request.can_edit, request.current_role, krowdio_response['data'], 'fan')
-        tags = FanFollowingEntityTag.objects.filter(fan=request.current_role.entity)
-        template_data['tags'] = [(t.tag, t.get_entity_icon()) for t in tags]
+        template_data['teams'] = krowdio_users_to_links(
+            request.can_edit,
+            request.current_role,
+            krowdio_response['data'],
+            EntityController.ENTITY_TEAM)
+        template_data['fans'] = krowdio_users_to_links(
+            request.can_edit,
+            request.current_role,
+            krowdio_response['data'],
+            RoleController.ENTITY_FAN)
+        template_data['fan_nav_active'] = "explore"
     return render(request, 'spudderspuds/pages/landing_page.html', template_data)
 
 
@@ -128,10 +138,18 @@ def fan_profile_view(request, page_id):
     fan_role = RoleFan(page)
     krowdio_response = get_following(fan_role)
     template_data = {
-        'page': page, 'fan_spuds': SpudsController.GetSpudsForFan(page),
+        'page': page,
+        'fan_spuds': SpudsController.GetSpudsForFan(page),
         'base_url': 'spudderspuds/base.html',
-        'following_teams': krowdio_users_to_links(request.can_edit, fan_role, krowdio_response['data'], 'team'),
-                'following_fans': krowdio_users_to_links(request.can_edit, fan_role, krowdio_response['data'], 'fan')}
+        'following_teams': krowdio_users_to_links(request.can_edit,
+                                                  fan_role,
+                                                  krowdio_response['data'],
+                                                  EntityController.ENTITY_TEAM),
+        'following_fans': krowdio_users_to_links(request.can_edit,
+                                                 fan_role,
+                                                 krowdio_response['data'],
+                                                 RoleController.ENTITY_FAN)
+    }
     if request.can_edit:
         template_data['following_teams_title'] = "<img src='/static/img/spudderspuds/button-teams-tiny.png' /> Teams You Follow"
         template_data['following_fans_title'] = "<img src='/static/img/spudderspuds/button-fans-tiny.png' /> Fans You Follow"
@@ -139,25 +157,23 @@ def fan_profile_view(request, page_id):
         template_data['following_teams_title'] = "<img src='/static/img/spudderspuds/button-teams-tiny.png' /> Teams %s Follows" % page.name
         template_data['following_fans_title'] = "<img src='/static/img/spudderspuds/button-fans-tiny.png' /> Fans %s Follows" % page.name
 
-    if is_fan(request.current_role):
-        tags = FanFollowingEntityTag.objects.filter(fan=request.current_role.entity)
-        template_data['tags'] = [(t.tag, t.get_entity_icon()) for t in tags]
-
+    template_data['fan_nav_active'] = 'profile'
     return render(request, 'spudderspuds/fans/pages/fan_page_view.html', template_data)
 
 
 def fan_profile_edit(request, page_id):
     fan_page = get_object_or_404(FanPage, pk=page_id)
     profile_form = FanPageForm(initial=fan_page.__dict__)
-    social_accounts_form = FanPageSocialMediaForm(initial=fan_page.__dict__)
+    social_accounts_form = BasicSocialMediaForm(initial=fan_page.__dict__)
     if request.method == 'POST':
         profile_form = FanPageForm(request.POST)
-        social_accounts_form = FanPageSocialMediaForm(request.POST)
+        social_accounts_form = BasicSocialMediaForm(request.POST)
         if profile_form.is_valid() and social_accounts_form.is_valid():
             for attr in ('name', 'date_of_birth', 'state', ):
                 fan_page.__setattr__(attr, profile_form.cleaned_data[attr])
-            for attr in ('twitter', 'facebook', 'google_plus', 'instagram', ):
-                fan_page.__setattr__(attr, social_accounts_form.cleaned_data.get(attr, ''))
+
+            set_social_media(fan_page, social_accounts_form)
+
             fan_page.save()
         return redirect('/fan/%s' % fan_page.id)
     return render(request, 'spudderspuds/fans/pages/fan_page_edit.html', {
@@ -208,11 +224,26 @@ def fan_my_teams(request, page_id):
     template_data = {
         'teams': TeamsController.TeamsAdministeredByRole(request.current_role),
         'role_dashboard': 'spudderspuds/base.html',
-        'additional_nav': render_to_string(
-            'spudderspuds/components/main_nav.html',
-            {'active': 'teams'},
-            context_instance=RequestContext(request))}
-    return render(request, 'components/sharedpages/teams/teams_list.html', template_data)
+        'fan_nav_active': 'teams',
+        'info_message_id': 'teams_list',
+        'info_message_url': '/fan/disable_about/'
+    }
+    return render(request, 'components/sharedpages/teams/teams_list.html', template_data,
+                  context_instance=RequestContext(request))
+
+
+def disable_about(request):
+    """
+    Disables 'about X' part of given page for given fan
+    """
+    if request.method == 'POST':
+        fan = request.current_role.entity
+        message_id = request.POST.get('message_id')
+        if message_id:
+            fan.dismiss_info_message(message_id)
+        return HttpResponse(fan.info_messages_dismissed)
+    else:
+        return HttpResponseNotAllowed(['POST'])
 
 
 def claim_atpostspud(request, spud_id):
@@ -321,6 +352,11 @@ def start_following_view(request):
         elif re.match(r'/team/\d+', origin):
             entity_type = EntityController.ENTITY_TEAM
             entity_id = str.split(origin, '/')[-1]
+            team = TeamPage.objects.get(id=entity_id)
+            admin = TeamAdministrator.objects.get(team_page=team)
+            if admin.entity_type == 'student':
+                stu = Student.objects.get(id=admin.entity_id)
+                team_gained_follower(stu)
 
         entity_tag = FanFollowingEntityTag(
             fan=request.current_role.entity,
@@ -379,54 +415,58 @@ def krowdio_users_to_links(can_edit, current_role, krowdio_dict, filter=None):
     for user in krowdio_dict:
         krowdio_id = user['_id']
         storage_obj = KrowdIOStorage.objects.get(krowdio_user_id=krowdio_id)
-        if storage_obj.role_id:
-            if storage_obj.role_type == 'fan' and (filter == 'fan' or filter is None):
-                fan = FanPage.objects.get(id=storage_obj.role_id)
-                if fan.avatar:
-                    icon_link = '/file/serve/%s' % fan.avatar.id
-                else:
-                    icon_link = '/static/img/spudderfans/button-fans-tiny.png'
-                users.append({
-                    'name': fan.name,
-                    'profile': '/fan/%s' % fan.id,
-                    'icon_link': icon_link,
-                    'custom_tag': FanFollowingEntityTag.GetTag(
-                        fan=current_role.entity,
-                        entity_id=fan.id,
-                        entity_type=RoleController.ENTITY_FAN) if can_edit else None
-                })
-            elif storage_obj.role_type == 'sponsor' and (filter == 'sponsor' or filter is None):
-                sponsor = SponsorPage.objects.get(id=storage_obj.role_id)
-                if sponsor.thumbnail:
-                    icon_link = '/file/serve/%s' % sponsor.thumbnail
-                else:
-                    icon_link = '/static/img/spuddersponsors/button-sponsors-tiny.png'
-                users.append({
-                    'name': sponsor.name,
-                    'profile': '/sponsor/%s' % sponsor.id,
-                    'icon_link': icon_link,
-                    'custom_tag': FanFollowingEntityTag.GetTag(
-                        fan=current_role.entity,
-                        entity_id=sponsor.id,
-                        entity_type=RoleController.ENTITY_SPONSOR) if can_edit else None
-                })
-            elif storage_obj.role_type == 'student' and (filter == 'student' or filter is None):
-                stu = Student.objects.get(id=storage_obj.role_id)
-                if stu.logo:
-                    icon_link = '/file/serve/%s' % stu.logo
-                else:
-                    icon_link = 'static/img/spuddercern/button-cern-tiny.png'
-                users.append({
-                    'name': user_name(stu.user),
-                    'profile': '/cern/student/%s' % stu.id,
-                    'icon_link': icon_link,
-                    'custom_tag': FanFollowingEntityTag.GetTag(
-                        fan=current_role.entity,
-                        entity_id=stu.id,
-                        entity_type=RoleController.ENTITY_STUDENT) if can_edit else None
-                })
-        elif storage_obj.venue:
-            if storage_obj.venue.logo and (filter == 'venue' or filter is None):
+
+        if storage_obj.role_type == RoleController.ENTITY_FAN and \
+                (filter == RoleController.ENTITY_FAN or filter is None):
+            fan = FanPage.objects.get(id=storage_obj.role_id)
+            if fan.avatar:
+                icon_link = '/file/serve/%s' % fan.avatar.id
+            else:
+                icon_link = '/static/img/spudderfans/button-fans-tiny.png'
+            users.append({
+                'name': fan.name,
+                'profile': '/fan/%s' % fan.id,
+                'icon_link': icon_link,
+                'custom_tag': FanFollowingEntityTag.GetTag(
+                    fan=current_role.entity,
+                    entity_id=fan.id,
+                    entity_type=RoleController.ENTITY_FAN) if can_edit else None
+            })
+        elif storage_obj.role_type == RoleController.ENTITY_SPONSOR and \
+                (filter == RoleController.ENTITY_SPONSOR or filter is None):
+            sponsor = SponsorPage.objects.get(id=storage_obj.role_id)
+            if sponsor.thumbnail:
+                icon_link = '/file/serve/%s' % sponsor.thumbnail
+            else:
+                icon_link = '/static/img/spuddersponsors/button-sponsors-tiny.png'
+            users.append({
+                'name': sponsor.name,
+                'profile': '/sponsor/%s' % sponsor.id,
+                'icon_link': icon_link,
+                'custom_tag': FanFollowingEntityTag.GetTag(
+                    fan=current_role.entity,
+                    entity_id=sponsor.id,
+                    entity_type=RoleController.ENTITY_SPONSOR) if can_edit else None
+            })
+        elif storage_obj.role_type == RoleController.ENTITY_STUDENT and \
+                (filter == RoleController.ENTITY_STUDENT or filter is None):
+            stu = Student.objects.get(id=storage_obj.role_id)
+            if stu.logo:
+                icon_link = '/file/serve/%s' % stu.logo
+            else:
+                icon_link = 'static/img/spuddercern/button-cern-tiny.png'
+            users.append({
+                'name': user_name(stu.user),
+                'profile': '/cern/student/%s' % stu.id,
+                'icon_link': icon_link,
+                'custom_tag': FanFollowingEntityTag.GetTag(
+                    fan=current_role.entity,
+                    entity_id=stu.id,
+                    entity_type=RoleController.ENTITY_STUDENT) if can_edit else None
+            })
+        elif storage_obj.venue and \
+                (filter == EntityController.ENTITY_VENUE or filter is None):
+            if storage_obj.venue.logo:
                 icon_link = '/file/serve/%s' % storage_obj.venue.logo.id
             else:
                 icon_link = '/static/img/spudderspuds/button-spuds-tiny.png'
@@ -439,7 +479,9 @@ def krowdio_users_to_links(can_edit, current_role, krowdio_dict, filter=None):
                     entity_id=storage_obj.venue.id,
                     entity_type=EntityController.ENTITY_VENUE) if can_edit else None
             })
-        elif storage_obj.team and (filter == 'team' or filter is None):
+        elif storage_obj.team and \
+                (filter == EntityController.ENTITY_TEAM or filter is None):
+
             if storage_obj.team.image:
                 icon_link = '/file/serve/%s' % storage_obj.team.image.id
             else:
@@ -463,14 +505,12 @@ def test_spuds(request):
             request.current_role.entity)
         shuffle(stream)
         template_data['spuds'] = stream
-        tags = FanFollowingEntityTag.objects.filter(fan=request.current_role.entity)
-        template_data['tags'] = [(t.tag, t.get_entity_icon()) for t in tags]
         return render(request, 'spudderspuds/pages/test_spuds.html', template_data)
 
 
 def add_spud_comment(request):
     """
-    Adds a comment to a SPUD (KrowdIO post)
+    Adds a comment to a SPUD (KrowdIO post) that tags Spudder entities
     :param request: a POST request
     :return: response from KrowdIO or HttpResponseNotAllowed
     """
@@ -484,9 +524,32 @@ def add_spud_comment(request):
         fan = request.current_role.entity
         for t in tags:
             tag = FanFollowingEntityTag.objects.get(fan=fan, tag=t)
-            text += "@%s%s" % (tag.entity_type, tag.entity_id)
+            text += "@%s%s " % (tag.entity_type, tag.entity_id)
+            if tag.entity_type == 'Team':
+                team = TeamPage.objects.get(id=tag.entity_id)
+                admin = TeamAdministrator.objects.get(team_page=team)
+                if admin.entity_type == 'student':
+                    stu = Student.objects.get(id=admin.entity_id)
+                    team_tagged_in_spud(stu)
 
         json = post_comment(entity, spud_id, text)
         return HttpResponse(simplejson.dumps(json))
     else:
         return HttpResponseNotAllowed(['POST'])
+
+
+def get_at_names(request):
+    """
+    Gets all the currently used @names
+    :param request: a POST request
+    :return: a list of strings
+    """
+    at_names = []
+    for v in Venue.objects.all().exclude(name="VenueTagName"):
+        at_names.append(v.name)
+    for s in SponsorPage.objects.all():
+        at_names.append(s.tag)
+    for t in TeamPage.objects.all().exclude(at_name=None):
+        at_names.append(t.at_name)
+
+    return HttpResponse(simplejson.dumps(at_names))

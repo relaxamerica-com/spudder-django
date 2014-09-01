@@ -1,7 +1,9 @@
 import json
+import logging
+
 from django.shortcuts import render, get_object_or_404
 from django.template.loader import render_to_string
-from spudderaccounts.templatetags.spudderaccountstags import is_fan
+from spudderaccounts.wrappers import RoleSponsor
 from spudderdomain.models import TeamVenueAssociation
 from spudmart.utils.cover_image import reset_cover_image, save_cover_image_from_request
 from spudmart.utils.emails import send_email
@@ -24,12 +26,9 @@ from spudmart.accounts.utils import is_sponsor
 from spudmart.CERN.rep import added_basic_info, added_photos, added_logo, \
                             added_video
 from spudmart.CERN.models import Student
-
 from spudderdomain.controllers import SpudsController, RoleController
-from spudderkrowdio.models import KrowdIOStorage, FanFollowingEntityTag
-from spudderkrowdio.utils import get_user_mentions_activity, delete_spud
-import logging
-import datetime
+from spudderkrowdio.models import KrowdIOStorage
+from spudderkrowdio.utils import delete_spud
 
 
 def view(request, venue_id):
@@ -71,14 +70,8 @@ def view(request, venue_id):
         if sponsor.name != "":
             sponsor_info = True
     
-    storage = KrowdIOStorage.GetOrCreateForVenue(venue_id)
-    venue_spuds = get_user_mentions_activity(storage)
+    venue_spuds = SpudsController.GetSpudsForVenue(venue)
     teams = [team.team_page for team in TeamVenueAssociation.objects.filter(venue=venue)]
-
-    tags = []
-    if is_fan(request.current_role):
-        fan_tags = FanFollowingEntityTag.objects.filter(fan=request.current_role.entity)
-        tags = [(t.tag, t.get_entity_icon()) for t in fan_tags]
 
     return render(request, 'spuddercern/pages/venues_view.html', {
         'venue': venue,
@@ -92,8 +85,7 @@ def view(request, venue_id):
         'is_sponsor': venue.is_renter(role),
         'student': student,
         'venue_spuds': venue_spuds,
-        'base_url': 'spuddercern/base.html',
-        'tags': tags
+        'base_url': 'spuddercern/base.html'
     })
 
 
@@ -518,9 +510,15 @@ def rent_sign_in(request):
     if request.user.is_authenticated() and request.current_role.entity_type is RoleController.ENTITY_SPONSOR:
         return _handle_sign_in_complete(request)
 
+    sponsor_roles = []
+    for role in request.all_roles:
+        if isinstance(role, RoleSponsor):
+            sponsor_roles.append(role)
+
     return render(request, 'spuddercern/pages/rent_venue_signin.html', {
         'client_id': settings.AMAZON_LOGIN_CLIENT_ID,
-        'base_url': settings.SPUDMART_BASE_URL
+        'base_url': settings.SPUDMART_BASE_URL,
+        'sponsor_roles': sponsor_roles
     })
 
 
@@ -598,7 +596,8 @@ def get_instagram_stream(request, venue_id):
     controller = SpudsController(request.current_role)
     filters = request.GET.get('filter', None)
     results = controller.get_unapproved_spuds(venue_id, filters=filters)
-    template_data = {'results': results, 'venue_id': venue_id}
+    ven = Venue.objects.get(id=venue_id)
+    template_data = {'results': results, 'venue': ven}
     if filters == "day-0":
         template_data['filter_message'] = "Showing posts from today"
     elif filters == "day-1":
@@ -671,3 +670,27 @@ def edit_cover(request, venue_id):
         'post_url': '/venues/save_cover/%s' % venue.id,
         'reset_url': '/venues/reset_cover/%s' % venue.id
     })
+
+
+def search(request):
+    return render(request, 'spudderspuds/pages/entity_search.html', {
+        'entity_type': "venue",
+        'entities': Venue.objects.all()
+    })
+
+
+def multiply_venue(request, venue_id):
+    """
+    Creates 5 copies of venue without sponsorship
+
+    :param request: request to delete venue
+    :param venue_id: venue to be multiplied
+    :return: redirect to venues list
+    """
+    venue = Venue.objects.get(id=venue_id)
+    for _ in range(5):
+        venue.pk = None
+        venue.renter = None
+        venue.save()
+
+    return HttpResponseRedirect('/venues/view/%s' % venue_id)

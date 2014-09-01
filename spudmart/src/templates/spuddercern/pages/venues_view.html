@@ -1,6 +1,7 @@
 {% extends 'components/sharedpages/public_page_base.html' %}
 
 {% load krowdio %}
+{% load spudderspudstags %}
 
 {% block google_analytics_additions %}
     ga('set', 'contentGroup1', 'CERN Students - Venue View');
@@ -29,7 +30,7 @@
 {% block cover_image_edit_url %}/venues/edit_cover/{{ venue.id }}{% endblock %}
 
 {% block cover_title_profile_image_url %}
-    {% if sponsor %}
+    {% if sponsor and sponsor.thumbnail %}
         /file/serve/{{ sponsor.thumbnail }}
     {% else %}
         {% if venue.logo %}/file/serve/{{ venue.logo.id }}{% else %}/static/img/spuddersponsors/button-sponsors-medium.png{% endif %}
@@ -496,6 +497,41 @@
                         </div>
                     </div>
                 </div>
+                <div id="teams" class="content">
+                    <div class="page-header">
+                        <h2><i class="fa fa-group"></i> Teams associated with this venue</h2>
+                    </div>
+                    {% if not teams %}
+                        {% include 'spuddercern/quote_messages/quote_no_teams_associated_with_venue.html' %}
+                    {% else %}
+                        <table class="table table-striped" style="margin-top: 20px;">
+                            {% for team in teams %}
+                                <tr>
+                                    <td style="width:40px;vertical-align: middle;">
+                                        <a href="/team/{{ team.id }}" style="text-decoration: none;">
+                                            <img src="{% if team.logo %}/file/serve/{{ team.image.id }}{% else %}/static/img/spudderspuds/button-teams-medium.png{% endif %}" height="30px;"/>
+                                        </a>
+                                    </td>
+                                    <td style="vertical-align: middle;">
+                                        <a href="/team/{{ team.id }}" style="text-decoration: none;">
+                                            {{ team }}
+                                        </a>
+                                    </td>
+                                    <td style="vertical-align: middle;" class="hidden-xs">
+                                        @{{ team.at_name }}
+                                    </td>
+                                    {% if request.can_edit %}
+                                        <td style="width:100px; vertical-align: middle;">
+                                            <a class="btn btn-danger btn-sm" href="javascript:removeAssociation('{{ team.id }}', '{{ team.name }}');">
+                                                Remove association
+                                            </a>
+                                        </td>
+                                    {% endif %}
+                                </tr>
+                            {% endfor %}
+                        </table>
+                    {% endif %}
+                </div>
             </div>
         </div>
 
@@ -532,42 +568,7 @@
                 Support Venue's Sponsor
             </h3>
 
-            <ul class="social-network">
-                {% if sponsor.instagram %}
-                    <li>
-                        <a href="{{ sponsor.instagram }}" target="_blank" data-placement="bottom" title=""
-                        data-original-title="Sponsor Instagram profile"> <i class="fa fa-instagram fa-2x"> </i> </a>
-                    </li>
-                {% endif %}
-
-                {% if sponsor.facebook %}
-                    <li>
-                        <a href="{{ sponsor.facebook }}" target="_blank" data-placement="bottom" title=""
-                        data-original-title="Sponsor Facebook profile"> <i class="fa fa-facebook-square fa-2x"> </i> </a>
-                    </li>
-                {% endif %}
-
-                {% if sponsor.twitter %}
-                    <li>
-                        <a href="{{ sponsor.twitter }}" target="_blank" data-placement="bottom" title=""
-                        data-original-title="Sponsor Twitter profile"> <i class="fa fa-twitter-square fa-2x"> </i> </a>
-                    </li>
-                {% endif %}
-
-                {% if sponsor.google_plus %}
-                    <li>
-                        <a href="{{ sponsor.google_plus }}" target="_blank" rel="publisher" data-placement="bottom" title=""
-                        data-original-title="Sponsor Google+ profile"> <i class="fa fa-google-plus-square fa-2x"> </i> </a>
-                    </li>
-                {% endif %}
-
-                {% if sponsor.linkedin %}
-                    <li>
-                        <a href="{{ sponsor.linked_in }}" target="_blank" rel="publisher" data-placement="bottom" title=""
-                        data-original-title="Sponsor LinkedIn profile"> <i class="fa fa-linkedin-square fa-2x"> </i> </a>
-                    </li>
-                {% endif %}
-            </ul>
+            {% social_media_list sponsor %}
 
             <ul class="sponsor-details">
                 {% if sponsor.speciality %}
@@ -611,20 +612,6 @@
                         <label>Fax: </label> {{ sponsor.fax }}
                     </li>
                 {% endif %}
-            </ul>
-        </div>
-    {% endif %}
-
-    {% if teams %}
-        <div style="border-top: 1px solid lightgray;">
-            <h3>
-                Associated teams
-            </h3>
-
-            <ul class="associated-teams">
-                {% for team in teams %}
-                    <li><a href="/team/{{ team.id }}">{{ team }}</a></li>
-                {% endfor %}
             </ul>
         </div>
     {% endif %}
@@ -1443,5 +1430,12 @@
         else if (active == "medical-details") click_nav_button('#handicap-details');
     });
     })
+
+
+    function removeAssociation(teamID, teamName){
+        if (confirm('This will remove the association with the team ' + teamName + '. Are you sure you want to do that?')){
+            window.location = '/team/associate/' + teamID + '/remove/' + {{ venue.id }} + '?next={{ request.get_full_path }}';
+        }
+    }
 </script>
 {% endblock %}

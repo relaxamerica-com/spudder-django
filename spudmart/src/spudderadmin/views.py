@@ -14,12 +14,12 @@ from spudderaccounts.wrappers import RoleStudent, RoleFan, RoleSponsor
 from spudderadmin.decorators import admin_login_required
 from spudderadmin.forms import AtPostSpudTwitterAPIForm, SystemDeleteTeamsForm, SystemDeleteVenuesForm
 from spudderadmin.utils import encoded_admin_session_variable_name
-from spudderdomain.models import FanPage, LinkedService, TeamAdministrator, TeamPage, TeamVenueAssociation
+from spudderdomain.models import FanPage, LinkedService, TeamAdministrator, TeamPage, TeamVenueAssociation, Location
 from spudderkrowdio.models import KrowdIOStorage
 from spudderkrowdio.utils import get_user_mentions_activity
 from spuddersocialengine.atpostspud.models import AtPostSpudTwitterAuthentication, AtPostSpudTwitterCounter, AtPostSpudServiceConfiguration
 from spuddersocialengine.models import SpudFromSocialMedia
-from spudmart.CERN.models import Student, School, STATES
+from spudmart.CERN.models import Student, School
 from spudmart.CERN.templatetags.CERN import student_email
 from spudmart.accounts.templatetags.accounts import fan_page_name, user_name
 from spudmart.donations.models import RentVenue
@@ -191,6 +191,7 @@ def system_nukedb(request):
     LinkedService.objects.all().delete()
     TeamAdministrator.objects.all().delete()
     TeamPage.objects.all().delete()
+    Location.objects.all().delete()
     KrowdIOStorage.objects.all().delete()
     PendingVenueRental.objects.all().delete()
     Venue.objects.all().delete()
@@ -567,4 +568,22 @@ def venues_map_by_sport(request, sport):
     return render_to_response('spudderadmin/pages/reports/venues_map_by_sport.html',
         {'places_api_key': settings.GOOGLE_PLACES_API_KEY,
         'venues': Venue.objects.filter(sport=sport)},
+        context_instance=RequestContext(request))
+
+
+@admin_login_required
+def send_sponsor_email(request, sponsor_id):
+    """
+    Simple page for emailing sponsor
+    :param request: any request
+    :param sponsor_id: a valid ID of a SponsorPage object
+    :return: the email form optimized for sponsor
+    """
+    sponsor = SponsorPage.objects.get(id=sponsor_id)
+    return render_to_response('spudderadmin/pages/reports/send_email.html',
+        {
+            'name': sponsor.name,
+            'email': sponsor.email or RoleSponsor(sponsor).user.email,
+            'profile': "/sponsor/%s" % sponsor.id
+        },
         context_instance=RequestContext(request))

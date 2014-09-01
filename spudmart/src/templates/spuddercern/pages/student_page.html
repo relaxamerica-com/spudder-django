@@ -118,15 +118,18 @@
             <a class="btn btn-primary" openTab="#venues" title="Venues">
                 <i class="fa fa-2x fa-map-marker" title="Venues"></i>
             </a>
+            <a class="btn btn-primary" openTab="#teams" title="Teams">
+                <i class="fa fa-2x fa-users" title="Teams"></i>
+            </a>
             <a class="btn btn-primary" openTab="#social-media" title="Social Media PR">
                 <i class="fa fa-2x fa-rss" title="Social Media PR"></i>
             </a>
-            <a class="btn btn-primary" openTab="#content" title="Content">
-                <i class="fa fa-2x fa-edit" title="Content"></i>
-            </a>
-            <a class="btn btn-primary" openTab="#design" title="Design">
-                <i class="fa fa-2x fa-pencil" title="Design"></i>
-            </a>
+{#            <a class="btn btn-primary" openTab="#content" title="Content">#}
+{#                <i class="fa fa-2x fa-edit" title="Content"></i>#}
+{#            </a>#}
+{#            <a class="btn btn-primary" openTab="#design" title="Design">#}
+{#                <i class="fa fa-2x fa-pencil" title="Design"></i>#}
+{#            </a>#}
             <a class="btn btn-primary" openTab="#qa" title="QA Testing">
                 <i class="fa fa-2x fa-cogs" title="QA Testing"></i>
             </a>
@@ -174,6 +177,34 @@
                     {% endif %}
                 </div>
 
+                <div class="content" id="teams">
+                    {% if teams > 0 %}
+                        <h3>Teams Managed by {% user_name student.user %}:</h3>
+                        <table class="table" style="text-align:left">
+                            <thead>
+                                <tr>
+                                    <th>Sport</th>
+                                    <th>Name</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for t in teams %}
+                                    <tr>
+                                        <td>{{ t.team_page.sport }}</td>
+                                        <td><a href="/team/{{ t.team_page.id }}">{{ t.team_page.name }}</a></td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% else %}
+                        <div class="row">
+                            <div class="col-sm-8 col-sm-offset-2">
+                                {% include 'spuddercern/quote_messages/quote_no_venues_student_page.html' %}
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+
                 <div class="content" id="social-media">
                     {% if num_referred > 0 %}
                         <h3>{% user_name student.user %}'s Social Media Recruitment Progress</h3>
@@ -195,32 +226,32 @@
                     {% endif %}
                 </div>
 
-                <div class="content" id="content">
-                    {% if student.content_points > 0 %}
+{#                <div class="content" id="content">#}
+{#                    {% if student.content_points > 0 %}#}
                         {# Put content links here... #}
-                    {% else %}
-                        <div class="row">
-                            <div class="col-sm-8 col-sm-offset-2">
-                                {% include 'spuddercern/quote_messages/quote_no_content_student_page.html' %}
-                            </div>
-                        </div>
-                    {% endif %}
-                </div>
-
-                <div class="content" id="design">
-                    {% if student.content_points > 0 %}
+{#                    {% else %}#}
+{#                        <div class="row">#}
+{#                            <div class="col-sm-8 col-sm-offset-2">#}
+{#                                {% include 'spuddercern/quote_messages/quote_no_content_student_page.html' %}#}
+{#                            </div>#}
+{#                        </div>#}
+{#                    {% endif %}#}
+{#                </div>#}
+{##}
+{#                <div class="content" id="design">#}
+{#                    {% if student.content_points > 0 %}#}
                         {# Put content links here... #}
-                    {% else %}
-                        <div class="row">
-                            <div class="col-sm-8 col-sm-offset-2">
-                                {% include 'spuddercern/quote_messages/quote_no_design_student_page.html' %}
-                            </div>
-                        </div>
-                    {% endif %}
-                </div>
+{#                    {% else %}#}
+{#                        <div class="row">#}
+{#                            <div class="col-sm-8 col-sm-offset-2">#}
+{#                                {% include 'spuddercern/quote_messages/quote_no_design_student_page.html' %}#}
+{#                            </div>#}
+{#                        </div>#}
+{#                    {% endif %}#}
+{#                </div>#}
 
                 <div class="content" id="qa">
-                    {% if student.content_points > 0 %}
+                    {% if student.testing_points > 0 %}
                         {# Put content links here... #}
                     {% else %}
                         <div class="row">
@@ -243,6 +274,13 @@
     <ul class="list-unstyled">
         <li><label>School rank:</label> {% school_rank student %}</li>
         <li><label>National rank:</label> {% national_rank student %}</li>
+    </ul>
+    <h3>Points by Category</h3>
+    <ul class="list-unstyled">
+        <li><label>Marketing Venues: </label> {{ student.venue_points }}</li>
+        <li><label>Marketing Teams: </label> {{ student.team_points }}</li>
+        <li><label>Social Media PR: </label> {{ student.social_media_points }}</li>
+        <li><label>QA Testing: </label> {{ student.testing_points }}</li>
     </ul>
 {% endblock %}
 

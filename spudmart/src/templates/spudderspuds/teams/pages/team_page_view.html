@@ -1,6 +1,7 @@
 {% extends 'components/sharedpages/public_page_base.html' %}
 
 {% load accounts %}
+{% load spudderspudstags %}
 
 {% block title %}
     {{ page.name }}
@@ -13,13 +14,6 @@
 	{% if page.avatar %} <meta property="og:image" content="http://{{ request.META.HTTP_HOST }}/file/serve/{{ page.image.id }}">
         {% else %}<meta property="og:image" content="http://{{ request.META.HTTP_HOST }}/static/img/spudderteams/button-teams-large.png">
 	{% endif %}
-{% endblock %}
-
-{% block nav %}
-    {% if current_role and current_role.entity_type == 'fan' %}
-        {% include 'spudderspuds/components/main_nav.html' %}
-        {{ block.super }}
-    {% endif %}
 {% endblock %}
 
 {% block cover_image_container_id %}{% if not page.cover_image %}jumbo-map-container{% endif %}{% endblock %}
@@ -38,17 +32,7 @@
             Edit Mode
         </a>
     {% else %}
-        {% if request.can_follow %}
-            {% if request.following %}
-                <a class="btn btn-primary" id="follow">
-                    <i class="fa fa-fw fa-minus"></i> <span>Unfollow</span>
-                </a>
-            {% else %}
-                <a class="btn btn-primary" href="/fan/follow?origin={{ request.path }}">
-                    <i class="fa fa-fw fa-plus"></i> Follow
-                </a>
-            {% endif %}
-        {% endif %}
+        {% include 'spudderspuds/components/follow_button.html' %}
     {% endif %}
 {% endblock %}
 
@@ -63,11 +47,16 @@
 
             <a class="btn btn-primary" id="save-logo">Save</a>
             <div class="alert" id="logo-name-alert" style="margin-top:10px"></div>
+
+            <a class="btn btn-primary" href="/team/associate/{{ page.id }}" title="Associate with {% if is_associated %}Another {% endif %}Venue"
+                style="margin: 20px auto 0; display: table;">
+                <i class="fa fa-fw fa-map-marker"> </i> Associate with {% if is_associated %}Another {% endif %}Venue
+            </a>
         </form>
     </div>
 
     <div id="venue-property-buttons">
-        <div class="btn-group hidden-sm hidden-xs btn-group-justified" style="margin: 0 auto;">
+        <div class="btn-group btn-group-justified" style="margin: 0 auto;">
             {% include 'spudderspuds/teams/parts/team_view_buttons.html' %}
         </div>
     </div>
@@ -109,11 +98,13 @@
                             <td style="vertical-align: middle;" class="hidden-xs">
                                 @{{ venue.name }}
                             </td>
-                            <td style="width:100px; vertical-align: middle;">
-                                <a class="btn btn-danger btn-sm" href="javascript:removeAssociation('{{ venue.id }}', '{{ venue.aka_name }}');">
-                                    Remove association
-                                </a>
-                            </td>
+                            {% if request.can_edit %}
+                                <td style="width:100px; vertical-align: middle;">
+                                    <a class="btn btn-danger btn-sm" href="javascript:removeAssociation('{{ venue.id }}', '{{ venue.aka_name }}');">
+                                        Remove association
+                                    </a>
+                                </td>
+                            {% endif %}
                         </tr>
                     {% endfor %}
                 </table>
@@ -122,58 +113,6 @@
                         <i class="fa fa-fw fa-map-marker"> </i> Associate with Another Venue
                     </a>
                 {% endif %}
-{#                <div id="associated-venue-container" class="text-center" style="border-top: 1px solid lightgray; padding-top: 20px" class="text-center">#}
-{#                    <h3>#}
-{#                        Associated Venue{% if venues|length > 1 %}s{% endif %}#}
-{#                    </h3>#}
-{#                    {% for venue in venues %}#}
-{#                        <div id="associated-venue-{{ forloop.counter }}" {% if not forloop.first %}style="display:none"{% endif %}>#}
-{#                            <div style="font-size:100px;">#}
-{#                                {% if venues|length > 1 %}#}
-{#                                    {% if forloop.first %}#}
-{#                                        <a id="previous-venue" nextVenue="{{ venues|length }}"><i class="fa fa-angle-left"></i></a>#}
-{#                                    {% else %}#}
-{#                                        <a id="previous-venue" nextVenue="{{ forloop.counter0 }}"><i class="fa fa-angle-left"></i></a>#}
-{#                                    {% endif %}#}
-{#                                {% endif %}#}
-{##}
-{#                                <a href="/venues/view/{{ venue.id }}" style="text-decoration: none;">#}
-{#                                    {% if venue.logo %}#}
-{#                                        <img id="venue-logo" src="/file/serve/{{ venue.logo.id }}" height="100px"/>#}
-{#                                    {% else %}#}
-{#                                        <img id="venue-logo" src="/static/img/spuddersponsors/button-sponsors-medium.png" />#}
-{#                                    {% endif %}#}
-{#                                </a>#}
-{##}
-{#                                {% if venues|length > 1 %}#}
-{#                                    {% if forloop.last %}#}
-{#                                        <a id="next-venue" nextVenue="1"><i class="fa fa-angle-right"></i></a>#}
-{#                                    {% else %}#}
-{#                                        <a id="next-venue" nextVenue="{{ forloop.counter|add:1 }}"><i class="fa fa-angle-right"></i></a>#}
-{#                                    {% endif %}#}
-{#                                {% endif %}#}
-{#                            </div>#}
-{#                            <ul class="list-unstyled" style="display:inline-block">#}
-{#                                <li class="text-left">#}
-{#                                    <label>Name: </label> {{ venue }}#}
-{#                                </li>#}
-{##}
-{#                                <li class="text-left">#}
-{#                                    <label>Page: </label> <a href="/venues/view/{{ venue.id }}">View Venue page</a>#}
-{#                                </li>#}
-{##}
-{#                                <li class="text-left">#}
-{#                                    <label>Tag: </label> @{{ venue.name }}#}
-{#                                </li>#}
-{#                            </ul>#}
-{#                            <div style="margin-bottom:25px">#}
-{#                                <a class="btn btn-danger" href="javascript:removeAssociation('{{ venue.id }}', '{{ venue.aka_name }}');">#}
-{#                                    Remove association#}
-{#                                </a>#}
-{#                            </div>#}
-{#                        </div>#}
-{#                    {% endfor %}#}
-{#                </div>#}
             {% endif %}
         </div>
 
@@ -196,7 +135,9 @@
             Team Details
         </h3>
 
-        <ul class="sponsor-details">
+        {% social_media_list page %}
+
+        <ul class="list-unstyled">
             <li>
                 <label>Sport: </label> {{ page.sport }}
             </li>
