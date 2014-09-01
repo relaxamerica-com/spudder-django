@@ -4,7 +4,7 @@ from spudderaccounts.templatetags.spudderaccountstags import is_fan
 from spudderdomain.controllers import TeamsController, RoleController, SpudsController, SocialController
 from spudderdomain.models import TeamPage, Location, TeamVenueAssociation
 from spudderkrowdio.models import FanFollowingEntityTag
-from spudmart.teams.forms import CreateTeamForm, TeamPageForm
+from spudmart.teams.forms import CreateTeamForm, TeamPageForm, EditTeamForm
 from django.http import HttpResponseRedirect, HttpResponse
 from spudmart.upload.models import UploadedFile
 from spudmart.utils.Paginator import EntitiesPaginator
@@ -87,6 +87,29 @@ def team_page(request, page_id):
         'form': form,
         'sports': SPORTS,
         'states': STATES
+    })
+
+
+def edit_team_page(request, page_id):
+    team_page = TeamPage.objects.get(pk=page_id)
+    initial_dict = team_page.__dict__
+    initial_dict['team_name'] = initial_dict.get('name')
+    form = EditTeamForm(initial=team_page.__dict__)
+
+    if request.method == 'POST':
+        form = EditTeamForm(request.POST, team_id=team_page.id)
+
+        if form.is_valid():
+            data = form.cleaned_data
+            team_page.name = data.get('team_name')
+            team_page.contact_details = data.get('contact_details')
+            team_page.free_text = data.get('free_text')
+            team_page.save()
+            return HttpResponseRedirect('/team/%s' % page_id)
+
+    return render(request, 'spudderspuds/teams/pages/edit_team.html', {
+        'page': team_page,
+        'form': form
     })
 
 
