@@ -6,7 +6,7 @@ from spudderdomain.models import TeamPage, Location, TeamVenueAssociation, TeamA
 from spudderspuds.forms import LinkedInSocialMediaForm
 from spudderspuds.utils import set_social_media
 from spudmart.CERN.rep import created_team, team_associated_with_venue
-from spudmart.teams.forms import CreateTeamForm, TeamPageForm
+from spudmart.teams.forms import CreateTeamForm, TeamPageForm, EditTeamForm
 from django.http import HttpResponseRedirect, HttpResponse, HttpResponseNotAllowed
 from spudmart.upload.models import UploadedFile
 from spudmart.utils.Paginator import EntitiesPaginator
