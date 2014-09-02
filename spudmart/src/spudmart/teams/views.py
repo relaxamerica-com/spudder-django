@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from google.appengine.api import blobstore
 import settings
 from spudderaccounts.templatetags.spudderaccountstags import is_fan, is_cern_student
 from spudderdomain.controllers import TeamsController, RoleController, SpudsController, SocialController
@@ -9,6 +10,7 @@ from spudmart.CERN.rep import created_team, team_associated_with_venue
 from spudmart.teams.forms import CreateTeamForm, TeamPageForm, EditTeamForm
 from django.http import HttpResponseRedirect, HttpResponse, HttpResponseNotAllowed
 from spudmart.upload.models import UploadedFile
+from spudmart.upload.forms import UploadForm
 from spudmart.utils.Paginator import EntitiesPaginator
 from spudmart.utils.cover_image import save_cover_image_from_request, reset_cover_image
 from spudmart.CERN.models import STATES, Student
@@ -116,23 +118,32 @@ def team_page(request, page_id):
 
 
 def edit_team_page(request, page_id):
-    team_page = TeamPage.objects.get(pk=page_id)
-    form = EditTeamForm(initial=team_page.__dict__)
+    team_page = TeamPage.objects.select_related('image').get(pk=page_id)
+    form = EditTeamForm(initial=team_page.__dict__, image=team_page.image)
 
     if request.method == 'POST':
-        form = EditTeamForm(request.POST, team_id=team_page.id)
+        form = EditTeamForm(request.POST, team_id=team_page.id, image=team_page.image)
 
         if form.is_valid():
+
+            upload_form = UploadForm(request.POST, request.FILES)
+            uploaded_file_model = None
+            if upload_form.is_valid():
+                uploaded_file_model = upload_form.save()
+
             data = form.cleaned_data
             team_page.name = data.get('name')
             team_page.contact_details = data.get('contact_details')
             team_page.free_text = data.get('free_text')
+            if uploaded_file_model:
+                team_page.image = uploaded_file_model
             team_page.save()
             return HttpResponseRedirect('/team/%s' % page_id)
 
     return render(request, 'spudderspuds/teams/pages/edit_team.html', {
         'page': team_page,
-        'form': form
+        'form': form,
+        'upload_url': blobstore.create_upload_url('/team/%s/edit' % page_id)
     })
 
 
