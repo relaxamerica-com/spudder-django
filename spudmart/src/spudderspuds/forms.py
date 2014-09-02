@@ -56,6 +56,26 @@ class FanPageForm(forms.Form):
     name = forms.CharField(label='User Name', help_text='This can be your real name or something made up!')
     date_of_birth = forms.DateField(widget=SelectDateWidget(years=YEARS))
     state = forms.ChoiceField(choices=[(k, v) for k, v in SORTED_STATES.items()], label="Where do you live?")
+    file = forms.FileField(
+        required=False, label="Add logo to your profile",
+        help_text="Great logos are square and about 200px x 200px")
+
+    def __init__(self, *args, **kwargs):
+        fan_id = kwargs.pop('fan_id', None)
+        self.fan_id = fan_id
+        self.image = kwargs.pop('image', None)
+
+        super(FanPageForm, self).__init__(*args, **kwargs)
+
+        if self.image:
+            self.update_file_field_label_and_help_text()
+
+    def update_file_field_label_and_help_text(self):
+        self.fields['file'].label = "Replace your current logo"
+        self.fields['file'].help_text = """
+<span class=\"help-text-content\">Great logos are square and about 200px x 200px</span>
+<img class=\"edit-team-logo-img pull-left\" src=\"/file/serve/%s\"/>
+""" % self.image.id
 
 
 class BasicSocialMediaForm(forms.Form):

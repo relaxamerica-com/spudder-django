@@ -57,11 +57,19 @@ class CreateTeamForm(BaseTeamForm):
 
 
 class EditTeamForm(BaseTeamForm):
+    file = forms.FileField(
+        required=False, label="Add logo to this team",
+        help_text="Great logos are square and about 200px x 200px")
 
     def __init__(self, *args, **kwargs):
         team_id = kwargs.pop('team_id', None)
         self.team_id = team_id
+        self.image = kwargs.pop('image', None)
+
         super(EditTeamForm, self).__init__(*args, **kwargs)
+
+        if self.image:
+            self.update_file_field_label_and_help_text()
 
     def clean_name(self):
         cleaned_data = super(EditTeamForm, self).clean()
@@ -69,6 +77,13 @@ class EditTeamForm(BaseTeamForm):
         if TeamPage.objects.exclude(id=self.team_id).filter(name=name).count():
             raise forms.ValidationError("The team name you are using is already taken, try adding the town or city?")
         return name
+
+    def update_file_field_label_and_help_text(self):
+        self.fields['file'].label = "Replace this team logo"
+        self.fields['file'].help_text = """
+<span class=\"help-text-content\">Great logos are square and about 200px x 200px</span>
+<img class=\"edit-team-logo-img pull-left\" src=\"/file/serve/%s\"/>
+""" % self.image.id
 
 
 class TeamPageForm(ModelForm):

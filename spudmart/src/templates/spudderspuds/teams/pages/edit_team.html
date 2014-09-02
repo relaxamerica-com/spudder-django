@@ -1,6 +1,20 @@
 {% extends 'spudderspuds/teams/pages/create_team.html' %}
 {% load bootstrap3 %}
 
+{% block css %}
+    {{ block.super }}
+    <style>
+    .edit-team-logo-img {
+        width: 50px;
+        height: 50px;
+        margin-right: 5px;
+    }
+    .help-text-content {
+        line-height: 50px;
+    }
+    </style>
+{% endblock %}
+
 {% block well_content %}
     <h3>You are editing a "{{ page.name }}" Team in Spudder!</h3>
     <form method="post" enctype="multipart/form-data" action="{{ upload_url }}">
@@ -11,9 +25,9 @@
 
             {% buttons %}
                 <button type="submit" class="btn btn-primary">
-                    <i class="fa fa-save"></i> update
+                    <i class="fa fa-save"></i> Update
                 </button>
-                <a href="{{ request.META.HTTP_REFERER }}" class="btn btn-default">
+                <a href="/team/{{ page.id }}" class="btn btn-default">
                     Cancel
                 </a>
             {% endbuttons %}
