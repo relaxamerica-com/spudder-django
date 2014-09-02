@@ -249,11 +249,12 @@ def associate_with_venue(request, page_id):
     venues_paginator = EntitiesPaginator(venues, 20)
     venue_page = venues_paginator.page(current_page)
 
-    role_dashboard = ''
-    if request.current_role.entity_type == RoleController.ENTITY_STUDENT:
-        role_dashboard = 'spuddercern/pages/dashboard_pages/dashboard.html'
-    elif request.current_role.entity_type == RoleController.ENTITY_FAN:
-        role_dashboard = 'spudderspuds/fans/pages/dashboard.html'
+    role_dashboard = 'spudderspuds/teams/pages/dashboard_pages/dashboard_base.html'
+    if request.current_role:
+        if request.current_role.entity_type == RoleController.ENTITY_STUDENT:
+            role_dashboard = 'spuddercern/pages/dashboard_pages/dashboard.html'
+        elif request.current_role.entity_type == RoleController.ENTITY_FAN:
+            role_dashboard = 'spudderspuds/fans/pages/dashboard.html'
 
     return render(request, 'components/sharedpages/teams/associate_with_venue.html', {
         'page': page,
