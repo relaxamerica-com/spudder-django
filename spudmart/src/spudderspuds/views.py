@@ -32,7 +32,8 @@ from spudmart.venues.models import Venue
 def landing_page(request):
     template_data = {
         'find_teams': TeamPage.objects.all()[:10],
-        'find_fans': FanPage.objects.all()[:10]}
+        'find_fans': FanPage.objects.all()[:10],
+        'find_venues': Venue.objects.all()[:10]}
     if is_fan(request.current_role):
         spud_stream = SpudsController(request.current_role).get_spud_stream()
         fan_spuds = SpudsController.GetSpudsForFan(request.current_role.entity)
@@ -61,6 +62,8 @@ def entity_search(request, entity_type):
         template_data['entities'] = fans.exclude(fan=request.user) if request.current_role else fans.all()
     if entity_type == "team":
         template_data['entities'] = TeamPage.objects.all()
+    if entity_type == "venue":
+        template_data['entities'] = Venue.objects.all()
     return render(request, 'spudderspuds/pages/entity_search.html', template_data)
 
 

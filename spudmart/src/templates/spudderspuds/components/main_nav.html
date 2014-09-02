@@ -1,6 +1,16 @@
-<li class="{% if fan_nav_active == "explore" %}active{% endif %}">
-    <a href="/spuds">Explore</a>
+<li class="dropdown">
+    <a class="dropdown-toggle" href="#" data-toggle="dropdown">
+        Explore <i class="fa fa-caret-down"></i>
+    </a>
+    <ul class="dropdown-menu">
+        <li><a href="/spuds">Start</a></li>
+        <li><a href="/spuds/search/teams">Teams</a></li>
+        <li><a href="/spuds/search/fans">Fans</a></li>
+        <li><a href="/spuds/search/venues">Venues</a></li>
+
+    </ul>
 </li>
+
 {% if current_role and current_role.entity_type == "fan" %}
     <li class="{% if fan_nav_active == "profile" and request.can_edit %}active{% endif %}">
         {% if request.current_role.entity_type == 'fan' %}

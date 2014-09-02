@@ -9,6 +9,7 @@ urlpatterns = patterns(
     url(r'register_add_fan_role$', 'user_add_fan_role'),
     url(r'search/teams', 'entity_search', {'entity_type': 'team'}),
     url(r'search/fans', 'entity_search', {'entity_type': 'fan'}),
+    url(r'search/venues', 'entity_search', {'entity_type': 'venue'}),
 
 
     # /s/ urls - unclaimed atpostspuds
