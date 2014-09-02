@@ -7,6 +7,7 @@ from django.http import HttpResponse, HttpResponseNotAllowed
 from django.shortcuts import render, render_to_response, redirect, get_object_or_404
 from django.template import RequestContext
 from django.template.loader import render_to_string
+from google.appengine.api import blobstore
 import simplejson
 from spudderaccounts.templatetags.spudderaccountstags import is_fan, user_has_fan_role
 from spudderaccounts.utils import change_current_role
@@ -21,6 +22,7 @@ from spudmart.CERN.models import Student
 from spudmart.CERN.rep import team_gained_follower, team_tagged_in_spud
 from spudmart.accounts.templatetags.accounts import fan_page_name, user_name
 from spudmart.sponsors.models import SponsorPage
+from spudmart.upload.forms import UploadForm
 from spudmart.upload.models import UploadedFile
 from spudmart.utils.cover_image import reset_cover_image, save_cover_image_from_request
 from spudderkrowdio.utils import start_following, stop_following, get_following, post_comment
@@ -163,10 +165,10 @@ def fan_profile_view(request, page_id):
 
 def fan_profile_edit(request, page_id):
     fan_page = get_object_or_404(FanPage, pk=page_id)
-    profile_form = FanPageForm(initial=fan_page.__dict__)
+    profile_form = FanPageForm(initial=fan_page.__dict__, image=fan_page.avatar)
     social_accounts_form = BasicSocialMediaForm(initial=fan_page.__dict__)
     if request.method == 'POST':
-        profile_form = FanPageForm(request.POST)
+        profile_form = FanPageForm(request.POST, image=fan_page.avatar)
         social_accounts_form = BasicSocialMediaForm(request.POST)
         if profile_form.is_valid() and social_accounts_form.is_valid():
             for attr in ('name', 'date_of_birth', 'state', ):
@@ -174,13 +176,18 @@ def fan_profile_edit(request, page_id):
 
             set_social_media(fan_page, social_accounts_form)
 
+            upload_form = UploadForm(request.POST, request.FILES)
+            if upload_form.is_valid():
+                fan_page.avatar = upload_form.save()
+
             fan_page.save()
         return redirect('/fan/%s' % fan_page.id)
     return render(request, 'spudderspuds/fans/pages/fan_page_edit.html', {
         'profile_form': profile_form,
         'social_accounts_form': social_accounts_form,
-        # 'page': page,
-        'new_registration': request.GET.get('new_registration', False)
+        'page': fan_page,
+        'new_registration': request.GET.get('new_registration', False),
+        'upload_url': blobstore.create_upload_url('/fan/%s/edit' % page_id)
     })
 
 

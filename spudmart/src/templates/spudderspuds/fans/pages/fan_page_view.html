@@ -25,7 +25,7 @@
 
 {% block cover_image_edit_url %}/fan/{{ page.id }}/edit_cover{% endblock %}
 
-{% block cover_title_profile_image_url %}{% if page.image %}/file/serve/{{ page.avatar.id }}{% else %}/static/img/spudderspuds/button-fans-medium.png{% endif %}{% endblock %}
+{% block cover_title_profile_image_url %}{% if page.avatar %}/file/serve/{{ page.avatar.id }}{% else %}/static/img/spudderspuds/button-fans-medium.png{% endif %}{% endblock %}
 
 {% block cover_title_display_name %}{% fan_page_name page %}{% endblock %}
 

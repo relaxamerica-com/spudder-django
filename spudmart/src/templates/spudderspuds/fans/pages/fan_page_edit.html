@@ -1,6 +1,20 @@
 {% extends 'spudderspuds/base_single_well.html' %}
 {% load bootstrap3 %}
 
+{% block css %}
+    {{ block.super }}
+    <style>
+    .edit-team-logo-img {
+        width: 50px;
+        height: 50px;
+        margin-right: 5px;
+    }
+    .help-text-content {
+        line-height: 50px;
+    }
+    </style>
+{% endblock %}
+
 {% block google_analytics_additions %}
     ga('set', 'contentGroup1', 'FANS - FAN PAGE EDIT');
 {% endblock %}
@@ -17,7 +31,7 @@
         </div>
     {% endif %}
 
-    <form action="" method="post" id="create-team-form" class="fan-page-form" enctype="multipart/form-data" role="form">
+    <form action="{{ upload_url }}" method="post" id="create-team-form" class="fan-page-form" enctype="multipart/form-data" role="form">
         {% csrf_token %}
         <fieldset>
             <legend>Basic Profile Details</legend>
@@ -37,7 +51,13 @@
         </fieldset>
 
         {% buttons %}
-            <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> Save</button>
+            <button type="submit" class="btn btn-primary">
+                <i class="fa fa-save"></i> Update
+            </button>
+            <a href="/fan/{{ page.id }}" class="btn btn-default">
+                Cancel
+            </a>
+
         {% endbuttons %}
     </form>
 {% endblock %}

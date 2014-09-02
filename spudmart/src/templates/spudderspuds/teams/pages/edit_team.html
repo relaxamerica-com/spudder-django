@@ -25,9 +25,9 @@
 
             {% buttons %}
                 <button type="submit" class="btn btn-primary">
-                    <i class="fa fa-save"></i> update
+                    <i class="fa fa-save"></i> Update
                 </button>
-                <a href="{{ request.META.HTTP_REFERER }}" class="btn btn-default">
+                <a href="/team/{{ page.id }}" class="btn btn-default">
                     Cancel
                 </a>
             {% endbuttons %}
