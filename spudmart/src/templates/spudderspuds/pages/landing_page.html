@@ -31,7 +31,7 @@
 {#                <a href="/spuds/search/teams" class="btn btn-primary pull-right"><i class="fa fa-search"></i> Explore Spuder</a>#}
             </div>
 
-            <ul class="nav nav-tabs col-md-12" role="tablist">
+            <ul class="nav nav-tabs col-md-12" id="explore-tabs" role="tablist">
                 <li class="active">
                     <a href="#teams" role="tab" data-toggle="tab">
                         <img src="/static/img/spudderspuds/button-teams-tiny.png"/> Teams
@@ -119,7 +119,7 @@
                                         </a>
                                     </td>
                                     <td>
-                                        <a href="/fan/{{ venue.id }}">
+                                        <a href="/venues/view/{{ venue.id }}">
                                             {{ venue.name }}
                                         </a>
                                     </td>

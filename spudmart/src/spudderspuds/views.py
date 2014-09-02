@@ -63,7 +63,7 @@ def entity_search(request, entity_type):
     if entity_type == "team":
         template_data['entities'] = TeamPage.objects.all()
     if entity_type == "venue":
-        template_data['venue'] = Venue.objects.all()
+        template_data['entities'] = Venue.objects.all()
     return render(request, 'spudderspuds/pages/entity_search.html', template_data)
 
 
