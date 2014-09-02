@@ -141,3 +141,5 @@ class FanFollowingEntityTag(models.Model):
                 entity_type=entity_type).tag
         except FanFollowingEntityTag.DoesNotExist:
             return None
+        except FanFollowingEntityTag.MultipleObjectsReturned:
+            return None

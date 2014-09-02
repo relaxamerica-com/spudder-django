@@ -25,59 +25,113 @@
 
         <hr/>
         <div class="row">
-            <div class="col-md-6">
-                <div class="page-header">
-                    <a href="/spuds/search/teams" class="btn btn-primary pull-right"><i class="fa fa-search"></i> Find more teams</a>
-                    <h3><img src="/static/img/spudderspuds/button-teams-tiny.png"/> Find Teams on Spudder</h3>
-                </div>
-                <table class="table table-striped">
-                    <tbody>
-                        {% for team in find_teams %}
-                            <tr>
-                                <td style="width: 40px;">
-                                    <a href="/team/{{ team.id }}">
-                                        <img src="{% if team.image %}/file/serve/{{ team.image.id }}{% else %}/static/img/spudderspuds/button-teams-medium.png{% endif %}" style="width: 25px;"/>
-                                    </a>
-                                </td>
-                                <td>
-                                    <a href="/team/{{ team.id }}">
-                                        {{ team.name }}
-                                    </a>
-                                </td>
-                                <td>
-                                    {{ team.state|format_state }}
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+
+            <div class="page-header">
+                <h3><i class="fa fa-search"></i> Explore Spuder</h3>
+{#                <a href="/spuds/search/teams" class="btn btn-primary pull-right"><i class="fa fa-search"></i> Explore Spuder</a>#}
             </div>
-            <div class="col-md-6">
-                <div class="page-header">
-                    <a href="/spuds/search/fans" class="btn btn-primary pull-right"><i class="fa fa-search"></i> Find more fans</a>
-                    <h3><img src="/static/img/spudderspuds/button-fans-tiny.png"/> Find Fans on Spudder</h3>
+
+            <ul class="nav nav-tabs col-md-12" role="tablist">
+                <li class="active">
+                    <a href="#teams" role="tab" data-toggle="tab">
+                        <img src="/static/img/spudderspuds/button-teams-tiny.png"/> Teams
+                    </a>
+                </li>
+                <li>
+                    <a href="#fans" role="tab" data-toggle="tab">
+                        <img src="/static/img/spudderspuds/button-fans-tiny.png"/> Fans
+                    </a>
+                </li>
+                <li>
+                    <a href="#venues" role="tab" data-toggle="tab">
+                        <img src="/static/img/spuddervenues/button-venues-tiny.png"/> Venues
+                    </a>
+                </li>
+            </ul>
+
+            <div class="tab-content">
+                <div class="tab-pane active" id="teams">
+{#                    <div class="page-header">#}
+{#                        <a href="/spuds/search/teams" class="btn btn-primary pull-right"><i class="fa fa-search"></i> Find more teams</a>#}
+{#                        <h3><img src="/static/img/spudderspuds/button-teams-tiny.png"/> Find Teams on Spudder</h3>#}
+{#                    </div>#}
+                    <table class="table table-striped">
+                        <tbody>
+                            {% for team in find_teams %}
+                                <tr>
+                                    <td style="width: 40px;">
+                                        <a href="/team/{{ team.id }}">
+                                            <img src="{% if team.image %}/file/serve/{{ team.image.id }}{% else %}/static/img/spudderspuds/button-teams-medium.png{% endif %}" style="width: 25px;"/>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a href="/team/{{ team.id }}">
+                                            {{ team.name }}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        {{ team.state|format_state }}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
-                <table class="table table-striped">
-                    <tbody>
-                        {% for fan in find_fans %}
-                            <tr>
-                                <td style="width: 40px;">
-                                    <a href="/fan/{{ fan.id }}">
-                                        <img src="{% if fan.image %}/file/serve/{{ fan.image.id }}{% else %}/static/img/spudderspuds/button-fans-medium.png{% endif %}" style="width: 25px;"/>
-                                    </a>
-                                </td>
-                                <td>
-                                    <a href="/fan/{{ fan.id }}">
-                                        {{ fan.name }}
-                                    </a>
-                                </td>
-                                <td>
-                                    {{ fan.state|format_state }}
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                <div class="tab-pane" id="fans">
+{#                    <div class="page-header">#}
+{#                        <a href="/spuds/search/fans" class="btn btn-primary pull-right"><i class="fa fa-search"></i> Find more fans</a>#}
+{#                        <h3><img src="/static/img/spudderspuds/button-fans-tiny.png"/> Find Fans on Spudder</h3>#}
+{#                    </div>#}
+                    <table class="table table-striped">
+                        <tbody>
+                            {% for fan in find_fans %}
+                                <tr>
+                                    <td style="width: 40px;">
+                                        <a href="/fan/{{ fan.id }}">
+                                            <img src="{% if fan.image %}/file/serve/{{ fan.image.id }}{% else %}/static/img/spudderspuds/button-fans-medium.png{% endif %}" style="width: 25px;"/>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a href="/fan/{{ fan.id }}">
+                                            {{ fan.name }}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        {{ fan.state|format_state }}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="tab-pane" id="venues">
+{#                    <div class="page-header">#}
+{#                        <a href="/spuds/search/venues" class="btn btn-primary pull-right"><i class="fa fa-search"></i> Find more venues</a>#}
+{#                        <h3><img src="/static/img/spuddervenues/button-venues-tiny.png"/> Find Venues on Spudder</h3>#}
+{#                    </div>#}
+                    <table class="table table-striped">
+                        <tbody>
+                            {% for venue in find_venues %}
+                                <tr>
+                                    <td style="width: 40px;">
+                                        <a href="/venue/{{ venue.id }}">
+                                            <img src="{% if venue.logo %}/file/serve/{{ venue.logo.id }}{% else %}/static/img/spuddervenues/button-venues-medium.png{% endif %}" style="width: 25px;"/>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a href="/fan/{{ venue.id }}">
+                                            {{ venue.name }}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        {{ venue.state|format_state }}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                </div>
             </div>
         </div>
 
