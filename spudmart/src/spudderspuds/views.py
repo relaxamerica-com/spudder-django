@@ -38,7 +38,7 @@ def landing_page(request):
         spud_stream = SpudsController(request.current_role).get_spud_stream()
         fan_spuds = SpudsController.GetSpudsForFan(request.current_role.entity)
         stream = SpudsController.MergeSpudLists(spud_stream, fan_spuds)
-        shuffle(stream)
+        # shuffle(stream)
         template_data['spuds'] = stream
         krowdio_response = get_following(request.current_role)
         template_data['teams'] = krowdio_users_to_links(
@@ -513,7 +513,7 @@ def test_spuds(request):
     if is_fan(request.current_role):
         stream = SpudsController(request.current_role).get_spud_stream() + SpudsController.GetSpudsForFan(
             request.current_role.entity)
-        shuffle(stream)
+        # shuffle(stream)
         template_data['spuds'] = stream
         return render(request, 'spudderspuds/pages/test_spuds.html', template_data)
 
