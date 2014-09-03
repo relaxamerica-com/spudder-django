@@ -3,12 +3,12 @@ from google.appengine.api import blobstore
 import settings
 from spudderaccounts.templatetags.spudderaccountstags import is_fan, is_cern_student
 from spudderdomain.controllers import TeamsController, RoleController, SpudsController, SocialController
-from spudderdomain.models import TeamPage, Location, TeamVenueAssociation, TeamAdministrator
+from spudderdomain.models import TeamPage, Location, TeamVenueAssociation, TeamAdministrator, FanPage
 from spudderspuds.forms import LinkedInSocialMediaForm
 from spudderspuds.utils import set_social_media
 from spudmart.CERN.rep import created_team, team_associated_with_venue
 from spudmart.teams.forms import CreateTeamForm, TeamPageForm, EditTeamForm
-from django.http import HttpResponseRedirect, HttpResponse, HttpResponseNotAllowed
+from django.http import HttpResponseRedirect, HttpResponse, HttpResponseNotAllowed, HttpResponseForbidden
 from spudmart.upload.models import UploadedFile
 from spudmart.upload.forms import UploadForm
 from spudmart.utils.Paginator import EntitiesPaginator
@@ -118,6 +118,8 @@ def team_page(request, page_id):
 
 
 def edit_team_page(request, page_id):
+    if not request.can_edit:
+        return HttpResponseForbidden()
     team_page = TeamPage.objects.select_related('image').get(pk=page_id)
     form = EditTeamForm(initial=team_page.__dict__, image=team_page.image)
 
@@ -144,6 +146,21 @@ def edit_team_page(request, page_id):
         'page': team_page,
         'form': form,
         'upload_url': blobstore.create_upload_url('/team/%s/edit' % page_id)
+    })
+
+
+def manage_team_page_admins(request, page_id):
+    if not request.can_edit:
+        return HttpResponseForbidden()
+    team_page = get_object_or_404(TeamPage, pk=page_id)
+    team_admins_ids = TeamAdministrator.objects\
+        .filter(team_page=team_page, entity_type='fan').values_list('entity_id', flat=True)
+    team_admins_ids = [int(fan_id) for fan_id in team_admins_ids]
+    fans = FanPage.objects.filter(id__in=team_admins_ids)
+
+    return render(request, 'spudderspuds/teams/pages/manage_team_admins.html', {
+        'page': team_page,
+        'admins': fans
     })
 
 

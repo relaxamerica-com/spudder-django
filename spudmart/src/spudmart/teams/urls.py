@@ -8,6 +8,7 @@ urlpatterns = patterns(
     (r'^page/(?P<page_id>\d+){0,1}$', 'team_page'),
     (r'^(?P<page_id>\d+)$', 'public_view'),
     (r'^(?P<page_id>\d+)/edit$', 'edit_team_page'),
+    (r'^(?P<page_id>\d+)/admins$', 'manage_team_page_admins'),
     (r'^remove_image$', 'remove_image'),
     (r'^search$', 'search_teams'),
     (r'^(?P<page_id>\d+)/edit_cover$', 'edit_cover'),
