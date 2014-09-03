@@ -14123,6 +14123,9 @@ fieldset[disabled] .navbar-masthead.navbar-inverse .btn-link:focus {
     width: 90%;
   }
 }
+.spudder-jumbotron-caption .logo {
+  height: 100px;
+}
 .spudder-jumbotron-caption h1 {
   position: relative;
 }
@@ -14172,6 +14175,18 @@ form fieldset .form-group {
   position: absolute;
   right: 8px;
   z-index: 1;
+}
+ul.social-network {
+  list-style-type: none;
+  margin: 0 0 10px;
+  padding: 0;
+  text-align: left;
+}
+ul.social-network li {
+  display: inline;
+}
+ul.social-network li a {
+  text-decoration: none;
 }
 .venue-map {
   height: 200px;

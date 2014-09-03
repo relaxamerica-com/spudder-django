@@ -17,17 +17,17 @@ class AtPostSpudTwitterAPIForm(forms.Form):
         return data
 
 
-class SystemDeleteTeamsForm(forms.Form):
+class PasswordAndActionForm(forms.Form):
     password = forms.CharField(max_length=256, widget=forms.PasswordInput)
     action = forms.CharField(max_length=256, widget=forms.HiddenInput)
 
     def clean_password(self):
-        data = super(SystemDeleteTeamsForm, self).clean()
+        data = super(PasswordAndActionForm, self).clean()
         password = data.get('password', None)
         if password != "spudmart2":
             raise forms.ValidationError("You don't know the password, should you be doing this?")
         return password
 
 
-class SystemDeleteVenuesForm(SystemDeleteTeamsForm):
+class SystemDeleteVenuesForm(PasswordAndActionForm):
     pass

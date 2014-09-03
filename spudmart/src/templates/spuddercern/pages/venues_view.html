@@ -266,9 +266,13 @@
                 <div id="flag-content" class="content">
                     <div class="row-fluid">
                         <form role="form" class="form-horizontal">
+                            <div class="form-group hidden-xs hidden-sm hidden-md hidden-lg">
+                                <input type="text" name="email" value="" id="email-field" />
+                                {# Note that this is only here to fool bots, a bot will fill this in and then we will know that its a bot and can filter it out #}
+                            </div>
                             <div class="form-group">
                                 <label class="col-md-4 col-md-offset-2">Send message to Groundskeeper</label>
-                                <textarea class="col-md-4" placeholder="Message content" name=message></textarea>
+                                <textarea class="col-md-4" placeholder="Message content" name=message id="message-field"></textarea>
                             </div>
                             <a class="btn btn-primary" id="send-message">Contact Groundskeeper</a>
                         </form>
@@ -1313,6 +1317,13 @@
 		});
 
 		$('#send-message').click(function() {
+
+            //The following 4 lines are bot protection, a bot will fill out the hidden email field while a human wont
+            var $button = $(this);
+            var email = $button.parents('form:first').find('#email-field').val();
+            if (email > "")
+                return;
+
 			var message = $('[name="message"]').val(),
                 alert = $('.contents').find('.alert');
 

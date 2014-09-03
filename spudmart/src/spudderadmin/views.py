@@ -12,11 +12,12 @@ import settings
 from spudderaccounts.models import SpudderUser
 from spudderaccounts.wrappers import RoleStudent, RoleFan, RoleSponsor
 from spudderadmin.decorators import admin_login_required
-from spudderadmin.forms import AtPostSpudTwitterAPIForm, SystemDeleteTeamsForm, SystemDeleteVenuesForm
+from spudderadmin.forms import AtPostSpudTwitterAPIForm, PasswordAndActionForm, SystemDeleteVenuesForm
 from spudderadmin.utils import encoded_admin_session_variable_name
+from spudderdomain.controllers import RoleController, EntityController
 from spudderdomain.models import FanPage, LinkedService, TeamAdministrator, TeamPage, TeamVenueAssociation, Location
-from spudderkrowdio.models import KrowdIOStorage
-from spudderkrowdio.utils import get_user_mentions_activity
+from spudderkrowdio.models import KrowdIOStorage, FanFollowingEntityTag
+from spudderkrowdio.utils import get_user_mentions_activity, start_following
 from spuddersocialengine.atpostspud.models import AtPostSpudTwitterAuthentication, AtPostSpudTwitterCounter, AtPostSpudServiceConfiguration
 from spuddersocialengine.models import SpudFromSocialMedia
 from spudmart.CERN.models import Student, School
@@ -132,18 +133,39 @@ def system_dashboard(request):
 @admin_login_required
 def system_teams(request):
     template_data = {}
-    delete_teams_form = SystemDeleteTeamsForm(initial={'action': "teams_delete"})
+    delete_teams_form = PasswordAndActionForm(initial={'action': "teams_delete"})
+    following_teams_form = PasswordAndActionForm(initial={'action': 'following_teams'})
     if request.method == "POST":
         action = request.POST['action']
         if action == "teams_delete":
-            delete_teams_form = SystemDeleteTeamsForm(request.POST)
+            delete_teams_form = PasswordAndActionForm(request.POST)
             if delete_teams_form.is_valid():
                 for team in TeamPage.objects.all():
                     TeamAdministrator.objects.filter(team_page=team).delete()
                     TeamVenueAssociation.objects.filter(team_page=team).delete()
                 TeamPage.objects.all().delete()
                 messages.success(request, 'Teams deleted')
+        if action == "following_teams":
+            following_teams_form = PasswordAndActionForm(request.POST)
+            if following_teams_form.is_valid():
+                for team in TeamPage.objects.all():
+                    for admin in TeamAdministrator.objects.filter(team_page=team):
+                        if admin.entity_type == RoleController.ENTITY_FAN:
+                            try:
+                                fan = FanPage.objects.get(id=admin.entity_id)
+                                if not FanFollowingEntityTag.objects.filter(fan=fan).count():
+                                    tag = team.at_name or ''.join([c for c in team.name if c.isalnum()])
+                                    FanFollowingEntityTag(
+                                        fan=fan,
+                                        tag=tag,
+                                        entity_id=team.id,
+                                        entity_type=EntityController.ENTITY_TEAM).save()
+                                    start_following(RoleFan(fan), EntityController.ENTITY_TEAM, team.id)
+                            except FanPage.DoesNotExist:
+                                continue
+            messages.success(request, 'Team followings up to date')
     template_data['delete_teams_form'] = delete_teams_form
+    template_data['following_teams_form'] = following_teams_form
     return render_to_response(
         'spudderadmin/pages/system/teams.html', template_data, context_instance=RequestContext(request))
 
