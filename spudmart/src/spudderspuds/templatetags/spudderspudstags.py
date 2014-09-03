@@ -1,4 +1,5 @@
 from django.template.defaulttags import register
+from google.appengine.api import urlfetch
 from spudderdomain.models import FanPage
 from spudmart.CERN.models import STATES, Student
 from spudmart.accounts.templatetags.accounts import fan_page_name, user_name
@@ -97,3 +98,11 @@ def entity_view_link(entity, entity_type):
 @register.inclusion_tag('components/social_media_list.html')
 def social_media_list(entity):
     return {'entity': entity}
+
+@register.filter
+def spud_is_valid(spud):
+    result = urlfetch.fetch(url=spud['image']['standard_resolution']['url'])
+    if result.status_code == 404:
+        return False
+    else:
+        return True

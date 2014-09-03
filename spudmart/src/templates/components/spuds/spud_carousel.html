@@ -3,7 +3,11 @@
     <div class="carousel-inner">
         {% for full_spud in spuds %}
             <div class="item {% if forloop.counter0 == 0 %}active{% endif %}">
-                {% include 'components/spuds/spud.html' with spud=full_spud.extra id=full_spud|get_protected_id %}
+                {% if full_spud.extra|spud_is_valid %}
+                    {% include 'components/spuds/spud.html' with spud=full_spud.extra id=full_spud|get_protected_id %}
+                {% else %}
+                    {% include 'components/spuds/spud_deleted.html' with service=full_spud.extra.service %}
+                {% endif %}
             </div>
         {% empty %}
             <div class="item active empty">

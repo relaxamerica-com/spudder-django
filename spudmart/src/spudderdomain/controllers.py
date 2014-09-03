@@ -180,7 +180,8 @@ class SpudsController(object):
     def MergeSpudLists(cls, *args):
         return_list = []
         for arg in args:
-            return_list += arg
+            if arg not in return_list:
+                return_list += arg
         return return_list
 
     @classmethod

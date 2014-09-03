@@ -29,8 +29,8 @@ handlers:
   upload: templates/static_files/img/favicon.png
 
 - url: /robots.txt
-  static_files: templates/static_files/robots.txt
-  upload: templates/static_files/robots.txt
+  static_files: templates/robots.txt
+  upload: templates/robots.txt
 
 - url: /admin/.*
   script: $PYTHON_LIB/google/appengine/ext/admin
