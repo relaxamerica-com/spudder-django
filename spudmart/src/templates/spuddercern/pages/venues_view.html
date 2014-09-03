@@ -37,7 +37,7 @@
     {% endif %}
 {% endblock %}
 
-{% block cover_title_display_name %}{{ venue.name }}{% endblock %}
+{% block cover_title_display_name %}{{ venue.aka_name }}{% endblock %}
 
 {% block cover_title_additions %}
     <p>Sponsored By: <b>{% if sponsor %}<a href="/sponsor/{{ sponsor.id }}">@{{ sponsor.tag }}</a>{% else %}@postspud{% endif %}</b></p>
@@ -628,7 +628,7 @@
 <script type="text/javascript" src="/static/js/libs/google.map.js"></script>
 <script type="text/javascript" src="/static/js/libs/jquery.serialize.file.js"></script>
 <script type="text/javascript">
-    window.venueName = "{{ venue.name }}";
+    window.venueName = "{{ venue.aka_name }}";
 	window.currentVenueLongitude = parseFloat("{{ venue.longitude }}");
 	window.currentVenueId = "{{ venue.id }}";
 	window.currentVenueLatitude = parseFloat("{{ venue.latitude }}");

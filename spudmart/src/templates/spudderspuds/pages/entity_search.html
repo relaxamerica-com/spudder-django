@@ -40,7 +40,7 @@
                             <img src="{% entity_button e entity_type 'medium' %}" class="img-responsive"/>
                         </td>
                         <td>
-                            <a href="{% entity_view_link e entity_type %}">{{ e.name }}</a>
+                            <a href="{% entity_view_link e entity_type %}">{% if entity_type != 'venue' %}{{ e.name }}{% else %}{{ e.aka_name }}{% endif %}</a>
                         </td>
                         <td>
                             {{ e.state|format_state }}
