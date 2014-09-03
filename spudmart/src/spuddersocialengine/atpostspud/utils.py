@@ -36,7 +36,7 @@ def parse_spud_for_unknown_fan(status):
         entity_type="FAN",
         originating_service='TWITTER',
         unique_id_from_source=status.id_str,
-        state=SpudFromSocialMedia.STATE_ACCEPTED,
+        state=SpudFromSocialMedia.STATE_NEW,
         type=SpudFromSocialMedia.TYPE_IMAGE,
         data=json.dumps({
             'service': 'TWITTER',

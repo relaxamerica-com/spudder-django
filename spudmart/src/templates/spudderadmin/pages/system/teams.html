@@ -12,6 +12,28 @@
         <div class="col-md-6">
             <div class="panel panel-default">
                 <div class="panel-body">
+                    <h4>Ensure Krowd.io Following</h4>
+                    <div class="alert alert-warning">
+                        <p>
+                            Note that this should only be run to ensure that teams created before the 1.5.0 release are
+                            correctly being followed by their creating fan.
+                        </p>
+                    </div>
+                    <form method="post">
+                        {% csrf_token %}
+                        {% bootstrap_form following_teams_form %}
+                        {% buttons %}
+                            <button class="btn btn-primary" type="submit">
+                                <i class="fa fa-refresh"></i> Refresh krowd.io following
+                            </button>
+                        {% endbuttons %}
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-body">
                     <h4>Delete All Teams</h4>
                     <div class="alert alert-warning">
                         <p>Note that this can not be undone!</p>

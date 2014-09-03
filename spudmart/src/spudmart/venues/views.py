@@ -299,13 +299,14 @@ def save_handicap_details(request, venue_id):
     return HttpResponse('OK')
 
 def send_message(request, venue_id):
-    venue = Venue.objects.get(pk = venue_id)
+    venue = Venue.objects.get(pk=venue_id)
     message = request.POST.get('message', '')
-    to = []
-    to.append('support@spudder.zendesk.com')
-    to.append(venue.student.user.email)
-    mail.send_mail(subject='Message from Spudmart about Venue: %s' % venue.name, body=message, sender=settings.SERVER_EMAIL, to=to)
-
+    to = ['support@spudder.zendesk.com', venue.student.user.email]
+    mail.send_mail(
+        subject='Message from Spudmart about Venue: %s' % venue.name,
+        body=message,
+        sender=settings.SERVER_EMAIL,
+        to=to)
     return HttpResponse('OK')
 
 def save_price(request, venue_id):

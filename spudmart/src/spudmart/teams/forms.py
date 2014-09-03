@@ -10,7 +10,7 @@ from spudmart.CERN.models import SORTED_STATES
 class BaseTeamForm(forms.Form):
     name = forms.CharField(max_length=255, help_text='The name of your team must be unique.',
                                 label="Team name <span class=\"input-required\">*required</span>")
-    contact_details = forms.EmailField(
+    contact_details = forms.CharField(
         max_length=255,
         help_text='How should people contact you and your team? Leave instructions, number and emails '
                   'addresses here!',
