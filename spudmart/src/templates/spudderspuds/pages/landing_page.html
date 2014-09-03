@@ -2,6 +2,15 @@
 {% load spudderaccountstags %}
 {% load spudderspudstags %}
 
+{% block css %}
+    {{ block.super }}
+    <style>
+    #explore-tab-content table {
+        display: inline-table;
+    }
+    </style>
+{% endblock %}
+
 {% block body %}
     <div class="container">
 
@@ -51,10 +60,6 @@
 
             <div class="tab-content" id="explore-tab-content">
                 <div class="tab-pane active" id="teams">
-{#                    <div class="page-header">#}
-{#                        <a href="/spuds/search/teams" class="btn btn-primary pull-right"><i class="fa fa-search"></i> Find more teams</a>#}
-{#                        <h3><img src="/static/img/spudderspuds/button-teams-tiny.png"/> Find Teams on Spudder</h3>#}
-{#                    </div>#}
                     <table class="table table-striped">
                         <tbody>
                             {% for team in find_teams %}
@@ -78,10 +83,6 @@
                     </table>
                 </div>
                 <div class="tab-pane" id="fans">
-{#                    <div class="page-header">#}
-{#                        <a href="/spuds/search/fans" class="btn btn-primary pull-right"><i class="fa fa-search"></i> Find more fans</a>#}
-{#                        <h3><img src="/static/img/spudderspuds/button-fans-tiny.png"/> Find Fans on Spudder</h3>#}
-{#                    </div>#}
                     <table class="table table-striped">
                         <tbody>
                             {% for fan in find_fans %}
@@ -105,10 +106,6 @@
                     </table>
                 </div>
                 <div class="tab-pane" id="venues">
-{#                    <div class="page-header">#}
-{#                        <a href="/spuds/search/venues" class="btn btn-primary pull-right"><i class="fa fa-search"></i> Find more venues</a>#}
-{#                        <h3><img src="/static/img/spuddervenues/button-venues-tiny.png"/> Find Venues on Spudder</h3>#}
-{#                    </div>#}
                     <table class="table table-striped">
                         <tbody>
                             {% for venue in find_venues %}
@@ -154,7 +151,7 @@
         $('#explore-tab-content').css('min-height', max_height);
         $('#explore-tab a[data-toggle="tab"]:first').tab('show');
 
-        fix_footer_position();
+{#        fix_footer_position();#}
     });
     </script>
 {% endblock %}
