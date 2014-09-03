@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
 from spudmart.sponsors.models import SponsorPage
@@ -6,10 +7,7 @@ from djangotoolbox.fields import ListField
 from spudmart.CERN.rep import deleted_venue
 from spudmart.CERN.models import Student, STATES
 
-SPORTS = ['Baseball', 'Basketball', 'Field Hockey', 'Football',
-          'Ice Hockey', 'Lacrosse', 'Rugby', 'Soccer', 'Softball',
-          'Swimming', 'Tennis', 'Track and Field', 'Volleyball',
-          'Waterpolo', 'Wrestling']
+SPORTS = settings.SPORTS
 
 
 class Venue(models.Model):

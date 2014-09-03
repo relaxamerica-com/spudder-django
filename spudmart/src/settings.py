@@ -132,6 +132,12 @@ SECRET_KEY = '8lu*6g0lg)9z!ba+a$ehk)xt)x%rxgb$i1&amp;022shmi1jcgihb*'
 
 app_name = get_spudmart_app_name()
 
+SPORTS = [
+    'Baseball', 'Basketball', 'Field Hockey', 'Football',
+    'Ice Hockey', 'Lacrosse', 'Rugby', 'Soccer', 'Softball',
+    'Swimming', 'Tennis', 'Track and Field', 'Volleyball',
+    'Waterpolo', 'Wrestling']
+
 shared_settings = {
     'spudmart1': {  # main testing environment
         'server_email': 'help@spuder.com',

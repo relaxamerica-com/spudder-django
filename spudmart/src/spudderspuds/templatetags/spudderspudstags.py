@@ -75,8 +75,8 @@ def entity_button(entity, entity_type, size='small'):
         else:
             return '/static/img/spudderspuds/button-teams-%s.png' % size
     elif entity_type == "fan":
-        if entity.image:
-            return '/file/serve/%s' % entity.image.id
+        if entity.avatar:
+            return '/file/serve/%s' % entity.avatar.id
         else:
             return '/static/img/spudderspuds/button-fans-%s.png' % size
     elif entity_type == "venue":

@@ -1,0 +1,205 @@
+{% extends 'spudderadmin/pages/socialengine/_sociaengine_base.html' %}
+
+{% load bootstrap3 %}
+
+{% block admin_body %}
+    <div class="row">
+        <div class="col-md-12">
+            <h2 style="margin-top: 0;">Manage Location Scraper</h2>
+            <hr/>
+            <h3>Overall service management</h3>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="well">
+                        <h4 style="margin-top: 0">Current Activation State</h4>
+                        {% if at_post_spud_service.active %}
+                            <p>
+                                <span class="label label-success">
+                                    <i class="fa fa-check"></i> Active and running
+                                </span>
+                            </p>
+                            <p>
+                                <form method="post">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="action" value="service_deactivate" />
+                                    <button type="submit" class="btn btn-danger">
+                                        <i class="fa fa-power-off"></i> Deactiavte
+                                    </button>
+                                </form>
+                            </p>
+                        {% else %}
+                            <p>
+                                <span class="label label-danger">
+                                    <i class="fa fa-warning"></i> Not Active
+                                </span>
+                            </p>
+                            <p>
+                                <form method="post">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="action" value="service_activate" />
+                                    <button type="submit" class="btn btn-success">
+                                        <i class="fa fa-power-on"></i> Activate
+                                    </button>
+                                </form>
+                            </p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <hr/>
+            <h3>Twitter configuration and management</h3>
+            <div class="row">
+                <div class="col-md-6" style="border-right: 1px solid #DDD">
+                    {% if not twitter_auth_model.api_key or not twitter_auth_model.api_secret %}
+                        <div class="alert alert-warning">
+                            <h4><i class="fa fa-warning"></i> Twitter authentication is not configured</h4>
+                            <p><b>Step 1</b> Add the API Key and API Secret here and hit save.</p>
+                        </div>
+                        <form method="post">
+                            <fieldset>
+                                <p class="help-block">Add the twitter API Key and API Secret for the @postspud twitter app here.</p>
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="twitter_api_1"/>
+                                {% bootstrap_form at_post_spud_api_form %}
+                                {% buttons %}
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fa fa-save"></i> Save
+                                    </button>
+                                {% endbuttons %}
+                            </fieldset>
+                        </form>
+                    {% else %}
+                        {% if not twitter_auth_model.authorized %}
+                            <div class="alert alert-warning">
+                                <h4><i class="fa fa-warning"></i> Twitter authentication is not configured</h4>
+                                <p><b>Step 2</b> Authorize the account.</p>
+                            </div>
+                            <form>
+                                <fieldset>
+                                    <div class="form-group">
+                                        <label>API Key</label>
+                                        <input type="text" class="form-control" value="{{ twitter_auth_model.api_key }}" readonly/>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>API Secret</label>
+                                        <input type="text" class="form-control" value="{{ twitter_auth_model.api_secret }}" readonly/>
+                                    </div>
+                                </fieldset>
+                            </form>
+
+                            <div id="authorize-step-one">
+
+                                <div class="alert alert-info">
+                                    <p>Clicking on the button bellow will take you off to twitter to authorize this app.</p>
+                                    <p><b>You should be logged into Twitter as @postspud!</b></p>
+                                </div>
+
+                                <a class="btn btn-primary" href="{{ twitter_auth_url }}" target="_blank">
+                                    Click here to authorize this application with Twitter
+                                </a>
+
+                            </div>
+
+                            <div  id="authorize-step-two" style="display: none">
+
+                                <div class="alert alert-info">
+                                    <p>Now enter the PIN from twitter below</p>
+                                </div>
+
+                                <form method="post">
+                                    <fieldset>
+                                        {% csrf_token %}
+                                        <input type="hidden" name="action" value="twitter_api_2" />
+                                        <input type="hidden" name="request_token_key" value="{{ request_token_key }}" />
+                                        <input type="hidden" name="request_token_secret" value="{{ request_token_secret }}" />
+                                        <div class="form-group">
+                                            <label>PIN</label>
+                                            <input type="text" name="pin" class="form-control" />
+                                        </div>
+                                        <div class="form-group">
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="fa fa-save"></i> Save PIN
+                                            </button>
+                                        </div>
+                                    </fieldset>
+                                </form>
+                            </div>
+
+                        {% else %}
+                            <div class="alert alert-success">
+                                <h4><i class="fa fa-check"></i> Twitter authentication up and running</h4>
+                                <p>The @postspud twitter authentication for this instance is up and running</p>
+                            </div>
+
+                            <p>Current username: <b>{{ twitter_auth_model.api.me.screen_name }}</b></p>
+                            <p class="help-block">Spuds sent to <i class="fa fa-hand-o-up"></i> username will be collected by the system</p>
+                            <p class="help-block">If this is not correct then you authorized this app under the wrong twitter account</p>
+                        {% endif %}
+
+                        <hr />
+                        <h4>Need to reset the Twitter authentication?</h4>
+                        <p>Hit the button bellow to reset all authentication</p>
+                        <form method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="twitter_api_reset"/>
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fa fa-refresh"></i> Reset
+                            </button>
+                        </form>
+                    {% endif %}
+
+                </div>
+                <div class="col-md-6">
+                    <div class="well">
+                        <h4 style="margin-top: 0">Twitter Since ID</h4>
+                        <p>This counter is uesd to ensure that we do not pull down multiple copies of the same SPUD.</p>
+                        <p><small>Mess around with it only if you dare!</small></p>
+                        <p>Current Counter: <b>{{ twitter_since_id }}</b></p>
+                        <form method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="twitter_counter_reset" />
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fa fa-refresh"></i> Reset
+                            </button>
+                        </form>
+                    </div>
+
+                    {% if twitter_auth_model.authorized %}
+                        <div class="well">
+                            <h4 style="margin-top: 0"><i class="fa fa-twitter"></i> Test Twitter Messaging</h4>
+                            <form method="post">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="twitter_test_tweet" />
+                                <div class="form-group">
+                                    <label>Your tweet</label>
+                                    <textarea name="tweet" class="form-control"></textarea>
+                                    <p class="help-block">This tweet will be sent from the account <b>{{ twitter_auth_model.api.me.screen_name }}</b></p>
+                                </div>
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fa fa-twitter"></i> Tweet
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr/>
+{% endblock %}
+
+
+{% block js %}
+    {{ block.super }}
+    <script type="text/javascript" language="JavaScript">
+        $(document).ready(function(){
+            $('#authorize-step-one a').on('click', function(){
+                $('#authorize-step-one').hide();
+                $('#authorize-step-two').show();
+            })
+        })
+    </script>
+{% endblock %}

@@ -1,10 +1,26 @@
 import json
-
 from django.db import models
 
 
-# Global Models
+class LocationScraperServiceConfiguration(models.Model):
+    SITE_UNIQUE_ID = "01"
+    site_unique_id = models.CharField(max_length=2)
+    active = models.BooleanField(default=False)
 
+    @classmethod
+    def GetForSite(cls):
+        return LocationScraperServiceConfiguration.objects.get_or_create(site_unique_id=cls.SITE_UNIQUE_ID)[0]
+
+    def activate(self):
+        self.active = True
+        self.save()
+
+    def deactivate(self):
+        self.active = False
+        self.save()
+
+
+# Global Models
 class VenuesModel(models.Model):
     venue_id = models.CharField(max_length=20)
     lat = models.CharField(max_length=20)
@@ -12,7 +28,6 @@ class VenuesModel(models.Model):
 
 
 # Instagram Specific Models
-
 class InstagramDataProcessor(models.Model):
     venue_id = models.CharField(max_length=20)
     data = models.TextField()
@@ -36,12 +51,13 @@ class InstagramDataProcessor(models.Model):
     def created_time(self, value):
         self._created_time = value
 
+
 class InstagramSubscriptions(models.Model):
     venue_id = models.CharField(max_length=20)
     subscription_id = models.CharField(max_length=20)
 
-# Twitter Specific Models
 
+# Twitter Specific Models
 class TwitterPolling(models.Model):
     last_poll_id = models.CharField(max_length=20)
 
