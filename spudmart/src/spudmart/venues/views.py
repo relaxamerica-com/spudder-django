@@ -110,6 +110,7 @@ def save_coordinates(request, venue_id):
     venue = Venue.objects.get(pk = venue_id)
     venue.latitude = float(request.POST['latitude'])
     venue.longitude = float(request.POST['longitude'])
+    venue.location_has_been_changed = True
     venue.save()
     return HttpResponse('OK')
 

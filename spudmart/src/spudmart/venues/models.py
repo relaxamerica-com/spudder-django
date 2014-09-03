@@ -48,6 +48,7 @@ class Venue(models.Model):
     fax = models.CharField(max_length=200)
     cover_image = models.ForeignKey(UploadedFile, null=True, related_name="cover_image")
     state = models.CharField(max_length=2)
+    location_has_been_changed = models.BooleanField(default=False)
 
     # Just to stay consistent with fcns created in spuddercern.rep
     rep = models.IntegerField(default=0)

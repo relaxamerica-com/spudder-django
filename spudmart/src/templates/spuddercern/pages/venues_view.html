@@ -113,6 +113,16 @@
                     {% include 'components/spuds/spud_carousel.html' with spuds=venue_spuds title='<abbr title="Sports Updates">SPUDS</abbr> from this venue' %}
                 </div>
                 <div class="content" id="map">
+                    {% if request.can_edit and not venue.location_has_been_changed %}
+                        <div class="edit-mode">
+                            <a class="btn btn-primary" id="edit-venue-location-button">Edit Venue Location</a>
+                        </div>
+                        <div id="edit-venue-location" style="display:none">
+                            <p>To edit the venue location, drag the map until it is centered on the venue, and then click:</p>
+                            <p><a class="btn btn-primary" id="place-map-marker">Place Map Marker</a></p>
+                        </div>
+                        <div class="alert" style="display:none" id="location-alert"></div>
+                    {% endif %}
                     <div id="map-canvas" class="view-venue-map">
 
                     </div>
@@ -636,6 +646,7 @@
 	window.preloadedBlack = $('<img src="/media/img/ajax-loader-black.gif" />');
 	window.currentSelectedSport = '{{ venue.sport }}';
     window.twitterPopupText = "Checkout all the action happening near you at {{ venue.aka_name }}!";
+    window.marker = null;
 
 {#    {% if venue.cover_image %}if($('.jumbotron').height() > $('.jumbotron-img').height()) $('.jumbotron').css('height', $('.jumbotron-img').height() + "px");{% endif %}#}
 
@@ -1440,7 +1451,7 @@
         else if (active == "admission-details") click_nav_button('#medical-details');
         else if (active == "medical-details") click_nav_button('#handicap-details');
     });
-    })
+    });
 
 
     function removeAssociation(teamID, teamName){
@@ -1448,5 +1459,80 @@
             window.location = '/team/associate/' + teamID + '/remove/' + {{ venue.id }} + '?next={{ request.get_full_path }}';
         }
     }
+
+    {% if not venue.location_has_been_changed %}
+        $('#edit-venue-location-button').click(function(){
+            $(this).parent().hide();
+            $('#edit-venue-location').show()
+        });
+
+        $('#place-map-marker').click(function(){
+            if (marker){
+                marker.setPosition(map.getCenter());
+            }
+            else {
+                marker = new google.maps.Marker({
+                    position: map.getCenter(),
+                    map: map,
+                    title: 'New Venue Location'
+                });
+            }
+            var alert = $('#location-alert');
+            showAlert(alert,'Please wait while we check this location...', 'info');
+
+            function checkNearbyVenues(latlng, alertContainer, successHandler){
+                getVenuesWithinBounds().done(function(data) {
+                    var venues = JSON.parse(data).venues,
+                        otherVenueInRange = null;
+
+                    $.each(venues, function() {
+                        var distance = google.maps.geometry.spherical.computeDistanceBetween(new google.maps.LatLng(this.latitude, this.longitude), latlng);
+                        if (distance <= 250 && this.sport == "{{ venue.sport }}" && this.id != {{ venue.id }}) {
+                            otherVenueInRange = this;
+                            return false;
+                        }
+                    });
+
+                    if (otherVenueInRange) {
+                        var venueLink = '<a href="/venues/view/'
+                                        + otherVenueInRange.id
+                                        + '">'
+                                        + otherVenueInRange.aka_name
+                                        + '</a>';
+                        showAlert(alertContainer, 'A {{ venue.sport }} venue already exists within 250m of where you want to move your venue to: ' + venueLink + '<br/>Please move the map to another location and click "Place Map Marker" again to move the venue.', 'warning', false);
+                    } else {
+                        successHandler(pos.latitude, pos.longitude);
+                    }
+                });
+            }
+
+            checkNearbyVenues(marker.position, alert, function(latitude, longitude){
+                var distance = google.maps.geometry.spherical.computeDistanceBetween(map.getCenter(), new google.maps.LatLng(window.currentVenueLatitude, window.currentVenueLongitude));
+                if (distance <= 1000){
+                    showAlert(alert, '<p>You only get <b>ONE</b> chance to change the location! If you are 100% satisfied with the new location, centered on the red marker, you can:</p>' +
+                                     '<p><a class="btn btn-primary" href="javascript:saveVenueLocation()">Save Updated Location</a></p>', 'success');
+                }
+                else{
+                    showAlert(alert, '<p>Oops! You cannot move your venue more than 1000 meters from the original location (You are ' + Math.round(distance) + ' meters away.)', 'danger');
+                }
+            });
+
+
+        });
+
+        function saveVenueLocation(){
+            var response = $.post('/venues/save_coordinates/{{ venue.id }}',
+                                  {
+                                      'latitude': marker.position.lat(),
+                                      'longitude': marker.position.lng()
+                                  });
+            response.done(function(){
+                $('#edit-venue-location').hide();
+                showAlert($('#location-alert'), 'You have successfully changed the location of your venue!', 'success');
+            })
+        }
+    {% endif %}
+
+
 </script>
 {% endblock %}
