@@ -418,3 +418,14 @@ class SocialController(object):
         if SponsorPage.objects.filter(tag=at_name).count():
             return False
         return True
+
+
+class CommunicationController(object):
+
+    @classmethod
+    def CommunicateWithNonUserByEmail(cls):
+        pass
+
+    @classmethod
+    def CommunicateWithEntity(cls):
+        pass
