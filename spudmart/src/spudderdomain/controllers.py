@@ -179,10 +179,13 @@ class SpudsController(object):
     @classmethod
     def MergeSpudLists(cls, *args):
         return_list = []
+        extras = []
         for arg in args:
-            if arg not in return_list:
-                return_list += arg
-        return return_list
+            for item in arg:
+                if item not in return_list and item['extra'] not in extras:
+                    return_list.append(item)
+                    extras.append(item['extra'])
+        return sorted(return_list, key=lambda x: x['created_time'], reverse=True)
 
     @classmethod
     def GetSpudsForFan(cls, fan_page):
