@@ -3,13 +3,13 @@ import hmac
 import hashlib
 import httplib
 import logging
-
+from django.conf import settings
 from google.appengine.api import taskqueue
-
 from spuddersocialengine.locationscraper.socialnetworks import instagram_settings
 from spuddersocialengine.locationscraper.api import *
 from spuddersocialengine.locationscraper.spudmart.api import *
 from spuddersocialengine.locationscraper.spudmart import api as spudmart_api
+from spuddersocialengine.locationscraper.models import InstagramPerSportApplicationConfiguration
 from spuddersocialengine.models import SpudFromSocialMedia
 
 
@@ -20,24 +20,33 @@ Creates a new Instagram Subscription and returns the JSON back
 """
 
 
-def create_new_subscription(request, latitude, longitude):
+def create_new_subscription(request, latitude, longitude, sport):
     # Perform subscription
 
     # Variables
     url_string = "api.instagram.com"
-    path_to_callback = request.build_absolute_uri(location='instagram/callback')
+    path_to_callback = "%s/%s" % (
+        request.build_absolute_uri(location='instagram/callback'),
+        ''.join([s.lower() for s in sport if s.isalnum()]))
     logging.debug("SPICE: socialnetworks/instagram/process_data callback URL: %s" % path_to_callback)
+
+    config = InstagramPerSportApplicationConfiguration.GetForSport(sport)
+    if not config.client_id or not config.client_secret:
+        logging.error(
+            "locationscraper.instagram.create_new_subscription: Can not create subscription for sport: %s, "
+            "No InstagramPerSportApplicationConfiguration object configured." % sport)
+        return
 
     # Perform the request
     data = urllib.urlencode(
         {
-            'client_id': instagram_settings.instagram_client_id,
-            'client_secret': instagram_settings.instagram_client_secret,
+            'client_id': config.client_id,
+            'client_secret': config.client_secret,
             'object': 'geography',
             'aspect': 'media',
             'lat': latitude,
             'lng': longitude,
-            'radius': '1000',
+            'radius': str(int(config.default_distance/3)),
             'callback_url': path_to_callback,
         }
     )
@@ -60,7 +69,7 @@ Get location data
 """
 
 
-def process_data(request, latitude, longitude, venue_id):
+def process_data(request, latitude, longitude, venue_id, sport):
     # Debug logging of instagram
     logging.debug("SPICE: socialnetworks/instagram/process_data started")
 
@@ -73,23 +82,38 @@ def process_data(request, latitude, longitude, venue_id):
         # Add to the database and order a subscription
         logging.debug("SPICE: socialnetworks/instagram/process_data register new venue ID %s", venue_id)
 
-        content_to_return = create_new_subscription(request=request, latitude=latitude, longitude=longitude)
+        content_to_return = create_new_subscription(request, latitude, longitude, sport)
+        if content_to_return:
+            # Save the subscription tagged with the ID to the database
+            subscriptions_for_the_venue = content_to_return['data']
 
-        # Save the subscription tagged with the ID to the database
-        subscriptions_for_the_venue = content_to_return['data']
+            logging.debug("SPICE: socialnetworks/instagram/process_data data from call: %s" %
+                          json.dumps(subscriptions_for_the_venue))
 
-        logging.debug("SPICE: socialnetworks/instagram/process_data data from call: %s" %
-                      json.dumps(subscriptions_for_the_venue))
-
-        if 'id' in subscriptions_for_the_venue:
-            # Looks to be a single item, not array
-            new_subscription = InstagramSubscriptions(venue_id=venue_id, subscription_id=subscriptions_for_the_venue['id'])
-            new_subscription.save()
-        else:
-            # Looks to be an array
-            for subscription in subscriptions_for_the_venue:
-                new_subscription = InstagramSubscriptions(venue_id=venue_id, subscription_id=subscription['id'])
+            if 'id' in subscriptions_for_the_venue:
+                # Looks to be a single item, not array
+                new_subscription = InstagramSubscriptions(
+                    venue_id=venue_id,
+                    subscription_id=subscriptions_for_the_venue['id'],
+                    sport=sport)
                 new_subscription.save()
+            else:
+                # Looks to be an array
+                for subscription in subscriptions_for_the_venue:
+                    new_subscription = InstagramSubscriptions(
+                        venue_id=venue_id,
+                        subscription_id=subscription['id'],
+                        sport=sport)
+                    new_subscription.save()
+        else:
+            # If a subscription could not be made then delete the venue model
+            try:
+                VenuesModel.objects.get(venue_id=venue_id).delete()
+                logging.debug(
+                    "locationscraper/instagram/process_data: deleting VenueModel with id %s as no "
+                    "instagram subscription could be create" % venue_id)
+            except VenuesModel.DoesNotExist as ex:
+                logging.error("%s" % ex)
 
     # Debug logging of instagram
     logging.debug("SPICE: socialnetworks/instagram/process_data ended")
@@ -116,9 +140,9 @@ Gets the end result of a callback (returns objects)
 """
 
 
-def get_instagram_callback_json_end_result(geography_id):
+def get_instagram_callback_json_end_result(geography_id, config):
     url_to_call = "https://api.instagram.com/v1/geographies/%s/media/recent?client_id=%s" % \
-                  (geography_id, instagram_settings.instagram_client_id)
+                  (geography_id, config.client_id)
 
     response = urllib2.urlopen(url=url_to_call)
 
@@ -132,8 +156,10 @@ The instagram callback URL
 """
 
 
-def callback(request):
+def callback(request, sport=None):
     logging.debug("SPICE: socialnetworks/instagram/callback started")
+
+    sport = [s for s in settings.SPORTS if ''.join([c.lower() for c in s]) == sport][0]
 
     if request.method == 'GET':
         if 'hub.mode' in request.GET and request.GET['hub.mode'] != '':
@@ -144,7 +170,7 @@ def callback(request):
             if 'hub.verify_token' in request.GET and request.GET['hub.verify_token'] != '':
                 hub_verify_token = request.GET['hub.verify_token']
 
-            logging.debug("SPICE: socialnetworks/instagram/callback challange returned: %s", (hub_challenge))
+            logging.debug("SPICE: socialnetworks/instagram/callback challange returned: %s", hub_challenge)
             logging.debug("SPICE: socialnetworks/instagram/callback ended")
 
             return HttpResponse(hub_challenge)
@@ -157,7 +183,8 @@ def callback(request):
         x_hub_signature = request.META.get('HTTP_X_HUB_SIGNATURE')
         raw_response = request.read()
 
-        if instagram_verify_signature(instagram_settings.instagram_client_secret, raw_response, x_hub_signature):
+        config = InstagramPerSportApplicationConfiguration.GetForSport(sport)
+        if instagram_verify_signature(config.client_secret, raw_response, x_hub_signature):
             logging.debug("SPICE: socialnetworks/instagram/callback HTTP body: %s", raw_response)
 
             json_response = json.loads(raw_response)
@@ -169,22 +196,13 @@ def callback(request):
                     subscription = InstagramSubscriptions.objects.get(subscription_id=subscription_id)
                     venue_id = subscription.venue_id
 
-                    data = json.loads(get_instagram_callback_json_end_result(json_response_item['object_id']))
+                    data = json.loads(get_instagram_callback_json_end_result(json_response_item['object_id'], config))
 
                     for data_item in data.get('data', []):
                         spud = social_spud_from_instagram_update(data_item, venue_id)
-                        #
-                        #
-                        # process_item = InstagramDataProcessor(venue_id=venue_id, data=json.dumps(data_item), processed=False)
-                        # process_item.save()
-
-
-                    # Create a new item for processing
-                    # process_item = InstagramDataProcessor(venue_id=venue_id, data=data, processed=False)
-                    # process_item.save()
 
                     # Is the content auto-processor enabled?
-                    if instagram_settings.instagram_auto_process_callback == True:
+                    if instagram_settings.instagram_auto_process_callback:
                         instagram_queue = taskqueue.Queue('instagramcallback')
                         queue_stats = instagram_queue.fetch_statistics()
 
@@ -198,7 +216,7 @@ def callback(request):
                 except InstagramSubscriptions.DoesNotExist:
                     # If the subscription does not exist then deregister it
                     if subscription_id and not InstagramSubscriptions.objects.filter(subscription_id=subscription_id):
-                        deregister_subscription(subscription_id)
+                        deregister_subscription(subscription_id, sport)
                         logging.debug("SPICE: socialnetworks/instagram/callback deregistered unknown subscription")
                     pass
 
@@ -405,11 +423,15 @@ De-register a subscription
 """
 
 
-def deregister_subscription(subscription_id):
+def deregister_subscription(subscription_id, sport=None):
+    if not sport:
+        # This can no longer be done if we don't knowthe sport of the venue
+        return
+    config = InstagramPerSportApplicationConfiguration.GetForSport(sport)
     instagram_delete_url = "https://api.instagram.com/v1/subscriptions?client_secret=%s&id=%s&client_id=%s" % (
-        instagram_settings.instagram_client_secret,
+        config.client_secret,
         subscription_id,
-        instagram_settings.instagram_client_id)
+        config.client_id)
     request = urllib2.Request(instagram_delete_url)
     request.get_method = lambda: 'DELETE'
     urllib2.urlopen(request)
@@ -426,7 +448,7 @@ def deregister_venue(venue_id):
 
     for subscription in subscriptions:
         # Un-subscribe
-        deregister_subscription(subscription.subscription_id)
+        deregister_subscription(subscription.subscription_id, subscription.sport)
 
         # Delete
         subscription.delete()

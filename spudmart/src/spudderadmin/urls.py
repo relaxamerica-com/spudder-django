@@ -17,6 +17,7 @@ urlpatterns = patterns(
 
 
     url(r'^/socialengine/atpostspud$', 'socialengine_atpostspud'),
+    url(r'^/socialengine/location_scraper$', 'socialengine_location_scraper'),
     url(r'^/socialengine', 'socialengine_dashboard'),
 
     url(r'^/system/teams$', 'system_teams'),

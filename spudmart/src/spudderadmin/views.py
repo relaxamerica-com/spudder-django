@@ -19,6 +19,7 @@ from spudderdomain.models import FanPage, LinkedService, TeamAdministrator, Team
 from spudderkrowdio.models import KrowdIOStorage, FanFollowingEntityTag
 from spudderkrowdio.utils import get_user_mentions_activity, start_following
 from spuddersocialengine.atpostspud.models import AtPostSpudTwitterAuthentication, AtPostSpudTwitterCounter, AtPostSpudServiceConfiguration
+from spuddersocialengine.locationscraper.models import LocationScraperServiceConfiguration, InstagramPerSportApplicationConfiguration, InstagramSubscriptions, VenuesModel
 from spuddersocialengine.models import SpudFromSocialMedia
 from spudmart.CERN.models import Student, School
 from spudmart.CERN.templatetags.CERN import student_email
@@ -118,6 +119,46 @@ def socialengine_atpostspud(request):
     template_data['at_post_spud_service'] = AtPostSpudServiceConfiguration.GetForSite()
     return render_to_response(
         'spudderadmin/pages/socialengine/at_post_spud.html',
+        template_data,
+        context_instance=RequestContext(request))
+
+
+@admin_login_required
+def socialengine_location_scraper(request):
+    template_data = {}
+    if request.method == "POST":
+        action = request.POST.get('action', None)
+        if action == 'service_deactivate':
+            LocationScraperServiceConfiguration.GetForSite().deactivate()
+            messages.success(request, "Service deactivated")
+        if action == 'service_activate':
+            LocationScraperServiceConfiguration.GetForSite().activate()
+            messages.success(request, "Service actiavted")
+        if action == 'update_instagram_sport_config':
+            for s in settings.SPORTS:
+                config = InstagramPerSportApplicationConfiguration.GetForSport(s)
+                config.client_id = request.POST.get('%s_client_id' % s, config.client_id)
+                config.client_secret = request.POST.get('%s_client_secret' % s, config.client_secret)
+                config.default_distance = int(request.POST.get('%s_distance' % s, str(config.default_distance)))
+                config.save()
+            messages.success(request, "Config updated")
+        if action == 'delete_old_subscriptions':
+            for subscription in InstagramSubscriptions.objects.all():
+                instagram_delete_url = "https://api.instagram.com/v1/subscriptions?client_secret=%s&id=%s&client_id=%s" % (
+                    settings.INSTAGRAM_CLIENT_SECRET,
+                    subscription.subscription_id,
+                    settings.INSTAGRAM_CLIENT_ID)
+                request = urllib2.Request(instagram_delete_url)
+                request.get_method = lambda: 'DELETE'
+                urllib2.urlopen(request)
+            InstagramSubscriptions.objects.all().delete()
+            VenuesModel.objects.all().delete()
+            messages.success(request, "Old subscriptions removed")
+    template_data['location_scraper_service'] = LocationScraperServiceConfiguration.GetForSite()
+    template_data['by_sport_instagram_keys'] = [
+        InstagramPerSportApplicationConfiguration.GetForSport(s) for s in settings.SPORTS]
+    return render_to_response(
+        'spudderadmin/pages/socialengine/location_scraper.html',
         template_data,
         context_instance=RequestContext(request))
 

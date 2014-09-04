@@ -129,8 +129,11 @@ To be used as a task. Invoked by the location call
 def location_task(request):
     logging.debug("SPICE: api/location_task started")
 
-    # Begin processing
-    # Response object
+    # Check to see if the service is active
+    config = LocationScraperServiceConfiguration.GetForSite()
+    if not config.active:
+        logging.warning("locationscraper/location_task: Service is deactivated.")
+        return HttpResponse(json.dumps({'status': 'ok'}), content_type='application/json')
 
     json_response = []
 
@@ -160,6 +163,7 @@ def location_task(request):
                     latitude = venue['lat']
                     longitude = venue['lon']
                     venue_id = venue['id']
+                    sport = venue['sport']
 
                     venue_social_network_json = []
 
@@ -177,7 +181,7 @@ def location_task(request):
                             # Deal with the subscription
                             getattr(
                                 importlib.import_module('spuddersocialengine.locationscraper.socialnetworks.' + social_network_name),
-                                    "process_data")(request, latitude, longitude, venue_id)
+                                    "process_data")(request, latitude, longitude, venue_id, sport)
 
                         # Debug logging of images returned back
                         logging.debug("SPICE: api/location_task venue id %s completed", (venue['id']))
@@ -223,7 +227,7 @@ def manual_process(request):
 
                 for social_network in social_networks:
 
-                    venue_return = getattr(importlib.import_module('spuddersocialengine.socialnetworks.' + social_network['name']),
+                    venue_return = getattr(importlib.import_module('spuddersocialengine.locationscraper.socialnetworks.' + social_network['name']),
                                            "manual_process_for_venue")(venue_id)
 
                     if venue_return is not None:
@@ -260,6 +264,7 @@ def save_venues(venues_data):
         latitude = venue['lat']
         longitude = venue['lon']
         venue_id = str(venue['id'])
+        sport = venue['sport']
 
         venues_ids_array.append(venue_id)
 
@@ -267,13 +272,13 @@ def save_venues(venues_data):
 
         if len(venue_by_id) < 1:
             logging.debug("SPICE: api/save_venues creating new venue for venue_id: %s" % venue_id)
-            new_venue = VenuesModel(venue_id=venue_id, lat=latitude, lon=longitude)
+            new_venue = VenuesModel(venue_id=venue_id, lat=latitude, lon=longitude, sport=sport)
             new_venue.save()
 
             # Get each social network to register: Where applicable
             for social_network in social_networks:
                 logging.debug("SPICE: api/save_venues register venue for social network %s" % social_network['name'])
-                getattr(importlib.import_module('spuddersocialengine.socialnetworks.' + social_network['name']),
+                getattr(importlib.import_module('spuddersocialengine.locationscraper.socialnetworks.' + social_network['name']),
                         "register_venue")(venue_id)
 
 
@@ -298,7 +303,7 @@ def save_venues(venues_data):
                 # Get each social network to de-register: Where applicable
                 for social_network in social_networks:
                     logging.debug("SPICE: api/save_venues deregister on network %s" % social_network['name'])
-                    getattr(importlib.import_module('spuddersocialengine.socialnetworks.' + social_network['name']),
+                    getattr(importlib.import_module('spuddersocialengine.locationscraper.socialnetworks.' + social_network['name']),
                             "deregister_venue")(venue_to_find.venue_id)
             except VenuesModel.DoesNotExist:
                 # Nothing to do if it does not exist

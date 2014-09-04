@@ -301,12 +301,13 @@ def save_handicap_details(request, venue_id):
 def send_message(request, venue_id):
     venue = Venue.objects.get(pk=venue_id)
     message = request.POST.get('message', '')
-    to = ['support@spudder.zendesk.com', venue.student.user.email]
-    mail.send_mail(
-        subject='Message from Spudmart about Venue: %s' % venue.name,
-        body=message,
-        sender=settings.SERVER_EMAIL,
-        to=to)
+    if message:
+        to = ['support@spudder.zendesk.com', venue.student.user.email]
+        mail.send_mail(
+            subject='Message from Spudmart about Venue: %s' % venue.name,
+            body=message,
+            sender=settings.SERVER_EMAIL,
+            to=to)
     return HttpResponse('OK')
 
 def save_price(request, venue_id):
