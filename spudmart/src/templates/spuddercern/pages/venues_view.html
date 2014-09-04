@@ -1487,7 +1487,7 @@
 
                     $.each(venues, function() {
                         var distance = google.maps.geometry.spherical.computeDistanceBetween(new google.maps.LatLng(this.latitude, this.longitude), latlng);
-                        if (distance <= 250 && this.sport == "{{ venue.sport }}" && this.id != {{ venue.id }}) {
+                        if (distance <= distBtwnVenues && this.sport == "{{ venue.sport }}" && this.id != {{ venue.id }}) {
                             otherVenueInRange = this;
                             return false;
                         }
@@ -1499,7 +1499,7 @@
                                         + '">'
                                         + otherVenueInRange.aka_name
                                         + '</a>';
-                        showAlert(alertContainer, 'A {{ venue.sport }} venue already exists within 250m of where you want to move your venue to: ' + venueLink + '<br/>Please move the map to another location and click "Place Map Marker" again to move the venue.', 'warning', false);
+                        showAlert(alertContainer, 'A {{ venue.sport }} venue already exists within 200m of where you want to move your venue to: ' + venueLink + '<br/>Please move the map to another location and click "Place Map Marker" again to move the venue.', 'warning', false);
                     } else {
                         successHandler(pos.latitude, pos.longitude);
                     }
