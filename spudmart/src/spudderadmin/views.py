@@ -20,6 +20,7 @@ from spudderkrowdio.models import KrowdIOStorage, FanFollowingEntityTag
 from spudderkrowdio.utils import get_user_mentions_activity, start_following
 from spuddersocialengine.atpostspud.models import AtPostSpudTwitterAuthentication, AtPostSpudTwitterCounter, AtPostSpudServiceConfiguration
 from spuddersocialengine.locationscraper.models import LocationScraperServiceConfiguration, InstagramPerSportApplicationConfiguration, InstagramSubscriptions, VenuesModel
+from spuddersocialengine.locationscraper.socialnetworks.instagram import deregister_subscription
 from spuddersocialengine.models import SpudFromSocialMedia
 from spudmart.CERN.models import Student, School
 from spudmart.CERN.templatetags.CERN import student_email
@@ -154,6 +155,12 @@ def socialengine_location_scraper(request):
             InstagramSubscriptions.objects.all().delete()
             VenuesModel.objects.all().delete()
             messages.success(request, "Old subscriptions removed")
+        if action == "delete_all_subscriptions":
+            for subscription in InstagramSubscriptions.objects.exclude(sport=None):
+                deregister_subscription(subscription.subscription_id, subscription.sport)
+            InstagramSubscriptions.objects.all().delete()
+            VenuesModel.objects.all().delete()
+            messages.success(request, "All subscriptions removed")
     template_data['location_scraper_service'] = LocationScraperServiceConfiguration.GetForSite()
     template_data['by_sport_instagram_keys'] = [
         InstagramPerSportApplicationConfiguration.GetForSport(s) for s in settings.SPORTS]

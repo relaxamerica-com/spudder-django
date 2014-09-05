@@ -83,7 +83,7 @@ def process_data(request, latitude, longitude, venue_id, sport):
         logging.debug("SPICE: socialnetworks/instagram/process_data register new venue ID %s", venue_id)
 
         content_to_return = create_new_subscription(request, latitude, longitude, sport)
-        if content_to_return:
+        if content_to_return and 'data' in content_to_return:
             # Save the subscription tagged with the ID to the database
             subscriptions_for_the_venue = content_to_return['data']
 
@@ -107,6 +107,10 @@ def process_data(request, latitude, longitude, venue_id, sport):
                     new_subscription.save()
         else:
             # If a subscription could not be made then delete the venue model
+            if content_to_return:
+                logging.error(
+                    "locationscraper/instagram/process_data: Content was returned from the subscription service but "
+                    "did not contain a valid response. Response was: %s" % content_to_return)
             try:
                 VenuesModel.objects.get(venue_id=venue_id).delete()
                 logging.debug(
@@ -159,7 +163,7 @@ The instagram callback URL
 def callback(request, sport=None):
     logging.debug("SPICE: socialnetworks/instagram/callback started")
 
-    sport = [s for s in settings.SPORTS if ''.join([c.lower() for c in s]) == sport][0]
+    sport = [s for s in settings.SPORTS if ''.join([c.lower() for c in s if c.isalnum()]) == sport][0]
 
     if request.method == 'GET':
         if 'hub.mode' in request.GET and request.GET['hub.mode'] != '':

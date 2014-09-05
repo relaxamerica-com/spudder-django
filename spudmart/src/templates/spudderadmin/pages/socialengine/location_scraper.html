@@ -61,6 +61,25 @@
                             </form>
                         </div>
                     </div>
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <h4 style="margin-top: 0">Clear all Subscriptions</h4>
+                            <div class="alert alert-warning">
+                                <p>
+                                    <i class="fa fa-warning"></i>
+                                    Running this will delete all post release 1-6-0 subscriptions.
+                                    (They will be recreated the next time the service is run)
+                                </p>
+                            </div>
+                            <form method="post">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="delete_all_subscriptions" />
+                                <button class="btn btn-danger">
+                                    <i class="fa fa-trash-o"></i> Delete subscriptions
+                                </button>
+                            </form>
+                        </div>
+                    </div>
                 </div>
                 <div class="col-md-8">
                     <div class="panel panel-default">
