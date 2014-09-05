@@ -25,6 +25,7 @@ class VenuesModel(models.Model):
     venue_id = models.CharField(max_length=20)
     lat = models.CharField(max_length=20)
     lon = models.CharField(max_length=20)
+    sport = models.CharField(max_length=255)
 
 
 # Instagram Specific Models
@@ -55,6 +56,23 @@ class InstagramDataProcessor(models.Model):
 class InstagramSubscriptions(models.Model):
     venue_id = models.CharField(max_length=20)
     subscription_id = models.CharField(max_length=20)
+    sport = models.CharField(max_length=255, default='')
+
+
+class InstagramPerSportApplicationConfiguration(models.Model):
+    sport = models.CharField(max_length=255, unique=True)
+    client_id = models.CharField(max_length=255, default="")
+    client_secret = models.CharField(max_length=255, default="")
+    default_distance = models.IntegerField(default=500)
+
+    @classmethod
+    def GetForSport(cls, sport):
+        try:
+            return InstagramPerSportApplicationConfiguration.objects.get(sport=sport)
+        except InstagramPerSportApplicationConfiguration.DoesNotExist:
+            config = InstagramPerSportApplicationConfiguration(sport=sport)
+            config.save()
+            return config
 
 
 # Twitter Specific Models

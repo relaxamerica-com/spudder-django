@@ -3,6 +3,7 @@
 // is probably because you have denied permission for location sharing.
 
 window.map;
+window.distBtwnVenues = 200;
 
 function getDistance(latitude1, longitude1, latitude2, longitude2) {
 	var pos1 = new google.maps.LatLng(latitude1, longitude1),
@@ -36,7 +37,7 @@ function initialize(tryGeolocation, alertContainer, filter, successHandler) {
 						pos = position.coords;
 
 					$.each(venues, function() {
-						if (getDistance(this.latitude, this.longitude, pos.latitude, pos.longitude) <= 250
+						if (getDistance(this.latitude, this.longitude, pos.latitude, pos.longitude) <= distBtwnVenues
 							&& filter(this)) {
 							otherVenueInRange = this;
 							return false;
@@ -49,7 +50,7 @@ function initialize(tryGeolocation, alertContainer, filter, successHandler) {
 										+ '">'
 										+ otherVenueInRange.aka_name
 										+ '</a>';
-						showAlert(alertContainer, 'A ' + $('#venue-sport').val() + ' venue already exists near your current location: ' + venueLink, 'warning', false);
+						showAlert(alertContainer, 'A ' + $('#venue-sport').val() + ' venue already within 200 meters of your current location: ' + venueLink, 'warning', false);
 					} else {
 						successHandler(pos.latitude, pos.longitude);
 					}

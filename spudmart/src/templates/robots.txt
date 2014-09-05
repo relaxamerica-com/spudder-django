@@ -5,7 +5,7 @@ Disallow: /accounts
 Disallow: /venues
 Disallow: /spudder
 Disallow: /upload
-Disallow: /sponsor/
+Disallow: /sponsor
 Disallow: /team
 Disallow: /hospitals
 Disallow: /file

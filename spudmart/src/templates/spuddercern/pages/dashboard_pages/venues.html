@@ -14,68 +14,64 @@
             <i class="fa fa-fw fa-map-marker"></i> Venues <small>Create and Manage Venues, sell naming right and get paid!</small>
         </h1>
     </div>
-    {% if venues %}
-        {% with info_message_id="venue_list_instructions" %}
-            {% if info_message_id not in student.hidden_info_messages %}
-{#                <div class="container">#}
-                    <div class="row">
-                        <div class="col-md-8 col-md-offset-2">
-                            {% include 'spuddercern/quote_messages/venue_list_instructions.html' %}
+    <div style="margin-bottom: 20px;">
+        {% if venues %}
+            {% with info_message_id="venue_list_instructions" %}
+                {% if info_message_id not in student.hidden_info_messages %}
+                        <div class="row">
+                            <div class="col-md-8 col-md-offset-2">
+                                {% include 'spuddercern/quote_messages/venue_list_instructions.html' %}
+                            </div>
                         </div>
-                    </div>
-{#                </div>#}
-            {% endif %}
-        {% endwith %}
-        <table class="table striped {% if venues %}datatable{% endif %}">
-            <thead>
-                <tr>
-                    <th>Sport</th>
-                    <th>AKA Name</th>
-                    <th>Tag</th>
-                    <th style="width: 70px;">Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for venue in venues %}
+                {% endif %}
+            {% endwith %}
+            <table class="table striped {% if venues %}datatable{% endif %}">
+                <thead>
                     <tr>
-                        <td>{{ venue.sport }}</td>
-                        <td><a href="/venues/view/{{ venue.id }}">{{ venue.aka_name }}</a></td>
-                        <td>@{{ venue.name }}</td>
-                        <td style="white-space: nowrap">
-                            <!--<a class="btn btn-xs btn-primary" href="javascript:alert('Feature Coming Soon!')" title="SPUDS from SPICE">
-                                <i class="icon-microphone"> </i>
-                            </a>
-                            <a class="btn btn-xs btn-primary" href="javascript:alert('Feature Coming Soon!')" title="My Venue Teams">
-                                <i class="icon-group"> </i>
-                            </a>-->
-                            <a class="btn btn-xs btn-primary" href="/venues/view/{{ venue.id }}" title="Edit">
-                                <i class="fa fa-fw fa-edit"> </i>
-                            </a>
-                            <a class="btn btn-xs btn-primary" href="javascript:deleteVenue('{{ venue.id }}')" title="Delete">
-                                <i class="fa fa-fw fa-trash-o"> </i>
-                            </a>
-                            <a class="btn btn-xs btn-primary" href="/venues/get_instagram_stream/{{ venue.id }}" title="Instagram Stream">
-	                        	<i class="fa fa-fw fa-instagram"> </i> 
-	                   		</a>
-                        </td>
+                        <th>Sport</th>
+                        <th>Name</th>
+                        <th>Tag</th>
+                        <th style="width: 70px;">Actions</th>
                     </tr>
-                {% endfor %}
-                <tr>
-                    <td colspan="4">
-                        <a href="/cern/venues/new/" class="btn btn-primary">
-                            <i class="fa fa-fw fa-plus"></i> Claim another venue!
-                        </a>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    {% else %}
-        <div class="centered-venue-alert">
-            {% include 'spuddercern/quote_messages/quote_venues_empty_list.html' %}
-        </div>
+                </thead>
+                <tbody>
+                    {% for venue in venues %}
+                        <tr>
+                            <td>{{ venue.sport }}</td>
+                            <td><a href="/venues/view/{{ venue.id }}">{{ venue.aka_name }}</a></td>
+                            <td>@{{ venue.name }}</td>
+                            <td style="white-space: nowrap">
+                                <!--<a class="btn btn-xs btn-primary" href="javascript:alert('Feature Coming Soon!')" title="SPUDS from SPICE">
+                                    <i class="icon-microphone"> </i>
+                                </a>
+                                <a class="btn btn-xs btn-primary" href="javascript:alert('Feature Coming Soon!')" title="My Venue Teams">
+                                    <i class="icon-group"> </i>
+                                </a>-->
+                                <a class="btn btn-xs btn-primary" href="/venues/view/{{ venue.id }}" title="Edit">
+                                    <i class="fa fa-fw fa-edit"> </i>
+                                </a>
+                                <a class="btn btn-xs btn-primary" href="javascript:deleteVenue('{{ venue.id }}')" title="Delete">
+                                    <i class="fa fa-fw fa-trash-o"> </i>
+                                </a>
+                                <a class="btn btn-xs btn-primary" href="/venues/get_instagram_stream/{{ venue.id }}" title="Instagram Stream">
+                                    <i class="fa fa-fw fa-instagram"> </i>
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
 
-    {% endif %}
+            <a href="/cern/venues/new/" class="btn btn-primary">
+                <i class="fa fa-fw fa-plus"></i> Claim another venue!
+            </a>
+        {% else %}
+            <div class="centered-venue-alert">
+                {% include 'spuddercern/quote_messages/quote_venues_empty_list.html' %}
+            </div>
+        {% endif %}
 
+    </div>
 {% endblock %}
 
 {% block js %}
