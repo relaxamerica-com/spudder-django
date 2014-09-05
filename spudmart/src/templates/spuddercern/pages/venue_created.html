@@ -1,0 +1,95 @@
+{% extends 'spuddercern/base_single_well.html' %}
+
+{% block title %}Name New Venue{% endblock %}
+
+{% block well_content %}
+    <h4 class="text-center">Name Your New Venue!</h4>
+
+    <p>Congratulations, you created a new {{ venue.sport }} venue! Enter a <abbr title="A name others will recognize when looking for this venue">Common Name</abbr> as well as an <abbr title="A name for tagging your venue in SPUDS">@name</abbr> below.</p>
+    <p>Don't worry, you can change this information later.</p>
+    <form role="form">
+        <div class="form-group">
+            <label>Common Name:</label>
+            <input type="text" id="common-name" class="form-control">
+        </div>
+        <div class="form-group">
+            <label>@name</label>
+            <div class="input-group">
+                <div class="input-group-addon">@</div>
+                <input type="text" id="at-name" class="form-control">
+            </div>
+        </div>
+    </form>
+    <div class="alert" style="display:none" id="form-alert"></div>
+    <div id="save-div">
+        <p>If you would like to add details for this venue now, use the "Edit Now" button. Otherwise, you can use "Edit Later" to edit the venue details at another time. You can find this venue later on the <a href="/cern/venues/temp_venus">Temp Venues</a> link which will appear in your CERN menu above.</p>
+        <p>If the buttons are disabled, check that you have supplied a name and @name, and that there are no warnings listed above.</p>
+        <div class="btn-group">
+            <button class="btn btn-primary" id="now" disabled>Save and Edit Now</button>
+            <button class="btn btn-primary" id="later" disabled>Save and Edit Later</button>
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+{{ block.super }}
+<script type="text/javascript">
+    var response = $.get('/spuds/at_names');
+    response.done(function(){
+        window.at_names = JSON.parse(response.responseText);
+    });
+
+    function keymapper(){
+        var alert = $('#form-alert'),
+            val = $('#at-name').val(),
+            buttons = $('.btn');
+        if (val == null || val.length == 0)
+            return;
+        if (window.at_names.indexOf(val) != -1){
+            showAlert(alert,'The @name ' + val + ' has already been taken. Try another one.','warning');
+            buttons.each(function(){$(this).attr('disabled','')});
+        }
+        else{
+            if (val.match(/^[a-z0-9]+$/)){
+                alert.hide();
+                if ($('#common-name').val() != ""){
+                    buttons.each(function(){$(this).removeAttr('disabled')});
+                } else{
+                    buttons.each(function(){$(this).attr('disabled','')});
+                }
+
+            }
+            else{
+                showAlert(alert, 'Only lowercase letters and numbers are allowed in the @name', 'warning');
+                buttons.each(function(){$(this).attr('disabled','')});
+            }
+        }
+    }
+
+    $('#at-name').bind('keyup',keymapper);
+    $('#common-name').bind('keyup',keymapper);
+
+    function saveName(){
+        return $.post('/venues/save_temp_name/{{ venue.id }}', {
+            'name': $('#at-name').val(),
+            'aka_name': $('#common-name').val()
+        });
+    }
+
+    $('#now').click(function(){
+        var response = saveName();
+        response.done(function(){
+            alert('You are now being redirected to the page of your Temporary Venue!');
+            window.location = '/cern/venues/temp_view/{{ venue.id }}';
+        })
+    });
+
+    $('#later').click(function(){
+        var response = saveName();
+        response.done(function(){
+            alert('You will now be redirect to your Temporary Venues list.');
+            window.location = '/cern/venues/temp';
+        })
+    })
+</script>
+{% endblock %}

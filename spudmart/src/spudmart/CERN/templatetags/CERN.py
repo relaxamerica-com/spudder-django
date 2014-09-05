@@ -4,6 +4,7 @@ from spudderdomain.controllers import RoleController
 from spudmart.CERN.utils import strip_invalid_chars
 from spudmart.CERN.models import Student
 from spudmart.accounts.templatetags.accounts import user_name
+from spudmart.venues.models import TempVenue
 
 register = template.Library()
 
@@ -123,3 +124,12 @@ def display_name(student):
     else:
         return user_name(student.user)
 
+
+@register.filter()
+def student_has_temp_venues(student):
+    """
+    Checks to see whether the student has any temporary venues
+    :param student: any Student objects
+    :return: a boolean
+    """
+    return bool(TempVenue.objects.filter(student=student))

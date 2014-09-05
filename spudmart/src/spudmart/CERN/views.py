@@ -21,7 +21,7 @@ from spudmart.utils.cover_image import save_cover_image_from_request, reset_cove
 from spudmart.utils.queues import trigger_backend_task
 from spudmart.utils.url import get_return_url, get_request_param
 import settings
-from spudmart.venues.models import Venue, SPORTS
+from spudmart.venues.models import Venue, SPORTS, TempVenue
 
 
 def role_is_student(request):
@@ -535,18 +535,6 @@ def venues(request):
 # @login_required
 @user_passes_test(user_is_student, '/cern/non-student/')
 def venues_new(request):
-    if request.method == 'POST':
-        venue = Venue(user=request.user, sport=request.POST['sport'], student=request.current_role.entity)
-        venue.latitude = float(request.POST['latitude'])
-        venue.longitude = float(request.POST['longitude'])
-        venue.state = request.POST['state']
-        venue.save()
-
-        # Reward the student for creating the venue
-        owner = request.current_role.entity
-        created_venue(owner)
-
-        return redirect('/venues/view/%s' % venue.id)
     sorted_states = sorted(STATES.items(), key=lambda x: x[1])
     template_data = {'sports': SPORTS, 'states': sorted_states}
     return render(request, 'spuddercern/pages/venues_new.html', template_data)
@@ -556,15 +544,14 @@ def venues_new(request):
 @user_passes_test(user_is_student, '/cern/non-student/')
 def delete_venue(request, venue_id):
     """
-    Deletes a venue
-
-    :param request: request to delete venue
-    :param venue_id: venue to be deleted
-    :return: redirect to venues list
+    Deletes a TempVenue
+    :param request: a POST request
+    :param venue_id: a valid ID of a TempVenue object
+    :return: redirect to temp venues list
     """
-    venue = Venue.objects.get(id=venue_id)
+    venue = TempVenue.objects.get(id=venue_id)
     venue.delete()
-    return HttpResponseRedirect('/cern/venues/')
+    return HttpResponseRedirect('/cern/venues/temp')
 
 
 def add_email_alert(request):
@@ -1120,6 +1107,7 @@ def import_school_addrs_async(request):
     return HttpResponse('OK')
 
 
+@user_passes_test(user_is_student, '/cern/non-student/')
 def edit_school_cover(request, school_id):
     """
     Edit cover template, customized for school
@@ -1137,6 +1125,7 @@ def edit_school_cover(request, school_id):
     })
 
 
+@user_passes_test(user_is_student, '/cern/non-student/')
 def edit_student_cover(request, student_id):
     """
     Edit cover template, customized for student
@@ -1172,3 +1161,92 @@ def translate_referrals_async(request):
     convert_referrals()
 
     return HttpResponse('OK')
+
+
+@user_passes_test(user_is_student, '/cern/non-student/')
+def create_temp_venue(request):
+    """
+    Creates a TempVenue from POST Data, saving location & sport
+    :param request: a POST request with location & sport of new venue
+    :return: an HttpResponse with ID of new venue on success
+    """
+    if request.method == 'POST':
+        venue = TempVenue(user=request.user, sport=request.POST['sport'], student=request.current_role.entity)
+        venue.latitude = float(request.POST['latitude'])
+        venue.longitude = float(request.POST['longitude'])
+        venue.state = request.POST['state']
+        venue.save()
+
+        return HttpResponse("%s" % venue.id)
+
+
+@user_passes_test(user_is_student, '/cern/non-student/')
+def venue_created(request, venue_id):
+    """
+    Displays a simple well for naming the venue
+
+    Also allows the student to save venue for later, or edit now and
+    mark as "live"
+    :param request: any request
+    :param venue_id: a valid ID of a TempVenue object
+    :return: a simple well page with form
+    """
+    venue = TempVenue.objects.get(id=venue_id)
+    return render(request, 'spuddercern/pages/venue_created.html', {
+        'venue': venue
+    })
+
+
+@user_passes_test(user_is_student, '/cern/non-student/')
+def temp_venues_list(request):
+    """
+    Displays a list of the TempVenue objects associated with student
+    :param request: any request
+    :return: a table of TempVenue objects
+    """
+    return render(request, 'spuddercern/pages/temp_venues.html', {
+        'venues': TempVenue.objects.filter(student=request.current_role.entity)
+    })
+
+
+@user_passes_test(user_is_student, '/cern/non-student/')
+def temp_venue_view(request, venue_id):
+    """
+    Displays a page like the public venue page, for TempVenues
+
+    Student can edit all info about actual venue, but need to "publish"
+        the page before anyone else can see it
+    :param request: any request
+    :param venue_id: a valid ID of a TempVenue object
+    :return: a template like the public venue page, but with limited
+        functionality (no sponsorships, no spuds)
+    """
+    ven = TempVenue.objects.get(id=venue_id)
+    if request.current_role.entity == ven.student:
+        splitted_address = ven.medical_address.split(', ')
+        medical_address = {
+            'address': splitted_address.pop(0) if splitted_address else '',
+            'city': splitted_address.pop(0) if splitted_address else '',
+            'state': splitted_address.pop(0) if splitted_address else '',
+            'zip': splitted_address.pop(0) if splitted_address else ''
+        }
+        return render(request, 'spuddercern/pages/temp_venue.html', {
+            'venue': ven,
+            'medical_address': medical_address,
+            'base_url': 'spuddercern/base.html'
+        })
+    else:
+        return render(request, 'spuddercern/pages/temp_venue_error.html')
+
+
+@user_passes_test(user_is_student, '/cern/non-student/')
+def publish_venue(request, venue_id):
+    """
+    Converts a TempVenue into a Venue
+    :param request: any request
+    :param venue_id: a valid ID of a TempVenue object
+    :return: a redirect to the supplied next url, or the new venue page
+    """
+    new_venue = TempVenue.objects.get(id=venue_id).translate_to_real_venue()
+    next = request.GET.get('next', '/venues/view/%s' % new_venue.id)
+    return HttpResponseRedirect(next)

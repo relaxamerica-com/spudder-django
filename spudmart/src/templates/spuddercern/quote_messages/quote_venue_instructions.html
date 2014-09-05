@@ -2,17 +2,16 @@
 
 {% block content %}
     <h4><i class="fa fa-fw fa-bullhorn"></i> What to do now?</h4>
-    <p><b>Welcome to your new Venue!</b></p>
-    <p>Venues are the core commodity in the CERN system. They are yours to <b>claim</b>, <b>promote</b> and <b>monetize</b>!</p>
-    <p>As the venue controller, its your responsibility to make this venue an attractive Sponsorship target.</p>
-    <p>If your venue info is up-to-date, and has a decent amount of content associated with it, Sponsors will <b>Pay</b> to sponsor it!</p>
+    <p><b>Welcome to your Public Venue!</b></p>
+    <p>Now that your venue is public, you have access to more features!</p>
     <br/>
-    <p><i class="fa fa-hand-o-down"></i> Start by entering 'edit mode' and giving this venue a name and a common name, and uploading an image or icon for this venue.</p>
-    <p>Then cycle through the various venue properties adding and maintaining content.</p>
-    <p><b>Remember</b> the the more content you add, the better chance of winning a Sponsorship!</p>
+    <p>The first thing you should do is use the "Price this Venue" button on the right to set a price for the sponsorship. This is the price for 1 year of sponsorship on your venue.</p>
     <br/>
-    <p><b>Coming Soon:</b> Soon you will be able to curate auto generated <abbr title="Sports Updates">SPUDS</abbr> providing a rich stream of content associated with your venue!</p>
+    <p>Next, you should set up some SPUDS. There are two ways to do this: Filter Posts from Instagram, and Posting SPUDS on Twitter.</p>
+    <p>Filtering Posts from Instagram can be done at this link: <a href="/venues/get_instagram_stream/{{ venue.id }}">Filter Instagram Posts</a>. This link shows you a list of posts Geo-Tagged within the bounds of your venue, and allows you to approve the ones that are related to the venue/sport.</p>
+    <p>Posting SPUDS on Twitter requires a Fan account on Spudder. Once you Follow this venue with a Spudder Fan account, you can create Tweets with "@postspud" and "#&lt;yourtagforthisvenue&gt;" and an image, and they will get automatically linked to this Venue!</p>
     <br/>
+    <p>Remember, the more content your Venue has, the more likely you are to get a Sponsorship, so always keep your info updated, and keep making SPUDS!</p>
     <div class="btn-group">
         <button class="btn btn-default dismiss-for-now-button">Hide for now</button>
         <button id="submit" class="btn btn-primary dismiss-for-good-button">Hide Forever</button>

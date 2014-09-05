@@ -50,9 +50,6 @@
                                 <a class="btn btn-xs btn-primary" href="/venues/view/{{ venue.id }}" title="Edit">
                                     <i class="fa fa-fw fa-edit"> </i>
                                 </a>
-                                <a class="btn btn-xs btn-primary" href="javascript:deleteVenue('{{ venue.id }}')" title="Delete">
-                                    <i class="fa fa-fw fa-trash-o"> </i>
-                                </a>
                                 <a class="btn btn-xs btn-primary" href="/venues/get_instagram_stream/{{ venue.id }}" title="Instagram Stream">
                                     <i class="fa fa-fw fa-instagram"> </i>
                                 </a>
@@ -72,15 +69,4 @@
         {% endif %}
 
     </div>
-{% endblock %}
-
-{% block js %}
-    {{ block.super }}
-    <script type="text/javascript">
-        function deleteVenue(id){
-            if (confirm('This will permanently delete the venue!')){
-                window.location.href = "/cern/venues/delete/" + id;
-            }
-        }
-    </script>
 {% endblock %}

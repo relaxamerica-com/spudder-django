@@ -15,7 +15,11 @@
                 <div class="carousel-caption">
                     <div class="alert alert-info">
                         <h4>No SPUDS Yet</h4>
-                        <p>Stay tuned, there will soon be SPUDS here!</p>
+                        {% if alt_empty_text %}
+                            {{ alt_empty_text|safe }}
+                        {% else %}
+                            <p>Stay tuned, there will soon be SPUDS here!</p>
+                        {% endif %}
                     </div>
                 </div>
             </div>

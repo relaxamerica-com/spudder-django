@@ -59,7 +59,7 @@
             </div>
         </div>
         <div class="btn-group">
-            <button type="submit" id="save" class="btn btn-primary hidden">Create</button>
+            <a class="btn btn-primary" id="save">Save Location</a>
             <a href="/cern/venues" class="btn btn-default">
                 Cancel
             </a>
@@ -91,6 +91,19 @@
                     $('.alert').not('.alert-info').hide();
                 }
             });
+
+            $('#save').click(function(){
+                var response = $.post('/cern/venues/create_temp',{
+                    'sport': $('#venue-sport').val(),
+                    'latitude': $('[name="latitude"]').val(),
+                    'longitude': $('[name="longitude"]').val(),
+                    'state': $('#venue-state').val()
+                });
+
+                response.done(function(data){
+                   window.location = "/cern/venues/venue_created/" + data;
+                })
+            })
 		});
 	</script>
 {% endblock %}

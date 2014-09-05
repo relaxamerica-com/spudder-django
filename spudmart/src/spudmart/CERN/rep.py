@@ -2,6 +2,7 @@
 from spudmart.CERN.models import Student
 
 # Rep values for various tasks, grouped like the methods
+
 RECRUITED_HEAD = 30
 RECRUITED_NEW_MAX = 20
 RECRUITED_NEW_MIN = 2
@@ -41,6 +42,7 @@ def add_venue_rep(venue, points):
     """
     venue.rep += points
     venue.save()
+
 
     add_venue_points(venue.student, points)
 

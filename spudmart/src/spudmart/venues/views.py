@@ -7,7 +7,7 @@ from spudderaccounts.wrappers import RoleSponsor
 from spudderdomain.models import TeamVenueAssociation
 from spudmart.utils.cover_image import reset_cover_image, save_cover_image_from_request
 from spudmart.utils.emails import send_email
-from spudmart.venues.models import Venue, SPORTS, PendingVenueRental
+from spudmart.venues.models import Venue, SPORTS, PendingVenueRental, TempVenue
 from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect, HttpResponse, HttpResponseNotAllowed
 from spudmart.upload.models import UploadedFile
@@ -69,14 +69,13 @@ def view(request, venue_id):
     if sponsor:
         if sponsor.name != "":
             sponsor_info = True
-    
+
     venue_spuds = SpudsController.GetSpudsForVenue(venue)
     teams = [team.team_page for team in TeamVenueAssociation.objects.filter(venue=venue)]
 
     return render(request, 'spuddercern/pages/venues_view.html', {
         'venue': venue,
         'teams': teams,
-        'sports': SPORTS,
         'medical_address': medical_address,
         'is_recipient': is_recipient,
         'rent_venue_url': rent_venue_url,
@@ -92,6 +91,7 @@ def view(request, venue_id):
 def index(request):
     return render(request, 'spuddercern/pages/venue_index.html')
 
+
 @login_required
 def list_view(request):
     if is_sponsor(request.user):
@@ -106,16 +106,24 @@ def list_view(request):
 
 # VENUE ENDPOINTS
 
+
 def save_coordinates(request, venue_id):
-    venue = Venue.objects.get(pk = venue_id)
+    if request.GET.get('is_temp'):
+        venue = TempVenue.objects.get(id=venue_id)
+    else:
+        venue = Venue.objects.get(id=venue_id)
     venue.latitude = float(request.POST['latitude'])
     venue.longitude = float(request.POST['longitude'])
     venue.location_has_been_changed = True
     venue.save()
     return HttpResponse('OK')
 
+
 def save_parking_details(request, venue_id):
-    venue = Venue.objects.get(pk = venue_id)
+    if request.GET.get('is_temp'):
+        venue = TempVenue.objects.get(id=venue_id)
+    else:
+        venue = Venue.objects.get(id=venue_id)
     parking_pics = request.POST.getlist('parking_pics[]')
     parking_details = request.POST['parking_details']
 
@@ -130,8 +138,12 @@ def save_parking_details(request, venue_id):
     venue.save()
     return HttpResponse('OK')
 
+
 def save_venue_pics(request, venue_id):
-    venue = Venue.objects.get(pk = venue_id)
+    if request.GET.get('is_temp'):
+        venue = TempVenue.objects.get(id=venue_id)
+    else:
+        venue = Venue.objects.get(id=venue_id)
     venue_pics = request.POST.getlist('venue_pics[]')
 
     # If there were no photos, but now there are, add points
@@ -144,8 +156,12 @@ def save_venue_pics(request, venue_id):
     venue.save()
     return HttpResponse('OK')
 
+
 def save_logo_and_name(request, venue_id):
-    venue = Venue.objects.get(pk = venue_id)
+    if request.GET.get('is_temp'):
+        venue = TempVenue.objects.get(id=venue_id)
+    else:
+        venue = Venue.objects.get(id=venue_id)
 
     request_logo = request.POST.getlist('logo[]')
     if len(request_logo):
@@ -177,8 +193,12 @@ def save_logo_and_name(request, venue_id):
     venue.save()
     return HttpResponse('OK')
 
+
 def save_playing_surface_pics(request, venue_id):
-    venue = Venue.objects.get(pk = venue_id)
+    if request.GET.get('is_temp'):
+        venue = TempVenue.objects.get(id=venue_id)
+    else:
+        venue = Venue.objects.get(id=venue_id)
     playing_surface_pics = request.POST.getlist('playing_surface_pics[]')
     playing_surface_details = request.POST['playing_surface_details']
 
@@ -193,8 +213,12 @@ def save_playing_surface_pics(request, venue_id):
     venue.save()
     return HttpResponse('OK')
 
+
 def save_video(request, venue_id):
-    venue = Venue.objects.get(pk = venue_id)
+    if request.GET.get('is_temp'):
+        venue = TempVenue.objects.get(id=venue_id)
+    else:
+        venue = Venue.objects.get(id=venue_id)
     video = request.POST['video']
 
     # If this is the first time a video is added, add points
@@ -207,8 +231,12 @@ def save_video(request, venue_id):
     venue.save()
     return HttpResponse('OK')
 
+
 def save_restroom_details(request, venue_id):
-    venue = Venue.objects.get(pk = venue_id)
+    if request.GET.get('is_temp'):
+        venue = TempVenue.objects.get(id=venue_id)
+    else:
+        venue = Venue.objects.get(id=venue_id)
     restroom_details = request.POST['restroom_details']
     restroom_pics = request.POST.getlist('restroom_pics[]')
 
@@ -223,8 +251,12 @@ def save_restroom_details(request, venue_id):
     venue.save()
     return HttpResponse('OK')
 
+
 def save_concession_details(request, venue_id):
-    venue = Venue.objects.get(pk = venue_id)
+    if request.GET.get('is_temp'):
+        venue = TempVenue.objects.get(id=venue_id)
+    else:
+        venue = Venue.objects.get(id=venue_id)
     concession_pics = request.POST.getlist('concession_pics[]')
     concession_details = request.POST['concession_details']
 
@@ -239,8 +271,12 @@ def save_concession_details(request, venue_id):
     venue.save()
     return HttpResponse('OK')
 
+
 def save_admission_details(request, venue_id):
-    venue = Venue.objects.get(pk = venue_id)
+    if request.GET.get('is_temp'):
+        venue = TempVenue.objects.get(id=venue_id)
+    else:
+        venue = Venue.objects.get(id=venue_id)
     admission_pics = request.POST.getlist('admission_pics[]')
     admission_details = request.POST['admission_details']
 
@@ -255,22 +291,12 @@ def save_admission_details(request, venue_id):
     venue.save()
     return HttpResponse('OK')
 
-# def save_shelter_details(request, venue_id):
-#     venue = Venue.objects.get(pk = venue_id)
-#     shelter_details = request.POST['shelter_details']
-#
-#     # If this is filled in for the first time, add points
-#     if venue.shelter_details == '':
-#         if shelter_details:
-#             added_basic_info(venue)
-#
-#     # Update and save shelter details
-#     venue.shelter_details = shelter_details
-#     venue.save()
-#     return HttpResponse('OK')
 
 def save_medical_details(request, venue_id):
-    venue = Venue.objects.get(pk = venue_id)
+    if request.GET.get('is_temp'):
+        venue = TempVenue.objects.get(id=venue_id)
+    else:
+        venue = Venue.objects.get(id=venue_id)
     medical_address = request.POST['medical_address']
 
     # If this is filled in for the first time, add points
@@ -283,8 +309,12 @@ def save_medical_details(request, venue_id):
     venue.save()
     return HttpResponse('OK')
 
+
 def save_handicap_details(request, venue_id):
-    venue = Venue.objects.get(pk = venue_id)
+    if request.GET.get('is_temp'):
+        venue = TempVenue.objects.get(id=venue_id)
+    else:
+        venue = Venue.objects.get(id=venue_id)
     handicap_pics = request.POST.getlist('handicap_pics[]')
     handicap_details = request.POST['handicap_details']
 
@@ -299,6 +329,7 @@ def save_handicap_details(request, venue_id):
     venue.save()
     return HttpResponse('OK')
 
+
 def send_message(request, venue_id):
     venue = Venue.objects.get(pk=venue_id)
     message = request.POST.get('message', '')
@@ -311,11 +342,13 @@ def send_message(request, venue_id):
             to=to)
     return HttpResponse('OK')
 
+
 def save_price(request, venue_id):
     venue = Venue.objects.get(pk = venue_id)
     venue.price = float(request.POST['price'])
     venue.save()
     return HttpResponse('OK')
+
 
 def get_venues_within_bounds(request):
     latitude_range = [float(value) for value in request.GET.getlist('latitude_range[]')]
@@ -345,6 +378,7 @@ def get_venues_within_bounds(request):
 
     return HttpResponse(simplejson.dumps(venues_dict))
 
+
 def fix_venue_coordinates(request):
     for venue in Venue.objects.all():
         splitted = venue.coordinates.split(',')
@@ -353,8 +387,12 @@ def fix_venue_coordinates(request):
         venue.save()
     return HttpResponse('OK')
 
+
 def remove_pic(request, venue_id):
-    venue = Venue.objects.get(pk = venue_id)
+    if request.GET.get('is_temp'):
+        venue = TempVenue.objects.get(id=venue_id)
+    else:
+        venue = Venue.objects.get(id=venue_id)
     list_type = request.POST['list_type']
     file_url = request.POST['file_url']
 
@@ -370,6 +408,7 @@ def remove_pic(request, venue_id):
     return HttpResponse('OK')
 
 # AMAZON
+
 
 def recipient(request, venue_id):
     venue = Venue.objects.get(pk = venue_id)
@@ -584,15 +623,15 @@ def rent_notification(request, venue_id, user_id):
 
 def delete_venue(request, venue_id):
     """
-    Deletes a venue
+    Deletes an unpublished
 
-    :param request: request to delete venue
-    :param venue_id: venue to be deleted
-    :return: redirect to venues list
+    :param request: any request
+    :param venue_id: ID of TempVenue to be deleted
+    :return: redirect to temp venues list
     """
     venue = Venue.objects.get(id=venue_id)
     venue.delete()
-    return HttpResponseRedirect('/venues/list')
+    return HttpResponseRedirect('/cern/venues/temp')
 
 
 def get_instagram_stream(request, venue_id):
@@ -619,8 +658,8 @@ def accept_spud_from_social_media(request, venue_id, spud_from_social_media_id):
     controller = SpudsController(request.current_role)
     controller.approve_spuds([spud_from_social_media_id], venue_id)
     return HttpResponse(json.dumps({'status': 'ok'}), content_type='application/json')
-        
-    
+
+
 def reject_spud_from_social_media(request, venue_id, spud_from_social_media_id):
     controller = SpudsController(request.current_role)
     controller.reject_spuds([spud_from_social_media_id])
@@ -635,7 +674,7 @@ def accept_instagram_media(request, venue_id):
     # #     spuds.append(controller.get_unapproved_spud_by_id(data_id))
     #
     # controller.approve_spuds(spuds, venue_id)
-    
+
     return HttpResponseRedirect('/venues/get_instagram_stream/%s' % venue_id)
 
 
@@ -646,17 +685,31 @@ def save_cover(request, venue_id):
     return HttpResponse()
 
 
+def save_temp_cover(request, venue_id):
+    venue = TempVenue.objects.get(id=venue_id)
+    save_cover_image_from_request(venue, request)
+
+    return HttpResponse()
+
+
 def reset_cover(request, venue_id):
     venue = Venue.objects.get(pk=venue_id)
     reset_cover_image(venue)
 
     return HttpResponse('OK')
-    
-    
+
+
+def reset_temp_cover(request, venue_id):
+    venue = TempVenue.objects.get(pk=venue_id)
+    reset_cover_image(venue)
+
+    return HttpResponse('OK')
+
+
 def delete_spud_endpoint(request, venue_id):
     try:
         venue = Venue.objects.get(pk = venue_id)
-        
+
         storage = KrowdIOStorage.objects.get(venue = venue)
         delete_spud(storage, request.POST.get('spud_id'))
     except Exception, e:
@@ -672,6 +725,17 @@ def edit_cover(request, venue_id):
         'return_url': "/venues/view/%s" % venue.id,
         'post_url': '/venues/save_cover/%s' % venue.id,
         'reset_url': '/venues/reset_cover/%s' % venue.id
+    })
+
+
+def edit_temp_cover(request, venue_id):
+    venue = TempVenue.objects.get(id=venue_id)
+
+    return render(request, 'components/coverimage/edit_cover_image.html', {
+        'name': venue.aka_name,
+        'return_url': "/cern/venues/temp_view/%s" % venue.id,
+        'post_url': '/venues/save_temp_cover/%s' % venue.id,
+        'reset_url': '/venues/reset_temp_cover/%s' % venue.id
     })
 
 
@@ -697,3 +761,29 @@ def multiply_venue(request, venue_id):
         venue.save()
 
     return HttpResponseRedirect('/venues/view/%s' % venue_id)
+
+
+def save_temp_name(request, venue_id):
+    """
+    Saves the name of a TempVenue
+    :param request: a POST request
+    :param venue_id: the ID of a TempVenue object
+    :return: an HTTPResponse with "OK" on success
+    """
+    venue = TempVenue.objects.get(pk=venue_id)
+    venue.name = request.POST.get('name')
+    venue.aka_name = request.POST.get('aka_name')
+    venue.save()
+    return HttpResponse('OK')
+
+
+def temp_to_real_venue(request, venue_id):
+    """
+    Translates a TempVenue to Venue object
+    :param request: any request
+    :param venue_id: a valid ID of a TempVenue object
+    :return: a rel link to the page of the new Venue object
+    """
+    temp = TempVenue.objects.get(id=venue_id)
+    venue = temp.translate_to_real_venue()
+    return HttpResponse('/venues/view/%s' % venue.id)

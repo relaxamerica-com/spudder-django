@@ -9,7 +9,7 @@ from spudderkrowdio.models import KrowdIOStorage
 from spudderkrowdio.utils import get_following
 from spudmart.CERN.models import School
 from spudmart.utils.app_identity import get_spudmart_app_name
-from spudmart.venues.models import Venue
+from spudmart.venues.models import Venue, TempVenue
 
 
 class RolesMiddleware:
@@ -73,6 +73,11 @@ class EditPageMiddleware:
             elif re.match(r'/venues/view/\d+', path):
                 if request.current_role.entity_type == RoleController.ENTITY_STUDENT:
                     ven = Venue.objects.get(id=str.split(path, '/')[-1])
+                    if request.current_role.entity == ven.student:
+                        can_edit = True
+            elif re.match(r'/cern/venues/temp_view/\d+', path):
+                if request.current_role.entity_type == RoleController.ENTITY_STUDENT:
+                    ven = TempVenue.objects.get(id=str.split(path, '/')[-1])
                     if request.current_role.entity == ven.student:
                         can_edit = True
             elif re.match(r'/team/\d+$', path):

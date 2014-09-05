@@ -1,0 +1,11 @@
+{% extends 'spudderspuds/components/base_quote_message.html' %}
+
+{% block alert_style %}display: block; margin-top: 20px;{% endblock %}
+
+{% block content %}
+    <h4>Publish Your Venue</h4>
+    <p>When you're satisfied with the way your page looks, you can:</p>
+    <p class="text-center"><a class="btn btn-primary" href="/cern/venues/publish/{{ venue.id }}">Publish This Venue</a></p>
+    <p>and make this venue public on Spudder.</p>
+    <p>Don't worry, anything you can edit on this page will still be editable on a public venue - plus, you'll get access to even more features.</p>
+{% endblock %}

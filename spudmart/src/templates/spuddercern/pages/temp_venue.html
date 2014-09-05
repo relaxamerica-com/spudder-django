@@ -3,21 +3,7 @@
 {% load krowdio %}
 {% load spudderspudstags %}
 
-{% block google_analytics_additions %}
-    ga('set', 'contentGroup1', 'CERN Students - Venue View');
-{% endblock %}
-
 {% block title %}{{ venue.aka_name }} ({{ venue.sport }}) | Spudder - Sports Updates Made Simple{% endblock %}
-
-{% block page_meta %}
-    {% if venue.aka_name and venue.sport %}
-    <meta property="og:title" content="{{ venue.aka_name }} | Spudder - Sports Updates Made Simple">
-    <meta property="og:description" content="Need directions, closest hospital information, details on seating, or playing conditions? Everything about {{ venue.aka_name }} in one place!">
-    {% endif %}
-    {% if venue.logo %}<meta property="og:image" content="http://{{ request.META.HTTP_HOST }}/file/serve/{{ venue.logo.id }}">
-        {% else %}<meta property="og:image" content="http://{{ request.META.HTTP_HOST }}/static/img/spuddersponsors/button-sponsors-large.png">
-    {% endif %}
-{% endblock %}
 
 {% block favicon %}"/media/ico/favicon.png"{% endblock %}
 
@@ -27,29 +13,23 @@
 
 {% block cover_image_css_background %}{% if venue.cover_image %}/file/serve/{{ venue.cover_image.id }}{% endif %}{% endblock %}
 
-{% block cover_image_edit_url %}/venues/edit_cover/{{ venue.id }}{% endblock %}
+{% block cover_image_edit_url %}/venues/edit_temp_cover/{{ venue.id }}{% endblock %}
 
 {% block cover_title_profile_image_url %}
-    {% if sponsor and sponsor.thumbnail %}
-        /file/serve/{{ sponsor.thumbnail }}
+    {% if venue.logo %}
+        /file/serve/{{ venue.logo.id }}
     {% else %}
-        {% if venue.logo %}/file/serve/{{ venue.logo.id }}{% else %}/static/img/spuddersponsors/button-sponsors-medium.png{% endif %}
+        /static/img/spuddersponsors/button-sponsors-medium.png
     {% endif %}
 {% endblock %}
 
 {% block cover_title_display_name %}{{ venue.aka_name }}{% endblock %}
 
-{% block cover_title_additions %}
-    <p>Sponsored By: <b>{% if sponsor %}<a href="/sponsor/{{ sponsor.id }}">@{{ sponsor.tag }}</a>{% else %}@postspud{% endif %}</b></p>
-{% endblock %}
-
 {% block cover_title_action_buttons %}
     <a href="https://www.google.com/maps/dir/Current+Location/{{ venue.latitude }},{{ venue.longitude }}" target="_blank" class="social-link"><i class="fa fa-map-marker"></i></a>
-    {% if request.can_edit %}
-        <button class="btn btn-primary" id="edit">
-            Edit Mode
-        </button>
-    {% endif %}
+    <button class="btn btn-primary" id="edit">
+        Edit Mode
+    </button>
 {% endblock %}
 
 {% block main_page %}
@@ -79,13 +59,11 @@
         <div class="alert" id="logo-name-alert" style="margin-top:10px"></div>
     </div>
 
-    {% if request.can_edit %}
-        {% with info_message_id="venues_can_edit" %}
-            {% if info_message_id not in student.hidden_info_messages %}
-                {% include 'spuddercern/quote_messages/quote_venue_instructions.html' %}
-            {% endif %}
-        {% endwith %}
-    {% endif %}
+    {% with info_message_id="venues_can_edit_temp" %}
+        {% if info_message_id not in student.hidden_info_messages %}
+            {% include 'spuddercern/quote_messages/quote_temp_venue_instructions.html' %}
+        {% endif %}
+    {% endwith %}
 
     <div id="venue-property-buttons">
         <div class="btn-group hidden-sm hidden-xs btn-group-justified" style="margin: 0 auto;">
@@ -108,12 +86,12 @@
     <div style="min-height: 362px; margin: 0 auto; width: 100%; vertical-align: middle; text-align: center; padding:15px;">
         <div class="row-fluid" style="height:100%;">
             <div class="col-md-12 contents" style="height:100%;">
-                <div class="alert"></div>
+                <div class="alert" id="contents-alert"></div>
                 <div class="content active" id="spuds">
-                    {% include 'components/spuds/spud_carousel.html' with spuds=venue_spuds title='<abbr title="Sports Updates">SPUDS</abbr> from this venue' %}
+                    {% include 'components/spuds/spud_carousel.html' with spuds=venue_spuds title='<abbr title="Sports Updates">SPUDS</abbr> from this venue' alt_empty_text="<p>SPUDS will be available when you have Published this venue.</p>" %}
                 </div>
                 <div class="content" id="map">
-                    {% if request.can_edit and not venue.location_has_been_changed %}
+                    {% if not venue.location_has_been_changed %}
                         <div class="edit-mode">
                             <a class="btn btn-primary" id="edit-venue-location-button">Edit Venue Location</a>
                         </div>
@@ -274,19 +252,7 @@
 
                 </div>
                 <div id="flag-content" class="content">
-                    <div class="row-fluid">
-                        <form role="form" class="form-horizontal">
-                            <div class="form-group hidden-xs hidden-sm hidden-md hidden-lg">
-                                <input type="text" name="email" value="" id="email-field" />
-                                {# Note that this is only here to fool bots, a bot will fill this in and then we will know that its a bot and can filter it out #}
-                            </div>
-                            <div class="form-group">
-                                <label class="col-md-4 col-md-offset-2">Send message to Groundskeeper</label>
-                                <textarea class="col-md-4" placeholder="Message content" name=message id="message-field"></textarea>
-                            </div>
-                            <a class="btn btn-primary" id="send-message">Contact Groundskeeper</a>
-                        </form>
-                    </div>
+                    {% include 'spuddercern/quote_messages/quote_temp_venue_feature_not_available.html' with missing_feature="sending messages to you (the venue manager)" %}
                 </div>
                 <div id="restroom-details" class="content">
                     <div class="row-fluid edit-mode">
@@ -301,7 +267,7 @@
                                 <p>
                                     Restroom Details
                                 </p>
-                                <textarea placeholder="Enter restroom details" name="details">{{ venue.restroom_details }}</textarea>
+                                <textarea placeholder="Enter restroom details" name="restroom_details">{{ venue.restroom_details }}</textarea>
                             </div>
                             <div class="col-md-6">
                                 <div class="progress">
@@ -515,36 +481,7 @@
                     <div class="page-header">
                         <h2><i class="fa fa-group"></i> Teams associated with this venue</h2>
                     </div>
-                    {% if not teams %}
-                        {% include 'spuddercern/quote_messages/quote_no_teams_associated_with_venue.html' %}
-                    {% else %}
-                        <table class="table table-striped" style="margin-top: 20px;">
-                            {% for team in teams %}
-                                <tr>
-                                    <td style="width:40px;vertical-align: middle;">
-                                        <a href="/team/{{ team.id }}" style="text-decoration: none;">
-                                            <img src="{% if team.logo %}/file/serve/{{ team.image.id }}{% else %}/static/img/spudderspuds/button-teams-medium.png{% endif %}" height="30px;"/>
-                                        </a>
-                                    </td>
-                                    <td style="vertical-align: middle;">
-                                        <a href="/team/{{ team.id }}" style="text-decoration: none;">
-                                            {{ team }}
-                                        </a>
-                                    </td>
-                                    <td style="vertical-align: middle;" class="hidden-xs">
-                                        @{{ team.at_name }}
-                                    </td>
-                                    {% if request.can_edit %}
-                                        <td style="width:100px; vertical-align: middle;">
-                                            <a class="btn btn-danger btn-sm" href="javascript:removeAssociation('{{ team.id }}', '{{ team.name }}');">
-                                                Remove association
-                                            </a>
-                                        </td>
-                                    {% endif %}
-                                </tr>
-                            {% endfor %}
-                        </table>
-                    {% endif %}
+                    {% include 'spuddercern/quote_messages/quote_temp_venue_feature_not_available.html' with missing_feature="Associated Teams" %}
                 </div>
             </div>
         </div>
@@ -554,81 +491,7 @@
 {% endblock %}
 
 {% block sidebar %}
-    {% if request.current_role.entity == venue.student %}
-        {% if not venue.renter %}
-            {% include 'spuddercern/quote_messages/quote_venue_sponsors_coming_soon_can_edit.html' %}
-        {% else %}
-            {% include 'spuddercern/quote_messages/quote_venue_rented_for_student.html' %}
-        {% endif %}
-        <hr>
-    {% else %}
-        {% if not sponsor_info %}
-            {% if venue.renter %}
-                {% include 'spuddercern/quote_messages/quote_venue_reserved.html' %}
-            {% else %}
-                {% include 'spuddercern/quote_messages/quote_venue_sponsors_coming_soon.html' %}
-            {% endif %}
-            <hr>
-        {% endif %}
-    {% endif %}
-
-    {% if sponsor %}
-        <div id="venue-sponsor-container">
-            {% if sponsor.thumbnail %}
-                <img id="sponsor-logo" src="/file/serve/{{ sponsor.thumbnail }}" onclick="window.open('/sponsor/{{ sponsor.id }}', '_blank')"/>
-            {% endif %}
-
-            <h3>
-                Support Venue's Sponsor
-            </h3>
-
-            {% social_media_list sponsor %}
-
-            <ul class="sponsor-details">
-                {% if sponsor.speciality %}
-                    <li>
-                        <label>Speciality: </label> {{ sponsor.speciality }}
-                    </li>
-                {% endif %}
-
-                {% if sponsor.location %}
-                    <li>
-                        <label>Location: </label> <a href="http://maps.google.com/?q={{ sponsor.location }}" target="_blank" id="sponsor-location">{{ sponsor.location }}</a>
-                    </li>
-                {% endif %}
-
-                {% if sponsor.phone %}
-                    <li>
-                        <label>Phone: </label> {{ sponsor.phone }}
-                    </li>
-                {% endif %}
-
-                {% if sponsor.email %}
-                    <li>
-                        <label>E-mail: </label> <a href="mailto:{{ sponsor.email }}">{{ sponsor.email }}</a>
-                    </li>
-                {% endif %}
-
-                {% if sponsor.website %}
-                    <li>
-                        <label>Website: </label> <a href="{{ sponsor.website }}">{{ sponsor.website }}</a>
-                    </li>
-                {% endif %}
-
-                {% if sponsor.video %}
-                    <li>
-                        <label>Video: </label> <a href="{{ sponsor.video }}">Sponsor video</a>
-                    </li>
-                {% endif %}
-
-                {% if sponsor.fax %}
-                    <li>
-                        <label>Fax: </label> {{ sponsor.fax }}
-                    </li>
-                {% endif %}
-            </ul>
-        </div>
-    {% endif %}
+    {% include 'spuddercern/quote_messages/quote_publish_temp_venue.html' %}
 {% endblock %}
 
 
@@ -645,20 +508,13 @@
 	window.preloadedOrange = $('<img src="/media/img/ajax-loader-orange.gif" />');
 	window.preloadedBlack = $('<img src="/media/img/ajax-loader-black.gif" />');
 	window.currentSelectedSport = '{{ venue.sport }}';
-    window.twitterPopupText = "Checkout all the action happening near you at {{ venue.aka_name }}!";
     window.marker = null;
-
-{#    {% if venue.cover_image %}if($('.jumbotron').height() > $('.jumbotron-img').height()) $('.jumbotron').css('height', $('.jumbotron-img').height() + "px");{% endif %}#}
 
     $('.content').hide();
     $('.active').show();
 
 	$(document).ready(function() {
         $('.progress').hide();
-
-        $('#mailto').attr('href',
-                          'mailto:?subject={{ venue.aka_name }} on Spudder' +
-                          '&body=Need directions, closest hospital information, details on seating, or playing conditions? Everything about {{ venue.aka_name }} in one place! ' + url);
 
         $('#venue-property-buttons a').click(function(){
             if (window.isEditMode){
@@ -725,11 +581,7 @@
             $('.contents .alert'),
             function(venue) {
                 return venue.sport == window.currentSelectedSport && venue.id != parseInt(window.currentVenueId, 10);
-            },
-            function() {
-            //$('#save-location').removeClass('hidden');
-            }
-        );
+            },function(){});
 
 		icons.click(function() {
 			if(!$(this).hasClass('active')) {
@@ -752,9 +604,7 @@
 					initialize(false, $('.contents .alert'), function(venue) {
                         return venue.sport == window.currentSelectedSport
 							&& venue.id != parseInt(window.currentVenueId, 10);
-					}, function() {
-						//$('#save-location').removeClass('hidden');
-					});
+					}, function() {});
 				}
 			} else if ($(this).find('i').hasClass('fa-h-square')) {
 				setNearestHospitals(hospitalSelect);
@@ -775,7 +625,7 @@
 			var form = $(this).parents('form'),
 				files = $(form).serializeFiles(),
 				filesList = $(form).find('input')[0].files,
-                alert = $('.contents').find('.alert');
+                alert = $('#contents-alert');
 
 			if (filesList.length > 5 || (parseInt('{{ venue.parking_pics|length }}', 10) + filesList.length) > 5) {
 				showAlert(alert, 'You are trying to upload more pics than are allowed.', 'warning', true);
@@ -801,7 +651,7 @@
 					success : function(data) {
 						var parsed = JSON.parse(data);
 
-						var response = $.post('/venues/save_parking_details/{{ venue.id }}', {
+						var response = $.post('/venues/save_parking_details/{{ venue.id }}?is_temp=True', {
 							'parking_pics' : parsed['uploaded_files'],
 							'parking_details' : details.val()
 						});
@@ -837,7 +687,7 @@
 
 			$(this).hide();
 
-			var response = $.post('/venues/remove_pic/{{ venue.id }}', {
+			var response = $.post('/venues/remove_pic/{{ venue.id }}?is_temp=True', {
 				'list_type' : listType,
 				'file_url' : fileURL
 			});
@@ -883,7 +733,7 @@
 			var form = $(this).parents('form'),
 				files = $(form).serializeFiles(),
 				filesList = $(form).find('input')[0].files,
-				alert = $('.contents').find('.alert');
+                alert = $('#contents-alert');
 
 			if (filesList.length > 5 || (parseInt('{{ venue.venue_pics|length }}', 10) + filesList.length) > 5) {
 				showAlert(alert, 'You are trying to upload more pics than are allowed.', 'warning', true);
@@ -908,7 +758,7 @@
 					success : function(data) {
 						var parsed = JSON.parse(data);
 
-						var response = $.post('/venues/save_venue_pics/{{ venue.id }}', {
+						var response = $.post('/venues/save_venue_pics/{{ venue.id }}?is_temp=True', {
 							'venue_pics' : parsed['uploaded_files']
 						});
 
@@ -971,7 +821,7 @@
                         success: function (data) {
                             var parsed = JSON.parse(data);
 
-                            var response = $.post('/venues/save_logo_and_name/{{ venue.id }}', {
+                            var response = $.post('/venues/save_logo_and_name/{{ venue.id }}?is_temp=True', {
                                 'logo': parsed['uploaded_files'],
                                 'name': name,
                                 'aka_name': akaName,
@@ -999,7 +849,7 @@
 			var form = $(this).parents('form'),
 				files = $(form).serializeFiles(),
 				filesList = $(form).find('input')[0].files,
-                alert = $('.contents').find('.alert');
+                alert = $('#contents-alert');
 
 			if (filesList.length > 5 || (parseInt('{{ venue.playing_surface_pics|length }}', 10) + filesList.length) > 5) {
 				showAlert(alert, 'You are trying to upload more pics than are allowed.', 'warning', true);
@@ -1025,7 +875,7 @@
 					success : function(data) {
 						var parsed = JSON.parse(data);
 
-						var response = $.post('/venues/save_playing_surface_pics/{{ venue.id }}', {
+						var response = $.post('/venues/save_playing_surface_pics/{{ venue.id }}?is_temp=True', {
 							'playing_surface_pics' : parsed['uploaded_files'],
 							'playing_surface_details' : details.val()
 						});
@@ -1052,7 +902,7 @@
 		$('#save-video').click(function() {
 			var textarea = $('#video form textarea');
 
-			var response = $.post('/venues/save_video/{{ venue.id }}', {
+			var response = $.post('/venues/save_video/{{ venue.id }}?is_temp=True', {
 				'video' : textarea.val()
 			});
 
@@ -1068,14 +918,14 @@
 			var form = $(this).parents('form'),
 				files = $(form).serializeFiles(),
 				filesList = $(form).find('input')[0].files,
-                alert = $('.contents').find('.alert');
+                alert = $('#contents-alert');
 
 			if (filesList.length > 5 || (parseInt('{{ venue.restroom_pics|length }}', 10) + filesList.length) > 5) {
 				showAlert(alert, 'You are trying to upload more pics than are allowed.', 'warning', true);
 				return;
 			}
 
-			var details = $('[name="details"]'),
+			var details = $('[name="restroom_details"]'),
 				progressBar = form.find('.progress');
 
 			$.get('/upload/get_upload_url', function(data) {
@@ -1092,7 +942,7 @@
 					success : function(data) {
 						var parsed = JSON.parse(data);
 
-						var response = $.post('/venues/save_restroom_details/{{ venue.id }}', {
+						var response = $.post('/venues/save_restroom_details/{{ venue.id }}?is_temp=True', {
 							'restroom_pics' : parsed['uploaded_files'],
 							'restroom_details' : details.val()
 						});
@@ -1118,7 +968,7 @@
 			var form = $(this).parents('form'),
 				files = $(form).serializeFiles(),
 				filesList = $(form).find('input')[0].files,
-                alert = $('.contents').find('.alert');
+                alert = $('#contents-alert');
 
 			if (filesList.length > 5 || (parseInt('{{ venue.concession_pics|length }}', 10) + filesList.length) > 5) {
 				showAlert(alert, 'You are trying to upload more pics than are allowed.', 'warning', true);
@@ -1144,7 +994,7 @@
 					success : function(data) {
 						var parsed = JSON.parse(data);
 
-						var response = $.post('/venues/save_concession_details/{{ venue.id }}', {
+						var response = $.post('/venues/save_concession_details/{{ venue.id }}?is_temp=True', {
 							'concession_pics' : parsed['uploaded_files'],
 							'concession_details' : details.val()
 						});
@@ -1171,7 +1021,7 @@
 			var form = $(this).parents('form'),
 				files = $(form).serializeFiles(),
 				filesList = $(form).find('input')[0].files,
-                alert = $('.contents').find('.alert');
+                alert = $('#contents-alert');
 
 			if (filesList.length > 5 || (parseInt('{{ venue.admission_pics|length }}', 10) + filesList.length) > 5) {
 				showAlert(alert, 'You are trying to upload more pics than are allowed.', 'warning', true);
@@ -1197,7 +1047,7 @@
 					success : function(data) {
 						var parsed = JSON.parse(data);
 
-						var response = $.post('/venues/save_admission_details/{{ venue.id }}', {
+						var response = $.post('/venues/save_admission_details/{{ venue.id }}?is_temp=True', {
 							'admission_pics' : parsed['uploaded_files'],
 							'admission_details' : details.val()
 						});
@@ -1225,11 +1075,11 @@
 				city = $('#medical-details form input[name="city"]'),
 				state = $('#medical-details form select[name="state"]'),
 				zip = $('#medical-details form input[name="zip"]'),
-                alert = $('.contents').find('.alert');
+                alert = $('#contents-alert');
 
 			var medicalAddress = address.val() + ', ' + city.val() + ', ' + state.val() + ', ' + zip.val();
 
-			var response = $.post('/venues/save_medical_details/{{ venue.id }}', {
+			var response = $.post('/venues/save_medical_details/{{ venue.id }}?is_temp=True', {
 				'medical_address' : medicalAddress,
 			});
 
@@ -1245,7 +1095,7 @@
 			var form = $(this).parents('form'),
 				files = $(form).serializeFiles(),
 				filesList = $(form).find('input')[0].files,
-                alert = $('.contents').find('.alert');
+                alert = $('#contents-alert');
 
 			if (filesList.length > 5 || (parseInt('{{ venue.handicap_pics|length }}', 10) + filesList.length) > 5) {
 				showAlert(alert, 'You are trying to upload more pics than are allowed.', 'warning', true);
@@ -1271,7 +1121,7 @@
 					success : function(data) {
 						var parsed = JSON.parse(data);
 
-						var response = $.post('/venues/save_handicap_details/{{ venue.id }}', {
+						var response = $.post('/venues/save_handicap_details/{{ venue.id }}?is_temp=True', {
 							'handicap_pics' : parsed['uploaded_files'],
 							'handicap_details' : details.val()
 						});
@@ -1291,59 +1141,6 @@
 						});
 					}
 				});
-			});
-		});
-
-		$('#prize-this-venue').click(function() {
-            {% if not is_recipient %}
-				document.location = '/venues/recipient/{{ venue.id }}';
-            {% else %}
-                var priceInput = $('#price'), textSpan = $(this).find('span'), currentPrice = $('#current-price'), icon = $(this).find('i'), input = $('.input-prepend');
-
-                currentPrice.hide();
-                input.show();
-
-                if (textSpan.text() == 'Save') {
-                    icon.removeClass('fa-save').addClass('fa-spin fa-spinner');
-                    var response = $.post('/venues/save_price/{{ venue.id }}', {
-                        'price' : priceInput.val() ? priceInput.val() : '0'
-                    });
-
-                    response.done(function() {
-                        icon.removeClass('fa-spin fa-spinner').addClass('fa-usd');
-                        textSpan.text('Price this Venue');
-                        input.hide();
-                        currentPrice.show();
-                        currentPrice.find('span').html(priceInput.val());
-                        priceInput.parent().css('display', 'none');
-                    });
-
-                } else {
-                    priceInput.parent().css('display', 'table');
-                    $(this).data('original_text', $(this).html());
-                    textSpan.text('Save');
-                    icon.removeClass('fa-usd').addClass('fa-save');
-                }
-            {% endif %}
-		});
-
-		$('#send-message').click(function() {
-
-            //The following 4 lines are bot protection, a bot will fill out the hidden email field while a human wont
-            var $button = $(this);
-            var email = $button.parents('form:first').find('#email-field').val();
-            if (email > "")
-                return;
-
-			var message = $('[name="message"]').val(),
-                alert = $('.contents').find('.alert');
-
-			var response = $.post('/venues/send_message/{{ venue.id }}', {
-				'message' : message
-			});
-
-			response.done(function() {
-                showAlert(alert, 'Message has been sent!', 'success', true)
 			});
 		});
 
@@ -1410,7 +1207,7 @@
 				setRemoveButtonPosition($(this).attr('id'));
 			}
 			else {
-                $(this).find('.pin-pic').show()
+                $(this).find('.pin-pic').show();
 			    setPinButtonPosition($(this).attr('id'));
 			}
 		});
@@ -1453,12 +1250,6 @@
     });
     });
 
-
-    function removeAssociation(teamID, teamName){
-        if (confirm('This will remove the association with the team ' + teamName + '. Are you sure you want to do that?')){
-            window.location = '/team/associate/' + teamID + '/remove/' + {{ venue.id }} + '?next={{ request.get_full_path }}';
-        }
-    }
 
     {% if not venue.location_has_been_changed %}
         $('#edit-venue-location-button').click(function(){
@@ -1521,7 +1312,7 @@
         });
 
         function saveVenueLocation(){
-            var response = $.post('/venues/save_coordinates/{{ venue.id }}',
+            var response = $.post('/venues/save_coordinates/{{ venue.id }}?is_temp=True',
                                   {
                                       'latitude': marker.position.lat(),
                                       'longitude': marker.position.lng()
@@ -1533,6 +1324,6 @@
         }
     {% endif %}
 
-    console.log({{ request.path }})
+
 </script>
 {% endblock %}
