@@ -267,8 +267,9 @@
         <script type="text/javascript" language="javascript">
 
             function fix_footer_position(){
+                var $footer = $('.spudder-footer');
+                $footer.css('top', 'auto');
                 setTimeout(function(){
-                    var $footer = $('.spudder-footer');
                     if ($(document).height() > $(window).height())
                         $footer.css({top: ''});
                     else

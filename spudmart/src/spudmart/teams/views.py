@@ -1,14 +1,19 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.views.decorators.http import require_http_methods
 from google.appengine.api import blobstore
 import settings
+from spudderaccounts.controllers import InvitationController
+from spudderaccounts.models import Invitation
 from spudderaccounts.templatetags.spudderaccountstags import is_fan, is_cern_student
-from spudderdomain.controllers import TeamsController, RoleController, SpudsController, SocialController
+from spudderdomain.controllers import TeamsController, RoleController, SpudsController, SocialController, \
+    EntityController
 from spudderdomain.models import TeamPage, Location, TeamVenueAssociation, TeamAdministrator, FanPage
+from spudderdomain.wrappers import EntityBase
 from spudderspuds.forms import LinkedInSocialMediaForm
 from spudderspuds.utils import set_social_media
 from spudmart.CERN.rep import created_team, team_associated_with_venue
 from spudmart.teams.forms import CreateTeamForm, TeamPageForm, EditTeamForm
-from django.http import HttpResponseRedirect, HttpResponse, HttpResponseNotAllowed, HttpResponseForbidden
+from django.http import HttpResponseRedirect, HttpResponse, HttpResponseNotAllowed, HttpResponseForbidden, HttpResponseBadRequest
 from spudmart.upload.models import UploadedFile
 from spudmart.upload.forms import UploadForm
 from spudmart.utils.Paginator import EntitiesPaginator
@@ -153,15 +158,167 @@ def manage_team_page_admins(request, page_id):
     if not request.can_edit:
         return HttpResponseForbidden()
     team_page = get_object_or_404(TeamPage, pk=page_id)
+    # get current team admins
     team_admins_ids = TeamAdministrator.objects\
-        .filter(team_page=team_page, entity_type='fan').values_list('entity_id', flat=True)
+        .filter(team_page=team_page, entity_type=RoleController.ENTITY_FAN).values_list('entity_id', flat=True)
     team_admins_ids = [int(fan_id) for fan_id in team_admins_ids]
-    fans = FanPage.objects.filter(id__in=team_admins_ids)
+    admins = FanPage.objects.filter(id__in=team_admins_ids)
+    # get invited fans
+    invited_fans_ids = Invitation.objects.filter(
+        invitee_entity_type=RoleController.ENTITY_FAN,
+        invitation_type=Invitation.ADMINISTRATE_TEAM_INVITATION,
+        status=Invitation.PENDING_STATUS,
+        target_entity_id=team_page.id,
+        target_entity_type=EntityController.ENTITY_TEAM
+    ).values_list('invitee_entity_id', flat=True)
+    invited_fans_ids = [int(fan_id) for fan_id in invited_fans_ids]
+    invited_fans = FanPage.objects.filter(id__in=invited_fans_ids)
+    # get not invited fans
+    not_invited_ids = list(team_admins_ids) + list(invited_fans_ids)
+    not_invited_fans = FanPage.objects.exclude(id__in=not_invited_ids)
 
     return render(request, 'spudderspuds/teams/pages/manage_team_admins.html', {
         'page': team_page,
-        'admins': fans
+        'admins': admins,
+        'invited_fans': invited_fans,
+        'not_invited_fans': not_invited_fans
     })
+
+
+@require_http_methods(["GET", "POST"])
+def create_fan_invitation(request, page_id, fan_id):
+    if not request.can_edit:
+        return HttpResponseForbidden()
+
+    entity_team = EntityController.GetWrappedEntityByTypeAndId(
+        EntityController.ENTITY_TEAM, page_id,
+        EntityBase.EntityWrapperByEntityType(EntityController.ENTITY_TEAM))
+    fan = get_object_or_404(FanPage, pk=fan_id)
+
+    if entity_team.is_admin(fan.id, RoleController.ENTITY_FAN):
+        return HttpResponseBadRequest()
+
+    if request.method == 'GET':
+        return render(request, 'spudderspuds/teams/pages/create_fan_invitation.html', {
+            'team_page': entity_team.entity,
+            'fan': fan
+        })
+    elif request.method == 'POST':
+        InvitationController.InviteEntity(
+            fan.id, RoleController.ENTITY_FAN, Invitation.ADMINISTRATE_TEAM_INVITATION,
+            entity_team.entity.id, entity_team.entity_type)
+        return HttpResponseRedirect('/team/%s/admins' % page_id)
+
+
+@require_http_methods(["GET", "POST"])
+def create_fan_invitation(request, page_id, fan_id):
+    if not request.can_edit:
+        return HttpResponseForbidden()
+
+    entity_team = EntityController.GetWrappedEntityByTypeAndId(
+        EntityController.ENTITY_TEAM, page_id,
+        EntityBase.EntityWrapperByEntityType(EntityController.ENTITY_TEAM))
+    fan = get_object_or_404(FanPage, pk=fan_id)
+
+    # check that fan is not an admin already
+    if entity_team.is_admin(fan.id, RoleController.ENTITY_FAN):
+        return HttpResponseBadRequest()
+
+    if request.method == 'GET':
+        return render(request, 'spudderspuds/teams/pages/create_fan_invitation.html', {
+            'team_page': entity_team.entity,
+            'fan': fan
+        })
+    elif request.method == 'POST':
+        InvitationController.InviteEntity(
+            fan.id, RoleController.ENTITY_FAN, Invitation.ADMINISTRATE_TEAM_INVITATION,
+            entity_team.entity.id, entity_team.entity_type)
+        return HttpResponseRedirect('/team/%s/admins' % page_id)
+
+
+@require_http_methods(["GET", "POST"])
+def cancel_fan_invitation(request, page_id, fan_id):
+    if not request.can_edit:
+        return HttpResponseForbidden()
+
+    entity_team = EntityController.GetWrappedEntityByTypeAndId(
+        EntityController.ENTITY_TEAM, page_id,
+        EntityBase.EntityWrapperByEntityType(EntityController.ENTITY_TEAM))
+    fan = get_object_or_404(FanPage, pk=fan_id)
+
+    # check that fan is not an admin already
+    if entity_team.is_admin(fan.id, RoleController.ENTITY_FAN):
+        return HttpResponseBadRequest()
+
+    if request.method == 'GET':
+        return render(request, 'spudderspuds/teams/pages/cancel_fan_invitation.html', {
+            'team_page': team_page,
+            'fan': fan
+        })
+    elif request.method == 'POST':
+        InvitationController.CancelEntityInvitation(
+            fan.id, RoleController.ENTITY_FAN, Invitation.ADMINISTRATE_TEAM_INVITATION,
+            entity_team.entity.id, entity_team.entity_type)
+        return HttpResponseRedirect('/team/%s/admins' % page_id)
+
+
+@require_http_methods(["GET", "POST"])
+def revoke_fan_invitation(request, page_id, fan_id):
+    if not request.can_edit:
+        return HttpResponseForbidden()
+
+    entity_team = EntityController.GetWrappedEntityByTypeAndId(
+        EntityController.ENTITY_TEAM, page_id,
+        EntityBase.EntityWrapperByEntityType(EntityController.ENTITY_TEAM))
+    fan = get_object_or_404(FanPage, pk=fan_id)
+
+    # check that fan is an admin
+    if not entity_team.is_admin(fan.id, RoleController.ENTITY_FAN):
+        return HttpResponseBadRequest()
+
+    if request.method == 'GET':
+        return render(request, 'spudderspuds/teams/pages/revoke_fan_invitation.html', {
+            'team_page': entity_team.entity,
+            'fan': fan
+        })
+    if request.method == 'POST':
+        InvitationController.RevokeEntityInvitation(
+            fan.id, RoleController.ENTITY_FAN, Invitation.ADMINISTRATE_TEAM_INVITATION,
+            entity_team.entity.id, entity_team.entity_type)
+        return HttpResponseRedirect('/team/%s/admins' % page_id)
+
+
+@require_http_methods(["GET", "POST"])
+def accept_fan_invitation(request, page_id, invitation_id):
+    entity_team = EntityController.GetWrappedEntityByTypeAndId(
+        EntityController.ENTITY_TEAM, page_id,
+        EntityBase.EntityWrapperByEntityType(EntityController.ENTITY_TEAM))
+    invitation = get_object_or_404(Invitation, pk=invitation_id)
+    fan = get_object_or_404(FanPage, pk=invitation.invitee_entity_id)
+    if request.user != fan.fan:
+        return HttpResponseBadRequest()
+
+    # check that fan is not an admin already
+    if entity_team.is_admin(fan.id, RoleController.ENTITY_FAN):
+        return HttpResponseBadRequest()
+
+    if request.method == 'GET':
+        return render(request, 'spudderspuds/teams/pages/accept_fan_invitation.html', {
+            'team_page': entity_team.entity,
+            'fan': fan,
+            'invitation': invitation,
+            'is_invitation_active': invitation.status == invitation.PENDING_STATUS
+        })
+    if request.method == 'POST':
+        invitation.status = Invitation.ACCEPTED_STATUS
+        invitation.save()
+        team_admin = TeamAdministrator(
+            entity_type=RoleController.ENTITY_FAN,
+            entity_id=fan.id,
+            team_page=entity_team.entity
+        )
+        team_admin.save()
+        return HttpResponseRedirect('/team/%s/admins' % page_id)
 
 
 def public_view(request, page_id):

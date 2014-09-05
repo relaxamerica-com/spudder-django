@@ -96,6 +96,27 @@ class EditPageMiddleware:
                 admins = TeamAdministrator.objects.filter(team_page=page, entity_type=entity_type, entity_id=entity_id)
                 if len(admins) > 0:
                     can_edit = True
+            elif re.match(r'/team/\d+/invite_fan/\d+$', path):
+                entity_id = request.current_role.entity.id
+                entity_type = request.current_role.entity_type
+                page = TeamPage.objects.get(id=str.split(path, '/')[2])
+                admins = TeamAdministrator.objects.filter(team_page=page, entity_type=entity_type, entity_id=entity_id)
+                if len(admins) > 0:
+                    can_edit = True
+            elif re.match(r'/team/\d+/cancel_fan_invitation/\d+$', path):
+                entity_id = request.current_role.entity.id
+                entity_type = request.current_role.entity_type
+                page = TeamPage.objects.get(id=str.split(path, '/')[2])
+                admins = TeamAdministrator.objects.filter(team_page=page, entity_type=entity_type, entity_id=entity_id)
+                if len(admins) > 0:
+                    can_edit = True
+            elif re.match(r'/team/\d+/revoke_fan_invitation/\d+$', path):
+                entity_id = request.current_role.entity.id
+                entity_type = request.current_role.entity_type
+                page = TeamPage.objects.get(id=str.split(path, '/')[2])
+                admins = TeamAdministrator.objects.filter(team_page=page, entity_type=entity_type, entity_id=entity_id)
+                if len(admins) > 0:
+                    can_edit = True
             elif re.match(r'/cern/\w{2}/\d+/\w+', path):
                 if request.current_role.entity_type == RoleController.ENTITY_STUDENT:
                     sch = School.objects.get(id=str.split(path, '/')[-1])

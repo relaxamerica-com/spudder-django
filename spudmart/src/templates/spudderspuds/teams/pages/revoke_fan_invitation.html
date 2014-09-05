@@ -1,0 +1,24 @@
+{% extends 'spudderspuds/base_single_well.html' %}
+{% load bootstrap3 %}
+{% load accounts %}
+
+{% block well_content %}
+    <h3>Revoke administration access for {% fan_page_name fan %}</h3>
+
+    <p>Are you sure you would like to revoke administration access to "{{ team_page.name }}" for <a
+            href="/fan/{{ admin.id }}">{% fan_page_name fan %}</a>?</p>
+
+    <form method="post" enctype="multipart/form-data" action="">
+        {% csrf_token %}
+
+        {% buttons %}
+            <button type="submit" class="btn btn-primary">
+                <i class="fa fa-send"></i> Revoke Invitation
+            </button>
+            <a href="/team/{{ team_page.id }}/admins" class="btn btn-default">
+                Cancel
+            </a>
+        {% endbuttons %}
+    </form>
+
+{% endblock %}

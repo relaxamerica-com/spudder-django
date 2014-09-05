@@ -1,6 +1,8 @@
 import logging
+from django.conf import settings
 from datetime import datetime, timedelta
 from spudderdomain.models import LinkedService, FanPage, TeamPage, TeamAdministrator, TeamVenueAssociation
+from spudderdomain.utils import get_entity_base_instanse_by_id_and_type
 from spudderdomain.wrappers import EntityTeam, EntityVenue
 from spuddersocialengine.models import SpudFromSocialMedia
 from spudmart.CERN.models import Student
@@ -8,6 +10,7 @@ from spudmart.CERN.rep import team_tagged_in_spud
 from spudmart.sponsors.models import SponsorPage
 from spudderkrowdio.utils import post_spud, get_user_mentions_activity, get_spud_stream_for_entity, start_following
 from spudderkrowdio.models import KrowdIOStorage, FanFollowingEntityTag
+from spudmart.utils.emails import send_email
 from spudmart.venues.models import Venue
 
 
@@ -426,10 +429,63 @@ class SocialController(object):
 
 class CommunicationController(object):
 
+    TYPE_EMAIL = 'email'
+    COMMUNICATION_TYPES = (TYPE_EMAIL, )
+
+    @classmethod
+    def CommunicateWithEmail(cls, entity, **kwargs):
+        from spudderaccounts.models import Invitation
+        invitation = kwargs['invitation']
+        invitation_type = invitation.invitation_type
+        if invitation_type in Invitation.INVITATION_TYPES:
+            if invitation_type == Invitation.ADMINISTRATE_TEAM_INVITATION:
+                team = TeamPage.objects.get(id=invitation.target_entity_id)
+                if invitation.status == Invitation.PENDING_STATUS:
+                    subject = 'Spudder - You have been invited to administer a team'
+                    message_body = """
+You have been invited to administer team "%s".
+
+Please follow the link bellow to accept.
+%s
+
+Kind regards, team Spudder.
+""" % (team.name, invitation.link)
+                elif invitation.status == Invitation.CANCELED_STATUS:
+                    subject = 'Spudder - Your invitation has been expired'
+                    message_body = """
+Your invitation to administer team "%s" has been expired.
+
+
+Kind regards, team Spudder.
+""" % team.name
+                elif invitation.status == Invitation.REVOKED_STATUS:
+                    subject = 'Spudder - Your invitation has been revoked'
+                    message_body = """
+Your invitation to administer team "%s" has been revoked.
+
+
+Kind regards, team Spudder.
+""" % team.name
+            else:
+                raise NotImplementedError("Invitation type '%s' not implemented" % invitation_type)
+        else:
+            raise NotImplementedError("Invitation type '%s' not supported" % invitation_type)
+
+        for contact_email in entity.contact_emails:
+            send_email(settings.SERVER_EMAIL, contact_email, subject, message_body)
+
     @classmethod
     def CommunicateWithNonUserByEmail(cls):
         pass
 
     @classmethod
-    def CommunicateWithEntity(cls):
-        pass
+    def CommunicateWithEntity(cls, entity_id, entity_type, **kwargs):
+        entity = get_entity_base_instanse_by_id_and_type(entity_id, entity_type)
+        communication_type = kwargs.get('communication_type')
+        if communication_type in cls.COMMUNICATION_TYPES:
+            if communication_type == cls.TYPE_EMAIL:
+                cls.CommunicateWithEmail(entity, **kwargs)
+            else:
+                raise NotImplementedError("Communication type '%s' not implemented" % communication_type)
+        else:
+            raise NotImplementedError("Communication type '%s' not supported" % communication_type)

@@ -68,6 +68,9 @@ class RoleBase(EntityBase):
     def user_is_owner(self, user):
         pass
 
+    def is_admin(self, entity_id, entity_type):
+        raise NotImplemented("Not supported by RoleBase")
+
 
 class RoleStudent(RoleBase):
     @property
@@ -130,6 +133,10 @@ class RoleStudent(RoleBase):
             return '/file/serve/%s' % self.entity.logo.id
         else:
             return '/static/img/spuddercern/button-cern-tiny.png'
+
+    @property
+    def contact_emails(self):
+        raise NotImplementedError()
 
     def user_is_owner(self, user):
         return self.entity.user == user
@@ -199,6 +206,10 @@ class RoleSponsor(RoleBase):
         else:
             return '/static/img/spuddersponsors/button-sponsors-tiny.png'
 
+    @property
+    def contact_emails(self):
+        raise NotImplementedError()
+
     def user_is_owner(self, user):
         return self.entity.user == user
 
@@ -259,6 +270,10 @@ class RoleFan(RoleBase):
             return '/file/serve/%s' % self.entity.avatar.id
         else:
             return '/static/img/spudderspuds/button-fans-tiny.png'
+
+    @property
+    def contact_emails(self):
+        return [self.entity.fan.email] if self.entity.fan.email else []
 
     def user_is_owner(self, user):
         return self.entity.fan == user

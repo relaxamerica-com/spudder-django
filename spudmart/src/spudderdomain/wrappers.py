@@ -1,4 +1,6 @@
 import abc
+from spudderdomain.utils import get_entity_base_instanse_by_id_and_type
+from spudmart.utils.querysets import get_object_or_none
 
 
 class EntityBase(object):
@@ -24,6 +26,24 @@ class EntityBase(object):
     def icon(self):
         pass
 
+    @abc.abstractproperty
+    def contact_emails(self):
+        pass
+
+    @classmethod
+    def EntityWrapperByEntityType(cls, entity_key):
+        from spudderdomain.controllers import EntityController
+        if entity_key == EntityController.ENTITY_TEAM:
+            return EntityTeam
+        elif entity_key == EntityController.ENTITY_VENUE:
+            return EntityVenue
+        else:
+            raise NotImplementedError("the entity_key %s is not supported yet." % entity_key)
+
+    @abc.abstractmethod
+    def is_admin(self, entity_id, entity_type):
+        pass
+
 
 class EntityVenue(EntityBase):
 
@@ -46,6 +66,10 @@ class EntityVenue(EntityBase):
         else:
             return '/static/img/spuddervenues/button-venues-medium.png'
 
+    @property
+    def contact_emails(self):
+        raise NotImplementedError()
+
 
 class EntityTeam(EntityBase):
 
@@ -67,6 +91,21 @@ class EntityTeam(EntityBase):
             return '/file/serve/%s' % self.entity.image.id
         else:
             return '/static/img/spudderspuds/button-teams-medium.png'
+
+    @property
+    def contact_emails(self):
+        from spudderdomain.models import TeamAdministrator
+        team_admins = TeamAdministrator.objects.filter(team_page=self.entity)
+        contact_emails = []
+        for team_admin in team_admins:
+            entity = get_entity_base_instanse_by_id_and_type(team_admin.entity_id, team_admin.entity_type)
+            contact_emails += entity.contact_emails
+        return contact_emails
+
+    def is_admin(self, entity_id, entity_type):
+        from spudderdomain.models import TeamAdministrator
+        return get_object_or_none(TeamAdministrator, entity_type=entity_type,
+                                  entity_id=entity_id, team_page=self.entity) is not None
 
 
 class LinkedServiceBase(object):
