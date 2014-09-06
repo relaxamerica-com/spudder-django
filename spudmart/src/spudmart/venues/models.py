@@ -106,12 +106,12 @@ class TempVenue(models.Model):
     A temporary model of a venue, used to model some venue properties
     """
     created_date = models.DateTimeField(auto_now_add=True, null=True)
-    user = models.ForeignKey(User, related_name="owner_user", null=True)
+    user = models.ForeignKey(User, related_name="temp_venue_owner_user", null=True)
     student = models.ForeignKey(Student, null=True)
     name = models.CharField(max_length=200, default="venuetagname")
     aka_name = models.CharField(max_length=200, default="Venue yet to be Named")
     sport = models.CharField(max_length=100)
-    logo = models.ForeignKey(UploadedFile, null=True, related_name="logo_file")
+    logo = models.ForeignKey(UploadedFile, null=True, related_name="temp_venue_logo_file")
     latitude = models.DecimalField(null=True, decimal_places=6, max_digits=9)
     longitude = models.DecimalField(null=True, decimal_places=6, max_digits=9)
     parking_details = models.CharField(max_length=200)
@@ -129,7 +129,7 @@ class TempVenue(models.Model):
     medical_address = models.CharField(max_length=200)
     handicap_details = models.CharField(max_length=200)
     handicap_pics = ListField()
-    cover_image = models.ForeignKey(UploadedFile, null=True, related_name="cover_image")
+    cover_image = models.ForeignKey(UploadedFile, null=True, related_name="temp_venue_cover_image")
     state = models.CharField(max_length=2)
     location_has_been_changed = models.BooleanField(default=False)
     rep = models.IntegerField(default=0)
