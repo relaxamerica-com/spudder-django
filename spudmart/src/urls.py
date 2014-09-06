@@ -68,6 +68,7 @@ urlpatterns = patterns(
     url(r'^spuds/', include('spudderspuds.urls_spuds')),
     url(r'^fan/', include('spudderspuds.urls_fans')),
     url(r'^flag/', include('spudmart.flags.urls')),
+    url(r'^club/', include('spudderclubs.urls')),
 
     # Spudder Admin site
     (r'^spudderadmin', include('spudderadmin.urls')),

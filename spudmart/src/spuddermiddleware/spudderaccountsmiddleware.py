@@ -1,5 +1,5 @@
 import re
-from django.conf import settings
+
 from django.shortcuts import redirect
 from spudderaccounts.utils import select_user_role_if_only_one_role_exists, select_all_user_roles, change_current_role
 from spudderaccounts.wrappers import RoleBase
@@ -8,7 +8,6 @@ from spudderdomain.models import TeamAdministrator, TeamPage
 from spudderkrowdio.models import KrowdIOStorage
 from spudderkrowdio.utils import get_following
 from spudmart.CERN.models import School
-from spudmart.utils.app_identity import get_spudmart_app_name
 from spudmart.venues.models import Venue, TempVenue
 
 

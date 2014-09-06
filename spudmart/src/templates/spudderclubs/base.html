@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block title %}Spudder Clubs Network{% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" href="/static/css/spudderclubs.css" />
+{% endblock %}
+
+{% block favicon %}"/static/img/spudderclubs/button-clubs-tiny.png"{% endblock %}
+
+{% block nav_brand %}<a href="/"><img src="/static/img/spudderclubs/logo-clubs-small.png" style="height:35px;margin-top:4px;"/> </a>{% endblock %}
+
+{% block nav %}
+    {% if not request.current_role %}
+        <li>
+            <a href="/club/register">register</a>
+        </li>
+        <li>
+            <a href="/club/signin">signin</a>
+        </li>
+    {% endif %}
+{% endblock %}
+
+{% block meta %}{% endblock %}
+
+{% block body %}
+{% endblock %}
