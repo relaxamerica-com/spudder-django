@@ -1,7 +1,7 @@
 import datetime
 from boto.fps.connection import FPSConnection
 import settings
-from spudmart.amazon.models import TransactionProgressStatus
+from spudmart.amazon.models import TransactionProgressStatus, RecipientVerificationStatus
 from spudmart.recipients.models import Recipient, VenueRecipient
 
 
@@ -67,6 +67,11 @@ def get_rent_venue_cbui_url(venue):
     )
 
 
+def get_club_register_as_recipient_cbui_url():
+    return_url = '%s/club/register/recipient/complete' % settings.SPUDMART_BASE_URL
+    return _get_recipient_cbui_url(return_url, 90)
+
+
 def get_rent_venue_ipn_url(venue, user):
     return '%s/venues/rent_venue/%s/notification/%s' % (settings.SPUDMART_BASE_URL, venue.id, user.id)
 
@@ -81,3 +86,17 @@ def parse_ipn_notification_request(request):
             setattr(progress_status, key, value)
 
     return progress_status
+
+
+def get_recipient_verification_status(recipientTokenID):
+    connection = get_fps_connection()
+
+    response = connection.get_recipient_verification_status(RecipientTokenId=recipientTokenID)
+
+    if response.GetRecipientVerificationStatusResult.RecipientVerificationStatus == RecipientVerificationStatus.PENDING:
+        return RecipientVerificationStatus.PENDING
+
+    # There are two types of complete verification: normal and with additional information about no limits.
+    # From Spudder perspective - either one of them is OK, because it means Amazon cleared the account for getting
+    # money transfers.
+    return RecipientVerificationStatus.COMPLETE

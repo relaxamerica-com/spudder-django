@@ -1,0 +1,26 @@
+{% extends 'spudderclubs/base_single_well.html' %}
+{% load bootstrap3 %}
+
+{% block google_analytics_additions %}
+    ga('set', 'contentGroup1', 'CLUBS Registration Page');
+{% endblock %}
+
+{% block well_content %}
+    <h2>
+        <img src="/static/img/spudderclubs/button-clubs-small.png" />
+        Register to become a Club in Spudder
+    </h2>
+    <p>Becoming a Club means you have access to the entire network of Teams, fundraising and marketplace tools!</p>
+
+    <div class="alert alert-info">
+        <h4>Registration as Amazon recipient</h4>
+        <p>The next step in activation process is to register your Club as Amazon Recipient. This way you will be able to fundraise money and run marketplace for your Teams.</p>
+        <p>After clicking "Register as recipient" button below, you will be redirected to Amazon in order to register.</p>
+
+        <p><strong>Remember to use same Amazon account through whole process!</strong></p>
+
+        <p style="text-align: center;">
+            <a href="{{ cbui_url }}" class="btn btn-primary" style="margin-top: 20px;">Register as recipient</a>
+        </p>
+    </div>
+{% endblock %}

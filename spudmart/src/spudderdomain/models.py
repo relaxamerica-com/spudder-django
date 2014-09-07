@@ -1,10 +1,12 @@
 import datetime
 import json
+
 from django.contrib.auth.models import User
 from django.db import models
-from djangotoolbox.fields import DictField, ListField
+from djangotoolbox.fields import ListField
+from spudmart.recipients.models import AmazonRecipient
 from spudmart.upload.models import UploadedFile
-from spudmart.venues.models import SPORTS, Venue
+from spudmart.venues.models import Venue
 
 
 class LinkedServiceTypeExistsForThisRole(Exception):
@@ -239,3 +241,48 @@ class TeamAdministrator(models.Model):
 class TeamVenueAssociation(models.Model):
     team_page = models.ForeignKey(TeamPage, related_name='team_venue_team_page')
     venue = models.ForeignKey(Venue, related_name='team_venue_venue')
+
+
+class Club(models.Model):
+    name = models.CharField(max_length=255)
+    amazon_email = models.CharField(max_length=255)
+    amazon_id = models.CharField(max_length=255)
+    thumbnail = models.ForeignKey(UploadedFile, blank=True, null=True, related_name='club_thumbnail')
+    location = models.ForeignKey(Location, null=True, blank=True, related_name='club_location')
+
+    def __unicode__(self):
+        return unicode(self.name)
+
+    def __str__(self):
+        return unicode(self).encode('utf-8')
+
+    def is_fully_activated(self):
+        if ClubRecipient.objects.filter(club=self).count() < 1:
+            return False
+
+        return self.location is not None
+
+    def next_activation_step(self):
+        if self.is_fully_activated():
+            return None
+
+        if ClubRecipient.objects.filter(club=self).count() < 1:
+            return 'recipient'
+
+        return 'location'
+
+
+class ClubRecipient(AmazonRecipient):
+    registered_by = models.ForeignKey(User)
+    club = models.ForeignKey(Club)
+
+
+class ClubAdministrator(models.Model):
+    club = models.ForeignKey(Club, related_name='club_administrator_club')
+    admin = models.ForeignKey(User, related_name='club_administrator_admin')
+
+    def __unicode__(self):
+        return unicode(self.club.name)
+
+    def __str__(self):
+        return unicode(self).encode('utf-8')

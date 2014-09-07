@@ -69,6 +69,14 @@ class IPNTransactionStatus():
     SUCCESS = 'SUCCESS'
 
 
+class RecipientVerificationStatus():
+    def __init__(self):
+        pass
+
+    PENDING = 'VerificationPending'
+    COMPLETE = 'VerificationComplete'
+
+
 class TransactionProgressStatus(models.Model):
     operation = models.CharField(max_length=255, default='')
     transactionDate = models.DateTimeField()

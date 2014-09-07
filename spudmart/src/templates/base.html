@@ -80,6 +80,9 @@
                                     {% if current_role|is_fan %}
                                         {% include 'spudderspuds/components/main_nav.html' %}
                                     {% endif %}
+                                    {% if current_role|is_club_admin %}
+                                        {% include 'spudderclubs/components/main_nav.html' %}
+                                    {% endif %}
                                 {% endif %}
                             {% endblock %}
                             {% block user_account_nav %}

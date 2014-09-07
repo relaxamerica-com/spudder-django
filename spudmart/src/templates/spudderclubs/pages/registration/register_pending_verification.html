@@ -1,0 +1,21 @@
+{% extends 'spudderclubs/base_single_well.html' %}
+{% load bootstrap3 %}
+
+{% block google_analytics_additions %}
+    ga('set', 'contentGroup1', 'CLUBS Registration Failure');
+{% endblock %}
+
+{% block well_content %}
+    <h2>
+        <img src="/static/img/spudderclubs/button-clubs-small.png" />
+        Register to become a Club in Spudder
+    </h2>
+    <p>Becoming a Club means you have access to the entire network of Teams, fundraising and marketplace tools!</p>
+
+    <div class="alert alert-danger">
+        <h4>Registration as recipient failed</h4>
+        <p>Club registration as Amazon recipient failed due to pending Amazon verification of the account.</p>
+        <p>Please go to <a href="https://payments.amazon.com">https://payments.amazon.com</a> for further assistance with the account verification on Amazon side.</p>
+        <p>You can come back at any time after the verification is complete and resume your Club account activation process.</p>
+    </div>
+{% endblock %}

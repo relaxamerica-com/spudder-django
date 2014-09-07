@@ -3,7 +3,6 @@ import abc
 from spudderdomain.controllers import RoleController, LinkedServiceController, EntityController
 from spudderdomain.models import LinkedService
 from spudderdomain.wrappers import EntityBase, LinkedServiceBase, EntityTeam
-import logging
 from spudderkrowdio.models import FanFollowingEntityTag
 
 """
@@ -25,6 +24,8 @@ class RoleBase(EntityBase):
             return RoleSponsor
         elif entity_key == RoleController.ENTITY_FAN:
             return RoleFan
+        elif entity_key == RoleController.ENTITY_CLUB_ADMIN:
+            return RoleClubAdmin
         else:
             raise NotImplementedError("the entity_key %s is not supported yet." % entity_key)
 
@@ -296,6 +297,72 @@ class RoleFan(RoleBase):
                         tag.entity_type, tag.entity_id, RoleFan)
                 })
         return tags_and_entities
+
+
+class RoleClubAdmin(RoleBase):
+    @property
+    def user(self):
+        return self.entity.admin
+
+    @property
+    def _amazon_id(self):
+        return LinkedService.objects.get(
+            role_id=self.entity.id,
+            role_type=self.entity_type,
+            service_type=LinkedServiceController.SERVICE_AMAZON).configuration.get('amazon_user_email')
+
+    @property
+    def entity_type(self):
+        return RoleController.ENTITY_CLUB_ADMIN
+
+    @property
+    def image(self):
+        if self.entity.club.thumbnail:
+            return '/file/serve/%s' % self.entity.club.thumbnail
+
+        return '/static/img/spudderclubs/button-clubs-medium.png'
+
+    @property
+    def title(self):
+        role_title = '<abbr>Club Administrator</abbr> on '
+        role_title += 'Spudder with Amazon ID %s' % self._amazon_id
+
+        return role_title
+
+    @property
+    def subtitle(self):
+        role_subtitle = 'Tied to Amazon ID: %s' % self._amazon_id
+
+        return role_subtitle
+
+    @property
+    def meta_data(self):
+        return {
+            'last_accessed': datetime.datetime.now()
+        }
+
+    @property
+    def breadcrumb_name(self):
+        return "Club: %s" % self._amazon_id
+
+    @property
+    def home_page_path(self):
+        return '/club/dashboard'
+
+    @property
+    def home_domain(self):
+        return 'club'
+
+    @property
+    def icon(self):
+        if self.entity.club.thumbnail:
+            return '/file/serve/%s' % self.entity.club.thumbnail.id
+        else:
+            return '/static/img/spudderclubs/button-clubs-tiny.png'
+
+    @property
+    def contact_emails(self):
+        raise NotImplementedError()
 
 
 """

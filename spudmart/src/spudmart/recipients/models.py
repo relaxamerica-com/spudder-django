@@ -11,6 +11,7 @@ class RecipientRegistrationState():
     NOT_STARTED = 1
     FINISHED = 2
     TERMINATED = 3
+    VERIFICATION_PENDING = 4
 
 
 class AmazonRecipient(models.Model):

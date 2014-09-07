@@ -1,0 +1,58 @@
+{% extends 'spudderclubs/base.html' %}
+
+{% block title %}Club Dashboard{% endblock %}
+
+{% block google_analytics_additions %}
+    ga('set', 'contentGroup1', 'Club Dashboard');
+{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        {% block dashboard_page %}
+            <div class="page-header">
+                <h1>
+                    <i class="fa fa-fw fa-bar-chart-o"></i> Dashboard <small>Manage your Club!</small>
+                </h1>
+            </div>
+
+            {% if club.is_fully_activated %}
+                <div class="quote" data-id="dashboard">
+                    <div class="alert alert-info" style="display: inline-block">
+                        <h4><i class="fa fa-fw fa-bullhorn"></i> What to do now?</h4>
+                        <p><b>Welcome to your Club dashboard.</b> This is your control center for managing your Club profile and associated Teams!</p>
+                        <br/>
+                        <div class="hidden-xs hidden-sm">
+                            <i class="fa fa-hand-o-up fa-2x pull-left" style="position:relative; top:-5px;"></i>
+                            <p>You can use the navigation at the top to visit the various pages in your dashboard:</p>
+                        </div>
+                        <div class="hidden-md hidden-lg">
+                            <i class="fa fa-hand-o-up fa-2x  pull-right"></i>
+                            <p>You can use this button to bring down the menu and visit the various pages in your dashboard:</p>
+                        </div>
+                        <br/>
+                        <ul class="list-unstyled">
+                            <li><i class="fa fa-fw fa-asterisk"></i> Manage your sponsor profile on the <a href="/sponsor/page">Sponsor Page</a></li>
+                            <li><i class="fa fa-fw fa-asterisk"></i> Manage sponsored venues on the <a href="/sponsor/venues">Venues Page</a></li>
+                        </ul>
+                    </div>
+                </div>
+            {% else %}
+                <div class="quote" data-id="dashboard">
+                    <div class="alert alert-danger" style="display: inline-block">
+                        <h4><i class="fa fa-fw fa-bolt"></i> Club account not fully activated!</h4>
+                        <p>Your Club account isn't fully activated. Only after successful activation, Club can use all the tools and options that Spudder® provide.</p>
+                            {% if club.next_activation_step == 'recipient' %}
+                                <p>The next step in activation process is to register your Club as Amazon Recipient. This way you will be able to fundraise money and run marketplace for your Teams.</p>
+                                <p>After clicking "Register as recipient" button below, you will be redirected to Amazon in order to register. Please remember to use same account with which you logged in before.</p>
+                                <a href="{{ cbui_url }}" class="btn btn-primary" style="margin-top: 20px;">Register as recipient</a>
+                            {% else %}
+                                <p>The last step of the activation process is to fill up Club basic profile information form (location, address etc). After this step your Club account will be fully functional!</p>
+                                <a href="/club/register/profile" class="btn btn-primary" style="margin-top: 20px;">Go to Club profile</a>
+                            {% endif %}
+
+                    </div>
+                </div>
+            {% endif %}
+        {% endblock %}
+    </div>
+{% endblock %}

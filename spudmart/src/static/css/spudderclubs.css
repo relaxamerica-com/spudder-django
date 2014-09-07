@@ -14188,3 +14188,6 @@ ul.social-network li {
 ul.social-network li a {
   text-decoration: none;
 }
+input#accepted-terms-and-conditions {
+  margin-right: 5px;
+}

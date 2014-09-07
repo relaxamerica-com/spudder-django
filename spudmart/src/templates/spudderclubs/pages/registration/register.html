@@ -1,0 +1,67 @@
+{% extends 'spudderclubs/base_single_well.html' %}
+{% load bootstrap3 %}
+
+{% block google_analytics_additions %}
+    ga('set', 'contentGroup1', 'CLUBS Registration Page');
+{% endblock %}
+
+{% block well_content %}
+    <h2>
+        <img src="/static/img/spudderclubs/button-clubs-small.png" />
+        Register to become a Club in Spudder
+    </h2>
+    <p>Becoming a Club means you have access to the entire network of Teams, fundraising and marketplace tools!</p>
+
+    <div class="alert alert-info">
+        <h4>Instructions:</h4>
+        <p>Club registration consists of 4 steps:</p>
+        <ol>
+            <li>Acceptance of Spudder Terms and conditions</li>
+            <li>Login with Amazon Account</li>
+            <li>Registering as Recipient in Amazon</li>
+            <li>Filling up club details form</li>
+        </ol>
+
+        <p>After successful registration your Club profile will be created and you will be able to associate Teams</p>
+
+        <p><strong>Remember to use same Amazon account through whole process!</strong></p>
+    </div>
+
+    <p>
+        <input type="checkbox" class="checkbox-visible" id="accepted-terms-and-conditions">
+        I have accepted the <a href="https://docs.google.com/document/d/1z1O8dbfsKidDVfcEjZCX17v7sq07RV2Qfy5ykCrUAgE/view">terms and conditions</a>.
+    </p>
+
+    <p style="text-align: center;">
+        <a id="LoginWithAmazon">
+            <img border="0" alt="Login with Amazon"
+                 src="https://images-na.ssl-images-amazon.com/images/G/01/lwa/btnLWA_gold_156x32.png"
+                 width="156" height="32" />
+        </a>
+    </p>
+{% endblock %}
+
+{% block js %}
+    {{ block.super }}
+
+    {% include 'spudderaccounts/parts/amazon_login_js.html' %}
+
+    <script type="text/javascript" language="javascript">
+        $(document).ready(function() {
+            var loginWithAmazon = document.getElementById('LoginWithAmazon'),
+                returnUrl = '/accounts/login/amazon?account_type=club';
+
+            if (loginWithAmazon) {
+                loginWithAmazon.onclick = function() {
+                    if ($('#accepted-terms-and-conditions').prop('checked')){
+                        options = { scope : 'profile', interactive: 'always' };
+                        amazon.Login.authorize(options, returnUrl);
+                        return false;
+                    } else{
+                        alert('You must accept the terms and conditions to register!');
+                    }
+                };
+            }
+        })
+    </script>
+{% endblock %}

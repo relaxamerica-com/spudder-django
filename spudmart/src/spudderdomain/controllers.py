@@ -1,7 +1,8 @@
 import logging
 from django.conf import settings
 from datetime import datetime, timedelta
-from spudderdomain.models import LinkedService, FanPage, TeamPage, TeamAdministrator, TeamVenueAssociation
+from spudderdomain.models import LinkedService, FanPage, TeamPage, TeamAdministrator, TeamVenueAssociation, Club, \
+    ClubAdministrator
 from spudderdomain.utils import get_entity_base_instanse_by_id_and_type
 from spudderdomain.wrappers import EntityTeam, EntityVenue
 from spuddersocialengine.models import SpudFromSocialMedia
@@ -46,7 +47,8 @@ class RoleController(object):
     ENTITY_STUDENT = "student"
     ENTITY_SPONSOR = "sponsor"
     ENTITY_FAN = "fan"
-    ENTITY_TYPES = (ENTITY_STUDENT, ENTITY_SPONSOR, ENTITY_FAN)
+    ENTITY_CLUB_ADMIN = "club_admin"
+    ENTITY_TYPES = (ENTITY_STUDENT, ENTITY_SPONSOR, ENTITY_FAN, ENTITY_CLUB_ADMIN)
 
     @classmethod
     def GetEntityByTypeAndId(cls, entity_type, entity_id):
@@ -64,6 +66,11 @@ class RoleController(object):
             try:
                 return FanPage.objects.get(id=entity_id)
             except FanPage.DoesNotExist:
+                return None
+        elif entity_type == cls.ENTITY_CLUB_ADMIN:
+            try:
+                return ClubAdministrator.objects.get(id=entity_id)
+            except ClubAdministrator.DoesNotExist:
                 return None
         else:
             raise NotImplementedError("The entity_type: %s is not yet supported" % entity_type)
@@ -95,6 +102,8 @@ class RoleController(object):
             roles = SponsorPage.objects.filter(sponsor=self.user)
         elif entity_key == self.ENTITY_FAN:
             roles = FanPage.objects.filter(fan=self.user)
+        elif entity_key == self.ENTITY_CLUB_ADMIN:
+            roles = ClubAdministrator.objects.filter(admin=self.user)
         else:
             raise NotImplementedError("That entity_key is not yet supported")
         roles = [entity_wrapper(r) for r in roles]
@@ -126,6 +135,12 @@ class RoleController(object):
                 entity = FanPage.objects.get(id=entity_id)
                 return entity_wrapper(entity)
             except FanPage.DoesNotExist:
+                return None
+        elif entity_key == self.ENTITY_CLUB_ADMIN:
+            try:
+                entity = ClubAdministrator.objects.get(id=entity_id)
+                return entity_wrapper(entity)
+            except ClubAdministrator.DoesNotExist:
                 return None
         else:
             raise NotImplementedError("That entity_key is not yet supported")

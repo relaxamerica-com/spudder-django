@@ -40,6 +40,11 @@ def is_fan(role):
 
 
 @register.filter
+def is_club_admin(role):
+    return role and role.entity_type == RoleController.ENTITY_CLUB_ADMIN
+
+
+@register.filter
 def user_has_fan_role(request):
     for role in request.all_roles:
         if is_fan(role):

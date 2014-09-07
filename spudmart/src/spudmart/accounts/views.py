@@ -19,7 +19,7 @@ from spudmart.accounts.utils import is_sponsor
 import logging
 from spudmart.CERN.rep import recruited_new_student, signed_up
 from spudmart.CERN.models import Student, School
-from spudderdomain.models import FanPage
+from spudderdomain.models import FanPage, Club, ClubAdministrator
 
 
 def _accommodate_legacy_pre_V1_1_0_users(access_token, amazon_user_email, amazon_user_id):
@@ -102,13 +102,15 @@ def create_student(user, school_id, referrer_id):
     return student
 
 
-def _process_amazon_login(access_token, amazon_user_email, amazon_user_id, request):
+def _process_amazon_login(access_token, amazon_user_email, amazon_user_id, request, amazon_user_name=None):
 
     # Check to see if we need to accomodate pre V1.1.0 accounts
     _accommodate_legacy_pre_V1_1_0_users(access_token, amazon_user_email, amazon_user_id)
 
     # Check to see if these credential are tied to a user role via an authentication service
     user_role = select_role_by_authentication_service(LinkedServiceController.SERVICE_AMAZON, amazon_user_id)
+
+    next_url = None
 
     # If there is a role then get the user, else get the currently authenticate user else create a new user
     if user_role and user_role.user:
@@ -210,12 +212,48 @@ def _process_amazon_login(access_token, amazon_user_email, amazon_user_id, reque
                     'amazon_access_token': access_token
                 })
 
+        # If the account_type is club, create a Club entity in first stage (before registration as recipient)
+        if account_type == 'club':
+            club, _ = Club.objects.get_or_create(
+                name=amazon_user_name,
+                amazon_email=amazon_user_email,
+                amazon_id=amazon_user_id
+            )
+            club.save()
+
+            club_admin, _ = ClubAdministrator.objects.get_or_create(admin=user, club=club)
+            club_admin.save()
+
+            # Get the Role controller for the current user
+            role_controller = RoleController(user)
+
+            # Get the user_role for this user/student combo
+            user_role = role_controller.role_by_entity_type_and_entity_id(
+                RoleController.ENTITY_CLUB_ADMIN,
+                club_admin.id,
+                RoleBase.RoleWrapperByEntityType(RoleController.ENTITY_CLUB_ADMIN))
+
+            # Store the amazon linked authentication service details
+            create_linked_authentication_service(
+                user_role,
+                LinkedServiceController.SERVICE_AMAZON,
+                amazon_user_id,
+                {
+                    'amazon_user_email': amazon_user_email,
+                    'amazon_user_id': amazon_user_id,
+                    'amazon_access_token': access_token
+                })
+
+            next_url = '/club/register/recipient'
+
     # Get and update the amazon auth record with the latest access token
     # Note that we don't use this at the moment but will in future - MG:20140708
     amazon_auth = get_authentication_wrapper(user_role, LinkedServiceController.SERVICE_AMAZON, amazon_user_id)
     amazon_auth.update_amazon_access_token(access_token)
 
-    next_url = request.GET.get('next', None) or user_role.home_page_path
+    if not next_url:
+        next_url = request.GET.get('next', None) or user_role.home_page_path
+
     if not request.user.is_authenticated():
         if user.spudder_user.has_set_password:
             return redirect('/users/account/signin/%s?next=%s' % (user.id, next_url))
@@ -272,7 +310,7 @@ def amazon_login(request):
             amazon_user_email = profile_json_data['email']
 
             # Process the login as an amazon login, creating and adding roles to the user as needed
-            return _process_amazon_login(access_token, amazon_user_email, amazon_user_id, request)
+            return _process_amazon_login(access_token, amazon_user_email, amazon_user_id, request, amazon_user_name)
 
         else:
             return _handle_amazon_conn_error(request, profile_json_data)
