@@ -1,10 +1,13 @@
+from google.appengine.api import mail
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.http import require_http_methods
 from google.appengine.api import blobstore
+import re
 import settings
 from spudderaccounts.controllers import InvitationController
 from spudderaccounts.models import Invitation
 from spudderaccounts.templatetags.spudderaccountstags import is_fan, is_cern_student
+from spudderaccounts.wrappers import RoleBase
 from spudderdomain.controllers import TeamsController, RoleController, SpudsController, SocialController, \
     EntityController
 from spudderdomain.models import TeamPage, Location, TeamVenueAssociation, TeamAdministrator, FanPage
@@ -470,5 +473,41 @@ def disable_about(request):
         if message_id:
             team.dismiss_info_message(message_id)
         return HttpResponse(team.info_messages_dismissed)
+    else:
+        return HttpResponseNotAllowed(['POST'])
+
+
+def send_message(request, page_id):
+    """
+    Sends a message to the team manager
+    :param request: a POST request with message body
+    :param team_id: a valid ID of a TeamPage object
+    :return: a blank HttpResponse on success
+    """
+    if request.method == 'POST':
+        team = TeamPage.objects.get(id=page_id)
+
+        admin = TeamAdministrator.objects.filter(team_page=team)[0]
+
+        entity = RoleController.GetRoleForEntityTypeAndID(
+            admin.entity_type,
+            admin.entity_id,
+            RoleBase.RoleWrapperByEntityType(admin.entity_type)
+        )
+        email = entity.user.email
+        details = team.contact_details
+        if details and re.match(r'[\w\.]+\@[\w\.]+\.com$', details):
+            email = details
+
+        message = request.POST.get('message', '')
+        if message:
+            to = ['support@spudder.zendesk.com', email]
+            mail.send_mail(
+                subject='Message from Spudder about Team: %s' % team.name,
+                body=message,
+                sender=settings.SERVER_EMAIL,
+                to=to
+            )
+        return HttpResponse()
     else:
         return HttpResponseNotAllowed(['POST'])

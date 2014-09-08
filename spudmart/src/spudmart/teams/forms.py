@@ -9,11 +9,12 @@ from spudmart.CERN.models import SORTED_STATES
 
 class BaseTeamForm(forms.Form):
     name = forms.CharField(max_length=255, help_text='The name of your team must be unique.',
-                                label="Team name <span class=\"input-required\">*required</span>")
-    contact_details = forms.CharField(
+                           label="Team name <span class=\"input-required\">*required</span>",
+                           widget=forms.TextInput(attrs={'placeholder': 'Team name'}))
+    contact_details = forms.EmailField(
         max_length=255,
-        help_text='How should people contact you and your team? Leave instructions, number and emails '
-                  'addresses here!',
+        label="Email Address",
+        help_text="This is where you will receive messages from Spudder users about your Team",
         required=False)
     free_text = forms.CharField(
         max_length=255, help_text='Say something about your team!',
@@ -32,7 +33,8 @@ class CreateTeamForm(BaseTeamForm):
     at_name = forms.CharField(
         max_length=255,
         label="Teams @name <span class=\"input-required\">*required</span>",
-        help_text="Used to identify this team and link spuds to it! <b>lowercase letters and numbers only please</b><div class='alert alert-danger' style='display:none;' id='at_name_alert'></div>")
+        help_text="Used to identify this team and link spuds to it! <b>lowercase letters and numbers only please</b><div class='alert alert-danger' style='display:none;' id='at_name_alert'></div>",
+        widget=forms.TextInput(attrs={'placeholder': 'Team @name'}))
     sport = forms.ChoiceField(
         choices=[('', 'Select a sport...')] + [('%s' % x, SPORTS[x]) for x in range(len(SPORTS))],
         label="Sport <span class=\"input-required\">*required</span>")
@@ -59,7 +61,7 @@ class CreateTeamForm(BaseTeamForm):
 class EditTeamForm(BaseTeamForm):
     file = forms.FileField(
         required=False, label="Add logo to this team",
-        help_text="Great logos are square and about 200px x 200px")
+        help_text="Great logos are square and at least 200px x 200px")
 
     def __init__(self, *args, **kwargs):
         team_id = kwargs.pop('team_id', None)
@@ -81,7 +83,7 @@ class EditTeamForm(BaseTeamForm):
     def update_file_field_label_and_help_text(self):
         self.fields['file'].label = "Replace this team logo"
         self.fields['file'].help_text = """
-<span class=\"help-text-content\">Great logos are square and about 200px x 200px</span>
+<span class=\"help-text-content\">Great logos are square and at least 200px x 200px</span>
 <img class=\"edit-team-logo-img pull-left\" src=\"/file/serve/%s\"/>
 """ % self.image.id
 
