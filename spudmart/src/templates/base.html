@@ -70,7 +70,6 @@
                                                 <li><a href="/cern/"><i class="fa fa-fw fa-bar-chart-o"></i> Scoreboard</a></li>
                                                 <li><a href="{% current_student_page %}"><i class="fa fa-fw fa-user"></i> Student Page</a></li>
                                                 <li><a href="/cern/venues/"><i class="fa fa-fw fa-map-marker"></i> Public Venues</a></li>
-                                                {% if request.current_role.entity|student_has_temp_venues %}<li><a href="/cern/venues/temp"><i class="fa fa-fw fa-map-marker"></i> Temporary Venues</a></li>{% endif %}
                                                 <li><a href="/team/list"><i class="fa fa-fw fa-group"></i> My Teams</a></li>
                                                 <li><a href="/cern/social_media/"><i class="fa fa-fw fa-rss"></i> Social Media</a></li>
                                                 <li><a href="/cern/testing/"><i class="fa fa-fw fa-bug"></i> QA Testing</a></li>

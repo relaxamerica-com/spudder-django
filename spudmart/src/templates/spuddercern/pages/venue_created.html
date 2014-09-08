@@ -5,7 +5,7 @@
 {% block well_content %}
     <h4 class="text-center">Name Your New Venue!</h4>
 
-    <p>Congratulations, you created a new {{ venue.sport }} venue! Enter a <abbr title="A name others will recognize when looking for this venue">Common Name</abbr> as well as an <abbr title="A name for tagging your venue in SPUDS">@name</abbr> below.</p>
+    <p>Congratulations, you created a new {{ venue.sport }} venue! Now you need to name that venue. First, choose a "Common Name" - something that other people will recognize when they are searching for the venue you just created on Spudder. Next, choose an "@name" - this is a tag that people can use to link SPUDS to your new venue!</p>
     <p>Don't worry, you can change this information later.</p>
     <form role="form">
         <div class="form-group">
@@ -79,7 +79,7 @@
     $('#now').click(function(){
         var response = saveName();
         response.done(function(){
-            alert('You are now being redirected to the page of your Temporary Venue!');
+            alert('You are now being redirected to the page of your Unpublished Venue!');
             window.location = '/cern/venues/temp_view/{{ venue.id }}';
         })
     });
@@ -87,9 +87,9 @@
     $('#later').click(function(){
         var response = saveName();
         response.done(function(){
-            alert('You will now be redirect to your Temporary Venues list.');
-            window.location = '/cern/venues/temp';
+            alert('You will now be redirect to your Venues list.');
+            window.location = '/cern/venues/';
         })
-    })
+    });
 </script>
 {% endblock %}
