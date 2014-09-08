@@ -441,6 +441,11 @@ class SocialController(object):
             return False
         return True
 
+    @classmethod
+    def IsFanFollowsTheTeam(cls, fan, team):
+        return FanFollowingEntityTag.objects.filter(
+            fan=fan, entity_id=team.id, entity_type=EntityController.ENTITY_TEAM).count() > 0
+
 
 class CommunicationController(object):
 

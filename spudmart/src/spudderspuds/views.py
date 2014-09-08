@@ -310,6 +310,17 @@ def follow(request):
             base_well_url = 'spudderspuds/base_single_well.html'
             base_quote_url = 'spudderspuds/components/base_quote_message.html'
 
+        elif re.match(r'/team/\d+/admins', origin):
+            team = TeamPage.objects.get(id=str.split(origin, '/')[2])
+            name = team.name
+            tag = team.at_name
+            base_well_url = 'spudderspuds/base_single_well.html'
+            base_quote_url = 'spudderspuds/components/base_quote_message.html'
+            messages.success(
+                request,
+                "<h4><i class='fa fa-check'></i> You accepted the invitation to become an administrator</h4>"
+                "<p>You are now and administrator of %s, please create a custom #tag</p>" % team.name)
+
         elif re.match(r'/team/\d+', origin):
             team = TeamPage.objects.get(id=str.split(origin, '/')[-1])
             name = team.name
@@ -361,9 +372,11 @@ def start_following_view(request):
             entity_id = str.split(origin, '/')[-1]
         elif re.match(r'/team/\d+', origin):
             entity_type = EntityController.ENTITY_TEAM
-            entity_id = str.split(origin, '/')[-1]
+            entity_id = str.split(origin, '/')[2]
             team = TeamPage.objects.get(id=entity_id)
-            admin = TeamAdministrator.objects.get(team_page=team)
+            admin = TeamAdministrator.objects.get(team_page=team,
+                                                  entity_id=request.current_role.entity.id,
+                                                  entity_type=request.current_role.entity_type)
             if admin.entity_type == 'student':
                 stu = Student.objects.get(id=admin.entity_id)
                 team_gained_follower(stu)

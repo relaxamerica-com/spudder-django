@@ -318,7 +318,11 @@ def accept_fan_invitation(request, page_id, invitation_id):
             team_page=entity_team.entity
         )
         team_admin.save()
-        return HttpResponseRedirect('/team/%s/admins' % page_id)
+        if SocialController.IsFanFollowsTheTeam(fan, entity_team.entity):
+            return HttpResponseRedirect('/team/%s/admins' % page_id)
+        else:
+            redirect_url = "/fan/follow?origin=/team/%s/admins" % entity_team.entity.id
+            return HttpResponseRedirect(redirect_url)
 
 
 def public_view(request, page_id):
