@@ -1,12 +1,12 @@
 import urllib
-from google.appengine.api import urlfetch
-from django.db import models
+import logging
 import settings
 import simplejson
-from spudderdomain.models import TeamPage, FanPage
-from spudmart.sponsors.models import SponsorPage
-from spudmart.venues.models import Venue
+from google.appengine.api import urlfetch
+from django.db import models
 from django.shortcuts import get_object_or_404
+from spudderdomain.models import TeamPage, FanPage
+from spudmart.venues.models import Venue
 
 
 FOLLOWABLE_ENTITY_TYPES = ['Venue', 'Team', 'fan']
@@ -31,11 +31,16 @@ def register_entity(entity):
         'email': "%s%s@spudder.com" % (entity.type, entity._id),
         'password': settings.KROWDIO_GLOBAL_PASSWORD
     }
-
-    response = _post('http://auth.krowd.io/user/register', data)
-    krowdio_data = simplejson.loads(response.content)
-
-    _update_entity(entity, krowdio_data)
+    try:
+        response = _post('http://auth.krowd.io/user/register', data)
+        krowdio_data = simplejson.loads(response.content)
+        _update_entity(entity, krowdio_data)
+    except Exception as ex:
+        logging.warning("krowdio.models.register_entity: Error registering entity: %s" % ex)
+        if 'Email already exists' in "%s" % ex:
+            logging.debug("krowdio.models.register_entity: User already exists in Krowd.io, attempting login")
+            from spudderkrowdio.utils import _ensure_oAuth_token
+            _ensure_oAuth_token(entity)
 
 
 def _update_entity(entity, krowdio_data):
@@ -73,14 +78,20 @@ class KrowdIOStorage(models.Model):
         # if there is a specific handler for this entity type then use it
         from spudderdomain.controllers import EntityController
         if entity_type == EntityController.ENTITY_VENUE:
-            return cls.GetOrCreateForVenue(entity_id)
-        if entity_type == EntityController.ENTITY_TEAM:
-            return cls.GetOrCreateForTeam(entity_id)
-
-        storage, created = KrowdIOStorage.objects.get_or_create(role_type=entity_type, role_id=entity_id)
-        if created:
-            storage._id = storage.role_id
-            storage.type = storage.role_type
+            storage = cls.GetOrCreateForVenue(entity_id)
+        elif entity_type == EntityController.ENTITY_TEAM:
+            storage = cls.GetOrCreateForTeam(entity_id)
+        else:
+            storage, created = KrowdIOStorage.objects.get_or_create(role_type=entity_type, role_id=entity_id)
+            if created:
+                storage._id = storage.role_id
+                storage.type = storage.role_type
+                register_entity(storage)
+        if not storage.krowdio_email:
+            storage.role_type = entity_type
+            storage._id = entity_id
+            storage.type = entity_type
+            storage.krowdio_email = "%s%s@spudder.com" % (entity_type, entity_id)
             register_entity(storage)
         return storage
 

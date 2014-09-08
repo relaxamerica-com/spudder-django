@@ -208,16 +208,28 @@ class SpudsController(object):
     @classmethod
     def GetSpudsForFan(cls, fan_page):
         from spudderaccounts.wrappers import RoleFan
-        return get_user_mentions_activity(KrowdIOStorage.GetOrCreateForCurrentUserRole(RoleFan(fan_page)))
+        try:
+            return get_user_mentions_activity(KrowdIOStorage.GetOrCreateForCurrentUserRole(RoleFan(fan_page)))
+        except Exception as ex:
+            logging.error("%s" % ex)
+            return []
 
     @classmethod
     def GetSpudsForTeam(cls, team_page):
-        team_spuds = get_user_mentions_activity(KrowdIOStorage.GetOrCreateForTeam(team_page.id))
-        spud_stream = get_spud_stream_for_entity(
-            KrowdIOStorage.GetOrCreateFromEntity(
-                team_page.id,
-                EntityController.ENTITY_TEAM
-            ))
+        try:
+            team_spuds = get_user_mentions_activity(KrowdIOStorage.GetOrCreateForTeam(team_page.id))
+        except Exception as ex:
+            logging.error("%s" % ex)
+            team_spuds = []
+        try:
+            spud_stream = get_spud_stream_for_entity(
+                KrowdIOStorage.GetOrCreateFromEntity(
+                    team_page.id,
+                    EntityController.ENTITY_TEAM
+                ))
+        except Exception as ex:
+            logging.error("%s" % ex)
+            spud_stream = []
         return cls.MergeSpudLists(team_spuds, spud_stream)
 
     @classmethod
