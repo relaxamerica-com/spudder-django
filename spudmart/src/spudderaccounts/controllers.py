@@ -59,14 +59,13 @@ class InvitationController(object):
         else:
             raise NotImplementedError('Invitation type %s not supported')
 
-        invitation = Invitation.objects.get(
+        invitation, created = Invitation.objects.get_or_create(
             invitee_entity_id=invitee_entity_id,
             invitee_entity_type=invitee_entity_type,
-            status=Invitation.ACCEPTED_STATUS,
             invitation_type=invitation_type,
             target_entity_id=target_entity_id,
-            target_entity_type=target_entity_type
-        )
+            target_entity_type=target_entity_type,
+            defaults={'status': Invitation.ACCEPTED_STATUS})
         invitation.status = Invitation.REVOKED_STATUS
         invitation.save()
         CommunicationController.CommunicateWithEntity(

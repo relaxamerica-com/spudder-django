@@ -3,81 +3,93 @@
 
 {% block well_content %}
     <h3>Administrators for "{{ page.name }}"</h3>
-    <p>This list shows all the fan's who can administer team "{{ page.name }}"</p>
-    <hr />
-    <table class="table table-striped {% if admins %} datatable {% endif %}">
-        <thead>
-            <tr>
-                <th></th>
-                <th></th>
-                <th>Fans Name</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for admin in admins %}
-                <tr>
-                    <td style="width: 40px;">
-                        {{ forloop.counter }}
-                    </td>
-                    <td style="width:40px;">
-                        <a href="/fan/{{ admin.id }}">
-                            <img src="{% if admin.avatar %}/file/serve/{{ admin.avatar.id }}{% else %}/static/img/spudderspuds/button-fans-medium.png{% endif %}" style="width: 25px;"/>
-                        </a>
-                    </td>
-                    <td>
-                        <a href="/fan/{{ admin.id }}">{% fan_page_name admin %}</a>
-                        {% if admin.fan == request.user %}
-                            <span class="label label-primary">It's you!</span>
-                        {% endif %}
-                    </td>
-                    <td style="width: 40px;">
-                        {% if admin.fan != request.user %}
-                            <a class="btn btn-xs btn-primary" href="/team/{{ page.id }}/revoke_fan_invitation/{{ admin.id }}"
-                               title="Revoke administration access">
-                                <i class="fa fa-fw fa-times"> </i>
-                            </a>
-                        {% endif %}
-                    </td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
 
-    <br/>
+    <ul class="nav nav-tabs" role="tablist">
+        <li class="active"><a href="#admins" role="tab" data-toggle="tab">Administrators</a></li>
+        <li><a href="#invited-admins" role="tab" data-toggle="tab">invited Administrators</a></li>
+    </ul>
 
-    <p>This list shows all the fan's who are invited to be an "{{ page.name }}" team administer</p>
+    <div class="tab-content">
+        <div class="tab-pane active" id="admins">
+            <p>This list shows all the fan's who can administer team "{{ page.name }}"</p>
 
-    <table class="table table-striped {% if admins %} datatable {% endif %}">
-        <thead>
-            <tr>
-              <th>#</th>
-              <th>Fans Name</th>
-              <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for fan in invited_fans %}
-                <tr>
-                    <td style="width: 40px;">
-                        {{ forloop.counter }}
-                    </td>
-                    <td>
-{#                        <a href="/fan/{{ admin.id }}">#}
-{#                            <img src="{% if admin.avatar %}/file/serve/{{ admin.avatar.id }}{% else %}/static/img/spudderspuds/button-fans-medium.png{% endif %}" style="width: 25px;"/>#}
-{#                        </a>#}
-                        <a href="/fan/{{ fan.id }}">{% fan_page_name fan %}</a>
-                    </td>
-                    <td style="width: 40px;">
-                        <a class="btn btn-xs btn-primary"
-                           href="/team/{{ page.id }}/cancel_fan_invitation/{{ fan.id }}" title="Cancel invitation">
-                            <i class="fa fa-fw fa-ban"> </i>
-                        </a>
-                    </td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+            <table class="table table-striped {% if admins %} datatable {% endif %}">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th></th>
+                        <th>Fans Name</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for admin in admins %}
+                        <tr>
+                            <td style="width: 40px;">
+                                {{ forloop.counter }}
+                            </td>
+                            <td style="width:40px;">
+                                <a href="/fan/{{ admin.id }}">
+                                    <img src="{% if admin.avatar %}/file/serve/{{ admin.avatar.id }}{% else %}/static/img/spudderspuds/button-fans-medium.png{% endif %}" style="width: 25px;"/>
+                                </a>
+                            </td>
+                            <td>
+                                <a href="/fan/{{ admin.id }}">{% fan_page_name admin %}</a>
+                                {% if admin.fan == request.user %}
+                                    <span class="label label-primary">It's you!</span>
+                                {% endif %}
+                            </td>
+                            <td style="width: 40px;">
+                                {% if admin.fan != request.user %}
+                                    <a class="btn btn-xs btn-primary" href="/team/{{ page.id }}/revoke_fan_invitation/{{ admin.id }}"
+                                       title="Revoke administration access">
+                                        <i class="fa fa-fw fa-times"> </i>
+                                    </a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            </div>
+        <div class="tab-pane" id="invited-admins">
+            <p>This list shows all the fan's who are invited to be an "{{ page.name }}" team administer</p>
+
+            <table class="table table-striped {% if admins %} datatable {% endif %}">
+                <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>Fans Name</th>
+                      <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for fan in invited_fans %}
+                        <tr>
+                            <td style="width: 40px;">
+                                {{ forloop.counter }}
+                            </td>
+                            <td>
+        {#                        <a href="/fan/{{ admin.id }}">#}
+        {#                            <img src="{% if admin.avatar %}/file/serve/{{ admin.avatar.id }}{% else %}/static/img/spudderspuds/button-fans-medium.png{% endif %}" style="width: 25px;"/>#}
+        {#                        </a>#}
+                                <a href="/fan/{{ fan.id }}">{% fan_page_name fan %}</a>
+                            </td>
+                            <td style="width: 40px;">
+                                <a class="btn btn-xs btn-primary"
+                                   href="/team/{{ page.id }}/cancel_fan_invitation/{{ fan.id }}" title="Cancel invitation">
+                                    <i class="fa fa-fw fa-ban"> </i>
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+    <br/><br/>
 
     <button type="button" class="btn btn-primary" data-toggle="collapse" data-target="#add-admins">
         <i class="fa fa-search"></i> Find more fans
