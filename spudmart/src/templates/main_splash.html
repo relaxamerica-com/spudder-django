@@ -1,6 +1,5 @@
 {% extends 'base.html' %}
 {% load bootstrap3 %}
-{% load featuretags %}
 
 {% block title %}Spudder - Sports Updated Made Simple!{% endblock %}
 
@@ -12,102 +11,142 @@
     <link rel="stylesheet" href="/static/css/spudderspuds.css" />
 {% endblock %}
 
-{% block header %}{% endblock %}
+{#{% block header %}{% endblock %}#}
 
 {% block body_id %}main-splash{% endblock %}
 
 {% block body %}
     <div class="jumbotron">
         <div class="container">
-            <div class="caption">
-                <div class="row">
-                    <div class="col-sm-7 col-md-8">
-                        <h1>
-                            <img src="/static/img/spudderspuds/logo-spuds-large.png" class="img-responsive"/>
-{#                            <img src="/static/img/spudderspuds/button-spuds-medium.png" class="hidden-xs"/>#}
-{#                            <img src="/static/img/spudderspuds/button-spuds-small.png" class="hidden-sm hidden-md hidden-lg"/>#}
-{#                            Spudder#}
-                        </h1>
-                        <h2>Spudder has forever changed the face of youth sports</h2>
-                    </div>
-                    <div class="col-xs-8 col-xs-offset-2 col-sm-5 col-sm-offset-0 col-md-4">
-                        <div class="embed-responsive embed-responsive-16by9">
-                            <iframe width="560" height="315" src="//www.youtube.com/embed/liJrY694jKw" frameborder="0" allowfullscreen></iframe>
+            <div class="row">
+                <div class="col-sm-5 col-sm-offset-1">
+                    <img src="/static/img/spudderspuds/logo-spuds-large-glow.png" class="img-responsive"/>
+                    <h2 id="message1">
+{#                        <img src="/static/img/spudderspuds/button-spuds-small.png"/>#}
+                        Spudder <i>Sports Updates Made Simple</i>
+                    </h2>
+                    <hr class="hidden-xs"/>
+                    <div class="row">
+                        <div class="col-sm-12 col-sm-offset-0 col-md-10 col-md-offset-1 hidden-xs">
+                            <div class="embed-responsive embed-responsive-16by9">
+                                <iframe width="560" height="315" src="//www.youtube.com/embed/liJrY694jKw" frameborder="0" allowfullscreen></iframe>
+                            </div>
                         </div>
                     </div>
+                    <h4 id="message2">
+                        Spudder is a <b>free</b> youth sports management system that allows <b>Fans</b>, <b>Coaches</b>
+                        and <b>Players</b> to share <abbr title="Sports Updates">Spuds</abbr>, manage teams and venues, promote
+                        and <b>fundraise</b>!
+                    </h4>
+
+                </div>
+                <div class="col-sm-4 col-sm-offset-1 hidden-xs">
+                    {% include 'components/main_splash_signin_register.html' %}
                 </div>
             </div>
         </div>
     </div>
-
-    <div class="container">
-
+    <div class="visible-xs">
         <div class="row">
-            <div class="col-xs-12">
-                <div class="page-header">
-                    <h1>
-                        <img src="/static/img/spudderspuds/button-spuds-small.png"/>
-                        Spudder <small>Sports Updates Made Simple</small>
-                    </h1>
+            <div class="col-xs-10 col-xs-offset-1">
+                <hr/>
+                <div class="embed-responsive embed-responsive-16by9">
+                    <iframe width="560" height="315" src="//www.youtube.com/embed/liJrY694jKw" frameborder="0" allowfullscreen></iframe>
                 </div>
-                <h4>
-                    Spudder is a <b>free</b> youth sports management system that allows <b>Fans</b>, <b>Coaches</b>
-                    and <b>Players</b> to share <abbr title="Sports Updates">Spuds</abbr>, manage teams and venues, promote
-                    and <b>fundraise</b>!
-                </h4>
+                <hr/>
+                {% include 'components/main_splash_signin_register.html' %}
+            </div>
+        </div>
+    </div>
+{#            <div class="caption">#}
+{#                <div class="row">#}
+{#                    <div class="col-sm-7 col-md-8">#}
+{#                        <h1>#}
+{#                            <img src="/static/img/spudderspuds/logo-spuds-large.png" class="img-responsive"/>#}
+{#                            <img src="/static/img/spudderspuds/button-spuds-medium.png" class="hidden-xs"/>#}
+{#                            <img src="/static/img/spudderspuds/button-spuds-small.png" class="hidden-sm hidden-md hidden-lg"/>#}
+{#                            Spudder#}
+{#                        </h1>#}
+{#                        <h2>Spudder has forever changed the face of youth sports</h2>#}
+{#                    </div>#}
+{#                    <div class="col-xs-8 col-xs-offset-2 col-sm-5 col-sm-offset-0 col-md-4">#}
+{#                        <div class="embed-responsive embed-responsive-16by9">#}
+{#                            <iframe width="560" height="315" src="//www.youtube.com/embed/liJrY694jKw" frameborder="0" allowfullscreen></iframe>#}
+{#                        </div>#}
+{#                    </div>#}
+{#                </div>#}
+{#            </div>#}
+        </div>
+    </div>
 
-                <div class="row" style="margin-top: 40px;">
-                    <div class="col-md-6 role-callout">
-                        <div class="row">
-                            <div class="col-xs-4">
-                                <img src="/static/img/spudderspuds/button-fans-large.png" class="img-responsive"/>
-                            </div>
-                            <div class="col-xs-8 role-callout-body">
-                                <h2>Fans</h2>
-                                <p>Post, share, interact and CHEER! Everyone is a FAN!</p>
-                                <a href="/spuds/register" class="btn btn-primary">
-                                    Register as a Fan
-                                </a>
-                                <a href="/spuds/signin" class="btn btn-default">
-                                    Signin to your account
-                                </a>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-xs-10 col-xs-offset-1">
-                                <div class="embed-responsive embed-responsive-16by9" style="margin-top: 20px;">
-                                    <iframe width="560" height="315" src="//www.youtube.com/embed/XMFkFbLrJro" frameborder="0" allowfullscreen></iframe>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6 role-callout">
-                        <div class="row">
-                            <div class="col-xs-4">
-                                <img src="/static/img/spudderspuds/button-teams-large.png" class="img-responsive"/>
-                            </div>
-                            <div class="col-xs-8 role-callout-body">
-                                <h2>Teams</h2>
-                                <p>Build your community, manage your TEAMS and get your own Sponsors. Join Spudder to become an official TEAM and use our easy fundraising and communication tools.</p>
-                                <p><small>You must register a fan account to start creating teams</small></p>
-                                <a href="/spuds/register" class="btn btn-primary">
-                                    Register as a Fan
-                                </a>
-                                <a href="/spuds/signin" class="btn btn-default">
-                                    Signin to your account
-                                </a>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-xs-10 col-xs-offset-1">
-                                <div class="embed-responsive embed-responsive-16by9" style="margin-top: 20px;">
-                                    <iframe width="560" height="315" src="//www.youtube.com/embed/1u-iAQYgU6I" frameborder="0" allowfullscreen></iframe>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
+{#    <div class="container">#}
+{##}
+{#        <div class="row">#}
+{#            <div class="col-xs-12">#}
+{#                <div class="page-header">#}
+{#                    <h1>#}
+{#                        <img src="/static/img/spudderspuds/button-spuds-small.png"/>#}
+{#                        Spudder <small>Sports Updates Made Simple</small>#}
+{#                    </h1>#}
+{#                </div>#}
+{#                <h4>#}
+{#                    Spudder is a <b>free</b> youth sports management system that allows <b>Fans</b>, <b>Coaches</b>#}
+{#                    and <b>Players</b> to share <abbr title="Sports Updates">Spuds</abbr>, manage teams and venues, promote#}
+{#                    and <b>fundraise</b>!#}
+{#                </h4>#}
+{##}
+{#                <div class="row" style="margin-top: 40px;">#}
+{#                    <div class="col-md-6 role-callout">#}
+{#                        <div class="row">#}
+{#                            <div class="col-xs-4">#}
+{#                                <img src="/static/img/spudderspuds/button-fans-large.png" class="img-responsive"/>#}
+{#                            </div>#}
+{#                            <div class="col-xs-8 role-callout-body">#}
+{#                                <h2>Fans</h2>#}
+{#                                <p>Post, share, interact and CHEER! Everyone is a FAN!</p>#}
+{#                                <a href="/spuds/register" class="btn btn-primary">#}
+{#                                    Register as a Fan#}
+{#                                </a>#}
+{#                                <a href="/spuds/signin" class="btn btn-default">#}
+{#                                    Signin to your account#}
+{#                                </a>#}
+{#                            </div>#}
+{#                        </div>#}
+{#                        <div class="row">#}
+{#                            <div class="col-xs-10 col-xs-offset-1">#}
+{#                                <div class="embed-responsive embed-responsive-16by9" style="margin-top: 20px;">#}
+{#                                    <iframe width="560" height="315" src="//www.youtube.com/embed/XMFkFbLrJro" frameborder="0" allowfullscreen></iframe>#}
+{#                                </div>#}
+{#                            </div>#}
+{#                        </div>#}
+{#                    </div>#}
+{#                    <div class="col-md-6 role-callout">#}
+{#                        <div class="row">#}
+{#                            <div class="col-xs-4">#}
+{#                                <img src="/static/img/spudderspuds/button-teams-large.png" class="img-responsive"/>#}
+{#                            </div>#}
+{#                            <div class="col-xs-8 role-callout-body">#}
+{#                                <h2>Teams</h2>#}
+{#                                <p>Build your community, manage your TEAMS and get your own Sponsors. Join Spudder to become an official TEAM and use our easy fundraising and communication tools.</p>#}
+{#                                <p><small>You must register a fan account to start creating teams</small></p>#}
+{#                                <a href="/spuds/register" class="btn btn-primary">#}
+{#                                    Register as a Fan#}
+{#                                </a>#}
+{#                                <a href="/spuds/signin" class="btn btn-default">#}
+{#                                    Signin to your account#}
+{#                                </a>#}
+{#                            </div>#}
+{#                        </div>#}
+{#                        <div class="row">#}
+{#                            <div class="col-xs-10 col-xs-offset-1">#}
+{#                                <div class="embed-responsive embed-responsive-16by9" style="margin-top: 20px;">#}
+{#                                    <iframe width="560" height="315" src="//www.youtube.com/embed/1u-iAQYgU6I" frameborder="0" allowfullscreen></iframe>#}
+{#                                </div>#}
+{#                            </div>#}
+{#                        </div>#}
+{#                    </div>#}
+{#                </div>#}
+{##}
 {#                <div class="panel panel-default spudder-section-panel">#}
 {#                    <div class="panel-body">#}
 {#                        <div class="media">#}
@@ -126,118 +165,54 @@
 {#                        </div>#}
 {#                    </div>#}
 {#                </div>#}
-            </div>
-        </div>
-
-        <hr style="margin: 80px 0" />
-
-        <div class="rwo">
-            {% if not 'clubs'|feature_is_enabled %}
-                <div class="col-sm-4 col-sm-offset-1">
-                    <div class="panel panel-default spudder-section-panel">
-                        <div class="panel-body">
-                            <div class="media">
-                                <img src="/static/img/spuddercern/button-cern-medium.png" class="media-object pull-left img-responsive"/>
-                                <div class="media-body">
-                                    <h4 class="media-heading">
-                                        CERN
-                                    </h4>
-                                    <h5>
-                                        The Spudder Campus Entrepreneur Recruiting Network
-                                    </h5>
-                                    <a class="btn btn-default" href="/cern">
-                                        Go!
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-4 col-sm-offset-2">
-                    <div class="panel panel-default spudder-section-panel">
-                        <div class="panel-body">
-                            <div class="media">
-                                <img src="/static/img/spuddersponsors/button-sponsors-medium.png" class="media-object pull-left img-responsive"/>
-                                <div class="media-body">
-                                    <h4 class="media-heading">
-                                        Sponsors
-                                    </h4>
-                                    <h5>
-                                        The Spudder Sponsors Network
-                                    </h5>
-                                    <a class="btn btn-default" href="/sponsor_network">
-                                        Go!
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            {% else %}
-                <div class="col-sm-4">
-                    <div class="panel panel-default spudder-section-panel">
-                        <div class="panel-body">
-                            <div class="media">
-                                <img src="/static/img/spuddercern/button-cern-medium.png" class="media-object pull-left img-responsive"/>
-                                <div class="media-body">
-                                    <h4 class="media-heading">
-                                        CERN
-                                    </h4>
-                                    <h5>
-                                        The Spudder Campus Entrepreneur Recruiting Network
-                                    </h5>
-                                    <a class="btn btn-default" href="/cern">
-                                        Go!
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-4">
-                    <div class="panel panel-default spudder-section-panel">
-                        <div class="panel-body">
-                            <div class="media">
-                                <img src="/static/img/spuddersponsors/button-sponsors-medium.png" class="media-object pull-left img-responsive"/>
-                                <div class="media-body">
-                                    <h4 class="media-heading">
-                                        Sponsors
-                                    </h4>
-                                    <h5>
-                                        The Spudder Sponsors Network
-                                    </h5>
-                                    <a class="btn btn-default" href="/sponsor_network">
-                                        Go!
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-sm-4">
-                    <div class="panel panel-default spudder-section-panel">
-                        <div class="panel-body">
-                            <div class="media">
-                                <img src="/static/img/spudderclubs/button-clubs-medium.png" class="media-object pull-left img-responsive"/>
-                                <div class="media-body">
-                                    <h4 class="media-heading">
-                                        Clubs
-                                    </h4>
-                                    <h5>
-                                        The Spudder Clubs Network
-                                    </h5>
-                                    <a class="btn btn-default" href="/club">
-                                        Go!
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            {% endif %}
-        </div>
-
+{#            </div>#}
+{#        </div>#}
+{##}
+{#        <hr style="margin: 80px 0" />#}
+{##}
+{#        <div class="rwo">#}
+{#            <div class="col-sm-4 col-sm-offset-1">#}
+{#                <div class="panel panel-default spudder-section-panel">#}
+{#                    <div class="panel-body">#}
+{#                        <div class="media">#}
+{#                            <img src="/static/img/spuddercern/button-cern-medium.png" class="media-object pull-left img-responsive"/>#}
+{#                            <div class="media-body">#}
+{#                                <h4 class="media-heading">#}
+{#                                    CERN#}
+{#                                </h4>#}
+{#                                <h5>#}
+{#                                    The Spudder Campus Entrepreneur Recruiting Network#}
+{#                                </h5>#}
+{#                                <a class="btn btn-default" href="/cern">#}
+{#                                    Go!#}
+{#                                </a>#}
+{#                            </div>#}
+{#                        </div>#}
+{#                    </div>#}
+{#                </div>#}
+{#            </div>#}
+{#            <div class="col-sm-4 col-sm-offset-2">#}
+{#                <div class="panel panel-default spudder-section-panel">#}
+{#                    <div class="panel-body">#}
+{#                        <div class="media">#}
+{#                            <img src="/static/img/spuddersponsors/button-sponsors-medium.png" class="media-object pull-left img-responsive"/>#}
+{#                            <div class="media-body">#}
+{#                                <h4 class="media-heading">#}
+{#                                    Sponsors#}
+{#                                </h4>#}
+{#                                <h5>#}
+{#                                    The Spudder Sponsors Network#}
+{#                                </h5>#}
+{#                                <a class="btn btn-default" href="/sponsor_network">#}
+{#                                    Go!#}
+{#                                </a>#}
+{#                            </div>#}
+{#                        </div>#}
+{#                    </div>#}
+{#                </div>#}
+{#            </div>#}
+{#        </div>#}
+{##}
 {##}
 {#        <div class="page-header">#}
 {#            <h1>#}
@@ -304,5 +279,5 @@
 {#                </div>#}
 {#            </div>#}
 {#        </div>#}
-    </div>
+{#    </div>#}
 {% endblock %}

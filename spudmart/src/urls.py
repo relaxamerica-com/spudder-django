@@ -1,9 +1,10 @@
 import urlparse
 from django.conf.urls.defaults import *
 from django.http import HttpResponseRedirect
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, render
 from django.views.generic import RedirectView
 from spudderdomain.controllers import RoleController
+from spudderspuds.forms import FanSigninForm
 
 handler404 = 'django.views.defaults.page_not_found'
 handler500 = 'djangotoolbox.errorviews.server_error'
@@ -43,7 +44,10 @@ def temp_redirect_view(request):
         if request.current_role.entity_type == RoleController.ENTITY_SPONSOR:
             return HttpResponseRedirect('/sponsor')
 
-    return render_to_response('main_splash.html')
+    template_data = {
+        'signin_form': FanSigninForm()
+    }
+    return render(request, 'main_splash.html', template_data)
 
 urlpatterns = patterns(
     '',

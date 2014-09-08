@@ -6,14 +6,11 @@ Disallow: /venues
 Disallow: /spudder
 Disallow: /upload
 Disallow: /sponsor
-Disallow: /team
 Disallow: /hospitals
 Disallow: /file
 Disallow: /api
 Disallow: /cern/
 Disallow: /users
-Disallow: /spuds/
-Disallow: /fan
 Disallow: /flag
 Disallow: /spudderadmin
 Disallow: /socialengine
@@ -24,3 +21,5 @@ Disallow: /static
 Disallow: /media
 Disallow: /favicon.ico
 Disallow: /admin
+Disallow: /*save
+Disallow: /*remove

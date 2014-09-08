@@ -36,6 +36,7 @@
         <script type="text/javascript" language="javascript" src="/static/js/libs/bootstrap.min.js"></script>
         <script type="text/javascript" language="javascript" src="/static/js/libs/jquery.livequery.js"></script>
         <script type="text/javascript" src="/static/js/alerts.js"></script>
+        <meta name="google-site-verification" content="LwTjfOkDzf-7D6U-ROwvrvO_2g8S6lktzpPrpYXfHC8" />
     </head>
     <body class="{% block body_class %}{% endblock %}" id="{% block body_id %}{% endblock %}">
         {% block flag-modal %}{% endblock %}
@@ -43,12 +44,14 @@
             <nav class="navbar navbar-masthead navbar-default navbar-static-top" role="navigation">
                 <div class="container-fluid">
                     <div class="navbar-header">
-                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                            <span class="sr-only">Toggle navigation</span>
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                        </button>
+                        {% if request.current_role %}
+                            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                                <span class="sr-only">Toggle navigation</span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                            </button>
+                        {% endif %}
                         {% block nav_brand %}<a href="/"><img src="/static/img/spudderspuds/logo-spuds-small.png" style="height:35px;margin-top:2px;"/> </a>{% endblock %}
                     </div>
                     {% block masterhead %}{% endblock %}
@@ -145,7 +148,7 @@
 {#                                                    </div>#}
                                                 {% endif %}
                                             </li>
-                                            <li><a href="/accounts/logout?next={% block logout_next_url %}/{% endblock %}"><i class="fa fa-fw fa-power-off"></i> Logout</a></li>
+                                            <li><a href="/accounts/logout"><i class="fa fa-fw fa-power-off"></i> Logout</a></li>
                                         </ul>
                                     </li>
                                     {% block support_nav %}
