@@ -316,6 +316,7 @@ def follow(request):
             tag = team.at_name
             base_well_url = 'spudderspuds/base_single_well.html'
             base_quote_url = 'spudderspuds/components/base_quote_message.html'
+            origin = "/team/%s" % team.id
             messages.success(
                 request,
                 "<h4><i class='fa fa-check'></i> You accepted the invitation to become an administrator</h4>"
