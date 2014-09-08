@@ -528,6 +528,7 @@ def mobile(request):
 def venues(request):
     stu = request.current_role.entity
     template_data = {'venues': Venue.objects.filter(student=stu),
+                     'temp_venues': TempVenue.objects.filter(student=stu),
                      'student': stu}
     return render(request, 'spuddercern/pages/dashboard_pages/venues.html', template_data)
 
@@ -1194,18 +1195,6 @@ def venue_created(request, venue_id):
     venue = TempVenue.objects.get(id=venue_id)
     return render(request, 'spuddercern/pages/venue_created.html', {
         'venue': venue
-    })
-
-
-@user_passes_test(user_is_student, '/cern/non-student/')
-def temp_venues_list(request):
-    """
-    Displays a list of the TempVenue objects associated with student
-    :param request: any request
-    :return: a table of TempVenue objects
-    """
-    return render(request, 'spuddercern/pages/temp_venues.html', {
-        'venues': TempVenue.objects.filter(student=request.current_role.entity)
     })
 
 

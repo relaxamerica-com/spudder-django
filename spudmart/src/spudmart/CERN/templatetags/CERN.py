@@ -123,13 +123,3 @@ def display_name(student):
         return student.display_name
     else:
         return user_name(student.user)
-
-
-@register.filter()
-def student_has_temp_venues(student):
-    """
-    Checks to see whether the student has any temporary venues
-    :param student: any Student objects
-    :return: a boolean
-    """
-    return bool(TempVenue.objects.filter(student=student))

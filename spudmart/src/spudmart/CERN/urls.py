@@ -10,7 +10,6 @@ urlpatterns = patterns(
     url(r'^venues/new/$', 'venues_new'),
     url(r'^venues/create_temp$', 'create_temp_venue'),
     url(r'^venues/venue_created/(?P<venue_id>\d+)$', 'venue_created'),
-    url(r'^venues/temp$', 'temp_venues_list'),
     url(r'^venues/temp_view/(?P<venue_id>\d+)$', 'temp_venue_view'),
     url(r'^venues/delete/(?P<venue_id>\d+)$', 'delete_venue'),
     url(r'^venues/publish/(?P<venue_id>\d+)$', 'publish_venue'),
