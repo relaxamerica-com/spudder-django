@@ -1,6 +1,10 @@
+from django.core.exceptions import ObjectDoesNotExist
 from django.template.defaulttags import register
 from google.appengine.api import urlfetch
+import re
+from spudderdomain.controllers import RoleController, EntityController
 from spudderdomain.models import FanPage
+from spudderkrowdio.models import KrowdIOStorage, FanFollowingEntityTag
 from spudmart.CERN.models import STATES, Student
 from spudmart.accounts.templatetags.accounts import fan_page_name, user_name
 
@@ -99,6 +103,7 @@ def entity_view_link(entity, entity_type):
 def social_media_list(entity):
     return {'entity': entity}
 
+
 @register.filter
 def spud_is_valid(spud):
     result = urlfetch.fetch(url=spud['image']['standard_resolution']['url'])
@@ -106,3 +111,75 @@ def spud_is_valid(spud):
         return False
     else:
         return True
+
+
+@register.simple_tag
+def krowdio_user_profile(krowdio_user):
+    """
+    Links to the Spudder profile from KrowdIO user ID
+    :param krowdio_user: a User description from KrowdIO API
+    :return: a rel link to a Spudder profile page
+    """
+    storage = KrowdIOStorage.objects.get(krowdio_user_id=krowdio_user['_id'])
+    get_link_from_storage(storage)
+
+
+def get_link_from_storage(storage):
+    """
+    Gets a rel link to profile from a KrowdIO storage object
+    :param storage: any KrowdIO Storage object
+    :return: a string rel link to Spudder profile
+    """
+    if storage.role_type == RoleController.ENTITY_FAN:
+        return '/fan/%s' % storage.role_id
+    elif storage.role_type == EntityController.ENTITY_TEAM:
+        return '/team/%s' % storage.team.id
+    elif storage.role_type == EntityController.ENTITY_VENUE:
+        return '/venues/view/%s' % storage.venue.id
+
+
+@register.filter
+def parse_text_for_entities(user_mentions, krowdio_user):
+    """
+    Makes tagged entities into links
+    :param user_mentions: the users linked to a SPUD
+    :param krowdio_user: the SPUD author
+    :return: html of image by type & links to profiles
+    """
+    poster = KrowdIOStorage.objects.get(krowdio_user_id=krowdio_user['_id'])
+    mentioned = []
+    links = []
+    for user in user_mentions:
+        storage = KrowdIOStorage.objects.get(krowdio_user_id=user['_id'])
+        if storage != poster and storage not in mentioned:
+            link = get_link_from_storage(storage)
+            img = "/static/img/spudderspuds/button-spuds-tiny.png"
+            name = ""
+            if storage.role_type == RoleController.ENTITY_FAN:
+                img = "/static/img/spudderspuds/button-fans-tiny.png"
+                name = "Fan: %s" % FanPage.objects.get(id=storage.role_id).name
+            elif storage.role_type == EntityController.ENTITY_TEAM:
+                img = "/static/img/spudderspuds/button-teams-tiny.png"
+                name = "Team: %s" % storage.team.name
+            elif storage.role_type == EntityController.ENTITY_VENUE:
+                img = "/static/img/spuddervenues/button-venues-tiny.png"
+                name = "Venue: %s" % storage.venue.aka_name
+            links.append('<a href="%s" title="%s"><img src="%s"></a>' % (link, name, img))
+            mentioned.append(storage)
+
+    return ' '.join(links)
+
+
+@register.filter
+def get_all_user_mentions(full_spud):
+    """
+    Pulls user mentions from original posts & comments
+    :param full_spud: a SPUD fresh from KrowdIO API
+    :return: a list of dicts of user_mentions
+    """
+    user_mentions = full_spud['entities']['user_mentions']
+    if len(full_spud['comments']) > 1:
+        for comment in full_spud['comments']['data']:
+            user_mentions += comment['entities']['user_mentions']
+
+    return user_mentions

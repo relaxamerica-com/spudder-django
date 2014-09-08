@@ -1,11 +1,13 @@
 {% if request.current_role.is_following_other_entities %}
-    <a class="btn btn-primary btn-sm spud-add-tags" title="Add Tags" id="add-spud-tags" style="top:8px"><i class="fa fa-fw fa-tags"></i></a>
+    <a class="btn btn-primary btn-sm spud-add-tags" title="Add Tags" id="add-spud-tags" style="top:20px"><i class="fa fa-fw fa-tags"></i></a>
     <div class="user media" id="add-tags-div" style="color:black !important;display:none;">
-        <p style="color:white !important">Tag someone you follow:</p>
-        <select id="select2" multiple style="z-index:1;width:200px;margin:8px;" krowdioID="{{ id }}">
-            {% for tag_and_entity in request.current_role.get_following_entities_by_entity_type %}
-                <option data-img="{{ tag_and_entity.entity.icon }}">{{ tag_and_entity.tag }}</option>
-            {% endfor %}
-        </select>
+        <div class="media-body">
+            <p style="color:white !important">Tag someone you follow:</p>
+            <select id="select2" multiple style="z-index:1;width:200px;margin:8px;" krowdioID="{{ id }}">
+                {% for tag_and_entity in request.current_role.get_following_entities_by_entity_type %}
+                    <option data-img="{{ tag_and_entity.entity.icon }}">{{ tag_and_entity.tag }}</option>
+                {% endfor %}
+            </select>
+        </div>
     </div>
 {% endif %}

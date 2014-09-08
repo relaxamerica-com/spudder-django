@@ -601,7 +601,7 @@
                         if ($(this).hasClass('btn-sm')){
                             $(this).parents('.carousel').carousel('pause');
                             $(this).siblings('#original-spud-data').hide();
-                            $(this).siblings("#add-tags-div").children("#select2").select2({
+                            $(this).siblings("#add-tags-div").children('.media-body').children("#select2").select2({
                                 formatResult: format,
                                 formatSelection: format,
                                 formatNoMatches: "No one else to tag!",
