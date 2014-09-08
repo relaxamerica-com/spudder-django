@@ -9,13 +9,43 @@
         height: 600px;
         background-size: cover;
         overflow:hidden;
+        margin-top: -20px;
+        margin-bottom: 0;
 
-        .caption {
-            position: relative;
-            background: rgba(255,255,255,0.6);
-            padding: 20px;
-            margin-top: 60px;
+        @media (max-width: @screen-xs-max) {
+            height:350px;
         }
+
+
+        #message1 {
+            text-align: center;
+            color: #FFF;
+            text-shadow: -1px 1px 8px #7086B9, 1px -1px 8px #7086B9;
+            i {
+                font-size:80%;
+            }
+        }
+
+        hr {
+            padding-top: 20px;
+        }
+
+        #message2 {
+            text-align: justify;
+            color: #FFF;
+            text-shadow: -1px 1px 8px #5A7E63, 1px -1px 8px #5A7E63;
+        }
+
+        .panel {
+            border-radius: 5px;
+        }
+
+//        .caption {
+//            position: relative;
+//            background: rgba(255,255,255,0.6);
+//            padding: 20px;
+//            margin-top: 60px;
+//        }
     }
 
     .role-callout {
