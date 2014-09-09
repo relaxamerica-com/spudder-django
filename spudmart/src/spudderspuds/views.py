@@ -6,9 +6,11 @@ from django.contrib.auth.models import User
 from django.http import HttpResponse, HttpResponseNotAllowed
 from django.shortcuts import render, render_to_response, redirect, get_object_or_404
 from django.template import RequestContext
+from django.http import HttpResponseNotFound, HttpResponseRedirect
 from django.template.loader import render_to_string
 from google.appengine.api import blobstore
 import simplejson
+from spudderaccounts.models import Invitation
 from spudderaccounts.templatetags.spudderaccountstags import is_fan, user_has_fan_role
 from spudderaccounts.utils import change_current_role
 from spudderaccounts.wrappers import RoleFan
@@ -105,6 +107,17 @@ def fan_register(request):
                 (request.GET['twitter'], request.GET['spud_id']))
         else:
             return redirect('/spuds/register_add_fan_role')
+
+    invitation_id = request.session.get('invitation_id')
+    invitation = None
+    if invitation_id:
+        try:
+            invitation = Invitation.objects.get(id=invitation_id, status=Invitation.PENDING_STATUS,
+                                                invitation_type=Invitation.REGISTER_AND_ADMINISTRATE_TEAM_INVITATION)
+        except Invitation.DoesNotExist:
+            pass
+
+
     template_data = {}
     if request.method == "POST":
         form = FanRegisterForm(request.POST)
@@ -121,9 +134,16 @@ def fan_register(request):
                 fan_role.entity,
                 form.cleaned_data.get('twitter', None),
                 form.cleaned_data.get('spud_id', None))
+            if invitation and invitation.invitation_type == Invitation.REGISTER_AND_ADMINISTRATE_TEAM_INVITATION:
+                team_admin = TeamAdministrator(entity_type=fan_role.entity_type, entity_id=fan_role.entity.id)
+                team_admin.team_page_id = invitation.target_entity_id
+                team_admin.save()
             return redirect('/fan/%s/edit?new_registration=true' % fan_role.entity.id)
     else:
-        form = FanRegisterForm(initial=request.GET)
+        if invitation and invitation.invitation_type == Invitation.REGISTER_AND_ADMINISTRATE_TEAM_INVITATION:
+            form = FanRegisterForm(initial={'email_address': invitation.invitee_entity_id})
+        else:
+            form = FanRegisterForm(initial=request.GET)
     template_data["form"] = form
     return render_to_response(
         'spudderspuds/pages/user_register.html',
@@ -577,3 +597,14 @@ def get_at_names(request):
         at_names.append(t.at_name)
 
     return HttpResponse(simplejson.dumps(at_names))
+
+
+def accept_invitation(request, invitation_id):
+    try:
+        invitation = Invitation.objects.get(id=invitation_id, status=Invitation.PENDING_STATUS)
+    except Invitation.DoesNotExist:
+        return HttpResponseNotFound()
+
+    if invitation.invitation_type == Invitation.REGISTER_AND_ADMINISTRATE_TEAM_INVITATION:
+        request.session['invitation_id'] = invitation_id
+        return HttpResponseRedirect('/spuds/register')

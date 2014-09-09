@@ -1,8 +1,9 @@
 from django import forms
+from django.contrib.auth.models import User
 from django.forms import HiddenInput
 from django.forms.models import ModelForm
 from spudderdomain.controllers import SocialController
-from spudderdomain.models import TeamPage
+from spudderdomain.models import TeamPage, FanPage
 from spudmart.venues.models import SPORTS
 from spudmart.CERN.models import SORTED_STATES
 
@@ -92,3 +93,17 @@ class TeamPageForm(ModelForm):
     class Meta:
         model = TeamPage
         exclude = ('image', 'location')
+
+
+class InviteNewFanByEmailForm(forms.Form):
+    email = forms.EmailField()
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if email:
+            users = User.objects.filter(username=email)
+            if users:
+                for user in users:
+                    if FanPage.objects.filter(fan=user).count() > 0:
+                        raise forms.ValidationError('Fan with such email already exists')
+        return email

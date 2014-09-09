@@ -6,8 +6,19 @@ from spudderdomain.models import TeamAdministrator
 class InvitationController(object):
 
     @classmethod
-    def InviteNonUser(cls):
-        pass
+    def InviteNonUser(cls, invitee_email, invitation_type, target_entity_id, target_entity_type):
+        invitation, created = Invitation.objects.get_or_create(
+            invitee_entity_id=invitee_email,
+            invitation_type=invitation_type,
+            target_entity_id=target_entity_id,
+            target_entity_type=target_entity_type,
+            defaults={'status': Invitation.PENDING_STATUS})
+        invitation.status = Invitation.PENDING_STATUS
+        invitation.save()
+        CommunicationController.CommunicateWithNonUserByEmail(
+            invitee_email,
+            invitation=invitation,
+            communication_type=CommunicationController.TYPE_EMAIL)
 
     @classmethod
     def InviteEntity(cls, invitee_entity_id, invitee_entity_type,

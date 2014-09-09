@@ -465,7 +465,7 @@ class CommunicationController(object):
     COMMUNICATION_TYPES = (TYPE_EMAIL, )
 
     @classmethod
-    def CommunicateWithEmail(cls, entity, **kwargs):
+    def CommunicateWithEmail(cls, emails=[], **kwargs):
         from spudderaccounts.models import Invitation
         invitation = kwargs['invitation']
         invitation_type = invitation.invitation_type
@@ -498,26 +498,46 @@ Your invitation to administer team "%s" has been revoked.
 
 Kind regards, team Spudder.
 """ % team.name
+            elif invitation_type == Invitation.REGISTER_AND_ADMINISTRATE_TEAM_INVITATION:
+                team = TeamPage.objects.get(id=invitation.target_entity_id)
+                subject = 'Spudder - You have been invited to administer a team'
+                message_body = """
+You have been invited to administer team "%s" at Spudder.
+
+Please follow the link bellow to accept.
+%s
+
+Kind regards, team Spudder.
+""" % (team.name, invitation.link)
             else:
                 raise NotImplementedError("Invitation type '%s' not implemented" % invitation_type)
         else:
             raise NotImplementedError("Invitation type '%s' not supported" % invitation_type)
 
-        for contact_email in entity.contact_emails:
+        for contact_email in emails:
             send_email(settings.SERVER_EMAIL, contact_email, subject, message_body)
 
     @classmethod
-    def CommunicateWithNonUserByEmail(cls):
-        pass
+    def ValidateComminicationTypeValid(cls, communication_type):
+        if communication_type in cls.COMMUNICATION_TYPES:
+            if communication_type == cls.TYPE_EMAIL:
+                return True
+            else:
+                raise NotImplementedError("Communication type '%s' not implemented" % communication_type)
+        else:
+            raise NotImplementedError("Communication type '%s' not supported" % communication_type)
+
+    @classmethod
+    def CommunicateWithNonUserByEmail(cls, email, **kwargs):
+        communication_type = kwargs.get('communication_type')
+        if cls.ValidateComminicationTypeValid(communication_type):
+            if communication_type == cls.TYPE_EMAIL:
+                cls.CommunicateWithEmail([email], **kwargs)
 
     @classmethod
     def CommunicateWithEntity(cls, entity_id, entity_type, **kwargs):
         entity = get_entity_base_instanse_by_id_and_type(entity_id, entity_type)
         communication_type = kwargs.get('communication_type')
-        if communication_type in cls.COMMUNICATION_TYPES:
+        if cls.ValidateComminicationTypeValid(communication_type):
             if communication_type == cls.TYPE_EMAIL:
-                cls.CommunicateWithEmail(entity, **kwargs)
-            else:
-                raise NotImplementedError("Communication type '%s' not implemented" % communication_type)
-        else:
-            raise NotImplementedError("Communication type '%s' not supported" % communication_type)
+                cls.CommunicateWithEmail(entity.contact_emails, **kwargs)

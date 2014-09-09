@@ -15,8 +15,9 @@ from spudderdomain.wrappers import EntityBase
 from spudderspuds.forms import LinkedInSocialMediaForm
 from spudderspuds.utils import set_social_media
 from spudmart.CERN.rep import created_team, team_associated_with_venue
-from spudmart.teams.forms import CreateTeamForm, TeamPageForm, EditTeamForm
-from django.http import HttpResponseRedirect, HttpResponse, HttpResponseNotAllowed, HttpResponseForbidden, HttpResponseBadRequest
+from spudmart.teams.forms import CreateTeamForm, TeamPageForm, EditTeamForm, InviteNewFanByEmailForm
+from django.http import HttpResponseRedirect, HttpResponse, HttpResponseNotAllowed, HttpResponseForbidden, \
+    HttpResponseBadRequest
 from spudmart.upload.models import UploadedFile
 from spudmart.upload.forms import UploadForm
 from spudmart.utils.Paginator import EntitiesPaginator
@@ -179,12 +180,25 @@ def manage_team_page_admins(request, page_id):
     # get not invited fans
     not_invited_ids = list(team_admins_ids) + list(invited_fans_ids)
     not_invited_fans = FanPage.objects.exclude(id__in=not_invited_ids)
+    form = InviteNewFanByEmailForm()
+    is_form_sent = False
+
+    if request.method == 'POST':
+        form = InviteNewFanByEmailForm(request.POST)
+        if form.is_valid():
+            is_form_sent = True
+            InvitationController.InviteNonUser(
+                form.cleaned_data['email'], Invitation.REGISTER_AND_ADMINISTRATE_TEAM_INVITATION,
+                team_page.id, EntityController.ENTITY_TEAM)
+            form = InviteNewFanByEmailForm()
 
     return render(request, 'spudderspuds/teams/pages/manage_team_admins.html', {
         'page': team_page,
         'admins': admins,
         'invited_fans': invited_fans,
-        'not_invited_fans': not_invited_fans
+        'not_invited_fans': not_invited_fans,
+        'form': form,
+        'is_form_sent': is_form_sent
     })
 
 
