@@ -19,7 +19,7 @@ from spudderdomain.models import FanPage, TeamPage, TeamAdministrator
 from spudderkrowdio.models import FanFollowingEntityTag, KrowdIOStorage
 from spuddersocialengine.models import SpudFromSocialMedia
 from spudderspuds.forms import FanSigninForm, FanRegisterForm, FanPageForm, BasicSocialMediaForm
-from spudderspuds.utils import create_and_activate_fan_role, is_signin_claiming_spud, set_social_media
+from spudderspuds.utils import create_and_activate_fan_role, is_signin_claiming_spud, set_social_media, can_edit
 from spudmart.CERN.models import Student
 from spudmart.CERN.rep import team_gained_follower, team_tagged_in_spud
 from spudmart.accounts.templatetags.accounts import fan_page_name, user_name
@@ -186,6 +186,7 @@ def fan_profile_view(request, page_id):
     return render(request, 'spudderspuds/fans/pages/fan_page_view.html', template_data)
 
 
+@can_edit()
 def fan_profile_edit(request, page_id):
     fan_page = get_object_or_404(FanPage, pk=page_id)
     profile_form = FanPageForm(initial=fan_page.__dict__, image=fan_page.avatar)

@@ -126,6 +126,10 @@ class EditPageMiddleware:
                     sch = School.objects.get(id=str.split(path, '/')[-1])
                     if request.current_role.entity == sch.get_head_student():
                         can_edit = True
+            elif re.match(r'/fan/\d+/edit', path):
+                if request.current_role.entity_type == RoleController.ENTITY_FAN:
+                    if str(request.current_role.entity.id) == str.split(path, '/')[2]:
+                        can_edit = True
             elif re.match(r'/fan/\d+', path):
                 if request.current_role.entity_type == RoleController.ENTITY_FAN:
                     if str(request.current_role.entity.id) == str.split(path, '/')[-1]:

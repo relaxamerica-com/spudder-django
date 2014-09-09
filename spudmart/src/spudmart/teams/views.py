@@ -13,7 +13,7 @@ from spudderdomain.controllers import TeamsController, RoleController, SpudsCont
 from spudderdomain.models import TeamPage, Location, TeamVenueAssociation, TeamAdministrator, FanPage
 from spudderdomain.wrappers import EntityBase
 from spudderspuds.forms import LinkedInSocialMediaForm
-from spudderspuds.utils import set_social_media
+from spudderspuds.utils import set_social_media, can_edit
 from spudmart.CERN.rep import created_team, team_associated_with_venue
 from spudmart.teams.forms import CreateTeamForm, TeamPageForm, EditTeamForm, InviteNewFanByEmailForm
 from django.http import HttpResponseRedirect, HttpResponse, HttpResponseNotAllowed, HttpResponseForbidden, \
@@ -126,9 +126,8 @@ def team_page(request, page_id):
     })
 
 
+@can_edit()
 def edit_team_page(request, page_id):
-    if not request.can_edit:
-        return HttpResponseForbidden()
     team_page = TeamPage.objects.select_related('image').get(pk=page_id)
     form = EditTeamForm(initial=team_page.__dict__, image=team_page.image)
 
@@ -158,9 +157,8 @@ def edit_team_page(request, page_id):
     })
 
 
+@can_edit()
 def manage_team_page_admins(request, page_id):
-    if not request.can_edit:
-        return HttpResponseForbidden()
     team_page = get_object_or_404(TeamPage, pk=page_id)
     # get current team admins
     team_admins_ids = TeamAdministrator.objects\
@@ -202,11 +200,9 @@ def manage_team_page_admins(request, page_id):
     })
 
 
+@can_edit()
 @require_http_methods(["GET", "POST"])
 def create_fan_invitation(request, page_id, fan_id):
-    if not request.can_edit:
-        return HttpResponseForbidden()
-
     entity_team = EntityController.GetWrappedEntityByTypeAndId(
         EntityController.ENTITY_TEAM, page_id,
         EntityBase.EntityWrapperByEntityType(EntityController.ENTITY_TEAM))
@@ -227,11 +223,9 @@ def create_fan_invitation(request, page_id, fan_id):
         return HttpResponseRedirect('/team/%s/admins' % page_id)
 
 
+@can_edit()
 @require_http_methods(["GET", "POST"])
 def create_fan_invitation(request, page_id, fan_id):
-    if not request.can_edit:
-        return HttpResponseForbidden()
-
     entity_team = EntityController.GetWrappedEntityByTypeAndId(
         EntityController.ENTITY_TEAM, page_id,
         EntityBase.EntityWrapperByEntityType(EntityController.ENTITY_TEAM))
@@ -253,11 +247,9 @@ def create_fan_invitation(request, page_id, fan_id):
         return HttpResponseRedirect('/team/%s/admins' % page_id)
 
 
+@can_edit()
 @require_http_methods(["GET", "POST"])
 def cancel_fan_invitation(request, page_id, fan_id):
-    if not request.can_edit:
-        return HttpResponseForbidden()
-
     entity_team = EntityController.GetWrappedEntityByTypeAndId(
         EntityController.ENTITY_TEAM, page_id,
         EntityBase.EntityWrapperByEntityType(EntityController.ENTITY_TEAM))
@@ -279,11 +271,9 @@ def cancel_fan_invitation(request, page_id, fan_id):
         return HttpResponseRedirect('/team/%s/admins' % page_id)
 
 
+@can_edit()
 @require_http_methods(["GET", "POST"])
 def revoke_fan_invitation(request, page_id, fan_id):
-    if not request.can_edit:
-        return HttpResponseForbidden()
-
     entity_team = EntityController.GetWrappedEntityByTypeAndId(
         EntityController.ENTITY_TEAM, page_id,
         EntityBase.EntityWrapperByEntityType(EntityController.ENTITY_TEAM))
