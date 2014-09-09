@@ -121,7 +121,7 @@ def krowdio_user_profile(krowdio_user):
     :return: a rel link to a Spudder profile page
     """
     storage = KrowdIOStorage.objects.get(krowdio_user_id=krowdio_user['_id'])
-    get_link_from_storage(storage)
+    return get_link_from_storage(storage)
 
 
 def get_link_from_storage(storage):
