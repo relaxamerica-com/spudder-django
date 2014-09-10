@@ -1,4 +1,5 @@
 {% extends 'spudderspuds/base.html' %}
+{% load bootstrap3 %}
 {% load accounts %}
 
 {% block css %}
@@ -110,44 +111,75 @@
 
         <h3>Add additional administrators to this team!</h3>
         <button type="button" class="btn btn-primary" data-toggle="collapse" data-target="#add-admins">
-            <i class="fa fa-search"></i> Find Spudder fans to administer this team
+            <i class="fa fa-plus"></i> Add users to administer this team
         </button>
 
-        <div id="add-admins" class="collapse">
-            <br/>
-            <p>This list shows all the fan's who are not invited yet</p>
+        <div id="add-admins" class="collapse {% if form.errors or is_form_sent %} in {% endif %}">
+            <ul class="nav nav-tabs" role="tablist" id="myTab">
+                <li {% if not form.errors and not is_form_sent %} class="active" {% endif %}><a href="#invite-fans" role="tab" data-toggle="tab">Invite Fans</a></li>
+                <li {% if form.errors or is_form_sent %} class="active" {% endif %}><a href="#invite-by-email" role="tab" data-toggle="tab">Invite New User By Email</a></li>
+            </ul>
 
-            <table class="table table-striped datatable">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Fans Name</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for fan in not_invited_fans %}
-                        <tr>
-                            <td style="width: 40px;">
-                                {{ forloop.counter }}
-                            </td>
-                            <td>
-        {#                        <a href="/fan/{{ admin.id }}">#}
-        {#                            <img src="{% if admin.avatar %}/file/serve/{{ admin.avatar.id }}{% else %}/static/img/spudderspuds/button-fans-medium.png{% endif %}" style="width: 25px;"/>#}
-        {#                        </a>#}
-                                <a href="/fan/{{ fan.id }}">{% fan_page_name fan %}</a>
-                            </td>
-                            <td style="width: 100px;">
-                                <a class="btn btn-xs btn-primary"
-                                   href="/team/{{ page.id }}/invite_fan/{{ fan.id }}"
-                                   title="Invite fan">
-                                    <i class="fa fa-fw fa-plus"> </i>
-                                </a>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+            <div class="tab-content">
+                <div class="tab-pane {% if not form.errors and not is_form_sent %} active {% endif %}" id="invite-fans">
+                    <p>This list shows all the fan's who are not invited yet</p>
+
+                    <table class="table table-striped datatable">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Fans Name</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for fan in not_invited_fans %}
+                                <tr>
+                                    <td style="width: 40px;">
+                                        {{ forloop.counter }}
+                                    </td>
+                                    <td>
+                {#                        <a href="/fan/{{ admin.id }}">#}
+                {#                            <img src="{% if admin.avatar %}/file/serve/{{ admin.avatar.id }}{% else %}/static/img/spudderspuds/button-fans-medium.png{% endif %}" style="width: 25px;"/>#}
+                {#                        </a>#}
+                                        <a href="/fan/{{ fan.id }}">{% fan_page_name fan %}</a>
+                                    </td>
+                                    <td style="width: 100px;">
+                                        <a class="btn btn-xs btn-primary"
+                                           href="/team/{{ page.id }}/invite_fan/{{ fan.id }}"
+                                           title="Invite fan">
+                                            <i class="fa fa-fw fa-plus"> </i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="tab-pane {% if form.errors or is_form_sent %} active {% endif %}" id="invite-by-email">
+
+                    {% if is_form_sent and not form.errors %}
+                        <div class="alert alert-success" role="alert">
+                            <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span></button>
+                            Invitation was sent, thanks!
+                        </div>
+                    {% endif %}
+
+                    <form method="post" enctype="multipart/form-data" action="{{ upload_url }}">
+                        <fieldset>
+                            {% csrf_token %}
+                            {% bootstrap_form form %}
+
+                            {% buttons %}
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fa fa-send"></i> Invite
+                                </button>
+                            {% endbuttons %}
+                        </fieldset>
+                    </form>
+
+                </div>
+            </div>
         </div>
 
         <hr />

@@ -336,7 +336,7 @@ def send_message(request, venue_id):
     if message:
         to = ['support@spudder.zendesk.com', venue.student.user.email]
         mail.send_mail(
-            subject='Message from Spudmart about Venue: %s' % venue.name,
+            subject='Message from Spudder about Venue: %s' % venue.name,
             body=message,
             sender=settings.SERVER_EMAIL,
             to=to)

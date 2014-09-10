@@ -108,6 +108,19 @@
                 {% include 'spudderspuds/teams/quotes/quote_no_free_text.html' %}
             {% endif %}
         </div>
+
+        <div class="tab-pane text-center" id="message">
+            <h3>Send Message to Team Manager:</h3>
+            <form role="form" class="form-horizontal">
+                <div class="form-group">
+                    <div class="col-sm-8 col-sm-offset-2">
+                        <textarea class="form-control" placeholder="Enter your message here..." id="message-input"></textarea>
+                    </div>
+                </div>
+            </form>
+            <button id="send-message" class="btn btn-primary"><i class="fa fa-fw fa-send"></i> Send Message</button>
+            <div class="alert"></div>
+        </div>
     </div>
 {% endblock %}
 
@@ -123,12 +136,6 @@
             <li>
                 <label>Sport: </label> {{ page.sport }}
             </li>
-
-            {% if page.contact_details %}
-                <li>
-                    <label>Contact details: </label> {{ page.contact_details }}
-                </li>
-            {% endif %}
 
             {% if page.location %}
                 <li>
@@ -208,10 +215,8 @@
 
             $(this).addClass('active');
             $(this).tab('show');
-        })
-    </script>
+        });
 
-    <script type="text/javascript">
         window.twitterPopupText = "Follow {{ page.name }} and check out all the Sports Updates shared and posted about them!";
 
         {% if page.location %}
@@ -219,6 +224,21 @@
                 initWithCoords(parseFloat("{{ page.location.latitude }}"), parseFloat("{{ page.location.longitude }}"))
             });
         {% endif %}
+
+        $('#send-message').click(function(){
+            var alert = $(this).siblings('.alert'),
+                icon = $(this).children('i');
+            icon.removeClass('fa-send').addClass('fa-spin fa-spinner');
+
+            var response = $.post('/team/send_message/{{ page.id }}',{
+                    'message': $('#message-input').val()
+                });
+
+            response.done(function(){
+                icon.removeClass('fa-spin fa-spinner').addClass('fa-send');
+                showAlert(alert, 'Your message has been sent to the manager of this team!', 'success', true);
+            });
+        });
     </script>
 {% endblock %}
 

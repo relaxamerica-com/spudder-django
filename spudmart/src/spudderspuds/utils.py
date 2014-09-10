@@ -4,6 +4,9 @@ from spudderaccounts.wrappers import RoleBase, RoleFan
 from spudderdomain.controllers import RoleController, SpudsController
 from spudderdomain.models import FanPage
 from spuddersocialengine.models import SpudFromSocialMedia
+from functools import wraps
+from django.utils.decorators import available_attrs
+from django.http import HttpResponseForbidden
 
 
 def create_and_activate_fan_role(request, user):
@@ -34,3 +37,22 @@ def is_signin_claiming_spud(request, fan, twitter, spud_id):
 def set_social_media(entity, form):
     for attr in form.get_social_media():
         entity.__setattr__(attr, form.cleaned_data.get(attr, ''))
+
+
+def can_edit():
+    """
+    Decorator to make a view only accept if request.can_edit is True.  Usage::
+
+        @can_edit(["GET", "POST"])
+        def my_view(request):
+            # ...
+
+    """
+    def decorator(func):
+        @wraps(func, assigned=available_attrs(func))
+        def inner(request, *args, **kwargs):
+            if not request.can_edit:
+                return HttpResponseForbidden()
+            return func(request, *args, **kwargs)
+        return inner
+    return decorator

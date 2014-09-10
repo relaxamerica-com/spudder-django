@@ -1,19 +1,23 @@
+from google.appengine.api import mail
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.http import require_http_methods
 from google.appengine.api import blobstore
+import re
 import settings
 from spudderaccounts.controllers import InvitationController
 from spudderaccounts.models import Invitation
 from spudderaccounts.templatetags.spudderaccountstags import is_fan, is_cern_student
+from spudderaccounts.wrappers import RoleBase
 from spudderdomain.controllers import TeamsController, RoleController, SpudsController, SocialController, \
     EntityController
 from spudderdomain.models import TeamPage, Location, TeamVenueAssociation, TeamAdministrator, FanPage
 from spudderdomain.wrappers import EntityBase
 from spudderspuds.forms import LinkedInSocialMediaForm
-from spudderspuds.utils import set_social_media
+from spudderspuds.utils import set_social_media, can_edit
 from spudmart.CERN.rep import created_team, team_associated_with_venue
-from spudmart.teams.forms import CreateTeamForm, TeamPageForm, EditTeamForm
-from django.http import HttpResponseRedirect, HttpResponse, HttpResponseNotAllowed, HttpResponseForbidden, HttpResponseBadRequest
+from spudmart.teams.forms import CreateTeamForm, TeamPageForm, EditTeamForm, InviteNewFanByEmailForm
+from django.http import HttpResponseRedirect, HttpResponse, HttpResponseNotAllowed, HttpResponseForbidden, \
+    HttpResponseBadRequest
 from spudmart.upload.models import UploadedFile
 from spudmart.upload.forms import UploadForm
 from spudmart.utils.Paginator import EntitiesPaginator
@@ -122,9 +126,8 @@ def team_page(request, page_id):
     })
 
 
+@can_edit()
 def edit_team_page(request, page_id):
-    if not request.can_edit:
-        return HttpResponseForbidden()
     team_page = TeamPage.objects.select_related('image').get(pk=page_id)
     form = EditTeamForm(initial=team_page.__dict__, image=team_page.image)
 
@@ -154,9 +157,8 @@ def edit_team_page(request, page_id):
     })
 
 
+@can_edit()
 def manage_team_page_admins(request, page_id):
-    if not request.can_edit:
-        return HttpResponseForbidden()
     team_page = get_object_or_404(TeamPage, pk=page_id)
     # get current team admins
     team_admins_ids = TeamAdministrator.objects\
@@ -176,20 +178,31 @@ def manage_team_page_admins(request, page_id):
     # get not invited fans
     not_invited_ids = list(team_admins_ids) + list(invited_fans_ids)
     not_invited_fans = FanPage.objects.exclude(id__in=not_invited_ids)
+    form = InviteNewFanByEmailForm()
+    is_form_sent = False
+
+    if request.method == 'POST':
+        form = InviteNewFanByEmailForm(request.POST)
+        if form.is_valid():
+            is_form_sent = True
+            InvitationController.InviteNonUser(
+                form.cleaned_data['email'], Invitation.REGISTER_AND_ADMINISTRATE_TEAM_INVITATION,
+                team_page.id, EntityController.ENTITY_TEAM)
+            form = InviteNewFanByEmailForm()
 
     return render(request, 'spudderspuds/teams/pages/manage_team_admins.html', {
         'page': team_page,
         'admins': admins,
         'invited_fans': invited_fans,
-        'not_invited_fans': not_invited_fans
+        'not_invited_fans': not_invited_fans,
+        'form': form,
+        'is_form_sent': is_form_sent
     })
 
 
+@can_edit()
 @require_http_methods(["GET", "POST"])
 def create_fan_invitation(request, page_id, fan_id):
-    if not request.can_edit:
-        return HttpResponseForbidden()
-
     entity_team = EntityController.GetWrappedEntityByTypeAndId(
         EntityController.ENTITY_TEAM, page_id,
         EntityBase.EntityWrapperByEntityType(EntityController.ENTITY_TEAM))
@@ -210,11 +223,9 @@ def create_fan_invitation(request, page_id, fan_id):
         return HttpResponseRedirect('/team/%s/admins' % page_id)
 
 
+@can_edit()
 @require_http_methods(["GET", "POST"])
 def create_fan_invitation(request, page_id, fan_id):
-    if not request.can_edit:
-        return HttpResponseForbidden()
-
     entity_team = EntityController.GetWrappedEntityByTypeAndId(
         EntityController.ENTITY_TEAM, page_id,
         EntityBase.EntityWrapperByEntityType(EntityController.ENTITY_TEAM))
@@ -236,11 +247,9 @@ def create_fan_invitation(request, page_id, fan_id):
         return HttpResponseRedirect('/team/%s/admins' % page_id)
 
 
+@can_edit()
 @require_http_methods(["GET", "POST"])
 def cancel_fan_invitation(request, page_id, fan_id):
-    if not request.can_edit:
-        return HttpResponseForbidden()
-
     entity_team = EntityController.GetWrappedEntityByTypeAndId(
         EntityController.ENTITY_TEAM, page_id,
         EntityBase.EntityWrapperByEntityType(EntityController.ENTITY_TEAM))
@@ -262,11 +271,9 @@ def cancel_fan_invitation(request, page_id, fan_id):
         return HttpResponseRedirect('/team/%s/admins' % page_id)
 
 
+@can_edit()
 @require_http_methods(["GET", "POST"])
 def revoke_fan_invitation(request, page_id, fan_id):
-    if not request.can_edit:
-        return HttpResponseForbidden()
-
     entity_team = EntityController.GetWrappedEntityByTypeAndId(
         EntityController.ENTITY_TEAM, page_id,
         EntityBase.EntityWrapperByEntityType(EntityController.ENTITY_TEAM))
@@ -470,5 +477,41 @@ def disable_about(request):
         if message_id:
             team.dismiss_info_message(message_id)
         return HttpResponse(team.info_messages_dismissed)
+    else:
+        return HttpResponseNotAllowed(['POST'])
+
+
+def send_message(request, page_id):
+    """
+    Sends a message to the team manager
+    :param request: a POST request with message body
+    :param team_id: a valid ID of a TeamPage object
+    :return: a blank HttpResponse on success
+    """
+    if request.method == 'POST':
+        team = TeamPage.objects.get(id=page_id)
+
+        admin = TeamAdministrator.objects.filter(team_page=team)[0]
+
+        entity = RoleController.GetRoleForEntityTypeAndID(
+            admin.entity_type,
+            admin.entity_id,
+            RoleBase.RoleWrapperByEntityType(admin.entity_type)
+        )
+        email = entity.user.email
+        details = team.contact_details
+        if details and re.match(r'[\w\.]+\@[\w\.]+\.com$', details):
+            email = details
+
+        message = request.POST.get('message', '')
+        if message:
+            to = ['support@spudder.zendesk.com', email]
+            mail.send_mail(
+                subject='Message from Spudder about Team: %s' % team.name,
+                body=message,
+                sender=settings.SERVER_EMAIL,
+                to=to
+            )
+        return HttpResponse()
     else:
         return HttpResponseNotAllowed(['POST'])

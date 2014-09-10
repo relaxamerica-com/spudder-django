@@ -25,11 +25,13 @@ User.spudder_user = property(lambda u: SpudderUser.objects.get_or_create(user=u)
 class Invitation(models.Model):
 
     ADMINISTRATE_TEAM_INVITATION = 'administrate_team'
+    REGISTER_AND_ADMINISTRATE_TEAM_INVITATION = 'register_and_administrate_team'
 
-    INVITATION_TYPES = (ADMINISTRATE_TEAM_INVITATION, )
+    INVITATION_TYPES = (ADMINISTRATE_TEAM_INVITATION, REGISTER_AND_ADMINISTRATE_TEAM_INVITATION)
 
     INVITATION_CHOICES = (
         (ADMINISTRATE_TEAM_INVITATION, 'Administrate team'),
+        (REGISTER_AND_ADMINISTRATE_TEAM_INVITATION, 'Register and administrate team')
     )
 
     PENDING_STATUS = 'pending'
@@ -59,3 +61,5 @@ class Invitation(models.Model):
     def link(self):
         if self.invitation_type == self.ADMINISTRATE_TEAM_INVITATION:
             return "%s/team/%s/accept_fan_invitation/%s" % (settings.SPUDMART_BASE_URL, self.target_entity_id, self.id)
+        elif self.invitation_type == self.REGISTER_AND_ADMINISTRATE_TEAM_INVITATION:
+            return "%s/spuds/invitation/%s" % (settings.SPUDMART_BASE_URL, self.id)

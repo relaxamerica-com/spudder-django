@@ -4,7 +4,7 @@
         {% for full_spud in spuds %}
             <div class="item {% if forloop.counter0 == 0 %}active{% endif %}">
                 {% if full_spud.extra|spud_is_valid %}
-                    {% include 'components/spuds/spud.html' with spud=full_spud.extra id=full_spud|get_protected_id %}
+                    {% include 'components/spuds/spud.html' with spud=full_spud.extra id=full_spud|get_protected_id krowdio_user=full_spud.user user_mentions=full_spud|get_all_user_mentions %}
                 {% else %}
                     {% include 'components/spuds/spud_deleted.html' with service=full_spud.extra.service %}
                 {% endif %}

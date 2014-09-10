@@ -49,6 +49,8 @@
         <button class="btn btn-primary" id="edit">
             Edit Mode
         </button>
+    {% else %}
+        {% include 'spudderspuds/components/follow_button.html' %}
     {% endif %}
 {% endblock %}
 
@@ -275,14 +277,14 @@
                 </div>
                 <div id="flag-content" class="content">
                     <div class="row-fluid">
-                        <form role="form" class="form-horizontal">
+                        <form role="form" class="form-horizontal" class="text-center">
                             <div class="form-group hidden-xs hidden-sm hidden-md hidden-lg">
                                 <input type="text" name="email" value="" id="email-field" />
                                 {# Note that this is only here to fool bots, a bot will fill this in and then we will know that its a bot and can filter it out #}
                             </div>
                             <div class="form-group">
-                                <label class="col-md-4 col-md-offset-2">Send message to Groundskeeper</label>
-                                <textarea class="col-md-4" placeholder="Message content" name=message id="message-field"></textarea>
+                                <h3>Send message to Venue Manager (Groundskeeper)</h3>
+                                <textarea class="col-sm-8 col-sm-offset-2" placeholder="Message content" name=message id="message-field"></textarea>
                             </div>
                             <a class="btn btn-primary" id="send-message">Contact Groundskeeper</a>
                         </form>

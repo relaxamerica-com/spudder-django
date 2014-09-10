@@ -22,4 +22,5 @@ urlpatterns = patterns(
     (r'^associate/(?P<page_id>\d+)$', 'associate_with_venue'),
     (r'^associate/(?P<page_id>\d+)/(?P<venue_id>\d+)$', 'associate_team_with_venue'),
     (r'^associate/(?P<page_id>\d+)/remove/(?P<venue_id>\d+)$', 'remove_association_with_venue'),
+    (r'^send_message/(?P<page_id>\d+)$', 'send_message'),
 )
