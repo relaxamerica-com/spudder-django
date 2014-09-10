@@ -29,3 +29,12 @@ indexes:
   properties:
   - name: sport
   - name: name
+
+- kind: spudderaccounts_invitation
+  properties:
+  - name: invitation_type
+  - name: status
+  - name: target_entity_id
+  - name: target_entity_type
+  - name: modified
+    direction: desc
