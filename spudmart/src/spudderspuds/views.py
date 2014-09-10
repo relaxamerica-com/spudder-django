@@ -3,10 +3,9 @@ from random import shuffle
 from django.contrib import messages
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.models import User
-from django.http import HttpResponse, HttpResponseNotAllowed
+from django.http import HttpResponse, HttpResponseNotAllowed, HttpResponseRedirect, HttpResponseBadRequest
 from django.shortcuts import render, render_to_response, redirect, get_object_or_404
 from django.template import RequestContext
-from django.http import HttpResponseNotFound, HttpResponseRedirect
 from django.template.loader import render_to_string
 from google.appengine.api import blobstore
 import simplejson
@@ -139,12 +138,12 @@ def fan_register(request):
                 team_admin = TeamAdministrator(entity_type=fan_role.entity_type, entity_id=fan_role.entity.id)
                 team_admin.team_page_id = invitation.target_entity_id
                 team_admin.save()
+                invitation.status = Invitation.ACCEPTED_STATUS
+                invitation.save()
+                return redirect('/fan/follow?origin=invitation')
             return redirect('/fan/%s/edit?new_registration=true' % fan_role.entity.id)
     else:
-        if invitation and invitation.invitation_type == Invitation.REGISTER_AND_ADMINISTRATE_TEAM_INVITATION:
-            form = FanRegisterForm(initial={'email_address': invitation.invitee_entity_id})
-        else:
-            form = FanRegisterForm(initial=request.GET)
+        form = FanRegisterForm(initial=request.GET)
     template_data["form"] = form
     return render_to_response(
         'spudderspuds/pages/user_register.html',
@@ -363,6 +362,27 @@ def follow(request):
                 "<h4><i class='fa fa-check'></i> Team %s successfully created!</h4>"
                 "<p>You successfully create your new team, now please give them a custom #tag</p>" % team.name)
 
+        elif origin == 'invitation':
+            invitation_id = request.session.get('invitation_id')
+            if invitation_id:
+                origin = '/fan/%s/edit?new_registration=true' % request.current_role.entity.id
+                try:
+                    invitation = Invitation.objects.get(id=invitation_id)
+                    if invitation.invitation_type == Invitation.REGISTER_AND_ADMINISTRATE_TEAM_INVITATION:
+                        team = TeamPage.objects.get(id=invitation.target_entity_id)
+                        name = team.name
+                        tag = team.at_name
+                        base_well_url = 'spudderspuds/base_single_well.html'
+                        base_quote_url = 'spudderspuds/components/base_quote_message.html'
+                        messages.success(
+                            request,
+                            "<h4><i class='fa fa-check'></i> You accepted the invitation to become an administrator</h4>"
+                            "<p>You are now and administrator of %s, please create a custom #tag</p>" % team.name)
+                    else:
+                        raise Invitation.DoesNotExist()
+                except Invitation.DoesNotExist:
+                    return HttpResponseRedirect(origin)
+
         template_data = {
             'name': name,
             'tag': tag,
@@ -390,6 +410,18 @@ def start_following_view(request):
         if re.match(r'/venues/view/\d+', origin):
             entity_type = EntityController.ENTITY_VENUE
             entity_id = str.split(origin, '/')[-1]
+        elif re.match(r'/fan/\d+/edit', origin):
+            invitation_id = request.session.pop('invitation_id')
+            if invitation_id:
+                try:
+                    invitation = Invitation.objects.get(id=invitation_id)
+                    if invitation.invitation_type == Invitation.REGISTER_AND_ADMINISTRATE_TEAM_INVITATION:
+                        entity_id = invitation.target_entity_id
+                        entity_type = EntityController.ENTITY_TEAM
+                    else:
+                        raise Invitation.DoesNotExist()
+                except Invitation.DoesNotExist:
+                    return HttpResponseBadRequest()
         elif re.match(r'/fan/\d+', origin):
             entity_type = RoleController.ENTITY_FAN
             entity_id = str.split(origin, '/')[-1]
@@ -599,14 +631,3 @@ def get_at_names(request):
         at_names.append(t.at_name)
 
     return HttpResponse(simplejson.dumps(at_names))
-
-
-def accept_invitation(request, invitation_id):
-    try:
-        invitation = Invitation.objects.get(id=invitation_id, status=Invitation.PENDING_STATUS)
-    except Invitation.DoesNotExist:
-        return HttpResponseNotFound()
-
-    if invitation.invitation_type == Invitation.REGISTER_AND_ADMINISTRATE_TEAM_INVITATION:
-        request.session['invitation_id'] = invitation_id
-        return HttpResponseRedirect('/spuds/register')

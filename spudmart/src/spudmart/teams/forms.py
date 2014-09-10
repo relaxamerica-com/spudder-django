@@ -2,7 +2,8 @@ from django import forms
 from django.contrib.auth.models import User
 from django.forms import HiddenInput
 from django.forms.models import ModelForm
-from spudderdomain.controllers import SocialController
+from spudderaccounts.models import Invitation
+from spudderdomain.controllers import SocialController, EntityController
 from spudderdomain.models import TeamPage, FanPage
 from spudmart.venues.models import SPORTS
 from spudmart.CERN.models import SORTED_STATES
@@ -98,6 +99,11 @@ class TeamPageForm(ModelForm):
 class InviteNewFanByEmailForm(forms.Form):
     email = forms.EmailField()
 
+    def __init__(self, *args, **kwargs):
+        team_id = kwargs.pop('team_id', None)
+        self.team_id = team_id
+        super(InviteNewFanByEmailForm, self).__init__(*args, **kwargs)
+
     def clean_email(self):
         email = self.cleaned_data.get('email')
         if email:
@@ -106,4 +112,13 @@ class InviteNewFanByEmailForm(forms.Form):
                 for user in users:
                     if FanPage.objects.filter(fan=user).count() > 0:
                         raise forms.ValidationError('Fan with such email already exists')
+
+            if Invitation.objects.filter(
+                invitee_entity_id=email,
+                invitation_type=Invitation.REGISTER_AND_ADMINISTRATE_TEAM_INVITATION,
+                status=Invitation.PENDING_STATUS,
+                target_entity_id=self.team_id,
+                target_entity_type=EntityController.ENTITY_TEAM
+            ).count() > 0:
+                raise forms.ValidationError('This user is already invited')
         return email

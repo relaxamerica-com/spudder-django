@@ -24,7 +24,8 @@
 
         <ul class="nav nav-tabs" role="tablist">
             <li class="active"><a href="#admins" role="tab" data-toggle="tab">Administrators</a></li>
-            <li><a href="#invited-admins" role="tab" data-toggle="tab">invited Administrators</a></li>
+            <li><a href="#invited-fans" role="tab" data-toggle="tab">invited Fans</a></li>
+            <li><a href="#invited-emails" role="tab" data-toggle="tab">invited By Email</a></li>
         </ul>
 
         <div class="tab-content">
@@ -70,7 +71,7 @@
                     </tbody>
                 </table>
             </div>
-            <div class="tab-pane" id="invited-admins">
+            <div class="tab-pane" id="invited-fans">
                 <p>This list shows all the fan's who are invited to be an "{{ page.name }}" team administer</p>
 
                 <table class="table table-striped {% if admins %} datatable {% endif %}">
@@ -96,6 +97,38 @@
                                 <td style="width: 40px;">
                                     <a class="btn btn-xs btn-primary"
                                        href="/team/{{ page.id }}/cancel_fan_invitation/{{ fan.id }}" title="Cancel invitation">
+                                        <i class="fa fa-fw fa-ban"> </i>
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+            </div>
+            <div class="tab-pane" id="invited-emails">
+                <p>This list shows all the users who are invited to be an "{{ page.name }}" team administer by email</p>
+
+                <table class="table table-striped {% if admins %} datatable {% endif %}">
+                    <thead>
+                        <tr>
+                          <th>#</th>
+                          <th>Email</th>
+                          <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for invited_non_user in invited_non_users %}
+                            <tr>
+                                <td style="width: 40px;">
+                                    {{ forloop.counter }}
+                                </td>
+                                <td>
+                                    {{ invited_non_user.invitee_entity_id }}
+                                </td>
+                                <td style="width: 40px;">
+                                    <a class="btn btn-xs btn-primary"
+                                       href="/users/invitation/{{ invited_non_user.id }}/cancel" title="Cancel invitation">
                                         <i class="fa fa-fw fa-ban"> </i>
                                     </a>
                                 </td>

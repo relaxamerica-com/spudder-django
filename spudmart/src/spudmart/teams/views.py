@@ -179,49 +179,34 @@ def manage_team_page_admins(request, page_id):
     # get not invited fans
     not_invited_ids = list(team_admins_ids) + list(invited_fans_ids)
     not_invited_fans = FanPage.objects.exclude(id__in=not_invited_ids)
-    form = InviteNewFanByEmailForm()
+    form = InviteNewFanByEmailForm(team_id=team_page.id)
     is_form_sent = False
+    # get invited non-users
+    invited_non_users = Invitation.objects.filter(
+        invitation_type=Invitation.REGISTER_AND_ADMINISTRATE_TEAM_INVITATION,
+        status=Invitation.PENDING_STATUS,
+        target_entity_id=team_page.id,
+        target_entity_type=EntityController.ENTITY_TEAM
+    ).order_by('-modified')
 
     if request.method == 'POST':
-        form = InviteNewFanByEmailForm(request.POST)
+        form = InviteNewFanByEmailForm(request.POST, team_id=team_page.id)
         if form.is_valid():
             is_form_sent = True
             InvitationController.InviteNonUser(
                 form.cleaned_data['email'], Invitation.REGISTER_AND_ADMINISTRATE_TEAM_INVITATION,
                 team_page.id, EntityController.ENTITY_TEAM)
-            form = InviteNewFanByEmailForm()
+            form = InviteNewFanByEmailForm(team_id=team_page.id)
 
     return render(request, 'spudderspuds/teams/pages/manage_team_admins.html', {
         'page': team_page,
         'admins': admins,
         'invited_fans': invited_fans,
         'not_invited_fans': not_invited_fans,
+        'invited_non_users': invited_non_users,
         'form': form,
         'is_form_sent': is_form_sent
     })
-
-
-@can_edit()
-@require_http_methods(["GET", "POST"])
-def create_fan_invitation(request, page_id, fan_id):
-    entity_team = EntityController.GetWrappedEntityByTypeAndId(
-        EntityController.ENTITY_TEAM, page_id,
-        EntityBase.EntityWrapperByEntityType(EntityController.ENTITY_TEAM))
-    fan = get_object_or_404(FanPage, pk=fan_id)
-
-    if entity_team.is_admin(fan.id, RoleController.ENTITY_FAN):
-        return HttpResponseBadRequest()
-
-    if request.method == 'GET':
-        return render(request, 'spudderspuds/teams/pages/create_fan_invitation.html', {
-            'team_page': entity_team.entity,
-            'fan': fan
-        })
-    elif request.method == 'POST':
-        InvitationController.InviteEntity(
-            fan.id, RoleController.ENTITY_FAN, Invitation.ADMINISTRATE_TEAM_INVITATION,
-            entity_team.entity.id, entity_team.entity_type)
-        return HttpResponseRedirect('/team/%s/admins' % page_id)
 
 
 @can_edit()
