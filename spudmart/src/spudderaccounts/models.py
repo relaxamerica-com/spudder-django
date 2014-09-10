@@ -62,4 +62,4 @@ class Invitation(models.Model):
         if self.invitation_type == self.ADMINISTRATE_TEAM_INVITATION:
             return "%s/team/%s/accept_fan_invitation/%s" % (settings.SPUDMART_BASE_URL, self.target_entity_id, self.id)
         elif self.invitation_type == self.REGISTER_AND_ADMINISTRATE_TEAM_INVITATION:
-            return "%s/spuds/invitation/%s" % (settings.SPUDMART_BASE_URL, self.id)
+            return "%s/users/invitation/%s" % (settings.SPUDMART_BASE_URL, self.id)

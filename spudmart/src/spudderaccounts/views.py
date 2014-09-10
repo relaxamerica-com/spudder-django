@@ -2,13 +2,16 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.shortcuts import render_to_response, redirect
+from django.shortcuts import render_to_response, redirect, render, get_object_or_404
 from django.template import RequestContext
+from django.http import HttpResponseNotFound, HttpResponseRedirect
 import settings
 from spudderaccounts.forms import ProfileDetailsForm, CreatePasswordForm, SigninForm
+from spudderaccounts.models import Invitation
 from spudderaccounts.utils import select_all_user_roles, change_current_role
 from spudderdomain.controllers import RoleController
 from spudderaccounts.wrappers import RoleBase
+from spudderdomain.models import TeamPage
 
 
 def accounts_signin(request, user_id):
@@ -125,3 +128,33 @@ def accounts_signin_choose_account(request):
         'AMAZON_CLIENT_ID': settings.AMAZON_LOGIN_CLIENT_ID,
         'base_url': settings.SPUDMART_BASE_URL,
     })
+
+
+def accept_invitation(request, invitation_id):
+    try:
+        invitation = Invitation.objects.get(id=invitation_id, status=Invitation.PENDING_STATUS)
+        if invitation.invitation_type == Invitation.REGISTER_AND_ADMINISTRATE_TEAM_INVITATION:
+            request.session['invitation_id'] = invitation_id
+            return HttpResponseRedirect('/spuds/register?email_address=%s' % invitation.invitee_entity_id)
+        else:
+            raise Invitation.DoesNotExist()
+    except Invitation.DoesNotExist:
+        return HttpResponseNotFound()
+
+
+def cancel_invitation(request, invitation_id):
+    try:
+        invitation = Invitation.objects.get(id=invitation_id, status=Invitation.PENDING_STATUS)
+        if not invitation.invitation_type == Invitation.REGISTER_AND_ADMINISTRATE_TEAM_INVITATION:
+            raise Invitation.DoesNotExist()
+    except Invitation.DoesNotExist:
+        return HttpResponseNotFound()
+
+    if request.method == 'GET':
+        return render(request, 'spudderaccounts/pages/cancel_invitation.html', {
+            'entity_name': invitation.invitee_entity_id
+        })
+    if request.method == 'POST':
+        invitation.status = Invitation.REVOKED_STATUS
+        invitation.save()
+        return HttpResponseRedirect('/team/%s/admins' % invitation.target_entity_id)

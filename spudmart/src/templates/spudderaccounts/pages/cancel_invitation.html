@@ -1,0 +1,23 @@
+{% extends 'spudderspuds/base_single_well.html' %}
+{% load bootstrap3 %}
+{% load accounts %}
+
+{% block well_content %}
+    <h3>Cancel invitation for {{ entity_name }}</h3>
+
+    <p>Are you sure you would like to cancel invitation for {{ entity_name }}?</p>
+
+    <form method="post" enctype="multipart/form-data" action="">
+        {% csrf_token %}
+
+        {% buttons %}
+            <button type="submit" class="btn btn-primary">
+                <i class="fa fa-send"></i> Cancel Invitation
+            </button>
+            <a href="{{ request.META.HTTP_REFERER }}" class="btn btn-default">
+                Cancel
+            </a>
+        {% endbuttons %}
+    </form>
+
+{% endblock %}
