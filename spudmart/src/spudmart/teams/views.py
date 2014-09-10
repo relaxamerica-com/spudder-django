@@ -13,7 +13,8 @@ from spudderdomain.controllers import TeamsController, RoleController, SpudsCont
 from spudderdomain.models import TeamPage, Location, TeamVenueAssociation, TeamAdministrator, FanPage
 from spudderdomain.wrappers import EntityBase
 from spudderspuds.forms import LinkedInSocialMediaForm
-from spudderspuds.utils import set_social_media, can_edit
+from spudderspuds.utils import set_social_media
+from spudderspuds.decorators import can_edit
 from spudmart.CERN.rep import created_team, team_associated_with_venue
 from spudmart.teams.forms import CreateTeamForm, TeamPageForm, EditTeamForm, InviteNewFanByEmailForm
 from django.http import HttpResponseRedirect, HttpResponse, HttpResponseNotAllowed, HttpResponseForbidden, \
