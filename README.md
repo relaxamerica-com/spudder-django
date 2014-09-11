@@ -1,0 +1,2 @@
+spudder-django
+==============
