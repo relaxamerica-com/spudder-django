@@ -24,6 +24,7 @@ urlpatterns = patterns(
     url(r'^/system/venues$', 'system_venues'),
     url(r'^/system/nukedb$', 'system_nukedb'),
     url(r'^/system/school_covers$', 'system_remove_school_cover_images'),
+    url(r'^/system/affiliates$', 'affiliates'),
     url(r'^/system', 'system_dashboard'),
 
     url(r'^/reports/fans$', 'fan_reports'),

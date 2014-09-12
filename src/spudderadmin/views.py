@@ -14,6 +14,8 @@ from spudderaccounts.wrappers import RoleStudent, RoleFan, RoleSponsor
 from spudderadmin.decorators import admin_login_required
 from spudderadmin.forms import AtPostSpudTwitterAPIForm, PasswordAndActionForm, SystemDeleteVenuesForm
 from spudderadmin.utils import encoded_admin_session_variable_name
+from spudderaffiliates.forms import AffiliateForm
+from spudderaffiliates.models import Affiliate
 from spudderdomain.controllers import RoleController, EntityController
 from spudderdomain.models import FanPage, LinkedService, TeamAdministrator, TeamPage, TeamVenueAssociation, Location
 from spudderkrowdio.models import KrowdIOStorage, FanFollowingEntityTag
@@ -657,3 +659,29 @@ def send_sponsor_email(request, sponsor_id):
             'profile': "/sponsor/%s" % sponsor.id
         },
         context_instance=RequestContext(request))
+
+
+@admin_login_required
+def affiliates(request):
+    """
+    Displays the affiliates and allows new affiliates to be created
+    :param request: any request
+    :return: a page with table on one side and form on the other
+    """
+    affiliate_message = None
+    affiliates = [a for a in Affiliate.objects.all()]
+    form = AffiliateForm()
+    if request.method == 'POST':
+        form = AffiliateForm(request.POST)
+        if form.is_valid():
+            affiliate = form.save()
+            affiliate_message = "%s was successfully created." % affiliate.name
+            affiliates.append(affiliate)
+            form = AffiliateForm()
+    return render_to_response('spudderadmin/pages/system/affiliates.html',{
+        'affiliates': affiliates,
+        'affiliate_message': affiliate_message,
+        'create_affiliate_form': form
+    })
+
+
