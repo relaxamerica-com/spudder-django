@@ -40,6 +40,7 @@ def register_entity(entity):
         if 'Email already exists' in "%s" % ex:
             logging.debug("krowdio.models.register_entity: User already exists in Krowd.io, attempting login")
             from spudderkrowdio.utils import _ensure_oAuth_token
+            entity.krowdio_email = "%s%s@spudder.com" % (entity.type, entity._id)
             _ensure_oAuth_token(entity)
 
 

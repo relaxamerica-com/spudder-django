@@ -492,7 +492,10 @@ def krowdio_users_to_links(can_edit, current_role, krowdio_dict, filter=None):
     users = []
     for user in krowdio_dict:
         krowdio_id = user['_id']
-        storage_obj = KrowdIOStorage.objects.get(krowdio_user_id=krowdio_id)
+        try:
+            storage_obj = KrowdIOStorage.objects.get(krowdio_user_id=krowdio_id)
+        except KrowdIOStorage.DoesNotExist:
+            continue
 
         if storage_obj.role_type == RoleController.ENTITY_FAN and \
                 (filter == RoleController.ENTITY_FAN or filter is None):
