@@ -1,5 +1,5 @@
 <project name="spudmart" default="unittest" basedir="..">
-	<property name="spudmart.src" location="spudmart/src"/>
+	<property name="spudmart.src" location="src"/>
 
 	<target name="test">
 	    <mkdir dir="${ant.project.name}/test-reports" />
