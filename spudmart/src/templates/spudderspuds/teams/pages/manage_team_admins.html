@@ -147,6 +147,8 @@
             <i class="fa fa-plus"></i> Add users to administer this team
         </button>
 
+        <hr/>
+
         <div id="add-admins" class="collapse {% if form.errors or is_form_sent %} in {% endif %}">
             <ul class="nav nav-tabs" role="tablist" id="myTab">
                 <li {% if not form.errors and not is_form_sent %} class="active" {% endif %}><a href="#invite-fans" role="tab" data-toggle="tab">Invite Fans</a></li>
@@ -191,26 +193,31 @@
                 </div>
                 <div class="tab-pane {% if form.errors or is_form_sent %} active {% endif %}" id="invite-by-email">
 
-                    {% if is_form_sent and not form.errors %}
-                        <div class="alert alert-success" role="alert">
-                            <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span></button>
-                            Invitation was sent, thanks!
+                    <div class="row">
+                        <div class="col-md-6 col-md-offset-3">
+                            <div class="well" style="margin:20px 0;">
+                                {% if is_form_sent and not form.errors %}
+                                    <div class="alert alert-success" role="alert">
+                                        <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span></button>
+                                        Invitation was sent, thanks!
+                                    </div>
+                                {% endif %}
+
+                                <form method="post" enctype="multipart/form-data" action="{{ upload_url }}">
+                                    <fieldset>
+                                        {% csrf_token %}
+                                        {% bootstrap_form form %}
+
+                                        {% buttons %}
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="fa fa-send"></i> Invite
+                                            </button>
+                                        {% endbuttons %}
+                                    </fieldset>
+                                </form>
+                            </div>
                         </div>
-                    {% endif %}
-
-                    <form method="post" enctype="multipart/form-data" action="{{ upload_url }}">
-                        <fieldset>
-                            {% csrf_token %}
-                            {% bootstrap_form form %}
-
-                            {% buttons %}
-                                <button type="submit" class="btn btn-primary">
-                                    <i class="fa fa-send"></i> Invite
-                                </button>
-                            {% endbuttons %}
-                        </fieldset>
-                    </form>
-
+                    </div>
                 </div>
             </div>
         </div>
