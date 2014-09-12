@@ -1,0 +1,5 @@
+backends:
+- name: payments
+  class: B2
+  instances: 2
+  options: dynamic

@@ -1,0 +1,42 @@
+[
+  {
+    "pk": 1, 
+    "model": "auth.user", 
+    "fields": {
+      "username": "user1",
+      "first_name": "", 
+      "last_name": "", 
+      "is_active": true, 
+      "idxf_email_l_iexact": "user1@spuder.com",
+      "idxf_username_l_iexact": "user1",
+      "is_superuser": false, 
+      "is_staff": false, 
+      "last_login": "2013-07-26 14:38:34", 
+      "groups": [], 
+      "user_permissions": [], 
+      "password": "sha1$1dee4$23c66007b1d199d6a2e19ce20eddbaff6d6a069d",
+      "email": "user1@spuder.com",
+      "date_joined": "2013-07-26 14:37:36"
+    }
+  }, 
+  {
+    "pk": 2,
+    "model": "auth.user",
+    "fields": {
+      "username": "user2",
+      "first_name": "",
+      "last_name": "",
+      "is_active": true,
+      "idxf_email_l_iexact": "user2@spuder.com",
+      "idxf_username_l_iexact": "user2",
+      "is_superuser": false,
+      "is_staff": false,
+      "last_login": "2013-07-26 14:38:34",
+      "groups": [],
+      "user_permissions": [],
+      "password": "sha1$0c1e7$76a3d4220f549356f35415babd17dcb37b954080",
+      "email": "user2@spuder.com",
+      "date_joined": "2013-07-26 14:37:36"
+    }
+  }
+]

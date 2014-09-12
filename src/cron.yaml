@@ -1,0 +1,8 @@
+cron:
+- description: Collect social media content using the location call
+  url: /socialengine/api/location?key=746fygf472f4o2ri
+  schedule: every 1 hours
+
+- description: Collects any at post spuds
+  url: /socialengine/postspud/tick
+  schedule: every 2 minutes
