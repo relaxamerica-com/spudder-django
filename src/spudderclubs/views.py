@@ -1,7 +1,10 @@
 from django.http import HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from spudderclubs.decorators import club_admin_required, club_not_fully_activated
+from spudderclubs.forms import ClubProfileForm
 from spudderdomain.models import ClubRecipient
+from spudderspuds.forms import LinkedInSocialMediaForm
+from spudderspuds.utils import set_social_media
 from spudmart.amazon.models import AmazonActionStatus, RecipientVerificationStatus
 from spudmart.amazon.utils import get_club_register_as_recipient_cbui_url, get_recipient_verification_status
 from spudmart.recipients.models import RecipientRegistrationState
@@ -77,7 +80,30 @@ def register_as_recipient_pending_verification(request):
 @club_admin_required
 @club_not_fully_activated
 def register_profile_info(request):
-    return render(request, 'spudderclubs/pages/registration/register.html')
+    club = request.current_role.entity.club
+    form = ClubProfileForm()
+    social_media_form = LinkedInSocialMediaForm()
+
+    if request.method == "POST":
+        form = ClubProfileForm(request.POST)
+        social_media_form = LinkedInSocialMediaForm(request.POST)
+
+        if form.is_valid() and social_media_form.is_valid():
+            club.address = request.POST.get('address')
+
+            location_info = request.POST.get('location_info', None)
+            club.update_location(location_info)
+
+            set_social_media(club, social_media_form)
+
+            club.save()
+
+            return redirect('/club/dashboard')
+
+    return render(request, 'spudderclubs/pages/registration/register_profile.html', {
+        'form': form,
+        'social_media': social_media_form
+    })
 
 
 def signin(request):

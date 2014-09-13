@@ -247,6 +247,7 @@ class Club(models.Model):
     name = models.CharField(max_length=255)
     amazon_email = models.CharField(max_length=255)
     amazon_id = models.CharField(max_length=255)
+    address = models.CharField(max_length=255, default='', blank=True)
     thumbnail = models.ForeignKey(UploadedFile, blank=True, null=True, related_name='club_thumbnail')
     location = models.ForeignKey(Location, null=True, blank=True, related_name='club_location')
 
@@ -255,6 +256,16 @@ class Club(models.Model):
 
     def __str__(self):
         return unicode(self).encode('utf-8')
+
+    def update_location(self, location_info):
+        if not location_info:
+            self.location = None
+            return
+
+        if not self.location:
+            self.location = Location.from_post_data(location_info)
+        else:
+            self.location.update_from_post_data(location_info)
 
     def is_fully_activated(self):
         if ClubRecipient.objects.filter(club=self).count() < 1:
