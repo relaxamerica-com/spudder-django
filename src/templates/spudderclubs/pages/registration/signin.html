@@ -1,0 +1,53 @@
+{% extends 'spudderclubs/base_single_well.html' %}
+
+{% block well_content %}
+    <h2>
+        <img src="/static/img/spudderclubs/button-clubs-small.png" />
+        Login to the Spudder Clubs Network
+    </h2>
+
+    <p>Click the login with Amazon button below and enter you amazon account details to access the Spudder Clubs Network.</p>
+
+    <p class="text-center">
+        <a href="#" id="LoginWithAmazon">
+            <img border="0" alt="Login with Amazon"
+                src="https://images-na.ssl-images-amazon.com/images/G/01/lwa/btnLWA_gold_156x32.png"
+                width="156" height="32" />
+        </a>
+    </p>
+    <p style="margin-top: 20px;">
+        Don't have a Club account? click <a href="/club/register">here</a> to register.
+    </p>
+{% endblock %}
+
+{% block js %}
+    {{ block.super }}
+
+    {% include 'spudderaccounts/parts/amazon_login_js.html' %}
+
+    <script type="text/javascript" language="javascript">
+        $(document).ready(function () {
+            if (typeof amazon == undefined) return;
+
+            var $logoutBtn = $('#logout-button');
+
+            if ($logoutBtn.length) {
+                $logoutBtn.click(function (event) {
+                    event.preventDefault();
+                    amazon.Login.logout();
+                    window.location = $logoutBtn.attr('href');
+                });
+            }
+            var loginWithAmazon = document.getElementById('LoginWithAmazon'),
+                returnUrl = '/accounts/login/amazon?next=/club/dashboard&account_type=club';
+
+            if (loginWithAmazon) {
+                loginWithAmazon.onclick = function() {
+                    options = { scope : 'profile', interactive: 'always' };
+                    amazon.Login.authorize(options, returnUrl);
+                    return false;
+                };
+            }
+        });
+    </script>
+{% endblock %}

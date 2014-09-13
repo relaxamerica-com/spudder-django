@@ -80,6 +80,10 @@ def register_profile_info(request):
     return render(request, 'spudderclubs/pages/registration/register.html')
 
 
+def signin(request):
+    return render(request, 'spudderclubs/pages/registration/signin.html')
+
+
 @club_admin_required
 def dashboard(request):
     club = request.current_role.entity.club
