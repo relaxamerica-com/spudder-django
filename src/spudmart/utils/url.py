@@ -10,4 +10,4 @@ def get_request_param(request, param, default=''):
 
 
 def determine_ssl():
-    return os.environ['SERVER_SOFTWARE'].startswith('Development')
+    return not os.environ['SERVER_SOFTWARE'].startswith('Development')

@@ -11,7 +11,7 @@ urlpatterns = patterns('spudderclubs.views',
     (r'register/recipient/verification_pending$', 'register_as_recipient_pending_verification'),
     (r'register/profile', 'register_profile_info'),
 
-    (r'^signin$', 'signin', {'SSL': True}),
+    (r'^signin$', 'signin', {'SSL': determine_ssl()}),
 
     (r'^dashboard$', 'dashboard'),
 )
