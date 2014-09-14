@@ -1,7 +1,7 @@
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
-from spudderclubs.decorators import club_admin_required, club_not_fully_activated
-from spudderclubs.forms import ClubProfileForm
+from spudderclubs.decorators import club_admin_required, club_not_fully_activated, club_fully_activated
+from spudderclubs.forms import ClubProfileCreateForm, ClubProfileEditForm
 from spudderdomain.models import ClubRecipient
 from spudderspuds.forms import LinkedInSocialMediaForm
 from spudderspuds.utils import set_social_media
@@ -81,11 +81,11 @@ def register_as_recipient_pending_verification(request):
 @club_not_fully_activated
 def register_profile_info(request):
     club = request.current_role.entity.club
-    form = ClubProfileForm()
+    form = ClubProfileCreateForm()
     social_media_form = LinkedInSocialMediaForm()
 
     if request.method == "POST":
-        form = ClubProfileForm(request.POST)
+        form = ClubProfileCreateForm(request.POST)
         social_media_form = LinkedInSocialMediaForm(request.POST)
 
         if form.is_valid() and social_media_form.is_valid():
@@ -117,4 +117,35 @@ def dashboard(request):
     return render(request, 'spudderclubs/pages/dashboard/dashboard.html', {
         'club': club,
         'cbui_url': get_club_register_as_recipient_cbui_url()
+    })
+
+
+@club_admin_required
+@club_fully_activated
+def profile(request):
+    club = request.current_role.entity.club
+    form = ClubProfileEditForm(initial=club.__dict__)
+    social_media_form = LinkedInSocialMediaForm(initial=club.__dict__)
+
+    if request.method == "POST":
+        form = ClubProfileEditForm(request.POST)
+        social_media_form = LinkedInSocialMediaForm(request.POST)
+
+        if form.is_valid() and social_media_form.is_valid():
+            club.address = request.POST.get('address')
+            club.description = request.POST.get('description')
+
+            location_info = request.POST.get('location_info', None)
+            club.update_location(location_info)
+
+            set_social_media(club, social_media_form)
+
+            club.save()
+
+            return redirect('/club/profile')
+
+    return render(request, 'spudderclubs/pages/dashboard/profile.html', {
+        'profile': club,
+        'form': form,
+        'social_media': social_media_form
     })

@@ -16,3 +16,11 @@ def club_not_fully_activated(function):
             return function(request, *args, **kwargs)
         return redirect('/club/dashboard')
     return wrapper
+
+
+def club_fully_activated(function):
+    def wrapper(request, *args, **kwargs):
+        if request.current_role.entity.club.is_fully_activated():
+            return function(request, *args, **kwargs)
+        return redirect('/club/dashboard')
+    return wrapper

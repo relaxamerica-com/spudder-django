@@ -248,8 +248,15 @@ class Club(models.Model):
     amazon_email = models.CharField(max_length=255)
     amazon_id = models.CharField(max_length=255)
     address = models.CharField(max_length=255, default='', blank=True)
+    description = models.TextField(blank=True)
     thumbnail = models.ForeignKey(UploadedFile, blank=True, null=True, related_name='club_thumbnail')
     location = models.ForeignKey(Location, null=True, blank=True, related_name='club_location')
+
+    facebook = models.CharField(max_length=255, blank=True)
+    twitter = models.CharField(max_length=255, blank=True)
+    google_plus = models.CharField(max_length=255, blank=True)
+    instagram = models.CharField(max_length=255, blank=True)
+    linkedin = models.CharField(max_length=255, blank=True)
 
     def __unicode__(self):
         return unicode(self.name)

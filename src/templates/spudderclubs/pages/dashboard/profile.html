@@ -1,0 +1,96 @@
+{% extends 'spudderclubs/base_single_well.html' %}
+
+{% block css %}
+    {{ block.super }}
+
+    <link rel="stylesheet" href="/static/css/spudderspuds.css" />
+{% endblock %}
+
+{% load bootstrap3 %}
+
+{% block google_analytics_additions %}
+    ga('set', 'contentGroup1', 'CLUBS Registration Page');
+{% endblock %}
+
+{% block well_content %}
+    <h2>
+        <img src="/static/img/spudderclubs/button-clubs-small.png"/> Update your club profile details
+    </h2>
+
+    <form method="post" enctype="multipart/form-data">
+        <fieldset>
+            {% if errors %}
+                <legend>
+                    <div class="alert alert-danger">
+                        {{ form.errors }}
+                    </div>
+                    <div class="alert alert-danger">
+                        {{ errors }}
+                    </div>
+                </legend>
+            {% else %}
+                <legend>Please fill out the form below and hit 'Update'.</legend>
+            {% endif %}
+            {% csrf_token %}
+            {% bootstrap_form form %}
+
+            <div class="form-group edit-mode" style="display: block;" required="required">
+                <label>Location:</label>
+                <span class="input-required">*required</span>
+                <input id="location" name="location" class="controls" type="text" placeholder="Enter a location">
+                <input id="infoWindow" name="infoWindow" type="hidden" {% if profile.location %}value="{{ profile.locagtion.info_window }}"{% endif %}>
+                <input id="location_info" name="location_info" type="hidden" {% if profile.location %}value="{{ profile.location.post_data }}"{% endif %}/>
+                <div id="map_canvas" class="google-map-canvas"></div>
+            </div>
+
+            <h3 style="margin-top: 30px;">Social Media</h3>
+
+            {% bootstrap_form social_media %}
+
+            {% buttons %}
+                <button type="submit" class="btn btn-primary">
+                    <i class="fa fa-save"></i> Update
+                </button>
+                <a href="{{ request.META.HTTP_REFERER }}" class="btn btn-default">
+                    Cancel
+                </a>
+            {% endbuttons %}
+        </fieldset>
+    </form>
+{% endblock %}
+
+{% block js %}
+    {{ block.super }}
+
+    <script src="https://maps.googleapis.com/maps/api/js?key={{ places_api_key }}&v=3.exp&sensor=false&libraries=places"></script>
+    <script src="/media/dashboard/js/jquery.validate.js"></script>
+    <script src="/static/js/google_maps/init.js"></script>
+
+    <script type="text/javascript">
+        {% autoescape off %}
+            initializeGoogleMaps('{{ profile.location.address }}', '{{ profile.location.info_window }}');
+        {% endautoescape %}
+
+        $(document).ready(function () {
+            var $form = $('form');
+
+            $form.validate({
+                submitHandler: function (form) {
+                    var $locationInfo = $('#location_info');
+
+                    if ($locationInfo.val()) {
+                        form.submit();
+                    } else {
+                        var $error = $(document.createElement('label'));
+
+                        $error.addClass('error').attr('for', 'location');
+                        $error.text('This field is required');
+                        $error.css('display', 'block');
+
+                        $('#map_canvas').before($error);
+                    }
+                }
+            });
+        });
+    </script>
+{% endblock js %}

@@ -14,5 +14,6 @@ urlpatterns = patterns('spudderclubs.views',
     (r'^signin$', 'signin', {'SSL': determine_ssl()}),
 
     (r'^dashboard$', 'dashboard'),
+    (r'^profile$', 'profile'),
 )
 
