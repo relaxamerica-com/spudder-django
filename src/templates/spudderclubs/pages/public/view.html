@@ -54,82 +54,21 @@
 
     <div id="venue-property-buttons">
         <div class="btn-group btn-group-justified" style="margin: 0 auto;">
-            <a class="btn btn-primary active" href="#teams" role="tab" data-toggle="tab" title="Teams">
-                <i class="fa fa-2x fa-group" title="Associated Teams"> </i>
-            </a>
-            <a class="btn btn-primary" href="#about" role="tab" data-toggle="tab" title="About">
-                <i class="fa fa-2x fa-list-alt" title="About"> </i>
-            </a>
-            <a class="btn btn-primary" href="#message" role="tab" data-toggle="tab" title="Send Message">
-                <i class="fa fa-2x fa-envelope" title="Send Message"> </i>
-            </a>
+            {% include 'spudderclubs/pages/public/parts/view_buttons.html' %}
         </div>
     </div>
 
     <div class="tab-content">
         <div class="tab-pane active" id="teams">
-            <div class="page-header">
-                <h2><i class="fa fa-group"></i> Teams associated with this club</h2>
-            </div>
-            {% if teams %}
-                <table class="table table-striped" style="margin-top: 20px;">
-                    {% for team in teams %}
-                        <tr>
-                            <td style="width:40px;vertical-align: middle;">
-                                <a href="/team/view/{{ team.id }}" style="text-decoration: none;">
-                                    <img src="{% if team.logo %}/file/serve/{{ team.logo.id }}{% else %}/static/img/spudderspuds/button-teams-medium.png{% endif %}" height="30px;"/>
-                                </a>
-                            </td>
-                            <td style="vertical-align: middle;">
-                                <a href="/team/view/{{ team.id }}" style="text-decoration: none;">
-                                    {{ team }}
-                                </a>
-                            </td>
-                            <td style="vertical-align: middle;" class="hidden-xs">
-                                @{{ team.name }}
-                            </td>
-                            {% if request.can_edit %}
-                                <td style="width:100px; vertical-align: middle;">
-                                    <a class="btn btn-danger btn-sm" href="javascript:removeAssociation('{{ team.id }}', '{{ team.aka_name }}');">
-                                        Remove association
-                                    </a>
-                                </td>
-                            {% endif %}
-                        </tr>
-                    {% endfor %}
-                </table>
-                {% if request.can_edit %}
-                    <a class="btn btn-primary" href="/club/associate" title="Associate with Another Team" style="margin: 20px 0;">
-                        <i class="fa fa-fw fa-group"> </i> Associate with Another Team
-                    </a>
-                {% endif %}
-            {% else %}
-                {% include 'spudderclubs/pages/public/quotes/not_associated_with_team.html' %}
-            {% endif %}
+            {% include 'spudderclubs/pages/public/parts/view_tab_teams.html' %}
         </div>
 
         <div class="tab-pane" id="about">
-            {% if profile.description %}
-                <div>
-                    <h3 style="text-align: center">Description:</h3>
-                    <p style="margin-left: 30px; margin-right: 30px; text-align: justify;">{{ profile.description }}</p>
-                </div>
-             {% else %}
-                {% include 'spudderspuds/teams/quotes/quote_no_free_text.html' %}
-            {% endif %}
+            {% include 'spudderclubs/pages/public/parts/view_tab_about.html' %}
         </div>
 
         <div class="tab-pane text-center" id="message">
-            <h3>Send Message to Club Manager:</h3>
-            <form role="form" class="form-horizontal">
-                <div class="form-group">
-                    <div class="col-sm-8 col-sm-offset-2">
-                        <textarea class="form-control" placeholder="Enter your message here..." id="message-input"></textarea>
-                    </div>
-                </div>
-            </form>
-            <button id="send-message" class="btn btn-primary"><i class="fa fa-fw fa-send"></i> Send Message</button>
-            <div class="alert"></div>
+            {% include 'spudderclubs/pages/public/parts/view_tab_send_message.html' %}
         </div>
     </div>
 {% endblock %}
