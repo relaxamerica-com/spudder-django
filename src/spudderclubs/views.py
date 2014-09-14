@@ -1,8 +1,13 @@
-from django.http import HttpResponseRedirect, Http404, HttpResponse
+from google.appengine.api import mail
+import re
+from django.http import HttpResponseRedirect, Http404, HttpResponse, HttpResponseNotAllowed
 from django.shortcuts import render, redirect, get_object_or_404
+import settings
+from spudderaccounts.wrappers import RoleBase
 from spudderclubs.decorators import club_admin_required, club_not_fully_activated, club_fully_activated
 from spudderclubs.forms import ClubProfileCreateForm, ClubProfileEditForm
-from spudderdomain.models import ClubRecipient, Club
+from spudderdomain.controllers import RoleController
+from spudderdomain.models import ClubRecipient, Club, ClubAdministrator
 from spudderspuds.forms import LinkedInSocialMediaForm
 from spudderspuds.utils import set_social_media
 from spudmart.amazon.models import AmazonActionStatus, RecipientVerificationStatus
@@ -205,3 +210,39 @@ def save_thumbnail(request):
         club.save()
 
     return HttpResponse('OK')
+
+
+def send_message(request, club_id):
+    """
+    Sends a message to the club manager
+    :param request: a POST request with message body
+    :param team_id: a valid ID of a Club object
+    :return: a blank HttpResponse on success
+    """
+    if request.method != 'POST':
+        return HttpResponseNotAllowed(['POST'])
+
+    club = get_object_or_404(Club, pk=club_id)
+    message = request.POST.get('message', '')
+
+    if not message:
+        return HttpResponse()
+
+    admin = ClubAdministrator.objects.filter(club=club)[0]
+    entity = RoleController.GetRoleForEntityTypeAndID(
+        RoleController.ENTITY_CLUB_ADMIN,
+        admin.id,
+        RoleBase.RoleWrapperByEntityType(RoleController.ENTITY_CLUB_ADMIN)
+    )
+    email = entity.user.email
+
+    if message:
+        to = ['support@spudder.zendesk.com', email]
+        mail.send_mail(
+            subject='Message from Spudder about Club: %s' % club.name,
+            body=message,
+            sender=settings.SERVER_EMAIL,
+            to=to
+        )
+
+    return HttpResponse()

@@ -17,6 +17,7 @@ urlpatterns = patterns('spudderclubs.views',
     (r'^profile$', 'profile'),
 
     (r'^(?P<club_id>\d+)$', 'public_page'),
+    (r'^send_message/(?P<club_id>\d+)$', 'send_message'),
 
     (r'^edit_cover$', 'edit_cover'),
     (r'^save_cover$', 'save_cover'),
