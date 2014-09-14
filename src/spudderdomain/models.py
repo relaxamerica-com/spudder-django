@@ -250,6 +250,7 @@ class Club(models.Model):
     address = models.CharField(max_length=255, default='', blank=True)
     description = models.TextField(blank=True)
     thumbnail = models.ForeignKey(UploadedFile, blank=True, null=True, related_name='club_thumbnail')
+    cover_image = models.ForeignKey(UploadedFile, blank=True, null=True, related_name='club_cover_image')
     location = models.ForeignKey(Location, null=True, blank=True, related_name='club_location')
 
     facebook = models.CharField(max_length=255, blank=True)

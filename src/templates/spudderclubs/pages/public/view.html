@@ -1,0 +1,284 @@
+{% extends 'components/sharedpages/public_page_base.html' %}
+
+{% load accounts %}
+{% load spudderspudstags %}
+
+{% block title %}
+    {{ profile.name }} club | Spudder Clubs Network
+{% endblock %}
+
+{% block favicon %}"/static/img/spudderclubs/button-clubs-tiny.png"{% endblock %}
+
+{% block meta %}
+	{{ block.super }}
+	<meta property="og:title" content="{{ profile.name }} | Spudder - Sports Updates Made Simple">
+	<meta property="og:description" content="Check out the latest updates about {{ profile.name }}. If you are a fan of {{ profile.name }}, you need to see this!">
+	{% if profile.avatar %} <meta property="og:image" content="http://{{ request.META.HTTP_HOST }}/file/serve/{{ profile.image.id }}">
+        {% else %}<meta property="og:image" content="http://{{ request.META.HTTP_HOST }}/static/img/spudderteams/button-teams-large.png">
+	{% endif %}
+{% endblock %}
+
+{% block cover_image_container_id %}{% if not profile.cover_image %}jumbo-map-container{% endif %}{% endblock %}
+
+{% block cover_image_css_background %}{% if profile.cover_image %}/file/serve/{{ profile.cover_image.id }}{% endif %}{% endblock %}
+
+{% block cover_image_edit_url %}/club/edit_cover{% endblock %}
+
+{% block cover_title_profile_image_url %}{% if profile.thumbnail %}/file/serve/{{ profile.thumbnail.id }}{% else %}/static/img/spudderclubs/button-clubs-medium.png{% endif %}{% endblock %}
+
+{% block cover_title_display_name %}{{ profile.name }}{% endblock %}
+
+{% block cover_title_action_buttons %}
+    <a href="https://www.google.com/maps/dir/Current+Location/{{ profile.location.latitude }},{{ profile.location.longitude }}" target="_blank" class="social-link"><i class="fa fa-map-marker"></i></a>
+    {% if request.can_edit %}
+        <button class="btn btn-primary" id="edit">
+            Edit Mode
+        </button>
+    {% endif %}
+{% endblock %}
+
+
+{% block main_page %}
+    <div class="edit-mode well">
+        <h2>Edit basic club details</h2>
+        <form method="post" enctype="multipart/form-data" role="form">
+            <div class="form-group edit-mode edit-mode-sponsor">
+                <label>Upload a profile image (logo):</label>
+                <input type="file" name="file" id="edit-logo" class="form-control" />
+            </div>
+
+            <a class="btn btn-primary edit-mode" id="save-name"><i class="fa fa-fw fa-save"></i> Save</a>
+        </form>
+        <div class="alert" id="logo-name-alert" style="margin-top:10px"></div>
+    </div>
+
+    <div id="venue-property-buttons">
+        <div class="btn-group btn-group-justified" style="margin: 0 auto;">
+            <a class="btn btn-primary active" href="#teams" role="tab" data-toggle="tab" title="Teams">
+                <i class="fa fa-2x fa-group" title="Associated Teams"> </i>
+            </a>
+            <a class="btn btn-primary" href="#about" role="tab" data-toggle="tab" title="About">
+                <i class="fa fa-2x fa-list-alt" title="About"> </i>
+            </a>
+{#            <a class="btn btn-primary" href="#message" role="tab" data-toggle="tab" title="Send Message">#}
+{#                <i class="fa fa-2x fa-envelope" title="Send Message"> </i>#}
+{#            </a>#}
+        </div>
+    </div>
+
+    <div class="tab-content">
+        <div class="tab-pane active" id="teams">
+            <div class="page-header">
+                <h2><i class="fa fa-group"></i> Teams associated with this club</h2>
+            </div>
+            {% if teams %}
+                <table class="table table-striped" style="margin-top: 20px;">
+                    {% for team in teams %}
+                        <tr>
+                            <td style="width:40px;vertical-align: middle;">
+                                <a href="/team/view/{{ team.id }}" style="text-decoration: none;">
+                                    <img src="{% if team.logo %}/file/serve/{{ team.logo.id }}{% else %}/static/img/spudderspuds/button-teams-medium.png{% endif %}" height="30px;"/>
+                                </a>
+                            </td>
+                            <td style="vertical-align: middle;">
+                                <a href="/team/view/{{ team.id }}" style="text-decoration: none;">
+                                    {{ team }}
+                                </a>
+                            </td>
+                            <td style="vertical-align: middle;" class="hidden-xs">
+                                @{{ team.name }}
+                            </td>
+                            {% if request.can_edit %}
+                                <td style="width:100px; vertical-align: middle;">
+                                    <a class="btn btn-danger btn-sm" href="javascript:removeAssociation('{{ team.id }}', '{{ team.aka_name }}');">
+                                        Remove association
+                                    </a>
+                                </td>
+                            {% endif %}
+                        </tr>
+                    {% endfor %}
+                </table>
+                {% if request.can_edit %}
+                    <a class="btn btn-primary" href="/club/associate" title="Associate with Another Team" style="margin: 20px 0;">
+                        <i class="fa fa-fw fa-group"> </i> Associate with Another Team
+                    </a>
+                {% endif %}
+            {% else %}
+                {% include 'spudderclubs/pages/public/quotes/not_associated_with_team.html' %}
+            {% endif %}
+        </div>
+
+        <div class="tab-pane" id="about">
+            {% if profile.description %}
+                <div>
+                    <h3 style="text-align: center">Description:</h3>
+                    <p style="margin-left: 30px; margin-right: 30px; text-align: justify;">{{ profile.description }}</p>
+                </div>
+             {% else %}
+                {% include 'spudderspuds/teams/quotes/quote_no_free_text.html' %}
+            {% endif %}
+        </div>
+
+{#        <div class="tab-pane text-center" id="message">#}
+{#            <h3>Send Message to Club Manager:</h3>#}
+{#            <form role="form" class="form-horizontal">#}
+{#                <div class="form-group">#}
+{#                    <div class="col-sm-8 col-sm-offset-2">#}
+{#                        <textarea class="form-control" placeholder="Enter your message here..." id="message-input"></textarea>#}
+{#                    </div>#}
+{#                </div>#}
+{#            </form>#}
+{#            <button id="send-message" class="btn btn-primary"><i class="fa fa-fw fa-send"></i> Send Message</button>#}
+{#            <div class="alert"></div>#}
+{#        </div>#}
+    </div>
+{% endblock %}
+
+{% block sidebar %}
+    <div id="venue-sponsor-container">
+        <h3>
+            Club Details
+        </h3>
+
+        {% social_media_list profile %}
+
+        <ul class="list-unstyled">
+            {% if profile.location %}
+                <li>
+                    <label>Location: </label> <a href="{{ profile.location.external_link }}">{{ profile.location }}</a>
+                </li>
+            {% endif %}
+        </ul>
+    </div>
+{% endblock sidebar %}
+
+{% block js %}
+    {{ block.super }}
+
+    <script type="text/javascript" src="/static/js/libs/jquery.serialize.file.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=true&libraries=geometry"></script>
+    <script type="text/javascript" src="/static/js/libs/google.map.js"></script>
+
+    <script type="text/javascript">
+        $('.content').not('.active').hide();
+
+        $(document).ready(function(){
+            $('#save-name').click(function() {
+                var form = $('#edit-logo').parents('form'),
+                    files = $(form).serializeFiles(),
+                    alert = $('#logo-name-alert'),
+                    icon = $('#save-name .fa-save');
+
+                icon.removeClass('fa-save').addClass('fa-spin fa-spinner');
+
+                $.get('/upload/get_upload_url', function (data) {
+                    $.ajax({
+                        url: data,
+                        data: files,
+                        cache: false,
+                        contentType: false,
+                        processData: false,
+                        type: 'POST',
+                        success: function (data) {
+                            var parsed = JSON.parse(data);
+
+                            var response = $.post('/club/save_thumbnail', {
+                                'thumbnail': parsed['uploaded_files']
+                            });
+
+                            response.done(function (data) {
+                                icon.removeClass('fa-spin fa-spinner').addClass('fa-save');
+                                showAlert(alert, "Club logo have been saved.", 'success', true);
+
+                                if (parsed['uploaded_files'].length > 0) {
+                                    $('.spudder-jumbotron-caption .media img').attr('src', parsed['uploaded_files'][0]);
+                                }
+
+                            });
+                        }
+                    });
+                });
+            });
+
+            $('#mailto').attr('href',
+                              'mailto:?subject={{ profile.name }} on Spudder' +
+                              '&body=Check out the latest updates about {{ page.name }}. If you are a fan of {{ page.name }}, you need to see this! ' + url);
+
+            $('.alert').each(function(i, alert) {
+               var $alert = $(alert);
+               if ($alert.html() == "")
+                   $alert.hide();
+            });
+
+            $('#nav-btn-wrapper').find('a').not('[title="School Page"]').click(function(){
+                if(!$(this).hasClass('active')) {
+                    var currentTab = $(this).attr('openTab');
+
+                    $('.alert').not('.alert-info').hide();
+
+                    $('#nav-btn-wrapper').find('.active').removeClass('active');
+
+                    hide($('.contents > div.content'));
+
+                    $(this).addClass('active');
+
+                    show(currentTab);
+                }
+            });
+
+            function show(element) {
+                $('.contents > .active').removeClass('active');
+                $(element).addClass('active');
+                $(element).show();
+            }
+
+            function hide(elements) {
+                $.each(elements, function() {
+                    $(this).hide();
+                });
+            }
+        });
+        
+        $('#associated-venue-container').find('[nextVenue]').click(function(){
+            $(this).parent().parent().hide();
+            $('#associated-venue-' + $(this).attr('nextVenue')).show();
+        });
+
+        function removeAssociation(venueID, venueName){
+            if (confirm('This will remove the association with the venue ' + venueName + '. Are you sure you want to do that?')){
+                window.location = '/team/associate/{{ page.id }}/remove/' + venueID;
+            }
+        }
+
+        $('a[role="tab"]').click(function () {
+            $('a[role="tab"]').removeClass('active');
+
+            $(this).addClass('active');
+            $(this).tab('show');
+        });
+
+        window.twitterPopupText = "Follow {{ profile.name }} and check out all the Sports Updates shared and posted about them!";
+
+        {% if profile.location %}
+            $(document).ready(function () {
+                initWithCoords(parseFloat("{{ profile.location.latitude }}"), parseFloat("{{ profile.location.longitude }}"))
+            });
+        {% endif %}
+
+        $('#send-message').click(function(){
+            var alert = $(this).siblings('.alert'),
+                icon = $(this).children('i');
+            icon.removeClass('fa-send').addClass('fa-spin fa-spinner');
+
+            var response = $.post('/club/send_message/{{ profile.id }}',{
+                    'message': $('#message-input').val()
+                });
+
+            response.done(function(){
+                icon.removeClass('fa-spin fa-spinner').addClass('fa-send');
+                showAlert(alert, 'Your message has been sent to the manager of this club!', 'success', true);
+            });
+        });
+    </script>
+{% endblock %}
+

@@ -1,13 +1,15 @@
-from django.http import HttpResponseRedirect
-from django.shortcuts import render, redirect
+from django.http import HttpResponseRedirect, Http404, HttpResponse
+from django.shortcuts import render, redirect, get_object_or_404
 from spudderclubs.decorators import club_admin_required, club_not_fully_activated, club_fully_activated
 from spudderclubs.forms import ClubProfileCreateForm, ClubProfileEditForm
-from spudderdomain.models import ClubRecipient
+from spudderdomain.models import ClubRecipient, Club
 from spudderspuds.forms import LinkedInSocialMediaForm
 from spudderspuds.utils import set_social_media
 from spudmart.amazon.models import AmazonActionStatus, RecipientVerificationStatus
 from spudmart.amazon.utils import get_club_register_as_recipient_cbui_url, get_recipient_verification_status
 from spudmart.recipients.models import RecipientRegistrationState
+from spudmart.upload.models import UploadedFile
+from spudmart.utils.cover_image import save_cover_image_from_request, reset_cover_image
 
 
 def splash(request):
@@ -149,3 +151,57 @@ def profile(request):
         'form': form,
         'social_media': social_media_form
     })
+
+
+def public_page(request, club_id):
+    club = get_object_or_404(Club, pk=club_id)
+
+    if not club.is_fully_activated():
+        raise Http404
+
+    return render(request, 'spudderclubs/pages/public/view.html', {
+        'base_url': 'spudderspuds/base.html',
+        'profile': club
+    })
+
+
+@club_admin_required
+def edit_cover(request):
+    club = request.current_role.entity.club
+
+    return render(request, 'components/coverimage/edit_cover_image.html', {
+        'name': 'Fan Page',
+        'return_url': "/club/%s" % club.id,
+        'post_url': '/club/save_cover',
+        'reset_url': '/club/reset_cover'
+    })
+
+
+@club_admin_required
+def save_cover(request):
+    club = request.current_role.entity.club
+    save_cover_image_from_request(club, request)
+
+    return HttpResponse()
+
+
+@club_admin_required
+def reset_cover(request):
+    club = request.current_role.entity.club
+    reset_cover_image(club)
+
+    return HttpResponse('OK')
+
+
+@club_admin_required
+def save_thumbnail(request):
+    club = request.current_role.entity.club
+    request_logo = request.POST.getlist('thumbnail[]')
+
+    if len(request_logo):
+        thumbnail_id = request_logo[0].split('/')[3]
+        thumbnail = UploadedFile.objects.get(pk=thumbnail_id)
+        club.thumbnail = thumbnail
+        club.save()
+
+    return HttpResponse('OK')

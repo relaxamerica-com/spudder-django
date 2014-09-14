@@ -4,7 +4,7 @@ from django.shortcuts import redirect
 from spudderaccounts.utils import select_user_role_if_only_one_role_exists, select_all_user_roles, change_current_role
 from spudderaccounts.wrappers import RoleBase
 from spudderdomain.controllers import RoleController
-from spudderdomain.models import TeamAdministrator, TeamPage
+from spudderdomain.models import TeamAdministrator, TeamPage, Club, ClubAdministrator
 from spudderkrowdio.models import KrowdIOStorage
 from spudderkrowdio.utils import get_following
 from spudmart.CERN.models import School
@@ -138,6 +138,13 @@ class EditPageMiddleware:
                 if request.current_role.entity_type == RoleController.ENTITY_SPONSOR:
                     if str(request.current_role.entity.id) == str.split(path, '/')[-1]:
                         can_edit = True
+            elif re.match(r'/club/\d+$', path):
+                entity_id = request.current_role.entity.id
+                entity_type = request.current_role.entity_type
+                page = Club.objects.get(id=str.split(path, '/')[-1])
+                admins = ClubAdministrator.objects.filter(club=page, admin=request.user)
+                if len(admins) > 0:
+                    can_edit = True
 
         request.can_edit = can_edit
 
