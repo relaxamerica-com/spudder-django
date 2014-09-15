@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block title %}Server Error | Spudder Sports Updates Made Simple{% endblock %}
+
+{% block logout_next_url %}/spuds{% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" href="/static/css/spudderspuds.css" />
+{% endblock %}
+
+{% block nav_brand %}<a href="/spuds"><img src="/static/img/spudderspuds/logo-spuds-small.png" style="height:35px;margin-top:2px;"/> </a>{% endblock %}
+
+{% block body %}
+    <div class="container clearfix" id="{% block well_container_id %}{% endblock %}">
+            <div class="row">
+                <div class="col-sm-6 col-sm-offset-3">
+                    <div class="well">
+                        <div class="alert alert-warning text-center">
+                            <h2><i class="fa fa-fw fa-warning"></i> Server Error</h2>
+                            <p>Spudder is experiencing some server troubles. We're doing our best to solve the problem.</p>
+                            <p>Try checking back in a little while to see if the problem has been fixed.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+{% endblock %}

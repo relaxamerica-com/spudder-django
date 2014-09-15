@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title %}Spudder Sports Updates Made Simple{% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" href="/static/css/spudderspuds.css" />
+{% endblock %}
+
+{% block nav_brand %}<a href="/spuds"><img src="/static/img/spudderclubs/logo-clubs-small.png" style="height:35px;margin-top:2px;"/> </a>{% endblock %}
+
+{% block nav %}
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        {% block dashboard_page %}{% endblock %}
+    </div>
+{% endblock %}

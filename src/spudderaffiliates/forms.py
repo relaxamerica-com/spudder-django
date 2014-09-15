@@ -50,5 +50,8 @@ class AffiliateForm(ModelForm):
             objects = Affiliate.objects.all()
         if objects.filter(url_name=url_name).count():
             raise ValidationError("That URL is already being used by another affiliate.")
+
+        if "/" in url_name:
+            raise ValidationError("No slashes (/) are allowed in Affiliate urls.")
         return url_name
 

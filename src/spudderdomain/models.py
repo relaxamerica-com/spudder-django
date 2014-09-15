@@ -4,6 +4,7 @@ import json
 from django.contrib.auth.models import User
 from django.db import models
 from djangotoolbox.fields import ListField
+from spudderaffiliates.models import Affiliate
 from spudmart.recipients.models import AmazonRecipient
 from spudmart.upload.models import UploadedFile
 from spudmart.venues.models import Venue
@@ -128,6 +129,8 @@ class FanPage(models.Model):
 
     info_messages_dismissed = models.TextField(blank=True, null=True)
 
+    affiliate = models.ForeignKey(Affiliate, blank=True, null=True)
+
     def was_edited(self):
         return self.email is not None and self.email != ""
 
@@ -213,6 +216,8 @@ class TeamPage(models.Model):
     instagram = models.CharField(max_length=255, blank=True)
     linkedin = models.CharField(max_length=255, blank=True)
 
+    affiliate = models.ForeignKey(Affiliate, blank=True, null=True)
+
     TeamWithNameAlreadyExistsError = _TeamWithNameAlreadyExistsError
 
     def update_location(self, location_info):
@@ -258,6 +263,8 @@ class Club(models.Model):
     google_plus = models.CharField(max_length=255, blank=True)
     instagram = models.CharField(max_length=255, blank=True)
     linkedin = models.CharField(max_length=255, blank=True)
+
+    affiliate = models.ForeignKey(Affiliate, blank=True, null=True)
 
     def __unicode__(self):
         return unicode(self.name)
