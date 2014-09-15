@@ -3,7 +3,7 @@ import urllib2
 from google.appengine.api import mail
 from django.contrib import messages
 from django.contrib.auth.models import User
-from django.http import Http404
+from django.http import Http404, HttpResponseRedirect
 from django.http import HttpResponse, HttpResponseNotAllowed
 from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
@@ -668,20 +668,79 @@ def affiliates(request):
     :param request: any request
     :return: a page with table on one side and form on the other
     """
-    affiliate_message = None
-    affiliates = [a for a in Affiliate.objects.all()]
-    form = AffiliateForm()
+    return render_to_response('spudderadmin/pages/affiliates/affiliates.html',{
+        'affiliates': Affiliate.objects.all()
+    })
+
+
+@admin_login_required
+def create_affiliate(request):
+    """
+    Allows admin to create a new affiliate, verifies form
+    :param request: any request
+    :return: a bootstrap form for creating an affiliate
+    """
     if request.method == 'POST':
         form = AffiliateForm(request.POST)
         if form.is_valid():
             affiliate = form.save()
             affiliate_message = "%s was successfully created." % affiliate.name
-            affiliates.append(affiliate)
-            form = AffiliateForm()
-    return render_to_response('spudderadmin/pages/system/affiliates.html',{
-        'affiliates': affiliates,
-        'affiliate_message': affiliate_message,
+            return render_to_response('spudderadmin/pages/affiliates/success.html', {
+                'affiliate_message': affiliate_message
+            })
+    else:
+        form = AffiliateForm()
+    return render_to_response('spudderadmin/pages/affiliates/create.html', {
         'create_affiliate_form': form
     })
 
 
+@admin_login_required
+def edit_affiliate(request, affiliate_id):
+    """
+    Allows user to edit affiliate information
+    :param request: any request
+    :param affiliate_id: a valid ID of an Affiliate object
+    :return: a bootstrap form filled out for given affiliate
+    """
+    aff = Affiliate.objects.get(id=affiliate_id)
+    success = False
+    if request.method == 'POST':
+        form = AffiliateForm(request.POST, instance=aff)
+        if form.is_valid():
+            success = True
+            form.save()
+    else:
+        form = AffiliateForm(instance=aff)
+    return render_to_response('spudderadmin/pages/affiliates/edit.html', {
+        'form': form,
+        'success': success,
+        'name': aff.name
+    })
+
+
+@admin_login_required
+def confirm_delete(request, affiliate_id):
+    """
+    Displays a page to confirm the deletion of an affiliate.
+    :param request: any request
+    :param affiliate_id: a valid ID of an Affiliate object
+    :return: a simple well page
+    """
+    aff = Affiliate.objects.get(id=affiliate_id)
+    return render_to_response('spudderadmin/pages/affiliates/delete.html', {
+        'name': aff.name,
+        'id': aff.id
+    })
+
+
+def delete_affiliate(request, affiliate_id):
+    """
+    Deletes affiliate & redirects to affiliates splash
+    :param request: any request
+    :param affiliate_id: a valid ID of an affiliate
+    :return: a redirect to Affiliates list
+    """
+    aff = Affiliate.objects.get(id=affiliate_id)
+    aff.delete()
+    return HttpResponseRedirect('/spudderadmin/affiliates')

@@ -22,21 +22,33 @@ class AffiliateForm(ModelForm):
     def clean_username(self):
         cleaned_data = super(AffiliateForm, self).clean()
         username = cleaned_data.get('username').strip()
-        if Affiliate.objects.filter(username=username).count():
+        if self.instance.id:
+            objects = Affiliate.objects.exclude(id=self.instance.id)
+        else:
+            objects = Affiliate.objects.all()
+        if objects.filter(username=username).count():
             raise ValidationError("That username is already being used by an affiliate.")
         return username
 
     def clean_name(self):
         cleaned_data = super(AffiliateForm, self).clean()
         name = cleaned_data.get('name').strip()
-        if Affiliate.objects.filter(name=name).count():
+        if self.instance.id:
+            objects = Affiliate.objects.exclude(id=self.instance.id)
+        else:
+            objects = Affiliate.objects.all()
+        if objects.filter(name=name).count():
             raise ValidationError("There is already an affiliate with that name.")
         return name
 
     def clean_url_name(self):
         cleaned_data = super(AffiliateForm, self).clean()
         url_name = cleaned_data.get('url_name').strip()
-        if Affiliate.objects.filter(url_name=url_name).count():
+        if self.instance.id:
+            objects = Affiliate.objects.exclude(id=self.instance.id)
+        else:
+            objects = Affiliate.objects.all()
+        if objects.filter(url_name=url_name).count():
             raise ValidationError("That URL is already being used by another affiliate.")
         return url_name
 

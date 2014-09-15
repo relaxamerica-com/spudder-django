@@ -24,7 +24,6 @@ urlpatterns = patterns(
     url(r'^/system/venues$', 'system_venues'),
     url(r'^/system/nukedb$', 'system_nukedb'),
     url(r'^/system/school_covers$', 'system_remove_school_cover_images'),
-    url(r'^/system/affiliates$', 'affiliates'),
     url(r'^/system', 'system_dashboard'),
 
     url(r'^/reports/fans$', 'fan_reports'),
@@ -40,6 +39,12 @@ urlpatterns = patterns(
     url(r'^/reports/venues/map', 'venues_map_landing'),
     url(r'^/reports/venues/(?P<sport>.+)/map', 'venues_map_by_sport'),
     url(r'^/reports', 'user_reports_dashboard'),
+
+    url(r'^/affiliates/create$', 'create_affiliate'),
+    url(r'^/affiliates/edit/(?P<affiliate_id>\d+)$', 'edit_affiliate'),
+    url(r'^/affiliates/confirm_delete/(?P<affiliate_id>\d+)$', 'confirm_delete'),
+    url(r'^/affiliates/delete/(?P<affiliate_id>\d+)$','delete_affiliate'),
+    url(r'^/affiliates', 'affiliates'),
 
     url(r'^/send_email$', 'send_email'),
 
