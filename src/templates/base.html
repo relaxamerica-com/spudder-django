@@ -44,14 +44,12 @@
             <nav class="navbar navbar-masthead navbar-default navbar-static-top" role="navigation">
                 <div class="container-fluid">
                     <div class="navbar-header">
-                        {% if request.current_role %}
-                            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                                <span class="sr-only">Toggle navigation</span>
-                                <span class="icon-bar"></span>
-                                <span class="icon-bar"></span>
-                                <span class="icon-bar"></span>
-                            </button>
-                        {% endif %}
+                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
                         {% block nav_brand %}<a href="/"><img src="/static/img/spudderspuds/logo-spuds-small.png" style="height:35px;margin-top:2px;"/> </a>{% endblock %}
                     </div>
                     {% block masterhead %}{% endblock %}
