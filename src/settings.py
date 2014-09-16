@@ -20,7 +20,7 @@ ENVIRONMENT = Environments.DEV
 
 DEBUG = True
 
-if socket.gethostname() == 'www.spudder.com':
+if 'spudder.com' in socket.gethostname():
     ENVIRONMENT = Environments.LIVE
     DEBUG = False
 elif 'spudmart1' in socket.gethostname():

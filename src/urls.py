@@ -77,6 +77,9 @@ urlpatterns = patterns(
     url(r'^club/*', include('spudderclubs.urls')),
     url(r'^challenges/*', include('spudmart.challenges.urls')),
 
+    # Spudder QA center
+    url(r'^qa', include('spudderqa.urls')),
+
     # Spudder Admin site
     (r'^spudderadmin', include('spudderadmin.urls')),
 
