@@ -3,9 +3,9 @@ import urllib2
 from google.appengine.api import mail
 from django.contrib import messages
 from django.contrib.auth.models import User
-from django.http import Http404
+from django.http import Http404, HttpResponseRedirect
 from django.http import HttpResponse, HttpResponseNotAllowed
-from django.shortcuts import render_to_response, redirect
+from django.shortcuts import render_to_response, redirect, render
 from django.template import RequestContext
 
 import settings
@@ -14,6 +14,8 @@ from spudderaccounts.wrappers import RoleStudent, RoleFan, RoleSponsor
 from spudderadmin.decorators import admin_login_required
 from spudderadmin.forms import AtPostSpudTwitterAPIForm, PasswordAndActionForm, SystemDeleteVenuesForm
 from spudderadmin.utils import encoded_admin_session_variable_name
+from spudderaffiliates.forms import AffiliateForm
+from spudderaffiliates.models import Affiliate
 from spudderdomain.controllers import RoleController, EntityController
 from spudderdomain.models import FanPage, LinkedService, TeamAdministrator, TeamPage, TeamVenueAssociation, Location
 from spudderkrowdio.models import KrowdIOStorage, FanFollowingEntityTag
@@ -657,3 +659,78 @@ def send_sponsor_email(request, sponsor_id):
             'profile': "/sponsor/%s" % sponsor.id
         },
         context_instance=RequestContext(request))
+
+
+@admin_login_required
+def affiliates(request):
+    """
+    Displays the affiliates and allows new affiliates to be created
+    :param request: any request
+    :return: a page with table on one side and form on the other
+    """
+    return render(request, 'spudderadmin/pages/affiliates/affiliates.html', {'affiliates': Affiliate.objects.all()})
+
+
+@admin_login_required
+def create_affiliate(request):
+    """
+    Allows admin to create a new affiliate, verifies form
+    :param request: any request
+    :return: a bootstrap form for creating an affiliate
+    """
+    form = AffiliateForm()
+    if request.method == 'POST':
+        form = AffiliateForm(request.POST)
+        if form.is_valid():
+            affiliate = form.save()
+            affiliate_message = "<i class='fa fa-check'></i> %s was successfully created." % affiliate.name
+            messages.success(request, affiliate_message)
+            return redirect('/spudderadmin/affiliates')
+    return render(request, 'spudderadmin/pages/affiliates/create.html', {'create_affiliate_form': form})
+
+
+@admin_login_required
+def edit_affiliate(request, affiliate_id):
+    """
+    Allows user to edit affiliate information
+    :param request: any request
+    :param affiliate_id: a valid ID of an Affiliate object
+    :return: a bootstrap form filled out for given affiliate
+    """
+    aff = Affiliate.objects.get(id=affiliate_id)
+    form = AffiliateForm(instance=aff)
+    if request.method == 'POST':
+        form = AffiliateForm(request.POST, instance=aff)
+        if form.is_valid():
+            affiliate = form.save()
+            affiliate_message = "<i class='fa fa-check'></i> %s updated." % affiliate.name
+            messages.success(request, affiliate_message)
+            return redirect('/spudderadmin/affiliates')
+    return render_to_response('spudderadmin/pages/affiliates/edit.html', {'form': form, 'name': aff.name})
+
+
+@admin_login_required
+def confirm_delete(request, affiliate_id):
+    """
+    Displays a page to confirm the deletion of an affiliate.
+    :param request: any request
+    :param affiliate_id: a valid ID of an Affiliate object
+    :return: a simple well page
+    """
+    aff = Affiliate.objects.get(id=affiliate_id)
+    return render_to_response('spudderadmin/pages/affiliates/delete.html', {
+        'name': aff.name,
+        'id': aff.id
+    })
+
+
+def delete_affiliate(request, affiliate_id):
+    """
+    Deletes affiliate & redirects to affiliates splash
+    :param request: any request
+    :param affiliate_id: a valid ID of an affiliate
+    :return: a redirect to Affiliates list
+    """
+    aff = Affiliate.objects.get(id=affiliate_id)
+    aff.delete()
+    return HttpResponseRedirect('/spudderadmin/affiliates')

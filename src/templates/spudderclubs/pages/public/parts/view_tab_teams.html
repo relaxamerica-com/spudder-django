@@ -1,0 +1,38 @@
+<div class="page-header">
+    <h2><i class="fa fa-group"></i> Teams associated with this club</h2>
+</div>
+{% if teams %}
+    <table class="table table-striped" style="margin-top: 20px;">
+        {% for team in teams %}
+            <tr>
+                <td style="width:40px;vertical-align: middle;">
+                    <a href="/team/view/{{ team.id }}" style="text-decoration: none;">
+                        <img src="{% if team.logo %}/file/serve/{{ team.logo.id }}{% else %}/static/img/spudderspuds/button-teams-medium.png{% endif %}" height="30px;"/>
+                    </a>
+                </td>
+                <td style="vertical-align: middle;">
+                    <a href="/team/view/{{ team.id }}" style="text-decoration: none;">
+                        {{ team }}
+                    </a>
+                </td>
+                <td style="vertical-align: middle;" class="hidden-xs">
+                    @{{ team.name }}
+                </td>
+                {% if request.can_edit %}
+                    <td style="width:100px; vertical-align: middle;">
+                        <a class="btn btn-danger btn-sm" href="javascript:removeAssociation('{{ team.id }}', '{{ team.aka_name }}');">
+                            Remove association
+                        </a>
+                    </td>
+                {% endif %}
+            </tr>
+        {% endfor %}
+    </table>
+    {% if request.can_edit %}
+        <a class="btn btn-primary" href="/club/associate" title="Associate with Another Team" style="margin: 20px 0;">
+            <i class="fa fa-fw fa-group"> </i> Associate with Another Team
+        </a>
+    {% endif %}
+{% else %}
+    {% include 'spudderclubs/pages/public/quotes/not_associated_with_team.html' %}
+{% endif %}

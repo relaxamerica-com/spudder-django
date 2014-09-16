@@ -40,6 +40,12 @@ urlpatterns = patterns(
     url(r'^/reports/venues/(?P<sport>.+)/map', 'venues_map_by_sport'),
     url(r'^/reports', 'user_reports_dashboard'),
 
+    url(r'^/affiliates/create$', 'create_affiliate'),
+    url(r'^/affiliates/edit/(?P<affiliate_id>\d+)$', 'edit_affiliate'),
+    url(r'^/affiliates/confirm_delete/(?P<affiliate_id>\d+)$', 'confirm_delete'),
+    url(r'^/affiliates/delete/(?P<affiliate_id>\d+)$','delete_affiliate'),
+    url(r'^/affiliates', 'affiliates'),
+
     url(r'^/send_email$', 'send_email'),
 
     url(r'^', 'admin_login'),

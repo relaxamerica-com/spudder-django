@@ -3,6 +3,7 @@ from django.conf.urls.defaults import *
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response, render
 from django.views.generic import RedirectView
+from spudderaffiliates.models import Affiliate
 from spudderdomain.controllers import RoleController
 from spudderspuds.forms import FanSigninForm
 
@@ -49,6 +50,7 @@ def temp_redirect_view(request):
     }
     return render(request, 'main_splash.html', template_data)
 
+
 urlpatterns = patterns(
     '',
     ('^_ah/warmup$', 'djangoappengine.views.warmup'),
@@ -67,12 +69,12 @@ urlpatterns = patterns(
     (r'^file/serve/(?P<file_id>\d+)$', 'spudmart.upload.views.serve_uploaded_file'),
     (r'^api/1/', include('spudmart.api.urls')),
 
-    url(r'^cern/', include('spudmart.CERN.urls')),
-    url(r'^users/', include('spudderaccounts.urls')),
-    url(r'^spuds/', include('spudderspuds.urls_spuds')),
-    url(r'^fan/', include('spudderspuds.urls_fans')),
-    url(r'^flag/', include('spudmart.flags.urls')),
-    url(r'^club/', include('spudderclubs.urls')),
+    url(r'^cern/*', include('spudmart.CERN.urls')),
+    url(r'^users/*', include('spudderaccounts.urls')),
+    url(r'^spuds/*', include('spudderspuds.urls_spuds')),
+    url(r'^fan/*', include('spudderspuds.urls_fans')),
+    url(r'^flag/*', include('spudmart.flags.urls')),
+    url(r'^club/*', include('spudderclubs.urls')),
     url(r'^challenges/', include('spudmart.challenges.urls')),
 
     # Spudder Admin site
@@ -87,6 +89,8 @@ urlpatterns = patterns(
     # Legacy URL mapping
     (r'^campusrep', RedirectView.as_view(url="/cern/")),
     (r'^privacy', RedirectView.as_view(url="http://info.spudder.com/privacy/")),
+
+    (r'(?P<affiliate_url_name>[^/]+)$', 'spudderaffiliates.views.affiliate_splash'),
 
     # Note the below line was added to catch root urls and push them to info.spudder.com for now MG 20140618
     (r'^$', temp_redirect_view)

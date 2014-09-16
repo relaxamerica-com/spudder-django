@@ -1,0 +1,52 @@
+{% extends 'spudderadmin/pages/affiliates/_affiliates_base.html' %}
+
+{% block admin_body %}
+    <div class="page-header">
+        <h1>
+            <i class="fa fa-building"></i>
+            All Affiliates
+            <a href="/spudderadmin/affiliates/create" class="btn btn-default pull-right"><i class="fa fa-plus"></i> Add a New Affiliate</a>
+        </h1>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-sm-12">
+                    <table class="table table-striped {% if affiliates %}datatable{% endif %}">
+                        <thead>
+                            <tr>
+                                <th>Affiliate Profile</th>
+                                <th class="no-sort">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for affiliate in affiliates %}
+                                <tr>
+                                    <td>
+                                        <a href="/{{ affiliate.url_name }}"><img src="{{ affiliate.path_to_icon }}" width="50px"/> {{ affiliate.name }}</a>
+                                    </td>
+                                    <td style="white-space: nowrap">
+                                        <a href="/spudderadmin/affiliates/edit/{{ affiliate.id }}" class="btn btn-default btn-sm">
+                                            <i class="fa fa-fw fa-edit"></i> <span class="hidden-xs">Edit</span>
+                                        </a>
+                                        <a href="/spudderadmin/affiliates/confirm_delete/{{ affiliate.id }}" class="btn btn-danger btn-sm">
+                                            <i class="fa fa-fw fa-trash-o"></i> <span class="hidden-xs">Delete</span>
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="2">
+                                        <div class="alert alert-warning">
+                                            <p>There are no affiliates to show.</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

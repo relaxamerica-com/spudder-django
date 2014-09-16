@@ -1,0 +1,16 @@
+{% extends 'spudderadmin/base_single_well.html' %}
+
+{% block well_content %}
+    <div class="page-header">
+        <h2><i class="fa fa-trash-o"></i> Delete {{ name }}?</h2>
+    </div>
+
+    <div class="alert alert-danger">
+        <p><b>Are you sure you want to delete the affiliate {{ name }}?</b></p>
+        <p>This will remove the affiliate, but not the venues, clubs, and fans associated with the affiliate.</p>
+    </div>
+
+        <a href="/spudderadmin/affiliates/delete/{{ id }}" class="btn btn-danger">Delete this affiliate</a>
+        <a href="/spudderadmin/affiliates" class="btn btn-default">Cancel</a>
+
+{% endblock %}

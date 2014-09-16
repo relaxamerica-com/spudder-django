@@ -4,6 +4,7 @@ import json
 from django.contrib.auth.models import User
 from django.db import models
 from djangotoolbox.fields import ListField
+from spudderaffiliates.models import Affiliate
 from spudmart.recipients.models import AmazonRecipient
 from spudmart.upload.models import UploadedFile
 from spudmart.venues.models import Venue
@@ -128,6 +129,8 @@ class FanPage(models.Model):
 
     info_messages_dismissed = models.TextField(blank=True, null=True)
 
+    affiliate = models.ForeignKey(Affiliate, blank=True, null=True)
+
     def was_edited(self):
         return self.email is not None and self.email != ""
 
@@ -213,6 +216,8 @@ class TeamPage(models.Model):
     instagram = models.CharField(max_length=255, blank=True)
     linkedin = models.CharField(max_length=255, blank=True)
 
+    affiliate = models.ForeignKey(Affiliate, blank=True, null=True)
+
     TeamWithNameAlreadyExistsError = _TeamWithNameAlreadyExistsError
 
     def update_location(self, location_info):
@@ -247,14 +252,35 @@ class Club(models.Model):
     name = models.CharField(max_length=255)
     amazon_email = models.CharField(max_length=255)
     amazon_id = models.CharField(max_length=255)
+    address = models.CharField(max_length=255, default='', blank=True)
+    description = models.TextField(blank=True)
     thumbnail = models.ForeignKey(UploadedFile, blank=True, null=True, related_name='club_thumbnail')
+    cover_image = models.ForeignKey(UploadedFile, blank=True, null=True, related_name='club_cover_image')
     location = models.ForeignKey(Location, null=True, blank=True, related_name='club_location')
+
+    facebook = models.CharField(max_length=255, blank=True)
+    twitter = models.CharField(max_length=255, blank=True)
+    google_plus = models.CharField(max_length=255, blank=True)
+    instagram = models.CharField(max_length=255, blank=True)
+    linkedin = models.CharField(max_length=255, blank=True)
+
+    affiliate = models.ForeignKey(Affiliate, blank=True, null=True)
 
     def __unicode__(self):
         return unicode(self.name)
 
     def __str__(self):
         return unicode(self).encode('utf-8')
+
+    def update_location(self, location_info):
+        if not location_info:
+            self.location = None
+            return
+
+        if not self.location:
+            self.location = Location.from_post_data(location_info)
+        else:
+            self.location.update_from_post_data(location_info)
 
     def is_fully_activated(self):
         if ClubRecipient.objects.filter(club=self).count() < 1:

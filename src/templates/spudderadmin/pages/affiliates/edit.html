@@ -1,0 +1,20 @@
+{% extends 'spudderadmin/pages/affiliates/_affiliates_base.html' %}
+{% load bootstrap3 %}
+
+{% block admin_body %}
+    <div class="page-header">
+        <h1>Edit Affiliate {{ name }}</h1>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <form method="post">
+                {% csrf_token %}
+                {% bootstrap_form form %}
+                {% buttons %}
+                    <button class="btn btn-primary" type="submit">Save Changes</button>
+                    <a href="/spudderadmin/affiliates" class="btn btn-default">Cancel</a>
+                {% endbuttons %}
+            </form>
+        </div>
+    </div>
+{% endblock %}

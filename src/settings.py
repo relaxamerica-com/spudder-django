@@ -124,7 +124,8 @@ LOGIN_REDIRECT_URL = '/'
 ACCOUNT_ACTIVATION_DAYS = 5
 
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
-NOSE_ARGS = ['--with-xunit', '--xunit-file=spudmart/test-reports/xunit.xml', '-v']
+# NOSE_ARGS = ['--with-xunit', '--xunit-file=test-reports/xunit.xml', '-v']
+NOSE_ARGS = ['--with-xunit', '-v']
 NOSE_PLUGINS = ['nose_plugins.noseplugins.TestDiscoveryPlugin']
 
 # Make this unique, and don't share it with anybody.

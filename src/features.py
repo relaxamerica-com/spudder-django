@@ -3,11 +3,13 @@ FEATURES = {
         'spud_tagging',
         'manage_team_admins',
         'clubs'
+        'nays_survey',
     ],
     'stage': [
         'spud_tagging',
         'manage_team_admins',
-        'clubs'
+        'clubs',
+        'nays_survey',
     ],
     'live': [
         'spud_tagging'

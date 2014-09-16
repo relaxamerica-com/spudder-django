@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
+from spudderaffiliates.models import Affiliate
 from spudmart.sponsors.models import SponsorPage
 from spudmart.upload.models import UploadedFile
 from djangotoolbox.fields import ListField
@@ -49,6 +50,8 @@ class Venue(models.Model):
     cover_image = models.ForeignKey(UploadedFile, null=True, related_name="cover_image")
     state = models.CharField(max_length=2)
     location_has_been_changed = models.BooleanField(default=False)
+
+    affiliate = models.ForeignKey(Affiliate, blank=True, null=True)
 
     # Just to stay consistent with fcns created in spuddercern.rep
     rep = models.IntegerField(default=0)

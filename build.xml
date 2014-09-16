@@ -1,26 +1,25 @@
 <project name="spudmart" default="unittest" basedir="..">
-	<property name="spudmart.src" location="spudmart/src"/>
+    <property name="spudmart.src" location="src"/>
 
-	<target name="test">
-	    <mkdir dir="${ant.project.name}/test-reports" />
-	    <touch file="${ant.project.name}/test-reports/xunit.xml"/>
+    <target name="test">
+        <!--<mkdir dir="${ant.project.name}/test-reports" />-->
+        <!--<touch file="${ant.project.name}/test-reports/xunit.xml"/>-->
+        <exec executable="python" failonerror="true">
+                <arg value="${basedir}/${projectname}/src/manage.py"/>
+                <arg value="test"/>
+                <arg value="src.spudmart"/>
+        </exec>
+    </target>
 
-		<exec executable="python" failonerror="true">
-			<arg value="${spudmart.src}/manage.py"/>
-			<arg value="test"/>
-			<arg value="src.spudmart"/>
-		</exec>
-	</target>
+    <!--<target name="unittest">-->
+            <!--<mkdir dir="${ant.project.name}/test-reports" />-->
+            <!--<touch file="${ant.project.name}/test-reports/xunit.xml"/>-->
 
-    <target name="unittest">
-	    <mkdir dir="${ant.project.name}/test-reports" />
-	    <touch file="${ant.project.name}/test-reports/xunit.xml"/>
-
-		<exec executable="python" failonerror="true">
-			<arg value="${spudmart.src}/manage.py"/>
-			<arg value="test"/>
-			<arg value="src.spudmart"/>
-            <arg value="-aunit"/>
-		</exec>
-	</target>
+                <!--<exec executable="python" failonerror="true">-->
+                        <!--<arg value="${spudmart.src}/manage.py"/>-->
+                        <!--<arg value="test"/>-->
+                        <!--<arg value="src.spudmart"/>-->
+            <!--<arg value="-aunit"/>-->
+                <!--</exec>-->
+        <!--</target>-->
 </project>
