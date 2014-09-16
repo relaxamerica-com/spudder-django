@@ -11,6 +11,10 @@ from spudderspuds.views import krowdio_users_to_links
 from spudmart.venues.models import Venue
 
 
+def _nays_survey(request):
+    return render(request, 'spudderaffiliates/pages/_nays_survey.html')
+
+
 def affiliate_splash(request, affiliate_url_name):
     """
 
@@ -18,6 +22,9 @@ def affiliate_splash(request, affiliate_url_name):
     :param affiliate_url_name:
     :return:
     """
+    if affiliate_url_name and affiliate_url_name.lower() == 'nays':
+        return _nays_survey(request)
+
     try:
         aff = Affiliate.objects.get(url_name=affiliate_url_name)
     except Affiliate.DoesNotExist:

@@ -1,0 +1,4599 @@
+{% extends 'spudderspuds/base.html' %}
+{% load spudderaccountstags %}
+{% load spudderspudstags %}
+
+{% block css %}
+    {{ block.super }}
+<style type="text/css">
+.docs-icon {
+    direction: ltr;
+    text-align: left;
+    height: 21px;
+    overflow: hidden;
+    vertical-align: middle;
+    width: 21px
+}
+
+.docs-icon-img:before {
+    content: url("//ssl.gstatic.com/docs/common/jfk_sprite115.png")
+}
+
+.docs-icon-img {
+    *background: url("//ssl.gstatic.com/docs/common/jfk_sprite115.png")
+}
+
+.docs-icon-img-legacy {
+    background: url("//ssl.gstatic.com/docs/common/jfk_sprite115.png")
+}
+
+.docs-icon-img-container {
+    height: 3150px;
+    position: absolute;
+    width: 42px
+}
+
+.goog-color-menu-button-indicator .docs-icon {
+    height: 19px
+}
+
+.goog-menuitem-icon .docs-icon-img-container {
+    opacity: .55
+}
+
+.goog-menuitem-icon .docs-icon-document, .goog-menuitem-icon .docs-icon-punch, .goog-menuitem-icon .docs-icon-presentation, .goog-menuitem-icon .docs-icon-spreadsheet, .goog-menuitem-icon .docs-icon-form, .goog-menuitem-icon .docs-icon-drawing, .goog-menuitem-icon .docs-icon-script {
+    opacity: 1
+}
+
+.docs-icon-save {
+    left: -21px;
+    top: -2709px
+}
+
+.docs-icon-print {
+    left: 0;
+    top: -546px
+}
+
+.docs-icon-undo, .docs-icon-redo-rtl {
+    left: 0;
+    top: -609px
+}
+
+.docs-icon-redo, .docs-icon-undo-rtl {
+    left: 0;
+    top: -1764px
+}
+
+.docs-icon-copy {
+    left: 0;
+    top: -168px
+}
+
+.docs-icon-cut {
+    left: 0;
+    top: -1407px
+}
+
+.docs-icon-paste {
+    left: -21px;
+    top: -2016px
+}
+
+.docs-icon-document {
+    left: -21px;
+    top: -3066px
+}
+
+.docs-icon-presentation {
+    left: -21px;
+    top: -1491px
+}
+
+.docs-icon-punch {
+    left: -21px;
+    top: -1491px
+}
+
+.docs-icon-spreadsheet {
+    left: 0;
+    top: -1848px
+}
+
+.docs-icon-form {
+    left: 0;
+    top: -588px
+}
+
+.docs-icon-drawing {
+    left: -21px;
+    top: -567px
+}
+
+.docs-icon-drawing-black {
+    left: 0;
+    top: -840px
+}
+
+.docs-icon-excel {
+    left: 0;
+    top: -735px
+}
+
+.docs-icon-powerpoint {
+    left: 0;
+    top: -1071px
+}
+
+.docs-icon-word {
+    left: -21px;
+    top: -21px
+}
+
+.docs-icon-script {
+    left: 0;
+    top: -1134px
+}
+
+.docs-icon-insert-script {
+    left: 0;
+    top: -2436px
+}
+
+.docs-icon-gadget {
+    left: -21px;
+    top: -3087px
+}
+
+.docs-icon-image {
+    left: -21px;
+    top: -1176px
+}
+
+.docs-icon-clipboard {
+    left: -21px;
+    top: -1281px
+}
+
+.docs-icon-bold {
+    left: -21px;
+    top: -1722px
+}
+
+.docs-icon-italic {
+    left: 0;
+    top: -1785px
+}
+
+.docs-icon-text-color {
+    left: -21px;
+    top: -1890px
+}
+
+.docs-icon-align-left {
+    left: -21px;
+    top: -1932px
+}
+
+.docs-icon-align-center {
+    left: -21px;
+    top: -2499px
+}
+
+.docs-icon-align-right {
+    left: -21px;
+    top: -105px
+}
+
+.docs-icon-align-justify {
+    left: 0;
+    top: -1092px
+}
+
+.docs-icon-valign-top {
+    left: -21px;
+    top: -1134px
+}
+
+.docs-icon-valign-middle {
+    left: 0;
+    top: -3108px
+}
+
+.docs-icon-valign-bottom {
+    left: 0;
+    top: -2919px
+}
+
+.docs-icon-list-number {
+    left: -21px;
+    top: -1302px
+}
+
+.docs-icon-list-bullet {
+    left: 0;
+    top: -2121px
+}
+
+.docs-icon-indent {
+    left: -21px;
+    top: -1218px
+}
+
+.docs-icon-outdent {
+    left: 0;
+    top: -2394px
+}
+
+.docs-icon-line-spacing {
+    left: -21px;
+    top: -2688px
+}
+
+.docs-icon-underline {
+    left: -21px;
+    top: -3129px
+}
+
+.docs-icon-text-bgcolor {
+    left: 0;
+    top: -987px
+}
+
+.docs-icon-textbox {
+    left: -21px;
+    top: -84px
+}
+
+.docs-icon-shapes {
+    left: -21px;
+    top: -3024px
+}
+
+.docs-icon-line-width {
+    left: 0;
+    top: -1575px
+}
+
+.docs-icon-add-trendline {
+    left: 0;
+    top: -2856px
+}
+
+.docs-icon-next {
+    left: 0;
+    top: -105px
+}
+
+.docs-icon-previous {
+    left: -21px;
+    top: -483px
+}
+
+.docs-icon-no-color {
+    left: 0;
+    top: -2961px
+}
+
+.docs-icon-fill-color {
+    left: 0;
+    top: -1197px
+}
+
+.docs-icon-line-color {
+    left: -21px;
+    top: -315px
+}
+
+.docs-icon-line-type {
+    left: -21px;
+    top: -1386px
+}
+
+.docs-icon-table {
+    left: 0;
+    top: -3129px
+}
+
+.docs-icon-comment {
+    left: -21px;
+    top: -2730px
+}
+
+.docs-icon-comment-blank {
+    left: 0;
+    top: -2646px
+}
+
+.docs-icon-comment-blank-highlighted {
+    left: -21px;
+    top: -2394px
+}
+
+.docs-icon-chart {
+    left: -21px;
+    top: -2247px
+}
+
+.docs-icon-list-number-rtl {
+    left: -21px;
+    top: -1659px
+}
+
+.docs-icon-list-bullet-rtl {
+    left: -21px;
+    top: -1617px
+}
+
+.docs-icon-indent-rtl {
+    left: -21px;
+    top: -2310px
+}
+
+.docs-icon-outdent-rtl {
+    left: 0;
+    top: -294px
+}
+
+.docs-icon-line-spacing-rtl {
+    left: 0;
+    top: -3087px
+}
+
+.docs-icon-text-ltr {
+    left: 0;
+    top: -2163px
+}
+
+.docs-icon-text-rtl {
+    left: -21px;
+    top: -2646px
+}
+
+.docs-icon-sheet-rtl {
+    left: -21px;
+    top: -3108px
+}
+
+.docs-icon-share {
+    left: 0;
+    top: -189px
+}
+
+.docs-icon-subscript {
+    left: -21px;
+    top: -1848px
+}
+
+.docs-icon-superscript {
+    left: 0;
+    top: -1638px
+}
+
+.docs-icon-strikethrough {
+    left: -21px;
+    top: -1197px
+}
+
+.docs-icon-clear-formatting {
+    left: 0;
+    top: -1701px
+}
+
+.docs-icon-link {
+    left: -21px;
+    top: -882px
+}
+
+.docs-icon-special-character {
+    left: -21px;
+    top: -777px
+}
+
+.docs-icon-close-white {
+    left: -21px;
+    top: -1596px
+}
+
+.docs-icon-close-small {
+    left: -21px;
+    top: -1071px
+}
+
+.docs-icon-paint-format {
+    left: 0;
+    top: -42px
+}
+
+.docs-icon-video {
+    left: -21px;
+    top: -1365px
+}
+
+.docs-icon-reload {
+    left: 0;
+    top: -2877px
+}
+
+.docs-icon-reload-rtl {
+    left: 0;
+    top: -399px
+}
+
+.docs-icon-insert-page-break {
+    left: -21px;
+    top: -2205px
+}
+
+.docs-icon-close {
+    left: -21px;
+    top: -987px
+}
+
+.docs-icon-check {
+    left: 0;
+    top: -273px
+}
+
+.docs-icon-up {
+    left: -21px;
+    top: -462px
+}
+
+.docs-icon-down {
+    left: -21px;
+    top: -966px
+}
+
+.docs-icon-add-page {
+    left: 0;
+    top: -147px
+}
+
+.docs-icon-email {
+    left: 0;
+    top: -2520px
+}
+
+.docs-icon-insert-equation {
+    left: 0;
+    top: -1680px
+}
+
+.docs-icon-insert-horizontal-line {
+    left: 0;
+    top: -1260px
+}
+
+.docs-icon-tabstop-center {
+    left: 0;
+    top: -2058px
+}
+
+.docs-icon-tabstop-center-bottom {
+    left: 0;
+    top: -1344px
+}
+
+.docs-icon-tabstop-left {
+    left: -21px;
+    top: -1785px
+}
+
+.docs-icon-tabstop-right {
+    left: 0;
+    top: -2268px
+}
+
+.docs-icon-border-all {
+    left: -21px;
+    top: -630px
+}
+
+.docs-icon-border-right {
+    left: -21px;
+    top: -1974px
+}
+
+.docs-icon-border-left {
+    left: -21px;
+    top: -2268px
+}
+
+.docs-icon-border-top {
+    left: -21px;
+    top: -693px
+}
+
+.docs-icon-border-bottom {
+    left: 0;
+    top: 0
+}
+
+.docs-icon-border-outside {
+    left: -21px;
+    top: -210px
+}
+
+.docs-icon-border-inside {
+    left: 0;
+    top: -2940px
+}
+
+.docs-icon-border-none {
+    left: 0;
+    top: -84px
+}
+
+.docs-icon-border-horizontal {
+    left: -21px;
+    top: -1239px
+}
+
+.docs-icon-border-vertical {
+    left: 0;
+    top: -1302px
+}
+
+.docs-icon-merge {
+    left: 0;
+    top: -1050px
+}
+
+.docs-icon-wrap {
+    left: 0;
+    top: -1932px
+}
+
+.docs-icon-autofilter {
+    left: 0;
+    top: -2247px
+}
+
+.docs-icon-autofilter-filled {
+    left: -21px;
+    top: -2961px
+}
+
+.docs-icon-insert-function {
+    left: 0;
+    top: -2289px
+}
+
+.docs-icon-insert-formula {
+    left: 0;
+    top: -1218px
+}
+
+.docs-icon-folder-shared {
+    left: 0;
+    top: -2499px
+}
+
+.docs-icon-folder-outline {
+    left: -21px;
+    top: -3003px
+}
+
+.docs-icon-folder-outline-hover {
+    left: 0;
+    top: -2583px
+}
+
+.docs-icon-folder-outline-pressed {
+    left: -21px;
+    top: -2751px
+}
+
+.docs-icon-folder-solid {
+    left: 0;
+    top: -2142px
+}
+
+.docs-icon-drive {
+    left: -21px;
+    top: -2814px
+}
+
+.docs-icon-drive-grey {
+    left: 0;
+    top: -756px
+}
+
+.docs-icon-drive-grey-hover {
+    left: -21px;
+    top: -1260px
+}
+
+.docs-icon-drive-grey-pressed {
+    left: 0;
+    top: -630px
+}
+
+.docs-icon-drive-hover {
+    left: -21px;
+    top: -1428px
+}
+
+.docs-icon-drive-pressed {
+    left: -21px;
+    top: -840px
+}
+
+.docs-icon-drive-large {
+    left: 0;
+    top: -2772px
+}
+
+.docs-icon-back {
+    left: 0;
+    top: -63px
+}
+
+.docs-icon-back-rtl {
+    left: -21px;
+    top: -1638px
+}
+
+.docs-icon-arrow-more {
+    left: -21px;
+    top: -2982px
+}
+
+.docs-icon-arrow-more-rtl {
+    left: -21px;
+    top: -1743px
+}
+
+.docs-icon-search-this-document {
+    left: -21px;
+    top: -399px
+}
+
+.docs-icon-arrow-dropdown {
+    left: 0;
+    top: -2751px
+}
+
+.docs-icon-word-art {
+    left: -21px;
+    top: -2898px
+}
+
+.docs-icon-delete-x {
+    left: -21px;
+    top: -1575px
+}
+
+.docs-icon-settings {
+    left: 0;
+    top: -1428px
+}
+
+.docs-icon-drive-large-wrapper {
+    width: 42px;
+    height: 42px
+}
+
+.docs-icon-plus {
+    left: -21px;
+    top: -2478px
+}
+
+.docs-icon-plus-white {
+    left: 0;
+    top: -1176px
+}
+
+.docs-icon-alert {
+    left: 0;
+    top: -1281px
+}
+
+.docs-icon-trash {
+    left: 0;
+    top: -2037px
+}
+
+.docs-icon-locked {
+    left: 0;
+    top: -1512px
+}
+
+.docs-icon-unlocked {
+    left: 0;
+    top: -861px
+}
+
+.docs-icon-add-fonts {
+    left: -21px;
+    top: -2835px
+}
+
+.docs-icon-enter-compact {
+    left: 0;
+    top: -819px
+}
+
+.docs-icon-exit-compact {
+    left: 0;
+    top: -483px
+}
+
+.docs-icon-mode-edit {
+    left: 0;
+    top: -2184px
+}
+
+.docs-icon-mode-review {
+    left: -21px;
+    top: -756px
+}
+
+.docs-icon-mode-review-white {
+    left: 0;
+    top: -2016px
+}
+
+.docs-icon-mode-view {
+    left: -21px;
+    top: -1554px
+}
+
+.docs-icon-chat {
+    left: 0;
+    top: -2604px
+}
+
+.docs-icon-star {
+    left: 0;
+    top: -2226px
+}
+
+.docs-icon-duplicate {
+    left: 0;
+    top: -2688px
+}
+
+.docs-icon-file {
+    left: 0;
+    top: -882px
+}
+
+.docs-icon-opacity {
+    left: -21px;
+    top: -231px
+}
+
+.docs-icon-label-slant {
+    left: -21px;
+    top: -735px
+}
+
+.docs-icon-point-size {
+    left: -21px;
+    top: -252px
+}
+
+.docs-icon-question {
+    left: 0;
+    top: -798px
+}
+
+.docs-icon-vertical-gridlines {
+    left: -21px;
+    top: -2184px
+}
+
+.docs-icon-left-axis {
+    left: 0;
+    top: -1596px
+}
+
+.docs-icon-right-axis {
+    left: 0;
+    top: -1617px
+}
+
+.docs-icon-left-axis-gridlines {
+    left: -21px;
+    top: -147px
+}
+
+.docs-icon-right-axis-gridlines {
+    left: -21px;
+    top: -2457px
+}
+
+.docs-icon-reset {
+    left: 0;
+    top: -1449px
+}
+
+.docs-icon-drag-move {
+    left: 0;
+    top: -1470px
+}
+
+.docs-icon-col-dragger {
+    left: 0;
+    top: -1386px
+}
+
+.docs-icon-chrome-store {
+    left: -21px;
+    top: -441px
+}
+
+.docs-icon-fit-area {
+    left: 0;
+    top: -1743px
+}
+
+.docs-icon-zoom-out {
+    left: 0;
+    top: -672px
+}
+
+.docs-icon-zoom-tool {
+    left: 0;
+    top: -2982px
+}
+
+.docs-icon-download {
+    left: 0;
+    top: -441px
+}
+
+.docs-icon-fusion-table {
+    left: 0;
+    top: -693px
+}
+
+.docs-icon-spreadsheet-sink {
+    left: 0;
+    top: -252px
+}
+
+.docs-icon-send-responses {
+    left: -21px;
+    top: -2331px
+}
+
+.docs-icon-liveform {
+    left: -21px;
+    top: -1008px
+}
+
+.docs-icon-ellipsis {
+    left: -21px;
+    top: -1029px
+}
+
+.docs-icon-html-preview {
+    left: 0;
+    top: -2100px
+}
+
+.docs-icon-grid {
+    left: -21px;
+    top: -2373px
+}
+
+.docs-icon-add-animation {
+    left: 0;
+    top: -231px
+}
+
+.docs-icon-playhead {
+    left: 0;
+    top: -1491px
+}
+
+.docs-icon-playhead-rtl {
+    left: 0;
+    top: -378px
+}
+
+.docs-icon-unsupported {
+    left: 0;
+    top: -504px
+}
+
+.docs-icon-calendar {
+    left: 0;
+    top: -1911px
+}
+
+.docs-zippy-closed {
+    left: -21px;
+    top: -1155px
+}
+
+.docs-zippy-open {
+    left: 0;
+    top: -2457px
+}
+
+.docs-icon-bookmark {
+    left: -21px;
+    top: -294px
+}
+
+.docs-icon-heading {
+    left: 0;
+    top: -420px
+}
+
+.docs-icon-file-blue {
+    left: 0;
+    top: -126px
+}
+
+.docs-icon-web-result {
+    left: -21px;
+    top: -1512px
+}
+
+.docs-icon-mic {
+    left: 0;
+    top: -2625px
+}
+
+.docs-icon-paragraph {
+    left: 0;
+    top: -2478px
+}
+
+.docs-icon-bookmark-black {
+    left: 0;
+    top: -567px
+}
+
+.docs-icon-web-result-blue {
+    left: -21px;
+    top: -420px
+}
+
+.docs-icon-popout {
+    left: 0;
+    top: -2331px
+}
+
+.docs-icon-checkbox-type {
+    left: -21px;
+    top: -1470px
+}
+
+.docs-icon-dropdown-type {
+    left: 0;
+    top: -1029px
+}
+
+.docs-icon-grid-type {
+    left: -21px;
+    top: -2604px
+}
+
+.docs-icon-image-type {
+    left: 0;
+    top: -2205px
+}
+
+.docs-icon-radio-type {
+    left: 0;
+    top: -1113px
+}
+
+.docs-icon-scale-type {
+    left: -21px;
+    top: -1050px
+}
+
+.docs-icon-text-type {
+    left: 0;
+    top: -3024px
+}
+
+.docs-icon-time-type {
+    left: 0;
+    top: -2352px
+}
+
+.docs-icon-insert-text-block {
+    left: 0;
+    top: -315px
+}
+
+.docs-icon-accepting-responses-on {
+    left: 0;
+    top: -777px
+}
+
+.docs-icon-accepting-responses-off {
+    left: -21px;
+    top: -525px
+}
+
+.docs-icon-decimal-increase {
+    left: 0;
+    top: -21px
+}
+
+.docs-icon-decimal-decrease {
+    left: 0;
+    top: -1953px
+}
+
+.docs-icon-settings-white {
+    left: 0;
+    top: -1155px
+}
+
+.docs-icon-no-symbol {
+    left: -21px;
+    top: -2877px
+}
+
+.docs-icon-crop {
+    left: -21px;
+    top: -168px
+}
+
+.docs-icon-green-check {
+    left: -21px;
+    top: -378px
+}
+
+.docs-icon-font-size {
+    left: 0;
+    top: -2709px
+}
+
+.docs-icon-reset-image {
+    left: 0;
+    top: -2667px
+}
+
+.docs-icon-r-squared {
+    left: 0;
+    top: -3066px
+}
+
+.docs-icon-graph-legend {
+    left: -21px;
+    top: -1911px
+}
+
+@media screen and (-webkit-device-pixel-ratio:2) {
+    .docs-icon-img {
+        content: url("//ssl.gstatic.com/docs/common/jfk_sprite_hdpi53.png")
+    }
+
+    .docs-icon-img-container {
+        height: 3066px;
+        position: absolute;
+        width: 42px
+    }
+
+    .docs-icon-save {
+        left: 0;
+        top: -2982px
+    }
+
+    .docs-icon-print {
+        left: -21px;
+        top: -1953px
+    }
+
+    .docs-icon-undo, .docs-icon-redo-rtl {
+        left: 0;
+        top: -693px
+    }
+
+    .docs-icon-redo, .docs-icon-undo-rtl {
+        left: 0;
+        top: -1722px
+    }
+
+    .docs-icon-copy {
+        left: 0;
+        top: 0
+    }
+
+    .docs-icon-cut {
+        left: 0;
+        top: -1008px
+    }
+
+    .docs-icon-paste {
+        left: -21px;
+        top: -483px
+    }
+
+    .docs-icon-document {
+        left: 0;
+        top: -2478px
+    }
+
+    .docs-icon-presentation {
+        left: 0;
+        top: -2331px
+    }
+
+    .docs-icon-punch {
+        left: 0;
+        top: -2331px
+    }
+
+    .docs-icon-spreadsheet {
+        left: 0;
+        top: -147px
+    }
+
+    .docs-icon-form {
+        left: -21px;
+        top: -2415px
+    }
+
+    .docs-icon-drawing {
+        left: 0;
+        top: -2226px
+    }
+
+    .docs-icon-drawing-black {
+        left: -21px;
+        top: -525px
+    }
+
+    .docs-icon-excel {
+        left: 0;
+        top: -1638px
+    }
+
+    .docs-icon-powerpoint {
+        left: -21px;
+        top: -2037px
+    }
+
+    .docs-icon-word {
+        left: -21px;
+        top: -1239px
+    }
+
+    .docs-icon-script {
+        left: 0;
+        top: -1932px
+    }
+
+    .docs-icon-insert-script {
+        left: -21px;
+        top: -2814px
+    }
+
+    .docs-icon-gadget {
+        left: -21px;
+        top: -1806px
+    }
+
+    .docs-icon-image {
+        left: -21px;
+        top: -2121px
+    }
+
+    .docs-icon-clipboard {
+        left: -21px;
+        top: -2730px
+    }
+
+    .docs-icon-bold {
+        left: -21px;
+        top: -231px
+    }
+
+    .docs-icon-italic {
+        left: -21px;
+        top: -2184px
+    }
+
+    .docs-icon-text-color {
+        left: 0;
+        top: -924px
+    }
+
+    .docs-icon-align-left {
+        left: 0;
+        top: -1197px
+    }
+
+    .docs-icon-align-center {
+        left: -21px;
+        top: -1113px
+    }
+
+    .docs-icon-align-right {
+        left: -21px;
+        top: -2898px
+    }
+
+    .docs-icon-align-justify {
+        left: -21px;
+        top: -567px
+    }
+
+    .docs-icon-valign-top {
+        left: 0;
+        top: -1260px
+    }
+
+    .docs-icon-valign-middle {
+        left: 0;
+        top: -2499px
+    }
+
+    .docs-icon-valign-bottom {
+        left: 0;
+        top: -609px
+    }
+
+    .docs-icon-list-number {
+        left: 0;
+        top: -2898px
+    }
+
+    .docs-icon-list-bullet {
+        left: 0;
+        top: -861px
+    }
+
+    .docs-icon-indent {
+        left: 0;
+        top: -2520px
+    }
+
+    .docs-icon-outdent {
+        left: -21px;
+        top: -651px
+    }
+
+    .docs-icon-line-spacing {
+        left: 0;
+        top: -63px
+    }
+
+    .docs-icon-underline {
+        left: -21px;
+        top: -1890px
+    }
+
+    .docs-icon-text-bgcolor {
+        left: 0;
+        top: -819px
+    }
+
+    .docs-icon-textbox {
+        left: 0;
+        top: -777px
+    }
+
+    .docs-icon-shapes {
+        left: 0;
+        top: -1869px
+    }
+
+    .docs-icon-line-width {
+        left: 0;
+        top: -1050px
+    }
+
+    .docs-icon-add-trendline {
+        left: 0;
+        top: -1365px
+    }
+
+    .docs-icon-next {
+        left: 0;
+        top: -2751px
+    }
+
+    .docs-icon-previous {
+        left: -21px;
+        top: -1722px
+    }
+
+    .docs-icon-no-color {
+        left: -21px;
+        top: -2688px
+    }
+
+    .docs-icon-fill-color {
+        left: -21px;
+        top: -2751px
+    }
+
+    .docs-icon-line-color {
+        left: 0;
+        top: -525px
+    }
+
+    .docs-icon-line-type {
+        left: -21px;
+        top: -1680px
+    }
+
+    .docs-icon-table {
+        left: 0;
+        top: -1827px
+    }
+
+    .docs-icon-comment {
+        left: 0;
+        top: -2688px
+    }
+
+    .docs-icon-comment-blank {
+        left: -21px;
+        top: -1911px
+    }
+
+    .docs-icon-comment-blank-highlighted {
+        left: -21px;
+        top: -2331px
+    }
+
+    .docs-icon-chart {
+        left: 0;
+        top: -2037px
+    }
+
+    .docs-icon-list-number-rtl {
+        left: -21px;
+        top: -2709px
+    }
+
+    .docs-icon-list-bullet-rtl {
+        left: -21px;
+        top: -1407px
+    }
+
+    .docs-icon-indent-rtl {
+        left: 0;
+        top: -231px
+    }
+
+    .docs-icon-outdent-rtl {
+        left: 0;
+        top: -1512px
+    }
+
+    .docs-icon-line-spacing-rtl {
+        left: 0;
+        top: -2730px
+    }
+
+    .docs-icon-text-ltr {
+        left: 0;
+        top: -1113px
+    }
+
+    .docs-icon-text-rtl {
+        left: -21px;
+        top: -1491px
+    }
+
+    .docs-icon-sheet-rtl {
+        left: -21px;
+        top: -2058px
+    }
+
+    .docs-icon-share {
+        left: 0;
+        top: -1953px
+    }
+
+    .docs-icon-subscript {
+        left: -21px;
+        top: -1659px
+    }
+
+    .docs-icon-superscript {
+        left: -21px;
+        top: -357px
+    }
+
+    .docs-icon-strikethrough {
+        left: -21px;
+        top: -2016px
+    }
+
+    .docs-icon-clear-formatting {
+        left: 0;
+        top: -189px
+    }
+
+    .docs-icon-link {
+        left: 0;
+        top: -1386px
+    }
+
+    .docs-icon-special-character {
+        left: 0;
+        top: -2121px
+    }
+
+    .docs-icon-close-white {
+        left: -21px;
+        top: -84px
+    }
+
+    .docs-icon-close-small {
+        left: 0;
+        top: -2604px
+    }
+
+    .docs-icon-paint-format {
+        left: -21px;
+        top: -3024px
+    }
+
+    .docs-icon-video {
+        left: 0;
+        top: -2352px
+    }
+
+    .docs-icon-reload {
+        left: 0;
+        top: -1995px
+    }
+
+    .docs-icon-reload-rtl {
+        left: -21px;
+        top: -1932px
+    }
+
+    .docs-icon-insert-page-break {
+        left: -21px;
+        top: -840px
+    }
+
+    .docs-icon-close {
+        left: 0;
+        top: -2415px
+    }
+
+    .docs-icon-check {
+        left: -21px;
+        top: -1533px
+    }
+
+    .docs-icon-up {
+        left: 0;
+        top: -210px
+    }
+
+    .docs-icon-down {
+        left: 0;
+        top: -357px
+    }
+
+    .docs-icon-add-page {
+        left: -21px;
+        top: -2667px
+    }
+
+    .docs-icon-email {
+        left: -21px;
+        top: -2562px
+    }
+
+    .docs-icon-insert-equation {
+        left: -21px;
+        top: -588px
+    }
+
+    .docs-icon-insert-horizontal-line {
+        left: 0;
+        top: -504px
+    }
+
+    .docs-icon-tabstop-center {
+        left: 0;
+        top: -1596px
+    }
+
+    .docs-icon-tabstop-center-bottom {
+        left: 0;
+        top: -1911px
+    }
+
+    .docs-icon-tabstop-left {
+        left: 0;
+        top: -2289px
+    }
+
+    .docs-icon-tabstop-right {
+        left: -21px;
+        top: -1617px
+    }
+
+    .docs-icon-border-all {
+        left: 0;
+        top: -1302px
+    }
+
+    .docs-icon-border-right {
+        left: -21px;
+        top: -2919px
+    }
+
+    .docs-icon-border-left {
+        left: -21px;
+        top: -672px
+    }
+
+    .docs-icon-border-top {
+        left: 0;
+        top: -987px
+    }
+
+    .docs-icon-border-bottom {
+        left: 0;
+        top: -2310px
+    }
+
+    .docs-icon-border-outside {
+        left: 0;
+        top: -2058px
+    }
+
+    .docs-icon-border-inside {
+        left: -21px;
+        top: -1281px
+    }
+
+    .docs-icon-border-none {
+        left: -21px;
+        top: -1848px
+    }
+
+    .docs-icon-border-horizontal {
+        left: -21px;
+        top: -2583px
+    }
+
+    .docs-icon-border-vertical {
+        left: 0;
+        top: -126px
+    }
+
+    .docs-icon-merge {
+        left: 0;
+        top: -2793px
+    }
+
+    .docs-icon-wrap {
+        left: -21px;
+        top: -1071px
+    }
+
+    .docs-icon-autofilter {
+        left: -21px;
+        top: -2352px
+    }
+
+    .docs-icon-autofilter-filled {
+        left: 0;
+        top: -1617px
+    }
+
+    .docs-icon-insert-function {
+        left: -21px;
+        top: -2541px
+    }
+
+    .docs-icon-insert-formula {
+        left: -21px;
+        top: -735px
+    }
+
+    .docs-icon-folder-shared {
+        left: -21px;
+        top: -1764px
+    }
+
+    .docs-icon-folder-outline {
+        left: 0;
+        top: -2814px
+    }
+
+    .docs-icon-folder-outline-hover {
+        left: -21px;
+        top: -609px
+    }
+
+    .docs-icon-folder-outline-pressed {
+        left: 0;
+        top: -1239px
+    }
+
+    .docs-icon-folder-solid {
+        left: -21px;
+        top: -189px
+    }
+
+    .docs-icon-drive {
+        left: 0;
+        top: -483px
+    }
+
+    .docs-icon-drive-grey {
+        left: -21px;
+        top: -2289px
+    }
+
+    .docs-icon-drive-grey-hover {
+        left: 0;
+        top: -1218px
+    }
+
+    .docs-icon-drive-grey-pressed {
+        left: -21px;
+        top: -2247px
+    }
+
+    .docs-icon-drive-hover {
+        left: 0;
+        top: -1764px
+    }
+
+    .docs-icon-drive-pressed {
+        left: -21px;
+        top: -1575px
+    }
+
+    .docs-icon-drive-large {
+        left: 0;
+        top: -315px
+    }
+
+    .docs-icon-back {
+        left: 0;
+        top: -441px
+    }
+
+    .docs-icon-back-rtl {
+        left: 0;
+        top: -3003px
+    }
+
+    .docs-icon-arrow-more {
+        left: -21px;
+        top: -21px
+    }
+
+    .docs-icon-arrow-more-rtl {
+        left: 0;
+        top: -1470px
+    }
+
+    .docs-icon-search-this-document {
+        left: -21px;
+        top: -2604px
+    }
+
+    .docs-icon-arrow-dropdown {
+        left: -21px;
+        top: -3003px
+    }
+
+    .docs-icon-word-art {
+        left: 0;
+        top: -2709px
+    }
+
+    .docs-icon-delete-x {
+        left: 0;
+        top: -2961px
+    }
+
+    .docs-icon-settings {
+        left: 0;
+        top: -462px
+    }
+
+    .docs-icon-drive-large-wrapper {
+        width: 42px;
+        height: 42px
+    }
+
+    .docs-icon-plus {
+        left: 0;
+        top: -1806px
+    }
+
+    .docs-icon-plus-white {
+        left: 0;
+        top: -1743px
+    }
+
+    .docs-icon-alert {
+        left: 0;
+        top: -2163px
+    }
+
+    .docs-icon-trash {
+        left: -21px;
+        top: -777px
+    }
+
+    .docs-icon-locked {
+        left: 0;
+        top: -2184px
+    }
+
+    .docs-icon-unlocked {
+        left: -21px;
+        top: -1638px
+    }
+
+    .docs-icon-add-fonts {
+        left: -21px;
+        top: -504px
+    }
+
+    .docs-icon-enter-compact {
+        left: -21px;
+        top: -2520px
+    }
+
+    .docs-icon-exit-compact {
+        left: -21px;
+        top: -1470px
+    }
+
+    .docs-icon-mode-edit {
+        left: 0;
+        top: -252px
+    }
+
+    .docs-icon-mode-review {
+        left: 0;
+        top: -2373px
+    }
+
+    .docs-icon-mode-review-white {
+        left: 0;
+        top: -84px
+    }
+
+    .docs-icon-mode-view {
+        left: 0;
+        top: -1659px
+    }
+
+    .docs-icon-chat {
+        left: 0;
+        top: -3045px
+    }
+
+    .docs-icon-star {
+        left: 0;
+        top: -735px
+    }
+
+    .docs-icon-duplicate {
+        left: 0;
+        top: -1554px
+    }
+
+    .docs-icon-file {
+        left: -21px;
+        top: -693px
+    }
+
+    .docs-icon-opacity {
+        left: 0;
+        top: -2583px
+    }
+
+    .docs-icon-label-slant {
+        left: -21px;
+        top: -861px
+    }
+
+    .docs-icon-point-size {
+        left: -21px;
+        top: -1869px
+    }
+
+    .docs-icon-question {
+        left: -21px;
+        top: -2793px
+    }
+
+    .docs-icon-vertical-gridlines {
+        left: -21px;
+        top: -2079px
+    }
+
+    .docs-icon-left-axis {
+        left: -21px;
+        top: -1197px
+    }
+
+    .docs-icon-right-axis {
+        left: 0;
+        top: -1890px
+    }
+
+    .docs-icon-left-axis-gridlines {
+        left: -21px;
+        top: -294px
+    }
+
+    .docs-icon-right-axis-gridlines {
+        left: 0;
+        top: -2436px
+    }
+
+    .docs-icon-reset {
+        left: 0;
+        top: -2268px
+    }
+
+    .docs-icon-drag-move {
+        left: 0;
+        top: -2646px
+    }
+
+    .docs-icon-col-dragger {
+        left: -21px;
+        top: -2268px
+    }
+
+    .docs-icon-chrome-store {
+        left: -21px;
+        top: -2982px
+    }
+
+    .docs-icon-fit-area {
+        left: 0;
+        top: -1029px
+    }
+
+    .docs-icon-zoom-out {
+        left: 0;
+        top: -945px
+    }
+
+    .docs-icon-zoom-tool {
+        left: 0;
+        top: -1575px
+    }
+
+    .docs-icon-download {
+        left: -21px;
+        top: -2373px
+    }
+
+    .docs-icon-fusion-table {
+        left: 0;
+        top: -2835px
+    }
+
+    .docs-icon-spreadsheet-sink {
+        left: 0;
+        top: -1134px
+    }
+
+    .docs-icon-send-responses {
+        left: -21px;
+        top: -3045px
+    }
+
+    .docs-icon-liveform {
+        left: -21px;
+        top: -714px
+    }
+
+    .docs-icon-ellipsis {
+        left: -21px;
+        top: -2205px
+    }
+
+    .docs-icon-html-preview {
+        left: 0;
+        top: -1281px
+    }
+
+    .docs-icon-grid {
+        left: 0;
+        top: -2625px
+    }
+
+    .docs-icon-add-animation {
+        left: -21px;
+        top: -882px
+    }
+
+    .docs-icon-playhead {
+        left: 0;
+        top: -2562px
+    }
+
+    .docs-icon-playhead-rtl {
+        left: 0;
+        top: -1680px
+    }
+
+    .docs-icon-unsupported {
+        left: 0;
+        top: -2247px
+    }
+
+    .docs-icon-calendar {
+        left: -21px;
+        top: -273px
+    }
+
+    .docs-zippy-closed {
+        left: -21px;
+        top: -1176px
+    }
+
+    .docs-zippy-open {
+        left: 0;
+        top: -21px
+    }
+
+    .docs-icon-bookmark {
+        left: 0;
+        top: -1428px
+    }
+
+    .docs-icon-heading {
+        left: 0;
+        top: -2877px
+    }
+
+    .docs-icon-file-blue {
+        left: 0;
+        top: -1176px
+    }
+
+    .docs-icon-web-result {
+        left: 0;
+        top: -168px
+    }
+
+    .docs-icon-mic {
+        left: 0;
+        top: -2079px
+    }
+
+    .docs-icon-paragraph {
+        left: 0;
+        top: -1323px
+    }
+
+    .docs-icon-bookmark-black {
+        left: -21px;
+        top: -126px
+    }
+
+    .docs-icon-web-result-blue {
+        left: -21px;
+        top: -2100px
+    }
+
+    .docs-icon-popout {
+        left: 0;
+        top: -1848px
+    }
+
+    .docs-icon-checkbox-type {
+        left: 0;
+        top: -630px
+    }
+
+    .docs-icon-dropdown-type {
+        left: 0;
+        top: -2772px
+    }
+
+    .docs-icon-grid-type {
+        left: -21px;
+        top: -1050px
+    }
+
+    .docs-icon-image-type {
+        left: -21px;
+        top: -1449px
+    }
+
+    .docs-icon-radio-type {
+        left: 0;
+        top: -3024px
+    }
+
+    .docs-icon-scale-type {
+        left: 0;
+        top: -1407px
+    }
+
+    .docs-icon-text-type {
+        left: -21px;
+        top: -1827px
+    }
+
+    .docs-icon-time-type {
+        left: 0;
+        top: -966px
+    }
+
+    .docs-icon-insert-text-block {
+        left: 0;
+        top: -651px
+    }
+
+    .docs-icon-accepting-responses-on {
+        left: 0;
+        top: -1155px
+    }
+
+    .docs-icon-accepting-responses-off {
+        left: 0;
+        top: -294px
+    }
+
+    .docs-icon-decimal-increase {
+        left: -21px;
+        top: -2877px
+    }
+
+    .docs-icon-decimal-decrease {
+        left: 0;
+        top: -2394px
+    }
+
+    .docs-icon-settings-white {
+        left: 0;
+        top: -1701px
+    }
+
+    .docs-icon-no-symbol {
+        left: 0;
+        top: -105px
+    }
+
+    .docs-icon-crop {
+        left: -21px;
+        top: -2310px
+    }
+
+    .docs-icon-green-check {
+        left: 0;
+        top: -1491px
+    }
+
+    .docs-icon-font-size {
+        left: -21px;
+        top: -2499px
+    }
+
+    .docs-icon-reset-image {
+        left: 0;
+        top: -2919px
+    }
+
+    .docs-icon-r-squared {
+        left: 0;
+        top: -714px
+    }
+
+    .docs-icon-graph-legend {
+        left: 0;
+        top: -1785px
+    }
+}
+
+.docs-a11y-ariascreenreader-speakable {
+    position: absolute;
+    left: -10000px
+}
+
+.goog-inline-block {
+    position: relative;
+    display: -moz-inline-box;
+    display: inline-block
+}
+
+{#* html .goog-inline-block {#}
+{#    display: inline#}
+{#}#}
+{##}
+{#*:first-child+html .goog-inline-block {#}
+{#    display: inline#}
+{#}#}
+{##}
+.jfk-progressStatus {
+    color: #202020
+}
+
+.jfk-progressText {
+    color: #999
+}
+
+.jfk-progressStatus, .jfk-progressText {
+    line-height: 18px
+}
+
+.jfk-progressBar-blocking .progress-bar-horizontal, .jfk-progressBar-nonBlocking .progress-bar-horizontal {
+    border: 1px solid #999;
+    padding: 1px;
+    width: 320px
+}
+
+.jfk-progressBar-blocking .progress-bar-thumb {
+    background-color: #6188f5;
+    height: 5px
+}
+
+.jfk-progressBar-nonBlocking .progress-bar-thumb {
+    background-color: #ccc;
+    height: 5px
+}
+
+.jfk-progressBar-blocking.jfk-progressBar-tall .progress-bar-thumb, .jfk-progressBar-nonBlocking.jfk-progressBar-tall .progress-bar-thumb {
+    height: 8px
+}
+
+.jfk-progressBar-blocking .progress-bar-thumb {
+    -webkit-animation: jfk-progressBar-bg 0.8s linear 0s infinite;
+    -moz-animation: jfk-progressBar-bg 0.8s linear 0s infinite;
+    -o-animation: jfk-progressBar-bg 0.8s linear 0s infinite;
+    animation: jfk-progressBar-bg 0.8s linear 0s infinite;
+    background-position: 0 0;
+    background-repeat: repeat-x;
+    background-size: 16px 8px;
+    background-color: #6188f5;
+    background-image: -webkit-linear-gradient(315deg, transparent, transparent 33%, rgba(0, 0, 0, .12) 33%, rgba(0, 0, 0, .12) 66%, transparent 66%, transparent);
+    background-image: -moz-linear-gradient(315deg, transparent, transparent 33%, rgba(0, 0, 0, .12) 33%, rgba(0, 0, 0, .12) 66%, transparent 66%, transparent);
+    background-image: -ms-linear-gradient(315deg, transparent, transparent 33%, rgba(0, 0, 0, .12) 33%, rgba(0, 0, 0, .12) 66%, transparent 66%, transparent);
+    background-image: -o-linear-gradient(315deg, transparent, transparent 33%, rgba(0, 0, 0, .12) 33%, rgba(0, 0, 0, .12) 66%, transparent 66%, transparent);
+    background-image: linear-gradient(315deg, transparent, transparent 33%, rgba(0, 0, 0, .12) 33%, rgba(0, 0, 0, .12) 66%, transparent 66%, transparent)
+}
+
+.jfk-progressBar-blocking.jfk-progressBar-tall .progress-bar-thumb {
+    -webkit-animation: jfk-progressBar-bg-tall 0.8s linear 0s infinite;
+    -moz-animation: jfk-progressBar-bg-tall 0.8s linear 0s infinite;
+    -o-animation: jfk-progressBar-bg-tall 0.8s linear 0s infinite;
+    animation: jfk-progressBar-bg-tall 0.8s linear 0s infinite;
+    background-size: 20px 10px
+}
+
+@-webkit-keyframes jfk-progressBar-bg {
+    0% {
+        background-position: 0 0
+    }
+    100% {
+        background-position: -16px 0
+    }
+}
+
+@-moz-keyframes jfk-progressBar-bg {
+    0% {
+        background-position: 0 0
+    }
+    100% {
+        background-position: -16px 0
+    }
+}
+
+@-o-keyframes jfk-progressBar-bg {
+    0% {
+        background-position: 0 0
+    }
+    100% {
+        background-position: -16px 0
+    }
+}
+
+@keyframes jfk-progressBar-bg {
+    0% {
+        background-position: 0 0
+    }
+    100% {
+        background-position: -16px 0
+    }
+}
+
+@-webkit-keyframes jfk-progressBar-bg-tall {
+    0% {
+        background-position: 0 0
+    }
+    100% {
+        background-position: -20px 0
+    }
+}
+
+@-moz-keyframes jfk-progressBar-bg-tall {
+    0% {
+        background-position: 0 0
+    }
+    100% {
+        background-position: -20px 0
+    }
+}
+
+@-o-keyframes jfk-progressBar-bg-tall {
+    0% {
+        background-position: 0 0
+    }
+    100% {
+        background-position: -20px 0
+    }
+}
+
+@keyframes jfk-progressBar-bg-tall {
+    0% {
+        background-position: 0 0
+    }
+    100% {
+        background-position: -20px 0
+    }
+}
+
+.jfk-progressbar .progress-bar-horizontal, .jfk-progressbar .progress-bar-vertical {
+    border-color: #999
+}
+
+.jfk-progressbar .progress-bar-thumb {
+    background-color: #ccc
+}
+
+::-webkit-scrollbar {
+    height: 16px;
+    overflow: visible;
+    width: 16px
+}
+
+::-webkit-scrollbar-button {
+    height: 0;
+    width: 0
+}
+
+::-webkit-scrollbar-track {
+    background-clip: padding-box;
+    border: solid transparent;
+    border-width: 0 0 0 4px
+}
+
+::-webkit-scrollbar-track:horizontal {
+    border-width: 4px 0 0
+}
+
+::-webkit-scrollbar-track:hover {
+    background-color: rgba(0, 0, 0, .05);
+    box-shadow: inset 1px 0 0 rgba(0, 0, 0, .1)
+}
+
+::-webkit-scrollbar-track:horizontal:hover {
+    box-shadow: inset 0 1px 0 rgba(0, 0, 0, .1)
+}
+
+::-webkit-scrollbar-track:active {
+    background-color: rgba(0, 0, 0, .05);
+    box-shadow: inset 1px 0 0 rgba(0, 0, 0, .14), inset -1px 0 0 rgba(0, 0, 0, .07)
+}
+
+::-webkit-scrollbar-track:horizontal:active {
+    box-shadow: inset 0 1px 0 rgba(0, 0, 0, .14), inset 0 -1px 0 rgba(0, 0, 0, .07)
+}
+
+.jfk-scrollbar-dark::-webkit-scrollbar-track:hover {
+    background-color: rgba(255, 255, 255, .1);
+    box-shadow: inset 1px 0 0 rgba(255, 255, 255, .2)
+}
+
+.jfk-scrollbar-dark::-webkit-scrollbar-track:horizontal:hover {
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .2)
+}
+
+.jfk-scrollbar-dark::-webkit-scrollbar-track:active {
+    background-color: rgba(255, 255, 255, .1);
+    box-shadow: inset 1px 0 0 rgba(255, 255, 255, .25), inset -1px 0 0 rgba(255, 255, 255, .15)
+}
+
+.jfk-scrollbar-dark::-webkit-scrollbar-track:horizontal:active {
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .25), inset 0 -1px 0 rgba(255, 255, 255, .15)
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, .2);
+    background-clip: padding-box;
+    border: solid transparent;
+    border-width: 1px 1px 1px 6px;
+    min-height: 28px;
+    padding: 100px 0 0;
+    box-shadow: inset 1px 1px 0 rgba(0, 0, 0, .1), inset 0 -1px 0 rgba(0, 0, 0, .07)
+}
+
+::-webkit-scrollbar-thumb:horizontal {
+    border-width: 6px 1px 1px;
+    padding: 0 0 0 100px;
+    box-shadow: inset 1px 1px 0 rgba(0, 0, 0, .1), inset -1px 0 0 rgba(0, 0, 0, .07)
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(0, 0, 0, .4);
+    box-shadow: inset 1px 1px 1px rgba(0, 0, 0, .25)
+}
+
+::-webkit-scrollbar-thumb:active {
+    background-color: rgba(0, 0, 0, 0.5);
+    box-shadow: inset 1px 1px 3px rgba(0, 0, 0, 0.35)
+}
+
+.jfk-scrollbar-dark::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, .3);
+    box-shadow: inset 1px 1px 0 rgba(255, 255, 255, .15), inset 0 -1px 0 rgba(255, 255, 255, .1)
+}
+
+.jfk-scrollbar-dark::-webkit-scrollbar-thumb:horizontal {
+    box-shadow: inset 1px 1px 0 rgba(255, 255, 255, .15), inset -1px 0 0 rgba(255, 255, 255, .1)
+}
+
+.jfk-scrollbar-dark::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(255, 255, 255, .6);
+    box-shadow: inset 1px 1px 1px rgba(255, 255, 255, .37)
+}
+
+.jfk-scrollbar-dark::-webkit-scrollbar-thumb:active {
+    background-color: rgba(255, 255, 255, .75);
+    box-shadow: inset 1px 1px 3px rgba(255, 255, 255, .5)
+}
+
+.jfk-scrollbar-borderless::-webkit-scrollbar-track {
+    border-width: 0 1px 0 6px
+}
+
+.jfk-scrollbar-borderless::-webkit-scrollbar-track:horizontal {
+    border-width: 6px 0 1px
+}
+
+.jfk-scrollbar-borderless::-webkit-scrollbar-track:hover {
+    background-color: rgba(0, 0, 0, .035);
+    box-shadow: inset 1px 1px 0 rgba(0, 0, 0, .14), inset -1px -1px 0 rgba(0, 0, 0, .07)
+}
+
+.jfk-scrollbar-borderless.jfk-scrollbar-dark::-webkit-scrollbar-track:hover {
+    background-color: rgba(255, 255, 255, .07);
+    box-shadow: inset 1px 1px 0 rgba(255, 255, 255, .25), inset -1px -1px 0 rgba(255, 255, 255, .15)
+}
+
+.jfk-scrollbar-borderless::-webkit-scrollbar-thumb {
+    border-width: 0 1px 0 6px
+}
+
+.jfk-scrollbar-borderless::-webkit-scrollbar-thumb:horizontal {
+    border-width: 6px 0 1px
+}
+
+::-webkit-scrollbar-corner {
+    background: transparent
+}
+
+{#body::-webkit-scrollbar-track-piece {#}
+{#    background-clip: padding-box;#}
+{#    background-color: #f5f5f5;#}
+{#    border: solid #fff;#}
+{#    border-width: 0 0 0 3px;#}
+{#    box-shadow: inset 1px 0 0 rgba(0, 0, 0, .14), inset -1px 0 0 rgba(0, 0, 0, .07)#}
+{#}#}
+{##}
+{#body::-webkit-scrollbar-track-piece:horizontal {#}
+{#    border-width: 3px 0 0;#}
+{#    box-shadow: inset 0 1px 0 rgba(0, 0, 0, .14), inset 0 -1px 0 rgba(0, 0, 0, .07)#}
+{#}#}
+{##}
+{#body::-webkit-scrollbar-thumb {#}
+{#    border-width: 1px 1px 1px 5px#}
+{#}#}
+{##}
+{#body::-webkit-scrollbar-thumb:horizontal {#}
+{#    border-width: 5px 1px 1px#}
+{#}#}
+{##}
+{#body::-webkit-scrollbar-corner {#}
+{#    background-clip: padding-box;#}
+{#    background-color: #f5f5f5;#}
+{#    border: solid #fff;#}
+{#    border-width: 3px 0 0 3px;#}
+{#    box-shadow: inset 1px 1px 0 rgba(0, 0, 0, .14)#}
+{#}#}
+{##}
+{#body {#}
+{#    background-color: white;#}
+{#    color: black;#}
+{#    font: normal 13px arial, sans-serif;#}
+{#    margin: 0#}
+{#}#}
+{##}
+{#h1, h2, h3, h4, h5 {#}
+{#    margin: 0#}
+{#}#}
+{##}
+{#.g {#}
+{#    color: #666#}
+{#}#}
+{##}
+.ss-form-title {
+    margin: .67em 0
+}
+
+.ss-form-desc {
+    font: inherit;
+    width: 99%;
+    margin: 0 0 1em
+}
+
+.ss-powered-by {
+    display: block;
+    clear: left;
+    color: #666;
+    margin: 1em 0.2em 0.2em
+}
+
+.ss-powered-by a:link, .ss-powered-by a:visited {
+    color: #666
+}
+
+.ss-no-ignore-whitespace {
+    white-space: pre-wrap;
+    word-wrap: break-word
+}
+
+.form-error-arg {
+    font-weight: bold
+}
+
+{#h1 {#}
+{#    font-size: 23px;#}
+{#    padding: 0#}
+{#}#}
+{##}
+{#hr {#}
+{#    border: 0;#}
+{#    height: 1px;#}
+{#    background-color: #ddd#}
+{#}#}
+{##}
+{#table {#}
+{#    border-collapse: collapse#}
+{#}#}
+{##}
+{#textarea {#}
+{#    font: normal 13px arial, sans-serif#}
+{#}#}
+{##}
+{#br {#}
+{#    display: block !important#}
+{#}#}
+{##}
+.aria-only-help {
+    font-size: 0;
+    left: -9999px;
+    position: absolute
+}
+
+.ss-printable-hint {
+    display: none
+}
+
+.ss-question-list {
+    list-style-type: none
+}
+
+.jfk-button {
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    border-radius: 2px;
+    cursor: default;
+    font-size: 11px;
+    font-weight: bold;
+    text-align: center;
+    white-space: nowrap;
+    margin-right: 16px;
+    height: 27px;
+    line-height: 27px;
+    min-width: 54px;
+    outline: 0px;
+    padding: 0 8px
+}
+
+.jfk-button-hover {
+    -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, .1);
+    -moz-box-shadow: 0 1px 1px rgba(0, 0, 0, .1);
+    box-shadow: 0 1px 1px rgba(0, 0, 0, .1)
+}
+
+.jfk-button-selected {
+    -webkit-box-shadow: inset 0px 1px 2px rgba(0, 0, 0, 0.1);
+    -moz-box-shadow: inset 0px 1px 2px rgba(0, 0, 0, 0.1);
+    box-shadow: inset 0px 1px 2px rgba(0, 0, 0, 0.1)
+}
+
+.jfk-button .jfk-button-img {
+    margin-top: -3px;
+    vertical-align: middle
+}
+
+.jfk-button-label {
+    margin-left: 5px
+}
+
+.jfk-button-narrow {
+    min-width: 34px;
+    padding: 0
+}
+
+.jfk-button-collapse-left, .jfk-button-collapse-right {
+    z-index: 1
+}
+
+.jfk-button-collapse-left.jfk-button-disabled {
+    z-index: 0
+}
+
+.jfk-button-checked.jfk-button-collapse-left, .jfk-button-checked.jfk-button-collapse-right {
+    z-index: 2
+}
+
+.jfk-button-collapse-left:focus, .jfk-button-collapse-right:focus, .jfk-button-hover.jfk-button-collapse-left, .jfk-button-hover.jfk-button-collapse-right {
+    z-index: 3
+}
+
+.jfk-button-collapse-left {
+    margin-left: -1px;
+    -moz-border-radius-bottomleft: 0;
+    -moz-border-radius-topleft: 0;
+    -webkit-border-bottom-left-radius: 0;
+    -webkit-border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    border-top-left-radius: 0
+}
+
+.jfk-button-collapse-right {
+    margin-right: 0px;
+    -moz-border-radius-topright: 0;
+    -moz-border-radius-bottomright: 0;
+    -webkit-border-top-right-radius: 0;
+    -webkit-border-bottom-right-radius: 0;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0
+}
+
+.jfk-button.jfk-button-disabled:active {
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none
+}
+
+.jfk-button-action {
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+    background-color: #4d90fe;
+    background-image: -webkit-linear-gradient(top, #4d90fe, #4787ed);
+    background-image: -moz-linear-gradient(top, #4d90fe, #4787ed);
+    background-image: -ms-linear-gradient(top, #4d90fe, #4787ed);
+    background-image: -o-linear-gradient(top, #4d90fe, #4787ed);
+    background-image: linear-gradient(top, #4d90fe, #4787ed);
+    border: 1px solid #3079ed;
+    color: #fff
+}
+
+.jfk-button-action.jfk-button-hover {
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+    background-color: #357ae8;
+    background-image: -webkit-linear-gradient(top, #4d90fe, #357ae8);
+    background-image: -moz-linear-gradient(top, #4d90fe, #357ae8);
+    background-image: -ms-linear-gradient(top, #4d90fe, #357ae8);
+    background-image: -o-linear-gradient(top, #4d90fe, #357ae8);
+    background-image: linear-gradient(top, #4d90fe, #357ae8);
+    border: 1px solid #2f5bb7;
+    border-bottom-color: #2f5bb7
+}
+
+.jfk-button-action:focus {
+    -webkit-box-shadow: inset 0 0 0 1px #fff;
+    -moz-box-shadow: inset 0 0 0 1px #fff;
+    box-shadow: inset 0 0 0 1px #fff;
+    border: 1px solid #fff;
+    border: rgba(0, 0, 0, 0) solid 1px;
+    outline: 1px solid #4d90fe;
+    outline: rgba(0, 0, 0, 0) 0
+}
+
+.jfk-button-action.jfk-button-clear-outline {
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+    outline: none
+}
+
+.jfk-button-action:active {
+    -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
+    -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
+    background: #357ae8;
+    border: 1px solid #2f5bb7;
+    border-top: 1px solid #2f5bb7
+}
+
+.jfk-button-action.jfk-button-disabled {
+    background: #4d90fe;
+    filter: alpha(opacity=50);
+    opacity: 0.5
+}
+
+.jfk-button-standard {
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+    background-color: #f5f5f5;
+    background-image: -webkit-linear-gradient(top, #f5f5f5, #f1f1f1);
+    background-image: -moz-linear-gradient(top, #f5f5f5, #f1f1f1);
+    background-image: -ms-linear-gradient(top, #f5f5f5, #f1f1f1);
+    background-image: -o-linear-gradient(top, #f5f5f5, #f1f1f1);
+    background-image: linear-gradient(top, #f5f5f5, #f1f1f1);
+    color: #444;
+    border: 1px solid #dcdcdc;
+    border: 1px solid rgba(0, 0, 0, 0.1)
+}
+
+.jfk-button-standard.jfk-button-hover, .jfk-button-standard.jfk-button-clear-outline.jfk-button-hover {
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+    background-color: #f8f8f8;
+    background-image: -webkit-linear-gradient(top, #f8f8f8, #f1f1f1);
+    background-image: -moz-linear-gradient(top, #f8f8f8, #f1f1f1);
+    background-image: -ms-linear-gradient(top, #f8f8f8, #f1f1f1);
+    background-image: -o-linear-gradient(top, #f8f8f8, #f1f1f1);
+    background-image: linear-gradient(top, #f8f8f8, #f1f1f1);
+    border: 1px solid #c6c6c6;
+    color: #333
+}
+
+.jfk-button-standard:active, .jfk-button-standard.jfk-button-hover:active {
+    -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, .1);
+    -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, .1);
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, .1);
+    background: #f8f8f8;
+    color: #333
+}
+
+.jfk-button-standard.jfk-button-selected, .jfk-button-standard.jfk-button-clear-outline.jfk-button-selected {
+    background-color: #eee;
+    background-image: -webkit-linear-gradient(top, #f8f8f8, #f1f1f1);
+    background-image: -moz-linear-gradient(top, #f8f8f8, #f1f1f1);
+    background-image: -ms-linear-gradient(top, #f8f8f8, #f1f1f1);
+    background-image: -o-linear-gradient(top, #f8f8f8, #f1f1f1);
+    background-image: linear-gradient(top, #f8f8f8, #f1f1f1);
+    border: 1px solid #ccc;
+    color: #333
+}
+
+.jfk-button-standard.jfk-button-checked, .jfk-button-standard.jfk-button-clear-outline.jfk-button-checked {
+    -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, .1);
+    -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, .1);
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, .1);
+    background-color: #eee;
+    background-image: -webkit-linear-gradient(top, #eee, #e0e0e0);
+    background-image: -moz-linear-gradient(top, #eee, #e0e0e0);
+    background-image: -ms-linear-gradient(top, #eee, #e0e0e0);
+    background-image: -o-linear-gradient(top, #eee, #e0e0e0);
+    background-image: linear-gradient(top, #eee, #e0e0e0);
+    border: 1px solid #ccc;
+    color: #333
+}
+
+.jfk-button-standard:focus {
+    border: 1px solid #4d90fe;
+    outline: none
+}
+
+.jfk-button-standard.jfk-button-clear-outline {
+    border: 1px solid #dcdcdc;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    outline: none
+}
+
+.jfk-button-standard.jfk-button-disabled {
+    background: #fff;
+    border: 1px solid #f3f3f3;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    color: #b8b8b8
+}
+
+.jfk-button-standard .jfk-button-img {
+    opacity: .55
+}
+
+.jfk-button-standard.jfk-button-checked .jfk-button-img, .jfk-button-standard.jfk-button-selected .jfk-button-img, .jfk-button-standard.jfk-button-hover .jfk-button-img {
+    opacity: 0.9
+}
+
+.jfk-button-standard.jfk-button-disabled .jfk-button-img {
+    filter: alpha(opacity=33);
+    opacity: 0.333
+}
+
+.jfk-tooltip {
+    -webkit-border-radius: 0;
+    -moz-border-radius: 0;
+    border-radius: 0;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+    -webkit-transition: visibility 0, opacity .13s ease-in;
+    -moz-transition: visibility 0, opacity .13s ease-in;
+    -o-transition: visibility 0, opacity .13s ease-in;
+    transition: visibility 0, opacity .13s ease-in;
+    background-color: #2a2a2a;
+    border: 1px solid #fff;
+    color: #fff;
+    cursor: default;
+    display: block;
+    font-size: 11px;
+    font-weight: bold;
+    margin-left: -1px;
+    opacity: 1;
+    padding: 7px 9px;
+    position: absolute;
+    visibility: visible;
+    word-break: break-all;
+    word-break: break-word
+}
+
+.jfk-tooltip-hide {
+    -webkit-transition: visibility .13s, opacity .13s ease-out, left 0 linear .13s, top 0 linear .13s;
+    -moz-transition: visibility .13s, opacity .13s ease-out, left 0 linear .13s, top 0 linear .13s;
+    -o-transition: visibility .13s, opacity .13s ease-out, left 0 linear .13s, top 0 linear .13s;
+    transition: visibility .13s, opacity .13s ease-out, left 0 linear .13s, top 0 linear .13s;
+    opacity: 0;
+    left: 20px !important;
+    top: 20px !important;
+    visibility: hidden
+}
+
+.jfk-tooltip-data {
+    display: none
+}
+
+.jfk-tooltip-arrow {
+    pointer-events: none;
+    position: absolute
+}
+
+.jfk-tooltip-arrow .jfk-tooltip-arrowimplbefore, .jfk-tooltip-arrow .jfk-tooltip-arrowimplafter {
+    content: '';
+    display: block;
+    height: 0;
+    position: absolute;
+    width: 0
+}
+
+.jfk-tooltip-arrow .jfk-tooltip-arrowimplbefore {
+    border: 6px solid
+}
+
+.jfk-tooltip-arrow .jfk-tooltip-arrowimplafter {
+    border: 5px solid
+}
+
+.jfk-tooltip-arrowdown {
+    bottom: 0
+}
+
+.jfk-tooltip-arrowup {
+    top: -6px
+}
+
+.jfk-tooltip-arrowleft {
+    left: -6px
+}
+
+.jfk-tooltip-arrowright {
+    right: 0
+}
+
+.jfk-tooltip-arrowdown .jfk-tooltip-arrowimplbefore, .jfk-tooltip-arrowup .jfk-tooltip-arrowimplbefore {
+    border-color: #fff transparent;
+    left: -6px
+}
+
+.jfk-tooltip-arrowdown .jfk-tooltip-arrowimplafter, .jfk-tooltip-arrowup .jfk-tooltip-arrowimplafter {
+    border-color: #2a2a2a transparent;
+    left: -5px
+}
+
+.jfk-tooltip-arrowdown .jfk-tooltip-arrowimplbefore {
+    border-bottom-width: 0
+}
+
+.jfk-tooltip-arrowdown .jfk-tooltip-arrowimplafter {
+    border-bottom-width: 0
+}
+
+.jfk-tooltip-arrowup .jfk-tooltip-arrowimplbefore {
+    border-top-width: 0
+}
+
+.jfk-tooltip-arrowup .jfk-tooltip-arrowimplafter {
+    border-top-width: 0;
+    top: 1px
+}
+
+.jfk-tooltip-arrowleft .jfk-tooltip-arrowimplbefore, .jfk-tooltip-arrowright .jfk-tooltip-arrowimplbefore {
+    border-color: transparent #fff;
+    top: -6px
+}
+
+.jfk-tooltip-arrowleft .jfk-tooltip-arrowimplafter, .jfk-tooltip-arrowright .jfk-tooltip-arrowimplafter {
+    border-color: transparent #2a2a2a;
+    top: -5px
+}
+
+.jfk-tooltip-arrowleft .jfk-tooltip-arrowimplbefore {
+    border-left-width: 0
+}
+
+.jfk-tooltip-arrowleft .jfk-tooltip-arrowimplafter {
+    border-left-width: 0;
+    left: 1px
+}
+
+.jfk-tooltip-arrowright .jfk-tooltip-arrowimplbefore {
+    border-right-width: 0
+}
+
+.jfk-tooltip-arrowright .jfk-tooltip-arrowimplafter {
+    border-right-width: 0
+}
+
+{#html {#}
+{#    font-size: 13px#}
+{#}#}
+{##}
+{#body {#}
+{#    word-wrap: break-word#}
+{#}#}
+{##}
+{#body {#}
+{#    padding: 0 .75rem#}
+{#}#}
+{##}
+.ss-form-container {
+    background-color: #fff;
+    border: 1px solid #ccc
+}
+
+.ss-form-container {
+    border-radius: 2px;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    box-sizing: border-box;
+    margin: 0.75rem auto;
+    padding: 0;
+    max-width: 700px;
+    min-width: 280px;
+    width: 100%
+}
+
+.ss-top-of-page {
+    padding-top: 4rem;
+    margin-bottom: 3rem
+}
+
+.ss-top-of-page, .ss-form, .ss-footer {
+    padding-left: 3rem;
+    padding-right: 3rem
+}
+
+.ss-confirmation-banner {
+    padding: 3rem
+}
+
+.ss-header-image-container {
+    height: 0
+}
+
+.ss-header-image-container {
+    font-size: 0;
+    line-height: 0
+}
+
+.ss-header-image-image {
+    background-repeat: no-repeat;
+    background-size: 100% auto;
+    display: inline-block;
+    width: 100%
+}
+
+.ss-header-image-sizer {
+    height: 0;
+    width: 100%
+}
+
+.ss-confirmation-banner {
+    background-color: #ffff87;
+    color: #333
+}
+
+.ss-confirmation-header {
+    font-size: 140%
+}
+
+.ss-confirmation-content {
+    margin-top: 1em
+}
+
+.ss-form-title {
+    margin: 0 0 .5rem
+}
+
+input#emailReceipt {
+    margin-left: 0;
+    margin-top: 0;
+    vertical-align: middle
+}
+
+.jfk-button {
+    height: auto;
+    padding-left: 15px;
+    padding-right: 15px
+}
+
+.ss-password-warning {
+    font-style: italic;
+    margin-top: .5rem
+}
+
+.ss-footer {
+    border-top: 1px solid #ddd;
+    padding-top: 2.5rem;
+    padding-bottom: 3rem;
+    margin-top: 3rem
+}
+
+.no-chrome .powered-by-logo, .no-chrome .ss-legal, .no-chrome .ss-edit-link {
+    display: none
+}
+
+.ss-prepopulate-input, .ss-submit-url-input {
+    width: 100%
+}
+
+.goog-date-picker, .goog-date-picker th, .goog-date-picker td {
+    font: 13px Arial, sans-serif
+}
+
+.goog-date-picker {
+    -moz-user-focus: normal;
+    -moz-user-select: none;
+    position: relative;
+    border: 1px solid #000;
+    float: left;
+    padding: 2px;
+    color: #000;
+    background: #c3d9ff;
+    cursor: default
+}
+
+.goog-date-picker th {
+    text-align: center
+}
+
+.goog-date-picker td {
+    text-align: center;
+    vertical-align: middle;
+    padding: 1px 3px
+}
+
+.goog-date-picker-menu {
+    position: absolute;
+    background: threedface;
+    border: 1px solid gray;
+    -moz-user-focus: normal;
+    z-index: 1;
+    outline: none
+}
+
+.goog-date-picker-menu ul {
+    list-style: none;
+    margin: 0px;
+    padding: 0px
+}
+
+.goog-date-picker-menu ul li {
+    cursor: default
+}
+
+.goog-date-picker-menu-selected {
+    background: #ccf
+}
+
+.goog-date-picker th {
+    font-size: .9em
+}
+
+.goog-date-picker td div {
+    float: left
+}
+
+.goog-date-picker button {
+    padding: 0px;
+    margin: 1px 0;
+    border: 0;
+    color: #20c;
+    font-weight: bold;
+    background: transparent
+}
+
+.goog-date-picker-date {
+    background: #fff
+}
+
+.goog-date-picker-week, .goog-date-picker-wday {
+    padding: 1px 3px;
+    border: 0;
+    border-color: #a2bbdd;
+    border-style: solid
+}
+
+.goog-date-picker-week {
+    border-right-width: 1px
+}
+
+.goog-date-picker-wday {
+    border-bottom-width: 1px
+}
+
+.goog-date-picker-head td {
+    text-align: center
+}
+
+td.goog-date-picker-today-cont {
+    text-align: center
+}
+
+td.goog-date-picker-none-cont {
+    text-align: center
+}
+
+.goog-date-picker-month {
+    min-width: 11ex;
+    white-space: nowrap
+}
+
+.goog-date-picker-year {
+    min-width: 6ex;
+    white-space: nowrap
+}
+
+.goog-date-picker-monthyear {
+    white-space: nowrap
+}
+
+.goog-date-picker table {
+    border-collapse: collapse
+}
+
+.goog-date-picker-other-month {
+    color: #888
+}
+
+.goog-date-picker-wkend-start, .goog-date-picker-wkend-end {
+    background: #eee
+}
+
+td.goog-date-picker-selected {
+    background: #c3d9ff
+}
+
+.goog-date-picker-today {
+    background: #9ab;
+    font-weight: bold !important;
+    border-color: #246 #9bd #9bd #246;
+    color: #fff
+}
+
+.ss-date input, .ss-datetime input, .ss-time input {
+    font: inherit
+}
+
+.ss-hidden-button {
+    border: none;
+    display: none;
+    height: 0;
+    padding: 0;
+    width: 0
+}
+
+.ss-picker-button-container {
+    background-color: #f5f5f5;
+    background-image: -webkit-linear-gradient(top, #f5f5f5, #f1f1f1);
+    background-image: -moz-linear-gradient(top, #f5f5f5, #f1f1f1);
+    background-image: -ms-linear-gradient(top, #f5f5f5, #f1f1f1);
+    background-image: -o-linear-gradient(top, #f5f5f5, #f1f1f1);
+    background-image: linear-gradient(top, #f5f5f5, #f1f1f1);
+    border: 1px solid #dcdcdc;
+    height: 32px;
+    margin: -1px -1px -1px 1ex
+}
+
+.ss-picker-container {
+    left: 2ex;
+    position: absolute;
+    z-index: 2
+}
+
+.ss-calendar-button {
+    padding: 5px 4px 4px 4px;
+    z-index: 1
+}
+
+.ss-datetime-box {
+    border: 1px solid #dcdcdc;
+    margin-right: 2em;
+    min-height: 32px;
+    padding-left: 3px;
+    vertical-align: middle
+}
+
+.ss-datetime-box select {
+    margin: 4px 3px;
+    vertical-align: middle
+}
+
+.ss-datetime-box-spacer {
+    height: 32px;
+    vertical-align: middle
+}
+
+.ss-grid {
+    overflow-x: auto
+}
+
+.ss-gridnumbers {
+    text-align: center;
+    border-bottom: 1px solid #d3d8d3
+}
+
+.ss-gridnumber {
+    display: block;
+    padding: 0.5em 0 .5em
+}
+
+.ss-gridrow {
+    text-align: center;
+    color: #666;
+    border-bottom: 1px solid #d3d8d3;
+    padding: 0
+}
+
+.ss-grid-button-label {
+    display: block
+}
+
+.ss-grid-button-wrapper {
+    padding: .5em .25em
+}
+
+.ss-gridrow-leftlabel {
+    min-width: 100px;
+    max-width: 200px;
+    padding-left: 15px;
+    text-align: left
+}
+
+.ss-grideditor-columns input {
+    line-height: 150%
+}
+
+.ss-grideditor-editor .ss-magiclist-ul span.ss-header {
+    font-weight: bold;
+    padding-right: 1em
+}
+
+.ss-grid-separator {
+    border: 1px solid #e5e5e5
+}
+
+.ss-scale {
+    overflow-x: auto
+}
+
+.ss-scalenumbers {
+    text-align: center
+}
+
+.ss-scalenumber {
+    display: block;
+    padding: 0.5em 0 .5em
+}
+
+.ss-scalerow {
+    text-align: center;
+    color: #666;
+    border: 1px solid #d3d8d3;
+    border-left: 0;
+    border-right: 0;
+    padding: .5em .25em
+}
+
+td.ss-leftlabel {
+    text-align: right;
+    padding-left: 0
+}
+
+td.ss-rightlabel {
+    text-align: left;
+    padding-right: 0
+}
+
+.ss-form-entry {
+    margin-bottom: 1.5em
+}
+
+.ss-form-entry input {
+    vertical-align: middle;
+    margin-left: 0;
+    margin-top: 0
+}
+
+.ss-form-entry select {
+    max-width: 100%
+}
+
+.ss-q-title {
+    display: block;
+    font-weight: bold
+}
+
+h2.ss-q-title {
+    margin-top: .83em;
+    margin-bottom: .83em
+}
+
+.ss-q-help {
+    display: block
+}
+
+.ss-q-help {
+    margin-top: .25rem
+}
+
+.ss-secondary-text {
+    color: #666
+}
+
+.ss-textarea {
+    max-width: 99%
+}
+
+.ss-q-long {
+    resize: vertical;
+    width: 70%
+}
+
+.ss-choices {
+    list-style: none;
+    padding: 0
+}
+
+.ss-choices {
+    margin: .75rem 0 0
+}
+
+.ss-choice-item {
+    margin: 0;
+    line-height: 1.3em;
+    padding-bottom: .5em
+}
+
+.ss-required-asterisk {
+    color: #c43b1d
+}
+
+.ss-section-title {
+    margin: 2rem 0 0
+}
+
+.ss-section-description {
+    margin-top: 0.5rem
+}
+
+.ss-page-title {
+    margin: 0;
+    padding: 0
+}
+
+.ss-formwidget-container:focus {
+    outline: none
+}
+
+.ss-item {
+    margin: 12px 0
+}
+
+.ss-q-short, .ss-q-long {
+    border: 1px solid #bbb;
+    padding: 0.4em 0.6em
+}
+
+.ss-image, .ss-video, .ss-embeddable-object-container {
+    max-width: 100%;
+    position: relative
+}
+
+.ss-video {
+    border: none
+}
+
+.ss-video-badge {
+    left: 0;
+    position: absolute
+}
+
+.ss-video:focus, .ss-image:focus {
+    outline: none
+}
+
+.ss-edit-link, .ss-edit-link:active, .ss-edit-link:visited, .ss-edit-link:hover, .ss-edit-link:link {
+    background: url(//www.gstatic.com/docs/spreadsheets/forms/edit_dark.png) 7px 8px no-repeat #1f1f1d;
+    border: 1px solid #fff;
+    color: #fff;
+    float: right;
+    font: normal 13px arial, sans-serif;
+    font-weight: bold;
+    padding: 7px 7px 7px 27px;
+    position: absolute;
+    text-decoration: none;
+    top: 7px;
+    right: 7px
+}
+
+.disclaimer .ss-terms a:link {
+    text-decoration: none
+}
+
+.disclaimer .ss-terms a:hover {
+    text-decoration: underline
+}
+
+.disclaimer {
+    color: #777;
+    font: normal 11px arial, sans-serif
+}
+
+.disclaimer {
+    margin: 0
+}
+
+.disclaimer-separator {
+    border-top: 1px solid #ebebeb
+}
+
+.disclaimer-separator {
+    display: none
+}
+
+.powered-by-logo {
+    float: left;
+    vertical-align: bottom
+}
+
+.powered-by-text {
+    line-height: 16px
+}
+
+.ss-terms {
+    line-height: 20px
+}
+
+.ss-terms {
+    text-align: right
+}
+
+.ss-submit-message {
+    font: normal 13px arial, sans-serif;
+    margin-bottom: 20px
+}
+
+.error, .required, .errorbox-bad {
+    border: 2px solid
+}
+
+.required-message, .error-message {
+    color: #c43b1d;
+    display: none;
+    font-size: 13px
+}
+
+.required~.required-message, .error~.error-message {
+    display: block
+}
+
+ul.ss-choices.required {
+    margin-left: -3px;
+    margin-top: -3px;
+    padding-left: 4px;
+    padding-top: 4px
+}
+
+.docs-offscreen {
+    position: absolute;
+    left: -10000px;
+    top: -10000px
+}
+
+.errorbox-bad {
+    background-color: #ffe6cc;
+    padding: 2px
+}
+
+.errorheader {
+    color: #c43b1d
+}
+
+.jfk-progressBar-nonBlocking .progress-bar-horizontal {
+    background: #fff;
+    border: 1px solid #999;
+    height: 10px;
+    padding: 1px;
+    width: 150px
+}
+
+.jfk-progressBar-nonBlocking .progress-bar-thumb {
+    height: 10px;
+    width: 150px
+}
+
+#navigation-table {
+    width: 100%
+}
+
+#navigation-buttons {
+    margin-bottom: 0
+}
+
+#progress-container {
+    text-align: right
+}
+{#body {#}
+{#  background-color: rgb(231, 238, 247);#}
+{#  background-image: url(//ssl.gstatic.com/docs/forms/themes/images/v1/0AX42CRMsmRFbUy03NTAzM2Q4My03ODU1LTQ2NzItODI2YS1kZmU5YzdiMzZjOGQ/blue-stripe-bg.png);#}
+{#  background-repeat: repeat;#}
+{#  background-position: left top;#}
+{#}#}
+
+.ss-form-container, .ss-resp-card {
+  background-color: rgb(255, 255, 255);
+}
+
+.ss-footer, .ss-response-footer {
+  background-color: rgb(255, 255, 255);
+}
+
+.ss-grid-row-odd {
+  background-color: rgb(242, 242, 242);
+}
+
+.ss-form-container, .ss-resp-card {
+  border-color: rgb(212, 212, 212);
+}
+
+.ss-form-title {
+  text-align: start;
+}
+
+.ss-form-desc {
+  text-align: start;
+}
+
+.ss-header-image-container {
+  height: 0;
+}
+
+.ss-item {
+  font-size: 1.080rem;
+}
+
+.ss-choices {
+  font-size: 1.000rem;
+}
+
+{#body {#}
+{#  font-family: "Roboto";#}
+{#  color: rgb(119, 119, 119);#}
+{#  font-weight: 400;#}
+{#  font-size: 1.080rem;#}
+{#  font-style: normal;#}
+{#}#}
+{##}
+.ss-record-username-message {
+  font-family: "Roboto";
+  color: rgb(119, 119, 119);
+  font-weight: 400;
+  font-size: 1.080rem;
+  font-style: normal;
+}
+
+.ss-form-title {
+  font-family: "Roboto";
+  color: rgb(80, 80, 80);
+  font-weight: 400;
+  font-size: 2.460rem;
+  font-style: normal;
+}
+
+.ss-confirmation {
+  font-family: "Roboto";
+  color: rgb(80, 80, 80);
+  font-weight: 400;
+  font-size: 2.460rem;
+  font-style: normal;
+}
+
+.ss-page-title, .ss-section-title {
+  font-family: "Roboto";
+  color: rgb(80, 80, 80);
+  font-weight: 400;
+  font-size: 1.845rem;
+  font-style: normal;
+}
+
+.ss-form-desc, .ss-page-description, .ss-section-description {
+  font-family: "Roboto";
+  color: rgb(140, 140, 140);
+  font-weight: 400;
+  font-size: 1.080rem;
+  font-style: normal;
+}
+
+.ss-resp-content {
+  font-family: "Roboto";
+  color: rgb(119, 119, 119);
+  font-weight: 400;
+  font-size: 1.080rem;
+  font-style: normal;
+}
+
+.ss-q-title {
+  font-family: "Roboto";
+  color: rgb(80, 80, 80);
+  font-weight: 700;
+  font-size: 1.080rem;
+  font-style: normal;
+}
+
+.ss-embeddable-object-container .ss-q-title {
+  font-family: "Roboto";
+  color: rgb(80, 80, 80);
+  font-weight: 700;
+  font-size: 1.845rem;
+  font-style: normal;
+}
+
+.ss-q-help, .ss-q-time-hint {
+  font-family: "Roboto";
+  color: rgb(140, 140, 140);
+  font-weight: 400;
+  font-size: 1.000rem;
+  font-style: normal;
+}
+
+.ss-choice-label, .video-secondary-text, .ss-gridrow-leftlabel, .ss-gridnumber, .ss-scalenumber, .ss-leftlabel, .ss-rightlabel {
+  font-family: "Roboto";
+  color: rgb(80, 80, 80);
+  font-weight: 400;
+  font-size: 1.000rem;
+  font-style: normal;
+}
+
+.error-message, .required-message, .ss-required-asterisk {
+  font-family: "Roboto";
+  color: rgb(196, 59, 29);
+  font-weight: 400;
+  font-size: 1.000rem;
+  font-style: normal;
+}
+
+.ss-send-email-receipt {
+  font-family: "Roboto";
+  color: rgb(80, 80, 80);
+  font-weight: 400;
+  font-size: 1.000rem;
+  font-style: normal;
+}
+
+.ss-password-warning {
+  font-family: "Arial";
+  color: rgb(119, 119, 119);
+  font-weight: 400;
+  font-size: 1.000rem;
+  font-style: italic;
+}
+
+.disclaimer {
+  font-family: "Arial";
+  color: rgb(119, 119, 119);
+  font-weight: 400;
+  font-size: 0.850rem;
+  font-style: normal;
+}
+
+.ss-footer-content {
+  font-family: "Arial";
+  color: rgb(80, 80, 80);
+  font-weight: 400;
+  font-size: 1.000rem;
+  font-style: normal;
+}
+
+.progress-label {
+  font-family: "Roboto";
+  color: rgb(140, 140, 140);
+  font-weight: 400;
+  font-size: 1.000rem;
+  font-style: normal;
+}
+
+{#a:link {#}
+{#  color: rgb(0, 0, 238);#}
+{#}#}
+{##}
+{#a:visited {#}
+{#  color: rgb(85, 26, 139);#}
+{#}#}
+{##}
+{#a:active {#}
+{#  color: rgb(252, 0, 0);#}
+{#}#}
+
+input[type='text'], input:not([type]), textarea {
+  font-size: 1.000rem;
+}
+
+.error, .required, .errorbox-bad {
+  border-color: rgb(196, 59, 29);
+}
+
+.jfk-progressBar-nonBlocking .progress-bar-thumb {
+  background-color: rgb(140, 140, 140);
+}
+
+.ss-logo-image {
+  background-image: url(//ssl.gstatic.com/docs/forms/forms_logo_small_dark.png);
+  background-size: 108px 21px;
+  width: 108px;
+  height: 21px;
+}
+
+@media screen and (-webkit-device-pixel-ratio: 2) {
+.ss-logo-image {
+  background-image: url(//ssl.gstatic.com/docs/forms/forms_logo_small_dark_2x.png);
+}
+}
+</style>
+
+{% endblock %}
+
+{% block body %}
+    <div class="jumbotron spudder-jumbotron" style="background-image: url('/static/img/spudderaffiliates/_nays_header.jpg'); height: 120px;"></div>
+
+    <div class="container">
+
+        <div class="page-header">
+            <h1>Take the NAYS youth sports funding survey!</h1>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-3 col-sm-push-9">
+
+                <h3 class="text-success"><i class="fa fa-question"></i> What is it</h3>
+                <p style="margin-left: 10px;">
+                    NAYS and <a href="/">Spudder</a> have teamed up to conduct the first national survey of Youth Sports funding needs.
+                </p>
+
+                <h3 class="text-success"><i class="fa fa-question"></i> Who can take it</h3>
+                <p style="margin-left: 10px;">
+                    Any Youth Sports organization, club or team can take part in this survey, <b>all answers are secure and private!</b>
+                </p>
+
+                <h3 class="text-success"><i class="fa fa-question"></i> What do we get for taking part</h3>
+                <p style="margin-left: 10px;">
+                    The oportunity to see the aggregated results of this ground breaking survey!
+                </p>
+                <p style="margin-left: 10px;">
+                    <i class="fa fa-plus"></i> Entry into a free draw with the chance to win: <b>2 Free Tickets</b> to the <a href="http://www.nays.org/congress/" target="_blank">NAYS Youth Sports Congress</a>
+                </p>
+                <hr class="visible-xs" />
+            </div>
+            <div class="col-sm-9 col-sm-pull-3">
+
+                <h3 class="text-success">Take the survey</h3>
+{#                <div class="embed-responsive" style="height:3000px;">#}
+{#                    <iframe src="https://docs.google.com/forms/d/1zXJ20p_SGivnfxWKVlP8MkSAtETvxMXlNjejhd-bo5o/viewform?embedded=true" marginheight="0" marginwidth="0">Loading...</iframe>#}
+{#                </div>#}
+
+                <form action="https://docs.google.com/a/metalayer.com/forms/d/1zXJ20p_SGivnfxWKVlP8MkSAtETvxMXlNjejhd-bo5o/formResponse"
+                      method="POST" id="ss-form" target="_self" onsubmit="">
+                    <ol role="list" class="ss-question-list" style="padding-left: 0">
+                        <div class="ss-form-question errorbox-good" role="listitem">
+                            <div dir="ltr" class="ss-item  ss-text">
+                                <div class="ss-form-entry">
+                                    <label class="ss-q-item-label" for="entry_1289516488">
+                                        <div class="ss-q-title">How much does your group attempt to fundraise each year?
+                                        </div>
+                                        <div class="ss-q-help ss-secondary-text" dir="ltr">An estimated range is fine
+                                        </div>
+                                    </label>
+                                    <input type="text" name="entry.1289516488" value="" class="ss-q-short"
+                                           id="entry_1289516488" dir="auto"
+                                           aria-label="How much does your group attempt to fundraise each year? An estimated range is fine "
+                                           title="">
+
+                                    <div class="error-message" id="240874301_errorMessage"></div>
+                                    <div class="required-message">This is a required question</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ss-form-question errorbox-good" role="listitem">
+                            <div dir="ltr" class="ss-item  ss-radio">
+                                <div class="ss-form-entry">
+                                    <label class="ss-q-item-label" for="entry_174715392">
+                                        <div class="ss-q-title">How many fundraising events did your group attempt over
+                                            the past 12 months?
+                                        </div>
+                                        <div class="ss-q-help ss-secondary-text" dir="ltr"></div>
+                                    </label>
+
+                                    <ul class="ss-choices" role="radiogroup"
+                                        aria-label="How many fundraising events did your group attempt over the past 12 months?  ">
+                                        <li class="ss-choice-item"><label><span
+                                                class="ss-choice-item-control goog-inline-block"><input type="radio"
+                                                                                                        name="entry.781438549"
+                                                                                                        value="0"
+                                                                                                        id="group_781438549_1"
+                                                                                                        role="radio"
+                                                                                                        class="ss-q-radio"
+                                                                                                        aria-label="0"></span>
+                                            <span class="ss-choice-label">0</span>
+                                        </label></li>
+                                        <li class="ss-choice-item"><label><span
+                                                class="ss-choice-item-control goog-inline-block"><input type="radio"
+                                                                                                        name="entry.781438549"
+                                                                                                        value="1-3"
+                                                                                                        id="group_781438549_2"
+                                                                                                        role="radio"
+                                                                                                        class="ss-q-radio"
+                                                                                                        aria-label="1-3"></span>
+                                            <span class="ss-choice-label">1-3</span>
+                                        </label></li>
+                                        <li class="ss-choice-item"><label><span
+                                                class="ss-choice-item-control goog-inline-block"><input type="radio"
+                                                                                                        name="entry.781438549"
+                                                                                                        value="4-6"
+                                                                                                        id="group_781438549_3"
+                                                                                                        role="radio"
+                                                                                                        class="ss-q-radio"
+                                                                                                        aria-label="4-6"></span>
+                                            <span class="ss-choice-label">4-6</span>
+                                        </label></li>
+                                        <li class="ss-choice-item"><label><span
+                                                class="ss-choice-item-control goog-inline-block"><input type="radio"
+                                                                                                        name="entry.781438549"
+                                                                                                        value="7 or more"
+                                                                                                        id="group_781438549_4"
+                                                                                                        role="radio"
+                                                                                                        class="ss-q-radio"
+                                                                                                        aria-label="7 or more"></span>
+                                            <span class="ss-choice-label">7 or more</span>
+                                        </label></li>
+                                    </ul>
+                                    <div class="error-message" id="174715392_errorMessage"></div>
+                                    <div class="required-message">This is a required question</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ss-form-question errorbox-good" role="listitem">
+                            <div dir="ltr" class="ss-item  ss-checkbox">
+                                <div class="ss-form-entry">
+                                    <label class="ss-q-item-label" for="entry_1067093058">
+                                        <div class="ss-q-title">Which of the following approaches does your group use to
+                                            fundraise?
+                                        </div>
+                                        <div class="ss-q-help ss-secondary-text" dir="ltr">Check all that apply</div>
+                                    </label>
+
+                                    <ul class="ss-choices" role="group"
+                                        aria-label="Which of the following approaches does your group use to fundraise? Check all that apply ">
+                                        <li class="ss-choice-item"><label><span
+                                                class="ss-choice-item-control goog-inline-block"><input type="checkbox"
+                                                                                                        name="entry.59348582"
+                                                                                                        value="Fundraising Events (Car washes, bake sales, parties, concerts&hellip;)"
+                                                                                                        id="group_59348582_1"
+                                                                                                        role="checkbox"
+                                                                                                        class="ss-q-checkbox"></span>
+                                            <span class="ss-choice-label">Fundraising Events (Car washes, bake sales, parties, concerts…)</span>
+                                        </label></li>
+                                        <li class="ss-choice-item"><label><span
+                                                class="ss-choice-item-control goog-inline-block"><input type="checkbox"
+                                                                                                        name="entry.59348582"
+                                                                                                        value="Direct Mail"
+                                                                                                        id="group_59348582_2"
+                                                                                                        role="checkbox"
+                                                                                                        class="ss-q-checkbox"></span>
+                                            <span class="ss-choice-label">Direct Mail</span>
+                                        </label></li>
+                                        <li class="ss-choice-item"><label><span
+                                                class="ss-choice-item-control goog-inline-block"><input type="checkbox"
+                                                                                                        name="entry.59348582"
+                                                                                                        value="Paid or Donated Advertising (TV, Radio, Newspaper, Internet)"
+                                                                                                        id="group_59348582_3"
+                                                                                                        role="checkbox"
+                                                                                                        class="ss-q-checkbox"></span>
+                                            <span class="ss-choice-label">Paid or Donated Advertising (TV, Radio, Newspaper, Internet)</span>
+                                        </label></li>
+                                        <li class="ss-choice-item"><label><span
+                                                class="ss-choice-item-control goog-inline-block"><input type="checkbox"
+                                                                                                        name="entry.59348582"
+                                                                                                        value="Telephone Campaigns"
+                                                                                                        id="group_59348582_4"
+                                                                                                        role="checkbox"
+                                                                                                        class="ss-q-checkbox"></span>
+                                            <span class="ss-choice-label">Telephone Campaigns</span>
+                                        </label></li>
+                                        <li class="ss-choice-item"><label><span
+                                                class="ss-choice-item-control goog-inline-block"><input type="checkbox"
+                                                                                                        name="entry.59348582"
+                                                                                                        value="Social Media Campaigns (Facebook, Twitter, etc.)"
+                                                                                                        id="group_59348582_5"
+                                                                                                        role="checkbox"
+                                                                                                        class="ss-q-checkbox"></span>
+                                            <span class="ss-choice-label">Social Media Campaigns (Facebook, Twitter, etc.)</span>
+                                        </label></li>
+                                        <li class="ss-choice-item"><label><span
+                                                class="ss-choice-item-control goog-inline-block"><input type="checkbox"
+                                                                                                        name="entry.59348582"
+                                                                                                        value="Dedicated Fundraising Mobile Apps"
+                                                                                                        id="group_59348582_6"
+                                                                                                        role="checkbox"
+                                                                                                        class="ss-q-checkbox"></span>
+                                            <span class="ss-choice-label">Dedicated Fundraising Mobile Apps</span>
+                                        </label></li>
+                                        <li class="ss-choice-item"><label><span
+                                                class="ss-choice-item-control goog-inline-block"><input type="checkbox"
+                                                                                                        name="entry.59348582"
+                                                                                                        value="Spectator Canvassing (Face-to-face)"
+                                                                                                        id="group_59348582_7"
+                                                                                                        role="checkbox"
+                                                                                                        class="ss-q-checkbox"></span>
+                                            <span class="ss-choice-label">Spectator Canvassing (Face-to-face)</span>
+                                        </label></li>
+                                        <li class="ss-choice-item"><label><span
+                                                class="ss-choice-item-control goog-inline-block"><input type="checkbox"
+                                                                                                        name="entry.59348582"
+                                                                                                        value="Raffles or Auctions"
+                                                                                                        id="group_59348582_8"
+                                                                                                        role="checkbox"
+                                                                                                        class="ss-q-checkbox"></span>
+                                            <span class="ss-choice-label">Raffles or Auctions</span>
+                                        </label></li>
+                                        <li class="ss-choice-item"><label><span
+                                                class="ss-choice-item-control goog-inline-block"><input type="checkbox"
+                                                                                                        name="entry.59348582"
+                                                                                                        value="__other_option__"
+                                                                                                        id="group_59348582_9"
+                                                                                                        role="checkbox"
+                                                                                                        class="ss-q-checkbox ss-q-other-toggle"></span>
+                                            <span class="ss-choice-label">Other:</span></label>
+                                            <span class="ss-q-other-container goog-inline-block"><input type="text"
+                                                                                                        name="entry.59348582.other_option_response"
+                                                                                                        value=""
+                                                                                                        class="ss-q-other"
+                                                                                                        id="entry_59348582_other_option_response"
+                                                                                                        dir="auto"
+                                                                                                        aria-label="Other"></span>
+                                        </li>
+                                    </ul>
+                                    <div class="error-message" id="1067093058_errorMessage"></div>
+                                    <div class="required-message">This is a required question</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ss-form-question errorbox-good" role="listitem">
+                            <div dir="ltr" class="ss-item  ss-paragraph-text">
+                                <div class="ss-form-entry">
+                                    <label class="ss-q-item-label" for="entry_1755275561">
+                                        <div class="ss-q-title">What was your group’s most successful fundraising event?
+                                        </div>
+                                        <div class="ss-q-help ss-secondary-text" dir="ltr"></div>
+                                    </label>
+                                    <textarea name="entry.1755275561" rows="8" cols="0" class="ss-q-long"
+                                              id="entry_1755275561" dir="auto"
+                                              aria-label="What was your group’s most successful fundraising event?   "></textarea>
+
+                                    <div class="error-message" id="823126520_errorMessage"></div>
+                                    <div class="required-message">This is a required question</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ss-form-question errorbox-good" role="listitem">
+                            <div dir="ltr" class="ss-item  ss-grid">
+                                <div class="ss-form-entry">
+                                    <label class="ss-q-item-label" for="entry_1052084115">
+                                        <div class="ss-q-title">How would you rate the total amount raised from each of
+                                            the following sources?
+                                        </div>
+                                        <div class="ss-q-help ss-secondary-text" dir="ltr"></div>
+                                    </label>
+
+                                    <div>
+                                        <table border="0" cellpadding="5" cellspacing="0">
+                                            <thead>
+                                            <tr>
+                                                <td class="ss-gridnumbers ss-gridrow-leftlabel"></td>
+                                                <td class="ss-gridnumbers" style="width: 20%;"><label
+                                                        class="ss-gridnumber">High</label></td>
+                                                <td class="ss-gridnumbers" style="width: 20%;"><label
+                                                        class="ss-gridnumber">Medium</label></td>
+                                                <td class="ss-gridnumbers" style="width: 20%;"><label
+                                                        class="ss-gridnumber">Low</label></td>
+                                                <td class="ss-gridnumbers" style="width: 20%;"><label
+                                                        class="ss-gridnumber">None</label></td>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr role="radiogroup"
+                                                aria-label="Participants (Annual dues, Per player assessments)"
+                                                aria-describedby="1052084115_errorMessage"
+                                                class="ss-gridrow ss-grid-row-odd">
+                                                <td class="ss-gridrow ss-gridrow-leftlabel">Participants (Annual dues,
+                                                    Per player assessments)
+                                                </td>
+                                                <td class="ss-gridrow" style="width: 20%;"><label
+                                                        class="ss-grid-button-label">
+                                                    <div class="ss-grid-button-wrapper"><input type="radio"
+                                                                                               name="entry.477526059"
+                                                                                               value="High"
+                                                                                               id="group_477526059_1"
+                                                                                               role="radio"
+                                                                                               class="ss-q-radio"
+                                                                                               aria-label="High"></div>
+                                                </label></td>
+                                                <td class="ss-gridrow" style="width: 20%;"><label
+                                                        class="ss-grid-button-label">
+                                                    <div class="ss-grid-button-wrapper"><input type="radio"
+                                                                                               name="entry.477526059"
+                                                                                               value="Medium"
+                                                                                               id="group_477526059_2"
+                                                                                               role="radio"
+                                                                                               class="ss-q-radio"
+                                                                                               aria-label="Medium">
+                                                    </div>
+                                                </label></td>
+                                                <td class="ss-gridrow" style="width: 20%;"><label
+                                                        class="ss-grid-button-label">
+                                                    <div class="ss-grid-button-wrapper"><input type="radio"
+                                                                                               name="entry.477526059"
+                                                                                               value="Low"
+                                                                                               id="group_477526059_3"
+                                                                                               role="radio"
+                                                                                               class="ss-q-radio"
+                                                                                               aria-label="Low"></div>
+                                                </label></td>
+                                                <td class="ss-gridrow" style="width: 20%;"><label
+                                                        class="ss-grid-button-label">
+                                                    <div class="ss-grid-button-wrapper"><input type="radio"
+                                                                                               name="entry.477526059"
+                                                                                               value="None"
+                                                                                               id="group_477526059_4"
+                                                                                               role="radio"
+                                                                                               class="ss-q-radio"
+                                                                                               aria-label="None"></div>
+                                                </label></td>
+                                            </tr>
+                                            <tr role="radiogroup"
+                                                aria-label="Individual Donors (Board members, Friends, Family, Major donors)&nbsp;"
+                                                aria-describedby="1052084115_errorMessage"
+                                                class="ss-gridrow ss-grid-row-even">
+                                                <td class="ss-gridrow ss-gridrow-leftlabel">Individual Donors (Board
+                                                    members, Friends, Family, Major donors)
+                                                </td>
+                                                <td class="ss-gridrow" style="width: 20%;"><label
+                                                        class="ss-grid-button-label">
+                                                    <div class="ss-grid-button-wrapper"><input type="radio"
+                                                                                               name="entry.2004512723"
+                                                                                               value="High"
+                                                                                               id="group_2004512723_1"
+                                                                                               role="radio"
+                                                                                               class="ss-q-radio"
+                                                                                               aria-label="High"></div>
+                                                </label></td>
+                                                <td class="ss-gridrow" style="width: 20%;"><label
+                                                        class="ss-grid-button-label">
+                                                    <div class="ss-grid-button-wrapper"><input type="radio"
+                                                                                               name="entry.2004512723"
+                                                                                               value="Medium"
+                                                                                               id="group_2004512723_2"
+                                                                                               role="radio"
+                                                                                               class="ss-q-radio"
+                                                                                               aria-label="Medium">
+                                                    </div>
+                                                </label></td>
+                                                <td class="ss-gridrow" style="width: 20%;"><label
+                                                        class="ss-grid-button-label">
+                                                    <div class="ss-grid-button-wrapper"><input type="radio"
+                                                                                               name="entry.2004512723"
+                                                                                               value="Low"
+                                                                                               id="group_2004512723_3"
+                                                                                               role="radio"
+                                                                                               class="ss-q-radio"
+                                                                                               aria-label="Low"></div>
+                                                </label></td>
+                                                <td class="ss-gridrow" style="width: 20%;"><label
+                                                        class="ss-grid-button-label">
+                                                    <div class="ss-grid-button-wrapper"><input type="radio"
+                                                                                               name="entry.2004512723"
+                                                                                               value="None"
+                                                                                               id="group_2004512723_4"
+                                                                                               role="radio"
+                                                                                               class="ss-q-radio"
+                                                                                               aria-label="None"></div>
+                                                </label></td>
+                                            </tr>
+                                            <tr role="radiogroup" aria-label="Local Business Sponsorships"
+                                                aria-describedby="1052084115_errorMessage"
+                                                class="ss-gridrow ss-grid-row-odd">
+                                                <td class="ss-gridrow ss-gridrow-leftlabel">Local Business
+                                                    Sponsorships
+                                                </td>
+                                                <td class="ss-gridrow" style="width: 20%;"><label
+                                                        class="ss-grid-button-label">
+                                                    <div class="ss-grid-button-wrapper"><input type="radio"
+                                                                                               name="entry.1510553312"
+                                                                                               value="High"
+                                                                                               id="group_1510553312_1"
+                                                                                               role="radio"
+                                                                                               class="ss-q-radio"
+                                                                                               aria-label="High"></div>
+                                                </label></td>
+                                                <td class="ss-gridrow" style="width: 20%;"><label
+                                                        class="ss-grid-button-label">
+                                                    <div class="ss-grid-button-wrapper"><input type="radio"
+                                                                                               name="entry.1510553312"
+                                                                                               value="Medium"
+                                                                                               id="group_1510553312_2"
+                                                                                               role="radio"
+                                                                                               class="ss-q-radio"
+                                                                                               aria-label="Medium">
+                                                    </div>
+                                                </label></td>
+                                                <td class="ss-gridrow" style="width: 20%;"><label
+                                                        class="ss-grid-button-label">
+                                                    <div class="ss-grid-button-wrapper"><input type="radio"
+                                                                                               name="entry.1510553312"
+                                                                                               value="Low"
+                                                                                               id="group_1510553312_3"
+                                                                                               role="radio"
+                                                                                               class="ss-q-radio"
+                                                                                               aria-label="Low"></div>
+                                                </label></td>
+                                                <td class="ss-gridrow" style="width: 20%;"><label
+                                                        class="ss-grid-button-label">
+                                                    <div class="ss-grid-button-wrapper"><input type="radio"
+                                                                                               name="entry.1510553312"
+                                                                                               value="None"
+                                                                                               id="group_1510553312_4"
+                                                                                               role="radio"
+                                                                                               class="ss-q-radio"
+                                                                                               aria-label="None"></div>
+                                                </label></td>
+                                            </tr>
+                                            <tr role="radiogroup"
+                                                aria-label="Professional Associations, Religious Groups, Non-Profits"
+                                                aria-describedby="1052084115_errorMessage"
+                                                class="ss-gridrow ss-grid-row-even">
+                                                <td class="ss-gridrow ss-gridrow-leftlabel">Professional Associations,
+                                                    Religious Groups, Non-Profits
+                                                </td>
+                                                <td class="ss-gridrow" style="width: 20%;"><label
+                                                        class="ss-grid-button-label">
+                                                    <div class="ss-grid-button-wrapper"><input type="radio"
+                                                                                               name="entry.1333938071"
+                                                                                               value="High"
+                                                                                               id="group_1333938071_1"
+                                                                                               role="radio"
+                                                                                               class="ss-q-radio"
+                                                                                               aria-label="High"></div>
+                                                </label></td>
+                                                <td class="ss-gridrow" style="width: 20%;"><label
+                                                        class="ss-grid-button-label">
+                                                    <div class="ss-grid-button-wrapper"><input type="radio"
+                                                                                               name="entry.1333938071"
+                                                                                               value="Medium"
+                                                                                               id="group_1333938071_2"
+                                                                                               role="radio"
+                                                                                               class="ss-q-radio"
+                                                                                               aria-label="Medium">
+                                                    </div>
+                                                </label></td>
+                                                <td class="ss-gridrow" style="width: 20%;"><label
+                                                        class="ss-grid-button-label">
+                                                    <div class="ss-grid-button-wrapper"><input type="radio"
+                                                                                               name="entry.1333938071"
+                                                                                               value="Low"
+                                                                                               id="group_1333938071_3"
+                                                                                               role="radio"
+                                                                                               class="ss-q-radio"
+                                                                                               aria-label="Low"></div>
+                                                </label></td>
+                                                <td class="ss-gridrow" style="width: 20%;"><label
+                                                        class="ss-grid-button-label">
+                                                    <div class="ss-grid-button-wrapper"><input type="radio"
+                                                                                               name="entry.1333938071"
+                                                                                               value="None"
+                                                                                               id="group_1333938071_4"
+                                                                                               role="radio"
+                                                                                               class="ss-q-radio"
+                                                                                               aria-label="None"></div>
+                                                </label></td>
+                                            </tr>
+                                            <tr role="radiogroup" aria-label="Foundations"
+                                                aria-describedby="1052084115_errorMessage"
+                                                class="ss-gridrow ss-grid-row-odd">
+                                                <td class="ss-gridrow ss-gridrow-leftlabel">Foundations</td>
+                                                <td class="ss-gridrow" style="width: 20%;"><label
+                                                        class="ss-grid-button-label">
+                                                    <div class="ss-grid-button-wrapper"><input type="radio"
+                                                                                               name="entry.2139384154"
+                                                                                               value="High"
+                                                                                               id="group_2139384154_1"
+                                                                                               role="radio"
+                                                                                               class="ss-q-radio"
+                                                                                               aria-label="High"></div>
+                                                </label></td>
+                                                <td class="ss-gridrow" style="width: 20%;"><label
+                                                        class="ss-grid-button-label">
+                                                    <div class="ss-grid-button-wrapper"><input type="radio"
+                                                                                               name="entry.2139384154"
+                                                                                               value="Medium"
+                                                                                               id="group_2139384154_2"
+                                                                                               role="radio"
+                                                                                               class="ss-q-radio"
+                                                                                               aria-label="Medium">
+                                                    </div>
+                                                </label></td>
+                                                <td class="ss-gridrow" style="width: 20%;"><label
+                                                        class="ss-grid-button-label">
+                                                    <div class="ss-grid-button-wrapper"><input type="radio"
+                                                                                               name="entry.2139384154"
+                                                                                               value="Low"
+                                                                                               id="group_2139384154_3"
+                                                                                               role="radio"
+                                                                                               class="ss-q-radio"
+                                                                                               aria-label="Low"></div>
+                                                </label></td>
+                                                <td class="ss-gridrow" style="width: 20%;"><label
+                                                        class="ss-grid-button-label">
+                                                    <div class="ss-grid-button-wrapper"><input type="radio"
+                                                                                               name="entry.2139384154"
+                                                                                               value="None"
+                                                                                               id="group_2139384154_4"
+                                                                                               role="radio"
+                                                                                               class="ss-q-radio"
+                                                                                               aria-label="None"></div>
+                                                </label></td>
+                                            </tr>
+                                            <tr role="radiogroup"
+                                                aria-label="Governments (Town, City, County, State or Federal)&nbsp;"
+                                                aria-describedby="1052084115_errorMessage"
+                                                class="ss-gridrow ss-grid-row-even">
+                                                <td class="ss-gridrow ss-gridrow-leftlabel">Governments (Town, City,
+                                                    County, State or Federal)
+                                                </td>
+                                                <td class="ss-gridrow" style="width: 20%;"><label
+                                                        class="ss-grid-button-label">
+                                                    <div class="ss-grid-button-wrapper"><input type="radio"
+                                                                                               name="entry.228771046"
+                                                                                               value="High"
+                                                                                               id="group_228771046_1"
+                                                                                               role="radio"
+                                                                                               class="ss-q-radio"
+                                                                                               aria-label="High"></div>
+                                                </label></td>
+                                                <td class="ss-gridrow" style="width: 20%;"><label
+                                                        class="ss-grid-button-label">
+                                                    <div class="ss-grid-button-wrapper"><input type="radio"
+                                                                                               name="entry.228771046"
+                                                                                               value="Medium"
+                                                                                               id="group_228771046_2"
+                                                                                               role="radio"
+                                                                                               class="ss-q-radio"
+                                                                                               aria-label="Medium">
+                                                    </div>
+                                                </label></td>
+                                                <td class="ss-gridrow" style="width: 20%;"><label
+                                                        class="ss-grid-button-label">
+                                                    <div class="ss-grid-button-wrapper"><input type="radio"
+                                                                                               name="entry.228771046"
+                                                                                               value="Low"
+                                                                                               id="group_228771046_3"
+                                                                                               role="radio"
+                                                                                               class="ss-q-radio"
+                                                                                               aria-label="Low"></div>
+                                                </label></td>
+                                                <td class="ss-gridrow" style="width: 20%;"><label
+                                                        class="ss-grid-button-label">
+                                                    <div class="ss-grid-button-wrapper"><input type="radio"
+                                                                                               name="entry.228771046"
+                                                                                               value="None"
+                                                                                               id="group_228771046_4"
+                                                                                               role="radio"
+                                                                                               class="ss-q-radio"
+                                                                                               aria-label="None"></div>
+                                                </label></td>
+                                            </tr>
+                                            <tr role="radiogroup" aria-label="League Office or Affiliate Organization"
+                                                aria-describedby="1052084115_errorMessage"
+                                                class="ss-gridrow ss-grid-row-odd">
+                                                <td class="ss-gridrow ss-gridrow-leftlabel">League Office or Affiliate
+                                                    Organization
+                                                </td>
+                                                <td class="ss-gridrow" style="width: 20%;"><label
+                                                        class="ss-grid-button-label">
+                                                    <div class="ss-grid-button-wrapper"><input type="radio"
+                                                                                               name="entry.1400321065"
+                                                                                               value="High"
+                                                                                               id="group_1400321065_1"
+                                                                                               role="radio"
+                                                                                               class="ss-q-radio"
+                                                                                               aria-label="High"></div>
+                                                </label></td>
+                                                <td class="ss-gridrow" style="width: 20%;"><label
+                                                        class="ss-grid-button-label">
+                                                    <div class="ss-grid-button-wrapper"><input type="radio"
+                                                                                               name="entry.1400321065"
+                                                                                               value="Medium"
+                                                                                               id="group_1400321065_2"
+                                                                                               role="radio"
+                                                                                               class="ss-q-radio"
+                                                                                               aria-label="Medium">
+                                                    </div>
+                                                </label></td>
+                                                <td class="ss-gridrow" style="width: 20%;"><label
+                                                        class="ss-grid-button-label">
+                                                    <div class="ss-grid-button-wrapper"><input type="radio"
+                                                                                               name="entry.1400321065"
+                                                                                               value="Low"
+                                                                                               id="group_1400321065_3"
+                                                                                               role="radio"
+                                                                                               class="ss-q-radio"
+                                                                                               aria-label="Low"></div>
+                                                </label></td>
+                                                <td class="ss-gridrow" style="width: 20%;"><label
+                                                        class="ss-grid-button-label">
+                                                    <div class="ss-grid-button-wrapper"><input type="radio"
+                                                                                               name="entry.1400321065"
+                                                                                               value="None"
+                                                                                               id="group_1400321065_4"
+                                                                                               role="radio"
+                                                                                               class="ss-q-radio"
+                                                                                               aria-label="None"></div>
+                                                </label></td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                        <div class="error-message" id="1052084115_errorMessage"></div>
+                                        <div class="required-message">Please enter one response per row</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ss-form-question errorbox-good" role="listitem">
+                            <div dir="ltr" class="ss-item  ss-checkbox">
+                                <div class="ss-form-entry">
+                                    <label class="ss-q-item-label" for="entry_1753260109">
+                                        <div class="ss-q-title">What’s your group’s economic level?
+                                        </div>
+                                        <div class="ss-q-help ss-secondary-text" dir="ltr"></div>
+                                    </label>
+
+                                    <ul class="ss-choices" role="group"
+                                        aria-label="What’s your group’s economic level?  ">
+                                        <li class="ss-choice-item"><label><span
+                                                class="ss-choice-item-control goog-inline-block"><input type="checkbox"
+                                                                                                        name="entry.1205482880"
+                                                                                                        value="Upper Income"
+                                                                                                        id="group_1205482880_1"
+                                                                                                        role="checkbox"
+                                                                                                        class="ss-q-checkbox"></span>
+                                            <span class="ss-choice-label">Upper Income</span>
+                                        </label></li>
+                                        <li class="ss-choice-item"><label><span
+                                                class="ss-choice-item-control goog-inline-block"><input type="checkbox"
+                                                                                                        name="entry.1205482880"
+                                                                                                        value="Upper Middle Class"
+                                                                                                        id="group_1205482880_2"
+                                                                                                        role="checkbox"
+                                                                                                        class="ss-q-checkbox"></span>
+                                            <span class="ss-choice-label">Upper Middle Class</span>
+                                        </label></li>
+                                        <li class="ss-choice-item"><label><span
+                                                class="ss-choice-item-control goog-inline-block"><input type="checkbox"
+                                                                                                        name="entry.1205482880"
+                                                                                                        value="Middle Class"
+                                                                                                        id="group_1205482880_3"
+                                                                                                        role="checkbox"
+                                                                                                        class="ss-q-checkbox"></span>
+                                            <span class="ss-choice-label">Middle Class</span>
+                                        </label></li>
+                                        <li class="ss-choice-item"><label><span
+                                                class="ss-choice-item-control goog-inline-block"><input type="checkbox"
+                                                                                                        name="entry.1205482880"
+                                                                                                        value="Low Income"
+                                                                                                        id="group_1205482880_4"
+                                                                                                        role="checkbox"
+                                                                                                        class="ss-q-checkbox"></span>
+                                            <span class="ss-choice-label">Low Income</span>
+                                        </label></li>
+                                        <li class="ss-choice-item"><label><span
+                                                class="ss-choice-item-control goog-inline-block"><input type="checkbox"
+                                                                                                        name="entry.1205482880"
+                                                                                                        value="Mixed Income"
+                                                                                                        id="group_1205482880_5"
+                                                                                                        role="checkbox"
+                                                                                                        class="ss-q-checkbox"></span>
+                                            <span class="ss-choice-label">Mixed Income</span>
+                                        </label></li>
+                                        <li class="ss-choice-item"><label><span
+                                                class="ss-choice-item-control goog-inline-block"><input type="checkbox"
+                                                                                                        name="entry.1205482880"
+                                                                                                        value="Unknown"
+                                                                                                        id="group_1205482880_6"
+                                                                                                        role="checkbox"
+                                                                                                        class="ss-q-checkbox"></span>
+                                            <span class="ss-choice-label">Unknown</span>
+                                        </label></li>
+                                    </ul>
+                                    <div class="error-message" id="1753260109_errorMessage"></div>
+                                    <div class="required-message">This is a required question</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ss-form-question errorbox-good" role="listitem">
+                            <div dir="ltr" class="ss-item  ss-checkbox">
+                                <div class="ss-form-entry">
+                                    <label class="ss-q-item-label" for="entry_446359935">
+                                        <div class="ss-q-title">What is the age range of your program’s participants?
+                                        </div>
+                                        <div class="ss-q-help ss-secondary-text" dir="ltr">Select all that apply</div>
+                                    </label>
+
+                                    <ul class="ss-choices" role="group"
+                                        aria-label="What is the age range of your program’s participants? Select all that apply ">
+                                        <li class="ss-choice-item"><label><span
+                                                class="ss-choice-item-control goog-inline-block"><input type="checkbox"
+                                                                                                        name="entry.237483554"
+                                                                                                        value="Elementary School"
+                                                                                                        id="group_237483554_1"
+                                                                                                        role="checkbox"
+                                                                                                        class="ss-q-checkbox"></span>
+                                            <span class="ss-choice-label">Elementary School</span>
+                                        </label></li>
+                                        <li class="ss-choice-item"><label><span
+                                                class="ss-choice-item-control goog-inline-block"><input type="checkbox"
+                                                                                                        name="entry.237483554"
+                                                                                                        value="Middle School"
+                                                                                                        id="group_237483554_2"
+                                                                                                        role="checkbox"
+                                                                                                        class="ss-q-checkbox"></span>
+                                            <span class="ss-choice-label">Middle School</span>
+                                        </label></li>
+                                        <li class="ss-choice-item"><label><span
+                                                class="ss-choice-item-control goog-inline-block"><input type="checkbox"
+                                                                                                        name="entry.237483554"
+                                                                                                        value="High School"
+                                                                                                        id="group_237483554_3"
+                                                                                                        role="checkbox"
+                                                                                                        class="ss-q-checkbox"></span>
+                                            <span class="ss-choice-label">High School</span>
+                                        </label></li>
+                                        <li class="ss-choice-item"><label><span
+                                                class="ss-choice-item-control goog-inline-block"><input type="checkbox"
+                                                                                                        name="entry.237483554"
+                                                                                                        value="College"
+                                                                                                        id="group_237483554_4"
+                                                                                                        role="checkbox"
+                                                                                                        class="ss-q-checkbox"></span>
+                                            <span class="ss-choice-label">College</span>
+                                        </label></li>
+                                        <li class="ss-choice-item"><label><span
+                                                class="ss-choice-item-control goog-inline-block"><input type="checkbox"
+                                                                                                        name="entry.237483554"
+                                                                                                        value="Adults"
+                                                                                                        id="group_237483554_5"
+                                                                                                        role="checkbox"
+                                                                                                        class="ss-q-checkbox"></span>
+                                            <span class="ss-choice-label">Adults</span>
+                                        </label></li>
+                                        <li class="ss-choice-item"><label><span
+                                                class="ss-choice-item-control goog-inline-block"><input type="checkbox"
+                                                                                                        name="entry.237483554"
+                                                                                                        value="__other_option__"
+                                                                                                        id="group_237483554_6"
+                                                                                                        role="checkbox"
+                                                                                                        class="ss-q-checkbox ss-q-other-toggle"></span>
+                                            <span class="ss-choice-label">Other:</span></label>
+                                            <span class="ss-q-other-container goog-inline-block"><input type="text"
+                                                                                                        name="entry.237483554.other_option_response"
+                                                                                                        value=""
+                                                                                                        class="ss-q-other"
+                                                                                                        id="entry_237483554_other_option_response"
+                                                                                                        dir="auto"
+                                                                                                        aria-label="Other"></span>
+                                        </li>
+                                    </ul>
+                                    <div class="error-message" id="446359935_errorMessage"></div>
+                                    <div class="required-message">This is a required question</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ss-form-question errorbox-good" role="listitem">
+                            <div dir="ltr" class="ss-item  ss-radio">
+                                <div class="ss-form-entry">
+                                    <label class="ss-q-item-label" for="entry_1075474940">
+                                        <div class="ss-q-title">How would you describe your group’s participation /
+                                            support during your most recent fundraising event?
+                                        </div>
+                                        <div class="ss-q-help ss-secondary-text" dir="ltr"></div>
+                                    </label>
+
+                                    <ul class="ss-choices" role="radiogroup"
+                                        aria-label="How would you describe your group’s participation / support during your most recent fundraising event?  ">
+                                        <li class="ss-choice-item"><label><span
+                                                class="ss-choice-item-control goog-inline-block"><input type="radio"
+                                                                                                        name="entry.458773444"
+                                                                                                        value="No Participation"
+                                                                                                        id="group_458773444_1"
+                                                                                                        role="radio"
+                                                                                                        class="ss-q-radio"
+                                                                                                        aria-label="No Participation"></span>
+                                            <span class="ss-choice-label">No Participation</span>
+                                        </label></li>
+                                        <li class="ss-choice-item"><label><span
+                                                class="ss-choice-item-control goog-inline-block"><input type="radio"
+                                                                                                        name="entry.458773444"
+                                                                                                        value="Very Little Participation"
+                                                                                                        id="group_458773444_2"
+                                                                                                        role="radio"
+                                                                                                        class="ss-q-radio"
+                                                                                                        aria-label="Very Little Participation"></span>
+                                            <span class="ss-choice-label">Very Little Participation</span>
+                                        </label></li>
+                                        <li class="ss-choice-item"><label><span
+                                                class="ss-choice-item-control goog-inline-block"><input type="radio"
+                                                                                                        name="entry.458773444"
+                                                                                                        value="Average Participation"
+                                                                                                        id="group_458773444_3"
+                                                                                                        role="radio"
+                                                                                                        class="ss-q-radio"
+                                                                                                        aria-label="Average Participation"></span>
+                                            <span class="ss-choice-label">Average Participation</span>
+                                        </label></li>
+                                        <li class="ss-choice-item"><label><span
+                                                class="ss-choice-item-control goog-inline-block"><input type="radio"
+                                                                                                        name="entry.458773444"
+                                                                                                        value="Outstanding Participation"
+                                                                                                        id="group_458773444_4"
+                                                                                                        role="radio"
+                                                                                                        class="ss-q-radio"
+                                                                                                        aria-label="Outstanding Participation"></span>
+                                            <span class="ss-choice-label">Outstanding Participation</span>
+                                        </label></li>
+                                    </ul>
+                                    <div class="error-message" id="1075474940_errorMessage"></div>
+                                    <div class="required-message">This is a required question</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ss-form-question errorbox-good" role="listitem">
+                            <div dir="ltr" class="ss-item  ss-text">
+                                <div class="ss-form-entry">
+                                    <label class="ss-q-item-label" for="entry_1303415825">
+                                        <div class="ss-q-title">How many people (all ages) are typically involved with
+                                            your fundraising activities?
+                                        </div>
+                                        <div class="ss-q-help ss-secondary-text" dir="ltr"></div>
+                                    </label>
+                                    <input type="number" name="entry.1303415825" value="" class="ss-q-short"
+                                           id="entry_1303415825" dir="auto"
+                                           aria-label="How many people (all ages) are typically involved with your fundraising activities?  Number must be 0 or greater"
+                                           step="any" min="0.0" aria-valuemin="0.0" title="Number must be 0 or greater">
+
+                                    <div class="error-message" id="471671436_errorMessage">Number must be 0 or greater
+                                    </div>
+                                    <div class="required-message">This is a required question</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ss-form-question errorbox-good" role="listitem">
+                            <div dir="ltr" class="ss-item  ss-text">
+                                <div class="ss-form-entry">
+                                    <label class="ss-q-item-label" for="entry_377833034">
+                                        <div class="ss-q-title">What percent of your annual budget is sourced from your
+                                            group’s fundraising strategy?
+                                        </div>
+                                        <div class="ss-q-help ss-secondary-text" dir="ltr">Enter a number between 0 and
+                                            100
+                                        </div>
+                                    </label>
+                                    <input type="number" name="entry.377833034" value="" class="ss-q-short"
+                                           id="entry_377833034" dir="auto"
+                                           aria-label="What percent of your annual budget is sourced from your group’s fundraising strategy? Enter a number between 0 and 100 Must be a number between 0 and 100"
+                                           step="any" title="Must be a number between 0 and 100">
+
+                                    <div class="error-message" id="2154744_errorMessage">Must be a number between 0 and
+                                        100
+                                    </div>
+                                    <div class="required-message">This is a required question</div>
+                                </div>
+                            </div>
+                        </div>
+                        <input type="hidden" name="draftResponse" value="[,,&quot;8068465183250833314&quot;]
+">
+                        <input type="hidden" name="pageHistory" value="0">
+
+
+                        <input type="hidden" name="fbzx" value="8068465183250833314">
+
+                        <div class="ss-item ss-navigate">
+                            <table id="navigation-table">
+                                <tbody>
+                                <tr>
+                                    <td class="ss-form-entry goog-inline-block" id="navigation-buttons" dir="ltr">
+                                        <input type="submit" name="submit" value="Submit" id="ss-submit"
+                                               class="btn btn-primary">
+
+                                        <div class="ss-password-warning ss-secondary-text">Never submit passwords
+                                            through Google Forms.
+                                        </div>
+                                    </td>
+                                    <td id="progress-container">
+                                        <div id="progress-bar"
+                                             class="jfk-progressBar-nonBlocking progress-bar-horizontal goog-inline-block"></div>
+                                        <div id="progress-label" class="progress-label">100%: You made it.</div>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </ol>
+                </form>
+
+
+            </div>
+        </div>
+
+    </div>
+{% endblock %}
+
+{% block js %}
+    {{ block.super }}
+{% endblock %}
