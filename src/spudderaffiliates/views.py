@@ -23,7 +23,9 @@ def affiliate_splash(request, affiliate_url_name):
     :param affiliate_url_name:
     :return:
     """
-    if affiliate_url_name and affiliate_url_name.lower() == 'nays' and feature_is_enabled('nays_survey'):
+    if affiliate_url_name:
+        affiliate_url_name = affiliate_url_name.lower()
+    if affiliate_url_name and affiliate_url_name == 'nays' and feature_is_enabled('nays_survey'):
         return _nays_survey(request)
 
     try:
@@ -54,6 +56,6 @@ def affiliate_splash(request, affiliate_url_name):
                 krowdio_response['data'],
                 RoleController.ENTITY_FAN)
             template_data['fan_nav_active'] = "explore"
-            return render(request,
-                          'spudderaffiliates/pages/landing_page.html',
-                          template_data)
+        return render(request,
+                      'spudderaffiliates/pages/landing_page.html',
+                      template_data)
