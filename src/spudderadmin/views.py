@@ -5,7 +5,7 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from django.http import Http404, HttpResponseRedirect
 from django.http import HttpResponse, HttpResponseNotAllowed
-from django.shortcuts import render_to_response, redirect
+from django.shortcuts import render_to_response, redirect, render
 from django.template import RequestContext
 
 import settings
@@ -668,9 +668,7 @@ def affiliates(request):
     :param request: any request
     :return: a page with table on one side and form on the other
     """
-    return render_to_response('spudderadmin/pages/affiliates/affiliates.html',{
-        'affiliates': Affiliate.objects.all()
-    })
+    return render(request, 'spudderadmin/pages/affiliates/affiliates.html', {'affiliates': Affiliate.objects.all()})
 
 
 @admin_login_required
@@ -680,19 +678,15 @@ def create_affiliate(request):
     :param request: any request
     :return: a bootstrap form for creating an affiliate
     """
+    form = AffiliateForm()
     if request.method == 'POST':
         form = AffiliateForm(request.POST)
         if form.is_valid():
             affiliate = form.save()
-            affiliate_message = "%s was successfully created." % affiliate.name
-            return render_to_response('spudderadmin/pages/affiliates/success.html', {
-                'affiliate_message': affiliate_message
-            })
-    else:
-        form = AffiliateForm()
-    return render_to_response('spudderadmin/pages/affiliates/create.html', {
-        'create_affiliate_form': form
-    })
+            affiliate_message = "<i class='fa fa-check'></i> %s was successfully created." % affiliate.name
+            messages.success(request, affiliate_message)
+            return redirect('/spudderadmin/affiliates')
+    return render(request, 'spudderadmin/pages/affiliates/create.html', {'create_affiliate_form': form})
 
 
 @admin_login_required
@@ -704,19 +698,15 @@ def edit_affiliate(request, affiliate_id):
     :return: a bootstrap form filled out for given affiliate
     """
     aff = Affiliate.objects.get(id=affiliate_id)
-    success = False
+    form = AffiliateForm(instance=aff)
     if request.method == 'POST':
         form = AffiliateForm(request.POST, instance=aff)
         if form.is_valid():
-            success = True
-            form.save()
-    else:
-        form = AffiliateForm(instance=aff)
-    return render_to_response('spudderadmin/pages/affiliates/edit.html', {
-        'form': form,
-        'success': success,
-        'name': aff.name
-    })
+            affiliate = form.save()
+            affiliate_message = "<i class='fa fa-check'></i> %s updated." % affiliate.name
+            messages.success(request, affiliate_message)
+            return redirect('/spudderadmin/affiliates')
+    return render_to_response('spudderadmin/pages/affiliates/edit.html', {'form': form, 'name': aff.name})
 
 
 @admin_login_required

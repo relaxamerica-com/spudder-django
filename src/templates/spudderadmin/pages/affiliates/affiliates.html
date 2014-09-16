@@ -5,7 +5,7 @@
         <h1>
             <i class="fa fa-building"></i>
             All Affiliates
-            <a href="/spudderadmin/affiliates/create" class="btn btn-primary btn-large pull-right"><i class="fa fa-fw fa-plus"></i> Add a New Affiliate</a>
+            <a href="/spudderadmin/affiliates/create" class="btn btn-default pull-right"><i class="fa fa-plus"></i> Add a New Affiliate</a>
         </h1>
     </div>
     <div class="panel panel-default">
@@ -25,12 +25,12 @@
                                     <td>
                                         <a href="/{{ affiliate.url_name }}"><img src="{{ affiliate.path_to_icon }}" width="50px"/> {{ affiliate.name }}</a>
                                     </td>
-                                    <td>
-                                        <a href="/spudderadmin/affiliates/edit/{{ affiliate.id }}" class="btn btn-primary">
-                                            <i class="fa fa-fw fa-edit"></i> Edit
+                                    <td style="white-space: nowrap">
+                                        <a href="/spudderadmin/affiliates/edit/{{ affiliate.id }}" class="btn btn-default btn-sm">
+                                            <i class="fa fa-fw fa-edit"></i> <span class="hidden-xs">Edit</span>
                                         </a>
-                                        <a href="/spudderadmin/affiliates/confirm_delete/{{ affiliate.id }}" class="btn btn-danger">
-                                            <i class="fa fa-fw fa-times"></i> Delete
+                                        <a href="/spudderadmin/affiliates/confirm_delete/{{ affiliate.id }}" class="btn btn-danger btn-sm">
+                                            <i class="fa fa-fw fa-trash-o"></i> <span class="hidden-xs">Delete</span>
                                         </a>
                                     </td>
                                 </tr>
