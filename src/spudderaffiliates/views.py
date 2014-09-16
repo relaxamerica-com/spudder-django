@@ -3,6 +3,7 @@ from django.shortcuts import render_to_response, render
 from django.template import RequestContext
 from django.views.defaults import page_not_found
 from spudderaccounts.templatetags.spudderaccountstags import is_fan
+from spudderadmin.templatetags.featuretags import feature_is_enabled
 from spudderaffiliates.models import Affiliate
 from spudderdomain.controllers import SpudsController, RoleController, EntityController
 from spudderdomain.models import TeamPage, FanPage, Club
@@ -22,7 +23,7 @@ def affiliate_splash(request, affiliate_url_name):
     :param affiliate_url_name:
     :return:
     """
-    if affiliate_url_name and affiliate_url_name.lower() == 'nays':
+    if affiliate_url_name and affiliate_url_name.lower() == 'nays' and feature_is_enabled('nays_survey'):
         return _nays_survey(request)
 
     try:
