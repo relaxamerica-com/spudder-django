@@ -83,6 +83,8 @@ urlpatterns = patterns(
     # Spudder Admin site
     (r'^spudderadmin', include('spudderadmin.urls')),
 
+    (r'^spudderaffiliates', include('spudderaffiliates.urls')),
+
     # Spudder Social Engine Urls
     (r'^socialengine/', include('spuddersocialengine.urls')),
 

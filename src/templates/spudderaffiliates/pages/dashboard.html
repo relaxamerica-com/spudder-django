@@ -1,0 +1,37 @@
+{% extends 'spudderaffiliates/base.html' %}
+
+{% block title %}Spudder Affiliate Management Console{% endblock %}
+
+{% block body %}
+    {% with request.session.affiliate as affiliate %}
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-3">
+                <div class="text-center">
+                    <h3><img src="{{ affiliate.path_to_icon }}" /> {{ affiliate.name }} Spudder Management Console</h3>
+                </div>
+                <div class="list-group" style="margin-top: 20px;">
+                    {% include 'spudderaffiliates/parts/sidenav.html' with active="dashboard" %}
+                </div>
+            </div>
+            <div class="col-sm-9 panel panel-default">
+                <div class="panel-body">
+                    <div class="page-header">
+                        <h1>Welcome to the Spudder Affiliates Management Console!</h1>
+                    </div>
+                    <p>This is where you will be able to see quick stats about the people YOU brought to Spudder. Stay tuned - more management features will be available to you soon!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endwith %}
+{% endblock %}
+
+{% block js %}
+    {{ block.super }}
+    <script type="text/javascript" language="javascript">
+        $(document).ready(function(){
+            balance_element_height("#admin-sections .panel-body");
+        })
+    </script>
+{% endblock %}

@@ -1,9 +1,12 @@
+from django.contrib import messages
+from django.contrib.auth.models import User
 from django.http import HttpResponse, Http404
-from django.shortcuts import render_to_response, render
+from django.shortcuts import render_to_response, render, redirect
 from django.template import RequestContext
 from django.views.defaults import page_not_found
 from spudderaccounts.templatetags.spudderaccountstags import is_fan
 from spudderadmin.templatetags.featuretags import feature_is_enabled
+from spudderaffiliates.decorators import affiliate_login_required
 from spudderaffiliates.models import Affiliate
 from spudderdomain.controllers import SpudsController, RoleController, EntityController
 from spudderdomain.models import TeamPage, FanPage, Club
@@ -16,12 +19,35 @@ def _nays_survey(request):
     return render(request, 'spudderaffiliates/pages/_nays_survey.html')
 
 
+def affiliate_login(request):
+    if feature_is_enabled('affiliate_login'):
+        error = False
+        if request.method == 'POST':
+            username = request.POST.get('username', None)
+            password = request.POST.get('password', None)
+            try:
+                aff = Affiliate.objects.get(username=username, password=password)
+            except Affiliate.DoesNotExist:
+                error = True
+            else:
+                request.session['affiliate'] = aff
+                return redirect(affiliate_dashboard)
+        return render_to_response(
+            'spudderaffiliates/pages/login.html',
+            {'error': error},
+            context_instance=RequestContext(request))
+    else:
+        raise Http404
+
+
 def affiliate_splash(request, affiliate_url_name):
     """
-
-    :param request:
-    :param affiliate_url_name:
-    :return:
+    Gives affiliate splash page
+    :param request: any request
+    :param affiliate_url_name: any string without the \ character,
+        formatted to lowercase for URL matching
+    :return: an affiliate's splash page, or a 404 error if not a valid
+        affiliate URL
     """
     if affiliate_url_name:
         affiliate_url_name = affiliate_url_name.lower()
@@ -59,3 +85,15 @@ def affiliate_splash(request, affiliate_url_name):
         return render(request,
                       'spudderaffiliates/pages/landing_page.html',
                       template_data)
+
+@affiliate_login_required
+def affiliate_dashboard(request):
+    """
+    Displays the affiliate dashboard
+    :param request: any request
+    :return: a simple dashboard with affiliate data overview
+    """
+    if feature_is_enabled('affiliate_login'):
+        return render(request, 'spudderaffiliates/pages/dashboard.html')
+    else:
+        raise Http404
