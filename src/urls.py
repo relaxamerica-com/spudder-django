@@ -69,12 +69,12 @@ urlpatterns = patterns(
     (r'^file/serve/(?P<file_id>\d+)$', 'spudmart.upload.views.serve_uploaded_file'),
     (r'^api/1/', include('spudmart.api.urls')),
 
-    url(r'^cern/', include('spudmart.CERN.urls')),
-    url(r'^users/', include('spudderaccounts.urls')),
-    url(r'^spuds/', include('spudderspuds.urls_spuds')),
-    url(r'^fan/', include('spudderspuds.urls_fans')),
-    url(r'^flag/', include('spudmart.flags.urls')),
-    url(r'^club/', include('spudderclubs.urls')),
+    url(r'^cern/*', include('spudmart.CERN.urls')),
+    url(r'^users/*', include('spudderaccounts.urls')),
+    url(r'^spuds/*', include('spudderspuds.urls_spuds')),
+    url(r'^fan/*', include('spudderspuds.urls_fans')),
+    url(r'^flag/*', include('spudmart.flags.urls')),
+    url(r'^club/*', include('spudderclubs.urls')),
 
     # Spudder Admin site
     (r'^spudderadmin', include('spudderadmin.urls')),
