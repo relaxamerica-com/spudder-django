@@ -1,0 +1,45 @@
+{% extends 'spudderspuds/base_single_well.html' %}
+{% load bootstrap3 %}
+
+{% block well_content %}
+    {% block info %}
+    {% endblock %}
+
+    <form method="post" enctype="multipart/form-data" action=".">
+        {% csrf_token %}
+
+        {% block form_content %}
+        {% endblock %}
+
+        {{ previous_fields|safe }}
+
+        {% block buttons %}
+            {% buttons %}
+                <a href="/challenges" class="btn btn-default">
+                    Cancel
+                </a>
+
+{#                {% if step0 %}#}
+{#                    <button name="{{ step_field }}" type="submit"#}
+{#                            class="btn btn-primary" value="{{ step0 }}">#}
+{#                        <i class="fa fa-arrow-left"></i> Previous Step#}
+{#                    </button>#}
+{#                {% endif %}#}
+
+                {% if step == step_count %}
+                    <button type="submit" class="btn btn-primary"
+                            name="{{ step_field }}" value="{{ step0 }}">
+                        <i class="fa fa-floppy-o"></i> Finish!
+                    </button>
+                {% else %}
+                    <button type="submit" class="btn btn-primary"
+                            name="{{ step_field }}" value="{{ step0 }}">
+                        <i class="fa fa-arrow-right"></i> Next Step
+                    </button>
+                {% endif %}
+            {% endbuttons %}
+        {% endblock %}
+
+    </form>
+
+{% endblock %}

@@ -286,3 +286,59 @@ class ClubAdministrator(models.Model):
 
     def __str__(self):
         return unicode(self).encode('utf-8')
+
+
+class ChallengeTemplate(models.Model):
+    name = models.CharField(max_length=255)
+    description = models.TextField()
+    image = models.ForeignKey(UploadedFile, null=True, default=None)
+
+    def __unicode__(self):
+        return unicode(self.name)
+
+    def __str__(self):
+        return unicode(self).encode('utf-8')
+
+
+class Challenge(models.Model):
+    template = models.ForeignKey(ChallengeTemplate)
+    parent = models.ForeignKey('Challenge', null=True, default=None)
+    club = models.ForeignKey(Club)
+    name = models.CharField(max_length=255)
+    description = models.TextField()
+    creator_entity_id = models.CharField(max_length=255)
+    creator_entity_type = models.CharField(max_length=255)
+    recipient_entity_id = models.CharField(max_length=255, null=True, blank=True, default=None)
+    recipient_entity_type = models.CharField(max_length=255, null=True, blank=True, default=None)
+    proposed_donation_amount = models.FloatField()
+    created = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
+
+    def __unicode__(self):
+        return unicode(self.name)
+
+    def __str__(self):
+        return unicode(self).encode('utf-8')
+
+
+class ChallengeParticipation(models.Model):
+    DECLINED_STATE = '01'
+    DONATE_ONLY_STATE = '02'
+    ACCEPTED_STATE = '03'
+
+    STATES = (DECLINED_STATE, DONATE_ONLY_STATE, ACCEPTED_STATE)
+
+    STATES_CHOICES = (
+        (DECLINED_STATE, 'Declined State'),
+        (DONATE_ONLY_STATE, 'Donate Only State'),
+        (ACCEPTED_STATE, 'Accepted State'),
+    )
+
+    challenge = models.ForeignKey(Challenge)
+    participating_entity_id = models.CharField(max_length=255)
+    participating_entity_type = models.CharField(max_length=255)
+    donation_amount = models.FloatField(null=True, default=None)
+    state = models.CharField(max_length=255, choices=STATES_CHOICES)
+    media = models.ForeignKey(UploadedFile, null=True, default=None)
+    created = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)

@@ -1,0 +1,69 @@
+{% extends 'spudderspuds/challenges/wizard/wizard_base.html' %}
+{% load bootstrap3 %}
+
+{% block info %}
+    <h3>Choose donation recipient</h3>
+{% endblock %}
+
+{% block form_content %}
+
+    {% if form.non_field_errors %}
+        <div class="alert alert-danger" role="alert">
+            <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span></button>
+            {{ form.non_field_errors.0 }}
+        </div>
+    {% endif %}
+
+    <hr />
+    <table class="table table-striped {% if clubs %}datatable{% endif %}">
+        <thead>
+            <tr>
+                <th>Logo</th>
+                <th>Name</th>
+                <th class="no-sort"></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for club in clubs %}
+                <tr>
+                    <td>
+                        <a href="/club/{{ club.pk }}">
+                            {% if club.thumbnail %}
+                                <img src="/file/serve/{{ club.thumbnail.pk }}" width="56" height="52" />
+                            {% else %}
+                                <i class="fa fa-group fa-2x"> </i>
+                            {% endif %}
+                        </a>
+                    </td>
+                    <td>
+                        <a href="/club/{{ club.pk }}">{{ club.name|safe }}</a>
+                    </td>
+                    <td class="actions" style="white-space: nowrap">
+                        <input type="checkbox" class="club-id"
+                               name="{{ step0 }}-{{ form.recipient_club_id.name }}" value="{{ club.pk }}"/>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="3">
+                        <div class="alert alert-warning">
+                            <p>There are no clubs to show.</p>
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}
+
+{% block js %}
+    {{ block.super }}
+    <script type="text/javascript">
+        $(function(){
+            $('input.club-id').change(function(){
+                $('input.club-id').not($(this)).removeAttr('checked');
+            })
+        });
+    </script>
+{% endblock %}
