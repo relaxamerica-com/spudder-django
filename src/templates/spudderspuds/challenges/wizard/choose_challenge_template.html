@@ -55,8 +55,14 @@
     {{ block.super }}
     <script type="text/javascript">
         $(function(){
+            $('button.next-step .next-step-text').text(' Create a New One');
+
             $('input.template-id').change(function(){
                 $('input.template-id').not($(this)).removeAttr('checked');
+                if ($('input.template-id:checked').length)
+                    $('button.next-step .next-step-text').text(' Next Step')
+                else
+                    $('button.next-step .next-step-text').text(' Create a New One')
             })
         });
     </script>

@@ -32,9 +32,9 @@
                         <i class="fa fa-floppy-o"></i> Finish!
                     </button>
                 {% else %}
-                    <button type="submit" class="btn btn-primary"
+                    <button type="submit" class="btn btn-primary next-step"
                             name="{{ step_field }}" value="{{ step0 }}">
-                        <i class="fa fa-arrow-right"></i> Next Step
+                        <i class="fa fa-arrow-right"></i><span class="next-step-text"> Next Step</span>
                     </button>
                 {% endif %}
             {% endbuttons %}

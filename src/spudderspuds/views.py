@@ -87,7 +87,8 @@ def fan_signin(request):
                 fan,
                 form.cleaned_data.get('twitter', None),
                 form.cleaned_data.get('spud_id', None))
-            return redirect('/spuds')
+            redirect_to = request.session.pop('redirect_after_auth', '/spuds')
+            return redirect(redirect_to)
     else:
         form = FanSigninForm(initial=request.GET)
     template_data["form"] = form
@@ -205,7 +206,7 @@ def fan_profile_edit(request, page_id):
                 fan_page.avatar = upload_form.save()
 
             fan_page.save()
-        redirect_to = request.session.pop('redirect_after_registration', '/fan/%s' % fan_page.id)
+        redirect_to = request.session.pop('redirect_after_auth', '/fan/%s' % fan_page.id)
         return redirect(redirect_to)
     return render(request, 'spudderspuds/fans/pages/fan_page_edit.html', {
         'profile_form': profile_form,

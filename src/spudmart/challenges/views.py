@@ -17,7 +17,7 @@ def new_challenge_wizard_view(request):
         wizard = NewChallengeWizard()
         return wizard(request)
     else:
-        request.session['redirect_after_registration'] = '/challenges/create'
+        request.session['redirect_after_auth'] = '/challenges/create'
         return HttpResponseRedirect('/spuds/register')
 
 
@@ -70,12 +70,12 @@ class NewChallengeWizard(FormWizard):
         if self.steps[step] == 'choose_template':
             template_id = form.cleaned_data.get('template_id')
             if template_id:
-                # remove next step
+                # remove next step and last step
                 self.remove_step(step + 1)
+                self.remove_step(self.num_steps() - 1)
                 # set initial form value for last step
                 template = get_object_or_404(ChallengeTemplate, id=int(template_id))
                 self.challenge_template = template
-                self.update_initial(self.num_steps() - 1, template.__dict__)
         elif self.steps[step] == 'create_template':
             self.update_initial(self.num_steps() - 1, form.cleaned_data)
 
@@ -88,6 +88,8 @@ class NewChallengeWizard(FormWizard):
             step_name = self.steps[index]
             if step_name == 'choose_template' and self.challenge_template:
                 challenge.template = self.challenge_template
+                challenge.name = self.challenge_template.name
+                challenge.description = self.challenge_template.description
             elif step_name == 'create_template' and not self.challenge_template:
                 challenge_template = ChallengeTemplate(
                     name=form.cleaned_data.get('name'),
@@ -103,4 +105,5 @@ class NewChallengeWizard(FormWizard):
                 challenge.name = form.cleaned_data.get('name')
                 challenge.description = form.cleaned_data.get('description')
         challenge.save()
-        return HttpResponseRedirect('/challenges/')
+        # TODO: redirect to challenge page
+        return HttpResponseRedirect('/challenges')
