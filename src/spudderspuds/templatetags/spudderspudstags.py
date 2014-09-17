@@ -101,16 +101,24 @@ def entity_view_link(entity, entity_type):
 
 @register.inclusion_tag('components/social_media_list.html')
 def social_media_list(entity):
-    return {'entity': entity}
+    return {'entity ': entity}
 
 
 @register.filter
 def spud_is_valid(spud):
-    result = urlfetch.fetch(url=spud['image']['standard_resolution']['url'])
-    if result.status_code == 404:
+    if not spud or not spud.get('image'):
         return False
-    else:
+    if not spud.get('image', {}).get('standard_resolution'):
+        return False
+    if not spud.get('image', {}).get('standard_resolution', {}).get('url'):
+        return False
+    try:
+        result = urlfetch.fetch(url=spud['image']['standard_resolution']['url'])
+        if result.status_code == 404:
+            return False
         return True
+    except:
+        return False
 
 
 @register.simple_tag
