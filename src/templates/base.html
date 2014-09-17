@@ -208,62 +208,67 @@
         {% block body %}{% endblock %}
         {% block footer %}
             <footer class="spudder-footer">
-                <div class="container">
-                    <div class="row hidden-sm hidden-xs main-footer">
-                        <div class="col-md-2">
-                            <h3>Features</h3>
-                            <ul class="list-unstyled">
-                                <li><a href="http://info.spudder.com/fundraising/" target="_blank">Fundraising</a></li>
-                                <li><a href="http://info.spudder.com/sports-updates/" target="_blank">Sports Updates</a></li>
-                                <li><a href="http://info.spudder.com/communications/" target="_blank">Safe Communications</a></li>
-                                <li><a href="http://info.spudder.com/community-metrics/" target="_blank">Community Metrics</a></li>
-                                <li><a href="http://info.spudder.com/parental-controls" target="_blank">Parental Controls</a></li>
-                            </ul>
-                        </div>
-                        <div class="col-md-2">
-                            <h3>About</h3>
-                            <ul class="list-unstyled">
-                                <li><a href="http://info.spudder.com/privacy/" target="_blank">Privacy policy</a></li>
-                                <li><a href="https://docs.google.com/document/d/1z1O8dbfsKidDVfcEjZCX17v7sq07RV2Qfy5ykCrUAgE/view" target="_blank">Terms of Service</a></li>
-                                <li><a href="http://spudder.zendesk.com/hc/en-us" target="_blank">Support</a></li>
-                                <li><a href="http://info.spudder.com/contact" target="_blank">Contact Us</a></li>
-                                <li><a href="http://info.spudder.com/meet-our-team/" target="_blank">Meet our team</a></li>
-                            </ul>
-                        </div>
-                        <div class="col-md-2">
-                            <h3>Our Platform</h3>
-                            <ul class="list-unstyled">
-                                <li style="margin-bottom: 10px;"><a href="/spuds"><img src="/static/img/spudderspuds/button-spuds-tiny.png" style="height:18px;"/> Spudder</a></li>
-                                <li style="margin-bottom: 10px;"><a href="/cern"><img src="/static/img/spuddercern/button-cern-tiny.png" style="height:18px;"/> CERN</a></li>
-                                <li style="margin-bottom: 10px;"><a href="/sponsor_network"><img src="/static/img/spuddersponsors/button-sponsors-tiny.png" style="height:18px;"/> Sponsor Network</a></li>
-                                {% if 'clubs'|feature_is_enabled %}
-                                    <li style="margin-bottom: 10px;"><a href="/club"><img src="/static/img/spudderclubs/button-clubs-tiny.png" style="height:18px;"/> Clubs Network</a></li>
-                                {% endif %}
-                            </ul>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="embed-responsive embed-responsive-16by9">
-                                <iframe width="560" height="315" src="//www.youtube.com/embed/liJrY694jKw" frameborder="0" allowfullscreen></iframe>
+                <div class=" main-footer">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-sm-4 col-md-2 list-column">
+                                <h3>Features</h3>
+                                <ul class="list-unstyled">
+                                    <li><a href="http://info.spudder.com/fundraising/" target="_blank">Fundraising</a></li>
+                                    <li><a href="http://info.spudder.com/sports-updates/" target="_blank">Sports Updates</a></li>
+                                    <li><a href="http://info.spudder.com/communications/" target="_blank">Safe Communications</a></li>
+                                    <li><a href="http://info.spudder.com/community-metrics/" target="_blank">Community Metrics</a></li>
+                                    <li><a href="http://info.spudder.com/parental-controls" target="_blank">Parental Controls</a></li>
+                                </ul>
+                            </div>
+                            <div class="col-sm-4 col-md-2 list-column">
+                                <h3>About</h3>
+                                <ul class="list-unstyled">
+                                    <li><a href="http://info.spudder.com/privacy/" target="_blank">Privacy policy</a></li>
+                                    <li><a href="https://docs.google.com/document/d/1z1O8dbfsKidDVfcEjZCX17v7sq07RV2Qfy5ykCrUAgE/view" target="_blank">Terms of Service</a></li>
+                                    <li><a href="http://spudder.zendesk.com/hc/en-us" target="_blank">Support</a></li>
+                                    <li><a href="http://info.spudder.com/contact" target="_blank">Contact Us</a></li>
+                                    <li><a href="http://info.spudder.com/meet-our-team/" target="_blank">Meet our team</a></li>
+                                </ul>
+                            </div>
+                            <div class="col-sm-4 col-md-2 list-column">
+                                <h3>Our Platform</h3>
+                                <ul class="list-unstyled">
+                                    <li style="margin-bottom: 10px;"><a href="/spuds"><img src="/static/img/spudderspuds/button-spuds-tiny.png" style="height:18px;"/> Spudder</a></li>
+                                    <li style="margin-bottom: 10px;"><a href="/cern"><img src="/static/img/spuddercern/button-cern-tiny.png" style="height:18px;"/> CERN</a></li>
+                                    <li style="margin-bottom: 10px;"><a href="/sponsor_network"><img src="/static/img/spuddersponsors/button-sponsors-tiny.png" style="height:18px;"/> Sponsor Network</a></li>
+                                    {% if 'clubs'|feature_is_enabled %}
+                                        <li style="margin-bottom: 10px;"><a href="/club"><img src="/static/img/spudderclubs/button-clubs-tiny.png" style="height:18px;"/> Clubs Network</a></li>
+                                    {% endif %}
+                                </ul>
+                            </div>
+                            <div class="col-md-3 hidden-xs hidden-sm">
+                                <div class="embed-responsive embed-responsive-16by9">
+                                    <iframe width="560" height="315" src="//www.youtube.com/embed/liJrY694jKw" frameborder="0" allowfullscreen></iframe>
+                                </div>
+                            </div>
+                            <div class="col-md-3 hidden-xs hidden-sm">
+                                <h3>Spudder</h3>
+                                <p>
+                                    Our patent pending system gives more than just the score, it gives amateur sports leagues a platform to connect, promote, fund and grow their local communities with about 50% the effort.
+                                </p>
                             </div>
                         </div>
-                        <div class="col-md-3">
-                            <h3>Sports Updates Made Simple</h3>
-                            <p>
-                                Our patent pending system gives more than just the score, it gives amateur sports leagues a platform to connect, promote, fund and grow their local communities with about 50% the effort.
-                            </p>
-                        </div>
                     </div>
-                    <div class="clearfix row sub-footer">
-                        <ul class="list-inline pull-right">
-                            <li><a href="https://www.facebook.com/spudderdotcom" target="_blank" title="Spudder on Facebook"><i class="fa fa-fw fa-facebook "></i></a></li>
-                            <li><a href="https://twitter.com/spudder_com" target="_blank" title="Spudder on Twitter"><i class="fa fa-fw fa-twitter "></i></a></li>
-                            <li><a href="https://www.linkedin.com/company/5012950" target="_blank" title="Spudder on LinkedIn"><i class="fa fa-fw fa-linkedin "></i></a></li>
-                            <li><a href="https://plus.google.com/+Spudder/posts" target="_blank" title="Spudder on G+"><i class="fa fa-fw fa-google-plus "></i></a></li>
-                            <li><a href="http://www.pinterest.com/spudderdotcom/" target="_blank" title="Spudder on Pinterest"><i class="fa fa-fw fa-pinterest "></i></a></li>
+                </div>
+                <div class="sub-footer">
+                    <div class="container">
+                        <ul class="list-inline pull-right social-links">
+                            <li><a href="https://www.facebook.com/spudderdotcom" target="_blank" title="Spudder on Facebook"><span class="fa-stack fa-2x"><i class="fa fa-circle fa-stack-2x fa-inverse"></i><i class="fa fa-facebook fa-stack-1x"></i></span></a></li>
+                            <li><a href="https://twitter.com/spudder_com" target="_blank" title="Spudder on Twitter"><span class="fa-stack fa-2x"><i class="fa fa-circle fa-stack-2x fa-inverse"></i><i class="fa fa-twitter fa-stack-1x"></i></span></a></li>
+                            <li><a href="https://www.linkedin.com/company/5012950" target="_blank" title="Spudder on LinkedIn"><span class="fa-stack fa-2x"><i class="fa fa-circle fa-stack-2x fa-inverse"></i><i class="fa fa-linkedin fa-stack-1x"></i></span></a></li>
+                            <li><a href="https://plus.google.com/+Spudder/posts" target="_blank" title="Spudder on G+"><span class="fa-stack fa-2x"><i class="fa fa-circle fa-stack-2x fa-inverse"></i><i class="fa fa-google-plus fa-stack-1x"></i></span></a></li>
+                            <li><a href="http://www.pinterest.com/spudderdotcom/" target="_blank" title="Spudder on Pinterest"><span class="fa-stack fa-2x"><i class="fa fa-circle fa-stack-2x fa-inverse"></i><i class="fa fa-pinterest fa-stack-1x"></i></span></a></li>
                         </ul>
                         <div class="copyright">
                             <p>
-                                <span>&copy; Spudder LLC 2014 All right reserved.</span>
+                                <span class="hidden-xs">&copy; Spudder LLC 2014 All right reserved.</span>
+                                <span class="visible-xs">&copy; <abbr title="Spudder LLC 2014 All right reserved">Spudder</abbr></span>
                             </p>
                         </div>
                         <div class="hidden-md hidden-lg text-center">
