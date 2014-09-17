@@ -10,7 +10,7 @@ class FanPageForm(forms.ModelForm):
 
 
 class ChooseChallengeTemplateForm(forms.Form):
-    template_id = forms.CharField(max_length=255, required=False)
+    template_id = forms.CharField(max_length=255, required=False, widget=HiddenInput)
 
 
 class NewChallengeTemplateForm(forms.Form):

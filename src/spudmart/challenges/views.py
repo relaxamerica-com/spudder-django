@@ -1,5 +1,5 @@
 from django.contrib.formtools.wizard import FormWizard
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from spudderdomain.forms import NewChallengeTemplateForm, ChallengeClubForm, ChallengeDonationForm,\
     ChallengeDetailsForm, ChooseChallengeTemplateForm
@@ -7,14 +7,18 @@ from spudderdomain.models import ChallengeTemplate, Club, Challenge
 
 
 def get_challenges(request):
-    challenge_templates = ChallengeTemplate.objects.all().order_by('-created')
-    template_data = {'challenge_templates': challenge_templates}
-    return render(request, 'spudderspuds/challenges/pages/challegnes.html', template_data)
+    challenges = Challenge.objects.select_related('template').order_by('-created')
+    template_data = {'challenges': challenges}
+    return render(request, 'spudderspuds/challenges/pages/challenges.html', template_data)
 
 
 def new_challenge_wizard_view(request):
-    wizard = NewChallengeWizard()
-    return wizard(request)
+    if request.user.is_authenticated():
+        wizard = NewChallengeWizard()
+        return wizard(request)
+    else:
+        request.session['redirect_after_registration'] = '/challenges/create'
+        return HttpResponseRedirect('/spuds/register')
 
 
 class NewChallengeWizard(FormWizard):

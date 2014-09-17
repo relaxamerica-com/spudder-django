@@ -205,7 +205,8 @@ def fan_profile_edit(request, page_id):
                 fan_page.avatar = upload_form.save()
 
             fan_page.save()
-        return redirect('/fan/%s' % fan_page.id)
+        redirect_to = request.session.pop('redirect_after_registration', '/fan/%s' % fan_page.id)
+        return redirect(redirect_to)
     return render(request, 'spudderspuds/fans/pages/fan_page_edit.html', {
         'profile_form': profile_form,
         'social_accounts_form': social_accounts_form,
