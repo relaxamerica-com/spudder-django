@@ -3,22 +3,21 @@
 
 {% block title %}Spudder Sports Updates Made Simple{% endblock %}
 
+{% block header_nav_class %}navbar-inverse{% endblock %}
+
 {% block logout_next_url %}/spuds{% endblock %}
 
 {% block css %}
     <link rel="stylesheet" href="/static/css/spudderspuds.css" />
 {% endblock %}
 
-{% block nav_brand %}<a href="/spuds"><img src="/static/img/spudderspuds/logo-spuds-small.png" style="height:35px;margin-top:2px;"/> </a>{% endblock %}
-
-{% block nav %}
+{% block masterhead %}
     {% if not request.current_role %}
-        <li>
-            <a href="/spuds/register">register</a>
-        </li>
-        <li>
-            <a href="/spuds/signin">signin</a>
-        </li>
+        <div class="navbar-collapse collapse navbar-right login-signup">
+            <a href="/spuds/signin" class="btn btn-default navbar-btn btn-lg">LOG IN <i class="fa fa-caret-down text-primary"></i></a>
+            <a href="/spuds/register" class="btn btn-primary navbar-btn btn-lg">SIGN UP</a>
+        </div>
+
     {% endif %}
 {% endblock %}
 

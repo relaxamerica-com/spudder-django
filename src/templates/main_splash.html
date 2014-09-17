@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'spudderspuds/base.html' %}
 {% load bootstrap3 %}
 
 {% block title %}Spudder - Sports Updated Made Simple!{% endblock %}
@@ -7,42 +7,36 @@
     ga('set', 'contentGroup1', 'SPUDDER - Splash');
 {% endblock %}
 
-{% block css %}
-    <link rel="stylesheet" href="/static/css/spudderspuds.css" />
-{% endblock %}
-
-{#{% block header %}{% endblock %}#}
-
 {% block body_id %}main-splash{% endblock %}
 
 {% block body %}
     <div class="jumbotron">
         <div class="container">
-            <div class="row">
-                <div class="col-sm-5 col-sm-offset-1">
-                    <img src="/static/img/spudderspuds/logo-spuds-large-glow.png" class="img-responsive"/>
-                    <h2 id="message1">
+{#            <div class="row">#}
+{#                <div class="col-sm-5 col-sm-offset-1">#}
+{#                    <img src="/static/img/spudderspuds/logo-spuds-large-glow.png" class="img-responsive"/>#}
+{#                    <h2 id="message1">#}
 {#                        <img src="/static/img/spudderspuds/button-spuds-small.png"/>#}
-                        Spudder <i>Sports Updates Made Simple</i>
-                    </h2>
-                    <hr class="hidden-xs"/>
-                    <div class="row">
-                        <div class="col-sm-12 col-sm-offset-0 col-md-10 col-md-offset-1 hidden-xs">
-                            <div class="embed-responsive embed-responsive-16by9">
-                                <iframe width="560" height="315" src="//www.youtube.com/embed/liJrY694jKw" frameborder="0" allowfullscreen></iframe>
-                            </div>
-                        </div>
-                    </div>
-                    <h4 id="message2">
-                        Spudder is a <b>free</b> youth sports management system that allows <b>Fans</b>, <b>Coaches</b>
-                        and <b>Players</b> to share <abbr title="Sports Updates">Spuds</abbr>, manage teams and venues, promote
-                        and <b>fundraise</b>!
-                    </h4>
-
-                </div>
-                <div class="col-sm-4 col-sm-offset-1 hidden-xs">
-                    {% include 'components/main_splash_signin_register.html' %}
-                </div>
+{#                        Spudder <i>Sports Updates Made Simple</i>#}
+{#                    </h2>#}
+{#                    <hr class="hidden-xs"/>#}
+{#                    <div class="row">#}
+{#                        <div class="col-sm-12 col-sm-offset-0 col-md-10 col-md-offset-1 hidden-xs">#}
+{#                            <div class="embed-responsive embed-responsive-16by9">#}
+{#                                <iframe width="560" height="315" src="//www.youtube.com/embed/liJrY694jKw" frameborder="0" allowfullscreen></iframe>#}
+{#                            </div>#}
+{#                        </div>#}
+{#                    </div>#}
+{#                    <h4 id="message2">#}
+{#                        Spudder is a <b>free</b> youth sports management system that allows <b>Fans</b>, <b>Coaches</b>#}
+{#                        and <b>Players</b> to share <abbr title="Sports Updates">Spuds</abbr>, manage teams and venues, promote#}
+{#                        and <b>fundraise</b>!#}
+{#                    </h4>#}
+{##}
+{#                </div>#}
+{#                <div class="col-sm-4 col-sm-offset-1 hidden-xs">#}
+{#                    {% include 'components/main_splash_signin_register.html' %}#}
+{#                </div>#}
             </div>
         </div>
     </div>

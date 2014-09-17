@@ -14218,7 +14218,7 @@ ul.social-network li a {
   height: 600px;
   background-size: cover;
   overflow: hidden;
-  margin-top: -20px;
+  margin-top: -130px;
   margin-bottom: 0;
 }
 @media (max-width: 767px) {
@@ -14294,4 +14294,44 @@ input[type="file"] {
 #location {
   width: 90%;
   margin-top: 10px;
+}
+body {
+  padding-top: 130px;
+}
+@media (max-width: 480px) {
+  body {
+    padding-top: 0px;
+  }
+}
+.navbar-masthead.spudder-masthead {
+  height: 120px;
+  background-color: rgba(0, 0, 0, 0.8);
+  position: absolute;
+  top: 0;
+  width: 100%;
+  border-bottom: 1px solid #000;
+  padding-top: 40px;
+}
+@media (max-width: 480px) {
+  .navbar-masthead.spudder-masthead {
+    height: 40px;
+    padding-top: 0px;
+    position: relative;
+  }
+}
+.navbar-masthead.spudder-masthead .navbar-header > a > img {
+  height: 50px;
+}
+@media (max-width: 480px) {
+  .navbar-masthead.spudder-masthead .navbar-header > a > img {
+    height: 35px;
+    padding-top: 3px;
+  }
+}
+.navbar-masthead.spudder-masthead .navbar-collapse.in {
+  background-color: rgba(0, 0, 0, 0.8);
+}
+.navbar-masthead.spudder-masthead .login-signup .btn {
+  width: 120px;
+  font-weight: bold;
 }
