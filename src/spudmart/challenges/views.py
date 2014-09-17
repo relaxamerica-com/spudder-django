@@ -42,6 +42,7 @@ class NewChallengeWizard(FormWizard):
         self.challenge_template = None
         for index in xrange(self.num_steps()):
             self.initial[index] = {}
+        self.extra_context = self.update_extra_context(self.extra_context)
 
     def get_template(self, step):
         return [self.templates[step]]
@@ -55,6 +56,16 @@ class NewChallengeWizard(FormWizard):
     def update_initial(self, step, dictionary):
         self.initial[step].update(dictionary)
 
+    def update_extra_context(self, extra_context=None):
+        extra_context = extra_context or {}
+        templates = ChallengeTemplate.objects.all()
+        clubs = Club.objects.all()
+        extra_context.update({
+            'templates': templates,
+            'clubs': clubs
+        })
+        return extra_context
+
     def process_step(self, request, form, step):
         if self.steps[step] == 'choose_template':
             template_id = form.cleaned_data.get('template_id')
@@ -67,27 +78,6 @@ class NewChallengeWizard(FormWizard):
                 self.update_initial(self.num_steps() - 1, template.__dict__)
         elif self.steps[step] == 'create_template':
             self.update_initial(self.num_steps() - 1, form.cleaned_data)
-
-    def update_challenge_template_form_context(self, context=None):
-        context = context or {}
-        templates = ChallengeTemplate.objects.all()
-        context.update({'templates': templates})
-        return context
-
-    def update_club_form_context(self, context=None):
-        context = context or {}
-        clubs = Club.objects.all()
-        context.update({'clubs': clubs})
-        return context
-
-    def render(self, form, request, step, context=None):
-        if self.steps[step] == 'choose_template':
-            context = self.update_challenge_template_form_context(context)
-        elif self.steps[step] == 'choose_club':
-            context = self.update_club_form_context(context)
-        elif self.steps[step] == 'update_details':
-            context = self.update_club_form_context(context)
-        return super(NewChallengeWizard, self).render(form, request, step, context)
 
     def done(self, request, form_list):
         challenge = Challenge(
