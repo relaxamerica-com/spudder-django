@@ -318,7 +318,7 @@ class ChallengeTemplate(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField()
     image = models.ForeignKey(UploadedFile, null=True, default=None)
-    created = models.DateTimeField(auto_now_add=True)
+    created = models.DateTimeField(auto_now_add=True, null=True, blank=True)
 
     def __unicode__(self):
         return unicode(self.name)
