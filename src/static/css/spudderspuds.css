@@ -14298,12 +14298,20 @@ ul.social-network li a {
 #main-splash #entities-section .top-entity p {
   font-size: 14px;
 }
+#main-splash #entities-section .list-group {
+  width: 90%;
+  margin: 0 auto;
+}
+#main-splash #entities-section .list-group hr {
+  margin-top: 7px;
+  margin-bottom: 7px;
+}
 #main-splash #entities-section .list-group .list-group-item h5 {
   font-size: 18px;
   margin: 0;
 }
 #main-splash #entities-section .list-group .list-group-item img {
-  width: 50px;
+  width: 40px;
 }
 .fan-page-form .input-required {
   color: #ff0000;
