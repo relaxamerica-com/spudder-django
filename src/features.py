@@ -4,7 +4,7 @@ FEATURES = {
         'manage_team_admins',
         'clubs'
         'nays_survey',
-        'affiliate_login', #just login & dashboard page
+        'affiliate_login',  # just login & dashboard page
         'challenges_landing_page',
     ],
     'stage': [

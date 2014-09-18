@@ -10,6 +10,7 @@ DATABASES['native'] = DATABASES['default']
 DATABASES['default'] = {'ENGINE': 'dbindexer', 'TARGET': 'native', 'HIGH_REPLICATION' : True}
 AUTOLOAD_SITECONF = 'indexes'
 
+app_name = get_spudmart_app_name()
 
 class Environments:
     LIVE = 'live'
@@ -17,16 +18,13 @@ class Environments:
     DEV = 'dev'
 
 ENVIRONMENT = Environments.DEV
-
 DEBUG = True
 
-if 'spudder.com' in socket.gethostname():
+if app_name in ['livespudder']:
     ENVIRONMENT = Environments.LIVE
     DEBUG = False
-elif 'spudmart1' in socket.gethostname():
+elif app_name in ['spudmart1']:
     ENVIRONMENT = Environments.STAGE
-else:
-    DEBUG = True
 
 APP_NAME = 'Spudmart'
 
@@ -130,8 +128,6 @@ NOSE_PLUGINS = ['nose_plugins.noseplugins.TestDiscoveryPlugin']
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = '8lu*6g0lg)9z!ba+a$ehk)xt)x%rxgb$i1&amp;022shmi1jcgihb*'
-
-app_name = get_spudmart_app_name()
 
 SPORTS = [
     'Baseball', 'Basketball', 'Field Hockey', 'Football',
