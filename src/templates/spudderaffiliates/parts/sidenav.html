@@ -1,3 +1,9 @@
-<a class="list-group-item {% if active == dashboard %}active{% endif %}" href="/spudderaffiliates/dashboard">
+{% load featuretags %}
+<a class="list-group-item {% if active == 'dashboard' %}active{% endif %}" href="/spudderaffiliates/dashboard">
     <i class="fa fa-fw fa-bar-chart-o"></i> Dashboard
 </a>
+{% if 'invite_clubs'|feature_is_enabled %}
+    <a class="list-group-item {% if active == 'invite_clubs' %}active{% endif %}" href="/spudderaffiliates/invite_club_managers">
+    <i class="fa fa-fw fa-send"></i> Invite Club
+    </a>
+{% endif %}

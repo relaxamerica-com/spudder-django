@@ -4,12 +4,15 @@ from django.http import HttpResponse, Http404
 from django.shortcuts import render_to_response, render, redirect
 from django.template import RequestContext
 from django.views.defaults import page_not_found
+from spudderaccounts.controllers import InvitationController
+from spudderaccounts.models import Invitation
 from spudderaccounts.templatetags.spudderaccountstags import is_fan
 from spudderadmin.templatetags.featuretags import feature_is_enabled
 from spudderaffiliates.decorators import affiliate_login_required
+from spudderaffiliates.forms import ClubAdministratorForm
 from spudderaffiliates.models import Affiliate
 from spudderdomain.controllers import SpudsController, RoleController, EntityController
-from spudderdomain.models import TeamPage, FanPage, Club
+from spudderdomain.models import TeamPage, FanPage, Club, TempClub
 from spudderkrowdio.utils import get_following
 from spudderspuds.views import krowdio_users_to_links
 from spudmart.venues.models import Venue
@@ -86,6 +89,7 @@ def affiliate_splash(request, affiliate_url_name):
                       'spudderaffiliates/pages/landing_page.html',
                       template_data)
 
+
 @affiliate_login_required
 def affiliate_dashboard(request):
     """
@@ -97,3 +101,60 @@ def affiliate_dashboard(request):
         return render(request, 'spudderaffiliates/pages/dashboard.html')
     else:
         raise Http404
+
+
+@affiliate_login_required
+def invite_club_manager(request):
+    """
+    Invites users to create a club
+    :param request: any request
+    :return: a simple form to add a club administrator from email
+    """
+    if feature_is_enabled('invite_clubs'):
+        if request.method == 'POST':
+            form = ClubAdministratorForm(request.POST)
+            if form.is_valid():
+                email = form.cleaned_data.get('email')
+                name = form.cleaned_data.get('club_name')
+                state = form.cleaned_data.get('state')
+                fan = InvitationController.CheckFanWithEmailExists(email)
+                club = TempClub(email=email, name=name, state=state)
+                club.save()
+                aff = request.session['affiliate']
+                if fan:
+                    InvitationController.InviteEntity(fan.id,
+                                                      RoleController.ENTITY_FAN,
+                                                      Invitation.AFFILIATE_INVITE_CLUB_ADMINISTRATOR,
+                                                      club.id,
+                                                      EntityController.ENTITY_TEMP_CLUB,
+                                                      extras={'affiliate_name': aff.name})
+                else:
+                    InvitationController.InviteNonUser(email,
+                                                       Invitation.AFFILIATE_INVITE_CLUB_ADMINISTRATOR,
+                                                       club.id,
+                                                       EntityController.ENTITY_TEMP_CLUB,
+                                                       extras={'affiliate_name': aff.name})
+
+                messages.success(request, "%s invited to administer club \"%s\"" %
+                                 (email, name))
+                form = ClubAdministratorForm()
+        else:
+            form = ClubAdministratorForm()
+        return render(request,
+                      'spudderaffiliates/pages/invite_club.html',
+                      {
+                          'form': form
+                      })
+    else:
+        raise Http404
+
+
+def invitation(request):
+    """
+    Acceptance page for invitation.
+    :param request: any request
+    :return: a place to register if not a user and to create a club
+        associated with affiliate if are a user
+    """
+    return render_to_response('spudderaffiliates/pages/accept_invitation.html',
+                              context_instance=RequestContext(request))

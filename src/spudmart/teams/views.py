@@ -162,32 +162,10 @@ def edit_team_page(request, page_id):
 def manage_team_page_admins(request, page_id):
     team_page = get_object_or_404(TeamPage, pk=page_id)
     # get current team admins
-    team_admins_ids = TeamAdministrator.objects\
-        .filter(team_page=team_page, entity_type=RoleController.ENTITY_FAN).values_list('entity_id', flat=True)
-    team_admins_ids = [int(fan_id) for fan_id in team_admins_ids]
-    admins = FanPage.objects.filter(id__in=team_admins_ids)
-    # get invited fans
-    invited_fans_ids = Invitation.objects.filter(
-        invitee_entity_type=RoleController.ENTITY_FAN,
-        invitation_type=Invitation.ADMINISTRATE_TEAM_INVITATION,
-        status=Invitation.PENDING_STATUS,
-        target_entity_id=team_page.id,
-        target_entity_type=EntityController.ENTITY_TEAM
-    ).values_list('invitee_entity_id', flat=True)
-    invited_fans_ids = [int(fan_id) for fan_id in invited_fans_ids]
-    invited_fans = FanPage.objects.filter(id__in=invited_fans_ids)
-    # get not invited fans
-    not_invited_ids = list(team_admins_ids) + list(invited_fans_ids)
-    not_invited_fans = FanPage.objects.exclude(id__in=not_invited_ids)
+    admins, invited_fans, invited_non_users, not_invited_fans = \
+        InvitationController.GetAllAdminsAndInvitesForTeam(team_page)
     form = InviteNewFanByEmailForm(team_id=team_page.id)
     is_form_sent = False
-    # get invited non-users
-    invited_non_users = Invitation.objects.filter(
-        invitation_type=Invitation.REGISTER_AND_ADMINISTRATE_TEAM_INVITATION,
-        status=Invitation.PENDING_STATUS,
-        target_entity_id=team_page.id,
-        target_entity_type=EntityController.ENTITY_TEAM
-    ).order_by('-modified')
 
     if request.method == 'POST':
         form = InviteNewFanByEmailForm(request.POST, team_id=team_page.id)

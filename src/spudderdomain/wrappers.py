@@ -53,12 +53,102 @@ class EntityBase(object):
             return EntityTeam
         elif entity_key == EntityController.ENTITY_VENUE:
             return EntityVenue
+        elif entity_key == EntityController.ENTITY_TEMP_CLUB:
+            return EntityTempClub
+        elif entity_key == EntityController.ENTITY_AFFILIATE:
+            return EntityAffiliate
         else:
             raise NotImplementedError("the entity_key %s is not supported yet." % entity_key)
 
     @abc.abstractmethod
     def is_admin(self, entity_id, entity_type):
         pass
+
+
+class EntityAffiliate(EntityBase):
+    @property
+    def entity_type(self):
+        from spudderdomain.controllers import EntityController
+        return EntityController.ENTITY_AFFILIATE
+
+    @property
+    def icon(self):
+        if self.entity.path_to_icon != "":
+            return self.entity.path_to_icon
+        else:
+            return '/static/img/spudderclubs/button-clubs-tiny.pny'
+
+    @property
+    def image(self):
+        if self.entity.path_to_icon != "":
+            return self.entity.path_to_icon
+        else:
+            return '/static/img/spudderclubs/button-clubs-tiny.pny'
+
+    @property
+    def jumbotron(self):
+        if self.entity.path_to_cover_image != "":
+            return self.entity.path_to_cover_image
+        else:
+            return None
+
+    @property
+    def contact_emails(self):
+        raise NotImplementedError()
+
+    @property
+    def link_to_public_page(self):
+        return "/%s" % self.entity.url_name
+
+    @property
+    def name(self):
+        return self.entity.name
+
+    @property
+    def state(self):
+        raise NotImplementedError()
+
+    def is_admin(self, entity_id, entity_type):
+        raise NotImplementedError()
+
+
+class EntityTempClub(EntityBase):
+    @property
+    def entity_type(self):
+        from spudderdomain.controllers import EntityController
+
+        return EntityController.ENTITY_TEMP_CLUB
+
+    @property
+    def icon(self):
+        return '/static/img/spudderclubs/button-clubs-tiny.pny'
+
+    @property
+    def image(self):
+        return '/static/img/spudderclubs/button-clubs-tiny.pny'
+
+    @property
+    def jumbotron(self):
+        raise NotImplementedError()
+
+    @property
+    def contact_emails(self):
+        return self.entity.email
+
+    @property
+    def link_to_public_page(self):
+        raise NotImplementedError()
+
+    @property
+    def name(self):
+        return self.entity.name
+
+    @property
+    def state(self):
+        return self.entity.state
+
+    def is_admin(self, entity_id, entity_type):
+        raise NotImplementedError()
 
 
 class EntityVenue(EntityBase):
@@ -94,7 +184,7 @@ class EntityVenue(EntityBase):
     @property
     def link_to_public_page(self):
         return '/venues/view/%s' % self.entity.id
-
+    
     @property
     def name(self):
         return self.entity.aka_name
@@ -102,6 +192,9 @@ class EntityVenue(EntityBase):
     @property
     def state(self):
         return self.entity.state
+
+    def is_admin(self, entity_id, entity_type):
+        raise NotImplementedError()
 
 
 class EntityTeam(EntityBase):

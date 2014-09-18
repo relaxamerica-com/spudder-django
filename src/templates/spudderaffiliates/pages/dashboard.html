@@ -11,15 +11,19 @@
                     <h3><img src="{{ affiliate.path_to_icon }}" style="max-width: 200px;" /> {{ affiliate.name }} Spudder Management Console</h3>
                 </div>
                 <div class="list-group" style="margin-top: 20px;">
-                    {% include 'spudderaffiliates/parts/sidenav.html' with active="dashboard" %}
+                    {% block sidenav %}
+                        {% include 'spudderaffiliates/parts/sidenav.html' with active="dashboard" %}
+                    {% endblock %}
                 </div>
             </div>
             <div class="col-sm-9 panel panel-default">
                 <div class="panel-body">
-                    <div class="page-header">
-                        <h1>Welcome to the Spudder Affiliates Management Console!</h1>
-                    </div>
-                    <p>This is where you will be able to see quick stats about the people YOU brought to Spudder. Stay tuned - more management features will be available to you soon!</p>
+                    {% block page_body %}
+                        <div class="page-header">
+                            <h1>Welcome to the Spudder Affiliates Management Console!</h1>
+                        </div>
+                        <p>This is where you will be able to see quick stats about the people YOU brought to Spudder. Stay tuned - more management features will be available to you soon!</p>
+                    {% endblock %}
                 </div>
             </div>
         </div>

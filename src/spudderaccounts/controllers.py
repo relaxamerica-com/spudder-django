@@ -1,12 +1,15 @@
+from django.contrib.auth.models import User
+from django.core.exceptions import ObjectDoesNotExist
 from spudderaccounts.models import Invitation
-from spudderdomain.controllers import CommunicationController
-from spudderdomain.models import TeamAdministrator
+from spudderdomain.controllers import CommunicationController, RoleController, EntityController
+from spudderdomain.models import TeamAdministrator, FanPage
 
 
 class InvitationController(object):
 
     @classmethod
-    def InviteNonUser(cls, invitee_email, invitation_type, target_entity_id, target_entity_type):
+    def InviteNonUser(cls, invitee_email, invitation_type, target_entity_id,
+                      target_entity_type, extras={}):
         invitation, created = Invitation.objects.get_or_create(
             invitee_entity_id=invitee_email,
             invitation_type=invitation_type,
@@ -14,6 +17,8 @@ class InvitationController(object):
             target_entity_type=target_entity_type,
             defaults={'status': Invitation.PENDING_STATUS})
         invitation.status = Invitation.PENDING_STATUS
+        if created and extras:
+            invitation.extras = extras
         invitation.save()
         CommunicationController.CommunicateWithNonUserByEmail(
             invitee_email,
@@ -22,7 +27,8 @@ class InvitationController(object):
 
     @classmethod
     def InviteEntity(cls, invitee_entity_id, invitee_entity_type,
-                     invitation_type, target_entity_id, target_entity_type):
+                     invitation_type, target_entity_id, target_entity_type,
+                     extras={}):
         invitation, created = Invitation.objects.get_or_create(
             invitee_entity_id=invitee_entity_id,
             invitee_entity_type=invitee_entity_type,
@@ -31,6 +37,8 @@ class InvitationController(object):
             target_entity_type=target_entity_type,
             defaults={'status': Invitation.PENDING_STATUS})
         invitation.status = Invitation.PENDING_STATUS
+        if created and extras:
+            invitation.extras = extras
         invitation.save()
         CommunicationController.CommunicateWithEntity(
             invitee_entity_id, invitee_entity_type,
@@ -83,3 +91,48 @@ class InvitationController(object):
             invitee_entity_id, invitee_entity_type,
             invitation=invitation,
             communication_type=CommunicationController.TYPE_EMAIL)
+
+    @classmethod
+    def CheckFanWithEmailExists(cls, email):
+        try:
+            u = User.objects.get(email=email)
+        except ObjectDoesNotExist:
+            try:
+                return FanPage.objects.get(email=email)
+            except ObjectDoesNotExist:
+                pass
+        else:
+            try:
+                return FanPage.objects.get(user=u)
+            except ObjectDoesNotExist:
+                pass
+        return None
+
+    @classmethod
+    def GetAllAdminsAndInvitesForTeam(cls, team_page):
+        team_admins_ids = TeamAdministrator.objects \
+            .filter(team_page=team_page, entity_type=RoleController.ENTITY_FAN).values_list('entity_id', flat=True)
+        team_admins_ids = [int(fan_id) for fan_id in team_admins_ids]
+        admins = FanPage.objects.filter(id__in=team_admins_ids)
+        # get invited fans
+        invited_fans_ids = Invitation.objects.filter(
+            invitee_entity_type=RoleController.ENTITY_FAN,
+            invitation_type=Invitation.ADMINISTRATE_TEAM_INVITATION,
+            status=Invitation.PENDING_STATUS,
+            target_entity_id=team_page.id,
+            target_entity_type=EntityController.ENTITY_TEAM
+        ).values_list('invitee_entity_id', flat=True)
+        invited_fans_ids = [int(fan_id) for fan_id in invited_fans_ids]
+        invited_fans = FanPage.objects.filter(id__in=invited_fans_ids)
+        # get not invited fans
+        invited_or_admin_ids = list(team_admins_ids) + list(invited_fans_ids)
+        not_invited_fans = FanPage.objects.exclude(id__in=invited_or_admin_ids)
+        # get invited non-users
+        invited_non_users = Invitation.objects.filter(
+            invitation_type=Invitation.REGISTER_AND_ADMINISTRATE_TEAM_INVITATION,
+            status=Invitation.PENDING_STATUS,
+            target_entity_id=team_page.id,
+            target_entity_type=EntityController.ENTITY_TEAM
+        ).order_by('-modified')
+
+        return (admins, invited_fans, invited_non_users, not_invited_fans)

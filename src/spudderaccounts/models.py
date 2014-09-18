@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
+from djangotoolbox import fields
 
 
 class SpudderUser(models.Model):
@@ -26,12 +27,15 @@ class Invitation(models.Model):
 
     ADMINISTRATE_TEAM_INVITATION = 'administrate_team'
     REGISTER_AND_ADMINISTRATE_TEAM_INVITATION = 'register_and_administrate_team'
+    AFFILIATE_INVITE_CLUB_ADMINISTRATOR = 'affiliate_invite_club_administrator'
 
-    INVITATION_TYPES = (ADMINISTRATE_TEAM_INVITATION, REGISTER_AND_ADMINISTRATE_TEAM_INVITATION)
+    INVITATION_TYPES = (ADMINISTRATE_TEAM_INVITATION, REGISTER_AND_ADMINISTRATE_TEAM_INVITATION,
+                        AFFILIATE_INVITE_CLUB_ADMINISTRATOR)
 
     INVITATION_CHOICES = (
         (ADMINISTRATE_TEAM_INVITATION, 'Administrate team'),
-        (REGISTER_AND_ADMINISTRATE_TEAM_INVITATION, 'Register and administrate team')
+        (REGISTER_AND_ADMINISTRATE_TEAM_INVITATION, 'Register and administrate team'),
+        (AFFILIATE_INVITE_CLUB_ADMINISTRATOR, 'Invite club administrator (by affiliate)')
     )
 
     PENDING_STATUS = 'pending'
@@ -52,10 +56,11 @@ class Invitation(models.Model):
     invitee_entity_type = models.CharField(max_length=255)
     invitation_type = models.CharField(max_length=255, choices=INVITATION_CHOICES)
     status = models.CharField(max_length=128, choices=STATUS_CHOICES)
-    target_entity_id = models.CharField(max_length=255)
-    target_entity_type = models.CharField(max_length=255)
+    target_entity_id = models.CharField(max_length=255, null=True, blank=True)
+    target_entity_type = models.CharField(max_length=255, null=True, blank=True)
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
+    extras = fields.DictField(null=True, blank=True)
 
     @property
     def link(self):
@@ -63,3 +68,5 @@ class Invitation(models.Model):
             return "%s/team/%s/accept_fan_invitation/%s" % (settings.SPUDMART_BASE_URL, self.target_entity_id, self.id)
         elif self.invitation_type == self.REGISTER_AND_ADMINISTRATE_TEAM_INVITATION:
             return "%s/users/invitation/%s" % (settings.SPUDMART_BASE_URL, self.id)
+        elif self.invitation_type == self.AFFILIATE_INVITE_CLUB_ADMINISTRATOR:
+            return "%s/spudderaffiliates/invitation" % settings.SPUDMART_BASE_URL

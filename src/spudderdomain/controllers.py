@@ -1,10 +1,12 @@
 import logging
 from django.conf import settings
 from datetime import datetime, timedelta
+from spudderaccounts.models import Invitation
+from spudderaffiliates.models import Affiliate
 from spudderdomain.models import LinkedService, FanPage, TeamPage, TeamAdministrator, TeamVenueAssociation, Club, \
-    ClubAdministrator
+    ClubAdministrator, TempClub
 from spudderdomain.utils import get_entity_base_instanse_by_id_and_type
-from spudderdomain.wrappers import EntityTeam, EntityVenue
+from spudderdomain.wrappers import EntityTeam, EntityVenue, EntityBase
 from spuddersocialengine.models import SpudFromSocialMedia
 from spudmart.CERN.models import Student
 from spudmart.CERN.rep import team_tagged_in_spud
@@ -13,12 +15,15 @@ from spudderkrowdio.utils import post_spud, get_user_mentions_activity, get_spud
 from spudderkrowdio.models import KrowdIOStorage, FanFollowingEntityTag
 from spudmart.utils.emails import send_email
 from spudmart.venues.models import Venue
+from communications import MESSAGES
 
 
 class EntityController(object):
     ENTITY_VENUE = "Venue"
     ENTITY_TEAM = "Team"
-    ENTITY_TYPES = (ENTITY_VENUE, ENTITY_TEAM, )
+    ENTITY_AFFILIATE = "Affiliate"
+    ENTITY_TEMP_CLUB = "Temporary Club"
+    ENTITY_TYPES = (ENTITY_VENUE, ENTITY_TEAM, ENTITY_AFFILIATE, ENTITY_TEMP_CLUB)
     
     @classmethod
     def GetEntityByTypeAndId(cls, entity_type, entity_id):
@@ -31,6 +36,16 @@ class EntityController(object):
             try:
                 return Venue.objects.get(id=entity_id)
             except Venue.DoesNotExist:
+                return None
+        if entity_type == cls.ENTITY_AFFILIATE:
+            try:
+                return Affiliate.objects.get(id=entity_id)
+            except Affiliate.DoesNotExist:
+                return None
+        if entity_type == cls.ENTITY_TEMP_CLUB:
+            try:
+                return TempClub.objects.get(id=entity_id)
+            except TempClub.DoesNotExist:
                 return None
         return None
 
@@ -480,61 +495,54 @@ class SocialController(object):
 
 class CommunicationController(object):
 
+
+
     TYPE_EMAIL = 'email'
     COMMUNICATION_TYPES = (TYPE_EMAIL, )
 
     @classmethod
     def CommunicateWithEmail(cls, emails=[], **kwargs):
-        from spudderaccounts.models import Invitation
         invitation = kwargs['invitation']
         invitation_type = invitation.invitation_type
         if invitation_type in Invitation.INVITATION_TYPES:
-            if invitation_type == Invitation.ADMINISTRATE_TEAM_INVITATION:
-                team = TeamPage.objects.get(id=invitation.target_entity_id)
-                if invitation.status == Invitation.PENDING_STATUS:
-                    subject = 'Spudder - You have been invited to administer a team'
-                    message_body = """
-You have been invited to administer team "%s".
+            wrapper = EntityBase.EntityWrapperByEntityType(invitation.target_entity_type)
+            entity = EntityController.GetWrappedEntityByTypeAndId(invitation.target_entity_type,
+                                                                  invitation.target_entity_id,
+                                                                  wrapper)
+            try:
+                name = entity.name
+            except NotImplementedError:
+                name = ""
 
-Please follow the link bellow to accept.
-%s
-
-Kind regards, team Spudder.
-""" % (team.name, invitation.link)
-                elif invitation.status == Invitation.CANCELED_STATUS:
-                    subject = 'Spudder - Your invitation has been expired'
-                    message_body = """
-Your invitation to administer team "%s" has been expired.
-
-
-Kind regards, team Spudder.
-""" % team.name
-                elif invitation.status == Invitation.REVOKED_STATUS:
-                    subject = 'Spudder - Your invitation has been revoked'
-                    message_body = """
-Your invitation to administer team "%s" has been revoked.
-
-
-Kind regards, team Spudder.
-""" % team.name
-            elif invitation_type == Invitation.REGISTER_AND_ADMINISTRATE_TEAM_INVITATION:
-                team = TeamPage.objects.get(id=invitation.target_entity_id)
-                subject = 'Spudder - You have been invited to administer a team'
-                message_body = """
-You have been invited to administer team "%s" at Spudder.
-
-Please follow the link bellow to accept.
-%s
-
-Kind regards, team Spudder.
-""" % (team.name, invitation.link)
+            if invitation_type == Invitation.REGISTER_AND_ADMINISTRATE_TEAM_INVITATION:
+                subject = MESSAGES[invitation_type]['subject']
+                message = str(MESSAGES[invitation_type]['message']) % (name, invitation.link)
             else:
-                raise NotImplementedError("Invitation type '%s' not implemented" % invitation_type)
+                try:
+                    subject = MESSAGES[invitation_type][invitation.status]['subject']
+                except:
+                    raise NotImplementedError("Messages for invitation type '%s' and status "
+                                              "'%s' not implemented with " % (
+                                              invitation_type, invitation.status))
+                else:
+                    if invitation.status == Invitation.PENDING_STATUS:
+                        if invitation_type == Invitation.AFFILIATE_INVITE_CLUB_ADMINISTRATOR:
+                            # This case has extra values to unpack to %s escapes, will cause errors
+                            # if not handled correctly
+                            subject = subject % invitation.extras['affiliate_name']
+                            message = str(MESSAGES[invitation_type][invitation.status]['message']) % (
+                                invitation.extras['affiliate_name'],
+                                name,
+                                invitation.link)
+                        else:
+                            message = str(MESSAGES[invitation_type][invitation.status]) % (name, invitation.link)
+                    else:
+                        message = str(MESSAGES[invitation_type][invitation.status]) % name
         else:
             raise NotImplementedError("Invitation type '%s' not supported" % invitation_type)
 
         for contact_email in emails:
-            send_email(settings.SERVER_EMAIL, contact_email, subject, message_body)
+            send_email(settings.SERVER_EMAIL, contact_email, subject, message)
 
     @classmethod
     def ValidateComminicationTypeValid(cls, communication_type):

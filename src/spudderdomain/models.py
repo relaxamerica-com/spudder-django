@@ -298,6 +298,15 @@ class Club(models.Model):
         return 'location'
 
 
+class TempClub(models.Model):
+    """
+    A simple model to hold basics about a club.
+    """
+    name = models.CharField(max_length=255)
+    state = models.CharField(max_length=2)
+    email = models.CharField(max_length=255)
+
+
 class ClubRecipient(AmazonRecipient):
     registered_by = models.ForeignKey(User)
     club = models.ForeignKey(Club)
