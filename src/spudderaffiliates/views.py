@@ -1,9 +1,7 @@
 from django.contrib import messages
-from django.contrib.auth.models import User
-from django.http import HttpResponse, Http404
+from django.http import Http404, HttpResponseRedirect, HttpResponse
 from django.shortcuts import render_to_response, render, redirect
 from django.template import RequestContext
-from django.views.defaults import page_not_found
 from spudderaccounts.controllers import InvitationController
 from spudderaccounts.models import Invitation
 from spudderaccounts.templatetags.spudderaccountstags import is_fan
@@ -15,7 +13,6 @@ from spudderdomain.controllers import SpudsController, RoleController, EntityCon
 from spudderdomain.models import TeamPage, FanPage, Club, TempClub
 from spudderkrowdio.utils import get_following
 from spudderspuds.views import krowdio_users_to_links
-from spudmart.venues.models import Venue
 
 
 def _nays_survey(request):
@@ -149,12 +146,110 @@ def invite_club_manager(request):
         raise Http404
 
 
-def invitation(request):
+def invitation(request, invitation_id):
     """
     Acceptance page for invitation.
     :param request: any request
     :return: a place to register if not a user and to create a club
         associated with affiliate if are a user
     """
-    return render_to_response('spudderaffiliates/pages/accept_invitation.html',
-                              context_instance=RequestContext(request))
+    if feature_is_enabled('invite_clubs'):
+        inv = Invitation.objects.get(id=invitation_id)
+        if request.method == 'POST' and request.current_role:
+            fan = request.current_role.entity
+            fan.affiliate = Affiliate.objects.get(name=inv.extras['affiliate_name'])
+            fan.save()
+            request.session['invitation_id'] = invitation_id
+            return HttpResponseRedirect('/spudderaffiliates/invitation/%s/create_club' % inv.id)
+        else:
+            if request.current_role:
+                if request.current_role.entity_type == RoleController.ENTITY_FAN:
+                    fan = request.current_role.entity
+                    if fan.affiliate == Affiliate.objects.get(name=inv.extras['affiliate_name']):
+                        return HttpResponseRedirect('/spudderaffiliates/invitation/%s/create_club' % inv.id)
+                    return render_to_response('spudderaffiliates/pages/accept_invitation.html',
+                                              {
+                                                  'club_name': TempClub.objects.get(id=inv.target_entity_id).name,
+                                                  'affiliate_name': inv.extras['affiliate_name']
+                                              },
+                                              context_instance=RequestContext(request))
+                else:
+                    return render_to_response('spudderaffiliates/pages/accept_invitation_fan_role_not_active.html',
+                                              context_instance=RequestContext(request))
+            else:
+                email = TempClub.objects.get(id=inv.target_entity_id).email
+                request.session['invitation_id'] = invitation_id
+                return HttpResponseRedirect('/spuds/register?email_address=%s' % email)
+    else:
+        raise Http404
+
+
+def redirect_to_registration(request, invitation_id):
+    """
+    Redirects a user without a Fan account to a registration page
+    :param request: any request
+    :param invitation_id: a valid ID of an Invitation object with type
+        AFFILIATE_INVITE_CLUB_ADMINISTRATOR
+    :return: a redirect to the Fan registration page,
+        with the invitation supplied in session info
+    """
+    if feature_is_enabled('invite_clubs'):
+        inv = Invitation.objects.get(id=invitation_id)
+        email = TempClub.objects.get(id=inv.target_entity_id).email
+        request.session['invitation_id'] = invitation_id
+        return HttpResponseRedirect('/spuds/register?email_address=%s' % email)
+    else:
+        raise Http404
+
+
+def create_invited_club(request, invitation_id):
+    """
+    Gives basic instruction on how to create club
+    :param request: any request
+    :return: a simple page with instructions
+    """
+    if feature_is_enabled('invite_clubs'):
+        request.session['invitation_id'] = invitation_id
+        inv = Invitation.objects.get(id=invitation_id)
+        name = TempClub.objects.get(id=inv.target_entity_id).name
+        return render(request, 'spudderaffiliates/pages/create_club_instructions.html', {
+            'club_name': name
+        })
+    else:
+        raise Http404
+
+
+def incorrect_name(request, invitation_id):
+    """
+    Simple error page telling user Amazon username was wrong
+    :param request: any request
+    :param invitation_id: a valid ID of an Invitation object with type
+        AFFILIATE_INVITE_CLUB_ADMINISTRATOR
+    :return: a simple page explaining why we need username to match
+    """
+    if feature_is_enabled('invite_clubs'):
+        inv = Invitation.objects.get(id=invitation_id)
+        return render(request, 'spudderaffiliates/pages/name_failed.html',{
+            'club_name': TempClub.objects.get(id=inv.target_entity_id).name,
+        })
+    else:
+        raise Http404
+
+
+def create_team(request, invitation_id):
+    """
+    Prompts user to create a team for recently-created club
+    :param request: any request
+    :param invitation_id: a valid ID of an Invitation object with type
+        AFFILIATE_INVITE_CLUB_ADMINISTRATOR
+    :return: a page with basic instructions explaining is optional to
+        create the team tho recommended
+    """
+    if feature_is_enabled('invite_clubs'):
+        inv = Invitation.objects.get(id=invitation_id)
+        name = TempClub.objects.get(id=inv.target_entity_id).name
+        return render(request,
+                      'spudderaffiliates/pages/create_team_instructions.html',
+                      {
+                          'club_name': name
+                      })

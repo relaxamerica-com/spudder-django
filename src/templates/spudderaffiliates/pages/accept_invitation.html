@@ -2,7 +2,10 @@
 
 {% block well_content %}
     <div class="text-center">
-        <h2>Accept the invitation!</h2>
-        <button class="btn btn-primary">Useless Button</button>
+        <h1>Confirm Invitation</h1>
+        <p>Are you sure you want to create the club "{{ club_name }}" for {{ affiliate_name }}? This will link your account to the affiliate permanently.</p>
+        <form role="form" method="post">
+            <button class="btn btn-primary">Create Club</button>
+        </form>
     </div>
 {% endblock %}

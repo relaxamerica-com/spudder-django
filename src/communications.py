@@ -69,7 +69,7 @@ Kind regards, team Spudder.
     },
     Invitation.AFFILIATE_INVITE_CLUB_ADMINISTRATOR: {
         Invitation.PENDING_STATUS: {
-            'subject': '%s - You have been invited to administer a club',
+            'subject': '%s - You have been invited to administer a club on Spudder',
             'message': """
 %s has invited you to create and manage the club "%s".
 
@@ -81,7 +81,7 @@ Kind regards, team Spudder.
 
         },
         Invitation.CANCELED_STATUS: {
-            'subject': '%s - Your invitation has expired',
+            'subject': '%s - Your Spudder invitation has expired',
             'message': """
 Your invitation to create club "%s" has expired.
 
@@ -90,7 +90,7 @@ Kind regards, team Spudder.
 """
         },
         Invitation.REVOKED_STATUS: {
-            'subject': '%s - Your invitation has been revoked',
+            'subject': '%s - Your Spudder invitation has been revoked',
             'message': """
 Your invitation to manage club "%s" has been revoked.
 

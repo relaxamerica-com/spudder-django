@@ -47,7 +47,11 @@ def teams_list(request):
 
 
 def create_team(request):
-    form = CreateTeamForm(initial={'next_url': request.GET.get('next_url')})
+    form = CreateTeamForm(
+        initial={
+            'next_url': request.GET.get('next_url'),
+            'name': request.GET.get('name', '')
+        })
     social_media_form = LinkedInSocialMediaForm()
     template_data = {'SPORTS': SPORTS}
     if request.method == "POST":

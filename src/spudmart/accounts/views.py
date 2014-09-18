@@ -8,6 +8,7 @@ import json
 from django.contrib.auth import authenticate
 from django.http import HttpResponseRedirect, HttpResponse, Http404
 from django.shortcuts import render, redirect
+from spudderaccounts.models import Invitation
 from spudderaccounts.utils import select_role_by_authentication_service, change_role_url, create_linked_authentication_service, get_authentication_wrapper
 from spudderaccounts.wrappers import RoleBase
 from spudderdomain.controllers import LinkedServiceController, RoleController
@@ -19,7 +20,7 @@ from spudmart.accounts.utils import is_sponsor
 import logging
 from spudmart.CERN.rep import recruited_new_student, signed_up
 from spudmart.CERN.models import Student, School
-from spudderdomain.models import FanPage, Club, ClubAdministrator
+from spudderdomain.models import FanPage, Club, ClubAdministrator, TempClub
 
 
 def _accommodate_legacy_pre_V1_1_0_users(access_token, amazon_user_email, amazon_user_id):
@@ -214,6 +215,11 @@ def _process_amazon_login(access_token, amazon_user_email, amazon_user_id, reque
 
         # If the account_type is club, create a Club entity in first stage (before registration as recipient)
         if account_type == 'club':
+            if request.session['invitation_id']:
+                inv = Invitation.objects.get(id=request.session['invitation_id'])
+                if str(amazon_user_name) != str(TempClub.objects.get(id=inv.target_entity_id).name):
+                    return HttpResponseRedirect('/spudderaffiliates/invitation/%s/incorrect_name' % inv.id)
+
             club, _ = Club.objects.get_or_create(
                 name=amazon_user_name,
                 amazon_email=amazon_user_email,
