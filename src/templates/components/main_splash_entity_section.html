@@ -1,0 +1,25 @@
+{% if top_entity %}
+    <div class="top-entity">
+        <div class="image" style="background-image:url({{ top_entity.jumbotron }});">
+            <img src="{{ top_entity.icon }}" class="img-circle" />
+        </div>
+        <div class="caption">
+            <h4><a href="{{ top_entity.link_to_public_page }}">{{ top_entity.name }}</a></h4>
+            <p>{{ top_entity.state|format_state }}</p>
+        </div>
+    </div>
+    <hr />
+{% endif %}
+<ul class="list-group">
+    {% for entity in top_entities %}
+        <li class="list-group-item">
+            <div class="media">
+                <img src="{{ entity.icon }}" class="img-circle media-object pull-left" />
+                <div class="media-body">
+                    <h5><a href="{{ entity.link_to_public_page }}">{{ entity.name }}</a></h5>
+                    <p>{{ entity.state|format_state }}</p>
+                </div>
+            </div>
+        </li>
+    {% endfor %}
+</ul>

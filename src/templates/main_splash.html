@@ -23,62 +23,19 @@
                     <h2 class="entity-section-header">
                         TEAMS <img src="/static/img/spudderspuds/button-teams-small.png" />
                     </h2>
-                    {% if top_team %}
-                        <div class="top-entity">
-                            <div class="image" style="background-image:url({{ top_team.jumbotron }});">
-                                <img src="{{ top_team.icon }}" class="img-circle" />
-                            </div>
-                            <div class="caption">
-                                <h4><a href="{{ top_team.link_to_public_page }}">{{ top_team.name }}</a></h4>
-                                <p>{{ top_team.state|format_state }}</p>
-                            </div>
-                        </div>
-                    {% endif %}
-                    <ul class="list-group">
-                        {% for team in top_teams %}
-                            <li class="list-group-item">
-                                <div class="media">
-                                    <img src="{{ team.icon }}" class="img-circle media-object pull-left" />
-                                    <div class="media-body">
-                                        <h5><a href="{{ team.link_to_public_page }}">{{ team.name }}</a></h5>
-                                        <p>{{ team.state|format_state }}</p>
-                                    </div>
-                                </div>
-                            </li>
-                        {% endfor %}
-                    </ul>
+                    {% include 'components/main_splash_entity_section.html' with top_entity=top_team top_entities=top_teams %}
                 </div>
                 <div class="col-sm-4">
                     <h2 class="entity-section-header">
                         FANS <img src="/static/img/spudderspuds/button-fans-small.png" />
                     </h2>
-                    {% if top_fan %}
-                        <div class="top-entity">
-                            <div class="image" style="background-image:url({{ top_fan.jumbotron }});">
-                                <img src="{{ top_fan.icon }}" class="img-circle" />
-                            </div>
-                            <div class="caption">
-                                <h4><a href="{{ top_fan.link_to_public_page }}">{{ top_fan.name }}</a></h4>
-                                <p>{{ top_fan.state|format_state }}</p>
-                            </div>
-                        </div>
-                    {% endif %}
+                    {% include 'components/main_splash_entity_section.html' with top_entity=top_fan top_entities=top_fans %}
                 </div>
                 <div class="col-sm-4">
                     <h2 class="entity-section-header">
                         VENUES <img src="/static/img/spuddervenues/button-venues-small.png" />
                     </h2>
-                    {% if top_venue %}
-                        <div class="top-entity">
-                            <div class="image" style="background-image:url({{ top_venue.jumbotron }});">
-                                <img src="{{ top_venue.icon }}" class="img-circle" />
-                            </div>
-                            <div class="caption">
-                                <h4><a href="{{ top_venue.link_to_public_page }}">{{ top_venue.name }}</a></h4>
-                                <p>{{ top_venue.state|format_state }}</p>
-                            </div>
-                        </div>
-                    {% endif %}
+                    {% include 'components/main_splash_entity_section.html' with top_entity=top_venue top_entities=top_venues %}
                 </div>
             </div>
         </div>

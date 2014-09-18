@@ -53,11 +53,11 @@ def temp_redirect_view(request):
     top_fan = ([t for t in top_fans if t.jumbotron] or [None])[0]
     template_data = {
         'signin_form': FanSigninForm(),
-        'top_teams': top_teams,
+        'top_teams': [e for e in top_teams if e != top_team][:5],
         'top_team': top_team,
-        'top_venues': top_venues,
+        'top_venues': [e for e in top_venues if e != top_venue][:5],
         'top_venue': top_venue,
-        'top_fans': top_fans,
+        'top_fans': [e for e in top_fans if e != top_fan][:5],
         'top_fan': top_fan,
     }
     return render(request, 'main_splash.html', template_data)
