@@ -12,7 +12,7 @@ FEATURES = {
         'manage_team_admins',
         'clubs',
         'nays_survey',
-        'affiliate_login'
+        'affiliate_login',
         'challenges_landing_page',
     ],
     'live': [
