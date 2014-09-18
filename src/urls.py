@@ -68,16 +68,16 @@ urlpatterns = patterns(
     ('^_ah/warmup$', 'djangoappengine.views.warmup'),
     ('^_ah/start$', 'spudmart.utils.backends.start'),
     # (r'^$', include('spudmart.home.urls')),  NOTE: Commented out by MG 20140617
-    (r'^dashboard/recipient/', include('spudmart.recipients.urls')),
-    (r'^dashboard/donation/', include('spudmart.donations.urls')),
-    (r'^dashboard/', include('spudmart.dashboard.urls')),
-    (r'^accounts/', include('spudmart.accounts.urls')),
-    (r'^venues/', include('spudmart.venues.urls')),
-    (r'^spudder/', include('spudmart.spudder.urls')),
-    (r'^upload/', include('spudmart.upload.urls')),
-    (r'^sponsor', include('spudmart.sponsors.urls')),
-    (r'^team/', include('spudmart.teams.urls')),
-    (r'^hospitals/', include('spudmart.hospitals.urls')),
+    (r'^dashboard/recipient/*', include('spudmart.recipients.urls')),
+    (r'^dashboard/donation/*', include('spudmart.donations.urls')),
+    (r'^dashboard/*', include('spudmart.dashboard.urls')),
+    (r'^accounts/*', include('spudmart.accounts.urls')),
+    (r'^venues/*', include('spudmart.venues.urls')),
+    (r'^spudder/*', include('spudmart.spudder.urls')),
+    (r'^upload/*', include('spudmart.upload.urls')),
+    (r'^sponsor/*', include('spudmart.sponsors.urls')),
+    (r'^team/*', include('spudmart.teams.urls')),
+    (r'^hospitals/*', include('spudmart.hospitals.urls')),
     (r'^file/serve/(?P<file_id>\d+)$', 'spudmart.upload.views.serve_uploaded_file'),
     (r'^api/1/', include('spudmart.api.urls')),
 
@@ -109,6 +109,5 @@ urlpatterns = patterns(
 
     (r'(?P<affiliate_url_name>[^/]+)$', 'spudderaffiliates.views.affiliate_splash'),
 
-    # Note the below line was added to catch root urls and push them to info.spudder.com for now MG 20140618
     (r'^$', temp_redirect_view)
 )
