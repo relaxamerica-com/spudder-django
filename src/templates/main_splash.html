@@ -34,6 +34,19 @@
                             </div>
                         </div>
                     {% endif %}
+                    <ul class="list-group">
+                        {% for team in top_teams %}
+                            <li class="list-group-item">
+                                <div class="media">
+                                    <img src="{{ team.icon }}" class="img-circle media-object pull-left" />
+                                    <div class="media-body">
+                                        <h5><a href="{{ team.link_to_public_page }}">{{ team.name }}</a></h5>
+                                        <p>{{ team.state|format_state }}</p>
+                                    </div>
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ul>
                 </div>
                 <div class="col-sm-4">
                     <h2 class="entity-section-header">
