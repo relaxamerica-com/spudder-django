@@ -14122,7 +14122,7 @@ fieldset[disabled] .navbar-masthead.navbar-inverse .btn-link:focus {
 }
 .spudder-jumbotron {
   position: relative;
-  top: -20px;
+  top: -10px;
   padding: 0;
   overflow: hidden;
   height: 400px;
@@ -14386,6 +14386,83 @@ ul.social-network li a {
 }
 #main-splash #entities-section .list-group .list-group-item img {
   width: 40px;
+}
+#challenges-splash .jumbotron {
+  background-image: url('/static/img/spudderspuds/challenges/jumbotron.jpg');
+  background-position: center top;
+  height: 600px;
+  background-size: cover;
+  overflow: hidden;
+  margin-top: -130px;
+  margin-bottom: 0;
+  position: relative;
+}
+#challenges-splash .jumbotron h1 {
+  color: #ffffff;
+  margin-top: 120px;
+}
+@media (max-width: 767px) {
+  #challenges-splash .jumbotron {
+    height: 350px;
+    background-position: center center;
+    margin-top: -80px;
+  }
+}
+#challenges-splash .jumbotron:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-image: -webkit-radial-gradient(circle, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.4));
+  background-image: radial-gradient(circle, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.4));
+  background-repeat: no-repeat;
+}
+#challenges-splash #challenges-cta {
+  width: 100%;
+  background: #F1f1f1;
+  overflow: hidden;
+  position: relative;
+  padding: 40px 0 80px;
+}
+@media (max-width: 991px) {
+  #challenges-splash #challenges-cta {
+    padding-bottom: 40px;
+  }
+}
+#challenges-splash #challenges-cta h1 {
+  color: #ffffff;
+  font-size: 48px;
+}
+@media (max-width: 991px) {
+  #challenges-splash #challenges-cta h1 {
+    font-size: 30px;
+  }
+}
+#challenges-splash #challenges-cta p {
+  color: #fafafa;
+  font-size: 18px;
+  margin: 20px 0;
+}
+#challenges-splash #challenges-cta h2 {
+  padding-top: 40px;
+  margin: 20px 0;
+}
+#challenges-splash #challenges-cta .btn {
+  font-size: 18px;
+  padding: 15px 14px;
+}
+#challenges-splash #challenges-cta:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-image: -webkit-radial-gradient(circle, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.5));
+  background-image: radial-gradient(circle, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.5));
+  background-repeat: no-repeat;
 }
 .fan-page-form .input-required {
   color: #ff0000;

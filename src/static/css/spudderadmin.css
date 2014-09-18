@@ -13705,6 +13705,14 @@ fieldset[disabled] .btn-link:focus {
 .spudder-footer .sub-footer .social-links li a:hover .fa-stack i:last-child {
   color: #FFF;
 }
+@media (max-width: 767px) {
+  .spudder-footer .sub-footer .social-links {
+    padding: 10px 0;
+  }
+  .spudder-footer .sub-footer .social-links li a {
+    font-size: 10px;
+  }
+}
 .pagination ul {
   display: inline-block;
   padding-left: 0;
@@ -14114,7 +14122,7 @@ fieldset[disabled] .navbar-masthead.navbar-inverse .btn-link:focus {
 }
 .spudder-jumbotron {
   position: relative;
-  top: -20px;
+  top: -10px;
   padding: 0;
   overflow: hidden;
   height: 400px;
