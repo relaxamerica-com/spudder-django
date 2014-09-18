@@ -276,6 +276,23 @@ class RoleFan(RoleBase):
     def contact_emails(self):
         return [self.entity.fan.email] if self.entity.fan.email else []
 
+    @property
+    def jumbotron(self):
+        if self.entity.cover_image:
+            return '/file/serve/%s' % self.entity.cover_image.id
+
+    @property
+    def link_to_public_page(self):
+        return '/fan/%s' % self.entity.id
+
+    @property
+    def name(self):
+        return self.entity.name
+
+    @property
+    def state(self):
+        return self.entity.state
+
     def user_is_owner(self, user):
         return self.entity.fan == user
 

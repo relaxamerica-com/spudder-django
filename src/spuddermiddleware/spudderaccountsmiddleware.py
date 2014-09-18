@@ -171,17 +171,20 @@ class FollowMiddleware:
         following = False
         if followers['totalItems'] > 0:
             for user in followers['data']:
-                item = KrowdIOStorage.objects.get(krowdio_user_id=user['_id'])
-                path = str(request.path)
-                if re.match('/venues/view/\d+', path) and item.venue:
-                    if str(item.venue.id) == str.split(path, '/')[-1]:
-                        following = True
-                elif re.match('/fan/\d+', path) and item.role_type == 'fan':
-                    if str(item.role_id) == str.split(path, '/')[-1]:
-                        following = True
-                elif re.match('/team/\d+', path) and item.team:
-                    if str(item.team.id) == str.split(path, '/')[-1]:
-                        following = True
+                try:
+                    item = KrowdIOStorage.objects.get(krowdio_user_id=user['_id'])
+                    path = str(request.path)
+                    if re.match('/venues/view/\d+', path) and item.venue:
+                        if str(item.venue.id) == str.split(path, '/')[-1]:
+                            following = True
+                    elif re.match('/fan/\d+/*$', path) and item.role_type == 'fan':
+                        if str(item.role_id) == str.split(path, '/')[-1]:
+                            following = True
+                    elif re.match('/team/\d+', path) and item.team:
+                        if str(item.team.id) == str.split(path, '/')[-1]:
+                            following = True
+                except KrowdIOStorage.DoesNotExist:
+                    pass
         request.following = following
 
     def process_request(self, request):

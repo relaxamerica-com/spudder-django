@@ -4,7 +4,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response, render
 from django.views.generic import RedirectView
 from spudderaffiliates.models import Affiliate
-from spudderdomain.controllers import RoleController
+from spudderdomain.controllers import RoleController, TeamsController, VenuesController, FansController
 from spudderspuds.forms import FanSigninForm
 
 handler404 = 'django.views.defaults.page_not_found'
@@ -45,8 +45,20 @@ def temp_redirect_view(request):
         if request.current_role.entity_type == RoleController.ENTITY_SPONSOR:
             return HttpResponseRedirect('/sponsor')
 
+    top_teams = TeamsController.GetTopTeamEntities()
+    top_team = ([t for t in top_teams if t.jumbotron] or [None])[0]
+    top_venues = VenuesController.GetTopVenueEntities()
+    top_venue = ([t for t in top_venues if t.jumbotron] or [None])[0]
+    top_fans = FansController.GetTopFanEntities()
+    top_fan = ([t for t in top_fans if t.jumbotron] or [None])[0]
     template_data = {
-        'signin_form': FanSigninForm()
+        'signin_form': FanSigninForm(),
+        'top_teams': top_teams,
+        'top_team': top_team,
+        'top_venues': top_venues,
+        'top_venue': top_venue,
+        'top_fans': top_fans,
+        'top_fan': top_fan,
     }
     return render(request, 'main_splash.html', template_data)
 

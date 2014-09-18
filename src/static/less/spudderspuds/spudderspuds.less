@@ -16,48 +16,81 @@
         @media (max-width: @screen-xs-max) {
             height:350px;
         }
-
-
-        #message1 {
-            text-align: center;
-            color: #FFF;
-            text-shadow: -1px 1px 8px #7086B9, 1px -1px 8px #7086B9;
-            i {
-                font-size:80%;
-            }
-        }
-
-        hr {
-            padding-top: 20px;
-        }
-
-        #message2 {
-            text-align: justify;
-            color: #FFF;
-            text-shadow: -1px 1px 8px #5A7E63, 1px -1px 8px #5A7E63;
-        }
-
-        .panel {
-            border-radius: 5px;
-        }
-
-//        .caption {
-//            position: relative;
-//            background: rgba(255,255,255,0.6);
-//            padding: 20px;
-//            margin-top: 60px;
-//        }
     }
 
-    .role-callout {
-        .role-callout-body {
-            padding-left: 10px;
-            h2 {
-                margin-top: 0;
+    #registration-section {
+        background-image: url('/static/img/footballfield.jpg');
+        background-position: center bottom;
+        width: 100%;
+        background-size: cover;
+        overflow:hidden;
+        position: relative;
+        padding: 40px 0;
+
+        h1 {
+            color: #ffffff;
+            font-size: 48px;
+            @media(max-width: @screen-sm-max){
+                font-size: 30px;
             }
         }
-        @media (max-width: @screen-sm) {
-            margin-top: 30px;
+        p {
+            color: #fafafa;
+            font-size: 18px;
+        }
+        form {
+            padding-top: 40px;
+            button {
+                font-size: 18px;
+                padding: 15px 14px;
+            }
+        }
+
+        &:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            #gradient.radial(rgba(0,0,0,.3); rgba(0,0,0,.8));
+//            #gradient.horizontal(#555;#333;0%;100%);
+//            background-image: linear-gradient(to bottom right,#002f4b,#dc4225);
+          }
+    }
+
+    #entities-section {
+        padding: 40px 0;
+        .entity-section-header {
+            background-color: @brand-primary;
+            color: #ffffff;
+            padding: 20px 10px;
+            font-size: 28px;
+            margin-bottom: 0;
+            > img {
+                float: right;
+                height: 28px;
+            }
+        }
+        .top-entity {
+            .image {
+                height: 150px;
+                background-position: center center;
+                background-size: cover;
+                position: relative;
+                > img {
+                    position: absolute;
+                    bottom: 5px;
+                    left: 5px;
+                    height: 50px;
+                }
+            }
+            h4 {
+                font-size: 24px;
+            }
+            p {
+                font-size: 14px;
+            }
         }
     }
 }

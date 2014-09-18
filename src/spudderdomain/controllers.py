@@ -190,7 +190,26 @@ class TeamsController(object):
     def TeamsAdministeredByRole(cls, role):
         team_admins = TeamAdministrator.objects.filter(entity_type=role.entity_type, entity_id=role.entity.id)
         return [ta.team_page for ta in team_admins]
-    
+
+    @classmethod
+    def GetTopTeamEntities(cls, count=10):
+        return [EntityTeam(t) for t in TeamPage.objects.all()[:count]]
+
+
+class VenuesController(object):
+
+    @classmethod
+    def GetTopVenueEntities(cls, count=10):
+        return [EntityVenue(v) for v in Venue.objects.all()[:count]]
+
+
+class FansController(object):
+
+    @classmethod
+    def GetTopFanEntities(cls, count=10):
+        from spudderaccounts.wrappers import RoleFan
+        return [RoleFan(f) for f in FanPage.objects.all()[:count]]
+
 
 class SpudsController(object):
 

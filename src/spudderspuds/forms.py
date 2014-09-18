@@ -14,13 +14,14 @@ class FanSigninForm(forms.Form):
 
     def clean(self):
         cleaned_data = super(FanSigninForm, self).clean()
-        email_address = cleaned_data.get('email_address', '')
+        email_address = cleaned_data.get('email_address', '').strip().lower()
         if not User.objects.filter(username=email_address).count():
             raise forms.ValidationError('Email address not recognized. Have you registered?')
         password = cleaned_data.get('password')
         user = authenticate(username=email_address, password=password)
         if not user or not user.is_active:
             raise forms.ValidationError('Email and password do not match.')
+        cleaned_data['email_address'] = email_address
         return cleaned_data
 
 
@@ -33,12 +34,18 @@ class FanRegisterForm(forms.Form):
 
     def clean(self):
         data = super(FanRegisterForm, self).clean()
-        email_address = data.get('email_address')
-        password = data.get('password')
-        password_again = data.get('password_again')
+        email_address = (data.get('email_address') or "").strip().lower()
+        password = (data.get('password') or "").strip()
+        password_again = (data.get('password_again') or "").strip()
         raise_error = False
+        if not email_address:
+            self._errors['email_address'] = self.error_class(['You must supply an email address'])
+            raise_error = True
         if User.objects.filter(username__iexact=email_address).count():
             self._errors['email_address'] = self.error_class(['An account already exists for this email address.'])
+            raise_error = True
+        if not password or len(password) < 6:
+            self._errors['password'] = self.error_class(['You must supply a password longer than 6 characters'])
             raise_error = True
         if password != password_again:
             message = 'Passwords must match.'

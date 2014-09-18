@@ -27,8 +27,24 @@ class EntityBase(object):
         pass
 
     @abc.abstractproperty
+    def jumbotron(self):
+        raise NotImplementedError
+
+    @abc.abstractproperty
     def contact_emails(self):
         pass
+
+    @abc.abstractproperty
+    def link_to_public_page(self):
+        raise NotImplementedError
+
+    @abc.abstractproperty
+    def name(self):
+        raise NotImplementedError
+
+    @abc.abstractproperty
+    def state(self):
+        raise NotImplementedError
 
     @classmethod
     def EntityWrapperByEntityType(cls, entity_key):
@@ -67,8 +83,25 @@ class EntityVenue(EntityBase):
             return '/static/img/spuddervenues/button-venues-medium.png'
 
     @property
+    def jumbotron(self):
+        if self.entity.cover_image:
+            return '/file/serve/%s' % self.entity.cover_image.id
+
+    @property
     def contact_emails(self):
         raise NotImplementedError()
+
+    @property
+    def link_to_public_page(self):
+        return '/venues/view/%s' % self.entity.id
+
+    @property
+    def name(self):
+        return self.entity.aka_name
+
+    @property
+    def state(self):
+        return self.entity.state
 
 
 class EntityTeam(EntityBase):
@@ -93,6 +126,11 @@ class EntityTeam(EntityBase):
             return '/static/img/spudderspuds/button-teams-medium.png'
 
     @property
+    def jumbotron(self):
+        if self.entity.cover_image:
+            return '/file/serve/%s' % self.entity.cover_image.id
+
+    @property
     def contact_emails(self):
         from spudderdomain.models import TeamAdministrator
         team_admins = TeamAdministrator.objects.filter(team_page=self.entity)
@@ -101,6 +139,18 @@ class EntityTeam(EntityBase):
             entity = get_entity_base_instanse_by_id_and_type(team_admin.entity_id, team_admin.entity_type)
             contact_emails += entity.contact_emails
         return contact_emails
+
+    @property
+    def link_to_public_page(self):
+        return '/team/%s' % self.entity.id
+
+    @property
+    def name(self):
+        return self.entity.name
+
+    @property
+    def state(self):
+        return self.entity.state
 
     def is_admin(self, entity_id, entity_type):
         from spudderdomain.models import TeamAdministrator

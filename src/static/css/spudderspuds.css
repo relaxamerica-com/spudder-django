@@ -14226,35 +14226,77 @@ ul.social-network li a {
     height: 350px;
   }
 }
-#main-splash .jumbotron #message1 {
-  text-align: center;
-  color: #FFF;
-  text-shadow: -1px 1px 8px #7086b9, 1px -1px 8px #7086b9;
+#main-splash #registration-section {
+  background-image: url('/static/img/footballfield.jpg');
+  background-position: center bottom;
+  width: 100%;
+  background-size: cover;
+  overflow: hidden;
+  position: relative;
+  padding: 40px 0;
 }
-#main-splash .jumbotron #message1 i {
-  font-size: 80%;
+#main-splash #registration-section h1 {
+  color: #ffffff;
+  font-size: 48px;
 }
-#main-splash .jumbotron hr {
-  padding-top: 20px;
-}
-#main-splash .jumbotron #message2 {
-  text-align: justify;
-  color: #FFF;
-  text-shadow: -1px 1px 8px #5a7e63, 1px -1px 8px #5a7e63;
-}
-#main-splash .jumbotron .panel {
-  border-radius: 5px;
-}
-#main-splash .role-callout .role-callout-body {
-  padding-left: 10px;
-}
-#main-splash .role-callout .role-callout-body h2 {
-  margin-top: 0;
-}
-@media (max-width: 768px) {
-  #main-splash .role-callout {
-    margin-top: 30px;
+@media (max-width: 991px) {
+  #main-splash #registration-section h1 {
+    font-size: 30px;
   }
+}
+#main-splash #registration-section p {
+  color: #fafafa;
+  font-size: 18px;
+}
+#main-splash #registration-section form {
+  padding-top: 40px;
+}
+#main-splash #registration-section form button {
+  font-size: 18px;
+  padding: 15px 14px;
+}
+#main-splash #registration-section:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-image: -webkit-radial-gradient(circle, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.8));
+  background-image: radial-gradient(circle, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.8));
+  background-repeat: no-repeat;
+}
+#main-splash #entities-section {
+  padding: 40px 0;
+}
+#main-splash #entities-section .entity-section-header {
+  background-color: #ff4800;
+  color: #ffffff;
+  padding: 20px 10px;
+  font-size: 28px;
+  margin-bottom: 0;
+}
+#main-splash #entities-section .entity-section-header > img {
+  float: right;
+  height: 28px;
+}
+#main-splash #entities-section .top-entity .image {
+  height: 150px;
+  background-position: center center;
+  background-size: cover;
+  position: relative;
+}
+#main-splash #entities-section .top-entity .image > img {
+  position: absolute;
+  bottom: 5px;
+  left: 5px;
+  height: 50px;
+}
+#main-splash #entities-section .top-entity h4 {
+  font-size: 24px;
+}
+#main-splash #entities-section .top-entity p {
+  font-size: 14px;
 }
 .fan-page-form .input-required {
   color: #ff0000;
