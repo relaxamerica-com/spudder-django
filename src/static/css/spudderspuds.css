@@ -14274,6 +14274,51 @@ ul.social-network li a {
   background-image: radial-gradient(circle, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.8));
   background-repeat: no-repeat;
 }
+#main-splash #challenges-cta {
+  width: 100%;
+  background: #F1f1f1;
+  overflow: hidden;
+  position: relative;
+  padding: 40px 0 80px;
+}
+@media (max-width: 991px) {
+  #main-splash #challenges-cta {
+    padding-bottom: 40px;
+  }
+}
+#main-splash #challenges-cta h1 {
+  color: #ffffff;
+  font-size: 48px;
+}
+@media (max-width: 991px) {
+  #main-splash #challenges-cta h1 {
+    font-size: 30px;
+  }
+}
+#main-splash #challenges-cta p {
+  color: #fafafa;
+  font-size: 18px;
+  margin: 20px 0;
+}
+#main-splash #challenges-cta h2 {
+  padding-top: 40px;
+  margin: 20px 0;
+}
+#main-splash #challenges-cta .btn {
+  font-size: 18px;
+  padding: 15px 14px;
+}
+#main-splash #challenges-cta:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-image: -webkit-radial-gradient(circle, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.5));
+  background-image: radial-gradient(circle, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.5));
+  background-repeat: no-repeat;
+}
 #main-splash #entities-section {
   padding: 40px 0;
 }
@@ -14283,10 +14328,31 @@ ul.social-network li a {
   padding: 20px 10px;
   font-size: 28px;
   margin-bottom: 0;
+  position: relative;
 }
 #main-splash #entities-section .entity-section-header > img {
   float: right;
   height: 28px;
+}
+#main-splash #entities-section .entity-section-header:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-image: -webkit-radial-gradient(circle, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.05));
+  background-image: radial-gradient(circle, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.05));
+  background-repeat: no-repeat;
+}
+@media (max-width: 991px) {
+  #main-splash #entities-section .entity-section-header {
+    font-size: 18px;
+    padding: 10px 10px;
+  }
+  #main-splash #entities-section .entity-section-header > img {
+    height: 18px;
+  }
 }
 #main-splash #entities-section .top-entity .image {
   height: 150px;

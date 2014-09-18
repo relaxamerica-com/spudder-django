@@ -1,6 +1,7 @@
 {% extends 'spudderspuds/base.html' %}
 {% load bootstrap3 %}
 {% load spudderspudstags %}
+{% load featuretags %}
 
 {% block title %}Spudder - Sports Updated Made Simple!{% endblock %}
 
@@ -16,6 +17,26 @@
             <img src="/static/img/spudderspuds/logo-spuds-large.png" style="padding-top: 160px; margin:0 auto;" class="img-responsive" />
         </div>
     </div>
+    {% if 'challenges_landing_page'|feature_is_enabled %}
+        <div id="challenges-cta">
+            <div class="row">
+                <div class="col-xs-10 col-xs-offset-1 col-sm-4 col-sm-offset-1">
+                    <h1><span class="text-primary">Spudder</span> makes fundraising simple</h1>
+                    <p>Create amazing challenges and engage your friends, family and fans to donate funds to your club.</p>
+                </div>
+                <div class="col-xs-10 col-xs-offset-1 col-sm-4 col-sm-offset-1">
+                    <h2>The next Ice Bucket challenge can be yours!</h2>
+                    <div class="row">
+                        <div class="col-xs-9">
+                            <a class="btn btn-lg btn-block btn-primary" href="/challenges">
+                                Get Started Today <i class="fa fa-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
     <div id="entities-section">
         <div class="container">
             <div class="row">

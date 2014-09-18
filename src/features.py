@@ -5,6 +5,7 @@ FEATURES = {
         'clubs'
         'nays_survey',
         'affiliate_login', #just login & dashboard page
+        'challenges_landing_page',
     ],
     'stage': [
         'spud_tagging',
@@ -12,6 +13,7 @@ FEATURES = {
         'clubs',
         'nays_survey',
         'affiliate_login'
+        'challenges_landing_page',
     ],
     'live': [
         'spud_tagging'
