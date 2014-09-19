@@ -22,7 +22,7 @@ class EntityController(object):
     ENTITY_VENUE = "Venue"
     ENTITY_TEAM = "Team"
     ENTITY_AFFILIATE = "Affiliate"
-    ENTITY_TEMP_CLUB = "Temporary Club"
+    ENTITY_TEMP_CLUB = "TemporaryClub"
     ENTITY_TYPES = (ENTITY_VENUE, ENTITY_TEAM, ENTITY_AFFILIATE, ENTITY_TEMP_CLUB)
     
     @classmethod

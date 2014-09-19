@@ -115,7 +115,7 @@ def invite_club_manager(request):
                 name = form.cleaned_data.get('club_name')
                 state = form.cleaned_data.get('state')
                 fan = InvitationController.CheckFanWithEmailExists(email)
-                club = TempClub(email=email, name=name, state=state)
+                club = TempClub(email=email, name=name, state=state, affiliate=request.session['affiliate'])
                 club.save()
                 aff = request.session['affiliate']
                 if fan:

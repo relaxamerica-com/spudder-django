@@ -64,6 +64,10 @@ class EntityBase(object):
     def is_admin(self, entity_id, entity_type):
         pass
 
+    @abc.abstractproperty
+    def affiliate(self):
+        pass
+
 
 class EntityAffiliate(EntityBase):
     @property
@@ -111,6 +115,10 @@ class EntityAffiliate(EntityBase):
     def is_admin(self, entity_id, entity_type):
         raise NotImplementedError()
 
+    @property
+    def affiliate(self):
+        return self.entity
+
 
 class EntityTempClub(EntityBase):
     @property
@@ -133,7 +141,7 @@ class EntityTempClub(EntityBase):
 
     @property
     def contact_emails(self):
-        return self.entity.email
+        return [self.entity.email]
 
     @property
     def link_to_public_page(self):
@@ -149,6 +157,10 @@ class EntityTempClub(EntityBase):
 
     def is_admin(self, entity_id, entity_type):
         raise NotImplementedError()
+
+    @property
+    def affiliate(self):
+        return self.entity.affiliate
 
 
 class EntityVenue(EntityBase):
@@ -195,6 +207,10 @@ class EntityVenue(EntityBase):
 
     def is_admin(self, entity_id, entity_type):
         raise NotImplementedError()
+
+    @property
+    def affiliate(self):
+        return self.entity.affiliate
 
 
 class EntityTeam(EntityBase):
@@ -249,6 +265,10 @@ class EntityTeam(EntityBase):
         from spudderdomain.models import TeamAdministrator
         return get_object_or_none(TeamAdministrator, entity_type=entity_type,
                                   entity_id=entity_id, team_page=self.entity) is not None
+
+    @property
+    def affiliate(self):
+        return self.entity.affiliate
 
 
 class LinkedServiceBase(object):
