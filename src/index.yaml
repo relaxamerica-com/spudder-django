@@ -38,3 +38,9 @@ indexes:
   - name: target_entity_type
   - name: modified
     direction: desc
+
+- kind: spudderdomain_challenge
+  properties:
+  - name: template_id
+  - name: created
+    direction: desc
