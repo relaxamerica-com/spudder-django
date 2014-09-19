@@ -1,3 +1,13 @@
+{% load featuretags %}
+
+{% if 'challenges_landing_page'|feature_is_enabled %}
+    <li>
+        <a href="/challenges">
+            <i class="fa fa-trophy"></i> Challenges!
+        </a>
+    </li>
+{% endif %}
+
 <li class="dropdown">
     <a class="dropdown-toggle" href="#" data-toggle="dropdown">
         Explore <i class="fa fa-caret-down"></i>
@@ -9,14 +19,3 @@
         <li><a href="/spuds/search/venues"><img src="/static/img/spuddervenues/button-venues-tiny.png"/> Find Venues</a></li>
     </ul>
 </li>
-
-{% if current_role and current_role.entity_type == "fan" %}
-    <li class="{% if fan_nav_active == "profile" and request.can_edit %}active{% endif %}">
-        {% if request.current_role.entity_type == 'fan' %}
-            <a href="/fan/{{ current_role.entity.id }}">My Fan Profile</a>
-        {% endif %}
-    </li>
-    <li class="{% if fan_nav_active == "teams" %}active{% endif %}">
-        <a href="/fan/{{ current_role.entity.id }}/teams">My Teams</a>
-    </li>
-{% endif %}

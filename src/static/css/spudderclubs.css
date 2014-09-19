@@ -13671,6 +13671,7 @@ fieldset[disabled] .btn-link:focus {
   width: 100%;
   background-color: #f1f1f1;
   border-top: 1px solid #e5e5e5;
+  margin-top: 80px;
 }
 .spudder-footer .main-footer {
   padding: 30px 0 40px;
@@ -14122,25 +14123,18 @@ fieldset[disabled] .navbar-masthead.navbar-inverse .btn-link:focus {
 }
 .spudder-jumbotron {
   position: relative;
-  top: -10px;
+  top: -180px;
   padding: 0;
   overflow: hidden;
-  height: 400px;
+  height: 500px;
   background-size: cover;
+  margin-bottom: -80px;
 }
 @media (max-width: 767px) {
   .spudder-jumbotron {
     height: 300px;
-  }
-}
-@media (max-width: 991px) {
-  .spudder-jumbotron {
-    height: 300px;
-  }
-}
-@media (max-width: 1199px) {
-  .spudder-jumbotron {
-    height: 350px;
+    top: -60px;
+    margin-bottom: 0;
   }
 }
 .spudder-jumbotron-caption {
@@ -14219,6 +14213,124 @@ ul.social-network li {
 }
 ul.social-network li a {
   text-decoration: none;
+}
+.breadcrumb {
+  padding: 13px 15px;
+  margin-bottom: 36px;
+  background-color: #f3f3f3;
+  border-radius: 2px;
+}
+.breadcrumb > li + li {
+  position: relative;
+  display: inline-block;
+  margin-left: 20px;
+}
+.breadcrumb > li + li:before {
+  border-radius: 5px;
+}
+.breadcrumb > li + li:before,
+.breadcrumb > li + li:after {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 0;
+}
+.breadcrumb > li + li:before {
+  border: 7px solid transparent;
+}
+.breadcrumb > li + li:after {
+  border: 5px solid transparent;
+}
+.breadcrumb > li + li:before,
+.breadcrumb > li + li:after {
+  left: 100%;
+  top: 9px;
+}
+.breadcrumb > li + li:before {
+  margin-top: -7px;
+  border-left: 7px solid;
+  border-left-color: #777777;
+}
+.breadcrumb > li + li:after {
+  margin-top: -5px;
+  border-left: 5px solid #f3f3f3;
+}
+.breadcrumb > li + li:before,
+.breadcrumb > li + li:after {
+  left: -16px;
+}
+.breadcrumb > li + li:before {
+  content: "";
+  color: #999999;
+}
+.breadcrumb > li > a {
+  color: #999999;
+}
+.breadcrumb > li > a:hover {
+  color: #000000;
+}
+.breadcrumb > .active,
+.breadcrumb > .active > a {
+  color: #000000;
+}
+.breadcrumb-inverse {
+  background-color: #393832;
+}
+.breadcrumb-inverse > li + li {
+  position: relative;
+  display: inline-block;
+}
+.breadcrumb-inverse > li + li:before {
+  border-radius: 5px;
+}
+.breadcrumb-inverse > li + li:before,
+.breadcrumb-inverse > li + li:after {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 0;
+}
+.breadcrumb-inverse > li + li:before {
+  border: 7px solid transparent;
+}
+.breadcrumb-inverse > li + li:after {
+  border: 5px solid transparent;
+}
+.breadcrumb-inverse > li + li:before,
+.breadcrumb-inverse > li + li:after {
+  left: 100%;
+  top: 9px;
+}
+.breadcrumb-inverse > li + li:before {
+  margin-top: -7px;
+  border-left: 7px solid;
+  border-left-color: #666666;
+}
+.breadcrumb-inverse > li + li:after {
+  margin-top: -5px;
+  border-left: 5px solid #393832;
+}
+.breadcrumb-inverse > li + li:before,
+.breadcrumb-inverse > li + li:after {
+  left: -16px;
+}
+.breadcrumb-inverse > li > a {
+  color: #999999;
+}
+.breadcrumb-inverse > li > a:hover {
+  color: #ffffff;
+}
+.breadcrumb-inverse > .active,
+.breadcrumb-inverse > .active > a {
+  color: #ffffff;
+}
+.breadcrumb-sm {
+  padding: 4px 15px;
+  background-color: #ffffff;
+  border-bottom: 1px solid #ebebeb;
+}
+.breadcrumb-sm.breadcrumb-inverse {
+  background-color: #393832;
 }
 input#accepted-terms-and-conditions {
   margin-right: 5px;
