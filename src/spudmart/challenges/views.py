@@ -21,7 +21,7 @@ def view_challenge(request, challenge_id):
         return HttpResponseNotFound
 
     can_share = False
-    if challenge.creator_entity_id == str(request.current_role.entity.id) \
+    if request.current_role is not None and challenge.creator_entity_id == str(request.current_role.entity.id) \
             and challenge.creator_entity_type == request.current_role.entity_type:
         can_share = True
 
