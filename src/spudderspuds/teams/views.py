@@ -16,7 +16,7 @@ from spudderspuds.forms import LinkedInSocialMediaForm
 from spudderspuds.utils import set_social_media
 from spudderspuds.decorators import can_edit
 from spudmart.CERN.rep import created_team, team_associated_with_venue
-from spudmart.teams.forms import CreateTeamForm, TeamPageForm, EditTeamForm, InviteNewFanByEmailForm
+from spudderspuds.teams.forms import CreateTeamForm, TeamPageForm, EditTeamForm, InviteNewFanByEmailForm
 from django.http import HttpResponseRedirect, HttpResponse, HttpResponseNotAllowed, HttpResponseForbidden, \
     HttpResponseBadRequest
 from spudmart.upload.models import UploadedFile
@@ -47,11 +47,7 @@ def teams_list(request):
 
 
 def create_team(request):
-    form = CreateTeamForm(
-        initial={
-            'next_url': request.GET.get('next_url'),
-            'name': request.GET.get('name', '')
-        })
+    form = CreateTeamForm(initial={'next_url': request.GET.get('next_url')})
     social_media_form = LinkedInSocialMediaForm()
     template_data = {'SPORTS': SPORTS}
     if request.method == "POST":
@@ -131,7 +127,7 @@ def team_page(request, page_id):
     })
 
 
-@can_edit()
+@can_edit
 def edit_team_page(request, page_id):
     team_page = TeamPage.objects.select_related('image').get(pk=page_id)
     form = EditTeamForm(initial=team_page.__dict__, image=team_page.image)
@@ -162,7 +158,7 @@ def edit_team_page(request, page_id):
     })
 
 
-@can_edit()
+@can_edit
 def manage_team_page_admins(request, page_id):
     team_page = get_object_or_404(TeamPage, pk=page_id)
     # get current team admins
@@ -171,27 +167,16 @@ def manage_team_page_admins(request, page_id):
     form = InviteNewFanByEmailForm(team_id=team_page.id)
     is_form_sent = False
 
-    if request.method == 'POST':
-        form = InviteNewFanByEmailForm(request.POST, team_id=team_page.id)
-        if form.is_valid():
-            is_form_sent = True
-            InvitationController.InviteNonUser(
-                form.cleaned_data['email'], Invitation.REGISTER_AND_ADMINISTRATE_TEAM_INVITATION,
-                team_page.id, EntityController.ENTITY_TEAM)
-            form = InviteNewFanByEmailForm(team_id=team_page.id)
-
     return render(request, 'spudderspuds/teams/pages/manage_team_admins.html', {
         'page': team_page,
         'admins': admins,
         'invited_fans': invited_fans,
         'not_invited_fans': not_invited_fans,
         'invited_non_users': invited_non_users,
-        'form': form,
-        'is_form_sent': is_form_sent
     })
 
 
-@can_edit()
+@can_edit
 @require_http_methods(["GET", "POST"])
 def create_fan_invitation(request, page_id, fan_id):
     entity_team = EntityController.GetWrappedEntityByTypeAndId(
@@ -215,7 +200,7 @@ def create_fan_invitation(request, page_id, fan_id):
         return HttpResponseRedirect('/team/%s/admins' % page_id)
 
 
-@can_edit()
+@can_edit
 @require_http_methods(["GET", "POST"])
 def cancel_fan_invitation(request, page_id, fan_id):
     entity_team = EntityController.GetWrappedEntityByTypeAndId(
@@ -239,7 +224,7 @@ def cancel_fan_invitation(request, page_id, fan_id):
         return HttpResponseRedirect('/team/%s/admins' % page_id)
 
 
-@can_edit()
+@can_edit
 @require_http_methods(["GET", "POST"])
 def revoke_fan_invitation(request, page_id, fan_id):
     entity_team = EntityController.GetWrappedEntityByTypeAndId(

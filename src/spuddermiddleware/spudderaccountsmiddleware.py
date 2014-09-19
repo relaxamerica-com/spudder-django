@@ -60,92 +60,55 @@ class EditPageMiddleware:
         path = str(request.path)
         can_edit = False
         if request.user.is_authenticated and request.current_role:
-            if re.match(r'/cern/student/\d+', path):
+            if re.match(r'^/cern/student/\d+', path):
                 if request.current_role.entity_type == RoleController.ENTITY_STUDENT:
                     if str(request.current_role.entity.id) == str.split(path, '/')[-1]:
                         can_edit = True
-            elif re.match(r'/cern/\w{2}/\d+/\w+', path):
+            elif re.match(r'^/cern/\w{2}/\d+/\w+', path):
                 if request.current_role.entity_type == RoleController.ENTITY_STUDENT:
                     sch = School.objects.get(id=str.split(path, '/')[-3])
                     if request.current_role.entity == sch.get_head_student():
                         can_edit = True
-            elif re.match(r'/venues/view/\d+', path):
+            elif re.match(r'^/venues/view/\d+', path):
                 if request.current_role.entity_type == RoleController.ENTITY_STUDENT:
                     ven = Venue.objects.get(id=str.split(path, '/')[-1])
                     if request.current_role.entity == ven.student:
                         can_edit = True
-            elif re.match(r'/cern/venues/temp_view/\d+', path):
+            elif re.match(r'^/cern/venues/temp_view/\d+', path):
                 if request.current_role.entity_type == RoleController.ENTITY_STUDENT:
                     ven = TempVenue.objects.get(id=str.split(path, '/')[-1])
                     if request.current_role.entity == ven.student:
                         can_edit = True
-            elif re.match(r'/team/\d+$', path):
+            elif re.match(r'^/team/\d+', path):
                 entity_id = request.current_role.entity.id
                 entity_type = request.current_role.entity_type
-                page = TeamPage.objects.get(id=str.split(path, '/')[-1])
-                admins = TeamAdministrator.objects.filter(team_page=page, entity_type=entity_type, entity_id=entity_id)
-                if len(admins) > 0:
+                page = TeamPage.objects.get(id=path.split('/')[2])
+                if TeamAdministrator.objects.filter(team_page=page, entity_type=entity_type, entity_id=entity_id):
                     can_edit = True
-            elif re.match(r'/team/\d+/edit$', path):
-                entity_id = request.current_role.entity.id
-                entity_type = request.current_role.entity_type
-                page = TeamPage.objects.get(id=str.split(path, '/')[2])
-                admins = TeamAdministrator.objects.filter(team_page=page, entity_type=entity_type, entity_id=entity_id)
-                if len(admins) > 0:
-                    can_edit = True
-            elif re.match(r'/team/\d+/admins$', path):
-                entity_id = request.current_role.entity.id
-                entity_type = request.current_role.entity_type
-                page = TeamPage.objects.get(id=str.split(path, '/')[2])
-                admins = TeamAdministrator.objects.filter(team_page=page, entity_type=entity_type, entity_id=entity_id)
-                if len(admins) > 0:
-                    can_edit = True
-            elif re.match(r'/team/\d+/invite_fan/\d+$', path):
-                entity_id = request.current_role.entity.id
-                entity_type = request.current_role.entity_type
-                page = TeamPage.objects.get(id=str.split(path, '/')[2])
-                admins = TeamAdministrator.objects.filter(team_page=page, entity_type=entity_type, entity_id=entity_id)
-                if len(admins) > 0:
-                    can_edit = True
-            elif re.match(r'/team/\d+/cancel_fan_invitation/\d+$', path):
-                entity_id = request.current_role.entity.id
-                entity_type = request.current_role.entity_type
-                page = TeamPage.objects.get(id=str.split(path, '/')[2])
-                admins = TeamAdministrator.objects.filter(team_page=page, entity_type=entity_type, entity_id=entity_id)
-                if len(admins) > 0:
-                    can_edit = True
-            elif re.match(r'/team/\d+/revoke_fan_invitation/\d+$', path):
-                entity_id = request.current_role.entity.id
-                entity_type = request.current_role.entity_type
-                page = TeamPage.objects.get(id=str.split(path, '/')[2])
-                admins = TeamAdministrator.objects.filter(team_page=page, entity_type=entity_type, entity_id=entity_id)
-                if len(admins) > 0:
-                    can_edit = True
-            elif re.match(r'/cern/\w{2}/\d+/\w+', path):
+            elif re.match(r'^/cern/\w{2}/\d+/\w+', path):
                 if request.current_role.entity_type == RoleController.ENTITY_STUDENT:
                     sch = School.objects.get(id=str.split(path, '/')[-1])
                     if request.current_role.entity == sch.get_head_student():
                         can_edit = True
-            elif re.match(r'/fan/\d+/edit', path):
+            elif re.match(r'^/fan/\d+/edit', path):
                 if request.current_role.entity_type == RoleController.ENTITY_FAN:
                     if str(request.current_role.entity.id) == str.split(path, '/')[2]:
                         can_edit = True
-            elif re.match(r'/fan/\d+', path):
+            elif re.match(r'^/fan/\d+', path):
                 if request.current_role.entity_type == RoleController.ENTITY_FAN:
                     if str(request.current_role.entity.id) == str.split(path, '/')[-1]:
                         can_edit = True
-            elif re.match(r'/sponsor/\d+', path):
+            elif re.match(r'^/sponsor/\d+', path):
                 if request.current_role.entity_type == RoleController.ENTITY_SPONSOR:
                     if str(request.current_role.entity.id) == str.split(path, '/')[-1]:
                         can_edit = True
-            elif re.match(r'/club/\d+$', path):
+            elif re.match(r'^/club/\d+$', path):
                 entity_id = request.current_role.entity.id
                 entity_type = request.current_role.entity_type
                 page = Club.objects.get(id=str.split(path, '/')[-1])
                 admins = ClubAdministrator.objects.filter(club=page, admin=request.user)
                 if len(admins) > 0:
                     can_edit = True
-
         request.can_edit = can_edit
 
 

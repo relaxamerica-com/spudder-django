@@ -30,6 +30,7 @@
             .paging_bootstrap { float: right; text-align: right; }
             .paging_bootstrap .pagination { margin: 0; }
             .dataTables_filter { text-align: right; }
+            .dataTables_length { display: none;}
         </style>
         <script src="/static/js/libs/modernizr-2.6.2-respond-1.1.0.min.js"></script>
         <script type="text/javascript" language="javascript" src="/static/js/libs/jquery-1.11.0.min.js"></script>
@@ -305,7 +306,7 @@
                     if ($(document).height() > $(window).height())
                         $footer.css({top: ''});
                     else
-                        $footer.css({top: $(window).height() - $footer.outerHeight()});
+                        $footer.css({top: $(window).height() - $footer.outerHeight() + 80});
                 }, 500);
             }
 

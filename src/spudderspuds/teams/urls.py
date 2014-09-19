@@ -2,14 +2,14 @@ from django.conf.urls.defaults import patterns
 
 
 urlpatterns = patterns(
-    'spudmart.teams.views',
+    'spudderspuds.teams.views',
     (r'^list$', 'teams_list'),
     (r'^create$', 'create_team'),
-    (r'^page/(?P<page_id>\d+){0,1}$', 'team_page'),
+    (r'^page/(?P<page_id>\d+)$', 'team_page'),
     (r'^(?P<page_id>\d+)$', 'public_view'),
     (r'^(?P<page_id>\d+)/edit$', 'edit_team_page'),
     (r'^(?P<page_id>\d+)/admins$', 'manage_team_page_admins'),
-    (r'^(?P<page_id>\d+)/invite_fan/(?P<fan_id>\d+)$', 'create_fan_invitation'),
+    (r'^(?P<page_id>\d+)/admins/invite$', 'manage_team_page_admins_invite'),
     (r'^(?P<page_id>\d+)/cancel_fan_invitation/(?P<fan_id>\d+)$', 'cancel_fan_invitation'),
     (r'^(?P<page_id>\d+)/revoke_fan_invitation/(?P<fan_id>\d+)$', 'revoke_fan_invitation'),
     (r'^(?P<page_id>\d+)/accept_fan_invitation/(?P<invitation_id>\d+)$', 'accept_fan_invitation'),

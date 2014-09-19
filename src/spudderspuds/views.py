@@ -191,7 +191,7 @@ def fan_profile_view(request, page_id):
     return render(request, 'spudderspuds/fans/pages/fan_page_view.html', template_data)
 
 
-@can_edit()
+@can_edit
 def fan_profile_edit(request, page_id):
     fan_page = get_object_or_404(FanPage, pk=page_id)
     profile_form = FanPageForm(initial=fan_page.__dict__, image=fan_page.avatar)

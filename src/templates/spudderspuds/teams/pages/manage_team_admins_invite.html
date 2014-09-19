@@ -4,19 +4,21 @@
 
 {% block well_content %}
     <div class="page-header">
-        <h1>Cancel invitation for {% fan_page_name fan %}</h1>
+        <h1><i class="fa fa-send"></i> Invite more administrators for {{ team.name }}</h1>
     </div>
 
-    <p>Are you sure you would like to cancel the invitation for {{ fan.name }} to administer "{{ team.name }}"?</p>
-
-    <form method="post" enctype="multipart/form-data" action="" style="margin-top: 20px;">
+    <form method="post">
         {% csrf_token %}
+        <legend>
+            Enter the email of the person you would like to invite to administer this team.
+        </legend>
+        {% bootstrap_form form %}
         {% buttons %}
             <button type="submit" class="btn btn-primary">
-                <i class="fa fa-trash-o"></i> Cancel Invitation
+                <i class="fa fa-send"></i> Send invitation
             </button>
             <a href="/team/{{ team.entity.id }}/admins" class="btn btn-default">
-                No thanks
+                Cancel
             </a>
         {% endbuttons %}
     </form>
