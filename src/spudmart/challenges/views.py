@@ -1,15 +1,70 @@
 from django.contrib.formtools.wizard import FormWizard
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponseNotFound
 from django.shortcuts import get_object_or_404, render
+from google.appengine.api import blobstore
 from spudderdomain.forms import NewChallengeTemplateForm, ChallengeClubForm, ChallengeDonationForm,\
-    ChallengeDetailsForm, ChooseChallengeTemplateForm
+    ChallengeDetailsForm, ChooseChallengeTemplateForm, EditChallengeTemplateForm
 from spudderdomain.models import ChallengeTemplate, Club, Challenge
+from spudmart.upload.forms import UploadForm
 
 
 def get_challenges(request):
     challenges = Challenge.objects.select_related('template').order_by('-created')
     template_data = {'challenges': challenges}
     return render(request, 'spudderspuds/challenges/pages/challenges.html', template_data)
+
+
+def view_challenge(request, challenge_id):
+    try:
+        challenge = Challenge.objects.select_related('template__image').get(id=challenge_id)
+    except Challenge.DoesNotExist:
+        return HttpResponseNotFound
+
+    template_data = {'challenge': challenge}
+    return render(request, 'spudderspuds/challenges/pages/view_challenge.html', template_data)
+
+
+def view_challenge_template(request, template_id):
+    try:
+        template = ChallengeTemplate.objects.get(id=template_id)
+    except ChallengeTemplate.DoesNotExist:
+        return HttpResponseNotFound
+
+    challenges = Challenge.objects.filter(template=template).order_by('-created')[:5]
+    template_data = {
+        'template': template,
+        'challenges': challenges
+    }
+    return render(request, 'spudderspuds/challenges/pages/view_template.html', template_data)
+
+
+def edit_challenge_template(request, template_id):
+    try:
+        template = ChallengeTemplate.objects.get(id=template_id)
+    except ChallengeTemplate.DoesNotExist:
+        return HttpResponseNotFound
+
+    form = EditChallengeTemplateForm(initial=template.__dict__, image=template.image)
+
+    if request.method == 'POST':
+        form = EditChallengeTemplateForm(request.POST, template_id=template.id, image=template.image)
+
+        if form.is_valid():
+            data = form.cleaned_data
+            template.name = data.get('name')
+            template.description = data.get('description')
+
+            upload_form = UploadForm(request.POST, request.FILES)
+            if upload_form.is_valid():
+                template.image = upload_form.save()
+            template.save()
+            return HttpResponseRedirect('/challenges/template/%s' % template.id)
+    template_data = {
+        'template': template,
+        'form': form,
+        'upload_url': blobstore.create_upload_url('/challenges/template/%s/edit' % template.id)
+    }
+    return render(request, 'spudderspuds/challenges/pages/edit_template.html', template_data)
 
 
 def new_challenge_wizard_view(request):
@@ -105,5 +160,4 @@ class NewChallengeWizard(FormWizard):
                 challenge.name = form.cleaned_data.get('name')
                 challenge.description = form.cleaned_data.get('description')
         challenge.save()
-        # TODO: redirect to challenge page
-        return HttpResponseRedirect('/challenges')
+        return HttpResponseRedirect('/challenges/%s' % challenge.id)

@@ -43,3 +43,34 @@ class ChallengeDetailsForm(forms.Form):
     name = forms.CharField(max_length=255)
     description = forms.CharField(widget=forms.Textarea)
 
+
+class EditChallengeTemplateForm(forms.Form):
+    name = forms.CharField(max_length=255)
+    description = forms.CharField(widget=forms.Textarea)
+    file = forms.FileField(
+        required=False, label="Add logo to this challenge template",
+        help_text="Great logos are square and at least 200px x 200px")
+
+    def __init__(self, *args, **kwargs):
+        template_id = kwargs.pop('template_id', None)
+        self.template_id = template_id
+        self.image = kwargs.pop('image', None)
+
+        super(EditChallengeTemplateForm, self).__init__(*args, **kwargs)
+
+        if self.image:
+            self.update_file_field_label_and_help_text()
+
+    def clean_name(self):
+        cleaned_data = super(EditChallengeTemplateForm, self).clean()
+        name = cleaned_data.get('name').strip()
+        if ChallengeTemplate.objects.exclude(id=self.template_id).filter(name=name).count():
+            raise forms.ValidationError("The template name you are using is already taken, try adding the town or city?")
+        return name
+
+    def update_file_field_label_and_help_text(self):
+        self.fields['file'].label = "Replace this challenge template logo"
+        self.fields['file'].help_text = """
+<span class=\"help-text-content\">Great logos are square and at least 200px x 200px</span>
+<img class=\"edit-team-logo-img pull-left\" src=\"/file/serve/%s\"/>
+""" % self.image.id
