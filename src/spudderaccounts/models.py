@@ -69,4 +69,4 @@ class Invitation(models.Model):
         elif self.invitation_type == self.REGISTER_AND_ADMINISTRATE_TEAM_INVITATION:
             return "%s/users/invitation/%s" % (settings.SPUDMART_BASE_URL, self.id)
         elif self.invitation_type == self.AFFILIATE_INVITE_CLUB_ADMINISTRATOR:
-            return "%s/spudderaffiliates/invitation" % settings.SPUDMART_BASE_URL
+            return "%s/spudderaffiliates/invitation/%s" % (settings.SPUDMART_BASE_URL, self.id)

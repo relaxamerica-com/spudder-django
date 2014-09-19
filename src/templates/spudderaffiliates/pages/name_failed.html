@@ -1,0 +1,10 @@
+{% extends 'spudderaffiliates/base_single_well.html' %}
+
+{% block well_content %}
+    <div class="text-center alert alert-warning">
+        <h1>Incorrect Name</h1>
+        <p>The name on the Amazon account you supplied is not "{{ club_name }}".</p>
+        <p>Since you will be able to fundraise on behalf of the club "{{ club_name }}", we require that your Amazon Account username match the club name.</p>
+        <p>When you have access to an Amazon account with that name, you can either click <a href="/spudderaffiliates/invitation/{{ invitation_id }}/create_club">here</a> to try again, or follow the link in the email you received originally.</p>
+    </div>
+{% endblock %}

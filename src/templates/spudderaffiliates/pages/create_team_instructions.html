@@ -1,0 +1,14 @@
+{% extends 'spudderaffiliates/base_single_well.html' %}
+
+{% block well_content %}
+    <div class="text-center">
+        <h1>Create A Team</h1>
+        <p class="text-left">You have now successfully created the club {{ club_name }}!</p>
+        <p>It is recommended, but not required, that you now create a Team to go with the Club. This Team will be where people can see the social media presence of your club.</p>
+        <p>Choose an option below:</p>
+        <div class="btn-group">
+            <a class="btn btn-default" href="/club/profile">Return to Club Profile</a>
+            <a class="btn btn-primary" href="/team/create?name={{ club_name }}&next_url=/fan/{{ request.current_role.entity_id }}"></a>
+        </div>
+    </div>
+{% endblock %}

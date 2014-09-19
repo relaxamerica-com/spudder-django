@@ -13,6 +13,7 @@ from spudderaccounts.models import Invitation
 from spudderaccounts.templatetags.spudderaccountstags import is_fan, user_has_fan_role
 from spudderaccounts.utils import change_current_role
 from spudderaccounts.wrappers import RoleFan
+from spudderaffiliates.models import Affiliate
 from spudderdomain.controllers import TeamsController, RoleController, SpudsController, EntityController
 from spudderdomain.models import FanPage, TeamPage, TeamAdministrator
 from spudderkrowdio.models import FanFollowingEntityTag, KrowdIOStorage
@@ -113,8 +114,7 @@ def fan_register(request):
     invitation = None
     if invitation_id:
         try:
-            invitation = Invitation.objects.get(id=invitation_id, status=Invitation.PENDING_STATUS,
-                                                invitation_type=Invitation.REGISTER_AND_ADMINISTRATE_TEAM_INVITATION)
+            invitation = Invitation.objects.get(id=invitation_id, status=Invitation.PENDING_STATUS)
         except Invitation.DoesNotExist:
             pass
 
@@ -135,12 +135,16 @@ def fan_register(request):
                 fan_role.entity,
                 form.cleaned_data.get('twitter', None),
                 form.cleaned_data.get('spud_id', None))
-            if invitation and invitation.invitation_type == Invitation.REGISTER_AND_ADMINISTRATE_TEAM_INVITATION:
-                team_admin = TeamAdministrator(entity_type=fan_role.entity_type, entity_id=fan_role.entity.id)
-                team_admin.team_page_id = invitation.target_entity_id
-                team_admin.save()
-                invitation.status = Invitation.ACCEPTED_STATUS
-                invitation.save()
+            if invitation:
+                if invitation.invitation_type == Invitation.REGISTER_AND_ADMINISTRATE_TEAM_INVITATION:
+                    team_admin = TeamAdministrator(entity_type=fan_role.entity_type, entity_id=fan_role.entity.id)
+                    team_admin.team_page_id = invitation.target_entity_id
+                    team_admin.save()
+                    invitation.status = Invitation.ACCEPTED_STATUS
+                    invitation.save()
+                elif invitation.invitation_type == Invitation.AFFILIATE_INVITE_CLUB_ADMINISTRATOR:
+                    fan_role.entity.affiliate = Affiliate.objects.get(name=invitation.extras['affiliate_name'])
+                    return HttpResponseRedirect('/spudderaffiliates/invitation/%s/create_club' % invitation.id)
                 return redirect('/fan/follow?origin=invitation')
             return redirect('/fan/%s/edit?new_registration=true' % fan_role.entity.id)
     else:

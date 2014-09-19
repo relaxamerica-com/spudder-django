@@ -3,6 +3,7 @@ import re
 from django.http import HttpResponseRedirect, Http404, HttpResponse, HttpResponseNotAllowed
 from django.shortcuts import render, redirect, get_object_or_404
 import settings
+from spudderaccounts.models import Invitation
 from spudderaccounts.wrappers import RoleBase
 from spudderclubs.decorators import club_admin_required, club_not_fully_activated, club_fully_activated
 from spudderclubs.forms import ClubProfileCreateForm, ClubProfileEditForm
@@ -54,7 +55,15 @@ def register_as_recipient_complete(request):
             redirect_to = '/club/register/verification_pending'
         else:
             state = RecipientRegistrationState.FINISHED
-            redirect_to = '/club/register/profile'
+            id = request.session['invitation_id']
+            if id:
+                inv = Invitation.objects.get(id=id)
+                inv.status = Invitation.ACCEPTED_STATUS
+                inv.save()
+                request.session['invitation_id'] = None
+                redirect_to = '/spudderaffiliates/invitation/%s/create_team' % id
+            else:
+                redirect_to = '/club/register/profile'
     else:
         state = RecipientRegistrationState.TERMINATED
         redirect_to = '/club/register/recipient/error'
