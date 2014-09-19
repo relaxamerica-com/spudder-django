@@ -305,6 +305,7 @@ class TempClub(models.Model):
     name = models.CharField(max_length=255)
     state = models.CharField(max_length=2)
     email = models.CharField(max_length=255)
+    affiliate = models.ForeignKey(Affiliate, blank=True, null=True)
 
 
 class ClubRecipient(AmazonRecipient):

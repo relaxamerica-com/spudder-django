@@ -11,6 +11,7 @@ from django.shortcuts import render, redirect
 from spudderaccounts.models import Invitation
 from spudderaccounts.utils import select_role_by_authentication_service, change_role_url, create_linked_authentication_service, get_authentication_wrapper
 from spudderaccounts.wrappers import RoleBase
+from spudderaffiliates.models import Affiliate
 from spudderdomain.controllers import LinkedServiceController, RoleController
 from spudmart.accounts.models import UserProfile
 from spudmart.sponsors.models import SponsorPage
@@ -215,6 +216,7 @@ def _process_amazon_login(access_token, amazon_user_email, amazon_user_id, reque
 
         # If the account_type is club, create a Club entity in first stage (before registration as recipient)
         if account_type == 'club':
+            inv = None
             if request.session['invitation_id']:
                 inv = Invitation.objects.get(id=request.session['invitation_id'])
                 if str(amazon_user_name) != str(TempClub.objects.get(id=inv.target_entity_id).name):
@@ -225,6 +227,8 @@ def _process_amazon_login(access_token, amazon_user_email, amazon_user_id, reque
                 amazon_email=amazon_user_email,
                 amazon_id=amazon_user_id
             )
+            if inv:
+                club.affiliate = Affiliate.objects.get(name=inv.extras['affiliate_name'])
             club.save()
 
             club_admin, _ = ClubAdministrator.objects.get_or_create(admin=user, club=club)
