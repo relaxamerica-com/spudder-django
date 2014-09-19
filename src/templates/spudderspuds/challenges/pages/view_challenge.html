@@ -26,9 +26,10 @@
     <p>Name: {{ challenge.name }}</p>
     <p>Description: {{ challenge.description }}</p>
     <p>Check challenge history <a href="/challenges/{{ challenge.id }}/history">here</a></p>
-
+    {% if can_share %}
     <a data-original-title="Share on Facebook" data-placement="bottom" href="JavaScript:facebookPopup()">
         Share on Facebook
     </a>
+    {% endif %}
 
 {% endblock %}

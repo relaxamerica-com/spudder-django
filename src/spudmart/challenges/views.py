@@ -20,7 +20,15 @@ def view_challenge(request, challenge_id):
     except Challenge.DoesNotExist:
         return HttpResponseNotFound
 
-    template_data = {'challenge': challenge}
+    can_share = False
+    if challenge.creator_entity_id == str(request.current_role.entity.id) \
+            and challenge.creator_entity_type == request.current_role.entity_type:
+        can_share = True
+
+    template_data = {
+        'challenge': challenge,
+        'can_share': can_share
+    }
     return render(request, 'spudderspuds/challenges/pages/view_challenge.html', template_data)
 
 
