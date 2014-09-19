@@ -1,6 +1,17 @@
 {% extends 'spudderspuds/base_single_well.html' %}
 {% load bootstrap3 %}
 
+{% block meta %}
+    {{ block.super }}
+    <!-- Base facebook meta tags -->
+    <meta property="og:title" content="Check '{{ challenge.name }}' challenge on Spudder!" />
+    <meta property="og:description" content="{{ challenge.description }}" />
+    {% if challenge.template.image %}
+        <meta property="og:image" content="/file/serve/{{ challenge.template.image.pk }}" />
+    {% endif %}
+{% endblock %}
+
+
 {% block well_content %}
     <h3>"{{ challenge.name }}" challenge in Spudder!</h3>
     <hr />
@@ -15,5 +26,9 @@
     <p>Name: {{ challenge.name }}</p>
     <p>Description: {{ challenge.description }}</p>
     <p>Check challenge history <a href="/challenges/{{ challenge.id }}/history">here</a></p>
+
+    <a data-original-title="Share on Facebook" data-placement="bottom" href="JavaScript:facebookPopup()">
+        Share on Facebook
+    </a>
 
 {% endblock %}
