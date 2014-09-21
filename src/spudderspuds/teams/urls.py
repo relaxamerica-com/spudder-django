@@ -9,7 +9,7 @@ urlpatterns = patterns(
     (r'^(?P<page_id>\d+)$', 'public_view'),
     (r'^(?P<page_id>\d+)/edit$', 'edit_team_page'),
     (r'^(?P<page_id>\d+)/admins$', 'manage_team_page_admins'),
-    (r'^(?P<page_id>\d+)/admins/invite$', 'manage_team_page_admins_invite'),
+    # (r'^(?P<page_id>\d+)/admins/invite$', 'manage_team_page_admins_invite'),
     (r'^(?P<page_id>\d+)/cancel_fan_invitation/(?P<fan_id>\d+)$', 'cancel_fan_invitation'),
     (r'^(?P<page_id>\d+)/revoke_fan_invitation/(?P<fan_id>\d+)$', 'revoke_fan_invitation'),
     (r'^(?P<page_id>\d+)/accept_fan_invitation/(?P<invitation_id>\d+)$', 'accept_fan_invitation'),
