@@ -1,0 +1,38 @@
+{% extends 'spudderclubs/base_single_well.html' %}
+
+{% block css %}
+    {{ block.super }}
+
+    <link rel="stylesheet" href="/static/css/spudderspuds.css" />
+{% endblock %}
+
+{% block google_analytics_additions %}
+    ga('set', 'contentGroup1', 'CLUBS Show Profile Page');
+{% endblock %}
+
+{% block well_content %}
+    <h2>
+        <img src="/static/img/spudderclubs/button-clubs-small.png"/> Show club profile page
+    </h2>
+
+    <div class="alert alert-info">
+        <h4>Show profile</h4>
+        <p>After restoring club profile page visibility it will gain back some features like:</p>
+        <ol>
+            <li>Profile page will be visible for any Spudder® user</li>
+            <li>Club admins will be able to associate it with new Teams</li>
+            <li>Information about club will be displayed on associated Teams pages</li>
+        </ol>
+    </div>
+
+    <form method="post" enctype="multipart/form-data">
+        <div class="form-group" style="text-align: center">
+            <button type="submit" class="btn btn-primary">
+                <i class="fa fa-save"></i> Show
+            </button>
+            <a href="{{ request.META.HTTP_REFERER }}" class="btn btn-default">
+                Cancel
+            </a>
+        </div>
+    </form>
+{% endblock %}

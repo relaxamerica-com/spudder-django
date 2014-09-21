@@ -6,5 +6,14 @@
         <li><a href="/club/dashboard"><i class="fa fa-fw fa-bar-chart-o"></i> Dashboard</a></li>
         <li><a href="/club/profile"><i class="fa fa-fw fa-pencil"></i> Edit Profile</a></li>
         <li><a href="/club/{{ request.current_role.entity.club.id }}"><i class="fa fa-fw fa-search-plus"></i> Club Profile Preview</a></li>
+
+        <!-- Features available only for fully activated clubs -->
+        {% if request.current_role.entity.club.is_fully_activated %}
+            {% if request.current_role.entity.club.is_hidden %}
+                <li><a href="/club/show"><i class="fa fa-fw fa-eye"></i> Show Profile</a></li>
+            {% else %}
+                <li><a href="/club/hide"><i class="fa fa-fw fa-eye-slash"></i> Hide Profile</a></li>
+            {% endif %}
+        {% endif %}
     </ul>
 </li>

@@ -1,0 +1,61 @@
+{% extends 'spudderspuds/base.html' %}
+{% load bootstrap3 %}
+{% load accounts %}
+
+{% block css %}
+    {{ block.super }}
+
+    <link rel="stylesheet" href="/static/css/spudderclubs.css" />
+{% endblock %}
+
+{% block body_id %}club-not-found{% endblock %}
+
+{% block title %}Club not found | Spudder Clubs Network{% endblock title %}
+
+{% block body %}
+    <div class="jumbotron">
+        <div class="container">
+            <div class="col-xs-offset-0 col-sm-8 col-sm-offset-1">
+                <h1><span class="text-primary">OPPS</span><br/> Club profile not found </h1>
+                <h3>
+                    The Club that you are looking for doesn't exists or has chosen to Hide their Profile.
+                </h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="page-header">
+            <h1>
+                Here we have a listing of similar Clubs for you.
+            </h1>
+        </div>
+
+        <div class="row-fluid">
+            {% for club in clubs %}
+                <div class="col-sm-10" style="margin-bottom: 10px;">
+                    <table>
+                        <tr>
+                            <td rowspan="2">
+                                {% if club.thumbnail %}
+                                    <img src="/file/serve/{{ club.thumbnail.pk }}" width="56" height="52" style="margin-right: 20px;"/>
+                                {% else %}
+                                    <i class="fa fa-group fa-2x" style="margin-right: 20px;"> </i>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="/club/{{ club.id }}">{{ club.name }}</a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                {{ club.address }}
+                            </td>
+                        </tr>
+                    </table>
+
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

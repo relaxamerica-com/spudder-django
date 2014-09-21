@@ -258,6 +258,10 @@ class Club(models.Model):
     cover_image = models.ForeignKey(UploadedFile, blank=True, null=True, related_name='club_cover_image')
     location = models.ForeignKey(Location, null=True, blank=True, related_name='club_location')
 
+    # Flags
+    hidden = models.BooleanField(default=False)
+
+    # Social media
     facebook = models.CharField(max_length=255, blank=True)
     twitter = models.CharField(max_length=255, blank=True)
     google_plus = models.CharField(max_length=255, blank=True)
@@ -296,6 +300,9 @@ class Club(models.Model):
             return 'recipient'
 
         return 'location'
+
+    def is_hidden(self):
+        return self.hidden
 
 
 class TempClub(models.Model):

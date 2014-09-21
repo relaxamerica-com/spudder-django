@@ -16,6 +16,7 @@ from spudmart.amazon.utils import get_club_register_as_recipient_cbui_url, get_r
 from spudmart.recipients.models import RecipientRegistrationState
 from spudmart.upload.models import UploadedFile
 from spudmart.utils.cover_image import save_cover_image_from_request, reset_cover_image
+from spudmart.utils.querysets import get_object_or_none
 
 
 def splash(request):
@@ -167,15 +168,55 @@ def profile(request):
     })
 
 
-def public_page(request, club_id):
-    club = get_object_or_404(Club, pk=club_id)
+@club_admin_required
+@club_fully_activated
+def hide_profile(request):
+    club = request.current_role.entity.club
 
-    if not club.is_fully_activated():
-        raise Http404
+    if request.method == "POST":
+        club.hidden = True
+        club.save()
+
+        return redirect('/club/dashboard')
+
+    return render(request, 'spudderclubs/pages/dashboard/hide_profile.html', {
+        'profile': club
+    })
+
+
+@club_admin_required
+@club_fully_activated
+def show_profile(request):
+    club = request.current_role.entity.club
+
+    if request.method == "POST":
+        club.hidden = False
+        club.save()
+
+        return redirect('/club/dashboard')
+
+    return render(request, 'spudderclubs/pages/dashboard/show_profile.html', {
+        'profile': club
+    })
+
+
+def public_page(request, club_id):
+    club = get_object_or_none(Club, pk=club_id)
+
+    if not club or not club.is_fully_activated or club.is_hidden():
+        return HttpResponseRedirect('/club/not_found')
 
     return render(request, 'spudderclubs/pages/public/view.html', {
         'base_url': 'spudderspuds/base.html',
         'profile': club
+    })
+
+
+def not_found(request):
+    clubs = Club.objects.filter(hidden=False)[:5]
+
+    return render(request, 'spudderclubs/pages/public/not_found.html', {
+        'clubs': clubs
     })
 
 

@@ -1,0 +1,40 @@
+{% extends 'spudderclubs/base_single_well.html' %}
+
+{% block css %}
+    {{ block.super }}
+
+    <link rel="stylesheet" href="/static/css/spudderspuds.css" />
+{% endblock %}
+
+{% block google_analytics_additions %}
+    ga('set', 'contentGroup1', 'CLUBS Hide Profile Page');
+{% endblock %}
+
+{% block well_content %}
+    <h2>
+        <img src="/static/img/spudderclubs/button-clubs-small.png"/> Hide club profile page
+    </h2>
+
+    <div class="alert alert-info">
+        <h4>Hiding profile</h4>
+        <p>Hidden club profiles have few limitations:</p>
+        <ol>
+            <li>Profile page is no longer visible for any Spudder® user (including club administrators)</li>
+            <li>Club cannot be associated with any new Teams</li>
+            <li>On associated Teams pages club isn't displayed any more</li>
+        </ol>
+
+        <p>At any time you can show your club profile again from Dashboard!</p>
+    </div>
+
+    <form method="post" enctype="multipart/form-data">
+        <div class="form-group" style="text-align: center">
+            <button type="submit" class="btn btn-primary">
+                <i class="fa fa-save"></i> Hide
+            </button>
+            <a href="{{ request.META.HTTP_REFERER }}" class="btn btn-default">
+                Cancel
+            </a>
+        </div>
+    </form>
+{% endblock %}

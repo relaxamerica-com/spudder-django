@@ -8,6 +8,7 @@ from spudderdomain.models import TeamAdministrator, TeamPage, Club, ClubAdminist
 from spudderkrowdio.models import KrowdIOStorage
 from spudderkrowdio.utils import get_following
 from spudmart.CERN.models import School
+from spudmart.utils.querysets import get_object_or_none
 from spudmart.venues.models import Venue, TempVenue
 
 
@@ -103,9 +104,7 @@ class EditPageMiddleware:
                     if str(request.current_role.entity.id) == str.split(path, '/')[-1]:
                         can_edit = True
             elif re.match(r'^/club/\d+$', path):
-                entity_id = request.current_role.entity.id
-                entity_type = request.current_role.entity_type
-                page = Club.objects.get(id=str.split(path, '/')[-1])
+                page = get_object_or_none(Club, id=str.split(path, '/')[-1])
                 admins = ClubAdministrator.objects.filter(club=page, admin=request.user)
                 if len(admins) > 0:
                     can_edit = True
