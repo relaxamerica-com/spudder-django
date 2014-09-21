@@ -14340,6 +14340,6 @@ input#accepted-terms-and-conditions {
   background-position: center bottom;
   background-size: 100% auto;
 }
-#club-not-found h3 {
+#club-not-found .jumbotron h3 {
   color: white;
 }

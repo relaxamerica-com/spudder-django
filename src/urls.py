@@ -1,7 +1,9 @@
 import urlparse
+from django.views.generic.simple import direct_to_template
 from django.conf.urls.defaults import *
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response, render
+from django.template import Template
 from django.views.generic import RedirectView
 from spudderaffiliates.models import Affiliate
 from spudderdomain.controllers import RoleController, TeamsController, VenuesController, FansController
@@ -106,6 +108,7 @@ urlpatterns = patterns(
     # Legacy URL mapping
     (r'^campusrep', RedirectView.as_view(url="/cern/")),
     (r'^privacy', RedirectView.as_view(url="http://info.spudder.com/privacy/")),
+    (r'^terms', direct_to_template, {'template': 'terms_of_service.html'}),
 
     (r'(?P<affiliate_url_name>[^/]+)$', 'spudderaffiliates.views.affiliate_splash'),
 

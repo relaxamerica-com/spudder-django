@@ -25,7 +25,12 @@
         </ol>
     </div>
 
-    <form method="post" enctype="multipart/form-data">
+    <p>
+        <input type="checkbox" class="checkbox-visible" id="accepted-terms-and-conditions">
+        I have accepted the <a href="/terms">terms and conditions</a>.
+    </p>
+
+    <form method="post" enctype="multipart/form-data" id="reactivate-form">
         <div class="form-group" style="text-align: center">
             <button type="submit" class="btn btn-primary">
                 <i class="fa fa-save"></i> Show
@@ -35,4 +40,19 @@
             </a>
         </div>
     </form>
+{% endblock %}
+
+{% block js %}
+    {{ block.super }}
+
+    <script type="text/javascript" language="javascript">
+        $(document).ready(function() {
+            $('#reactivate-form').submit(function (event) {
+                if (!$('#accepted-terms-and-conditions').prop('checked')){
+                    event.preventDefault();
+                    alert('You must accept the terms and conditions to reactivate club profile!!');
+                }
+            })
+        });
+    </script>
 {% endblock %}
