@@ -487,6 +487,14 @@ class SocialController(object):
             return False
         return True
 
+
+    @classmethod
+    def AtNameIsValid(cls, at_name):
+        if not at_name:
+            return False
+        return not [c for c in at_name if not c.isalnum()]
+
+
     @classmethod
     def IsFanFollowsTheTeam(cls, fan, team):
         return FanFollowingEntityTag.objects.filter(

@@ -1,0 +1,33 @@
+{% extends 'spudderspuds/base_single_well.html' %}
+{% load bootstrap3 %}
+
+{% block masterhead %}
+    <h4 class="navbar-text navbar-right hidden-xs"><span class="text-primary">Create new challenge:</span> {{ template.name }}</h4>
+{% endblock %}
+
+{% block body_id %}challenges-choose-club-create-club{% endblock %}
+
+{% block body_class %}{{ template.slug }}{% endblock %}
+
+{% block title %}{% endblock %}
+
+{% block well_content %}
+    <div class="page-header">
+        <h1>Who gets the money? (2 of 2)</h1>
+        <p><small>Tell us about the club you want to raise money for.</small></p>
+    </div>
+
+    <form method="post">
+        {% csrf_token %}
+        {% bootstrap_form form %}
+        {% buttons %}
+            <button type="submit" class="btn btn-primary">
+                <i class="fa fa-save"></i> Save an continue
+            </button>
+            <a href="{{ request.META.HTTP_REFERER }}" class="btn btn-default">
+                Back
+            </a>
+        {% endbuttons %}
+    </form>
+
+{% endblock %}

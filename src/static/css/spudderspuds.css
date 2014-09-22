@@ -14505,7 +14505,7 @@ ul.social-network li a {
   height: 600px;
   background-size: cover;
   overflow: hidden;
-  margin-top: -130px;
+  margin-top: -180px;
   margin-bottom: 0;
   position: relative;
 }
@@ -14560,6 +14560,12 @@ ul.social-network li a {
 #challenges-splash #challenges-cta h2 {
   padding-top: 40px;
   margin: 20px 0;
+}
+@media (max-width: 991px) {
+  #challenges-splash #challenges-cta h2 {
+    padding-top: 0;
+    margin-top: 0;
+  }
 }
 #challenges-splash #challenges-cta .btn {
   font-size: 18px;
@@ -14654,4 +14660,99 @@ body {
 .navbar-masthead.spudder-masthead .login-signup .btn {
   width: 120px;
   font-weight: bold;
+}
+/**********************************************************************************************************************/
+/**********************************************************************************************************************/
+body {
+  background-color: #110301;
+}
+body.icebucket {
+  background-color: #628E98;
+}
+body.icebucket:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-image: -webkit-linear-gradient(top, rgba(98, 142, 152, 0.2) 0%, #628e98 100%);
+  background-image: -o-linear-gradient(top, rgba(98, 142, 152, 0.2) 0%, #628e98 100%);
+  background-image: linear-gradient(to bottom, rgba(98, 142, 152, 0.2) 0%, #628e98 100%);
+  background-repeat: repeat-x;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#33628e98', endColorstr='#ff628e98', GradientType=0);
+}
+body.icebucket #body-background-image-container {
+  background-image: url('/static/img/spudderspuds/challenges/challenge_icebucket_jumbotron.jpg');
+}
+body #body-background-image-container {
+  width: 100%;
+  height: 100%;
+  background-image: url('/static/img/spudderspuds/challenges/jumbotron.jpg');
+  background-size: cover;
+  background-position: center top;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  position: absolute;
+  z-index: -1;
+}
+body #body-background-image-container:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-image: -webkit-radial-gradient(circle, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.4));
+  background-image: radial-gradient(circle, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.4));
+  background-repeat: no-repeat;
+}
+#challenges-choose-template .challenge-templates .list-group-item {
+  position: relative;
+  border-radius: 3px;
+  color: #FFF;
+  background-size: cover;
+}
+#challenges-choose-template .challenge-templates .list-group-item:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-image: -webkit-radial-gradient(circle, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.4));
+  background-image: radial-gradient(circle, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.4));
+  background-repeat: no-repeat;
+}
+#challenges-choose-template .challenge-templates .list-group-item .media-object {
+  height: 150px;
+  width: 150px;
+  background-size: cover;
+}
+#challenges-choose-template .challenge-templates .list-group-item .media {
+  position: relative;
+}
+#challenges-choose-template .challenge-templates .list-group-item .fa-arrow-right {
+  position: absolute;
+  top: 40%;
+  right: 2px;
+  font-size: 36px;
+}
+#challenges-choose-template .challenge-templates .list-group-item.icebucket {
+  background-image: url('/static/img/spudderspuds/challenges/challenge_icebucket_jumbotron.jpg');
+}
+#challenges-choose-template .challenge-templates .list-group-item.icebucket .media-object {
+  background-image: url('/static/img/spudderspuds/challenges/challenge_icebucket_icon.jpg');
+}
+#challenges-choose-club table td {
+  padding: 0;
+}
+#challenges-choose-club table td h4 {
+  margin: 0;
+  padding: 4px;
+}
+.well {
+  background-color: rgba(255, 255, 255, 0.8);
 }

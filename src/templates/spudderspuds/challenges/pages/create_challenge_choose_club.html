@@ -1,0 +1,72 @@
+{% extends 'spudderspuds/base_single_well.html' %}
+
+{% block masterhead %}
+    <h4 class="navbar-text navbar-right hidden-xs"><span class="text-primary">Create new challenge:</span> {{ template.name }}</h4>
+{% endblock %}
+
+{% block body_id %}challenges-choose-club{% endblock %}
+
+{% block body_class %}{{ template.slug }}{% endblock %}
+
+{% block title %}{% endblock %}
+
+{% block well_content %}
+    <div class="page-header">
+        <h1>Who gets the money? (2 of 2)</h1>
+        <p><small>Choose the club you would like donations to go to</small></p>
+    </div>
+
+    <p class="text-info" style="margin-bottom: 20px;">Currently viewing clubs in <b>{{ state }}</b>, <a href="/challenges/create/{{ template.id }}">change</a>?</p>
+
+    {% if clubs %}
+
+        <div class="alert alert-info">
+            <h4>Can't find your club here?</h4>
+            <p>No problems, you can add your club to this list and we'll make sure they get any money donated to them through Spudder!</p>
+            <br/>
+            <a class="btn btn-default" href="{{ request.path }}/create_club">
+                <i class="fa fa-plus"></i> Add your club!
+            </a>
+            <br/>
+            <br/>
+            <p><small>Once you add your club, we'll make sure they get all money raised for them!</small></p>
+        </div>
+
+        <table class="table table-striped datatable">
+            <thead>
+                <tr>
+                    <th>Club</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for club in clubs %}
+                <tr>
+                    <td>
+                        <a href="{{ request.path }}/{{ club.type }}/{{ club.id }}" class="list-group-item">
+                            <h4 class="list-group-item-heading">{{ club.name }}</h4>
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+    {% else %}
+
+        <div class="alert alert-info">
+            <h4>Your the first to raise money for a club in {{ state }}!</h4>
+            <p>Great news, you have started the fundraising revolution in {{ state }}.</p>
+            <p>No clubs in {{ state }} are registered yet but <b>don't worry</b></p>
+            <br/>
+            <a class="btn btn-default" href="{{ request.path }}/create_club">
+                <i class="fa fa-plus"></i> Add your club!
+            </a>
+            <br/>
+            <br/>
+            <p><small>Once you add your club, we'll make sure they get all money raised for them!</small></p>
+        </div>
+
+    {% endif %}
+
+
+{% endblock %}

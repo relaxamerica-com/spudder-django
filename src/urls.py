@@ -5,6 +5,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response, render
 from django.template import Template
 from django.views.generic import RedirectView
+from spudderadmin.templatetags.featuretags import feature_is_enabled
 from spudderaffiliates.models import Affiliate
 from spudderdomain.controllers import RoleController, TeamsController, VenuesController, FansController
 from spudderspuds.forms import FanSigninForm
@@ -37,6 +38,11 @@ def temp_redirect_view(request):
                     return HttpResponseRedirect(redirect_url)
         except KeyError:
             pass  # request META dict doesn't have HTTP_HOST key (f.i. in tests)
+
+    # challenges_only_override - launch with only challenges Sep 2014
+    if feature_is_enabled('challenges_only_override'):
+        from spudmart.challenges.views import get_challenges
+        return get_challenges(request)
 
     # Deal with current role if one exists
     if request.current_role:
@@ -89,6 +95,7 @@ urlpatterns = patterns(
     url(r'^team/*', include('spudderspuds.teams.urls')),
     url(r'^flag/*', include('spudmart.flags.urls')),
     url(r'^club/*', include('spudderclubs.urls')),
+    url(r'^challenges/*', include('spudderspuds.challenges.urls')),
     url(r'^challenges/*', include('spudmart.challenges.urls')),
 
     # Spudder QA center

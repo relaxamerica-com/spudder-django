@@ -1,0 +1,25 @@
+{% extends 'spudderadmin/base.html' %}
+
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <h2>Ensure base challenge templates</h2>
+                        <div class="alert alert-info">
+                            <p>This will ensure that the database is populated with the basic challenge templates.</p>
+                        </div>
+                        <form method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="ensure_challenge_templates" />
+                            <button class="btn btn-default" type="submit">
+                                Ensure templates
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

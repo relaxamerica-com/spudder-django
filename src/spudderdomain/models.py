@@ -347,14 +347,14 @@ class ChallengeTemplate(models.Model):
 class Challenge(models.Model):
     template = models.ForeignKey(ChallengeTemplate)
     parent = models.ForeignKey('Challenge', null=True, default=None)
-    club = models.ForeignKey(Club)
     name = models.CharField(max_length=255)
     description = models.TextField()
     creator_entity_id = models.CharField(max_length=255)
     creator_entity_type = models.CharField(max_length=255)
     recipient_entity_id = models.CharField(max_length=255, null=True, blank=True, default=None)
     recipient_entity_type = models.CharField(max_length=255, null=True, blank=True, default=None)
-    proposed_donation_amount = models.FloatField()
+    proposed_donation_amount = models.FloatField(default=0.0)
+    proposed_donation_amount_decline = models.FloatField(default=0.0)
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
 

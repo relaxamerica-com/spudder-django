@@ -20,6 +20,8 @@ class FanSigninForm(forms.Form):
         password = cleaned_data.get('password')
         user = authenticate(username=email_address, password=password)
         if not user or not user.is_active:
+            del cleaned_data['email_address']
+            del cleaned_data['password']
             raise forms.ValidationError('Email and password do not match.')
         cleaned_data['email_address'] = email_address
         return cleaned_data

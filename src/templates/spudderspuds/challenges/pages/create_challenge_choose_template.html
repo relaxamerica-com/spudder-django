@@ -1,0 +1,31 @@
+{% extends 'spudderspuds/base_single_well.html' %}
+
+{% block body_id %}challenges-choose-template{% endblock %}
+
+{% block masterhead %}
+    <h4 class="navbar-text navbar-right"><span class="text-primary">Spudder</span> Sports Fundraising Made Simple</h4>
+{% endblock %}
+
+{% block title %}{% endblock %}
+
+{% block well_content %}
+    <div class="page-header">
+        <h1>Challenge Type</h1>
+        <p><small>Choose the type of challenge you want to create</small></p>
+    </div>
+
+    <div class="list-group challenge-templates">
+        {% for template in templates %}
+            <a class="list-group-item {{ template.slug }}" href="/challenges/create/{{ template.id }}">
+                <div class="media">
+                    <div class="media-object pull-left img-circle"></div>
+                    <div class="media-body">
+                        <h2 class="media-heading">{{ template.name }}</h2>
+                        <p>{{ template.description }}</p>
+                        <i class="fa fa-arrow-right"></i>
+                    </div>
+                </div>
+            </a>
+        {% endfor %}
+    </div>
+{% endblock %}

@@ -734,3 +734,11 @@ def delete_affiliate(request, affiliate_id):
     aff = Affiliate.objects.get(id=affiliate_id)
     aff.delete()
     return HttpResponseRedirect('/spudderadmin/affiliates')
+
+
+@admin_login_required
+def challenges(request):
+    if request.method == 'POST':
+        if request.POST.get('action') == 'ensure_challenge_templates':
+            messages.success(request, "<i class='fa fa-check'></i> Base challenge templates ensured.")
+    return render(request, 'spudderadmin/pages/challenges/dashboard.html')

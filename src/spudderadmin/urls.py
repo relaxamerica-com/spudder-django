@@ -48,5 +48,7 @@ urlpatterns = patterns(
 
     url(r'^/send_email$', 'send_email'),
 
+    url(r'^/challenges$', 'challenges'),
+
     url(r'^', 'admin_login'),
 )

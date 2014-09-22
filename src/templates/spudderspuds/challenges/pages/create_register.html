@@ -1,0 +1,33 @@
+{% extends 'spudderspuds/base_single_well.html' %}
+{% load bootstrap3 %}
+
+{% block masterhead %}
+    <h4 class="navbar-text navbar-right"><span class="text-primary">Spudder</span> Sports Fundraising Made Simple</h4>
+{% endblock %}
+
+{% block body_id %}challenges-regsiter{% endblock %}
+
+{% block title %}{% endblock %}
+
+{% block well_content %}
+    <div class="page-header">
+        <h1>Register with <span class="text-primary">Spudder</span></h1>
+        <p><small>Register for a free account with Spudder to start fundraising for your club!</small></p>
+    </div>
+
+    <p class="text-info" style="margin-bottom: 20px;">Already have an account? <a href="/challenges/create/signin?next={{ request.GET.next|default:'/' }}">sign in</a>?</p>
+
+    <form method="post">
+        {% csrf_token %}
+        {% bootstrap_form form %}
+        {% buttons %}
+            <button type="submit" class="btn btn-primary">
+                Register
+            </button>
+            <a href="{{ request.META.HTTP_REFERER }}" class="btn btn-default">
+                Cancel
+            </a>
+        {% endbuttons %}
+    </form>
+
+{% endblock %}

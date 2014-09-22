@@ -1,7 +1,8 @@
 {% extends 'base.html' %}
 {% load spudderaccountstags %}
+{% load featuretags %}
 
-{% block title %}Spudder Sports Updates Made Simple{% endblock %}
+{% block title %}Spudder Sports Fundraising Made Simple{% endblock %}
 
 {% block header_nav_class %}navbar-inverse{% endblock %}
 
@@ -12,7 +13,8 @@
 {% endblock %}
 
 {% block masterhead %}
-    {% if not request.current_role %}
+
+    {% if not request.current_role and not 'challenges_only_override'|feature_is_enabled %}
         <div class="navbar-collapse collapse navbar-right login-signup">
             <a href="/spuds/signin" class="btn btn-default navbar-btn btn-lg">LOG IN <i class="fa fa-caret-down text-primary"></i></a>
             <a href="/spuds/register" class="btn btn-primary navbar-btn btn-lg">SIGN UP</a>
