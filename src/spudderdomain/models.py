@@ -384,5 +384,6 @@ class ChallengeParticipation(models.Model):
     donation_amount = models.FloatField(null=True, default=None)
     state = models.CharField(max_length=255, choices=STATES_CHOICES)
     media = models.ForeignKey(UploadedFile, null=True, default=None)
+    message = models.TextField(default='', blank=True)
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)

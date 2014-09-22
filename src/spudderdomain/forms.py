@@ -74,3 +74,17 @@ class EditChallengeTemplateForm(forms.Form):
 <span class=\"help-text-content\">Great logos are square and at least 200px x 200px</span>
 <img class=\"edit-team-logo-img pull-left\" src=\"/file/serve/%s\"/>
 """ % self.image.id
+
+
+class DeclineChallengeForm(forms.Form):
+    message = forms.CharField(widget=forms.Textarea, required=False)
+
+
+class DonateChallengeForm(forms.Form):
+    donation_amount = forms.FloatField()
+
+
+class AcceptChallengeForm(forms.Form):
+    donation_amount = forms.FloatField()
+    # file = forms.FileField(label="Upload video with you performing a challenge")
+

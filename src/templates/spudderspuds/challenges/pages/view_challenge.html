@@ -26,10 +26,29 @@
     <p>Name: {{ challenge.name }}</p>
     <p>Description: {{ challenge.description }}</p>
     <p>Check challenge history <a href="/challenges/{{ challenge.id }}/history">here</a></p>
-    {% if can_share %}
+    {% if is_creator %}
     <a data-original-title="Share on Facebook" data-placement="bottom" href="JavaScript:facebookPopup()">
         Share on Facebook
     </a>
     {% endif %}
+
+    <hr />
+
+    {% buttons %}
+        <a href="/challenges" class="btn btn-default">
+            Back
+        </a>
+        {% if not is_creator %}
+            <a href="/challenges/{{ challenge.id }}/decline" class="btn btn-default">
+                Decline
+            </a>
+            <a href="/challenges/{{ challenge.id }}/donate" class="btn btn-default">
+                Donate Only
+            </a>
+            <a href="/challenges/{{ challenge.id }}/accept" class="btn btn-default">
+                Accept
+            </a>
+        {% endif %}
+    {% endbuttons %}
 
 {% endblock %}
