@@ -363,21 +363,21 @@ body {
 body {
     background-color: #110301;
 
-    &.icebucket {
-        background-color: #628E98;
-        &:before {
-            content: '';
-            position: absolute;
-            top: 0;
-            right: 0;
-            bottom: 0;
-            left: 0;
-            #gradient.vertical(rgba(98,142,152,.2); rgba(98,142,152,1));
-        }
-        #body-background-image-container {
-            background-image: url('/static/img/spudderspuds/challenges/challenge_icebucket_jumbotron.jpg');
-        }
-    }
+//    &.icebucket {
+//        background-color: #628E98;
+//        &:before {
+//            content: '';
+//            position: absolute;
+//            top: 0;
+//            right: 0;
+//            bottom: 0;
+//            left: 0;
+//            #gradient.vertical(rgba(98,142,152,.2); rgba(98,142,152,1));
+//        }
+//        #body-background-image-container {
+//            background-image: url('/static/img/spudderspuds/challenges/challenge_icebucket_jumbotron.jpg');
+//        }
+//    }
 
     #body-background-image-container {
         width: 100%;
@@ -459,6 +459,33 @@ body {
                 padding: 4px;
             }
         }
+    }
+}
+
+#challenge-share {
+
+    .challenge-container {
+        .image {
+            background-position: center;
+            background-size: cover;
+            height: 200px;
+        }
+    }
+    &.icebucket {
+        .challenge-container {
+            .image {
+                background-image: url('/static/img/spudderspuds/challenges/challenge_icebucket_jumbotron.jpg');
+            }
+        }
+    }
+}
+
+.challenge-container {
+    border: 1px solid #FFF;
+    .caption {
+        border-top:1px solid #FFF;
+        background: #F1f1f1;
+        padding: 10px;
     }
 }
 

@@ -152,3 +152,10 @@ def create_challenge_set_donation(request, template_id, state, club_id, club_cla
         request,
         'spudderspuds/challenges/pages/create_challenge_choose_donation.html',
         template_data)
+
+
+def challenge_share(request, challenge_id):
+    challenge = get_object_or_404(Challenge, id=challenge_id)
+    template = challenge.template
+    template_data = {'challenge': challenge, 'template': template}
+    return render(request, 'spudderspuds/challenges/pages/challenge_share.html', template_data)

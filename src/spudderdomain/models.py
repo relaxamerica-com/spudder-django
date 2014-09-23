@@ -367,6 +367,17 @@ class Challenge(models.Model):
     def __str__(self):
         return unicode(self).encode('utf-8')
 
+    def get_recipient(self):
+        from spudderdomain.controllers import EntityController
+        from spudderdomain.wrappers import EntityBase
+        for entity_type in [EntityController.ENTITY_TEMP_CLUB, EntityController.ENTITY_CLUB]:
+            if self.recipient_entity_type == entity_type:
+                return EntityController.GetWrappedEntityByTypeAndId(
+                    entity_type,
+                    self.recipient_entity_id,
+                    EntityBase.EntityWrapperByEntityType(entity_type))
+        return None
+
 
 class ChallengeParticipation(models.Model):
     DECLINED_STATE = '01'

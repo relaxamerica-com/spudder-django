@@ -146,7 +146,7 @@ class EntityTempClub(EntityBase):
 
     @property
     def link_to_public_page(self):
-        raise NotImplementedError()
+        return None
 
     @property
     def name(self):
@@ -191,7 +191,7 @@ class EntityClub(EntityBase):
 
     @property
     def link_to_public_page(self):
-        raise NotImplementedError
+        return '/clubs/%s' % self.entity.id
 
     @property
     def name(self):
