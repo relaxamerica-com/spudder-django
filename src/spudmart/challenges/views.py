@@ -280,11 +280,10 @@ class AcceptChallengeWizard(FormWizard):
 
     def done(self, request, form_list):
         challenge = Challenge(
+            parent=self.challenge,
             template=self.challenge.template,
-            creator_entity_id=self.challenge.recipient_entity_id,
-            creator_entity_type=self.challenge.recipient_entity_type,
-            recipient_entity_id=request.current_role.entity.id,
-            recipient_entity_type=request.current_role.entity_type
+            creator_entity_id=request.current_role.entity.id,
+            creator_entity_type=request.current_role.entity_type
         )
         participation = ChallengeParticipation(
             participating_entity_id=request.current_role.entity.id,
@@ -296,7 +295,8 @@ class AcceptChallengeWizard(FormWizard):
                 participation.donation_amount = form.cleaned_data.get('donation_amount')
                 participation.state = ChallengeParticipation.ACCEPTED_STATE
             elif step_name == 'choose_club':
-                challenge.club_id = form.cleaned_data.get('recipient_club_id')
+                challenge.recipient_entity_id = form.cleaned_data.get('recipient_club_id')
+                challenge.recipient_entity_type = Club.__name__
             elif step_name == 'set_donation_amount':
                 challenge.proposed_donation_amount = form.cleaned_data.get('proposed_donation_amount')
             elif step_name == 'update_details':
