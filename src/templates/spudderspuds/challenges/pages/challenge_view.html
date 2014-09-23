@@ -51,7 +51,7 @@
                     </div>
                     <div class="row">
                         <div class="col-sm-10 col-sm-offset-1">
-                            {% include 'spudderspuds/challenges/components/challenge-container.html' %}
+                            {% include 'spudderspuds/challenges/components/challenge_container.html' %}
                         </div>
                     </div>
                     <hr/>
@@ -59,7 +59,7 @@
                     <div class="action-buttons">
                         <div class="row">
                             <div class="col-md-4">
-                                <a href="javascript:alert('accept');" class="btn btn-primary btn-block">
+                                <a href="{{ request.path }}/accept/donate" class="btn btn-primary btn-block">
                                     ACCEPT!
                                 </a>
                             </div>

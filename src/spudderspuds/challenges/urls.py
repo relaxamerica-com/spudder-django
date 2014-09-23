@@ -4,6 +4,12 @@ from spudderdomain.models import TempClub, Club
 urlpatterns = patterns(
     'spudderspuds.challenges.views',
 
+    url(r'(?P<challenge_id>\d+)/accept/upload',
+        'challenge_accept_upload'),
+
+    url(r'(?P<challenge_id>\d+)/accept/donate',
+        'challenge_accept_donate'),
+
     url(r'(?P<challenge_id>\d+)/share',
         'challenge_share'),
 

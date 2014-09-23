@@ -8,6 +8,8 @@ from spudderspuds.challenges.forms import CreateTempClubForm, ChallengeDonationA
 from spudderspuds.challenges.models import TempClubOtherInformation
 from spudderspuds.utils import create_and_activate_fan_role
 from spudmart.CERN.models import STATES
+from spudmart.upload.forms import UploadForm
+from google.appengine.api import blobstore
 
 
 def _get_clubs_by_state(state):
@@ -166,3 +168,26 @@ def challenge_view(request, challenge_id):
     template = challenge.template
     template_data = {'challenge': challenge, 'template': template}
     return render(request, 'spudderspuds/challenges/pages/challenge_view.html', template_data)
+
+
+def challenge_accept_donate(request, challenge_id):
+    challenge = get_object_or_404(Challenge, id=challenge_id)
+    template = challenge.template
+    template_data = {'challenge': challenge, 'template': template}
+    return render(request, 'spudderspuds/challenges/pages/challenge_accept_donate.html', template_data)
+
+
+def challenge_accept_upload(request, challenge_id):
+    form = UploadForm()
+    challenge = get_object_or_404(Challenge, id=challenge_id)
+    template = challenge.template
+    if request.method == 'POST':
+        form = UploadForm(request.POST, request.FILES)
+        if form.is_valid():
+            file = form.save()
+    template_data = {
+        'challenge': challenge,
+        'template': template,
+        'form': form,
+        'upload_url': blobstore.create_upload_url('/challenges/%s/accept/upload' % challenge_id)}
+    return render(request, 'spudderspuds/challenges/pages/challenge_accept_upload.html', template_data)
