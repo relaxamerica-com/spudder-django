@@ -159,3 +159,10 @@ def challenge_share(request, challenge_id):
     template = challenge.template
     template_data = {'challenge': challenge, 'template': template}
     return render(request, 'spudderspuds/challenges/pages/challenge_share.html', template_data)
+
+
+def challenge_view(request, challenge_id):
+    challenge = get_object_or_404(Challenge, id=challenge_id)
+    template = challenge.template
+    template_data = {'challenge': challenge, 'template': template}
+    return render(request, 'spudderspuds/challenges/pages/challenge_view.html', template_data)

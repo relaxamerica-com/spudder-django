@@ -14734,16 +14734,20 @@ body #body-background-image-container:before {
   margin: 0;
   padding: 4px;
 }
-#challenge-share .challenge-container .image {
+#challenge-view .action-buttons .btn {
+  font-size: 18px;
+  padding: 15px 14px;
+}
+.challenge-container {
+  border: 1px solid #FFF;
+}
+.challenge-container .image {
   background-position: center;
   background-size: cover;
   height: 200px;
 }
-#challenge-share.icebucket .challenge-container .image {
+.icebucket .challenge-container .image {
   background-image: url('/static/img/spudderspuds/challenges/challenge_icebucket_jumbotron.jpg');
-}
-.challenge-container {
-  border: 1px solid #FFF;
 }
 .challenge-container .caption {
   border-top: 1px solid #FFF;

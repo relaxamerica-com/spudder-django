@@ -462,26 +462,25 @@ body {
     }
 }
 
-#challenge-share {
-
-    .challenge-container {
-        .image {
-            background-position: center;
-            background-size: cover;
-            height: 200px;
-        }
-    }
-    &.icebucket {
-        .challenge-container {
-            .image {
-                background-image: url('/static/img/spudderspuds/challenges/challenge_icebucket_jumbotron.jpg');
-            }
+#challenge-view {
+    .action-buttons {
+        .btn {
+            font-size: 18px;
+            padding: 15px 14px;
         }
     }
 }
 
 .challenge-container {
     border: 1px solid #FFF;
+    .image {
+        background-position: center;
+        background-size: cover;
+        height: 200px;
+        .icebucket & {
+            background-image: url('/static/img/spudderspuds/challenges/challenge_icebucket_jumbotron.jpg');
+        }
+    }
     .caption {
         border-top:1px solid #FFF;
         background: #F1f1f1;

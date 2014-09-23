@@ -1,0 +1,25 @@
+<div class="challenge-container">
+    <div class="image"></div>
+    <div class="caption">
+        <p class="name">{{ challenge.name }}</p>
+        {% with recipient=challenge.get_recipient %}
+            {% if recipient %}
+                <p class="recipient">
+                    All money raised goes to:
+                    <span class="recipient-name">
+                        {% if recipient.link_to_public_page %}
+                            <a href="{{ recipient.link_to_public_page }}">
+                                {{ recipient.name }}
+                            </a>
+                        {% else %}
+                            {{ recipient.name }}
+                        {% endif %}
+                    </span>
+                </p>
+                <p class="recipient-location">
+                    <i class="fa fa-map-marker"></i> {{ recipient.state|format_state }}
+                </p>
+            {% endif %}
+        {% endwith %}
+    </div>
+</div>

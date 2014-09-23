@@ -7,6 +7,9 @@ urlpatterns = patterns(
     url(r'(?P<challenge_id>\d+)/share',
         'challenge_share'),
 
+    url(r'(?P<challenge_id>\d+)',
+        'challenge_view'),
+
     url(r'create/(?P<template_id>\d+)/(?P<state>\w+)/o/(?P<club_id>\d+)$',
         'create_challenge_set_donation',
         {'club_class': Club}),

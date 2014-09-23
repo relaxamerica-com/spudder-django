@@ -18,39 +18,19 @@
     </div>
     <div class="row">
         <div class="col-sm-10 col-sm-offset-1">
-
-            <div class="challenge-container">
-                <div class="image"></div>
-                <div class="caption">
-                    <p class="name">{{ challenge.name }}</p>
-                    {% with recipient=challenge.get_recipient %}
-                        {% if recipient %}
-                            <p class="recipient">
-                                All money raised goes to:
-                                <span class="recipient-name">
-                                    {% if recipient.link_to_public_page %}
-                                        <a href="{{ recipient.link_to_public_page }}">
-                                            {{ recipient.name }}
-                                        </a>
-                                    {% else %}
-                                        {{ recipient.name }}
-                                    {% endif %}
-                                </span>
-                            </p>
-                            <p class="recipient-location">
-                                <i class="fa fa-map-marker"></i> {{ recipient.state|format_state }}
-                            </p>
-                        {% endif %}
-                    {% endwith %}
-                </div>
-            </div>
+            {% include 'spudderspuds/challenges/components/challenge-container.html' %}
             <hr/>
             <p>Share on social media:</p>
             <p class="share-challenge">
-                <a data-original-title="Share on Facebook" data-placement="bottom" href="JavaScript:facebookPopup('{{ settings.SPUDMART_BASE_URL }}/challenges/{{ challenge.id }}')">
+                <a data-original-title="Share on Facebook" data-placement="bottom" href="JavaScript:facebookPopup('http://{{ request.META.HTTP_HOST }}/challenges/{{ challenge.id }}')">
                     <span class="fa-stack fa-2x"><i class="fa fa-circle fa-stack-2x fa-inverse"></i><i class="fa fa-facebook fa-stack-1x"></i></span>
                 </a>
             </p>
         </div>
     </div>
+    <hr/>
+    <h2>Where to next?</h2>
+    <a href="/challenges/{{ challenge.id }}" class="btn btn-primary">
+        Go to the challenge page!
+    </a>
 {% endblock %}

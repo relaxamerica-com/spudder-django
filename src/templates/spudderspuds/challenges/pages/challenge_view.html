@@ -1,0 +1,94 @@
+{% extends 'spudderspuds/base.html' %}
+{% load spudderspudstags %}
+
+{% block meta %}
+    {{ block.super }}
+    <meta property="og:title" content="Take the '{{ challenge.name }}'. On Spudder for '{{ challenge.get_recipient.name }} ({{ challenge.get_recipient.state }})'!" />
+    <meta property="og:description" content="{{ challenge.description }}" />
+    {% if template.slug == 'icebucket' %}
+        <meta property="og:image" content="/static/img/spudderspuds/challenges/challenge_icebucket_icon.jpg" />
+    {% endif %}
+{% endblock %}
+
+{% block masterhead %}
+    <a href="/challenges/create" class="btn btn-lg btn-primary hidden-xs navbar-right">
+        Create your own challenge <i class="fa fa-arrow-right"></i>
+    </a>
+
+    <h4 class="navbar-text navbar-right hidden-xs"><span class="text-primary">Spudder Challenge:</span> {{ challenge.name }}</h4>
+{% endblock %}
+
+{% block body_id %}challenge-view{% endblock %}
+
+{% block body_class %}{{ template.slug }}{% endblock %}
+
+{% block title %}{% endblock %}
+
+{% block body %}
+
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-8">
+
+                <div class="well">
+                    <div class="page-header">
+                        <h1><span class="text-primary">Spudder Challenge:</span> {{ challenge.name }}</h1>
+                        <h2>
+                            <small>
+                                You are challenged to do the {{ challenge.name }}
+                                {% with recipient=challenge.get_recipient %}
+                                    for
+                                    {% if recipient.link_to_public_page %}
+                                        <a href="{{ recipient.link_to_public_page }}">
+                                            {{ recipient.name }}
+                                        </a>
+                                    {% else %}
+                                        {{ recipient.name }}
+                                    {% endif %}
+                                {% endwith %}
+                            </small>
+                        </h2>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-10 col-sm-offset-1">
+                            {% include 'spudderspuds/challenges/components/challenge-container.html' %}
+                        </div>
+                    </div>
+                    <hr/>
+                    <h2>Do you ...</h2>
+                    <div class="action-buttons">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <a href="javascript:alert('accept');" class="btn btn-primary btn-block">
+                                    ACCEPT!
+                                </a>
+                            </div>
+                            <div class="col-md-4">
+                                <a href="javascript:alert('decline with donation');" class="btn btn-warning btn-block">
+                                    Decline with donation
+                                </a>
+                            </div>
+                            <div class="col-md-4">
+                                <a href="javascript:alert('decline with message');" class="btn btn-default btn-block">
+                                    Decline with message
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-sm-4">
+
+                <div class="well">
+                    <div class="page-header">
+                        <h3><span class="text-primary">Challenge</span> History</h3>
+                        <h4><small>See everyone how's taken this challenge</small></h4>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
