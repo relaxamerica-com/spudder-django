@@ -14663,10 +14663,10 @@ body {
 }
 /**********************************************************************************************************************/
 /**********************************************************************************************************************/
-body {
+body.challenges {
   background-color: #110301;
 }
-body #body-background-image-container {
+body.challenges #body-background-image-container {
   width: 100%;
   height: 100%;
   background-image: url('/static/img/spudderspuds/challenges/jumbotron.jpg');
@@ -14679,7 +14679,7 @@ body #body-background-image-container {
   position: absolute;
   z-index: -1;
 }
-body #body-background-image-container:before {
+body.challenges #body-background-image-container:before {
   content: '';
   position: absolute;
   top: 0;

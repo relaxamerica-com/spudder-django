@@ -4,6 +4,8 @@
 
 {% block body_id %}challenges-splash{% endblock %}
 
+{% block body_class %}challenges {{ template.slug }}{% endblock %}
+
 {% block masterhead %}
 
     {% if 'challenges_only_override'|feature_is_enabled %}
