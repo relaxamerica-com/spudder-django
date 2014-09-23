@@ -40,7 +40,6 @@ class CreateTeamForm(BaseTeamForm):
     sport = forms.ChoiceField(
         choices=[('', 'Select a sport...')] + [('%s' % x, SPORTS[x]) for x in range(len(SPORTS))],
         label="Sport <span class=\"input-required\">*required</span>")
-    # file = forms.FileField(required=False, label="Image")
     state = forms.ChoiceField(
         choices=[('', 'Select a state...')] + sorted([(k, v) for k, v in SORTED_STATES.items()], key=lambda x: x[1]),
         label="State <span class=\"input-required\">*required</span>")

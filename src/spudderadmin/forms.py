@@ -31,3 +31,7 @@ class PasswordAndActionForm(forms.Form):
 
 class SystemDeleteVenuesForm(PasswordAndActionForm):
     pass
+
+
+class ChallengesResetSystemForm(PasswordAndActionForm):
+    pass

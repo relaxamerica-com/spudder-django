@@ -23,7 +23,8 @@ class EntityController(object):
     ENTITY_TEAM = "Team"
     ENTITY_AFFILIATE = "Affiliate"
     ENTITY_TEMP_CLUB = "TemporaryClub"
-    ENTITY_TYPES = (ENTITY_VENUE, ENTITY_TEAM, ENTITY_AFFILIATE, ENTITY_TEMP_CLUB)
+    ENTITY_CLUB = "Club"
+    ENTITY_TYPES = (ENTITY_VENUE, ENTITY_TEAM, ENTITY_AFFILIATE, ENTITY_TEMP_CLUB, ENTITY_CLUB)
     
     @classmethod
     def GetEntityByTypeAndId(cls, entity_type, entity_id):
@@ -46,6 +47,11 @@ class EntityController(object):
             try:
                 return TempClub.objects.get(id=entity_id)
             except TempClub.DoesNotExist:
+                return None
+        if entity_type == cls.ENTITY_CLUB:
+            try:
+                return Club.objects.get(id=entity_id)
+            except Club.DoesNotExist:
                 return None
         return None
 

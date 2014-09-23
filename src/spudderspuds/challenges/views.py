@@ -2,29 +2,16 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 from django.shortcuts import redirect, render, get_object_or_404
 from spudderaccounts.utils import change_current_role
-from spudderdomain.controllers import RoleController
-from spudderdomain.models import Club, TempClub, FanPage, Challenge
+from spudderdomain.controllers import RoleController, EntityController
+from spudderdomain.models import Club, TempClub, FanPage, Challenge, ChallengeTemplate
 from spudderspuds.challenges.forms import CreateTempClubForm, ChallengeDonationAmountForm, ChallengesRegisterForm, ChallengesSigninForm
 from spudderspuds.challenges.models import TempClubOtherInformation
 from spudderspuds.utils import create_and_activate_fan_role
 from spudmart.CERN.models import STATES
 
-_CHALLENGE_TEMPLATES = {
-    'icebucket': {
-        'id': 1,
-        'name': 'The Ice Bucket Challenge',
-        'description': 'You know it and you love it, what a great way to raise money!',
-        'slug': 'icebucket'
-    }
-}
-
-
-def _get_challenge_template(template_id):
-    return _CHALLENGE_TEMPLATES['icebucket']
-
 
 def _get_clubs_by_state(state):
-    clubs = [c for c in Club.objects.all()]  # TODO this needs to take into account state
+    clubs = [c for c in Club.objects.filter(state=state)]
     for x in range(len(clubs)):
         clubs[x] = clubs[x].__dict__
         clubs[x]['type'] = 'o'
@@ -80,13 +67,13 @@ def create_register(request):
 def create_challenge(request):
     if not request.current_role or request.current_role.entity_type != RoleController.ENTITY_FAN:
         return redirect('/challenges/create/register?next=/challenges/create')
-    template_data = {'templates': _CHALLENGE_TEMPLATES.values()}
+    template_data = {'templates': ChallengeTemplate.objects.filter(active=True)}
     return render(request, 'spudderspuds/challenges/pages/create_challenge_choose_template.html', template_data)
 
 
 def create_challenge_choose_club_choose_state(request, template_id):
     template_data = {
-        'template': _get_challenge_template(template_id),
+        'template': get_object_or_404(ChallengeTemplate, id=template_id),
         'states': sorted([{'id': k, 'name': v} for k, v in STATES.items()], key=lambda x: x['id'])}
     return render(
         request,
@@ -97,7 +84,7 @@ def create_challenge_choose_club_choose_state(request, template_id):
 def create_challenge_choose_club(request, template_id, state):
     template_data = {
         'state': STATES[state],
-        'template': _get_challenge_template(template_id),
+        'template': get_object_or_404(ChallengeTemplate, id=template_id),
         'clubs': _get_clubs_by_state(state)}
     return render(
         request,
@@ -124,7 +111,7 @@ def create_challenge_choose_club_create_club(request, template_id, state):
     template_data = {
         'form': form,
         'state': STATES[state],
-        'template': _get_challenge_template(template_id)}
+        'template': get_object_or_404(ChallengeTemplate, id=template_id)}
     return render(
         request,
         'spudderspuds/challenges/pages/create_challenge_choose_club_create_club.html',
@@ -133,19 +120,34 @@ def create_challenge_choose_club_create_club(request, template_id, state):
 
 def create_challenge_set_donation(request, template_id, state, club_id, club_class):
     club = get_object_or_404(club_class, id=club_id)
+    template = get_object_or_404(ChallengeTemplate, id=template_id)
     form = ChallengeDonationAmountForm()
     if request.method == 'POST':
         form = ChallengeDonationAmountForm(request.POST)
         if form.is_valid():
             donation_accept = form.cleaned_data.get('donation_with_challenge')
             donation_reject = form.cleaned_data.get('donation_without_challenge')
-            challenge = Challenge()
+            recipient_entity_type = EntityController.ENTITY_CLUB
+            if club_class == TempClub:
+                recipient_entity_type = EntityController.ENTITY_TEMP_CLUB
+            challenge = Challenge(
+                template=template,
+                name=template.name,
+                description=template.description,
+                creator_entity_id=request.current_role.entity.id,
+                creator_entity_type=request.current_role.entity_type,
+                recipient_entity_id=club_id,
+                recipient_entity_type=recipient_entity_type,
+                proposed_donation_amount=donation_accept,
+                proposed_donation_amount_decline=donation_reject)
+            challenge.save()
+            return redirect('/challenges/%s/share' % challenge.id)
     template_data = {
         'club': club,
         'club_class': club_class.__name__,
         'form': form,
         'state': state,
-        'template': _get_challenge_template(template_id)}
+        'template': template}
     return render(
         request,
         'spudderspuds/challenges/pages/create_challenge_choose_donation.html',

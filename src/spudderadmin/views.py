@@ -13,11 +13,12 @@ from spudderaccounts.models import SpudderUser
 from spudderaccounts.wrappers import RoleStudent, RoleFan, RoleSponsor
 from spudderadmin.decorators import admin_login_required
 from spudderadmin.forms import AtPostSpudTwitterAPIForm, PasswordAndActionForm, SystemDeleteVenuesForm
+from spudderadmin.forms import ChallengesResetSystemForm
 from spudderadmin.utils import encoded_admin_session_variable_name
 from spudderaffiliates.forms import AffiliateForm
 from spudderaffiliates.models import Affiliate
 from spudderdomain.controllers import RoleController, EntityController
-from spudderdomain.models import FanPage, LinkedService, TeamAdministrator, TeamPage, TeamVenueAssociation, Location
+from spudderdomain.models import FanPage, LinkedService, TeamAdministrator, TeamPage, TeamVenueAssociation, Location, ChallengeTemplate, ChallengeParticipation, Challenge
 from spudderkrowdio.models import KrowdIOStorage, FanFollowingEntityTag
 from spudderkrowdio.utils import get_user_mentions_activity, start_following
 from spuddersocialengine.atpostspud.models import AtPostSpudTwitterAuthentication, AtPostSpudTwitterCounter, AtPostSpudServiceConfiguration
@@ -738,7 +739,27 @@ def delete_affiliate(request, affiliate_id):
 
 @admin_login_required
 def challenges(request):
+    ACTION_RESET_CHALLENGES_SYSTEM = 'reset_challenges_system'
+    ACTION_ENSURE_CHALLENGE_TEMPLATE = 'ensure_challenge_templates'
+    reset_challenges_system_form = ChallengesResetSystemForm(initial={'action': ACTION_RESET_CHALLENGES_SYSTEM})
     if request.method == 'POST':
-        if request.POST.get('action') == 'ensure_challenge_templates':
+        action = request.POST.get('action')
+        if action == ACTION_RESET_CHALLENGES_SYSTEM:
+            reset_challenges_system_form = ChallengesResetSystemForm(request.POST)
+            if reset_challenges_system_form.is_valid():
+                ChallengeParticipation.objects.all().delete()
+                Challenge.objects.all().delete()
+                ChallengeTemplate.objects.all().delete()
+                messages.success(request, "<i class='fa fa-check'></i> Challenges system reset.")
+                action = ACTION_ENSURE_CHALLENGE_TEMPLATE
+        if action == ACTION_ENSURE_CHALLENGE_TEMPLATE:
+            ChallengeTemplate(
+                name="Ice Bucket Challenge",
+                description="Challenge your friends, family and fans to tip a bucket of ice water over their head!",
+                slug="icebucket").save()
             messages.success(request, "<i class='fa fa-check'></i> Base challenge templates ensured.")
-    return render(request, 'spudderadmin/pages/challenges/dashboard.html')
+    template_data = {
+        'reset_challenges_system_form': reset_challenges_system_form,
+        'challenge_templates': ChallengeTemplate.objects.all()
+    }
+    return render(request, 'spudderadmin/pages/challenges/dashboard.html', template_data)

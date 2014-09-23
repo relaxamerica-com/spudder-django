@@ -1,4 +1,5 @@
 import abc
+from spudderdomain.models import ClubAdministrator
 from spudderdomain.utils import get_entity_base_instanse_by_id_and_type
 from spudmart.utils.querysets import get_object_or_none
 
@@ -161,6 +162,51 @@ class EntityTempClub(EntityBase):
     @property
     def affiliate(self):
         return self.entity.affiliate
+
+
+class EntityClub(EntityBase):
+    @property
+    def entity_type(self):
+        from spudderdomain.controllers import EntityController
+        return EntityController.ENTITY_CLUB
+
+    @property
+    def icon(self):
+        return '/static/img/spudderclubs/button-clubs-tiny.pny'
+
+    @property
+    def image(self):
+        return '/static/img/spudderclubs/button-clubs-tiny.pny'
+
+    @property
+    def jumbotron(self):
+        raise NotImplementedError
+
+    @property
+    def contact_emails(self):
+        emails = []
+        for admin in ClubAdministrator.objects.filter(club=self.entity):
+            emails.append(admin.admin.email)
+        return emails
+
+    @property
+    def link_to_public_page(self):
+        raise NotImplementedError
+
+    @property
+    def name(self):
+        return self.entity.name
+
+    @property
+    def state(self):
+        return self.entity.state
+
+    def is_admin(self, entity_id, entity_type):
+        raise NotImplementedError
+
+    @property
+    def affiliate(self):
+        raise NotImplementedError
 
 
 class EntityVenue(EntityBase):

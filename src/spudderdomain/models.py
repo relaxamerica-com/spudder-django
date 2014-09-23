@@ -257,6 +257,7 @@ class Club(models.Model):
     thumbnail = models.ForeignKey(UploadedFile, blank=True, null=True, related_name='club_thumbnail')
     cover_image = models.ForeignKey(UploadedFile, blank=True, null=True, related_name='club_cover_image')
     location = models.ForeignKey(Location, null=True, blank=True, related_name='club_location')
+    state = models.CharField(max_length=2)
 
     # Flags
     hidden = models.BooleanField(default=False)
@@ -336,6 +337,8 @@ class ChallengeTemplate(models.Model):
     description = models.TextField()
     image = models.ForeignKey(UploadedFile, null=True, default=None)
     created = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    slug = models.CharField(max_length=255, null=True, blank=True)
+    active = models.BooleanField(default=True)
 
     def __unicode__(self):
         return unicode(self.name)

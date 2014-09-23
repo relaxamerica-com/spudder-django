@@ -100,23 +100,17 @@ def register_profile_info(request):
     club = request.current_role.entity.club
     form = ClubProfileCreateForm()
     social_media_form = LinkedInSocialMediaForm()
-
     if request.method == "POST":
         form = ClubProfileCreateForm(request.POST)
         social_media_form = LinkedInSocialMediaForm(request.POST)
-
         if form.is_valid() and social_media_form.is_valid():
             club.address = request.POST.get('address')
-
+            club.state = form.cleaned_data.get('state')
             location_info = request.POST.get('location_info', None)
             club.update_location(location_info)
-
             set_social_media(club, social_media_form)
-
             club.save()
-
             return redirect('/club/dashboard')
-
     return render(request, 'spudderclubs/pages/registration/register_profile.html', {
         'form': form,
         'social_media': social_media_form

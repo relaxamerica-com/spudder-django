@@ -1,4 +1,5 @@
 from django import forms
+from spudmart.CERN.models import SORTED_STATES
 
 
 class ClubProfileCreateForm(forms.Form):
@@ -8,6 +9,9 @@ class ClubProfileCreateForm(forms.Form):
         help_text="Club main location address",
         widget=forms.TextInput(attrs={'placeholder': 'Address'})
     )
+    state = forms.ChoiceField(
+        choices=[('', 'Select a state...')] + sorted([(k, v) for k, v in SORTED_STATES.items()], key=lambda x: x[1]),
+        label="State <span class=\"input-required\">*required</span>")
 
 
 class ClubProfileEditForm(ClubProfileCreateForm):

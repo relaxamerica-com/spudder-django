@@ -1,4 +1,5 @@
 {% extends 'spudderadmin/base.html' %}
+{% load bootstrap3 %}
 
 {% block body %}
     <div class="container">
@@ -16,6 +17,42 @@
                             <button class="btn btn-default" type="submit">
                                 Ensure templates
                             </button>
+                        </form>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <h2>Challenge Templates</h2>
+                        <ul class="list-group">
+                            {% for template in challenge_templates %}
+                                <li class="list-group-item">
+                                    <h4>{{ template.name }}</h4>
+                                </li>
+                            {% empty %}
+                                <div class="alert alert-danger" style="width:90%; margin: 20px auto;">
+                                    <p>There are no templates in the system at the moment!</p>
+                                    <p>You should reset the system or ensure the base templates are set.</p>
+                                </div>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <h2>Reset Challenges System</h2>
+                        <div class="alert alert-danger">
+                            <p>This can not be undone and will delete all challenges and templates from the system.</p>
+                        </div>
+                        <form method="post">
+                            {% csrf_token %}
+                            {% bootstrap_form reset_challenges_system_form %}
+                            {% buttons %}
+                                <button type="submit" class="btn btn-danger">
+                                    <i class="fa fa-refresh"></i> Reset system
+                                </button>
+                            {% endbuttons %}
                         </form>
                     </div>
                 </div>
