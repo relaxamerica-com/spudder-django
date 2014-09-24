@@ -17,7 +17,8 @@
         <h1>Accept Challenge</h1>
         <h2><small>You are accepting the {{ challenge.name }}</small></h2>
     </div>
-    <p style="margin-bottom: 20px;">
+    {% include 'spudderspuds/challenges/components/challenge_container.html' %}
+    <p style="margin: 20px 0; ">
         To complete accepting this challenge, make a pledge and upload a video or image of you doing the challenge!<br/>
         <small>Note that you will contacted to honor your pledge and offered several ways to pay</small>
     </p>
@@ -31,7 +32,7 @@
         {% bootstrap_form form %}
         {% buttons %}
             <button type="submit" class="btn btn-primary btn-cta">
-                <i class="fa fa-check"></i> Accept
+                <i class="fa fa-check"></i> Pledge
             </button>
         {% endbuttons %}
     </form>

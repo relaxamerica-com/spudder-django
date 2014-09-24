@@ -2,6 +2,7 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 from django.shortcuts import redirect, render, get_object_or_404
 from spudderaccounts.utils import change_current_role
+from spudderaccounts.wrappers import RoleBase, RoleFan
 from spudderdomain.controllers import RoleController, EntityController
 from spudderdomain.models import Club, TempClub, FanPage, Challenge, ChallengeTemplate, ChallengeParticipation
 from spudderdomain.wrappers import EntityBase
@@ -183,7 +184,13 @@ def challenge_share(request, challenge_id):
 def challenge_view(request, challenge_id):
     challenge = get_object_or_404(Challenge, id=challenge_id)
     template = challenge.template
-    template_data = {'challenge': challenge, 'template': template}
+    template_data = {
+        'challenge': challenge,
+        'template': template,
+        'owner': RoleController.GetRoleForEntityTypeAndID(
+            challenge.creator_entity_type,
+            challenge.creator_entity_id,
+            RoleFan)}
     return render(request, 'spudderspuds/challenges/pages/challenge_view.html', template_data)
 
 
