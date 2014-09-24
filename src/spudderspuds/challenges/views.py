@@ -6,7 +6,7 @@ from spudderaccounts.wrappers import RoleBase, RoleFan
 from spudderdomain.controllers import RoleController, EntityController
 from spudderdomain.models import Club, TempClub, FanPage, Challenge, ChallengeTemplate, ChallengeParticipation
 from spudderdomain.wrappers import EntityBase
-from spudderspuds.challenges.forms import CreateTempClubForm, ChallengeDonationAmountForm, ChallengesRegisterForm, ChallengesSigninForm, AcceptChallengeForm
+from spudderspuds.challenges.forms import CreateTempClubForm, ChallengeConfigureForm, ChallengesRegisterForm, ChallengesSigninForm, AcceptChallengeForm
 from spudderspuds.challenges.models import TempClubOtherInformation
 from spudderspuds.utils import create_and_activate_fan_role
 from spudmart.CERN.models import STATES
@@ -42,7 +42,7 @@ def _create_temp_club(form, state):
     return temp_club
 
 
-def _create_challenge(club_class, club_id, form, request, template, parent=None, participation=None):
+def _create_challenge(club_class, club_id, form, request, template, parent=None, image=None):
     donation_accept = form.cleaned_data.get('donation_with_challenge')
     donation_reject = form.cleaned_data.get('donation_without_challenge')
     recipient_entity_type = EntityController.ENTITY_CLUB
@@ -59,13 +59,17 @@ def _create_challenge(club_class, club_id, form, request, template, parent=None,
         proposed_donation_amount=donation_accept,
         proposed_donation_amount_decline=donation_reject)
     challenge.save()
-    if parent or participation:
+    if parent or image:
         if parent:
             challenge.parent = parent
-        if participation and participation.media:
-            challenge.image = participation.media
+        if image:
+            challenge.image = image
         challenge.save()
     return challenge
+
+
+def clubs_splash(request):
+    return render(request, 'spudderspuds/challenges/pages/splash_clubs.html')
 
 
 def create_signin(request):
@@ -156,18 +160,22 @@ def create_challenge_choose_club_create_club(request, template_id, state):
 def create_challenge_set_donation(request, template_id, state, club_id, club_class):
     club = get_object_or_404(club_class, id=club_id)
     template = get_object_or_404(ChallengeTemplate, id=template_id)
-    form = ChallengeDonationAmountForm()
+    form = ChallengeConfigureForm()
     if request.method == 'POST':
-        form = ChallengeDonationAmountForm(request.POST)
+        form = ChallengeConfigureForm(request.POST)
         if form.is_valid():
-            challenge = _create_challenge(club_class, club_id, form, request, template)
+            if request.FILES:
+                upload_form = UploadForm(request.POST, request.FILES)
+                file = upload_form.save()
+            challenge = _create_challenge(club_class, club_id, form, request, template, image=file)
             return redirect('/challenges/%s/share' % challenge.id)
     template_data = {
         'club': club,
         'club_class': club_class.__name__,
         'form': form,
         'state': state,
-        'template': template}
+        'template': template,
+        'upload_url': blobstore.create_upload_url(request.path)}
     return render(
         request,
         'spudderspuds/challenges/pages/create_challenge_choose_donation.html',
@@ -292,12 +300,14 @@ def challenge_accept_beneficiary_set_donation(request, participation_id, state, 
     participation = get_object_or_404(ChallengeParticipation, id=participation_id)
     challenge = participation.challenge
     template = challenge.template
-    form = ChallengeDonationAmountForm()
-    if request.method == 'POST':
-        form = ChallengeDonationAmountForm(request.POST)
-        if form.is_valid():
-            challenge = _create_challenge(club_class, club_id, form, request, template, challenge, participation)
-            return redirect('/challenges/%s/share' % challenge.id)
+    form = ChallengeConfigureForm({
+        'donation_with_challenge': int(challenge.proposed_donation_amount),
+        'donation_without_challenge': int(challenge.proposed_donation_amount_decline)})
+    # if request.method == 'POST':
+    #     form = ChallengeConfigureForm(request.POST)
+    if form.is_valid():
+        challenge = _create_challenge(club_class, club_id, form, request, template, challenge, participation.media)
+        return redirect('/challenges/%s/share' % challenge.id)
     template_data = {
         'club': club,
         'club_class': club_class.__name__,

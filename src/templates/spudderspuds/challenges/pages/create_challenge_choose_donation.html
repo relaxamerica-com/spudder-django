@@ -13,13 +13,13 @@
 
 {% block well_content %}
     <div class="page-header">
-        <h1>How much should people pay?</h1>
-        <p><small>Choose the suggested donation amount for this challenge.</small></p>
+        <h1>Configure the challenge</h1>
+        <p><small>Choose the suggested donation amount and upload a video or image to go with this challenge.</small></p>
     </div>
 
     <p class="text-info" style="margin-bottom: 20px;">Create challenge for <b>{{ club.name }}</b>, <a href="/challenges/create/{{ template.id }}/{{ state }}">change</a>?</p>
 
-    <form method="post">
+    <form method="post" enctype="multipart/form-data" action="{{ upload_url }}">
         {% csrf_token %}
         {% bootstrap_form form %}
         {% buttons %}

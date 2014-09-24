@@ -20,17 +20,29 @@
         <div class="col-sm-10 col-sm-offset-1">
             {% include 'spudderspuds/challenges/components/challenge_container.html' %}
             <hr/>
-            <p>Share on social media:</p>
+            <h2><span class="text-primary">Share</span> and start fundraising</h2>
             <p class="share-challenge">
                 <a data-original-title="Share on Facebook" data-placement="bottom" href="JavaScript:facebookPopup('http://{{ request.META.HTTP_HOST }}/challenges/{{ challenge.id }}')">
                     <span class="fa-stack fa-2x"><i class="fa fa-circle fa-stack-2x fa-inverse"></i><i class="fa fa-facebook fa-stack-1x"></i></span>
+                </a>
+                <a data-original-title="Share on Twitter" data-placement="bottom" href="javascript:twitterPopup()">
+                    <span class="fa-stack fa-2x"><i class="fa fa-circle fa-stack-2x fa-inverse"></i><i class="fa fa-twitter fa-stack-1x"></i></span>
+                </a>
+                <a data-original-title="Share on LinkedIn" data-placement="bottom"href="Javascript:linkedinPopup()">
+                    <span class="fa-stack fa-2x"><i class="fa fa-circle fa-stack-2x fa-inverse"></i><i class="fa fa-linkedin fa-stack-1x"></i></span>
+                </a>
+                <a data-original-title="Share on Google+" data-placement="bottom" href="javascript:googlePopup()">
+                    <span class="fa-stack fa-2x"><i class="fa fa-circle fa-stack-2x fa-inverse"></i><i class="fa fa-google-plus fa-stack-1x"></i></span>
+                </a>
+                <a data-original-title="Share via Email" data-placement="bottom" id="mailto" href="mailto:?subject=Check out this Spudder page!&body=<Check out this cool page I saw on Spudder: http://{{ request.META.HTTP_HOST }}/challenges/{{ challenge.id }}">
+                    <span class="fa-stack fa-2x"><i class="fa fa-circle fa-stack-2x fa-inverse"></i><i class="fa fa-envelope-o fa-stack-1x"></i></span>
                 </a>
             </p>
         </div>
     </div>
     <hr/>
-    <h2>Where to next?</h2>
-    <a href="/challenges/{{ challenge.id }}" class="btn btn-primary">
-        Go to the challenge page!
+    <h2 style="margin-bottom: 20px;">Where to next?</h2>
+    <a href="/challenges/{{ challenge.id }}" class="btn btn-primary btn-cta">
+        Go to the challenge page! <i class="fa fa-arrow-right"></i>
     </a>
 {% endblock %}

@@ -4,6 +4,8 @@ from spudderdomain.models import TempClub, Club
 urlpatterns = patterns(
     'spudderspuds.challenges.views',
 
+    url(r'clubs_splash$', 'clubs_splash'),
+
     url(r'create/(?P<template_id>\d+)/(?P<state>\w+)/o/(?P<club_id>\d+)$',
         'create_challenge_set_donation',
         {'club_class': Club}),

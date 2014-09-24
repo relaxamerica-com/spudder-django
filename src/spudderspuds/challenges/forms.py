@@ -23,7 +23,7 @@ class CreateTempClubForm(forms.Form):
         widget=forms.Textarea)
 
 
-class ChallengeDonationAmountForm(forms.Form):
+class ChallengeConfigureForm(forms.Form):
     donation_with_challenge = forms.IntegerField(
         label="Suggested donation when accepting challenge",
         help_text="The suggested donation each person will be asked for when they accept this challenge.",
@@ -32,6 +32,11 @@ class ChallengeDonationAmountForm(forms.Form):
         label="Suggested donation when declining challenge",
         help_text="The suggested donation each person will be asked for if they decline this challenge.",
         widget=forms.TextInput(attrs={'addon_before': '$', 'addon_after': '.00', 'placeholder': '$\'s'}))
+    file = forms.FileField(
+        label="Upload photo or video",
+        help_text="Here is your chance to upload a photo or video for this challenge, it can be a video of you doing "
+                  "the challenge or just an image that's associated with the club.",
+        required=False)
 
 
 class ChallengesRegisterForm(forms.Form):
