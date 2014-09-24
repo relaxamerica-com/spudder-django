@@ -219,7 +219,7 @@ def challenge_accept(request, challenge_id):
         'template': template,
         'beneficiary': beneficiary,
         'form': form,
-        'upload_url': blobstore.create_upload_url('/challenges/%s/accept/upload' % challenge_id)}
+        'upload_url': blobstore.create_upload_url('/challenges/%s/accept' % challenge_id)}
     return render(request, 'spudderspuds/challenges/pages/challenge_accept.html', template_data)
 
 
