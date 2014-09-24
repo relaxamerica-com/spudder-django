@@ -14,17 +14,24 @@
 
 {% block well_content %}
     <div class="page-header">
-        <h1>Accept Challenge (2 of 2)</h1>
+        <h1>Accept Challenge</h1>
         <h2><small>You are accepting the {{ challenge.name }}</small></h2>
     </div>
-    <p style="margin-bottom: 20px;">To complete accepting this challenge, upload a video or image of you doing the challenge!</p>
+    <p style="margin-bottom: 20px;">
+        To complete accepting this challenge, make a pledge and upload a video or image of you doing the challenge!<br/>
+        <small>Note that you will contacted to honor your pledge and offered several ways to pay</small>
+    </p>
     <hr/>
+    <div class="alert alert-info" style="width:90%; margin:20px auto;">
+        <h4>{{ beneficiary.name }} ({{ beneficiary.state }})</h4>
+        <p>You are pledging money to {{ beneficiary.name }} of {{ beneficiary.state|format_state }}</p>
+    </div>
     <form action="{{ upload_url }}" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {% bootstrap_form form %}
         {% buttons %}
-            <button type="submit" class="btn btn-primary">
-                <i class="fa fa-cloud-upload"></i> Upload
+            <button type="submit" class="btn btn-primary btn-cta">
+                <i class="fa fa-check"></i> Accept
             </button>
         {% endbuttons %}
     </form>

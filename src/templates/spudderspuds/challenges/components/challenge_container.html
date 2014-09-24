@@ -1,5 +1,9 @@
 <div class="challenge-container">
-    <div class="image"></div>
+    <div class="image {% if not challenge.image %}without-image{% endif %}">
+        {% if challenge.image %}
+            <img src="/file/serve/{{ challenge.image.id }}" class="img-responsive" />
+        {% endif %}
+    </div>
     <div class="caption">
         <p class="name">{{ challenge.name }}</p>
         {% with recipient=challenge.get_recipient %}

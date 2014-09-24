@@ -4,11 +4,25 @@ from spudderdomain.models import TempClub, Club
 urlpatterns = patterns(
     'spudderspuds.challenges.views',
 
-    url(r'(?P<challenge_id>\d+)/accept/upload',
-        'challenge_accept_upload'),
+    url(r'c(?P<participation_id>\d+)/beneficiary/(?P<state>\w+)/o/(?P<club_id>\d+)$',
+        'challenge_accept_beneficiary_set_donation',
+        {'club_class': Club}),
 
-    url(r'(?P<challenge_id>\d+)/accept/donate',
-        'challenge_accept_donate'),
+    url(r'(?P<participation_id>\d+)/beneficiary/(?P<state>\w+)/t/(?P<club_id>\d+)$',
+        'challenge_accept_beneficiary_set_donation',
+        {'club_class': TempClub}),
+
+    url(r'(?P<participation_id>\d+)/beneficiary/(?P<state>\w+)/create_club$',
+        'challenge_accept_beneficiary_create_club'),
+
+    url(r'(?P<participation_id>\d+)/beneficiary/(?P<state>\w+)$',
+        'challenge_accept_beneficiary'),
+
+    url(r'(?P<participation_id>\d+)/state',
+        'challenge_accept_state'),
+
+    url(r'(?P<challenge_id>\d+)/accept',
+        'challenge_accept'),
 
     url(r'(?P<challenge_id>\d+)/share',
         'challenge_share'),

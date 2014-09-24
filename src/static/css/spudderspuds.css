@@ -14727,26 +14727,42 @@ body.challenges #body-background-image-container:before {
 #challenges-choose-template .challenge-templates .list-group-item.icebucket .media-object {
   background-image: url('/static/img/spudderspuds/challenges/challenge_icebucket_icon.jpg');
 }
-#challenges-choose-club table td {
+#challenges-choose-club .table-top-control .col-md-6:last-child,
+#challenge-accept-beneficiary .table-top-control .col-md-6:last-child {
+  position: relative;
+  min-height: 1px;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+@media (min-width: 992px) {
+  #challenges-choose-club .table-top-control .col-md-6:last-child,
+  #challenge-accept-beneficiary .table-top-control .col-md-6:last-child {
+    float: left;
+    width: 100%;
+  }
+}
+#challenges-choose-club table th,
+#challenge-accept-beneficiary table th {
+  display: none;
+}
+#challenges-choose-club table td,
+#challenge-accept-beneficiary table td {
   padding: 0;
 }
-#challenges-choose-club table td h4 {
+#challenges-choose-club table td h4,
+#challenge-accept-beneficiary table td h4 {
   margin: 0;
   padding: 4px;
-}
-#challenge-view .action-buttons .btn {
-  font-size: 18px;
-  padding: 15px 14px;
 }
 .challenge-container {
   border: 1px solid #FFF;
 }
-.challenge-container .image {
+.challenge-container .image.without-image {
   background-position: center;
   background-size: cover;
   height: 200px;
 }
-.icebucket .challenge-container .image {
+.icebucket .challenge-container .image.without-image {
   background-image: url('/static/img/spudderspuds/challenges/challenge_icebucket_jumbotron.jpg');
 }
 .challenge-container .caption {
@@ -14756,4 +14772,8 @@ body.challenges #body-background-image-container:before {
 }
 .well {
   background-color: rgba(255, 255, 255, 0.8);
+}
+.btn-cta {
+  font-size: 18px;
+  padding: 15px 14px;
 }

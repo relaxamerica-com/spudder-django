@@ -5,6 +5,7 @@ from spudderdomain.models import LinkedService
 from spudderdomain.wrappers import EntityBase, LinkedServiceBase, EntityTeam
 from spudderkrowdio.models import FanFollowingEntityTag
 
+
 """
     Roles
         Roles are the generic name given to the different types of entities within the Spudder ecosystem. These

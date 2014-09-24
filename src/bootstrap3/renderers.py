@@ -310,3 +310,22 @@ class InlineFieldRenderer(FieldRenderer):
 
     def get_label_class(self):
         return add_css_class(self.label_class, 'sr-only')
+
+
+class SpudderFieldRenderer(FieldRenderer):
+    def __init__(self, field, layout='', form_group_class=FORM_GROUP_CLASS,
+                 field_class=None, label_class=None, show_label=True,
+                 show_help=True, exclude='', set_required=True,
+                 addon_before=None, addon_after=None):
+        super(SpudderFieldRenderer, self).__init__(
+            field, layout, form_group_class,
+            field_class, label_class, show_label,
+            show_help, exclude, set_required,
+            addon_before, addon_after)
+        if not self.addon_before:
+            self.addon_before = self.initial_attrs.get('addon_before')
+        if not self.addon_after:
+            self.addon_after = self.initial_attrs.get('addon_after')
+
+
+

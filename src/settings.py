@@ -272,4 +272,11 @@ KROWDIO_GLOBAL_PASSWORD = 'spudtastic'
 
 LOGIN_URL = '/users/account/signin'
 
+BOOTSTRAP3 = {
+    'field_renderers': {
+        'default': 'bootstrap3.renderers.SpudderFieldRenderer',
+        'inline': 'bootstrap3.renderers.InlineFieldRenderer',
+    },
+}
+
 from features import *

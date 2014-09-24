@@ -24,23 +24,21 @@ class CreateTempClubForm(forms.Form):
 
 
 class ChallengeDonationAmountForm(forms.Form):
-    donation_with_challenge = forms.DecimalField(
-        decimal_places=2,
+    donation_with_challenge = forms.IntegerField(
         label="Suggested donation when accepting challenge",
         help_text="The suggested donation each person will be asked for when they accept this challenge.",
-        widget=forms.TextInput(attrs={'placeholder': 'Amount in $\'s'}))
-    donation_without_challenge = forms.DecimalField(
-        decimal_places=2,
+        widget=forms.TextInput(attrs={'addon_before': '$', 'addon_after': '.00', 'placeholder': '$\'s'}))
+    donation_without_challenge = forms.IntegerField(
         label="Suggested donation when declining challenge",
         help_text="The suggested donation each person will be asked for if they decline this challenge.",
-        widget=forms.TextInput(attrs={'placeholder': 'Amount in $\'s'}))
+        widget=forms.TextInput(attrs={'addon_before': '$', 'addon_after': '.00', 'placeholder': '$\'s'}))
 
 
 class ChallengesRegisterForm(forms.Form):
-    email_address = forms.EmailField()
     username = forms.CharField(max_length=255)
     password = forms.CharField(max_length=255, widget=forms.PasswordInput)
     password_again = forms.CharField(max_length=255, widget=forms.PasswordInput)
+    email_address = forms.EmailField()
     next = forms.CharField(max_length=256, required=False, widget=forms.HiddenInput)
 
     def clean_email_address(self):
@@ -75,3 +73,14 @@ class ChallengesRegisterForm(forms.Form):
 
 class ChallengesSigninForm(FanSigninForm):
     next = forms.CharField(max_length=255, required=False, widget=forms.HiddenInput)
+
+
+class AcceptChallengeForm(forms.Form):
+    donation = forms.IntegerField(
+        label="How much do you pledge?",
+        help_text="The amount shown here is the suggested pledge amount, you are free to pledge more or less.",
+        widget=forms.TextInput(attrs={'addon_before': '$', 'addon_after': '.00'}))
+    file = forms.FileField(
+        label="Upload photo or video",
+        help_text="Here is your chance to upload a photo or video of you doing the challenge.",
+        required=False)

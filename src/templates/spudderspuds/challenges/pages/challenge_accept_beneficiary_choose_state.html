@@ -1,0 +1,28 @@
+{% extends 'spudderspuds/base_single_well.html' %}
+{% load spudderspudstags %}
+{% load bootstrap3 %}
+
+{% block masterhead %}
+    <h4 class="navbar-text navbar-right hidden-xs"><span class="text-primary">Challenge Others:</span> {{ challenge.name }}</h4>
+{% endblock %}
+
+{% block body_id %}challenge-accept-beneficiary-choose-state{% endblock %}
+
+{% block body_class %}challenges {{ template.slug }}{% endblock %}
+
+{% block title %}{% endblock %}
+
+{% block well_content %}
+    <div class="page-header">
+        <h1>Who gets the money?</h1>
+        <p><small>Choose the state where the club you are raising money for is based</small></p>
+    </div>
+
+    <div class="list-group challenge-templates">
+        {% for state in states %}
+            <a class="list-group-item" href="/challenges/{{ participation.id }}/beneficiary/{{ state.id }}">
+                {{ state.name }} <i class="fa fa-arrow-right pull-right"></i>
+            </a>
+        {% endfor %}
+    </div>
+{% endblock %}

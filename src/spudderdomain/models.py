@@ -360,6 +360,7 @@ class Challenge(models.Model):
     proposed_donation_amount_decline = models.FloatField(default=0.0)
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
+    image = models.ForeignKey(UploadedFile, null=True, default=None)
 
     def __unicode__(self):
         return unicode(self.name)

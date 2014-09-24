@@ -590,8 +590,12 @@
                         "oLanguage": {
                             "sLengthMenu": "_MENU_ &nbsp; records per page"
                         },
-                        "aoColumns": unsortableColumns
+                        "aoColumns": unsortableColumns,
+                        aaSorting: []
                     });
+                    setTimeout(function(){
+                        $('.dataTables_filter input[type=text]').addClass('form-control')
+                    }, 200);
                 });
 
             })
