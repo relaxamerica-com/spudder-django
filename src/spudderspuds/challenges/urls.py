@@ -18,16 +18,16 @@ urlpatterns = patterns(
     url(r'(?P<participation_id>\d+)/beneficiary/(?P<state>\w+)$',
         'challenge_accept_beneficiary'),
 
-    url(r'(?P<participation_id>\d+)/state',
+    url(r'(?P<participation_id>\d+)/state$',
         'challenge_accept_state'),
 
-    url(r'(?P<challenge_id>\d+)/accept',
+    url(r'(?P<challenge_id>\d+)/accept$',
         'challenge_accept'),
 
-    url(r'(?P<challenge_id>\d+)/share',
+    url(r'(?P<challenge_id>\d+)/share$',
         'challenge_share'),
 
-    url(r'(?P<challenge_id>\d+)',
+    url(r'(?P<challenge_id>\d+)$',
         'challenge_view'),
 
     url(r'create/(?P<template_id>\d+)/(?P<state>\w+)/o/(?P<club_id>\d+)$',
