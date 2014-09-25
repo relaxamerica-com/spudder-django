@@ -162,7 +162,8 @@ def create_challenge_set_donation(request, template_id, state, club_id, club_cla
     club = get_object_or_404(club_class, id=club_id)
     template = get_object_or_404(ChallengeTemplate, id=template_id)
     form = ChallengeConfigureForm()
-    upload_url = blobstore.create_upload_url(request.path)
+    upload_url = blobstore.create_upload_url('/challenges/create/%s/%s/%s/%s' % (
+        template_id, state, 'o' if club_class == Club else 't', club_id))
     if request.method == 'POST':
         form = ChallengeConfigureForm(request.POST)
         if form.is_valid():
