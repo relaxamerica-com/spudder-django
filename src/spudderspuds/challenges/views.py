@@ -1,3 +1,4 @@
+import json
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 from django.shortcuts import redirect, render, get_object_or_404
@@ -7,7 +8,7 @@ from spudderdomain.controllers import RoleController, EntityController
 from spudderdomain.models import Club, TempClub, FanPage, Challenge, ChallengeTemplate, ChallengeParticipation
 from spudderdomain.wrappers import EntityBase
 from spudderspuds.challenges.forms import CreateTempClubForm, ChallengeConfigureForm, ChallengesRegisterForm, ChallengesSigninForm, AcceptChallengeForm
-from spudderspuds.challenges.models import TempClubOtherInformation
+from spudderspuds.challenges.models import TempClubOtherInformation, ChallengeTree
 from spudderspuds.utils import create_and_activate_fan_role
 from spudmart.CERN.models import STATES
 from spudmart.upload.forms import UploadForm
@@ -65,6 +66,10 @@ def _create_challenge(club_class, club_id, form, request, template, parent=None,
         if image:
             challenge.image = image
         challenge.save()
+    if parent is None:
+        ChallengeTree.CreateNewTree(challenge)
+    else:
+        ChallengeTree.AddChallengeToTree(challenge)
     return challenge
 
 
@@ -192,9 +197,11 @@ def challenge_share(request, challenge_id):
 def challenge_view(request, challenge_id):
     challenge = get_object_or_404(Challenge, id=challenge_id)
     template = challenge.template
+    challenge_tree_data = ChallengeTree.GetChallengeTree(challenge).get_tree()
     template_data = {
         'challenge': challenge,
         'template': template,
+        'challenge_tree': json.dumps(challenge_tree_data),
         'owner': RoleController.GetRoleForEntityTypeAndID(
             challenge.creator_entity_type,
             challenge.creator_entity_id,
@@ -222,12 +229,15 @@ def challenge_accept(request, challenge_id):
                 donation_amount=form.cleaned_data.get('donation', 0),
                 state=ChallengeParticipation.DONATE_ONLY_STATE)
             participation.save()
+
             if request.FILES:
                 upload_form = UploadForm(request.POST, request.FILES)
                 file = upload_form.save()
                 participation.media = file
                 participation.state = ChallengeParticipation.ACCEPTED_STATE
                 participation.save()
+
+            ChallengeTree.AddParticipationToTree(challenge, participation)
             return redirect('/challenges/%s/beneficiary/%s' % (participation.id, beneficiary.state))
     template_data = {
         'challenge': challenge,

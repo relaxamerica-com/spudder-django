@@ -379,6 +379,28 @@ class Challenge(models.Model):
                     EntityBase.EntityWrapperByEntityType(entity_type))
         return None
 
+    def as_dict(self):
+        data = {
+            'template': self.template_id,
+            'parent': self.parent_id if self.parent else None,
+            'name': self.name,
+            'description': self.description,
+            'creator_entity_id': self.creator_entity_id,
+            'creator_entity_type': self.creator_entity_type,
+            'recipient_entity_id': self.recipient_entity_id,
+            'recipient_entity_type': self.recipient_entity_type,
+            'proposed_donation_amount': self.proposed_donation_amount,
+            'proposed_donation_amount_decline': self.proposed_donation_amount_decline,
+            'created': self.created.isoformat(),
+            'modified': self.modified.isoformat(),
+            'image': '/file/serve/%s' % self.image.id if self.image else None,
+            'participations': []
+        }
+        return data
+
+    def as_json(self):
+        return json.dumps(self.as_dict())
+
 
 class ChallengeParticipation(models.Model):
     DECLINED_STATE = '01'
@@ -411,4 +433,21 @@ class ChallengeParticipation(models.Model):
 
     def is_declined(self):
         return self.state == self.DECLINED_STATE
+
+    def as_dict(self):
+        data = {
+            'challenge': self.challenge_id,
+            'participating_entity_id': self.participating_entity_id,
+            'participating_entity_type': self.participating_entity_type,
+            'donation_amount': self.donation_amount,
+            'state': self.state,
+            'message': self.message,
+            'created': self.created.isoformat(),
+            'modified': self.modified.isoformat(),
+            'media': '/file/serve/%s' % self.media.id if self.media else None
+        }
+        return data
+
+    def as_json(self):
+        return json.dumps(self.as_dict())
 
