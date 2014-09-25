@@ -14679,7 +14679,7 @@ body {
 /**********************************************************************************************************************/
 /**********************************************************************************************************************/
 body.challenges {
-  background-color: #110301;
+  background-color: #010001;
 }
 body.challenges #body-background-image-container {
   width: 100%;
@@ -14791,4 +14791,28 @@ body.challenges #body-background-image-container:before {
 .btn-cta {
   font-size: 18px;
   padding: 15px 14px;
+}
+.overlay {
+  background-color: rgba(0, 0, 0, 0.698);
+  height: 100%;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+}
+.overlay .inner {
+  position: absolute;
+  width: 100%;
+}
+.overlay .inner p {
+  width: 40%;
+  margin: 0 auto;
+  color: #ffffff;
+  font-size: 28px;
+  text-align: center;
+}
+.overlay .inner .progress {
+  width: 40%;
+  margin: 0 auto;
 }

@@ -1,5 +1,6 @@
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
+from django.http import HttpResponse, Http404
 from django.shortcuts import redirect, render, get_object_or_404
 from spudderaccounts.utils import change_current_role
 from spudderaccounts.wrappers import RoleBase, RoleFan
@@ -161,6 +162,7 @@ def create_challenge_set_donation(request, template_id, state, club_id, club_cla
     club = get_object_or_404(club_class, id=club_id)
     template = get_object_or_404(ChallengeTemplate, id=template_id)
     form = ChallengeConfigureForm()
+    upload_url = blobstore.create_upload_url(request.path)
     if request.method == 'POST':
         form = ChallengeConfigureForm(request.POST)
         if form.is_valid():
@@ -168,14 +170,21 @@ def create_challenge_set_donation(request, template_id, state, club_id, club_cla
                 upload_form = UploadForm(request.POST, request.FILES)
                 file = upload_form.save()
             challenge = _create_challenge(club_class, club_id, form, request, template, image=file)
-            return redirect('/challenges/%s/share' % challenge.id)
+            redirect_url = '/challenges/%s/share' % challenge.id
+            if request.is_ajax():
+                return HttpResponse(redirect_url)
+            return redirect(redirect_url)
+        if request.is_ajax():
+            return HttpResponse("%s|%s" % (
+                blobstore.create_upload_url(upload_url),
+                '<br/>'.join(['<br/>'.join([_e for _e in e]) for e in form.errors.values()])))
     template_data = {
         'club': club,
         'club_class': club_class.__name__,
         'form': form,
         'state': state,
         'template': template,
-        'upload_url': blobstore.create_upload_url(request.path)}
+        'upload_url': upload_url}
     return render(
         request,
         'spudderspuds/challenges/pages/create_challenge_choose_donation.html',
@@ -212,6 +221,7 @@ def challenge_accept(request, challenge_id):
         challenge.recipient_entity_id,
         EntityBase.EntityWrapperByEntityType(challenge.recipient_entity_type))
     form = AcceptChallengeForm(initial={'donation': int(challenge.proposed_donation_amount)})
+    upload_url = '/challenges/%s/accept' % challenge_id
     if request.method == 'POST':
         form = AcceptChallengeForm(request.POST)
         if form.is_valid():
@@ -228,13 +238,20 @@ def challenge_accept(request, challenge_id):
                 participation.media = file
                 participation.state = ChallengeParticipation.ACCEPTED_STATE
                 participation.save()
-            return redirect('/challenges/%s/beneficiary/%s' % (participation.id, beneficiary.state))
+            redirect_url = '/challenges/%s/beneficiary/%s' % (participation.id, beneficiary.state)
+            if request.is_ajax():
+                return HttpResponse(redirect_url)
+            return redirect(redirect_url)
+        if request.is_ajax():
+            return HttpResponse("%s|%s" % (
+                blobstore.create_upload_url(upload_url),
+                '<br/>'.join(['<br/>'.join([_e for _e in e]) for e in form.errors.values()])))
     template_data = {
         'challenge': challenge,
         'template': template,
         'beneficiary': beneficiary,
         'form': form,
-        'upload_url': blobstore.create_upload_url('/challenges/%s/accept' % challenge_id)}
+        'upload_url': blobstore.create_upload_url(upload_url)}
     return render(request, 'spudderspuds/challenges/pages/challenge_accept.html', template_data)
 
 
