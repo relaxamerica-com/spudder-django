@@ -2,6 +2,12 @@
 {% load spudderspudstags %}
 {% load bootstrap3 %}
 
+{% block js %}
+    {{ block.super }}
+    <script type="text/javascript" language="javascript" src="/static/js/libs/jquery.form.min.js"></script>
+    <script type="text/javascript" language="javascript" src="/static/js/spudder-ajax-form.js"></script>
+{% endblock %}
+
 {% block masterhead %}
     <h4 class="navbar-text navbar-right hidden-xs"><span class="text-primary">Accept Challenge:</span> {{ challenge.name }}</h4>
 {% endblock %}
@@ -27,7 +33,7 @@
         <h4>{{ beneficiary.name }} ({{ beneficiary.state }})</h4>
         <p>You are pledging money to {{ beneficiary.name }} of {{ beneficiary.state|format_state }}</p>
     </div>
-    <form action="{{ upload_url }}" method="post" enctype="multipart/form-data">
+    <form action="{{ upload_url }}" method="post" enctype="multipart/form-data" class="ajax-form">
         {% csrf_token %}
         {% bootstrap_form form %}
         {% buttons %}
