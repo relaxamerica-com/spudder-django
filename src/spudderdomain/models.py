@@ -402,3 +402,13 @@ class ChallengeParticipation(models.Model):
     message = models.TextField(default='', blank=True)
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
+
+    def is_accepted(self):
+        return self.state == self.ACCEPTED_STATE
+
+    def is_donated_only(self):
+        return self.state == self.DONATE_ONLY_STATE
+
+    def is_declined(self):
+        return self.state == self.DECLINED_STATE
+

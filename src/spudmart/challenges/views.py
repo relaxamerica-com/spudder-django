@@ -1,12 +1,13 @@
 from django.contrib.formtools.wizard import FormWizard
-from django.http import HttpResponseRedirect, HttpResponseNotFound
+from django.http import HttpResponseRedirect, HttpResponseNotFound, HttpResponse
 from django.shortcuts import get_object_or_404, render
 from google.appengine.api import blobstore
 from spudderdomain.forms import NewChallengeTemplateForm, ChallengeClubForm, ChallengeDonationForm,\
     ChallengeDetailsForm, ChooseChallengeTemplateForm, EditChallengeTemplateForm, DeclineChallengeForm, \
-    DonateChallengeForm, AcceptChallengeForm
+    DonateChallengeForm, AcceptChallengeForm, UploadVideoForm
 from spudderdomain.models import ChallengeTemplate, Club, Challenge, ChallengeParticipation
 from spudmart.upload.forms import UploadForm
+from spudmart.upload.models import UploadedFile
 
 
 def get_challenges(request):
@@ -306,3 +307,36 @@ class AcceptChallengeWizard(FormWizard):
         participation.challenge = challenge
         participation.save()
         return HttpResponseRedirect('/challenges/%s' % challenge.id)
+
+
+def upload_video(request):
+    form = UploadVideoForm()
+    video = None
+    if request.method == 'POST':
+        form = UploadVideoForm(request.POST, request.FILES)
+        if form.is_valid():
+            upload_form = UploadForm(request.POST, request.FILES)
+            if upload_form.is_valid():
+                video = upload_form.save()
+                return HttpResponseRedirect('/_challenges/upload_video/%s' % video.id)
+
+    template_data = {
+        'form': form,
+        'video': video,
+        'upload_url': blobstore.create_upload_url('/_challenges/upload_video')
+    }
+    return render(request, 'spudderspuds/challenges/pages/upload_video.html', template_data)
+
+
+def view_video(request, video_id):
+    video = get_object_or_404(UploadedFile, pk=video_id)
+    template_data = {'video': video}
+    return render(request, 'spudderspuds/challenges/pages/upload_video.html', template_data)
+
+
+def upload_video_to_youtube(request, video_id):
+    from spudmart.challenges.utils import YoutubeUploader
+    video = UploadedFile.objects.get(id=video_id)
+    uploader = YoutubeUploader()
+    resp = uploader.upload_video(video=video)
+    return HttpResponse(resp)

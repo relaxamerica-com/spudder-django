@@ -12,4 +12,7 @@ urlpatterns = patterns(
     (r'^template/(?P<template_id>\d+)$', 'view_challenge_template'),
     (r'^template/(?P<template_id>\d+)/edit$', 'edit_challenge_template'),
     (r'^create$', 'new_challenge_wizard_view'),
+    (r'^upload_video$', 'upload_video'),
+    (r'^upload_video/(?P<video_id>\d+)', 'view_video'),
+    (r'^upload_video/(?P<video_id>\d+)/post_to_youtube', 'upload_video_to_youtube'),
 )

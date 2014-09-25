@@ -88,3 +88,7 @@ class AcceptChallengeForm(forms.Form):
     donation_amount = forms.FloatField()
     # file = forms.FileField(label="Upload video with you performing a challenge")
 
+
+class UploadVideoForm(forms.Form):
+    file = forms.FileField()
+

@@ -1,0 +1,50 @@
+{% extends 'spudderspuds/base_single_well.html' %}
+{% load bootstrap3 %}
+
+{% block extra_head %}
+    <link href="http://vjs.zencdn.net/4.8/video-js.css" rel="stylesheet">
+    <script src="http://vjs.zencdn.net/4.8/video.js"></script>
+    <style type="text/css">
+        .vjs-default-skin { color: #ffffff; }
+        .vjs-default-skin .vjs-play-progress,
+        .vjs-default-skin .vjs-volume-level { background-color: #854a4a }
+        .vjs-default-skin .vjs-control-bar,
+        .vjs-default-skin .vjs-big-play-button { background: rgba(0,0,0,1); }
+        .vjs-default-skin .vjs-slider { background: rgba(0,0,0,0.3333333333333333) }
+        .vjs-default-skin .vjs-control-bar { font-size: 60% }
+    </style>
+{% endblock %}
+
+{% block well_content %}
+    <h3>Upload video file</h3>
+
+    {% if not video %}
+        <form method="post" enctype="multipart/form-data" action="{{ upload_url }}">
+            <fieldset>
+                {% csrf_token %}
+                {% bootstrap_form form %}
+
+                {% buttons %}
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fa fa-save"></i> Upload
+                    </button>
+                    <a href="/" class="btn btn-default">
+                        Cancel
+                    </a>
+                {% endbuttons %}
+            </fieldset>
+        </form>
+    {% else %}
+        <video id="video_player" class="video-js vjs-default-skin" controls preload="auto"
+               width="515px" height="240px" data-setup="{}">
+            <source src="/file/serve/{{ video.id }}" type='video/mp4' />
+            <source src="/file/serve/{{ video.id }}" type='video/webm' />
+            <source src="/file/serve/{{ video.id }}" type='video/ogg' />
+            <p class="vjs-no-js">
+                To view this video please enable JavaScript, and consider upgrading to a web browser that
+                <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
+            </p>
+        </video>
+    {% endif %}
+
+{% endblock %}
