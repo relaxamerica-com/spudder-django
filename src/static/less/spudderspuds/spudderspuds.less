@@ -439,7 +439,6 @@ body.challenges {
             }
 
             &.icebucket {
-                background-image: url('/static/img/spudderspuds/challenges/challenge_icebucket_jumbotron.jpg');
                 .media-object {
                     background-image: url('/static/img/spudderspuds/challenges/challenge_icebucket_icon.jpg');
                 }
@@ -449,6 +448,10 @@ body.challenges {
 }
 
 #challenges-choose-club, #challenge-accept-beneficiary {
+    #clubs-container {
+        padding: 10px;
+        min-height: 200px;
+    }
     .table-top-control {
         .col-md-6:last-child {
             .make-md-column(12);
@@ -489,6 +492,26 @@ body.challenges {
 
 .well {
     background-color: rgba(255, 255, 255, .8);
+    > .page-header {
+        h1 {
+            margin-top: 0;
+            .wizard-steps {
+                display: block;
+                margin-bottom: 10px;
+                small {
+                    margin-left: -5px;
+                }
+                .title {
+                    display: inline-block;
+                    padding-top: 18px;
+                    @media(max-width: @screen-xs-max) {
+                        font-size:80%;
+                    }
+
+                }
+            }
+        }
+    }
 }
 
 .btn-cta {

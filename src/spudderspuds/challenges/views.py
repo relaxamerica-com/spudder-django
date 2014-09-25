@@ -8,7 +8,8 @@ from spudderaccounts.wrappers import RoleBase, RoleFan
 from spudderdomain.controllers import RoleController, EntityController
 from spudderdomain.models import Club, TempClub, FanPage, Challenge, ChallengeTemplate, ChallengeParticipation
 from spudderdomain.wrappers import EntityBase
-from spudderspuds.challenges.forms import CreateTempClubForm, ChallengeConfigureForm, ChallengesRegisterForm, ChallengesSigninForm, AcceptChallengeForm
+from spudderspuds.challenges.forms import CreateTempClubForm, ChallengeConfigureForm, ChallengesRegisterForm
+from spudderspuds.challenges.forms import ChallengesSigninForm, AcceptChallengeForm
 from spudderspuds.challenges.models import TempClubOtherInformation, ChallengeTree
 from spudderspuds.utils import create_and_activate_fan_role
 from spudmart.CERN.models import STATES
@@ -44,7 +45,7 @@ def _create_temp_club(form, state):
     return temp_club
 
 
-def _create_challenge(club_class, club_id, form, request, template, parent=None, image=None):
+def _create_challenge(club_class, club_id, form, request, template, parent=None, image=None, media=None):
     donation_accept = form.cleaned_data.get('donation_with_challenge')
     donation_reject = form.cleaned_data.get('donation_without_challenge')
     recipient_entity_type = EntityController.ENTITY_CLUB
@@ -66,6 +67,8 @@ def _create_challenge(club_class, club_id, form, request, template, parent=None,
             challenge.parent = parent
         if image:
             challenge.image = image
+        if media:
+            challenge.media = media
         challenge.save()
     if parent is None:
         ChallengeTree.CreateNewTree(challenge)
@@ -128,7 +131,8 @@ def create_challenge(request):
 def create_challenge_choose_club_choose_state(request, template_id):
     template_data = {
         'template': get_object_or_404(ChallengeTemplate, id=template_id),
-        'states': sorted([{'id': k, 'name': v} for k, v in STATES.items()], key=lambda x: x['id'])}
+        'states': [{'id': '', 'name': 'Select a state ...'}] + sorted([
+            {'id': k, 'name': v} for k, v in STATES.items()], key=lambda x: x['id'])}
     return render(
         request,
         'spudderspuds/challenges/pages/create_challenge_choose_club_choose_state.html',
@@ -172,10 +176,11 @@ def create_challenge_set_donation(request, template_id, state, club_id, club_cla
     if request.method == 'POST':
         form = ChallengeConfigureForm(request.POST)
         if form.is_valid():
+            uploaded_file = None
             if request.FILES:
                 upload_form = UploadForm(request.POST, request.FILES)
-                file = upload_form.save()
-            challenge = _create_challenge(club_class, club_id, form, request, template, image=file)
+                uploaded_file = upload_form.save()
+            challenge = _create_challenge(club_class, club_id, form, request, template, image=uploaded_file)
             redirect_url = '/challenges/%s/share' % challenge.id
             if request.is_ajax():
                 return HttpResponse(redirect_url)
@@ -333,7 +338,9 @@ def challenge_accept_beneficiary_set_donation(request, participation_id, state, 
     # if request.method == 'POST':
     #     form = ChallengeConfigureForm(request.POST)
     if form.is_valid():
-        challenge = _create_challenge(club_class, club_id, form, request, template, challenge, participation.media)
+        challenge = _create_challenge(
+            club_class, club_id, form, request, template, challenge,
+            media=participation.media, image=participation.image)
         return redirect('/challenges/%s/share' % challenge.id)
     template_data = {
         'club': club,

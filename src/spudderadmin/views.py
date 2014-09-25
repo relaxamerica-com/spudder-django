@@ -33,8 +33,8 @@ from spudmart.recipients.models import VenueRecipient
 from spudmart.sponsors.models import SponsorPage
 from spudmart.upload.models import UploadedFile
 from spudmart.venues.models import PendingVenueRental, Venue, SPORTS
-from spudmart.CERN.models import STATUS_ACCEPTED, STATUS_REJECTED, \
-    STATUS_WAITLIST
+from spudmart.CERN.models import STATUS_ACCEPTED, STATUS_REJECTED, STATUS_WAITLIST
+from spudderspuds.challenges.models import _ChallengeTreeChallenge, ChallengeTree
 
 
 def admin_login(request):
@@ -747,6 +747,8 @@ def challenges(request):
         if action == ACTION_RESET_CHALLENGES_SYSTEM:
             reset_challenges_system_form = ChallengesResetSystemForm(request.POST)
             if reset_challenges_system_form.is_valid():
+                _ChallengeTreeChallenge.objects.all().delete()
+                ChallengeTree.objects.all().delete()
                 ChallengeParticipation.objects.all().delete()
                 Challenge.objects.all().delete()
                 ChallengeTemplate.objects.all().delete()

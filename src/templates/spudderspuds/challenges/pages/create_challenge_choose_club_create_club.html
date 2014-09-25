@@ -13,18 +13,21 @@
 
 {% block well_content %}
     <div class="page-header">
-        <h1>Who gets the money? (2 of 2)</h1>
-        <p><small>Tell us about the club you want to raise money for.</small></p>
+        <h1>
+            {% include 'spudderspuds/challenges/components/wizard_steps.html' with step="2" of="3" title="Create Challenge"  %}
+            Who gets the money?
+        </h1>
+        <p><small>Tell us as much as you can about the team you're raising money for any we'll make sure they get registered so they can receive all their pledges!</small></p>
     </div>
 
     <form method="post">
         {% csrf_token %}
         {% bootstrap_form form %}
         {% buttons %}
-            <button type="submit" class="btn btn-primary">
-                <i class="fa fa-save"></i> Save an continue
+            <button type="submit" class="btn btn-primary btn-cta">
+                Save an continue <i class="fa fa-arrow-right"></i>
             </button>
-            <a href="{{ request.META.HTTP_REFERER }}" class="btn btn-default">
+            <a href="{{ request.META.HTTP_REFERER }}" class="btn btn-default btn-cta">
                 Back
             </a>
         {% endbuttons %}

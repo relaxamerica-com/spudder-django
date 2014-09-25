@@ -5,15 +5,18 @@
 {% block body_class %}challenges {{ template.slug }}{% endblock %}
 
 {% block masterhead %}
-    <h4 class="navbar-text navbar-right"><span class="text-primary">Spudder</span> Sports Fundraising Made Simple</h4>
+    <h4 class="navbar-text navbar-right hidden-xs"><span class="text-primary">Spudder</span> Sports Fundraising Made Simple</h4>
 {% endblock %}
 
 {% block title %}{% endblock %}
 
 {% block well_content %}
     <div class="page-header">
-        <h1>Challenge Type</h1>
-        <p><small>Choose the type of challenge you want to create</small></p>
+        <h1>
+            {% include 'spudderspuds/challenges/components/wizard_steps.html' with step="1" of="3" title="Create Challenge" %}
+            What type of challenge?
+        </h1>
+        <p><small>Choose the type of challenge you want to create. In a moment we'll ask you what Team you're raising money for!</small></p>
     </div>
 
     <div class="list-group challenge-templates">

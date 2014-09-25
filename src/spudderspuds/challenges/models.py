@@ -9,9 +9,6 @@ class TempClubOtherInformation(models.Model):
     other_information = models.TextField()
 
 
-
-
-
 class ChallengeTree(models.Model):
     base_challenge = models.ForeignKey(Challenge)
 

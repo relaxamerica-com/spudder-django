@@ -23,14 +23,14 @@
         <p><small>Choose the suggested donation amount and upload a video or image to go with this challenge.</small></p>
     </div>
 
-    <p class="text-info" style="margin-bottom: 20px;">Create challenge for <b>{{ club.name }}</b>, <a href="/challenges/create/{{ template.id }}/{{ state }}">change</a>?</p>
+    <p class="text-info" style="margin-bottom: 20px;">Create challenge for <b>{{ club.name }}</b>, <a href="/challenges/create/{{ template.id }}">change</a>?</p>
 
     <form method="post" enctype="multipart/form-data" action="{{ upload_url }}" class="ajax-form">
         {% csrf_token %}
         {% bootstrap_form form %}
         {% buttons %}
-            <button type="submit" class="btn btn-primary">
-                <i class="fa fa-save"></i> Save an continue
+            <button type="submit" class="btn btn-primary btn-cta">
+                Save an continue <i class="fa fa-arrow-right"></i>
             </button>
         {% endbuttons %}
     </form>
