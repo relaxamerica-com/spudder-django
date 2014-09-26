@@ -107,7 +107,7 @@ class AcceptChallengeForm(forms.Form):
         label="How much do you pledge?",
         help_text="The amount shown here is the suggested pledge amount, you are free to pledge more or less.",
         widget=forms.TextInput(attrs={'addon_before': '$', 'addon_after': '.00'}))
-    file = forms.FileField(
-        label="Upload photo or video",
-        help_text="Here is your chance to upload a photo or video of you doing the challenge.",
-        required=False)
+    # file = forms.FileField(
+    #     label="Upload photo or video",
+    #     help_text="Here is your chance to upload a photo or video of you doing the challenge.",
+    #     required=False)

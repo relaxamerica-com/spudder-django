@@ -52,6 +52,9 @@ urlpatterns = patterns(
     url(r'(?P<challenge_id>\d+)/accept/notice$',
         'challenge_accept_notice'),
 
+    url(r'(?P<challenge_id>\d+)/accept/pledge$',
+        'challenge_accept_pledge'),
+
     url(r'(?P<challenge_id>\d+)/accept$',
         'challenge_accept'),
 

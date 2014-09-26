@@ -2,17 +2,11 @@
 {% load spudderspudstags %}
 {% load bootstrap3 %}
 
-{% block js %}
-    {{ block.super }}
-    <script type="text/javascript" language="javascript" src="/static/js/libs/jquery.form.min.js"></script>
-    <script type="text/javascript" language="javascript" src="/static/js/spudder-ajax-form.js"></script>
-{% endblock %}
-
 {% block masterhead_title %}
     <h4 class="navbar-text navbar-right hidden-xs"><span class="text-primary">Accept Challenge:</span> {{ challenge.name }}</h4>
 {% endblock %}
 
-{% block body_id %}challenge-accept-upload{% endblock %}
+{% block body_id %}challenge-accept-pledge{% endblock %}
 
 {% block body_class %}challenges {{ template.slug }}{% endblock %}
 
@@ -28,17 +22,17 @@
     </div>
     {% include 'spudderspuds/challenges/components/challenge_container.html' %}
     <hr/>
-    <p>To complete accepting this challenge, make a pledge and upload a video or image of you doing the challenge!</p>
+    <p>The first step in accepting this challenge is to make a pledge to {{ beneficiary.name }} ({{ beneficiary.state }})</p>
     <p><small>Note that you will contacted to honor your pledge and offered several ways to pay.</small></p>
     <hr/>
     <div class="well" style="width:90%; margin:20px auto;">
         <h4>{{ beneficiary.name }} ({{ beneficiary.state }})</h4>
         <p>You are pledging money to {{ beneficiary.name }} of {{ beneficiary.state|format_state }}</p>
     </div>
-    <form action="{{ upload_url }}" method="post" enctype="multipart/form-data" class="ajax-form">
+    <form method="post">
         {% csrf_token %}
         {% bootstrap_form form %}
-        <p>Once you have pledged, you'll have the opportunity to challenge others and even change the beneficiary to a team of your choice!</p>
+        <p>Once you have pledged, you'll have the opportunity to upload evidence of you taking the challenge, challenge others and even change the beneficiary to a team of your choice!</p>
         {% buttons %}
             <button type="submit" class="btn btn-primary btn-cta">
                 <i class="fa fa-check"></i> Pledge

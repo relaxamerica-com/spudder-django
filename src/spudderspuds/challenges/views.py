@@ -259,6 +259,37 @@ def challenge_accept_notice(request, challenge_id):
     return render(request, 'spudderspuds/challenges/pages/challenge_accept_notice.html', template_data)
 
 
+def challenge_accept_pledge(request, challenge_id):
+    if not request.current_role or request.current_role.entity_type != RoleController.ENTITY_FAN:
+        return redirect('/challenges/create/register?next=%s' % request.path)
+    challenge = get_object_or_404(Challenge, id=challenge_id)
+    template = challenge.template
+    beneficiary = EntityController.GetWrappedEntityByTypeAndId(
+        challenge.recipient_entity_type,
+        challenge.recipient_entity_id,
+        EntityBase.EntityWrapperByEntityType(challenge.recipient_entity_type))
+    form = AcceptChallengeForm(initial={'donation': int(challenge.proposed_donation_amount)})
+    if request.method == 'POST':
+        form = AcceptChallengeForm(request.POST)
+        if form.is_valid():
+            participation, created = ChallengeParticipation.objects.get_or_create(
+                challenge=challenge,
+                participating_entity_id=request.current_role.entity.id,
+                participating_entity_type=request.current_role.entity_type)
+            participation.donation_amount = form.cleaned_data.get('donation', 0)
+            participation.state = ChallengeParticipation.DONATE_ONLY_STATE
+            participation.save()
+            ChallengeTree.AddParticipationToTree(challenge, participation)
+            redirect_url = '/challenges/%s/accept/notice?just_pledged=True' % challenge.id
+            return redirect(redirect_url)
+    template_data = {
+        'challenge': challenge,
+        'template': template,
+        'beneficiary': beneficiary,
+        'form': form}
+    return render(request, 'spudderspuds/challenges/pages/challenge_accept_pledge.html', template_data)
+
+
 def challenge_accept(request, challenge_id):
     if not request.current_role or request.current_role.entity_type != RoleController.ENTITY_FAN:
         return redirect('/challenges/create/register?next=%s' % request.path)
@@ -301,7 +332,7 @@ def challenge_accept(request, challenge_id):
         'beneficiary': beneficiary,
         'form': form,
         'upload_url': blobstore.create_upload_url(upload_url)}
-    return render(request, 'spudderspuds/challenges/pages/challenge_accept.html', template_data)
+    return render(request, 'spudderspuds/challenges/pages/challenge_accept_upload.html', template_data)
 
 
 def challenge_accept_state(request, participation_id):

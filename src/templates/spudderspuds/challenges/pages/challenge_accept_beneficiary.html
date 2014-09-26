@@ -16,15 +16,9 @@
     <div class="page-header">
         <h1>
             {% include 'spudderspuds/challenges/components/wizard_steps.html' with step="<i class='fa fa-trophy'></i>" title="Challenge others" %}
-            {% if request.GET.just_pledged %}
-                Thanks for your pledge!
-            {% else %}
-                Who are you fundraising for?
-            {% endif %}
+            Who are you fundraising for?
         </h1>
-        {% if request.GET.just_pledged %}
-            <h2>Now you can challenge others and raise money for your team</h2>
-        {% endif %}
+        <h2>Now you can challenge others and raise money for your team</h2>
         <p><small>Choose who the money your friends, family and fans pledge should go to.</small></p>
     </div>
     <p>Currently viewing clubs in <b>{{ state|format_state }}</b>, <a href="/challenges/{{ participation.id }}/state">change</a>?</p>

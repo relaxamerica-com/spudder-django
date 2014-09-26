@@ -58,8 +58,15 @@
     <div class="page-header">
         <h1>
             {% include 'spudderspuds/challenges/components/wizard_steps.html' with step="<i class='fa fa-trophy'></i>" title="Spudder Challenge" %}
-            Accept Challenge
+            {% if request.GET.just_pledged %}
+                Challenge Accepted
+            {% else %}
+                Accept Challenge
+            {% endif %}
         </h1>
+        {% if request.GET.just_pledged %}
+            <h2 class="text-primary">Thank you for your pledge!</h2>
+        {% endif %}
         <h2><small>You now have <span class="text-primary countdown">48 hours</span> to accept {{ challenge.name }}</small></h2>
     </div>
     {% include 'spudderspuds/challenges/components/challenge_container.html' %}
@@ -78,7 +85,7 @@
     <div class="media">
         <span class="fa fa-stack text-primary media-object pull-left fa-2x">
             <i class="fa fa-circle fa-stack-2x"></i>
-            <i class="fa-stack-1x fa-inverse fa-info"></i>
+            <i class="fa fa-stack-1x fa-inverse fa-info"></i>
         </span>
         <div class="media-body">
             <h4>All your challenges can be found in <a href="{{ request.current_role.link_to_public_page }}">Your account</a></h4>
