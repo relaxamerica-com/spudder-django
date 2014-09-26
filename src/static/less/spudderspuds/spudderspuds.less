@@ -255,6 +255,7 @@
     #challenges-explained {
         background-color: #FFF;
         position: relative;
+        padding-bottom:30px;
         &:before {
             content: '';
             position: absolute;
@@ -262,11 +263,60 @@
             right: 0;
             bottom: 0;
             left: 0;
-            #gradient.radial(rgba(0,0,0,0); rgba(0,0,0,.1));
+            #gradient.vertical(rgba(0,0,0,.1); rgba(0,0,0,0));
         }
 
+        .header-text {
+            margin-bottom: 30px;
+        }
     }
 
+    #coming-soon {
+        background-image: url('/static/img/footballfield.jpg');
+        background-position: center bottom;
+        width: 100%;
+        background-size: cover;
+        overflow:hidden;
+        position: relative;
+        padding: 40px 0;
+
+        h1 {
+            color: #ffffff;
+            font-size: 48px;
+            @media(max-width: @screen-sm-max){
+                font-size: 30px;
+            }
+        }
+        h2 {
+            color: #ffffff;
+            font-size: 38px;
+            @media(max-width: @screen-sm-max){
+                font-size: 20px;
+            }
+        }
+        p {
+            color: #fafafa;
+            font-size: 18px;
+        }
+
+        &:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            #gradient.radial(rgba(0,0,0,.3); rgba(0,0,0,.8));
+        }
+    }
+
+    .spudder-footer {
+        margin-top: 0 !important;
+    }
+}
+
+body#challenges-splash {
+    background-color: #FFF;
 }
 
 
@@ -512,6 +562,9 @@ body.challenges {
             }
         }
     }
+    .well {
+        background-color: #F1f1f1;
+    }
 }
 
 .btn-cta {
@@ -542,4 +595,8 @@ body.challenges {
             margin: 0 auto;
         }
     }
+}
+
+.text-warning {
+    color: @brand-warning;
 }

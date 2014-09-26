@@ -5,16 +5,25 @@ from spudmart.CERN.models import STATES
 from spudderspuds.forms import FanSigninForm
 
 
-
 class CreateTempClubForm(forms.Form):
     name = forms.CharField(
         max_length=255,
         help_text="Please be a descriptive as possible, a good, accurate name will help us identify your club and "
-                  "get them their money sooner!")
+                  "get them their money sooner!",
+        widget=forms.TextInput(attrs={'addon_before': '<i class="fa fa-fw fa-pencil"></i>'}))
     email = forms.EmailField(
         help_text="If you know an email address of someone at the club, we'll contact them to ensure they get "
                   "their money",
-        required=False)
+        required=False,
+        widget=forms.TextInput(attrs={'addon_before': '<i class="fa fa-fw fa-envelope"></i>'}))
+    website = forms.URLField(
+        help_text="If your team has a website, enter it here.",
+        required=False,
+        widget=forms.TextInput(attrs={'addon_before': '<i class="fa fa-fw fa-home"></i>'}))
+    contact_number = forms.CharField(
+        help_text="If you know a contact number for your team, enter it here.",
+        required=False,
+        widget=forms.TextInput(attrs={'addon_before': '<i class="fa fa-fw fa-phone"></i>'}))
     other_information = forms.CharField(
         max_length=1024,
         required=False,
@@ -40,10 +49,23 @@ class ChallengeConfigureForm(forms.Form):
 
 
 class ChallengesRegisterForm(forms.Form):
-    username = forms.CharField(max_length=255)
-    password = forms.CharField(max_length=255, widget=forms.PasswordInput)
-    password_again = forms.CharField(max_length=255, widget=forms.PasswordInput)
-    email_address = forms.EmailField()
+    username = forms.CharField(
+        max_length=255,
+        label="Choose a username",
+        help_text="Letter and numbers only please!",
+        widget=forms.TextInput(attrs={'addon_before': '<i class="fa fa-fw fa-user"></i>'}))
+    password = forms.CharField(
+        max_length=255,
+        widget=forms.PasswordInput(attrs={'addon_before': '<i class="fa fa-fw fa-lock"></i>'}),
+        label="Please choose a password",
+        help_text="Six or more characters please!")
+    password_again = forms.CharField(
+        max_length=255,
+        widget=forms.PasswordInput(attrs={'addon_before': '<i class="fa fa-fw fa-lock"></i>'}),
+        help_text="Confirm password")
+    email_address = forms.EmailField(
+        label="Your email address",
+        widget=forms.TextInput(attrs={'addon_before': '<i class="fa fa-fw fa-envelope"></i>'}))
     next = forms.CharField(max_length=256, required=False, widget=forms.HiddenInput)
 
     def clean_email_address(self):

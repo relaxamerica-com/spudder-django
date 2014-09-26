@@ -2,7 +2,7 @@
 {% load bootstrap3 %}
 
 {% block masterhead %}
-    <h4 class="navbar-text navbar-right"><span class="text-primary">Spudder</span> Sports Fundraising Made Simple</h4>
+    <h4 class="navbar-text navbar-right hidden-xs"><span class="text-primary">Spudder</span> Sports Fundraising Made Simple</h4>
 {% endblock %}
 
 {% block body_id %}challenges-regsiter{% endblock %}
@@ -13,18 +13,23 @@
 
 {% block well_content %}
     <div class="page-header">
-        <h1><span class="text-primary">Fundraising</span> for your club is just a click away</h1>
-        <p><small>Register for a free account with Spudder to start fundraising for your club!</small></p>
+        <h1>
+            {% include 'spudderspuds/challenges/components/wizard_steps.html' with title="Start Fundraising" step="$" %}
+            Register with Spudder and start fundraising
+        </h1>
+        <p><small>Once you create an account, you'll be able to create challenges and raise money for your team!</small></p>
     </div>
 
-    <p class="text-info" style="margin-bottom: 20px;">Already have an account? <a href="/challenges/create/signin?next={{ request.GET.next|default:'/' }}">sign in</a>?</p>
+    <p>Already have an account? <a href="/challenges/create/signin?next={{ request.GET.next|default:'/' }}">sign in <i class="fa fa-arrow-right"></i> </a></p>
+
+    <hr/>
 
     <form method="post">
         {% csrf_token %}
         {% bootstrap_form form %}
         {% buttons %}
             <button type="submit" class="btn btn-primary btn-cta">
-                Start fundraising
+                Start fundraising <i class="fa fa-arrow-right"></i>
             </button>
         {% endbuttons %}
     </form>
