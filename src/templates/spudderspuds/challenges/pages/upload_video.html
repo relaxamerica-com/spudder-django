@@ -2,16 +2,51 @@
 {% load bootstrap3 %}
 
 {% block extra_head %}
-    <link href="http://vjs.zencdn.net/4.8/video-js.css" rel="stylesheet">
     <script src="http://vjs.zencdn.net/4.8/video.js"></script>
+{% endblock %}
+
+{% block css %}
+    {{ block.super }}
+    <link href="http://vjs.zencdn.net/4.8/video-js.css" rel="stylesheet">
     <style type="text/css">
-        .vjs-default-skin { color: #ffffff; }
+        .vjs-default-skin {
+            color: #ffffff;
+        }
+
         .vjs-default-skin .vjs-play-progress,
-        .vjs-default-skin .vjs-volume-level { background-color: #854a4a }
+        .vjs-default-skin .vjs-volume-level {
+            background-color: #854a4a
+        }
+
         .vjs-default-skin .vjs-control-bar,
-        .vjs-default-skin .vjs-big-play-button { background: rgba(0,0,0,1); }
-        .vjs-default-skin .vjs-slider { background: rgba(0,0,0,0.3333333333333333) }
-        .vjs-default-skin .vjs-control-bar { font-size: 60% }
+        .vjs-default-skin .vjs-big-play-button {
+            background: rgba(0, 0, 0, 1);
+        }
+
+        .vjs-default-skin .vjs-slider {
+            background: rgba(0, 0, 0, 0.3333333333333333)
+        }
+
+        .vjs-default-skin .vjs-control-bar {
+            font-size: 60%
+        }
+
+        .post-sign-in {
+            display: none;
+        }
+
+        .during-upload {
+            display: none;
+        }
+
+        .post-upload {
+            display: none;
+        }
+
+        #channel-name {
+            font-size: 60px;
+            margin-left: 10px;
+        }
     </style>
 {% endblock %}
 
@@ -19,27 +54,73 @@
     <h3>Upload video file</h3>
 
     {% if not video %}
-        <form method="post" enctype="multipart/form-data" action="{{ upload_url }}">
-            <fieldset>
-                {% csrf_token %}
-                {% bootstrap_form form %}
+        {#        <form method="post" enctype="multipart/form-data" action="{{ upload_url }}">#}
+        {#            <fieldset>#}
+        {#                {% csrf_token %}#}
+        {#                {% bootstrap_form form %}#}
+        {##}
+        {#                {% buttons %}#}
+        {#                    <button type="submit" class="btn btn-primary">#}
+        {#                        <i class="fa fa-save"></i> Upload#}
+        {#                    </button>#}
+        {#                    <a href="/" class="btn btn-default">#}
+        {#                        Cancel#}
+        {#                    </a>#}
+        {#                {% endbuttons %}#}
+        {#            </fieldset>#}
+        {#        </form>#}
 
-                {% buttons %}
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fa fa-save"></i> Upload
-                    </button>
-                    <a href="/" class="btn btn-default">
-                        Cancel
-                    </a>
-                {% endbuttons %}
-            </fieldset>
-        </form>
+        <span id="signinButton" class="pre-sign-in">
+            <span class="g-signin"
+                  data-callback="oauth2Callback"
+                  data-clientid="653628115804-7vkcnmhte0f36fvr1dj9t5hrn1mt6i5t.apps.googleusercontent.com"
+                  data-cookiepolicy="single_host_origin"
+                  data-scope="https://www.googleapis.com/auth/youtube.readonly https://www.googleapis.com/auth/youtube.upload">
+            </span>
+        </span>
+
+        <div class="post-sign-in">
+            <div>
+                <img id="channel-thumbnail">
+                <span id="channel-name"></span>
+            </div>
+            <br />
+            <form id="upload-form" role="form">
+                <div class="form-group">
+                    <label for="title">Title</label>
+                    <input id="title" class="form-control"  type="text" placeholder="Enter Video Title" />
+                </div>
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea id="description" class="form-control" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="description">Select Video</label>
+                    <input id="file" type="file" />
+                </div>
+                <button id="submit" type="submit" value="Upload" class="btn btn-default">Submit</button>
+            </form>
+
+            <div class="during-upload">
+                <p><span id="percent-transferred"></span>% done (<span id="bytes-transferred"></span>/<span
+                        id="total-bytes"></span> bytes)</p>
+                <progress id="upload-progress" max="1" value="0"></progress>
+            </div>
+
+            <div class="post-upload">
+                <p>Uploaded video with id <span id="video-id"></span>. Polling for status...</p>
+                <ul id="post-upload-status"></ul>
+                <div id="player"></div>
+            </div>
+        </div>
+
+
     {% else %}
         <video id="video_player" class="video-js vjs-default-skin" controls preload="auto"
                width="515px" height="240px" data-setup="{}">
-            <source src="/file/serve/{{ video.id }}" type='video/mp4' />
-            <source src="/file/serve/{{ video.id }}" type='video/webm' />
-            <source src="/file/serve/{{ video.id }}" type='video/ogg' />
+            <source src="/file/serve/{{ video.id }}" type='video/mp4'/>
+            <source src="/file/serve/{{ video.id }}" type='video/webm'/>
+            <source src="/file/serve/{{ video.id }}" type='video/ogg'/>
             <p class="vjs-no-js">
                 To view this video please enable JavaScript, and consider upgrading to a web browser that
                 <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
@@ -47,4 +128,174 @@
         </video>
     {% endif %}
 
+{% endblock %}
+
+{% block js %}
+    {{ block.super }}
+    <script type="text/javascript">
+        (function () {
+            var GOOGLE_PLUS_SCRIPT_URL = 'https://apis.google.com/js/client:plusone.js';
+            var CHANNELS_SERVICE_URL = 'https://www.googleapis.com/youtube/v3/channels';
+            var VIDEOS_UPLOAD_SERVICE_URL = 'https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet';
+            var VIDEOS_SERVICE_URL = 'https://www.googleapis.com/youtube/v3/videos';
+            var INITIAL_STATUS_POLLING_INTERVAL_MS = 15 * 1000;
+
+            var accessToken;
+
+            window.oauth2Callback = function (authResult) {
+                if (authResult['access_token']) {
+                    accessToken = authResult['access_token'];
+
+                    $.ajax({
+                        url: CHANNELS_SERVICE_URL,
+                        method: 'GET',
+                        headers: {
+                            Authorization: 'Bearer ' + accessToken
+                        },
+                        data: {
+                            part: 'snippet',
+                            mine: true
+                        }
+                    }).done(function (response) {
+                        $('#channel-name').text(response.items[0].snippet.title);
+                        $('#channel-thumbnail').attr('src', response.items[0].snippet.thumbnails.default.url);
+
+                        $('.pre-sign-in').hide();
+                        $('.post-sign-in').show();
+                    });
+                }
+            };
+
+            function initiateUpload(e) {
+                e.preventDefault();
+
+                var file = $('#file').get(0).files[0];
+                if (file) {
+                    $('#submit').attr('disabled', true);
+
+                    var metadata = {
+                        snippet: {
+                            title: $('#title').val(),
+                            description: $('#description').val(),
+                            categoryId: 22
+                        }
+                    };
+
+                    $.ajax({
+                        url: VIDEOS_UPLOAD_SERVICE_URL,
+                        method: 'POST',
+                        contentType: 'application/json',
+                        headers: {
+                            Authorization: 'Bearer ' + accessToken,
+                            'x-upload-content-length': file.size,
+                            'x-upload-content-type': file.type
+                        },
+                        data: JSON.stringify(metadata)
+                    }).done(function (data, textStatus, jqXHR) {
+                        resumableUpload({
+                            url: jqXHR.getResponseHeader('Location'),
+                            file: file,
+                            start: 0
+                        });
+                    });
+                }
+            }
+
+            function resumableUpload(options) {
+                var ajax = $.ajax({
+                    url: options.url,
+                    method: 'PUT',
+                    contentType: options.file.type,
+                    headers: {
+                        'Content-Range': 'bytes ' + options.start + '-' + (options.file.size - 1) + '/' + options.file.size
+                    },
+                    xhr: function () {
+                        // Thanks to http://stackoverflow.com/a/8758614/385997
+                        var xhr = $.ajaxSettings.xhr();
+
+                        if (xhr.upload) {
+                            xhr.upload.addEventListener(
+                                    'progress',
+                                    function (e) {
+                                        if (e.lengthComputable) {
+                                            var bytesTransferred = e.loaded;
+                                            var totalBytes = e.total;
+                                            var percentage = Math.round(100 * bytesTransferred / totalBytes);
+
+                                            $('#upload-progress').attr({
+                                                value: bytesTransferred,
+                                                max: totalBytes
+                                            });
+
+                                            $('#percent-transferred').text(percentage);
+                                            $('#bytes-transferred').text(bytesTransferred);
+                                            $('#total-bytes').text(totalBytes);
+
+                                            $('.during-upload').show();
+                                        }
+                                    },
+                                    false
+                            );
+                        }
+
+                        return xhr;
+                    },
+                    processData: false,
+                    data: options.file
+                });
+
+                ajax.done(function (response) {
+                    var videoId = response.id;
+                    $('#video-id').text(videoId);
+                    $('.post-upload').show();
+                    checkVideoStatus(videoId, INITIAL_STATUS_POLLING_INTERVAL_MS);
+                });
+
+                ajax.fail(function () {
+                    $('#submit').click(function () {
+                        alert('Not yet implemented!');
+                    });
+                    $('#submit').val('Resume Upload');
+                    $('#submit').attr('disabled', false);
+                });
+            }
+
+            function checkVideoStatus(videoId, waitForNextPoll) {
+                $.ajax({
+                    url: VIDEOS_SERVICE_URL,
+                    method: 'GET',
+                    headers: {
+                        Authorization: 'Bearer ' + accessToken
+                    },
+                    data: {
+                        part: 'status,processingDetails,player',
+                        id: videoId
+                    }
+                }).done(function (response) {
+                    var processingStatus = response.items[0].processingDetails.processingStatus;
+                    var uploadStatus = response.items[0].status.uploadStatus;
+
+                    $('#post-upload-status').append('<li>Processing status: ' + processingStatus + ', upload status: ' + uploadStatus + '</li>');
+
+                    if (processingStatus == 'processing') {
+                        setTimeout(function () {
+                            checkVideoStatus(videoId, waitForNextPoll * 2);
+                        }, waitForNextPoll);
+                    } else {
+                        if (uploadStatus == 'processed') {
+                            $('#player').append(response.items[0].player.embedHtml);
+                        }
+
+                        $('#post-upload-status').append('<li>Final status.</li>');
+                    }
+                });
+            }
+
+            $(function () {
+                $.getScript(GOOGLE_PLUS_SCRIPT_URL);
+
+                $('#upload-form').submit(initiateUpload);
+            });
+        })();
+    </script>
 {% endblock %}
