@@ -80,11 +80,11 @@ class ChallengeTreeHelper(Tree):
             self.beneficiaries[recipient_entity_id] = {
                 'entity_id': recipient_entity_id,
                 'entity_type': recipient_entity_type,
-                'number_of_challenegs': 0,
+                'number_of_challenges': 0,
                 'total_amount_raised': 0,
                 'participants': []
             }
-        self.beneficiaries[recipient_entity_id]['number_of_challenegs'] += 1
+        self.beneficiaries[recipient_entity_id]['number_of_challenges'] += 1
         for participation in tree_element.participations:
             self.beneficiaries[recipient_entity_id]['total_amount_raised'] += participation['donation_amount']
             participation_data = {
@@ -99,8 +99,10 @@ class ChallengeTreeHelper(Tree):
         self.add_beneficiary(self.root)
 
     def add_element(self, element, parent_id):
-        self.add_beneficiary(element)
-        return super(ChallengeTreeHelper, self).add_element(element, parent_id)
+        is_added = super(ChallengeTreeHelper, self).add_element(element, parent_id)
+        if is_added:
+            self.add_beneficiary(element)
+        return is_added
 
     def update_beneficiaries_data(self):
         # get participiants objects
