@@ -7,6 +7,8 @@
     {% fan_page_name page %}
 {% endblock %}
 
+{% block body_id %}fan-page{% endblock %}
+
 {% block meta %}
 	{{ block.super }}
 	<meta property="og:title" content="{% fan_page_name page %} | Spudder - Sports Updates Made Simple">
@@ -27,7 +29,7 @@
 
 {% block cover_title_profile_image_url %}{% if page.avatar %}/file/serve/{{ page.avatar.id }}{% else %}/static/img/spudderspuds/button-fans-medium.png{% endif %}{% endblock %}
 
-{% block cover_title_display_name %}{% fan_page_name page %}{% endblock %}
+{% block cover_title_display_name %}{{ page.username }}{% endblock %}
 
 {% block cover_title_action_buttons %}
     {% include 'components/coverimage/social_links.html' with twitter=page.twitter facebook=page.facebook google_plus=page.google_plus instagram=page.instagram %}
@@ -41,37 +43,76 @@
 {% endblock %}
 
 
-{% block full_page %}
-    <div class="edit-mode well">
-        <h2>Edit Your Information</h2>
-        <form method="post" enctype="multipart/form-data" role="form">
-            <div class="form-group edit-mode">
-                <label>Upload a profile image (logo):</label>
-                <input type="file" name="avatar" id="logo-input" class="form-control" />
+{% block outer_page %}
+    <div class="public-page-submenu btn btn-primary btn-block">
+        <div class="container-fluid text-left">
+            <h4><i class="fa fa-trophy"></i> Your Challenges</h4>
+        </div>
+    </div>
+
+    <div class="container" style="margin-top: 30px;">
+
+        {% if request.can_edit %}
+
+            <ul class="nav nav-tabs nav-tabs-google">
+                <li class="active"><a href="#created">Created by you</a></li>
+                <li><a href="#waiting">Waiting for you</a></li>
+{#                <li><a href="#completed">Completed</a></li>#}
+            </ul>
+            <div class="tab-content">
+                <div id="created" class="tab-pane active">
+                    {% include 'spudderspuds/fans/components/fan_page_challenge_tab_pane.html' with title="Challenges created by you" challenges=challenges.created %}
+                </div>
+                <div id="waiting" class="tab-pane">
+                    {% include 'spudderspuds/fans/components/fan_page_challenge_tab_pane.html' with title="Challenges waiting for you" challenges=challenges.waiting %}
+                </div>
+                <div id="completed" class="tab-pane">
+                    {% include 'spudderspuds/fans/components/fan_page_challenge_tab_pane.html' with title="Challenges done by you" challenges=challenges.done %}
+                </div>
             </div>
 
-            <a class="btn btn-primary" id="save-logo">Save</a>
-            <div class="alert" id="logo-name-alert" style="margin-top:10px"></div>
-        </form>
+        {% else %}
+            {% include 'spudderspuds/fans/components/fan_page_challenge_tab_pane.html' with title="Challenges created this fan" challenges=challenges.created %}
+        {% endif %}
     </div>
 
-    <div class="row">
-        <div class="col-md-6">
-            {% include 'components/spuds/spud_carousel.html' with spuds=fan_spuds %}
-        </div>
-        <div class="col-md-6">
-            {% include 'components/following_table.html' with title=following_teams_title following=following_teams entity_type='team' show_find_button=request.can_edit datatable=1 %}
-            {% include 'components/following_table.html' with title=following_fans_title following=following_fans entity_type='fan' show_find_button=request.can_edit datatable=1%}
-        </div>
-    </div>
-
-    <hr/>
+{#    <div class="edit-mode well">#}
+{#        <h2>Edit Your Information</h2>#}
+{#        <form method="post" enctype="multipart/form-data" role="form">#}
+{#            <div class="form-group edit-mode">#}
+{#                <label>Upload a profile image (logo):</label>#}
+{#                <input type="file" name="avatar" id="logo-input" class="form-control" />#}
+{#            </div>#}
+{##}
+{#            <a class="btn btn-primary" id="save-logo">Save</a>#}
+{#            <div class="alert" id="logo-name-alert" style="margin-top:10px"></div>#}
+{#        </form>#}
+{#    </div>#}
+{##}
+{#    <div class="row">#}
+{#        <div class="col-md-6">#}
+{#            {% include 'components/spuds/spud_carousel.html' with spuds=fan_spuds %}#}
+{#        </div>#}
+{#        <div class="col-md-6">#}
+{#            {% include 'components/following_table.html' with title=following_teams_title following=following_teams entity_type='team' show_find_button=request.can_edit datatable=1 %}#}
+{#            {% include 'components/following_table.html' with title=following_fans_title following=following_fans entity_type='fan' show_find_button=request.can_edit datatable=1%}#}
+{#        </div>#}
+{#    </div>#}
+{##}
+{#    <hr/>#}
 {% endblock %}
 
 {% block js %}
 {{ block.super }}
 <script type="text/javascript" src="/static/js/libs/jquery.serialize.file.js"></script>
 <script type="text/javascript">
+    $(function(){
+        $('.nav-tabs a').click(function(e){
+            e.preventDefault();
+            $(this).tab('show');
+        });
+    });
+
     window.isEditMode = false;
     window.twitterPopupText = "See the great Sports Updates that this fan has shared on their page!";
 

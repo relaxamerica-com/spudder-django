@@ -1,46 +1,68 @@
 {% extends base_url %}
-
 {% load displays %}
+{% load featuretags %}
 
 {% block body %}
 <div class="jumbotron spudder-jumbotron {% block cover_image_container_class %}{% endblock %}"
      style="background-image:url({% block cover_image_css_background %}{% endblock %})"
      id="{% block cover_image_container_id %}{% endblock %}">
 
-    {% if request.can_edit %}
+    {% if request.can_edit and not 'challenges_only_override'|feature_is_enabled %}
         <a class="btn btn-primary hidden-xs" href="{% block cover_image_edit_url %}{% endblock %}" style="position:absolute; bottom:20px; right:20px;">Edit Cover Image</a>
     {% endif %}
 
-    <div class="container">
-        <div class="spudder-jumbotron-caption">
-            <div class="media">
-                <img src="{% block cover_title_profile_image_url %}{% endblock %}" class="media-object pull-left img-responsive logo"/>
-                <div class="media-body">
-                    <h1 class="media-heading">{% block cover_title_display_name %}{% endblock %}</h1>
-                    {% block cover_title_additions %}{% endblock %}
-                    <p class="text-right">
-                        {% block cover_title_action_buttons %}{% endblock %}
-                    </p>
+    {% if 'challenges_only_override'|feature_is_enabled %}
+        <div class="jumbotron-bottom-banner">
+            <div class="container-fluid">
+                <div class="media">
+                    <img src="{% block cover_title_profile_image_url %}{% endblock %}" class="media-object pull-left img-responsive logo"/>
+                    <div class="media-body">
+                        <h1 class="media-heading">{% block cover_title_display_name %}{% endblock %}</h1>
+                        {% block cover_title_additions %}{% endblock %}
+{#                        <p class="text-right">#}
+{#                            {% block cover_title_action_buttons %}{% endblock %}#}
+{#                        </p>#}
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</div>
-<div class="container clearfix" id="venue-view">
-    {% block full_page %}
-        <div class="row">
-            <div class="col-sm-8" style="margin-bottom:20px;">
-                {% block main_page %}{% endblock %}
-            </div>
 
-            <div class="col-md-4">
-                <aside class="right-sidebar">
-                    {% block sidebar %}{% endblock %}
-                </aside>
-            </div>
+    {% else %}
+{##}
+{#        <div class="container">#}
+{#            <div class="spudder-jumbotron-caption">#}
+{#                <div class="media">#}
+{#                    <img src="{% block cover_title_profile_image_url %}{% endblock %}" class="media-object pull-left img-responsive logo"/>#}
+{#                    <div class="media-body">#}
+{#                        <h1 class="media-heading">{% block cover_title_display_name %}{% endblock %}</h1>#}
+{#                        {% block cover_title_additions %}{% endblock %}#}
+{#                        <p class="text-right">#}
+{#                            {% block cover_title_action_buttons %}{% endblock %}#}
+{#                        </p>#}
+{#                    </div>#}
+{#                </div>#}
+{#            </div>#}
+{#        </div>#}
+{##}
+    {% endif %}
+</div>
+    {% block outer_page %}
+        <div class="container clearfix" id="venue-view">
+            {% block full_page %}
+                <div class="row">
+                    <div class="col-sm-8" style="margin-bottom:20px;">
+                        {% block main_page %}{% endblock %}
+                    </div>
+
+                    <div class="col-md-4">
+                        <aside class="right-sidebar">
+                            {% block sidebar %}{% endblock %}
+                        </aside>
+                    </div>
+                </div>
+            {% endblock %}
         </div>
     {% endblock %}
-</div>
 {% endblock %}
 
 {% block js %}

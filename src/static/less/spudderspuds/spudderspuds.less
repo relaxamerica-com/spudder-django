@@ -340,13 +340,16 @@ input[type="file"] {
 }
 
 #fan-jumbotron-default {
-    background: -moz-linear-gradient(top, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.85) 100%), url(bg.png) repeat 0 0, url(/static/img/spudderspuds/button-fans-medium.png) repeat 0 0 !important;
-    background: -moz-linear-gradient(top, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0.85) 100%), url(/static/img/spudderspuds/button-fans-medium.png) repeat 0 0 !important;
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,0.85)), color-stop(100%,rgba(255,255,255,0.85))), url(/static/img/spudderspuds/button-fans-medium.png) repeat 0 0 !important;
-    background: -webkit-linear-gradient(top, rgba(255,255,255,0.85) 0%,rgba(255,255,255,0.85) 100%), url(/static/img/spudderspuds/button-fans-medium.png) repeat 0 0 !important;
-    background: -o-linear-gradient(top, rgba(255,255,255,0.85) 0%,rgba(255,255,255,0.85) 100%), url(/static/img/spudderspuds/button-fans-medium.png) repeat 0 0 !important;
-    background: -ms-linear-gradient(top, rgba(255,255,255,0.85) 0%,rgba(255,255,255,0.85) 100%), url(/static/img/spudderspuds/button-fans-medium.png) repeat 0 0 !important;
-    background: linear-gradient(to bottom, rgba(255,255,255,0.85) 0%,rgba(255,255,255,0.85) 100%), url(/static/img/spudderspuds/button-fans-medium.png) repeat 0 0 !important;
+//    background: -moz-linear-gradient(top, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.85) 100%), url(bg.png) repeat 0 0, url(/static/img/spudderspuds/button-fans-medium.png) repeat 0 0 !important;
+//    background: -moz-linear-gradient(top, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0.85) 100%), url(/static/img/spudderspuds/button-fans-medium.png) repeat 0 0 !important;
+//    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,0.85)), color-stop(100%,rgba(255,255,255,0.85))), url(/static/img/spudderspuds/button-fans-medium.png) repeat 0 0 !important;
+//    background: -webkit-linear-gradient(top, rgba(255,255,255,0.85) 0%,rgba(255,255,255,0.85) 100%), url(/static/img/spudderspuds/button-fans-medium.png) repeat 0 0 !important;
+//    background: -o-linear-gradient(top, rgba(255,255,255,0.85) 0%,rgba(255,255,255,0.85) 100%), url(/static/img/spudderspuds/button-fans-medium.png) repeat 0 0 !important;
+//    background: -ms-linear-gradient(top, rgba(255,255,255,0.85) 0%,rgba(255,255,255,0.85) 100%), url(/static/img/spudderspuds/button-fans-medium.png) repeat 0 0 !important;
+//    background: linear-gradient(to bottom, rgba(255,255,255,0.85) 0%,rgba(255,255,255,0.85) 100%), url(/static/img/spudderspuds/button-fans-medium.png) repeat 0 0 !important;
+    background-image: url('/static/img/spudderspuds/challenges/jumbotron.jpg') !important;
+    background-position: center top;
+    background-size: cover;
 }
 
 .edit-mode{
@@ -416,6 +419,10 @@ body {
                 width: 120px;
                 font-weight: bold;
             }
+        }
+
+        .navbar-text {
+            margin-right: 30px;
         }
     }
 }
@@ -570,6 +577,9 @@ body.challenges {
 .btn-cta {
     font-size: 18px;
     padding: 15px 14px;
+    @media(max-width: @screen-xs-max) {
+        display: block;
+    }
 }
 
 .overlay {
@@ -599,4 +609,39 @@ body.challenges {
 
 .text-warning {
     color: @brand-warning;
+}
+
+.spudder-jumbotron {
+    margin-bottom: -180px;
+    @media (max-width: @screen-xs-max) {
+        margin-bottom: -60px;
+    }
+}
+
+.jumbotron-bottom-banner {
+    background: rgba(0,0,0, .7);
+    position:absolute;
+    bottom: 0;
+    padding: 10px;
+    width: 100%;
+    color: #FFF;
+
+    .logo {
+        height: 100px;
+    }
+
+    h1 {
+        position: relative;
+    }
+
+    .social-link {
+        font-size: 30px;
+        float: left;
+    }
+}
+
+#fan-page {
+    .tab-pane {
+        padding: 30px 0 20px;
+    }
 }

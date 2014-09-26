@@ -49,6 +49,9 @@ urlpatterns = patterns(
     url(r'(?P<participation_id>\d+)/state$',
         'challenge_accept_state'),
 
+    url(r'(?P<challenge_id>\d+)/accept/notice$',
+        'challenge_accept_notice'),
+
     url(r'(?P<challenge_id>\d+)/accept$',
         'challenge_accept'),
 
@@ -57,4 +60,8 @@ urlpatterns = patterns(
 
     url(r'(?P<challenge_id>\d+)$',
         'challenge_view'),
+
+
+    url(r'$',
+        'challenges_splash'),
 )

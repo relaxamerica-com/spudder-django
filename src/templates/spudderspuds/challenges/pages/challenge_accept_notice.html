@@ -1,0 +1,91 @@
+{% extends 'spudderspuds/base_single_well.html' %}
+{% load spudderspudstags %}
+{% load bootstrap3 %}
+
+{% block js %}
+    {{ block.super }}
+    <script type="text/javascript" language="JavaScript">
+        // set the date we're counting down to
+        var target_date = new Date('{{ participation.created.isoformat }}');
+        target_date.setDate(target_date.getDate() + 2);
+
+        // variables for time units
+        var days, hours, minutes, seconds;
+
+        // get tag element
+        var countdown = $(".countdown");
+
+        $(function(){
+
+            // update the tag with id "countdown" every 1 second
+            setInterval(function () {
+
+                // find the amount of "seconds" between now and target
+                var current_date = new Date().getTime();
+                var seconds_left = (target_date - current_date) / 1000;
+
+                // do some time calculations
+                days = parseInt(seconds_left / 86400);
+                seconds_left = seconds_left % 86400;
+
+                hours = parseInt(seconds_left / 3600);
+                seconds_left = seconds_left % 3600;
+
+                minutes = parseInt(seconds_left / 60);
+                seconds = parseInt(seconds_left % 60);
+
+                // format countdown string + set tag value
+                countdown.html(days + " day" + ((days > 1) ? 's' : '') + ", " + hours + " hours, "
+                + minutes + " minutes and " + seconds + " seconds");
+
+            }, 1000);
+
+        });
+    </script>
+{% endblock %}
+
+{% block masterhead_title %}
+    <h4 class="navbar-text navbar-right hidden-xs"><span class="text-primary">Accept Challenge:</span> {{ challenge.name }}</h4>
+{% endblock %}
+
+{% block body_id %}challenge-accept-notice{% endblock %}
+
+{% block body_class %}challenges {{ template.slug }}{% endblock %}
+
+{% block title %}{% endblock %}
+
+{% block well_content %}
+    <div class="page-header">
+        <h1>
+            {% include 'spudderspuds/challenges/components/wizard_steps.html' with step="<i class='fa fa-trophy'></i>" title="Spudder Challenge" %}
+            Accept Challenge
+        </h1>
+        <h2><small>You now have <span class="text-primary countdown">48 hours</span> to accept {{ challenge.name }}</small></h2>
+    </div>
+    {% include 'spudderspuds/challenges/components/challenge_container.html' %}
+    <hr/>
+    <h2>To accept this challenge you should either...</h2>
+    <ul class="fa-ul" style="padding: 20px 0 20px 20px;">
+        <li>
+            <h4><i class="fa fa-li fa-video-camera text-primary"></i> Record a video of you doing the challenge and have it ready to upload, or</h4><br/>
+        </li>
+        <li>
+            <h4><i class="fa fa-li fa-camera text-primary"></i> Take a picture of you doing the challenge.</h4>
+        </li>
+    </ul>
+    <h4>Remember, you now have <span class="text-primary countdown">48 hours</span> to accept</h4>
+    <hr/>
+    <div class="media">
+        <span class="fa fa-stack text-primary media-object pull-left fa-2x">
+            <i class="fa fa-circle fa-stack-2x"></i>
+            <i class="fa-stack-1x fa-inverse fa-info"></i>
+        </span>
+        <div class="media-body">
+            <h4>All your challenges can be found in <a href="{{ request.current_role.link_to_public_page }}">Your account</a></h4>
+        </div>
+    </div>
+    <hr/>
+    <a class="btn btn-primary btn-cta" href="/challenges/{{ challenge.id }}/accept">
+        I'm ready! <i class="fa fa-arrow-right"></i>
+    </a>
+{% endblock %}

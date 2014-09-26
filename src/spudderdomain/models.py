@@ -404,13 +404,15 @@ class Challenge(models.Model):
 
 
 class ChallengeParticipation(models.Model):
+    PRE_ACCEPTED_STATE = '00'
     DECLINED_STATE = '01'
     DONATE_ONLY_STATE = '02'
     ACCEPTED_STATE = '03'
 
-    STATES = (DECLINED_STATE, DONATE_ONLY_STATE, ACCEPTED_STATE)
+    STATES = (PRE_ACCEPTED_STATE, DECLINED_STATE, DONATE_ONLY_STATE, ACCEPTED_STATE)
 
     STATES_CHOICES = (
+        (PRE_ACCEPTED_STATE, 'Pre accepted state'),
         (DECLINED_STATE, 'Declined State'),
         (DONATE_ONLY_STATE, 'Donate Only State'),
         (ACCEPTED_STATE, 'Accepted State'),
@@ -419,11 +421,11 @@ class ChallengeParticipation(models.Model):
     challenge = models.ForeignKey(Challenge)
     participating_entity_id = models.CharField(max_length=255)
     participating_entity_type = models.CharField(max_length=255)
-    donation_amount = models.FloatField(null=True, default=None)
-    state = models.CharField(max_length=255, choices=STATES_CHOICES)
+    donation_amount = models.FloatField(null=True, blank=True, default=None)
+    state = models.CharField(max_length=255, choices=STATES_CHOICES, null=True, blank=True)
     media = models.ForeignKey(UploadedFile, null=True, default=None, related_name='challenge_participation_media')
     image = models.ForeignKey(UploadedFile, null=True, default=None, related_name='challenge_participation_image')
-    message = models.TextField(default='', blank=True)
+    message = models.TextField(default='', null=True, blank=True)
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
 

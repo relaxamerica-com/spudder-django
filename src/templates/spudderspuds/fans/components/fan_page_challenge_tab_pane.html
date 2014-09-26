@@ -1,0 +1,29 @@
+<div class="row">
+    <div class="hidden-xs col-sm-3 text-center">
+        <span class="fa fa-stack fa-3x">
+            <i class="fa fa-circle fa-stack-2x "></i>
+            <i class="fa-stack-1x fa-inverse fa-trophy"></i>
+        </span>
+        <h4>{{ title }}</h4>
+    </div>
+    <div class="col-sm-9">
+        {% if challenges %}
+
+            <div class="list-group">
+                {% for challenge in challenges %}
+                    <a href="{{ challenge.link }}" class="list-group-item">
+                        <i class="fa fa-arrow-right text-primary pull-right"></i>
+                        <h4 class="list-group-item-heading">{{ challenge.name }}</h4>
+                    </a>
+                {% endfor %}
+            </div>
+
+        {% else %}
+
+            <div class="well" style="width:90%; margin:20px auto;">
+                <h4>No challenges to show here.</h4>
+            </div>
+
+        {% endif %}
+    </div>
+</div>

@@ -10,11 +10,7 @@
     {% endif %}
 {% endblock %}
 
-{% block masterhead %}
-    <a href="/challenges/create" class="btn btn-lg btn-primary hidden-xs navbar-right">
-        Create your own challenge <i class="fa fa-arrow-right"></i>
-    </a>
-
+{% block masterhead_title %}
     <h4 class="navbar-text navbar-right hidden-xs"><span class="text-primary">Spudder Challenge:</span> {{ challenge.name }}</h4>
 {% endblock %}
 
@@ -63,7 +59,7 @@
                     <div class="action-buttons">
                         <div class="row">
                             <div class="col-md-4">
-                                <a href="{{ request.path }}/accept" class="btn btn-primary btn-block btn-cta">
+                                <a href="{{ request.path }}/accept/notice" class="btn btn-primary btn-block btn-cta">
                                     ACCEPT!
                                 </a>
                             </div>
@@ -106,7 +102,7 @@
                                         <div class="panel-body">
                                             <ul class="list-unstyled">
                                                 <li>Money raised: {{ beneficiary_data.total_amount_raised }}$</li>
-                                                <li>Number of challenges: {{ beneficiary_data.number_of_challenges }}</li>
+                                                <li>Number of challanges: {{ beneficiary_data.number_of_challenegs }}</li>
                                                 <li>
                                                     <ul class="list-inline">
                                                         <li>Participants:</li>
@@ -123,6 +119,10 @@
                                 </div>
                             {% endfor %}
                         </div>
+
+                        <div class="well" id="challenge-history">
+                        </div>
+
                     </div>
                 </div>
 
@@ -130,4 +130,49 @@
         </div>
     </div>
 
+{% endblock %}
+
+{% block js %}
+    {{ block.super }}
+    <script type="text/javascript">
+        $(function(){
+
+            function convertTreeNode(node, node_id){
+                var data = {
+                    text: node.name,
+                    icon: "fa fa-trophy",
+                    color: "#000000",
+                    backColor: "#FFFFFF",
+                    href: "#node-" + node_id
+                };
+                var data = $.extend(data, node);
+                if (node.children.length){
+                    data.nodes = []
+                    for (var i in node.children)
+                        for (var child_id in node.children[i])
+                            data.nodes.push(convertTreeNode(node.children[i][child_id], child_id));
+                }
+                return data;
+            }
+
+            function convertToTree(raw_data){
+                var tree_data = [];
+                for (var challenge_id in raw_data)
+                    tree_data.push(convertTreeNode(raw_data[challenge_id], challenge_id));
+                return tree_data;
+            }
+
+            var tree_data = {{ challenge_tree|safe }};
+            tree_data = convertToTree(tree_data);
+            $('#challenge-history').treeview({
+                data: tree_data,
+                selectable: false,
+                highlightSelected: false,
+                levels: 1,
+                expandIcon: "fa fa-plus",
+                collapseIcon: "fa fa-minus",
+                emptyIcon: "fa"
+            });
+        })
+    </script>
 {% endblock %}

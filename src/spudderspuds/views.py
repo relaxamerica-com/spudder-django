@@ -30,6 +30,34 @@ from spudmart.upload.models import UploadedFile
 from spudmart.utils.cover_image import reset_cover_image, save_cover_image_from_request
 from spudderkrowdio.utils import start_following, stop_following, get_following, post_comment
 from spudmart.venues.models import Venue
+from spudderdomain.models import Challenge, ChallengeParticipation
+from spudderdomain.wrappers import EntityBase
+
+
+def _format_challenge(type, c):
+    if type == 'created':
+        club = EntityController.GetWrappedEntityByTypeAndId(
+            c.recipient_entity_type,
+            c.recipient_entity_id,
+            EntityBase.EntityWrapperByEntityType(c.recipient_entity_type))
+        name = '%s for %s' % (c.name, club.name)
+        return {
+            'name': name,
+            'link': '/challenges/%s' % c.id
+        }
+    if type == 'waiting':
+        club = EntityController.GetWrappedEntityByTypeAndId(
+            c.challenge.recipient_entity_type,
+            c.challenge.recipient_entity_id,
+            EntityBase.EntityWrapperByEntityType(c.challenge.recipient_entity_type))
+        return {
+            'name': c.challenge.name,
+            'link': '/challenges/%s/accept/notice' % c.challenge.id
+        }
+    if type == 'done':
+        return {
+            'name': 'Test'
+        }
 
 
 def landing_page(request):
@@ -188,6 +216,15 @@ def fan_profile_view(request, page_id):
         template_data['following_fans_title'] = "<img src='/static/img/spudderspuds/button-fans-tiny.png' /> Fans %s Follows" % page.name
 
     template_data['fan_nav_active'] = 'profile'
+    template_data['challenges'] = {
+        'created': [_format_challenge('created', c) for c in Challenge.objects.filter(
+            creator_entity_id=fan_role.entity.id,
+            creator_entity_type=RoleController.ENTITY_FAN)],
+        'waiting': [_format_challenge('waiting', c) for c in ChallengeParticipation.objects.filter(
+            participating_entity_id=fan_role.entity.id,
+            participating_entity_type=RoleController.ENTITY_FAN,
+            state=ChallengeParticipation.PRE_ACCEPTED_STATE).select_related('challenge')]
+    }
     return render(request, 'spudderspuds/fans/pages/fan_page_view.html', template_data)
 
 

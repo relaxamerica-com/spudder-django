@@ -81,6 +81,11 @@ def _create_challenge(club_class, club_id, form, request, template, parent=None,
     return challenge
 
 
+def challenges_splash(request):
+    template_data = {}
+    return render(request, 'spudderspuds/challenges/pages/challenges.html', template_data)
+
+
 def clubs_splash(request):
     return render(request, 'spudderspuds/challenges/pages/splash_clubs.html')
 
@@ -231,6 +236,29 @@ def challenge_view(request, challenge_id):
     return render(request, 'spudderspuds/challenges/pages/challenge_view.html', template_data)
 
 
+def challenge_accept_notice(request, challenge_id):
+    if not request.current_role or request.current_role.entity_type != RoleController.ENTITY_FAN:
+        return redirect('/challenges/create/register?next=%s' % request.path)
+    challenge = get_object_or_404(Challenge, id=challenge_id)
+    template = challenge.template
+    beneficiary = EntityController.GetWrappedEntityByTypeAndId(
+        challenge.recipient_entity_type,
+        challenge.recipient_entity_id,
+        EntityBase.EntityWrapperByEntityType(challenge.recipient_entity_type))
+    participation, created = ChallengeParticipation.objects.get_or_create(
+        challenge=challenge,
+        participating_entity_id=request.current_role.entity.id,
+        participating_entity_type=request.current_role.entity_type)
+    participation.state = ChallengeParticipation.PRE_ACCEPTED_STATE
+    participation.save()
+    template_data = {
+        'challenge': challenge,
+        'template': template,
+        'beneficiary': beneficiary,
+        'participation': participation}
+    return render(request, 'spudderspuds/challenges/pages/challenge_accept_notice.html', template_data)
+
+
 def challenge_accept(request, challenge_id):
     if not request.current_role or request.current_role.entity_type != RoleController.ENTITY_FAN:
         return redirect('/challenges/create/register?next=%s' % request.path)
@@ -245,14 +273,13 @@ def challenge_accept(request, challenge_id):
     if request.method == 'POST':
         form = AcceptChallengeForm(request.POST)
         if form.is_valid():
-            participation = ChallengeParticipation(
+            participation, created = ChallengeParticipation.objects.get_or_create(
                 challenge=challenge,
                 participating_entity_id=request.current_role.entity.id,
-                participating_entity_type=request.current_role.entity_type,
-                donation_amount=form.cleaned_data.get('donation', 0),
-                state=ChallengeParticipation.DONATE_ONLY_STATE)
+                participating_entity_type=request.current_role.entity_type)
+            participation.donation_amount=form.cleaned_data.get('donation', 0)
+            participation.state = ChallengeParticipation.DONATE_ONLY_STATE
             participation.save()
-
             if request.FILES:
                 upload_form = UploadForm(request.POST, request.FILES)
                 file = upload_form.save()

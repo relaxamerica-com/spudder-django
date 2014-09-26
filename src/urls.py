@@ -41,8 +41,8 @@ def temp_redirect_view(request):
 
     # challenges_only_override - launch with only challenges Sep 2014
     if feature_is_enabled('challenges_only_override'):
-        from spudmart.challenges.views import get_challenges
-        return get_challenges(request)
+        from spudderspuds.challenges.views import challenges_splash
+        return challenges_splash(request)
 
     # Deal with current role if one exists
     if request.current_role:

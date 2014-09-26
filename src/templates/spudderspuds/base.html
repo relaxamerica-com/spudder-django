@@ -13,14 +13,42 @@
 {% endblock %}
 
 {% block masterhead %}
-
     {% if not request.current_role and not 'challenges_only_override'|feature_is_enabled %}
         <div class="navbar-collapse collapse navbar-right login-signup">
             <a href="/spuds/signin" class="btn btn-default navbar-btn btn-lg">LOG IN <i class="fa fa-caret-down text-primary"></i></a>
             <a href="/spuds/register" class="btn btn-primary navbar-btn btn-lg">SIGN UP</a>
         </div>
-
+    {% else %}
+        <div class="navbar-collapse collapse">
+            {% if not request.current_role %}
+                <div class="navbar-collapse collapse navbar-right login-signup">
+                    <a href="/challenges/create/signin?next=/challenges" class="btn btn-default navbar-btn btn-lg">LOG IN <i class="fa fa-caret-down text-primary"></i></a>
+                </div>
+            {% else %}
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/challenges"><i class="fa fa-trophy"></i> Challenges</a>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> My account <i class="fa fa-caret-down"></i> </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="{{ request.current_role.link_to_public_page }}"><i class="fa fa-user fa-fw"></i> My profile page</a>
+                            </li>
+                            <li>
+                                <a href="{{ request.current_role.link_to_public_page }}/edit"><i class="fa fa-pencil fa-fw"></i> Edit profile</a>
+                            </li>
+                            <li>
+                                <a href="/accounts/logout/"><i class="fa fa-sign-out fa-fw"></i> Sign out</a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            {% endif %}
+            {% block masterhead_title %}{% endblock %}
+        </div>
     {% endif %}
+
 {% endblock %}
 
 {% block body %}

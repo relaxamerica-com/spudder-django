@@ -6,18 +6,8 @@
 
 {% block body_class %}challenges {{ template.slug }}{% endblock %}
 
-{% block masterhead %}
-
-    {% if 'challenges_only_override'|feature_is_enabled %}
-
-        <a href="/challenges/create" class="btn btn-lg btn-primary hidden-xs navbar-right">
-            Create your first challenge <i class="fa fa-arrow-right"></i>
-        </a>
-
-        <h4 class="navbar-text navbar-right"><span class="text-primary">Spudder</span> Sports Fundraising Made Simple</h4>
-
-    {% endif %} {# if not 'challenges_only_override'|feature_is_enabled #}
-
+{% block masterhead_title %}
+    <h4 class="navbar-text navbar-right"><span class="text-primary">Spudder</span> Sports Fundraising Made Simple</h4>
 {% endblock %}
 
 {% block body %}
