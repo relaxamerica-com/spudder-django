@@ -1,7 +1,7 @@
 import json
 from django.db import models
 from spudderdomain.models import TempClub, Challenge
-from spudderspuds.challenges.utils import Tree, TreeElement
+from spudderspuds.challenges.utils import ChallengeTreeHelper, TreeElement
 
 
 class TempClubOtherInformation(models.Model):
@@ -53,7 +53,7 @@ class ChallengeTree(models.Model):
             if ctc.json_data['parent'] is None:
                 parent = ctc
         ctcs_list.remove(parent)
-        tree = Tree(id=parent.challenge_id, children={}, **parent.json_data)
+        tree = ChallengeTreeHelper(id=parent.challenge_id, children={}, **parent.json_data)
         while ctcs_list:
             ctcs_list_copy = ctcs_list[:]
             for ctc in ctcs_list_copy:
@@ -61,7 +61,7 @@ class ChallengeTree(models.Model):
                 if tree.add_element(element, ctc.json_data['parent']):
                     ctcs_list.remove(ctc)
 
-        return tree.to_dict()
+        return tree
 
 
 class _ChallengeTreeChallenge(models.Model):

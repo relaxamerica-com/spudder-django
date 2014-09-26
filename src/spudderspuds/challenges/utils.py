@@ -1,3 +1,5 @@
+from spudderdomain.controllers import RoleController, EntityController
+from spudderdomain.models import FanPage, Club, TempClub
 
 
 class TreeElement(object):
@@ -52,7 +54,7 @@ class Tree(object):
         if element_id in element.children:
             return element.children[element_id]
         else:
-            for child in element.children:
+            for child_id, child in element.children.items():
                 self._find_element(child, element_id)
         return None
 
@@ -65,3 +67,69 @@ class Tree(object):
 
     def to_dict(self):
         return self.root.to_dict()
+
+
+class ChallengeTreeHelper(Tree):
+    beneficiaries = {}
+    _participiants = {}
+
+    def add_beneficiary(self, tree_element):
+        recipient_entity_id = tree_element.recipient_entity_id
+        recipient_entity_type = tree_element.recipient_entity_type
+        if recipient_entity_id not in self.beneficiaries:
+            self.beneficiaries[recipient_entity_id] = {
+                'entity_id': recipient_entity_id,
+                'entity_type': recipient_entity_type,
+                'number_of_challenegs': 0,
+                'total_amount_raised': 0,
+                'participants': []
+            }
+        self.beneficiaries[recipient_entity_id]['number_of_challenegs'] += 1
+        for participation in tree_element.participations:
+            self.beneficiaries[recipient_entity_id]['total_amount_raised'] += participation['donation_amount']
+            participation_data = {
+                'entity_id': participation['participating_entity_id'],
+                'entity_type': participation['participating_entity_type']
+            }
+            self.beneficiaries[recipient_entity_id]['participants'].append(participation_data)
+            self._participiants[participation['participating_entity_id']] = participation_data
+
+    def __init__(self, id, children={}, **kwargs):
+        super(ChallengeTreeHelper, self).__init__(id, children, **kwargs)
+        self.add_beneficiary(self.root)
+
+    def add_element(self, element, parent_id):
+        self.add_beneficiary(element)
+        return super(ChallengeTreeHelper, self).add_element(element, parent_id)
+
+    def update_beneficiaries_data(self):
+        # get participiants objects
+        # for now fans only
+        fan_ids = [int(entity_id) for entity_id, data in self._participiants.items()
+                   if data['entity_type'] == RoleController.ENTITY_FAN]
+        fans = FanPage.objects.filter(id__in=fan_ids)
+        for fan in fans:
+            self._participiants[fan.id]['object'] = fan
+
+        # get beneficiaries objects
+        # for now clubs and temp clubs only
+        club_ids = [int(entity_id) for entity_id, data in self.beneficiaries.items()
+                    if data['entity_type'] == EntityController.ENTITY_CLUB]
+        temp_club_ids = [int(entity_id) for entity_id, entity_type in self.beneficiaries.items()
+                         if data['entity_type'] == EntityController.ENTITY_TEMP_CLUB]
+
+        clubs = Club.objects.filter(id__in=club_ids)
+        for club in clubs:
+            club_id = str(club.id)
+            self.beneficiaries[club_id]['object'] = club
+            for participiant_data in self.beneficiaries[club_id]['participants']:
+                participiant_data['object'] = self._participiants[participiant_data['entity_id']]['object']
+
+        temp_clubs = TempClub.objects.filter(id__in=temp_club_ids)
+        for temp_club in temp_clubs:
+            temp_club_id = str(temp_club.id)
+            self.beneficiaries[temp_club_id]['object'] = temp_club
+            for participiant_data in self.beneficiaries[temp_club_id]['participants']:
+                participiant_data['object'] = self._participiants[participiant_data['entity_id']]['object']
+
+        return self.beneficiaries

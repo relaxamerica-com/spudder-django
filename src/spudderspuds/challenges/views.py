@@ -212,11 +212,14 @@ def challenge_share(request, challenge_id):
 def challenge_view(request, challenge_id):
     challenge = get_object_or_404(Challenge, id=challenge_id)
     template = challenge.template
-    challenge_tree_data = ChallengeTree.GetChallengeTree(challenge).get_tree()
+    challenge_tree = ChallengeTree.GetChallengeTree(challenge).get_tree()
+    challenge_tree_data = challenge_tree.to_dict()
+    beneficiaries_data = challenge_tree.update_beneficiaries_data()
     template_data = {
         'challenge': challenge,
         'template': template,
         'challenge_tree': json.dumps(challenge_tree_data),
+        'beneficiaries': beneficiaries_data,
         'owner': RoleController.GetRoleForEntityTypeAndID(
             challenge.creator_entity_type,
             challenge.creator_entity_id,
@@ -352,5 +355,3 @@ def challenge_accept_beneficiary_set_donation(request, participation_id, state, 
         request,
         'spudderspuds/challenges/pages/challenge_accept_beneficiary_choose_donation.html',
         template_data)
-
-
