@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 
 from django.forms import (TextInput, DateInput, FileInput, CheckboxInput,
-                          ClearableFileInput, Select, RadioSelect, CheckboxSelectMultiple)
+                          ClearableFileInput, Select, RadioSelect, CheckboxSelectMultiple, PasswordInput)
 from django.forms.extras import SelectDateWidget
 from django.forms.forms import BaseForm, BoundField
 from django.utils.html import conditional_escape, strip_tags
@@ -326,6 +326,18 @@ class SpudderFieldRenderer(FieldRenderer):
             self.addon_before = self.initial_attrs.get('addon_before')
         if not self.addon_after:
             self.addon_after = self.initial_attrs.get('addon_after')
+
+    def make_input_group(self, html):
+        if ((self.addon_before or self.addon_after) and
+                isinstance(self.widget, (TextInput, DateInput, Select, PasswordInput))
+        ):
+            before = '<span class="input-group-addon">{addon}</span>'.format(
+                addon=self.addon_before) if self.addon_before else ''
+            after = '<span class="input-group-addon">{addon}</span>'.format(
+                addon=self.addon_after) if self.addon_after else ''
+            html = '<div class="input-group">{before}{html}{after}</div>'.format(
+                before=before, after=after, html=html)
+        return html
 
 
 

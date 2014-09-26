@@ -14,25 +14,32 @@
 
 {% block well_content %}
     <div class="page-header">
-        <h1><span class="text-primary">Thanks!</span> Now challenge others</h1>
-        <h2><small>You can now customize the {{ challenge.name }} and challenge your friends, family and fans!</small></h2>
+        <h1>
+            {% include 'spudderspuds/challenges/components/wizard_steps.html' with step="<i class='fa fa-trophy'></i>" title="Challenge others" %}
+            {% if request.GET.just_pledged %}
+                Thanks for your pledge!
+            {% else %}
+                Who are you fundraising for?
+            {% endif %}
+        </h1>
+        {% if request.GET.just_pledged %}
+            <h2>Now you can challenge others and raise money for your team</h2>
+        {% endif %}
+        <p><small>Choose who the money your friends, family and fans pledge should go to.</small></p>
     </div>
-    <p style="margin-bottom: 20px;">
-        First, choose who the money your friends, family and fans pledge should go to.
-    </p>
-    <p class="text-info" style="margin-bottom: 20px;">Currently viewing clubs in <b>{{ state|format_state }}</b>, <a href="/challenges/{{ participation.id }}/state">change</a>?</p>
+    <p>Currently viewing clubs in <b>{{ state|format_state }}</b>, <a href="/challenges/{{ participation.id }}/state">change</a>?</p>
     <hr/>
     {% if clubs %}
-        <div class="alert alert-info">
-            <h4>Can't find your club here?</h4>
-            <p>No problems, you can add your club to this list and we'll make sure they get any money donated to them through Spudder!</p>
+        <div class="well">
+            <h4>Can't find your team here?</h4>
+            <p>No problems, you can add your team to this list and we'll make sure they get any money donated to them through Spudder!</p>
             <br/>
             <a class="btn btn-default" href="{{ request.path }}/create_club">
-                <i class="fa fa-plus"></i> Add your club!
+                <i class="fa fa-plus"></i> Add your team!
             </a>
             <br/>
             <br/>
-            <p><small>Once you add your club, we'll make sure they get all money raised for them!</small></p>
+            <p><small>Once you add your team, we'll make sure they get all money raised for them!</small></p>
         </div>
 
         <table class="table table-striped datatable">
@@ -59,17 +66,17 @@
         </table>
     {% else %}
 
-        <div class="alert alert-info">
-            <h4>Your the first to raise money for a club in {{ state|format_state }}!</h4>
+        <div class="well">
+            <h4>Your the first to raise money for a team in {{ state|format_state }}!</h4>
             <p>Great news, you have started the fundraising revolution in {{ state|format_state }}.</p>
-            <p>No clubs in {{ state|format_state }} are registered yet but <b>don't worry</b></p>
+            <p>No teams in {{ state|format_state }} are registered yet but <b>don't worry</b></p>
             <br/>
             <a class="btn btn-default" href="{{ request.path }}/create_club">
-                <i class="fa fa-plus"></i> Add your club!
+                <i class="fa fa-plus"></i> Add your team!
             </a>
             <br/>
             <br/>
-            <p><small>Once you add your club, we'll make sure they get all money raised for them!</small></p>
+            <p><small>Once you add your team, we'll make sure they get all money raised for them!</small></p>
         </div>
 
     {% endif %}

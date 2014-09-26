@@ -19,12 +19,16 @@
 
 {% block well_content %}
     <div class="page-header">
-        <h1>Configure the challenge</h1>
+        <h1>
+            {% include 'spudderspuds/challenges/components/wizard_steps.html' with step="3" of="3" title="Create Challenge" %}
+            Configure the challenge
+        </h1>
         <p><small>Choose the suggested donation amount and upload a video or image to go with this challenge.</small></p>
     </div>
 
-    <p class="text-info" style="margin-bottom: 20px;">Create challenge for <b>{{ club.name }}</b>, <a href="/challenges/create/{{ template.id }}">change</a>?</p>
+    <p>Your creating a challenge for <b>{{ club.name }} ({{ club.state }})</b>, <a href="/challenges/create/{{ template.id }}">change</a>?</p>
 
+    <hr/>
     <form method="post" enctype="multipart/form-data" action="{{ upload_url }}" class="ajax-form">
         {% csrf_token %}
         {% bootstrap_form form %}

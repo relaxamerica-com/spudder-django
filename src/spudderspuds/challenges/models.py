@@ -7,6 +7,8 @@ from spudderspuds.challenges.utils import Tree, TreeElement
 class TempClubOtherInformation(models.Model):
     temp_club = models.ForeignKey(TempClub)
     other_information = models.TextField()
+    website = models.URLField(blank=True)
+    contact_number = models.CharField(blank=True)
 
 
 class ChallengeTree(models.Model):

@@ -13,22 +13,24 @@
 
 {% block well_content %}
     <div class="page-header">
-        <h1>Sign in with <span class="text-primary">Spudder</span></h1>
-        <p><small>Sign into your account to continue fundraising for your club!</small></p>
+        <h1>
+            {% include 'spudderspuds/challenges/components/wizard_steps.html' with title="Start Fundraising" step="$" %}
+            Signin and start fundraising
+        </h1>
+        <p><small>Sign into your account to continue fundraising for your team!</small></p>
     </div>
 
-    <p class="text-info" style="margin-bottom: 20px;">Don't have an account? <a href="/challenges/create/register?next={{ request.GET.next|default:'/' }}">register</a>?</p>
+    <p>Don't have an account? <a href="/challenges/create/register?next={{ request.GET.next|default:'/' }}">register <i class="fa fa-arrow-right"></i> </a></p>
+
+    <hr/>
 
     <form method="post">
         {% csrf_token %}
         {% bootstrap_form form %}
         {% buttons %}
-            <button type="submit" class="btn btn-primary">
-                Sign in
+            <button type="submit" class="btn btn-primary btn-cta">
+                Start fundraising <i class="fa fa-arrow-right"></i>
             </button>
-            <a href="{{ request.META.HTTP_REFERER }}" class="btn btn-default">
-                Cancel
-            </a>
         {% endbuttons %}
     </form>
 

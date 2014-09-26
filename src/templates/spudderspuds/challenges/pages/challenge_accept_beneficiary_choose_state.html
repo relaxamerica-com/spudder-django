@@ -14,7 +14,10 @@
 
 {% block well_content %}
     <div class="page-header">
-        <h1>Who gets the money?</h1>
+        <h1>
+            {% include 'spudderspuds/challenges/components/wizard_steps.html' with step="<i class='fa fa-trophy'></i>" title="Challenge others" %}
+            Who are you fundraising for!
+        </h1>
         <p><small>Choose the state where the club you are raising money for is based</small></p>
     </div>
 

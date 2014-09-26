@@ -35,12 +35,16 @@ def _create_temp_club(form, state):
     name = form.cleaned_data['name'].upper()
     email = form.cleaned_data['email']
     other_info = form.cleaned_data['other_information']
+    website = form.cleaned_data['website']
+    contact_number = form.cleaned_data['contact_number']
     temp_club, created = TempClub.objects.get_or_create(name=name, state=state)
     temp_club.email = email or temp_club.email
     temp_club.save()
-    if other_info:
+    if other_info or website or contact_number:
         temp_club_other_info, created = TempClubOtherInformation.objects.get_or_create(temp_club=temp_club)
         temp_club_other_info.other_information = other_info
+        temp_club_other_info.website = website
+        temp_club_other_info.contact_number = contact_number
         temp_club_other_info.save()
     return temp_club
 
@@ -198,7 +202,7 @@ def create_challenge_set_donation(request, template_id, state, club_id, club_cla
         'upload_url': upload_url}
     return render(
         request,
-        'spudderspuds/challenges/pages/create_challenge_choose_donation.html',
+        'spudderspuds/challenges/pages/create_challenge_configure.html',
         template_data)
 
 
@@ -253,7 +257,7 @@ def challenge_accept(request, challenge_id):
                 participation.state = ChallengeParticipation.ACCEPTED_STATE
                 participation.save()
             ChallengeTree.AddParticipationToTree(challenge, participation)
-            redirect_url = '/challenges/%s/beneficiary/%s' % (participation.id, beneficiary.state)
+            redirect_url = '/challenges/%s/beneficiary/%s?just_pledged=True' % (participation.id, beneficiary.state)
             if request.is_ajax():
                 return HttpResponse(redirect_url)
             return redirect(redirect_url)

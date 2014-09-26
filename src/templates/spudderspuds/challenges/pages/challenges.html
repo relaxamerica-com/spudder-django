@@ -2,6 +2,14 @@
 {% load bootstrap3 %}
 {% load accounts %}
 
+{% block js %}
+    <script type="text/javascript" language="javascript">
+        $(function(){
+            balance_element_height("#challenges-explained .panel-body");
+        })
+    </script>
+{% endblock %}
+
 {% block body_id %}challenges-splash{% endblock %}
 
 {% block body_class %}challenges {{ template.slug }}{% endblock %}
@@ -46,56 +54,80 @@
             </div>
         </div>
     </div>
-    <div class="container">
-        <div class="page-header">
-            <h1>
-                Browse challenges in Spudder!
-            </h1>
-        </div>
-
-        <table class="table table-striped {% if challenges %} datatable {% endif %}">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Logo</th>
-                    <th>Challenge Template</th>
-                    <th>Challenge Name</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for challenge in challenges %}
-                    <tr>
-                        <td style="width: 40px;">
-                            {{ forloop.counter }}
-                        </td>
-                        <td>
-                            {% if challenge.template.image %}
-                                <img src="/file/serve/{{ challenge.template.image.pk }}" width="56" height="52" />
-                            {% else %}
-                                <i class="fa fa-group fa-2x"> </i>
-                            {% endif %}
-                        </td>
-                        <td>
-                            <a href="/challenges/template/{{ challenge.template.id }}">{{ challenge.template.name }}</a>
-                        </td>
-                        <td>
-                            <a href="/challenges/{{ challenge.id }}">{{ challenge.name }}</a>
-                        </td>
-                        <td style="width: 40px;">
-
-                        </td>
-                    </tr>
-                {% empty %}
-                <tr>
-                    <td colspan="5">
-                        <div class="alert alert-warning">
-                            <p>There are no challenges to show.</p>
+    <div id="challenges-explained">
+        <div class="container">
+            <div class="row header-text">
+                <div class="col-md-8 col-md-offset-2 text-center">
+                    <h1><span class="text-primary">Spudder</span> enables youth sports clubs to create <span class="text-primary">Challenges</span> that go viral and help raise funds.</h1>
+                    <h3>Fundraising with <span class="text-primary">Spudder</span> is as easy as 1, 2, 3 ...</h3>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <h1 class="text-center text-muted">
+                                Step
+                                <span class="fa fa-stack">
+                                    <i class="fa fa-circle fa-stack-2x "></i>
+                                    <strong class="fa-stack-1x fa-inverse">1</strong>
+                                </span>
+                            </h1>
+                            <h2>Choose a challenge!</h2>
+                            <p>
+                                <span class="text-primary">Spudder</span> provides a list of ready-to-use challenges that
+                                you can use to start fundraising for your team!
+                            </p>
                         </div>
-                    </td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <h1 class="text-center text-warning">
+                                Step
+                                <span class="fa fa-stack">
+                                    <i class="fa fa-circle fa-stack-2x "></i>
+                                    <strong class="fa-stack-1x fa-inverse">2</strong>
+                                </span>
+                            </h1>
+                            <h2>Choose who gets the money!</h2>
+                            <p>
+                                Register your team with <span class="text-primary">Spudder</span> and we'll make sure they
+                                get all the money pledged!
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <h1 class="text-center text-primary">
+                                Step
+                                <span class="fa fa-stack">
+                                    <i class="fa fa-circle fa-stack-2x "></i>
+                                    <strong class="fa-stack-1x fa-inverse">3</strong>
+                                </span>
+                            </h1>
+                            <h2>Start fundraising!</h2>
+                            <p>
+                                Challenge your friends, family and fans by sharing your challenge on social media or
+                                by email!
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="coming-soon">
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12 text-center">
+                    <h1 class="text-primary">Coming Soon!</h1>
+                    <h2><span class="text-primary">Spudder:</span> Sports updates made simple</h2>
+                </div>
+            </div>
+        </div>
     </div>
 {% endblock %}

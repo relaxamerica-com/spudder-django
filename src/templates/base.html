@@ -208,7 +208,7 @@
                 <div class=" main-footer">
                     <div class="container">
                         <div class="row">
-                            <div class="col-sm-4 col-md-2 list-column">
+                            <div class="col-xs-6 col-sm-4 col-md-2 list-column">
                                 <h3>Features</h3>
                                 <ul class="list-unstyled">
                                     <li><a href="http://info.spudder.com/fundraising/" target="_blank">Fundraising</a></li>
@@ -218,7 +218,7 @@
                                     <li><a href="http://info.spudder.com/parental-controls" target="_blank">Parental Controls</a></li>
                                 </ul>
                             </div>
-                            <div class="col-sm-4 col-md-2 list-column">
+                            <div class="col-xs-6 col-sm-4 col-md-2 list-column">
                                 <h3>About</h3>
                                 <ul class="list-unstyled">
                                     <li><a href="http://info.spudder.com/privacy/" target="_blank">Privacy policy</a></li>
@@ -230,7 +230,15 @@
                             </div>
                             <div class="col-sm-4 col-md-2 list-column">
                                 <h3>Our Platform</h3>
-                                <ul class="list-unstyled">
+                                <ul class="list-unstyled hidden-xs">
+                                    <li style="margin-bottom: 10px;"><a href="/spuds"><img src="/static/img/spudderspuds/button-spuds-tiny.png" style="height:18px;"/> Spudder</a></li>
+                                    <li style="margin-bottom: 10px;"><a href="/cern"><img src="/static/img/spuddercern/button-cern-tiny.png" style="height:18px;"/> CERN</a></li>
+                                    <li style="margin-bottom: 10px;"><a href="/sponsor_network"><img src="/static/img/spuddersponsors/button-sponsors-tiny.png" style="height:18px;"/> Sponsor Network</a></li>
+                                    {% if 'clubs'|feature_is_enabled %}
+                                        <li style="margin-bottom: 10px;"><a href="/club"><img src="/static/img/spudderclubs/button-clubs-tiny.png" style="height:18px;"/> Clubs Network</a></li>
+                                    {% endif %}
+                                </ul>
+                                <ul class="list-inline visible-xs">
                                     <li style="margin-bottom: 10px;"><a href="/spuds"><img src="/static/img/spudderspuds/button-spuds-tiny.png" style="height:18px;"/> Spudder</a></li>
                                     <li style="margin-bottom: 10px;"><a href="/cern"><img src="/static/img/spuddercern/button-cern-tiny.png" style="height:18px;"/> CERN</a></li>
                                     <li style="margin-bottom: 10px;"><a href="/sponsor_network"><img src="/static/img/spuddersponsors/button-sponsors-tiny.png" style="height:18px;"/> Sponsor Network</a></li>
