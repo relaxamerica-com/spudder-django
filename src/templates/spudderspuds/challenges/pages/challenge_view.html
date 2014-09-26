@@ -10,6 +10,16 @@
     {% endif %}
 {% endblock %}
 
+
+{% block css %}
+    {{ block.super }}
+    <link rel="stylesheet" href="/static/css/bootstrap-treeview.css" />
+{% endblock %}
+
+{% block extra_head %}
+    <script type="text/javascript" language="javascript" src="/static/js/libs/bootstrap-treeview.js"></script>
+{% endblock %}
+
 {% block masterhead %}
     <a href="/challenges/create" class="btn btn-lg btn-primary hidden-xs navbar-right">
         Create your own challenge <i class="fa fa-arrow-right"></i>
@@ -89,8 +99,7 @@
                         <h3><span class="text-primary">Challenge</span> History</h3>
                         <h4><small>See everyone how's taken this challenge</small></h4>
 
-                        <div class="well">
-                            {{ challenge_tree }}
+                        <div class="well" id="challenge-history">
                         </div>
 
                     </div>
@@ -100,4 +109,49 @@
         </div>
     </div>
 
+{% endblock %}
+
+{% block js %}
+    {{ block.super }}
+    <script type="text/javascript">
+        $(function(){
+
+            function convertTreeNode(node, node_id){
+                var data = {
+                    text: node.name,
+                    icon: "fa fa-trophy",
+                    color: "#000000",
+                    backColor: "#FFFFFF",
+                    href: "#node-" + node_id
+                };
+                var data = $.extend(data, node);
+                if (node.children.length){
+                    data.nodes = []
+                    for (var i in node.children)
+                        for (var child_id in node.children[i])
+                            data.nodes.push(convertTreeNode(node.children[i][child_id], child_id));
+                }
+                return data;
+            }
+
+            function convertToTree(raw_data){
+                var tree_data = [];
+                for (var challenge_id in raw_data)
+                    tree_data.push(convertTreeNode(raw_data[challenge_id], challenge_id));
+                return tree_data;
+            }
+
+            var tree_data = {{ challenge_tree|safe }};
+            tree_data = convertToTree(tree_data);
+            $('#challenge-history').treeview({
+                data: tree_data,
+                selectable: false,
+                highlightSelected: false,
+                levels: 1,
+                expandIcon: "fa fa-plus",
+                collapseIcon: "fa fa-minus",
+                emptyIcon: ""
+            });
+        })
+    </script>
 {% endblock %}
