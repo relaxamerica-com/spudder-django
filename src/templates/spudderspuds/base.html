@@ -36,7 +36,10 @@
                                 <a href="{{ request.current_role.link_to_public_page }}"><i class="fa fa-user fa-fw"></i> My profile page</a>
                             </li>
                             <li>
-                                <a href="{{ request.current_role.link_to_public_page }}/edit"><i class="fa fa-pencil fa-fw"></i> Edit profile</a>
+                                <a href="{{ request.current_role.link_to_public_page }}#challenges"><i class="fa fa-angle-right fa-fw"  style="margin-right: 10px;"></i><i class="fa fa-trophy fa-fw"></i> My challenges</a>
+                            </li>
+                            <li>
+                                <a href="{{ request.current_role.link_to_public_page }}/edit"><i class="fa fa-angle-right fa-fw"  style="margin-right: 10px;"></i><i class="fa fa-pencil fa-fw"></i> Edit profile</a>
                             </li>
                             <li>
                                 <a href="/accounts/logout/"><i class="fa fa-sign-out fa-fw"></i> Sign out</a>
