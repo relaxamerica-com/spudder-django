@@ -6,7 +6,7 @@
     {{ block.super }}
     <script type="text/javascript">
         (function () {
-            var GOOGLE_PLUS_SCRIPT_URL = 'https://apis.google.com/js/client:plusone.js';
+            var GOOGLE_PLUS_SCRIPT_URL = 'https://apis.google.com/js/client:plusone.js?callback=googleOnLoad';
             var CHANNELS_SERVICE_URL = 'https://www.googleapis.com/youtube/v3/channels';
             var VIDEOS_UPLOAD_SERVICE_URL = 'https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet';
             var VIDEOS_SERVICE_URL = 'https://www.googleapis.com/youtube/v3/videos';
@@ -36,6 +36,15 @@
                         $('.post-sign-in').show();
                     });
                 }
+            };
+
+            window.googleOnLoad = function() {
+                gapi.signin.render('customBtn', {
+                    'callback': "oauth2Callback",
+                    'clientid': "653628115804-7vkcnmhte0f36fvr1dj9t5hrn1mt6i5t.apps.googleusercontent.com",
+                    'cookiepolicy': "single_host_origin",
+                    'scope': "https://www.googleapis.com/auth/youtube.readonly https://www.googleapis.com/auth/youtube.upload",
+                });
             };
 
             function initiateUpload(e) {
@@ -164,19 +173,9 @@
             }
 
             $(function () {
-                $.getScript(GOOGLE_PLUS_SCRIPT_URL, function(){
-                    gapi.signin.render('google-button', {
-                        'data-callback': "oauth2Callback",
-                        'data-clientid': "653628115804-7vkcnmhte0f36fvr1dj9t5hrn1mt6i5t.apps.googleusercontent.com",
-                        'data-cookiepolicy': "single_host_origin",
-                        'data-scope': "https://www.googleapis.com/auth/youtube.readonly https://www.googleapis.com/auth/youtube.upload",
-                        'cookiepolicy': 'single_host_origin',
-{#                        //'callback': 'signinCallback',#}
-{#                        'clientid': '841077041629.apps.googleusercontent.com',#}
-{#                        'requestvisibleactions': 'http://schema.org/AddAction',#}
-{#                        'scope': 'https://www.googleapis.com/auth/plus.login'#}
-                    });
-                });
+                $.getScript(GOOGLE_PLUS_SCRIPT_URL);
+{#                , function(){#}
+{#                });#}
 
                 $('#upload-form').submit(initiateUpload);
             });
@@ -207,7 +206,23 @@
     <hr/>
     <p>Once you have uploaded evidence of you taking the {{ challenge.name }}, you'll be able to challenge others and even start fundraising for a different team!</p>
     <hr/>
+    <div id="gSignInWrapper">
+        <span class="label">Sign in with:</span>
+        <div id="customBtn" class="customGPlusSignIn">
+            <span class="icon"></span>
+            <span class="buttonText">Google</span>
+        </div>
+    </div>
     <button class="btn btn-danger btn-cta" id="google-button">
         <i class="fa fa-youtube"></i> Upload video to YouTube
     </button>
+{#    <span id="signinButton" class="pre-sign-in">#}
+{#        <span class="g-signin"#}
+{#              data-callback="oauth2Callback"#}
+{#              data-clientid="653628115804-7vkcnmhte0f36fvr1dj9t5hrn1mt6i5t.apps.googleusercontent.com"#}
+{#              data-cookiepolicy="single_host_origin"#}
+{#              data-scope="https://www.googleapis.com/auth/youtube.readonly https://www.googleapis.com/auth/youtube.upload">#}
+{#        </span>#}
+{#    </span>#}
+
 {% endblock %}
