@@ -49,6 +49,10 @@ urlpatterns = patterns(
     url(r'^/send_email$', 'send_email'),
 
     url(r'^/challenges$', 'challenges'),
+    url(r'^/challenges/edit_config$', 'edit_config'),
+    url(r'^/challenges/add_message$', 'add_challenge_config_message'),
+    url(r'^/challenges/(?P<message_id>\d+)/edit_message$', 'edit_challenge_config_message'),
+    url(r'^/challenges/(?P<message_id>\d+)/remove_message$', 'remove_challenge_config_message'),
 
     url(r'^', 'admin_login'),
 )

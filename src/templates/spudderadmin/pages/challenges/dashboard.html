@@ -37,6 +37,39 @@
                         </ul>
                     </div>
                 </div>
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <h2>Challenge Configuration</h2>
+                        <dl>
+                            <dt>Time to complete challenge</dt>
+                            <dd>{{ challenge_config.time_to_complete }} min <a href="/spudderadmin/challenges/edit_config">edit</a></dd>
+                            <dt>Messages</dt>
+                            <dd>
+                                <a href="/spudderadmin/challenges/add_message" class="btn btn-default">
+                                    <i class="fa fa-plus"></i> Add message
+                                </a>
+
+                                <ul class="list-group">
+                                    {% for challenge_message_config in challenge_messages_config %}
+                                        <li class="list-group-item">
+                                            <p>
+                                                {{ challenge_message_config.message }}
+                                                <a href="/spudderadmin/challenges/{{ challenge_message_config.id }}/edit_message" class="btn btn-default">
+                                                    <i class="fa fa-pencil-square-o"></i> Edit message
+                                                </a>
+                                                <a href="/spudderadmin/challenges/{{ challenge_message_config.id }}/remove_message" class="btn btn-danger">
+                                                    <i class="fa fa-trash"></i> Remove message
+                                                </a>
+                                            </p>
+                                        </li>
+                                    {% empty %}
+                                        <p>No messages configured</p>
+                                    {% endfor %}
+                                </ul>
+                            </dd>
+                        </dl>
+                    </div>
+                </div>
             </div>
             <div class="col-sm-6">
                 <div class="panel panel-default">

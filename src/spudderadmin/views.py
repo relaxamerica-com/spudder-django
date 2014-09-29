@@ -5,7 +5,7 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from django.http import Http404, HttpResponseRedirect
 from django.http import HttpResponse, HttpResponseNotAllowed
-from django.shortcuts import render_to_response, redirect, render
+from django.shortcuts import render_to_response, redirect, render, get_object_or_404
 from django.template import RequestContext
 
 import settings
@@ -25,6 +25,7 @@ from spuddersocialengine.atpostspud.models import AtPostSpudTwitterAuthenticatio
 from spuddersocialengine.locationscraper.models import LocationScraperServiceConfiguration, InstagramPerSportApplicationConfiguration, InstagramSubscriptions, VenuesModel
 from spuddersocialengine.locationscraper.socialnetworks.instagram import deregister_subscription
 from spuddersocialengine.models import SpudFromSocialMedia
+from spudderspuds.challenges.forms import ChallengeServiceConfigurationForm, ChallengeMessageConfigurationForm
 from spudmart.CERN.models import Student, School
 from spudmart.CERN.templatetags.CERN import student_email
 from spudmart.accounts.templatetags.accounts import fan_page_name, user_name
@@ -34,7 +35,8 @@ from spudmart.sponsors.models import SponsorPage
 from spudmart.upload.models import UploadedFile
 from spudmart.venues.models import PendingVenueRental, Venue, SPORTS
 from spudmart.CERN.models import STATUS_ACCEPTED, STATUS_REJECTED, STATUS_WAITLIST
-from spudderspuds.challenges.models import _ChallengeTreeChallenge, ChallengeTree
+from spudderspuds.challenges.models import _ChallengeTreeChallenge, ChallengeTree, ChallengeServiceConfiguration, \
+    ChallengeServiceMessageConfiguration
 
 
 def admin_login(request):
@@ -760,8 +762,71 @@ def challenges(request):
                 description="Challenge your friends, family and fans to tip a bucket of ice water over their head!",
                 slug="icebucket").save()
             messages.success(request, "<i class='fa fa-check'></i> Base challenge templates ensured.")
+
+    challenge_config = ChallengeServiceConfiguration.GetForSite()
+    challenge_messages_config = ChallengeServiceMessageConfiguration.objects.filter(configuration=challenge_config)
     template_data = {
         'reset_challenges_system_form': reset_challenges_system_form,
-        'challenge_templates': ChallengeTemplate.objects.all()
+        'challenge_templates': ChallengeTemplate.objects.all(),
+        'challenge_config': challenge_config,
+        'challenge_messages_config': challenge_messages_config,
     }
     return render(request, 'spudderadmin/pages/challenges/dashboard.html', template_data)
+
+
+@admin_login_required
+def edit_config(request):
+    challenge_config = ChallengeServiceConfiguration.GetForSite()
+    form = ChallengeServiceConfigurationForm(initial=challenge_config.__dict__)
+    if request.method == 'POST':
+        form = ChallengeServiceConfigurationForm(data=request.POST)
+        if form.is_valid():
+            challenge_config.time_to_complete = form.cleaned_data['time_to_complete']
+            challenge_config.save()
+            return HttpResponseRedirect('/spudderadmin/challenges')
+    template_data = {'form': form}
+    return render(request, 'spudderadmin/pages/challenges/edit_config_form.html', template_data)
+
+
+@admin_login_required
+def add_challenge_config_message(request):
+    challenge_config = ChallengeServiceConfiguration.GetForSite()
+    form = ChallengeMessageConfigurationForm()
+    if request.method == 'POST':
+        form = ChallengeMessageConfigurationForm(data=request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+            message_config = ChallengeServiceMessageConfiguration(
+                configuration=challenge_config,
+                notify_after=data['notify_after'],
+                message=data['message']
+            )
+            message_config.save()
+            return HttpResponseRedirect('/spudderadmin/challenges')
+    template_data = {'form': form}
+    return render(request, 'spudderadmin/pages/challenges/edit_config_form.html', template_data)
+
+
+@admin_login_required
+def edit_challenge_config_message(request, message_id):
+    message_config = get_object_or_404(ChallengeServiceMessageConfiguration, id=message_id)
+    form = ChallengeMessageConfigurationForm(initial=message_config.__dict__)
+    if request.method == 'POST':
+        form = ChallengeMessageConfigurationForm(data=request.POST)
+        if form.is_valid():
+            message_config.notify_after = form.cleaned_data['notify_after']
+            message_config.message = form.cleaned_data['message']
+            message_config.save()
+            return HttpResponseRedirect('/spudderadmin/challenges')
+    template_data = {'form': form}
+    return render(request, 'spudderadmin/pages/challenges/edit_config_form.html', template_data)
+
+
+@admin_login_required
+def remove_challenge_config_message(request, message_id):
+    message_config = get_object_or_404(ChallengeServiceMessageConfiguration, id=message_id)
+    if request.method == 'POST':
+        message_config.delete()
+        return HttpResponseRedirect('/spudderadmin/challenges')
+    template_data = {}
+    return render(request, 'spudderadmin/pages/challenges/remove_form.html', template_data)

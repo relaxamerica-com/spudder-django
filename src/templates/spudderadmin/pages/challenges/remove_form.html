@@ -1,0 +1,23 @@
+{% extends 'spudderadmin/base.html' %}
+{% load bootstrap3 %}
+
+{% block body %}
+    <div class="container">
+        <h1>Are you sure you want to delete selected object?</h1>
+        <form method="post" enctype="multipart/form-data" action="">
+            <fieldset>
+                {% csrf_token %}
+
+                {% buttons %}
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fa fa-trash"></i> Remove
+                    </button>
+                    <a href="/spudderadmin/challenges" class="btn btn-default">
+                        Cancel
+                    </a>
+                {% endbuttons %}
+            </fieldset>
+        </form>
+
+    </div>
+{% endblock %}

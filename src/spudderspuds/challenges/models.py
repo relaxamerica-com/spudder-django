@@ -1,6 +1,6 @@
 import json
 from django.db import models
-from spudderdomain.models import TempClub, Challenge
+from spudderdomain.models import TempClub, Challenge, ChallengeTemplate
 from spudderspuds.challenges.utils import ChallengeTreeHelper, TreeElement
 
 
@@ -87,3 +87,20 @@ class _ChallengeTreeChallenge(models.Model):
         challenge['participations'].append(participation.as_dict())
         self.challenge_json = json.dumps(challenge)
         self.save()
+
+
+class ChallengeServiceConfiguration(models.Model):
+    SITE_UNIQUE_ID = "01"
+    site_unique_id = models.CharField(max_length=256)
+    time_to_complete = models.IntegerField(default=48 * 60)  # in minutes
+
+
+    @classmethod
+    def GetForSite(cls):
+        return ChallengeServiceConfiguration.objects.get_or_create(site_unique_id=cls.SITE_UNIQUE_ID)[0]
+
+
+class ChallengeServiceMessageConfiguration(models.Model):
+    configuration = models.ForeignKey(ChallengeServiceConfiguration)
+    notify_after = models.IntegerField()  # in minutes
+    message = models.TextField()
