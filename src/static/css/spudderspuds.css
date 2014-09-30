@@ -14835,6 +14835,9 @@ body.challenges #body-background-image-container:before {
 #challenges-choose-template .challenge-templates .list-group-item.icebucket .media-object {
   background-image: url('/static/img/spudderspuds/challenges/challenge_icebucket_icon.jpg');
 }
+#challenges-choose-template .challenge-templates .list-group-item.piechallenge .media-object {
+  background-image: url('/static/img/spudderspuds/challenges/challenge_piechallenge_icon.jpg');
+}
 #challenges-choose-club #clubs-container,
 #challenge-accept-beneficiary #clubs-container {
   padding: 10px;
@@ -14871,12 +14874,10 @@ body.challenges #body-background-image-container:before {
   border: 1px solid #FFF;
 }
 .challenge-container .image.without-image {
-  background-position: center;
+  background-position: center top;
   background-size: cover;
   height: 200px;
-}
-.icebucket .challenge-container .image.without-image {
-  background-image: url('/static/img/spudderspuds/challenges/challenge_icebucket_jumbotron.jpg');
+  background-image: url('/static/img/spudderspuds/challenges/jumbotron.jpg');
 }
 .challenge-container .caption {
   border-top: 1px solid #FFF;

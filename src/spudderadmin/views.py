@@ -757,10 +757,30 @@ def challenges(request):
                 messages.success(request, "<i class='fa fa-check'></i> Challenges system reset.")
                 action = ACTION_ENSURE_CHALLENGE_TEMPLATE
         if action == ACTION_ENSURE_CHALLENGE_TEMPLATE:
-            ChallengeTemplate(
-                name="Ice Bucket Challenge",
-                description="Challenge your friends, family and fans to tip a bucket of ice water over their head!",
-                slug="icebucket").save()
+            challenges = [
+                {
+                    'name': "Ice Bucket Challenge",
+                    'description': "Challenge your friends, family and fans to tip a bucket of ice water over their "
+                                   "head!",
+                    'slug': 'icebucket'
+                },
+                {
+                    'name': "Pie Challenge",
+                    'description': "Challenge you friends family and fans to take a whipped cream pie to the face!!",
+                    'slug': 'piechallenge'
+                }
+            ]
+            for challenge in challenges:
+                try:
+                    c = ChallengeTemplate.objects.get(name=challenge['name'])
+                    c.description = challenge['description']
+                    c.slug = challenge['slug']
+                except ChallengeTemplate.DoesNotExist:
+                    ChallengeTemplate(
+                        name=challenge['name'],
+                        description=challenge['description'],
+                        slug=challenge['slug']).save()
+
             messages.success(request, "<i class='fa fa-check'></i> Base challenge templates ensured.")
 
     challenge_config = ChallengeServiceConfiguration.GetForSite()

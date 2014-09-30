@@ -500,6 +500,11 @@ body.challenges {
                     background-image: url('/static/img/spudderspuds/challenges/challenge_icebucket_icon.jpg');
                 }
             }
+            &.piechallenge {
+                .media-object {
+                    background-image: url('/static/img/spudderspuds/challenges/challenge_piechallenge_icon.jpg');
+                }
+            }
         }
     }
 }
@@ -532,12 +537,10 @@ body.challenges {
     border: 1px solid #FFF;
     .image {
         &.without-image {
-            background-position: center;
+            background-position: center top;
             background-size: cover;
             height: 200px;
-            .icebucket & {
-                background-image: url('/static/img/spudderspuds/challenges/challenge_icebucket_jumbotron.jpg');
-            }
+            background-image: url('/static/img/spudderspuds/challenges/jumbotron.jpg');
         }
     }
     .caption {

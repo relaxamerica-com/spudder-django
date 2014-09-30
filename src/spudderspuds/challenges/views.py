@@ -1,20 +1,20 @@
 import json
 from django.contrib.auth import authenticate, login
-from django.contrib.auth.models import User
+from google.appengine.api import blobstore
 from django.http import HttpResponse, Http404
 from django.shortcuts import redirect, render, get_object_or_404
-from spudderaccounts.utils import change_current_role
-from spudderaccounts.wrappers import RoleBase, RoleFan
-from spudderdomain.controllers import RoleController, EntityController
-from spudderdomain.models import Club, TempClub, FanPage, Challenge, ChallengeTemplate, ChallengeParticipation
-from spudderdomain.wrappers import EntityBase
-from spudderspuds.challenges.forms import CreateTempClubForm, ChallengeConfigureForm, ChallengesRegisterForm
-from spudderspuds.challenges.forms import ChallengesSigninForm, AcceptChallengeForm
-from spudderspuds.challenges.models import TempClubOtherInformation, ChallengeTree
+from django.contrib.auth.models import User
 from spudderspuds.utils import create_and_activate_fan_role
 from spudmart.CERN.models import STATES
+from spudderdomain.models import Club, TempClub, FanPage, Challenge, ChallengeTemplate, ChallengeParticipation
 from spudmart.upload.forms import UploadForm
-from google.appengine.api import blobstore
+from spudderaccounts.utils import change_current_role
+from spudderaccounts.wrappers import RoleBase, RoleFan
+from spudderdomain.wrappers import EntityBase
+from spudderdomain.controllers import RoleController, EntityController
+from spudderspuds.challenges.forms import CreateTempClubForm, ChallengeConfigureForm, ChallengesRegisterForm
+from spudderspuds.challenges.forms import ChallengesSigninForm, AcceptChallengeForm, UploadImageForm
+from spudderspuds.challenges.models import TempClubOtherInformation, ChallengeTree
 
 
 def _get_clubs_by_state(state):
@@ -49,7 +49,7 @@ def _create_temp_club(form, state):
     return temp_club
 
 
-def _create_challenge(club_class, club_id, form, request, template, parent=None, image=None, media=None):
+def _create_challenge(club_class, club_id, form, request, template, parent=None, image=None, youtube_video_id=None):
     donation_accept = form.cleaned_data.get('donation_with_challenge')
     donation_reject = form.cleaned_data.get('donation_without_challenge')
     recipient_entity_type = EntityController.ENTITY_CLUB
@@ -66,13 +66,13 @@ def _create_challenge(club_class, club_id, form, request, template, parent=None,
         proposed_donation_amount=donation_accept,
         proposed_donation_amount_decline=donation_reject)
     challenge.save()
-    if parent or image:
+    if parent or image or youtube_video_id:
         if parent:
             challenge.parent = parent
         if image:
             challenge.image = image
-        if media:
-            challenge.media = media
+        if youtube_video_id:
+            challenge.youtube_video_id = youtube_video_id
         challenge.save()
     if parent is None:
         ChallengeTree.CreateNewTree(challenge)
@@ -290,7 +290,7 @@ def challenge_accept_pledge(request, challenge_id):
     return render(request, 'spudderspuds/challenges/pages/challenge_accept_pledge.html', template_data)
 
 
-def challenge_accept(request, challenge_id):
+def challenge_accept_upload(request, challenge_id):
     if not request.current_role or request.current_role.entity_type != RoleController.ENTITY_FAN:
         return redirect('/challenges/create/register?next=%s' % request.path)
     challenge = get_object_or_404(Challenge, id=challenge_id)
@@ -299,39 +299,37 @@ def challenge_accept(request, challenge_id):
         challenge.recipient_entity_type,
         challenge.recipient_entity_id,
         EntityBase.EntityWrapperByEntityType(challenge.recipient_entity_type))
-    form = AcceptChallengeForm(initial={'donation': int(challenge.proposed_donation_amount)})
+    participation = ChallengeParticipation.objects.get(
+        challenge=challenge,
+        participating_entity_id=request.current_role.entity.id,
+        participating_entity_type=request.current_role.entity_type)
+    redirect_url = '/challenges/%s/beneficiary/%s?just_pledged=True' % (participation.id, beneficiary.state)
+    action_upload_image = 'upload_image'
+    image_form = UploadImageForm(initial={'action': action_upload_image})
     upload_url = '/challenges/%s/accept' % challenge_id
     if request.method == 'POST':
-        form = AcceptChallengeForm(request.POST)
-        if form.is_valid():
-            participation, created = ChallengeParticipation.objects.get_or_create(
-                challenge=challenge,
-                participating_entity_id=request.current_role.entity.id,
-                participating_entity_type=request.current_role.entity_type)
-            participation.donation_amount=form.cleaned_data.get('donation', 0)
-            participation.state = ChallengeParticipation.DONATE_ONLY_STATE
-            participation.save()
+        action = request.POST.get('action')
+        if action == action_upload_image:
             if request.FILES:
                 upload_form = UploadForm(request.POST, request.FILES)
                 file = upload_form.save()
-                participation.media = file
+                participation.image = file
                 participation.state = ChallengeParticipation.ACCEPTED_STATE
                 participation.save()
-            ChallengeTree.AddParticipationToTree(challenge, participation)
-            redirect_url = '/challenges/%s/beneficiary/%s?just_pledged=True' % (participation.id, beneficiary.state)
             if request.is_ajax():
                 return HttpResponse(redirect_url)
             return redirect(redirect_url)
         if request.is_ajax():
             return HttpResponse("%s|%s" % (
                 blobstore.create_upload_url(upload_url),
-                '<br/>'.join(['<br/>'.join([_e for _e in e]) for e in form.errors.values()])))
+                '<br/>'.join(['<br/>'.join([_e for _e in e]) for e in image_form.errors.values()])))
     template_data = {
         'challenge': challenge,
         'template': template,
         'beneficiary': beneficiary,
-        'form': form,
-        'upload_url': blobstore.create_upload_url(upload_url)}
+        'image_form': image_form,
+        'upload_url': blobstore.create_upload_url(upload_url),
+        'redirect_url': redirect_url}
     return render(request, 'spudderspuds/challenges/pages/challenge_accept_upload.html', template_data)
 
 
@@ -352,6 +350,10 @@ def challenge_accept_state(request, participation_id):
 
 def challenge_accept_beneficiary(request, participation_id, state):
     participation = get_object_or_404(ChallengeParticipation, id=participation_id)
+    if 'video_id' in request.GET:
+        participation.youtube_video_id = request.GET['video_id']
+        participation.state = ChallengeParticipation.ACCEPTED_STATE
+        participation.save()
     challenge = participation.challenge
     template = challenge.template
     original_beneficiary = EntityController.GetWrappedEntityByTypeAndId(
@@ -367,8 +369,7 @@ def challenge_accept_beneficiary(request, participation_id, state):
         'template': template,
         'participation': participation,
         'state': state,
-        'clubs': clubs
-    }
+        'clubs': clubs}
     return render(request, 'spudderspuds/challenges/pages/challenge_accept_beneficiary.html', template_data)
 
 
@@ -405,7 +406,7 @@ def challenge_accept_beneficiary_set_donation(request, participation_id, state, 
     if form.is_valid():
         challenge = _create_challenge(
             club_class, club_id, form, request, template, challenge,
-            media=participation.media, image=participation.image)
+            youtube_video_id=participation.youtube_video_id, image=participation.image)
         return redirect('/challenges/%s/share' % challenge.id)
     template_data = {
         'club': club,

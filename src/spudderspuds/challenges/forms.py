@@ -42,9 +42,9 @@ class ChallengeConfigureForm(forms.Form):
         help_text="The suggested donation each person will be asked for if they decline this challenge.",
         widget=forms.TextInput(attrs={'addon_before': '$', 'addon_after': '.00', 'placeholder': '$\'s'}))
     file = forms.FileField(
-        label="Upload photo or video",
-        help_text="Here is your chance to upload a photo or video for this challenge, it can be a video of you doing "
-                  "the challenge or just an image that's associated with the club.",
+        label="Upload an image",
+        help_text="Here is your chance to upload an image associated with your team, something that your fans will "
+                  "recognize. The best images are landscape!",
         required=False)
 
 
@@ -107,10 +107,14 @@ class AcceptChallengeForm(forms.Form):
         label="How much do you pledge?",
         help_text="The amount shown here is the suggested pledge amount, you are free to pledge more or less.",
         widget=forms.TextInput(attrs={'addon_before': '$', 'addon_after': '.00'}))
-    # file = forms.FileField(
-    #     label="Upload photo or video",
-    #     help_text="Here is your chance to upload a photo or video of you doing the challenge.",
-    #     required=False)
+
+
+class UploadImageForm(forms.Form):
+    action = forms.CharField(widget=forms.HiddenInput)
+    file = forms.FileField(
+        label="Upload photo",
+        help_text="Here is your chance to upload a photo of you doing the challenge.",
+        required=True)
 
 
 class ChallengeServiceConfigurationForm(forms.Form):

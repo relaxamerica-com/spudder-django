@@ -153,7 +153,7 @@ shared_settings = {
         'twitter_access_token_secret': 'hHPebsFws3AcWyDrAvjnxapUJ95JI15NjZ7TwiXgF5f3v',
         'support_email': 'support@spudder.com',
         'krowdio_client_key': '53fc72a6f1f70e3fc79f0876',
-
+        'google_client_id': '202980743025-44et20vv531h7o80l0onc2eld22ev1ar.apps.googleusercontent.com',
     },
     'sharp-avatar-587': {  # lukasz@spuder.com
         'server_email': 'lukasz@spuder.com',
@@ -178,18 +178,6 @@ shared_settings = {
         'linkedin_api_key': '',
         'linkedin_secret_key': '',
         'support_email': 'karol@spuder.com',
-
-    },
-    'ahmed': {
-        'server_email': 'help@spuder.com',
-        'spudder_application_id': '',
-        'spudder_rest_api_key': '',
-        'spudder_base_url': 'https://karol.parseapp.com',
-        'spudmart_base_url': 'https://ahmed-dot-spudmart1.appspot.com',
-        'amazon_login_client_id': 'amzn1.application-oa2-client.d8fccc9c77624577898dca9ff517eff3',
-        'linkedin_api_key': '',
-        'linkedin_secret_key': '',
-        'support_email': '',
 
     },
     'genial-union-587': {  # lucy@spuder.com
@@ -242,6 +230,7 @@ shared_settings = {
         'twitter_access_token_secret': '',
         'support_email': 'support@spudder.com',
         'krowdio_client_key': '52769e9ff1f70e0552df58a4',
+        'google_client_id': '102496195202-8l3ido6f9nn2iisedafjjfpa3l8nc4a5.apps.googleusercontent.com',
     },
 }
 
@@ -253,15 +242,16 @@ AMAZON_LOGIN_CLIENT_ID = shared_settings[app_name]['amazon_login_client_id']
 SERVER_EMAIL = shared_settings[app_name]['server_email']
 LINKEDIN_API_KEY = shared_settings[app_name]['linkedin_api_key']
 LINKEDIN_SECRET_KEY = shared_settings[app_name]['linkedin_secret_key']
-INSTAGRAM_CLIENT_ID = shared_settings[app_name].get('instagram_client_id', '')
-INSTAGRAM_CLIENT_SECRET = shared_settings[app_name].get('instagram_client_secret', '')
-TWITTER_CLIENT_SECRET = shared_settings[app_name].get('twitter_client_secret', '')
-TWITTER_CLIENT_ID = shared_settings[app_name].get('twitter_client_id', '')
-TWITTER_ACCESS_TOKEN = shared_settings[app_name].get('twitter_access_token', '')
-TWITTER_ACCESS_TOKEN_SECRET = shared_settings[app_name].get('twitter_access_token_secret', '')
+INSTAGRAM_CLIENT_ID = shared_settings[app_name].get('instagram_client_id')
+INSTAGRAM_CLIENT_SECRET = shared_settings[app_name].get('instagram_client_secret')
+TWITTER_CLIENT_SECRET = shared_settings[app_name].get('twitter_client_secret')
+TWITTER_CLIENT_ID = shared_settings[app_name].get('twitter_client_id')
+TWITTER_ACCESS_TOKEN = shared_settings[app_name].get('twitter_access_token')
+TWITTER_ACCESS_TOKEN_SECRET = shared_settings[app_name].get('twitter_access_token_secret')
 SUPPORT_EMAIL = shared_settings[app_name]['support_email']
-KROWDIO_CLIENT_KEY = shared_settings[app_name].get('krowdio_client_key', None)
+KROWDIO_CLIENT_KEY = shared_settings[app_name].get('krowdio_client_key')
 AT_POST_SPUD_BASE_TWEET_ID = 503359742325321728
+GOOGLE_CLIENT_ID = shared_settings[app_name].get('google_client_id')
 
 
 # Configuration shared across all applications

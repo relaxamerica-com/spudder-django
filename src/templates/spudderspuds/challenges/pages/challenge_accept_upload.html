@@ -5,6 +5,21 @@
 {% block css %}
     {{ block.super }}
     <style type="text/css">
+        .tab-pane {
+            padding: 10px;
+        }
+        .overlay ul {
+            width: 40%;
+            margin: 20px auto;
+        }
+        .overlay ul li {
+            color: #FFF;
+            font-size: 120%;
+        }
+        .overlay #processing-message {
+            font-size: 80%;
+        }
+
         .post-sign-in {
             display: none;
         }
@@ -26,17 +41,53 @@
 
 {% block js %}
     {{ block.super }}
+    <script type="text/javascript" language="JavaScript" src="/static/js/libs/jquery.firefoxCORSbugfix.js"></script>
+    <script type="text/javascript" language="JavaScript" src="/static/js/libs/jquery.form.min.js"></script>
+    <script type="text/javascript" language="JavaScript" src="/static/js/spudder-ajax-form.js"></script>
     <script type="text/javascript">
 
-        function render() {
-            gapi.signin.render('signinButton', {
-                'clientid': '202980743025-44et20vv531h7o80l0onc2eld22ev1ar.apps.googleusercontent.com', //'653628115804-7vkcnmhte0f36fvr1dj9t5hrn1mt6i5t.apps.googleusercontent.com',
-                'callback': 'oauth2Callback',
-                'cookiepolicy': 'single_host_origin',
-                //'requestvisibleactions': 'http://schema.org/AddAction',
-                'scope': 'https://www.googleapis.com/auth/youtube.readonly https://www.googleapis.com/auth/youtube.upload'
-            });
-        }
+        var overlay = {
+            _get: function(){
+                return $('.overlay');
+            },
+            show: function(){
+                var $body = $('body');
+                $body.css('position', 'relative');
+                $(overlay.html).appendTo($body);
+                $('.overlay .inner').css('top', $(window).scrollTop() + 100);
+            },
+            update_progress: function(percent){
+                overlay._get().find('.progress-bar').css('width', '' + percent + '%');
+            },
+            show_processing: function(){
+                var $overlay = overlay._get();
+                $overlay.find('.fa-spinner:first').attr('class', 'fa fa-check');
+                $overlay.find('#uploading-message').html("Uploaded");
+                $overlay.find('#processing-div').show();
+            },
+            update_processing: function() {
+                var $overlay = overlay._get();
+                var minutes = Math.round((((new Date() - video_processing_start_date)  % 86400000) % 3600000) / 60000);
+                if (minutes > 0)
+                    $overlay.find('ul').append("<li>Processing for " + minutes + " minutes</li>");
+            },
+            html:
+                '<div class="overlay">' +
+                    '<div class="inner">' +
+                        '<p>' +
+                            '<i class="fa fa-spin fa-spinner"></i> <span id="uploading-message">Uploading</span>' +
+                        '<p>' +
+                        '<div class="progress"><div class="progress-bar" style="width:10%"></div></div>' +
+                        '<div id="processing-div" style="display:none; margin-top:20px;">' +
+                            '<p>' +
+                                '<i class="fa fa-spin fa-spinner"></i> Processing on YouTube' +
+                            '</p>' +
+                            '<p><small id="processing-message">Processing can take several minutes</small></p>' +
+                            '<ul class="list-unstyled"></ul>' +
+                        '</div>' +
+                    '</div>' +
+                '</div>'
+        };
 
         var GOOGLE_PLUS_SCRIPT_URL = 'https://apis.google.com/js/client:plusone.js?onload=render';
         var CHANNELS_SERVICE_URL = 'https://www.googleapis.com/youtube/v3/channels';
@@ -45,6 +96,7 @@
         var INITIAL_STATUS_POLLING_INTERVAL_MS = 15 * 1000;
 
         var accessToken;
+        var video_processing_start_date;
 
         var po = document.createElement('script');
         po.type = 'text/javascript'; po.async = true;
@@ -52,24 +104,24 @@
         var s = document.getElementsByTagName('script')[0];
         s.parentNode.insertBefore(po, s);
 
+        window.render = function() {
+            gapi.signin.render('signinButton', {
+                'clientid': '{{ settings.GOOGLE_CLIENT_ID }}', //'653628115804-7vkcnmhte0f36fvr1dj9t5hrn1mt6i5t.apps.googleusercontent.com',
+                'callback': 'oauth2Callback',
+                'cookiepolicy': 'single_host_origin',
+                'scope': 'https://www.googleapis.com/auth/youtube.readonly https://www.googleapis.com/auth/youtube.upload'
+            });
+        };
+
         window.oauth2Callback = function (authResult) {
             if (authResult['access_token']) {
                 accessToken = authResult['access_token'];
-
                 $.ajax({
                     url: CHANNELS_SERVICE_URL,
                     method: 'GET',
-                    headers: {
-                        Authorization: 'Bearer ' + accessToken
-                    },
-                    data: {
-                        part: 'snippet',
-                        mine: true
-                    }
+                    headers: {Authorization: 'Bearer ' + accessToken},
+                    data: {part: 'snippet', mine: true}
                 }).done(function (response) {
-                    $('#channel-name').text(response.items[0].snippet.title);
-                    $('#channel-thumbnail').attr('src', response.items[0].snippet.thumbnails.default.url);
-
                     $('.pre-sign-in').hide();
                     $('.post-sign-in').show();
                 });
@@ -81,16 +133,9 @@
 
             var file = $('#file').get(0).files[0];
             if (file) {
-                $('#submit').attr('disabled', true);
-
-                var metadata = {
-                    snippet: {
-                        title: $('#title').val(),
-                        description: $('#description').val(),
-                        categoryId: 22
-                    }
-                };
-
+                overlay.show();
+                var title = "Spudder.com - {{ challenge.name }}";
+                var metadata = {snippet: {title: title, description: title, categoryId: 22 }};
                 $.ajax({
                     url: VIDEOS_UPLOAD_SERVICE_URL,
                     method: 'POST',
@@ -102,11 +147,7 @@
                     },
                     data: JSON.stringify(metadata)
                 }).done(function (data, textStatus, jqXHR) {
-                    resumableUpload({
-                        url: jqXHR.getResponseHeader('Location'),
-                        file: file,
-                        start: 0
-                    });
+                    resumableUpload({url: jqXHR.getResponseHeader('Location'), file: file, start: 0 });
                 });
             }
         }
@@ -120,9 +161,7 @@
                     'Content-Range': 'bytes ' + options.start + '-' + (options.file.size - 1) + '/' + options.file.size
                 },
                 xhr: function () {
-                    // Thanks to http://stackoverflow.com/a/8758614/385997
                     var xhr = $.ajaxSettings.xhr();
-
                     if (xhr.upload) {
                         xhr.upload.addEventListener(
                                 'progress',
@@ -131,23 +170,12 @@
                                         var bytesTransferred = e.loaded;
                                         var totalBytes = e.total;
                                         var percentage = Math.round(100 * bytesTransferred / totalBytes);
-
-                                        $('#upload-progress').attr({
-                                            value: bytesTransferred,
-                                            max: totalBytes
-                                        });
-
-                                        $('#percent-transferred').text(percentage);
-                                        $('#bytes-transferred').text(bytesTransferred);
-                                        $('#total-bytes').text(totalBytes);
-
-                                        $('.during-upload').show();
+                                        overlay.update_progress(percentage)
                                     }
                                 },
                                 false
                         );
                     }
-
                     return xhr;
                 },
                 processData: false,
@@ -156,17 +184,14 @@
 
             ajax.done(function (response) {
                 var videoId = response.id;
-                $('#video-id').text(videoId);
-                $('.post-upload').show();
+                $('body').data("video_id", videoId);
+                video_processing_start_date = new Date();
+                overlay.show_processing();
                 checkVideoStatus(videoId, INITIAL_STATUS_POLLING_INTERVAL_MS);
             });
 
             ajax.fail(function () {
-                $('#submit').click(function () {
-                    alert('Not yet implemented!');
-                });
-                $('#submit').val('Resume Upload');
-                $('#submit').attr('disabled', false);
+                alert('Something went wrong, please refresh this page and try again.');
             });
         }
 
@@ -184,19 +209,15 @@
             }).done(function (response) {
                 var processingStatus = response.items[0].processingDetails.processingStatus;
                 var uploadStatus = response.items[0].status.uploadStatus;
-
-                $('#post-upload-status').append('<li>Processing status: ' + processingStatus + ', upload status: ' + uploadStatus + '</li>');
-
                 if (processingStatus == 'processing') {
+                    overlay.update_processing();
                     setTimeout(function () {
-                        checkVideoStatus(videoId, waitForNextPoll * 2);
+                        checkVideoStatus(videoId, waitForNextPoll);
                     }, waitForNextPoll);
-                } else {
-                    if (uploadStatus == 'processed') {
-                        $('#player').append(response.items[0].player.embedHtml);
-                    }
-
-                    $('#post-upload-status').append('<li>Final status.</li>');
+                }
+                else {
+                    var conector = ('{{ redirect_url }}'.indexOf('?') > -1 ? "&" : "?");
+                    window.location = '{{ redirect_url }}' + conector + 'video_id=' + $('body').data("video_id");
                 }
             });
         }
@@ -242,47 +263,67 @@
     <!-- Tab panes -->
     <div class="tab-content">
         <div class="tab-pane active" id="upload-video">
-            <button id="signinButton" class="pre-sign-in btn btn-danger btn-cta">
-                <i class="fa fa-youtube"></i> Upload video to YouTube
-            </button>
+            <input type="hidden" name="video_id" id="video-id" />
+            <h3>Upload a video of you doing this challenge to YouTube</h3>
+
+            <div class="pre-sign-in">
+
+                <p>Once you click the button bellow, you will be asked to sign into your YouTube (Google) account, then you will be able to upload your video.</p>
+
+                <button id="signinButton" class="btn btn-danger btn-cta">
+                    <i class="fa fa-youtube"></i> Upload video to YouTube
+                </button>
+            </div>
 
             <div class="post-sign-in">
-                <div>
-                    <img id="channel-thumbnail">
-                    <span id="channel-name"></span>
-                </div>
-                <br />
+                <p>Choose the video you want to upload.</p>
+{#                <div>#}
+{#                    <img id="channel-thumbnail">#}
+{#                    <span id="channel-name"></span>#}
+{#                </div>#}
+{#                <br />#}
                 <form id="upload-form" role="form">
-                    <div class="form-group">
+                    <div class="form-group" style="display: none;">
                         <label for="title">Title</label>
-                        <input id="title" class="form-control"  type="text" placeholder="Enter Video Title" />
+                        <input id="title" class="form-control"  type="text" placeholder="Enter Video Title" value="" />
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" style="display: none;">
                         <label for="description">Description</label>
-                        <textarea id="description" class="form-control" rows="3"></textarea>
+                        <textarea id="description" class="form-control" rows="3">{{ challenge.name }}</textarea>
                     </div>
                     <div class="form-group">
                         <label for="description">Select Video</label>
                         <input id="file" type="file" />
                     </div>
-                    <button id="submit" type="submit" value="Upload" class="btn btn-default">Submit</button>
+                    <button id="submit" type="submit" value="Upload" class="btn btn-danger btn-cta">
+                        <i class="fa fa-youtube"></i> Upload video to YouTube
+                    </button>
                 </form>
 
-                <div class="during-upload">
-                    <p><span id="percent-transferred"></span>% done (<span id="bytes-transferred"></span>/<span
-                            id="total-bytes"></span> bytes)</p>
-                    <progress id="upload-progress" max="1" value="0"></progress>
-                </div>
+{#                <div class="during-upload">#}
+{#                    <p><span id="percent-transferred"></span>% done (<span id="bytes-transferred"></span>/<span#}
+{#                            id="total-bytes"></span> bytes)</p>#}
+{#                    <progress id="upload-progress" max="1" value="0"></progress>#}
+{#                </div>#}
 
-                <div class="post-upload">
-                    <p>Uploaded video with id <span id="video-id"></span>. Polling for status...</p>
-                    <ul id="post-upload-status"></ul>
-                    <div id="player"></div>
-                </div>
+{#                <div class="post-upload">#}
+{#                    <p>Uploaded video with id <span id="video-id"></span>. Polling for status...</p>#}
+{#                    <ul id="post-upload-status"></ul>#}
+{#                    <div id="player"></div>#}
+{#                </div>#}
             </div>
         </div>
         <div class="tab-pane" id="upload-image">
-            upload image
+            <h3>Upload an image of you doing the challenge</h3>
+            <form action="{{ upload_url }}" method="post" enctype="multipart/form-data" class="ajax-form">
+                {% csrf_token %}
+                {% bootstrap_form image_form %}
+                {% buttons %}
+                    <button type="submit" class="btn btn-primary btn-cta">
+                        Upload and continue
+                    </button>
+                {% endbuttons %}
+            </form>
         </div>
     </div>
 {% endblock %}

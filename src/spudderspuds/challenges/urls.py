@@ -56,7 +56,7 @@ urlpatterns = patterns(
         'challenge_accept_pledge'),
 
     url(r'(?P<challenge_id>\d+)/accept$',
-        'challenge_accept'),
+        'challenge_accept_upload'),
 
     url(r'(?P<challenge_id>\d+)/share$',
         'challenge_share'),

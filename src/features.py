@@ -21,5 +21,7 @@ FEATURES = {
     ],
     'live': [
         'spud_tagging'
+        'challenges_landing_page',
+        'challenges_only_override',  # Prevent access to any other part of spudder
     ]
 }
