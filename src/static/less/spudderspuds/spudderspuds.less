@@ -465,7 +465,7 @@ body.challenges {
         .list-group-item {
             position: relative;
             border-radius: 3px;
-            color: #FFF;
+            color: #000;
             background-size: cover;
 
             &:before {
@@ -475,24 +475,33 @@ body.challenges {
                 right: 0;
                 bottom: 0;
                 left: 0;
-                #gradient.radial(rgba(0,0,0,.2); rgba(0,0,0,.4));
+                #gradient.radial(rgba(0,0,0,.01); rgba(0,0,0,.1));
             }
 
-            .media-object {
-                height: 150px;
-                width: 150px;
-                background-size: cover;
-            }
 
             .media {
                 position: relative;
-            }
-
-            .fa-arrow-right {
-                position: absolute;
-                top: 40%;
-                right: 2px;
-                font-size: 36px;
+                .media-object {
+                    height: 150px;
+                    width: 150px;
+                    background-size: cover;
+                    @media (max-width: @screen-xs-max) {
+                        height: 80px;
+                        width: 80px;
+                    }
+                }
+                p{
+                    @media (max-width: @screen-xs-max) {
+                        padding-right: 40px;
+                    }
+                }
+                .fa-arrow-right {
+                    position: absolute;
+                    top: 30%;
+                    right: 2px;
+                    font-size: 36px;
+                    color: @brand-primary;
+                }
             }
 
             &.icebucket {
@@ -566,6 +575,7 @@ body.challenges {
                     padding-top: 18px;
                     @media(max-width: @screen-xs-max) {
                         font-size:80%;
+                        width: 50%;
                     }
 
                 }

@@ -14804,7 +14804,7 @@ body.challenges #body-background-image-container:before {
 #challenges-choose-template .challenge-templates .list-group-item {
   position: relative;
   border-radius: 3px;
-  color: #FFF;
+  color: #000;
   background-size: cover;
 }
 #challenges-choose-template .challenge-templates .list-group-item:before {
@@ -14814,23 +14814,35 @@ body.challenges #body-background-image-container:before {
   right: 0;
   bottom: 0;
   left: 0;
-  background-image: -webkit-radial-gradient(circle, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.4));
-  background-image: radial-gradient(circle, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.4));
+  background-image: -webkit-radial-gradient(circle, rgba(0, 0, 0, 0.01), rgba(0, 0, 0, 0.1));
+  background-image: radial-gradient(circle, rgba(0, 0, 0, 0.01), rgba(0, 0, 0, 0.1));
   background-repeat: no-repeat;
-}
-#challenges-choose-template .challenge-templates .list-group-item .media-object {
-  height: 150px;
-  width: 150px;
-  background-size: cover;
 }
 #challenges-choose-template .challenge-templates .list-group-item .media {
   position: relative;
 }
-#challenges-choose-template .challenge-templates .list-group-item .fa-arrow-right {
+#challenges-choose-template .challenge-templates .list-group-item .media .media-object {
+  height: 150px;
+  width: 150px;
+  background-size: cover;
+}
+@media (max-width: 767px) {
+  #challenges-choose-template .challenge-templates .list-group-item .media .media-object {
+    height: 80px;
+    width: 80px;
+  }
+}
+@media (max-width: 767px) {
+  #challenges-choose-template .challenge-templates .list-group-item .media p {
+    padding-right: 40px;
+  }
+}
+#challenges-choose-template .challenge-templates .list-group-item .media .fa-arrow-right {
   position: absolute;
-  top: 40%;
+  top: 30%;
   right: 2px;
   font-size: 36px;
+  color: #ff4800;
 }
 #challenges-choose-template .challenge-templates .list-group-item.icebucket .media-object {
   background-image: url('/static/img/spudderspuds/challenges/challenge_icebucket_icon.jpg');
@@ -14904,6 +14916,7 @@ body.challenges #body-background-image-container:before {
 @media (max-width: 767px) {
   .well > .page-header h1 .wizard-steps .title {
     font-size: 80%;
+    width: 50%;
   }
 }
 .well .well {
