@@ -35,3 +35,13 @@ class SystemDeleteVenuesForm(PasswordAndActionForm):
 
 class ChallengesResetSystemForm(PasswordAndActionForm):
     pass
+
+
+class ChallengeServiceConfigurationForm(forms.Form):
+    site_unique_id = forms.CharField(max_length=255, widget=forms.TextInput(attrs={'readonly': 'readonly'}))
+    time_to_complete = forms.IntegerField()
+
+
+class ChallengeMessageConfigurationForm(forms.Form):
+    notify_after = forms.IntegerField()  # in minutes
+    message = forms.CharField(widget=forms.Textarea, max_length=512)
