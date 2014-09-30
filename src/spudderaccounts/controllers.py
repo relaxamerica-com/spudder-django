@@ -146,18 +146,29 @@ class NotificationController(object):
     @classmethod
     def NotifyEntity(cls, target_entity_id, target_entity_type, notification_type,
                      extras={}, notification_channels=[NOTIFY_BY_EMAIL]):
-        notification, created = Notification.objects.get_or_create(
-            target_entity_id=target_entity_id,
-            target_entity_type=target_entity_type,
-            notification_type=notification_type)
-        if created and extras:
-            notification.extras = extras
-        notification.save()
+
+        notifications = Notification.objects.filter(target_entity_id=target_entity_id,
+                                                    target_entity_type=target_entity_type,
+                                                    notification_type=notification_type)
+        created = False
+        notify_after = extras.get('notify_after')
+        for notification in notifications:
+            if notification.extras.get('notify_after') == notify_after:
+                created = True
+                break
+
+        if not created:
+            notification = Notification(
+                target_entity_id=target_entity_id,
+                target_entity_type=target_entity_type,
+                notification_type=notification_type,
+                extras=extras)
+            notification.save()
 
         for notification_channel in notification_channels:
             if notification_channel in cls.NOTIFICATION_CHANNELS:
                 if notification_channel == cls.NOTIFY_BY_EMAIL:
-                    if notification_type == Notification.COMPLETE_CHALLENGE_NOTIFICATION and created:
+                    if notification_type == Notification.COMPLETE_CHALLENGE_NOTIFICATION and not created:
                         entity = RoleController.GetRoleForEntityTypeAndID(
                             target_entity_type, target_entity_id, RoleBase.RoleWrapperByEntityType(target_entity_type))
                         kwargs = {'notification': notification}
