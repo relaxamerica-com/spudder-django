@@ -44,3 +44,9 @@ indexes:
   - name: template_id
   - name: created
     direction: desc
+
+- kind: spudderdomain_challengeparticipation
+  properties:
+  - name: challenge_id
+  - name: state
+  - name: created
