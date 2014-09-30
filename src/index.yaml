@@ -50,3 +50,9 @@ indexes:
   - name: challenge_id
   - name: state
   - name: created
+
+- kind: challenges_challengeservicemessageconfiguration
+  properties:
+  - name: configuration_id
+  - name: notify_after
+    direction: desc
