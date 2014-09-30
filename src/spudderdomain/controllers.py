@@ -1,7 +1,7 @@
 import logging
 from django.conf import settings
 from datetime import datetime, timedelta
-from spudderaccounts.models import Invitation
+from spudderaccounts.models import Invitation, Notification
 from spudderaffiliates.models import Affiliate
 from spudderdomain.models import LinkedService, FanPage, TeamPage, TeamAdministrator, TeamVenueAssociation, Club, \
     ClubAdministrator, TempClub
@@ -15,7 +15,7 @@ from spudderkrowdio.utils import post_spud, get_user_mentions_activity, get_spud
 from spudderkrowdio.models import KrowdIOStorage, FanFollowingEntityTag
 from spudmart.utils.emails import send_email
 from spudmart.venues.models import Venue
-from communications import MESSAGES
+from communications import MESSAGES, NOTIFICATIONS
 
 
 class EntityController(object):
@@ -515,8 +515,7 @@ class CommunicationController(object):
     COMMUNICATION_TYPES = (TYPE_EMAIL, )
 
     @classmethod
-    def CommunicateWithEmail(cls, emails=[], **kwargs):
-        invitation = kwargs['invitation']
+    def _GetInvitationSubjectAndMessage(cls, invitation):
         invitation_type = invitation.invitation_type
         if invitation_type in Invitation.INVITATION_TYPES:
             wrapper = EntityBase.EntityWrapperByEntityType(invitation.target_entity_type)
@@ -552,8 +551,31 @@ class CommunicationController(object):
                             message = str(MESSAGES[invitation_type][invitation.status]) % (name, invitation.link)
                     else:
                         message = str(MESSAGES[invitation_type][invitation.status]) % name
+            return subject, message
         else:
             raise NotImplementedError("Invitation type '%s' not supported" % invitation_type)
+
+    @classmethod
+    def _GetNotificationSubjectAndMessage(cls, notification):
+        notification_type = notification.notification_type
+        if notification_type in Notification.NOTIFICATION_TYPES:
+            if notification_type == Notification.COMPLETE_CHALLENGE_NOTIFICATION:
+                subject = NOTIFICATIONS[notification_type]['subject']
+                message = notification.extras.get('message')
+            else:
+                NotImplementedError("Notification type '%s' not implemented" % notification_type)
+            return subject, message
+        else:
+            raise NotImplementedError("Notification type '%s' not supported" % notification_type)
+
+    @classmethod
+    def CommunicateWithEmail(cls, emails=[], **kwargs):
+        if 'invitation' in kwargs:
+            invitation = kwargs['invitation']
+            subject, message = cls._GetInvitationSubjectAndMessage(invitation)
+        elif 'notification' in kwargs:
+            notification = kwargs['notification']
+            subject, message = cls._GetNotificationSubjectAndMessage(notification)
 
         for contact_email in emails:
             send_email(settings.SERVER_EMAIL, contact_email, subject, message)

@@ -1,4 +1,4 @@
-from spudderaccounts.models import Invitation
+from spudderaccounts.models import Invitation, Notification
 
 # This can't go in settings.py because it would cause a circular import
 # bc settings.py is referenced in Invitation, so instead it's
@@ -98,5 +98,31 @@ Your invitation to manage club "%s" has been revoked.
 Kind regards, team Spudder.
 """
         }
+    }
+}
+
+
+"""
+'NOTIFICATIONS' is a dict of all the messages sent with notifications. It is organized
+into further dicts, with the following structure:
+{
+    <notification_type>: {
+        'subject': <message subject>,
+        'message': <message body>
+    }
+}
+
+You can expand it as needed, just be sure to follow this structure - it's referenced
+this way in the NotificationController. Also be sure to implement all status types for
+your new notification type!
+
+IMPORTANT LOCATION NOTE: This cannot be moved to settings.py because it calls types
+seen only in the Notification model, which in turn references settings.py -- adding it
+to settings.py would cause a circular import and break EVERYTHING. (Learned the hard way)
+"""
+NOTIFICATIONS = {
+    Notification.COMPLETE_CHALLENGE_NOTIFICATION: {
+        'subject': 'Spudder - You have challenge to complete!',
+        'message': ""
     }
 }

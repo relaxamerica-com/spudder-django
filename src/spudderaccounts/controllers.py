@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
-from spudderaccounts.models import Invitation
+from spudderaccounts.models import Invitation, Notification
+from spudderaccounts.wrappers import RoleBase
 from spudderdomain.controllers import CommunicationController, RoleController, EntityController
 from spudderdomain.models import TeamAdministrator, FanPage
 
@@ -135,4 +136,33 @@ class InvitationController(object):
             target_entity_type=EntityController.ENTITY_TEAM
         ).order_by('-modified')
 
-        return (admins, invited_fans, invited_non_users, not_invited_fans)
+        return admins, invited_fans, invited_non_users, not_invited_fans
+
+
+class NotificationController(object):
+    NOTIFY_BY_EMAIL = 'notify_by_email'
+    NOTIFICATION_CHANNELS = (NOTIFY_BY_EMAIL, )
+
+    @classmethod
+    def NotifyEntity(cls, target_entity_id, target_entity_type, notification_type,
+                     extras={}, notification_channels=[NOTIFY_BY_EMAIL]):
+        notification, created = Notification.objects.get_or_create(
+            target_entity_id=target_entity_id,
+            target_entity_type=target_entity_type,
+            notification_type=notification_type)
+        if created and extras:
+            notification.extras = extras
+        notification.save()
+
+        for notification_channel in notification_channels:
+            if notification_channel in cls.NOTIFICATION_CHANNELS:
+                if notification_channel == cls.NOTIFY_BY_EMAIL:
+                    if notification_type == Notification.COMPLETE_CHALLENGE_NOTIFICATION and created:
+                        entity = RoleController.GetRoleForEntityTypeAndID(
+                            target_entity_type, target_entity_id, RoleBase.RoleWrapperByEntityType(target_entity_type))
+                        kwargs = {'notification': notification}
+                        CommunicationController.CommunicateWithEmail(emails=entity.contact_emails, **kwargs)
+                else:
+                    raise NotImplementedError('Notification channel %s not implemented' % notification_channel)
+            else:
+                raise NotImplementedError('Notification channel %s not supported' % notification_channel)

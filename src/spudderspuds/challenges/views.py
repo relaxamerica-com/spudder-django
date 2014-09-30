@@ -1,9 +1,12 @@
 import json
+from datetime import datetime, timedelta
 from django.contrib.auth import authenticate, login
-from google.appengine.api import blobstore
 from django.http import HttpResponse, Http404
 from django.shortcuts import redirect, render, get_object_or_404
 from django.contrib.auth.models import User
+from google.appengine.api import blobstore, taskqueue
+from spudderaccounts.controllers import NotificationController
+from spudderaccounts.models import Notification
 from spudderspuds.utils import create_and_activate_fan_role
 from spudmart.CERN.models import STATES
 from spudderdomain.models import Club, TempClub, FanPage, Challenge, ChallengeTemplate, ChallengeParticipation
@@ -11,10 +14,11 @@ from spudmart.upload.forms import UploadForm
 from spudderaccounts.utils import change_current_role
 from spudderaccounts.wrappers import RoleBase, RoleFan
 from spudderdomain.wrappers import EntityBase
-from spudderdomain.controllers import RoleController, EntityController
+from spudderdomain.controllers import RoleController, EntityController, CommunicationController
 from spudderspuds.challenges.forms import CreateTempClubForm, ChallengeConfigureForm, ChallengesRegisterForm
 from spudderspuds.challenges.forms import ChallengesSigninForm, AcceptChallengeForm, UploadImageForm
-from spudderspuds.challenges.models import TempClubOtherInformation, ChallengeTree
+from spudderspuds.challenges.models import TempClubOtherInformation, ChallengeTree, ChallengeServiceConfiguration, \
+    ChallengeServiceMessageConfiguration
 
 
 def _get_clubs_by_state(state):
@@ -418,3 +422,47 @@ def challenge_accept_beneficiary_set_donation(request, participation_id, state, 
         request,
         'spudderspuds/challenges/pages/challenge_accept_beneficiary_choose_donation.html',
         template_data)
+
+
+def tick(request):
+    queue = taskqueue.Queue('challenges-sendemails')
+    task = taskqueue.Task(url='/challenges/send_challenge_emails', method='GET')
+    queue.add(task)
+    return HttpResponse(json.dumps({'status': 'ok'}), content_type='application/json')
+
+
+def send_challenge_emails(request):
+    challenge_config = ChallengeServiceConfiguration.GetForSite()
+    challenge_message_configs = ChallengeServiceMessageConfiguration.objects\
+        .filter(configuration=challenge_config).order_by('-notify_after')
+
+    active_templates = list(ChallengeTemplate.objects.filter(active=True))
+    challenges = list(Challenge.objects.filter(template__in=active_templates))
+    now = datetime.now()
+    unexpired_challenges_dt = now - timedelta(minutes=challenge_config.time_to_complete)
+    participations = list(ChallengeParticipation.objects.filter(
+        challenge__in=challenges,
+        state=ChallengeParticipation.PRE_ACCEPTED_STATE,
+        created__gte=unexpired_challenges_dt
+    ))
+    exclude_ids = []
+    for challenge_message_config in challenge_message_configs:
+        notify_after = challenge_message_config.notify_after
+        filtered_participations = [p for p in participations
+                                   if (now - p.created).seconds / 60 >= notify_after and p.id not in exclude_ids]
+        exclude_ids.extend(map(lambda p: p.id, filtered_participations))
+        for participation in filtered_participations:
+            extras = {
+                'challenge': participation.challenge,
+                'notify_after': notify_after,
+                'message': challenge_message_config.message
+            }
+            NotificationController.NotifyEntity(
+                participation.participating_entity_id,
+                participation.participating_entity_type,
+                Notification.COMPLETE_CHALLENGE_NOTIFICATION,
+                extras=extras)
+
+    queue = taskqueue.Queue('challenges-sendemails')
+    queue.purge()
+    return HttpResponse(json.dumps({'status': 'ok'}), content_type='application/json')

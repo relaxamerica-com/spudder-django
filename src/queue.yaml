@@ -10,3 +10,7 @@ queue:
 - name: atpostspud-getspuds
   rate: 1/m
   max_concurrent_requests: 1
+
+- name: challenges-sendemails
+  rate: 1/m
+  max_concurrent_requests: 1

@@ -70,3 +70,20 @@ class Invitation(models.Model):
             return "%s/users/invitation/%s" % (settings.SPUDMART_BASE_URL, self.id)
         elif self.invitation_type == self.AFFILIATE_INVITE_CLUB_ADMINISTRATOR:
             return "%s/spudderaffiliates/invitation/%s" % (settings.SPUDMART_BASE_URL, self.id)
+
+
+class Notification(models.Model):
+    COMPLETE_CHALLENGE_NOTIFICATION = 'complete_challenge'
+
+    NOTIFICATION_TYPES = (COMPLETE_CHALLENGE_NOTIFICATION,)
+
+    NOTIFICATION_CHOICES = (
+        (COMPLETE_CHALLENGE_NOTIFICATION, 'Complete Challenge'),
+    )
+
+    notification_type = models.CharField(max_length=255, choices=NOTIFICATION_CHOICES)
+    target_entity_id = models.CharField(max_length=255, null=True, blank=True)
+    target_entity_type = models.CharField(max_length=255, null=True, blank=True)
+    created = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
+    extras = fields.DictField(null=True, blank=True)
