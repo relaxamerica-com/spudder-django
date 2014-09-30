@@ -23,20 +23,23 @@
                 // find the amount of "seconds" between now and target
                 var current_date = new Date().getTime();
                 var seconds_left = (target_date - current_date) / 1000;
+                var message = "<b>taken too long!</b> But don't worry, you can still click 'Im ready' below";
+                if (seconds_left > 0) {
+                    // do some time calculations
+                    days = parseInt(seconds_left / 86400);
+                    seconds_left = seconds_left % 86400;
 
-                // do some time calculations
-                days = parseInt(seconds_left / 86400);
-                seconds_left = seconds_left % 86400;
+                    hours = parseInt(seconds_left / 3600);
+                    seconds_left = seconds_left % 3600;
 
-                hours = parseInt(seconds_left / 3600);
-                seconds_left = seconds_left % 3600;
+                    minutes = parseInt(seconds_left / 60);
+                    seconds = parseInt(seconds_left % 60);
 
-                minutes = parseInt(seconds_left / 60);
-                seconds = parseInt(seconds_left % 60);
-
-                // format countdown string + set tag value
-                countdown.html(days + " day" + ((days > 1) ? 's' : '') + ", " + hours + " hours, "
-                + minutes + " minutes and " + seconds + " seconds");
+                    // format countdown string + set tag value
+                    message = days + " day" + ((days > 1) ? 's' : '') + ", " + hours + " hours, "
+                            + minutes + " minutes and " + seconds + " seconds";
+                }
+                countdown.html(message);
 
             }, 1000);
 

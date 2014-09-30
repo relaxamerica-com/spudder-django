@@ -17,7 +17,7 @@
             font-size: 120%;
         }
         .overlay #processing-message {
-            font-size: 80%;
+            font-size: 12px;
         }
 
         .post-sign-in {
@@ -67,7 +67,9 @@
             },
             update_processing: function() {
                 var $overlay = overlay._get();
-                var minutes = Math.round((((new Date() - video_processing_start_date)  % 86400000) % 3600000) / 60000);
+                var minutes_raw = (((new Date() - video_processing_start_date) % 86400000) % 3600000) / 60000;
+                var minutes = Math.round(minutes_raw);
+                var seconds = Math.round(minutes_raw )
                 if (minutes > 0)
                     $overlay.find('ul').append("<li>Processing for " + minutes + " minutes</li>");
             },
@@ -82,7 +84,7 @@
                             '<p>' +
                                 '<i class="fa fa-spin fa-spinner"></i> Processing on YouTube' +
                             '</p>' +
-                            '<p><small id="processing-message">Processing can take several minutes</small></p>' +
+                            '<p><small id="processing-message">Processing can take several minutes<br/>Please do not refresh your browser.</small></p>' +
                             '<ul class="list-unstyled"></ul>' +
                         '</div>' +
                     '</div>' +
