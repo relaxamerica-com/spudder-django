@@ -6,3 +6,7 @@ cron:
 - description: Collects any at post spuds
   url: /socialengine/postspud/tick
   schedule: every 2 minutes
+
+- description: Send emails about pending challenges
+  url: /challenges/tick
+  schedule: every 10 minutes
