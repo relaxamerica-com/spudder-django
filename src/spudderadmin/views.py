@@ -12,8 +12,8 @@ import settings
 from spudderaccounts.models import SpudderUser
 from spudderaccounts.wrappers import RoleStudent, RoleFan, RoleSponsor
 from spudderadmin.decorators import admin_login_required
-from spudderadmin.forms import AtPostSpudTwitterAPIForm, PasswordAndActionForm, SystemDeleteVenuesForm
-from spudderadmin.forms import ChallengesResetSystemForm
+from spudderadmin.forms import AtPostSpudTwitterAPIForm, PasswordAndActionForm, SystemDeleteVenuesForm, \
+    ChallengesResetSystemForm, ChallengeServiceConfigurationForm, ChallengeMessageConfigurationForm
 from spudderadmin.utils import encoded_admin_session_variable_name
 from spudderaffiliates.forms import AffiliateForm
 from spudderaffiliates.models import Affiliate
@@ -25,7 +25,6 @@ from spuddersocialengine.atpostspud.models import AtPostSpudTwitterAuthenticatio
 from spuddersocialengine.locationscraper.models import LocationScraperServiceConfiguration, InstagramPerSportApplicationConfiguration, InstagramSubscriptions, VenuesModel
 from spuddersocialengine.locationscraper.socialnetworks.instagram import deregister_subscription
 from spuddersocialengine.models import SpudFromSocialMedia
-from spudderspuds.challenges.forms import ChallengeServiceConfigurationForm, ChallengeMessageConfigurationForm
 from spudmart.CERN.models import Student, School
 from spudmart.CERN.templatetags.CERN import student_email
 from spudmart.accounts.templatetags.accounts import fan_page_name, user_name
