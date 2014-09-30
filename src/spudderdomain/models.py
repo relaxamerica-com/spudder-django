@@ -362,7 +362,7 @@ class Challenge(models.Model):
     modified = models.DateTimeField(auto_now=True)
     media = models.ForeignKey(UploadedFile, null=True, default=None, related_name='challenge_media')
     image = models.ForeignKey(UploadedFile, null=True, default=None, related_name='challenge_image')
-    youtube_video_id = models.CharField(default='', null=True, blank=True)
+    youtube_video_id = models.CharField(max_length=255, default='', null=True, blank=True)
 
     def __unicode__(self):
         return unicode(self.name)
@@ -435,7 +435,7 @@ class ChallengeParticipation(models.Model):
     message = models.TextField(default='', null=True, blank=True)
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
-    youtube_video_id = models.CharField(default='', null=True, blank=True)
+    youtube_video_id = models.CharField(max_length=255, default='', null=True, blank=True)
 
     def is_accepted(self):
         return self.state == self.ACCEPTED_STATE
