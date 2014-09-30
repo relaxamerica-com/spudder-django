@@ -5,8 +5,10 @@
     {{ block.super }}
     <meta property="og:title" content="Take the '{{ challenge.name }}'. On Spudder for '{{ challenge.get_recipient.name }} ({{ challenge.get_recipient.state }})'!" />
     <meta property="og:description" content="{{ challenge.description }}" />
-    {% if template.slug == 'icebucket' %}
-        <meta property="og:image" content="/static/img/spudderspuds/challenges/challenge_icebucket_icon.jpg" />
+    {% if challenge.youtube_video_id %}
+        <meta property="og:image" content="http://img.youtube.com/vi/{{ challenge.youtube_video_id }}/sddefault.jpg" />
+    {% else %}
+        <meta property="og:image" content="http://{{ request.META.HTTP_HOST }}/static/img/spudderspuds/button-spuds-medium.png" />
     {% endif %}
 {% endblock %}
 
@@ -18,7 +20,7 @@
 
 {% block body_class %}challenges {{ template.slug }}{% endblock %}
 
-{% block title %}{% endblock %}
+{% block title %}Take the '{{ challenge.name }}'. On Spudder for '{{ challenge.get_recipient.name }} ({{ challenge.get_recipient.state }})'{% endblock %}
 
 {% block body %}
 
@@ -63,16 +65,6 @@
                                     ACCEPT!
                                 </a>
                             </div>
-{#                            <div class="col-md-4">#}
-{#                                <a href="javascript:alert('decline with donation');" class="btn btn-warning btn-block btn-cta">#}
-{#                                    Decline with donation#}
-{#                                </a>#}
-{#                            </div>#}
-{#                            <div class="col-md-4">#}
-{#                                <a href="javascript:alert('decline with message');" class="btn btn-default btn-block btn-cta">#}
-{#                                    Decline with message#}
-{#                                </a>#}
-{#                            </div>#}
                         </div>
                     </div>
                 </div>
