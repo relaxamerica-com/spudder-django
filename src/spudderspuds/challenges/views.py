@@ -473,10 +473,8 @@ def challenge_challenge_accept_beneficiary(request, state=None):
     if not request.current_role or request.current_role.entity_type != RoleController.ENTITY_FAN:
         return redirect('/challenges/create/register?next=%s&message=challenge_challenge' % request.path)
     if not state:
-        return redirect(request.path + request.current_role.state)
+        return redirect("%s%s" % (request.path, (request.current_role.state or 'no_state')))
     template_data = {
-        'state': state,
-        'clubs': _get_clubs_by_state(state),
         'states': [{'id': '', 'name': 'Select a state ...'}] + sorted([
             {'id': k, 'name': v} for k, v in STATES.items()], key=lambda x: x['id'])}
     return render(request, 'spudderspuds/challenges/pages/challenge_challenge_accept_beneficiary.html', template_data)
