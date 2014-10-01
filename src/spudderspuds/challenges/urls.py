@@ -71,6 +71,9 @@ urlpatterns = patterns(
     url(r'challenge_challenge/beneficiary/(?P<state>\w*)$',
         'challenge_challenge_accept_beneficiary'),
 
+    url(r'challenge_challenge/(?P<participation_id>\d+)/thanks$',
+        'challenge_challenge_thanks'),
+
     url(r'challenge_challenge$',
         'challenge_challenge'),
 

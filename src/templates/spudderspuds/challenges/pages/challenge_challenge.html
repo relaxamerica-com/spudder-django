@@ -39,10 +39,16 @@
                     <div class="row">
                         <div class="col-sm-10 col-sm-offset-1">
                             <div class="challenge-container">
-                                <div class="image without-image"></div>
+                                <div class="image ">
+
+                                        <div class="embed-responsive embed-responsive-16by9">
+                                            <iframe class="embed-responsive-item" type="text/html" src="http://www.youtube.com/embed/qw3zIp5us2U?origin=http://www.spudder.com&rel=0&showinfo=0" frameborder="0" allowfullscreen></iframe>
+                                        </div>
+
+                                </div>
                                 <div class="caption">
                                     <p class="name">The <span class="text-primary">Spudder</span> Challenge Challenge!</p>
-                                    <p class="recipient">Accept for the chance to win $200 for your team!</p>
+                                    <p class="recipient">Accept this challenge for a chance to win $200 for your team!</p>
                                 </div>
                             </div>
                         </div>
@@ -61,19 +67,19 @@
                     <hr/>
                     <h2>You can <span class="text-primary">share</span> this challenge with other!</h2>
                     <p class="share-challenge">
-                        <a data-original-title="Share on Facebook" data-placement="bottom" href="JavaScript:facebookPopup('http://{{ request.META.HTTP_HOST }}/challenges/{{ challenge.id }}')">
+                        <a data-original-title="Share on Facebook" data-placement="bottom" href="JavaScript:facebookPopup()">
                             <span class="fa-stack fa-2x"><i class="fa fa-circle fa-stack-2x fa-inverse"></i><i class="fa fa-facebook fa-stack-1x"></i></span>
                         </a>
-                        <a data-original-title="Share on Twitter" data-placement="bottom" href="javascript:twitterPopup('http://{{ request.META.HTTP_HOST }}/challenges/{{ challenge.id }}')">
+                        <a data-original-title="Share on Twitter" data-placement="bottom" href="javascript:twitterPopup()">
                             <span class="fa-stack fa-2x"><i class="fa fa-circle fa-stack-2x fa-inverse"></i><i class="fa fa-twitter fa-stack-1x"></i></span>
                         </a>
-                        <a data-original-title="Share on LinkedIn" data-placement="bottom"href="Javascript:linkedinPopup('http://{{ request.META.HTTP_HOST }}/challenges/{{ challenge.id }}')">
+                        <a data-original-title="Share on LinkedIn" data-placement="bottom"href="Javascript:linkedinPopup()">
                             <span class="fa-stack fa-2x"><i class="fa fa-circle fa-stack-2x fa-inverse"></i><i class="fa fa-linkedin fa-stack-1x"></i></span>
                         </a>
-                        <a data-original-title="Share on Google+" data-placement="bottom" href="javascript:googlePopup('http://{{ request.META.HTTP_HOST }}/challenges/{{ challenge.id }}')">
+                        <a data-original-title="Share on Google+" data-placement="bottom" href="javascript:googlePopup()">
                             <span class="fa-stack fa-2x"><i class="fa fa-circle fa-stack-2x fa-inverse"></i><i class="fa fa-google-plus fa-stack-1x"></i></span>
                         </a>
-                        <a data-original-title="Share via Email" data-placement="bottom" id="mailto" href="mailto:?subject=Check out this Spudder page!&body=<Check out this cool page I saw on Spudder: http://{{ request.META.HTTP_HOST }}/challenges/{{ challenge.id }}">
+                        <a data-original-title="Share via Email" data-placement="bottom" id="mailto" href="mailto:?subject=Check out this Spudder page!&body=<Check out this cool page I saw on Spudder: http://{{ request.META.HTTP_HOST }}{{ request.path }}">
                             <span class="fa-stack fa-2x"><i class="fa fa-circle fa-stack-2x fa-inverse"></i><i class="fa fa-envelope-o fa-stack-1x"></i></span>
                         </a>
                     </p>

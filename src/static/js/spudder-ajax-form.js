@@ -12,28 +12,29 @@ function show_form_error($form, error) {
             '<p>' + error + '</p>' +
         '</div>');
 }
-$(document).ready(function(){
-    $('.ajax-form').ajaxForm({
-        beforeSerialize: function($form, options){
-            var $body = $('body');
-            $body.css('position', 'relative');
-            $('<div class="overlay"><div class="inner"><p><i class="fa fa-spin fa-spinner"></i> Uploading<p><div class="progress"><div class="progress-bar" style="width:10%"></div></div></div></div>')
-                .appendTo($body);
-            $('.overlay .inner').css('top', $(window).scrollTop() + 100);
-        },
-        error: function(event, type, message, $form){
-            show_form_error($form, 'Sorry, there was an error processing your upload, please try again or contact <a href="mailto:support@spudder.com">support</a> if the problem continues.')
-        },
-        success: function(response_text, status_text, xhr, $form) {
-            if (response_text[0] != '/') {
-                $form.attr('action', response_text.split('|')[0]);
-                show_form_error($form, response_text.split('|')[1]);
-            }
-            else
-                window.location = response_text;
-        },
-        uploadProgress: function(event, position, total, percent_complete) {
-            $('.progress-bar').css('width', '' + percent_complete + "%");
+var ajax_form_options = {
+    beforeSerialize: function ($form, options) {
+        var $body = $('body');
+        $body.css('position', 'relative');
+        $('<div class="overlay"><div class="inner"><p><i class="fa fa-spin fa-spinner"></i> Uploading<p><div class="progress"><div class="progress-bar" style="width:10%"></div></div></div></div>')
+            .appendTo($body);
+        $('.overlay .inner').css('top', $(window).scrollTop() + 100);
+    },
+    error: function (event, type, message, $form) {
+        show_form_error($form, 'Sorry, there was an error processing your upload, please try again or contact <a href="mailto:support@spudder.com">support</a> if the problem continues.')
+    },
+    success: function (response_text, status_text, xhr, $form) {
+        if (response_text[0] != '/') {
+            $form.attr('action', response_text.split('|')[0]);
+            show_form_error($form, response_text.split('|')[1]);
         }
-    })
-})
+        else
+            window.location = response_text;
+    },
+    uploadProgress: function (event, position, total, percent_complete) {
+        $('.progress-bar').css('width', '' + percent_complete + "%");
+    }
+};
+$(document).ready(function(){
+    $('.ajax-form').ajaxForm(ajax_form_options);
+});

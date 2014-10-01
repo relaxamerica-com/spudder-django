@@ -16,7 +16,7 @@
     function on_upload_complete(){
         $('#youtube-video-id').val($('body').data('video_id'));
         $('#upload-form').unbind();
-        $('#upload-form').addClass('ajax-form');
+        $('#upload-form').ajaxForm(ajax_form_options);
         $('#upload-form').submit();
     }
 {% endblock %}
@@ -30,7 +30,7 @@
         <p><small>Tell us about the challenge you have invented!</small></p>
     </div>
 
-    <form method="post" action="{{ upload_url }}" id="upload-form">
+    <form method="post" action="{{ upload_url }}" id="upload-form" enctype="multipart/form-data">
 
         {% csrf_token %}
         {% bootstrap_form form %}

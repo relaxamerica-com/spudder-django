@@ -516,21 +516,48 @@ def challenge_challenge_accept_notice(request, state=None, club_entity_type=None
         return redirect('/challenges/challenge_challenge/%s/upload' % ccp.id)
     participation = get_object_or_404(ChallengeChallengeParticipation, id=participation_id)
     form = ChallengeChallengeParticipationForm()
+    upload_url = '/challenges/challenge_challenge/%s/upload' % participation_id
     if request.method == 'POST':
         form = ChallengeChallengeParticipationForm(request.POST)
         if form.is_valid():
             participation.youtube_video_id = form.cleaned_data.get('youtube_video_id')
             participation.name = form.cleaned_data.get('challenge_name')
             participation.description = form.cleaned_data.get('challenge_description')
+            participation.state = ChallengeChallengeParticipation.STATE_COMPLETE
             if request.FILES:
                 file = UploadForm(request.POST, request.FILES).save()
                 participation.image = file
             participation.save()
-            return redirect('/challenges/challenge_challenge/thanks')
+            redirect_url = '/challenges/challenge_challenge/%s/thanks?just_submitted=True' % participation_id
+            if request.is_ajax():
+                return HttpResponse(redirect_url)
+            return redirect(redirect_url)
+        if request.is_ajax():
+            return HttpResponse("%s|%s" % (
+                blobstore.create_upload_url(upload_url),
+                '<br/>'.join(['<br/>'.join([_e for _e in e]) for e in form.errors.values()])))
     template_data = {
         'form': form,
-        'upload_url': blobstore.create_upload_url('/challenges/challenge_challenge/%s/upload' % participation_id)}
+        'upload_url': blobstore.create_upload_url(upload_url)}
     return render(request, 'spudderspuds/challenges/pages/challenge_challenge_accept_upload.html', template_data)
+
+
+def challenge_challenge_thanks(request, participation_id):
+    participation = get_object_or_404(ChallengeChallengeParticipation, id=participation_id)
+    creator = RoleController.GetRoleForEntityTypeAndID(
+        participation.participating_entity_type,
+        participation.participating_entity_id,
+        RoleBase.EntityWrapperByEntityType(participation.participating_entity_type))
+    beneficiary = EntityController.GetWrappedEntityByTypeAndId(
+        participation.recipient_entity_type,
+        participation.recipient_entity_id,
+        EntityBase.EntityWrapperByEntityType(participation.recipient_entity_type))
+    template_data = {
+        'participation': participation,
+        'creator': creator,
+        'beneficiary': beneficiary,
+        'just_submitted': request.GET.get('just_submitted')}
+    return render(request, 'spudderspuds/challenges/pages/challenge_challenge_thanks.html', template_data)
 
 
 def tick(request):

@@ -30,6 +30,10 @@ class RoleBase(EntityBase):
         else:
             raise NotImplementedError("the entity_key %s is not supported yet." % entity_key)
 
+    @classmethod
+    def EntityWrapperByEntityType(cls, entity_key):
+        return cls.RoleWrapperByEntityType(entity_key)
+
     @abc.abstractproperty
     def user(self):
         pass
@@ -288,7 +292,7 @@ class RoleFan(RoleBase):
 
     @property
     def name(self):
-        return self.entity.name
+        return self.entity.username
 
     @property
     def state(self):

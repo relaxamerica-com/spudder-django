@@ -1,0 +1,103 @@
+{% extends 'spudderspuds/base.html' %}
+{% load spudderspudstags %}
+
+{% block meta %}
+    {{ block.super }}
+    <meta property="og:title" content="Check out the '{{ participation.name }}'. On Spudder!" />
+    <meta property="og:description" content="{{ participation.description }}" />
+    {% if participation.youtube_video_id %}
+        <meta property="og:image" content="http://img.youtube.com/vi/{{ participation.youtube_video_id }}/sddefault.jpg" />
+    {% else %}
+        <meta property="og:image" content="http://{{ request.META.HTTP_HOST }}/static/img/spudderspuds/button-spuds-medium.png" />
+    {% endif %}
+{% endblock %}
+
+{% block masterhead_title %}
+    <h4 class="navbar-text navbar-right hidden-xs"><span class="text-primary">Spudder:</span> the {{ participation.name }}</h4>
+{% endblock %}
+
+{% block body_id %}challenge-challenge-thanks{% endblock %}
+
+{% block body_class %}challenges{% endblock %}
+
+{% block title %}Challenge Challenge - Thanks{% endblock %}
+
+{% block body %}
+
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-8 col-sm-offset-2">
+
+                <div class="well">
+                    
+                    {% if just_submitted %}
+                        <div class="page-header">
+                            <h1>
+                                {% include 'spudderspuds/challenges/components/wizard_steps.html' with step="<i class='fa fa-trophy'></i>" title="Thanks!" %}
+                            </h1>
+                            <h2>Thanks for suggesting the {{ participation.name }}</h2>
+                        </div>
+                    {% else %}
+                        <div class="page-header">
+                            <h1>
+                                {% include 'spudderspuds/challenges/components/wizard_steps.html' with step="<i class='fa fa-trophy'></i>" title="Spudder Challenge Challenge" %}
+                            </h1>
+                            <h2>This challenge: {{ participation.name }} was entered into the <a href="/challenges/challenge_challenge">Spudder Challenge Challenge</a></h2>
+                        </div>
+                    {% endif %}
+                
+                    <div class="row">
+                        <div class="col-sm-10 col-sm-offset-1">
+                            <div class="challenge-container">
+                                <div class="image {% if not participation.image and not participation.youtube_video_id %}without-image{% endif %}">
+                                    {% if participation.youtube_video_id %}
+                                        <div class="embed-responsive embed-responsive-16by9">
+                                            <iframe class="embed-responsive-item" type="text/html" src="http://www.youtube.com/embed/{{ participation.youtube_video_id }}?origin=http://www.spudder.com&rel=0&showinfo=0" frameborder="0" allowfullscreen></iframe>
+                                        </div>
+                                    {% else %}
+                                        {% if participation.image %}
+                                            <img src="/file/serve/{{ participation.image.id }}" class="img-responsive" />
+                                        {% endif %}
+                                    {% endif %}
+                                </div>
+                                <div class="caption">
+                                    <p class="name">Challenge: <span class="text-primary">{{ participation.name }}</span></p>
+                                    <p class="description">{{ participation.description }}</p>
+                                    <p class="recipient">Created by <a href="{{ creator.link_to_public_page }}">{{ creator.name }}</a></p>
+                                    <p class="recipient">For the benefit of <b>{{ beneficiary.name }} ({{ beneficiary.state }})</b></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% if not just_submitted %}
+                        <hr/>
+                        <h2>Do you have an idea for a challenge?</h2>
+                        <a class="btn btn-primary btn-cta" href="/challenges/challenge_challenge">
+                            Watch the video <i class="fa fa-arrow-right"></i>
+                        </a>
+                    {% endif %}
+                    <hr/>
+                    <h2>You can <span class="text-primary">share</span> this challenge with other!</h2>
+                    <p class="share-challenge">
+                        <a data-original-title="Share on Facebook" data-placement="bottom" href="JavaScript:facebookPopup()">
+                            <span class="fa-stack fa-2x"><i class="fa fa-circle fa-stack-2x fa-inverse"></i><i class="fa fa-facebook fa-stack-1x"></i></span>
+                        </a>
+                        <a data-original-title="Share on Twitter" data-placement="bottom" href="javascript:twitterPopup()">
+                            <span class="fa-stack fa-2x"><i class="fa fa-circle fa-stack-2x fa-inverse"></i><i class="fa fa-twitter fa-stack-1x"></i></span>
+                        </a>
+                        <a data-original-title="Share on LinkedIn" data-placement="bottom"href="Javascript:linkedinPopup()">
+                            <span class="fa-stack fa-2x"><i class="fa fa-circle fa-stack-2x fa-inverse"></i><i class="fa fa-linkedin fa-stack-1x"></i></span>
+                        </a>
+                        <a data-original-title="Share on Google+" data-placement="bottom" href="javascript:googlePopup()">
+                            <span class="fa-stack fa-2x"><i class="fa fa-circle fa-stack-2x fa-inverse"></i><i class="fa fa-google-plus fa-stack-1x"></i></span>
+                        </a>
+                        <a data-original-title="Share via Email" data-placement="bottom" id="mailto" href="mailto:?subject=Check out this Spudder page!&body=<Check out this cool page I saw on Spudder: http://{{ request.META.HTTP_HOST }}{{ request.path }}">
+                            <span class="fa-stack fa-2x"><i class="fa fa-circle fa-stack-2x fa-inverse"></i><i class="fa fa-envelope-o fa-stack-1x"></i></span>
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
