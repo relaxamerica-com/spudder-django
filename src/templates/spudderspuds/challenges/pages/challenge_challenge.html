@@ -3,8 +3,8 @@
 
 {% block meta %}
     {{ block.super }}
-    <meta property="og:title" content="Take the '{{ challenge.name }}'. On Spudder for '{{ challenge.get_recipient.name }} ({{ challenge.get_recipient.state }})'!" />
-    <meta property="og:description" content="{{ challenge.description }}" />
+    <meta property="og:title" content="Come up with the next Ice Bucket Challenge and with $200!" />
+    <meta property="og:description" content="Spudder is giving away $200 to the team of your choice, all you have to do is take part in the 'Challenge Challenge'" />
     {% if challenge.youtube_video_id %}
         <meta property="og:image" content="http://img.youtube.com/vi/{{ challenge.youtube_video_id }}/sddefault.jpg" />
         <meta property="og:video" content="https://youtube.googleapis.com/v/qw3zIp5us2U" />

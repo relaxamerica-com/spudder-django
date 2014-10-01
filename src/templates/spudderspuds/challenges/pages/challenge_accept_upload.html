@@ -192,7 +192,8 @@
                 $('body').data("video_id", videoId);
                 video_processing_start_date = new Date();
                 overlay.show_processing();
-                checkVideoStatus(videoId, INITIAL_STATUS_POLLING_INTERVAL_MS);
+                //checkVideoStatus(videoId, INITIAL_STATUS_POLLING_INTERVAL_MS);
+                on_upload_complete();
             });
 
             ajax.fail(function () {
