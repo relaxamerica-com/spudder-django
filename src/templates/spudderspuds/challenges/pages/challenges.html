@@ -1,6 +1,7 @@
 {% extends 'spudderspuds/base.html' %}
 {% load bootstrap3 %}
 {% load accounts %}
+{% load featuretags %}
 
 {% block js %}
     <script type="text/javascript" language="javascript">
@@ -28,27 +29,33 @@
             </div>
         </div>
     </div>
-    <div id="challenge-challenge-cta">
-        <span class="fa fa-stack hidden-xs">
-            <i class="fa fa-stack-2x fa-circle"></i>
-            <span class="fa fa-stack-1x">$</span>
-        </span>
-        <div class="row">
-            <div class="col-xs-10 col-xs-offset-1 col-sm-8 col-sm-offset-2">
-                <h1 class="text-center">$200 <span class="text-muted">for your local team!</span></h1>
-                <h2 class="text-center">Spudder is giving away $200! It could go to your local youth sports team.</h2>
-                <p>
-                    Can you think of the next Ice Bucket Challenge? Send us your idea and if you win, we'll donate $200
-                    to the youth sports team of your choice. Simple!
-                </p>
-                <p class="text-center">
-                    <a href="/challenges/challenge_challenge" class="btn btn-info btn-cta">
-                        Watch the video <i class="fa fa-arrow-right"></i>
-                    </a>
-                </p>
+
+    {# START - CHALLENGE CHALLENGE CTA #}
+    {% if 'challenge_challenge'|feature_is_enabled %}
+        <div id="challenge-challenge-cta">
+            <span class="fa fa-stack hidden-xs">
+                <i class="fa fa-stack-2x fa-circle"></i>
+                <span class="fa fa-stack-1x">$</span>
+            </span>
+            <div class="row">
+                <div class="col-xs-10 col-xs-offset-1 col-sm-8 col-sm-offset-2">
+                    <h1 class="text-center">$200 <span class="text-muted">for your local team!</span></h1>
+                    <h2 class="text-center">Spudder is giving away $200! It could go to your local youth sports team.</h2>
+                    <p>
+                        Can you think of the next Ice Bucket Challenge? Send us your idea and if you win, we'll donate $200
+                        to the youth sports team of your choice. Simple!
+                    </p>
+                    <p class="text-center">
+                        <a href="/challenges/challenge_challenge" class="btn btn-info btn-cta">
+                            Watch the video <i class="fa fa-arrow-right"></i>
+                        </a>
+                    </p>
+                </div>
             </div>
         </div>
-    </div>
+    {% endif %}
+    {# END - CHALLENGE CHALLENGE CTA #}
+
     <div id="challenges-cta">
         <div class="row">
             <div class="col-xs-10 col-xs-offset-1 col-xs-push-0 col-sm-4 col-sm-offset-1 col-sm-push-6">

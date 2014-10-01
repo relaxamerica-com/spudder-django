@@ -7,7 +7,8 @@ FEATURES = {
         'affiliate_login',  # just login & dashboard page    
         'invite_clubs',
         'challenges_landing_page',
-        'challenges_only_override',  # Prevent access to any other part of spudder
+        'challenges_only_override'
+        'challenge_challenge',
     ],
     'stage': [
         'spud_tagging',
@@ -18,6 +19,7 @@ FEATURES = {
         'invite_clubs',
         'challenges_landing_page',
         'challenges_only_override',
+        'challenge_challenge',
     ],
     'live': [
         'google_analytics',
