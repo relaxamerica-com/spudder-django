@@ -9,7 +9,7 @@
 
 {% block body_class %}challenges {{ template.slug }}{% endblock %}
 
-{% block title %}{% endblock %}
+{% block title %}Challenges - Signin{% endblock %}
 
 {% block well_content %}
     <div class="page-header">
@@ -20,7 +20,7 @@
         <p><small>Sign into your account to continue fundraising for your team!</small></p>
     </div>
 
-    <p>Don't have an account? <a href="/challenges/create/register?next={{ request.GET.next|default:'/' }}">register <i class="fa fa-arrow-right"></i> </a></p>
+    <p>Don't have an account? <a href="/challenges/register?next={{ request.GET.next|default:'/' }}">register <i class="fa fa-arrow-right"></i> </a></p>
 
     <hr/>
 

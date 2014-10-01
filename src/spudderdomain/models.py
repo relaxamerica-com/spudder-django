@@ -360,7 +360,6 @@ class Challenge(models.Model):
     proposed_donation_amount_decline = models.FloatField(default=0.0)
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
-    media = models.ForeignKey(UploadedFile, null=True, default=None, related_name='challenge_media')
     image = models.ForeignKey(UploadedFile, null=True, default=None, related_name='challenge_image')
     youtube_video_id = models.CharField(max_length=255, default='', null=True, blank=True)
 
@@ -369,10 +368,6 @@ class Challenge(models.Model):
 
     def __str__(self):
         return unicode(self).encode('utf-8')
-
-    @property
-    def media(self):
-        raise DeprecationWarning('Media is deprcated in favour of youtube_video_id')
 
     def get_recipient(self):
         from spudderdomain.controllers import EntityController
@@ -429,8 +424,6 @@ class ChallengeParticipation(models.Model):
     participating_entity_type = models.CharField(max_length=255)
     donation_amount = models.FloatField(null=True, blank=True, default=None)
     state = models.CharField(max_length=255, choices=STATES_CHOICES, null=True, blank=True)
-    # Media is depricated in favour of youtube_video_id
-    media = models.ForeignKey(UploadedFile, null=True, default=None, related_name='challenge_participation_media')
     image = models.ForeignKey(UploadedFile, null=True, default=None, related_name='challenge_participation_image')
     message = models.TextField(default='', null=True, blank=True)
     created = models.DateTimeField(auto_now_add=True)

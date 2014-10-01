@@ -1,0 +1,85 @@
+{% extends 'spudderspuds/base.html' %}
+{% load spudderspudstags %}
+
+{% block meta %}
+    {{ block.super }}
+    <meta property="og:title" content="Take the '{{ challenge.name }}'. On Spudder for '{{ challenge.get_recipient.name }} ({{ challenge.get_recipient.state }})'!" />
+    <meta property="og:description" content="{{ challenge.description }}" />
+    {% if challenge.youtube_video_id %}
+        <meta property="og:image" content="http://img.youtube.com/vi/{{ challenge.youtube_video_id }}/sddefault.jpg" />
+    {% else %}
+        <meta property="og:image" content="http://{{ request.META.HTTP_HOST }}/static/img/spudderspuds/button-spuds-medium.png" />
+    {% endif %}
+{% endblock %}
+
+{% block masterhead_title %}
+    <h4 class="navbar-text navbar-right hidden-xs">The <span class="text-primary">Spudder</span> Challenge Challenge</h4>
+{% endblock %}
+
+{% block body_id %}challenge-challenge{% endblock %}
+
+{% block body_class %}challenges {{ template.slug }}{% endblock %}
+
+{% block title %}Challenges - View{% endblock %}
+
+{% block body %}
+
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-8 col-sm-offset-2">
+
+                <div class="well">
+                    <div class="page-header">
+                        <h1>
+                            {% include 'spudderspuds/challenges/components/wizard_steps.html' with step="<i class='fa fa-trophy'></i>" title="The Spudder Challenge Challenge" %}
+                        </h1>
+                        <h2><span class="text-primary">Spudder</span> challenges you to come up with the next Ice Bucket Challenge!</h2>
+                        <h2><small>The winning entry will receive <span class="text-primary">$200</span> for their youth sports team!</small></h2>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-10 col-sm-offset-1">
+                            <div class="challenge-container">
+                                <div class="image without-image"></div>
+                                <div class="caption">
+                                    <p class="name">The <span class="text-primary">Spudder</span> Challenge Challenge!</p>
+                                    <p class="recipient">Accept for the chance to win $200 for your team!</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr/>
+                    <h2>Do you ...</h2>
+                    <div class="action-buttons">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <a href="JavaScript:alert('in development');" class="btn btn-primary btn-block btn-cta">
+                                    ACCEPT!
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <hr/>
+                    <h2>You can <span class="text-primary">share</span> this challenge with other!</h2>
+                    <p class="share-challenge">
+                        <a data-original-title="Share on Facebook" data-placement="bottom" href="JavaScript:facebookPopup('http://{{ request.META.HTTP_HOST }}/challenges/{{ challenge.id }}')">
+                            <span class="fa-stack fa-2x"><i class="fa fa-circle fa-stack-2x fa-inverse"></i><i class="fa fa-facebook fa-stack-1x"></i></span>
+                        </a>
+                        <a data-original-title="Share on Twitter" data-placement="bottom" href="javascript:twitterPopup('http://{{ request.META.HTTP_HOST }}/challenges/{{ challenge.id }}')">
+                            <span class="fa-stack fa-2x"><i class="fa fa-circle fa-stack-2x fa-inverse"></i><i class="fa fa-twitter fa-stack-1x"></i></span>
+                        </a>
+                        <a data-original-title="Share on LinkedIn" data-placement="bottom"href="Javascript:linkedinPopup('http://{{ request.META.HTTP_HOST }}/challenges/{{ challenge.id }}')">
+                            <span class="fa-stack fa-2x"><i class="fa fa-circle fa-stack-2x fa-inverse"></i><i class="fa fa-linkedin fa-stack-1x"></i></span>
+                        </a>
+                        <a data-original-title="Share on Google+" data-placement="bottom" href="javascript:googlePopup('http://{{ request.META.HTTP_HOST }}/challenges/{{ challenge.id }}')">
+                            <span class="fa-stack fa-2x"><i class="fa fa-circle fa-stack-2x fa-inverse"></i><i class="fa fa-google-plus fa-stack-1x"></i></span>
+                        </a>
+                        <a data-original-title="Share via Email" data-placement="bottom" id="mailto" href="mailto:?subject=Check out this Spudder page!&body=<Check out this cool page I saw on Spudder: http://{{ request.META.HTTP_HOST }}/challenges/{{ challenge.id }}">
+                            <span class="fa-stack fa-2x"><i class="fa fa-circle fa-stack-2x fa-inverse"></i><i class="fa fa-envelope-o fa-stack-1x"></i></span>
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

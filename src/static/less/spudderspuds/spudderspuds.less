@@ -205,6 +205,62 @@
 
     }
 
+    #challenge-challenge-cta {
+        width: 100%;
+        background: @brand-primary;
+        overflow:hidden;
+        position: relative;
+        padding: 40px 0 80px;
+
+        @media(max-width: @screen-sm-max){
+            padding-bottom: 40px;
+        }
+
+        .fa-stack {
+            font-size:180px;
+            position: absolute;
+            .fa-stack-2x {
+                color: darken(@brand-primary, 10%)
+            }
+            .fa-stack-1x {
+                color: lighten(@brand-primary, 5%)
+            }
+        }
+
+        h1 {
+            color: #ffffff;
+            font-size: 48px;
+        }
+        p {
+            color: #fafafa;
+            font-size: 18px;
+            margin: 20px 0;
+        }
+        h2 {
+            padding-top: 40px;
+            margin: 20px 0;
+            color: #FFF;
+            @media(max-width: @screen-sm-max){
+                padding-top: 0;
+                margin-top: 0;
+            }
+        }
+        .btn {
+            font-size: 18px;
+            padding: 15px 14px;
+        }
+
+        &:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            #gradient.radial(rgba(0,0,0,0.01); rgba(0,0,0,0.1));
+        }
+    }
+
     #challenges-cta {
         width: 100%;
         background: #F1f1f1;

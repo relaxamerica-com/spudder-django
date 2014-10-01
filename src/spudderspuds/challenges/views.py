@@ -1,6 +1,7 @@
 import json
 from datetime import datetime, timedelta
 from django.contrib.auth import authenticate, login
+from google.appengine.api import blobstore
 from django.http import HttpResponse, Http404
 from django.shortcuts import redirect, render, get_object_or_404
 from django.contrib.auth.models import User
@@ -17,8 +18,8 @@ from spudderdomain.wrappers import EntityBase
 from spudderdomain.controllers import RoleController, EntityController, CommunicationController
 from spudderspuds.challenges.forms import CreateTempClubForm, ChallengeConfigureForm, ChallengesRegisterForm
 from spudderspuds.challenges.forms import ChallengesSigninForm, AcceptChallengeForm, UploadImageForm
-from spudderspuds.challenges.models import TempClubOtherInformation, ChallengeTree, ChallengeServiceConfiguration, \
-    ChallengeServiceMessageConfiguration
+from spudderspuds.challenges.models import TempClubOtherInformation, ChallengeTree, ChallengeServiceConfiguration
+from spudderspuds.challenges.models import ChallengeServiceMessageConfiguration
 
 
 def _get_clubs_by_state(state):
@@ -422,6 +423,10 @@ def challenge_accept_beneficiary_set_donation(request, participation_id, state, 
         request,
         'spudderspuds/challenges/pages/challenge_accept_beneficiary_choose_donation.html',
         template_data)
+
+
+def challenge_challenge(request):
+    return render(request, 'spudderspuds/challenges/pages/challenge_challenge.html')
 
 
 def tick(request):

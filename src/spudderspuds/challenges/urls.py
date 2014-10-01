@@ -64,8 +64,14 @@ urlpatterns = patterns(
     url(r'(?P<challenge_id>\d+)$',
         'challenge_view'),
 
-    url(r'^tick', 'tick'),
-    url(r'^send_challenge_emails', 'send_challenge_emails'),
+    url(r'challenge_challenge$',
+        'challenge_challenge'),
+    
+    url(r'^tick', 
+        'tick'),
+    
+    url(r'^send_challenge_emails', 
+        'send_challenge_emails'),
 
     url(r'$',
         'challenges_splash'),

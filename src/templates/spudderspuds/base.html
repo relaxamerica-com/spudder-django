@@ -22,7 +22,7 @@
         <div class="navbar-collapse collapse">
             {% if not request.current_role %}
                 <div class="navbar-collapse collapse navbar-right login-signup">
-                    <a href="/challenges/create/signin?next=/challenges" class="btn btn-default navbar-btn btn-lg">LOG IN <i class="fa fa-caret-down text-primary"></i></a>
+                    <a href="/challenges/signin?next=/challenges" class="btn btn-default navbar-btn btn-lg">LOG IN <i class="fa fa-caret-down text-primary"></i></a>
                 </div>
             {% else %}
                 <ul class="nav navbar-nav navbar-right">

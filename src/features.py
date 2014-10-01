@@ -20,6 +20,8 @@ FEATURES = {
         'challenges_only_override',
     ],
     'live': [
+        'google_analytics',
+        'alexa_analytics',
         'spud_tagging'
         'challenges_landing_page',
         'challenges_only_override',  # Prevent access to any other part of spudder

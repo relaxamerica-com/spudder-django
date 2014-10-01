@@ -7,7 +7,7 @@
 
 {% block body_id %}challenges-regsiter{% endblock %}
 
-{% block title %}{% endblock %}
+{% block title %}Challenges - Register{% endblock %}
 
 {% block body_class %}challenges {{ template.slug }}{% endblock %}
 
@@ -20,7 +20,7 @@
         <p><small>Once you create an account, you'll be able to create challenges and raise money for your team!</small></p>
     </div>
 
-    <p>Already have an account? <a href="/challenges/create/signin?next={{ request.GET.next|default:'/' }}">sign in <i class="fa fa-arrow-right"></i> </a></p>
+    <p>Already have an account? <a href="/challenges/signin?next={{ request.GET.next|default:'/' }}">sign in <i class="fa fa-arrow-right"></i> </a></p>
 
     <hr/>
 

@@ -14,6 +14,8 @@
 
 {% block body_class %}challenges {{ template.slug }}{% endblock %}
 
+{% block title %}Spudder: Sports Fundraising Made Simple{% endblock %}
+
 {% block masterhead_title %}
     <h4 class="navbar-text navbar-right hidden-xs"><span class="text-primary">Spudder</span> Sports Fundraising Made Simple</h4>
 {% endblock %}
@@ -26,13 +28,30 @@
             </div>
         </div>
     </div>
+    <div id="challenge-challenge-cta">
+        <span class="fa fa-stack hidden-xs">
+            <i class="fa fa-stack-2x fa-circle"></i>
+            <span class="fa fa-stack-1x">$</span>
+        </span>
+        <div class="row">
+            <div class="col-xs-10 col-xs-offset-1 col-sm-8 col-sm-offset-2">
+                <h1 class="text-center">$200 <span class="text-muted">for your local team!</span></h1>
+                <h2 class="text-center">Spudder is giving away $200! It could go to your local youth sports team.</h2>
+                <p>
+                    Can you think of the next Ice Bucket Challenge? Send us your idea and if you win, we'll donate $200
+                    to the youth sports team of your choice. Simple!
+                </p>
+                <p class="text-center">
+                    <a href="/challenges/challenge_challenge" class="btn btn-info btn-cta">
+                        Watch the video <i class="fa fa-arrow-right"></i>
+                    </a>
+                </p>
+            </div>
+        </div>
+    </div>
     <div id="challenges-cta">
         <div class="row">
-            <div class="hidden-xs col-sm-4 col-sm-offset-1">
-                <h1><span class="text-primary">Spudder</span> makes fundraising simple</h1>
-                <p>Create amazing challenges and engage your friends, family and fans to donate funds for your club.</p>
-            </div>
-            <div class="col-xs-10 col-xs-offset-1 col-sm-4 col-sm-offset-1">
+            <div class="col-xs-10 col-xs-offset-1 col-xs-push-0 col-sm-4 col-sm-offset-1 col-sm-push-6">
                 <h2>The next Ice Bucket challenge can be yours!</h2>
                 <div class="row">
                     <div class="col-sm-9">
@@ -41,6 +60,10 @@
                         </a>
                     </div>
                 </div>
+            </div>
+            <div class="col-xs-10 col-xs-offset-1 col-xs-pull-0 col-sm-4 col-sm-offset-1 col-sm-pull-5">
+                <h1><span class="text-primary">Spudder</span> makes fundraising simple</h1>
+                <p>Create amazing challenges and engage your friends, family and fans to donate funds for your club.</p>
             </div>
         </div>
     </div>
