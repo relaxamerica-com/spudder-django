@@ -1,7 +1,9 @@
 from django import forms
 from django.contrib.auth.models import User
-from spudderdomain.controllers import SocialController
-from spudmart.CERN.models import STATES
+from spudderadmin.templatetags.featuretags import feature_is_enabled
+from spudderdomain.controllers import SocialController, RoleController, EntityController
+from spudderdomain.models import Club, TeamPage
+from spudmart.CERN.models import STATES, SORTED_STATES
 from spudderspuds.forms import FanSigninForm
 
 
@@ -49,6 +51,12 @@ class ChallengeConfigureForm(forms.Form):
 
 
 class ChallengesRegisterForm(forms.Form):
+    ACCOUNT_TYPE_CHOICES = (
+        (RoleController.ENTITY_FAN, 'I\'m a sports fan'),
+        (EntityController.ENTITY_CLUB, 'I\'m a team administrator'),
+    )
+
+    account_type = forms.ChoiceField(choices=ACCOUNT_TYPE_CHOICES, initial=RoleController.ENTITY_FAN)
     username = forms.CharField(
         max_length=255,
         label="Choose a username",
@@ -67,6 +75,12 @@ class ChallengesRegisterForm(forms.Form):
         label="Your email address",
         widget=forms.TextInput(attrs={'addon_before': '<i class="fa fa-fw fa-envelope"></i>'}))
     next = forms.CharField(max_length=256, required=False, widget=forms.HiddenInput)
+
+    def __init__(self, *args, **kwargs):
+        super(ChallengesRegisterForm, self).__init__(*args, **kwargs)
+        if not feature_is_enabled('challenge_register_club'):
+            print self.fields['account_type'].widget
+            self.fields['account_type'].widget.is_hidden = True
 
     def clean_email_address(self):
         email_address = super(ChallengesRegisterForm, self).clean().get('email_address', '').lower()
@@ -115,3 +129,35 @@ class UploadImageForm(forms.Form):
         label="Upload photo",
         help_text="Here is your chance to upload a photo of you doing the challenge.",
         required=True)
+
+
+class RegisterCreateClubForm(forms.Form):
+    name = forms.CharField(max_length=255)
+    at_name = forms.CharField(max_length=255)
+    sport = forms.CharField(max_length=255)
+    description = forms.CharField(
+        max_length=2000, required=False,
+        help_text="Say something about your club!",
+        widget=forms.Textarea(attrs={'placeholder': 'Club description'})
+    )
+    state = forms.ChoiceField(
+        choices=[('', 'Select a state...')] + sorted([(k, v) for k, v in SORTED_STATES.items()], key=lambda x: x[1]),
+        label="State <span class=\"input-required\">*required</span>")
+    address = forms.CharField(
+        max_length=255, required=True,
+        label="Address <span class='input-required'>*required<span>",
+        help_text="Club main location address",
+        widget=forms.TextInput(attrs={'placeholder': 'Address'})
+    )
+    next = forms.CharField(max_length=256, required=False, widget=forms.HiddenInput)
+
+    def clean_at_name(self):
+        at_name = self.cleaned_data.get('at_name')
+        if at_name:
+            try:
+                TeamPage.objects.get(at_name=at_name)
+            except TeamPage.DoesNotExist:
+                pass
+            else:
+                raise forms.ValidationError("This at_name is already taken by other team")
+        return at_name

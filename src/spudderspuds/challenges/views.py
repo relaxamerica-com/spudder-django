@@ -8,15 +8,18 @@ from django.contrib.auth.models import User
 from google.appengine.api import blobstore, taskqueue
 from spudderaccounts.controllers import NotificationController
 from spudderaccounts.models import Notification
+from spudderkrowdio.models import FanFollowingEntityTag
 from spudderspuds.utils import create_and_activate_fan_role
 from spudmart.CERN.models import STATES
-from spudderdomain.models import Club, TempClub, FanPage, Challenge, ChallengeTemplate, ChallengeParticipation
+from spudderdomain.models import Club, TempClub, FanPage, Challenge, ChallengeTemplate, ChallengeParticipation, \
+    ClubAdministrator, TeamPage, TeamAdministrator, TeamClubAssociation
 from spudmart.upload.forms import UploadForm
 from spudderaccounts.utils import change_current_role
 from spudderaccounts.wrappers import RoleBase, RoleFan
 from spudderdomain.wrappers import EntityBase
 from spudderdomain.controllers import RoleController, EntityController, CommunicationController
-from spudderspuds.challenges.forms import CreateTempClubForm, ChallengeConfigureForm, ChallengesRegisterForm
+from spudderspuds.challenges.forms import CreateTempClubForm, ChallengeConfigureForm, ChallengesRegisterForm, \
+    RegisterCreateClubForm
 from spudderspuds.challenges.forms import ChallengesSigninForm, AcceptChallengeForm, UploadImageForm
 from spudderspuds.challenges.models import TempClubOtherInformation, ChallengeTree, ChallengeServiceConfiguration
 from spudderspuds.challenges.models import ChallengeServiceMessageConfiguration
@@ -124,10 +127,49 @@ def create_register(request):
             fan_page.username = form.cleaned_data.get('username')
             fan_page.save()
             login(request, authenticate(username=username, password=password))
+            if form.cleaned_data.get('account_type') == EntityController.ENTITY_CLUB:
+                return redirect('/challenges/register/team?next=%s' % form.cleaned_data.get('next', '/'))
             return redirect(form.cleaned_data.get('next', '/'))
     return render(
         request,
         'spudderspuds/challenges/pages/register.html',
+        {'form': form})
+
+
+def register_club(request):
+    form = RegisterCreateClubForm(initial=request.GET)
+    if request.method == 'POST':
+        form = RegisterCreateClubForm(data=request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+            name = data.get('name')
+            at_name = data.get('at_name')
+            sport = data.get('sport')
+            description = data.get('description')
+            state = data.get('state')
+            address = data.get('address')
+            club = Club(name=name, address=address, description=description, state=state)
+            club.save()
+            club_admin = ClubAdministrator(club=club, admin=request.user)
+            club_admin.save()
+            team = TeamPage(name=name, at_name=at_name, free_text=description, state=state, sport=sport)
+            team.save()
+            team_admin = TeamAdministrator(
+                entity_type=request.current_role.entity_type,
+                entity_id=request.current_role.entity.id,
+                team_page=team)
+            team_admin.save()
+            tca = TeamClubAssociation(team_page=team, club=club)
+            tca.save()
+            following_tag = FanFollowingEntityTag(
+                fan=request.current_role.entity, tag=at_name,
+                entity_id=request.current_role.entity.id,
+                entity_type=request.current_role.entity_type)
+            following_tag.save()
+            return redirect(form.cleaned_data.get('next', '/'))
+    return render(
+        request,
+        'spudderspuds/challenges/pages/register_create_club.html',
         {'form': form})
 
 
@@ -450,23 +492,25 @@ def send_challenge_emails(request):
         state=ChallengeParticipation.PRE_ACCEPTED_STATE,
         created__gte=unexpired_challenges_dt
     ))
-    exclude_ids = []
-    for challenge_message_config in challenge_message_configs:
-        notify_after = challenge_message_config.notify_after
-        filtered_participations = [p for p in participations
-                                   if (now - p.created).seconds / 60 >= notify_after and p.id not in exclude_ids]
-        exclude_ids.extend(map(lambda p: p.id, filtered_participations))
-        for participation in filtered_participations:
-            extras = {
-                'challenge': participation.challenge,
-                'notify_after': notify_after,
-                'message': challenge_message_config.message
-            }
-            NotificationController.NotifyEntity(
-                participation.participating_entity_id,
-                participation.participating_entity_type,
-                Notification.COMPLETE_CHALLENGE_NOTIFICATION,
-                extras=extras)
+
+    if participations:
+        exclude_ids = []
+        for challenge_message_config in challenge_message_configs:
+            notify_after = challenge_message_config.notify_after
+            filtered_participations = [p for p in participations
+                                       if (now - p.created).seconds / 60 >= notify_after and p.id not in exclude_ids]
+            exclude_ids.extend(map(lambda p: p.id, filtered_participations))
+            for participation in filtered_participations:
+                extras = {
+                    'challenge': participation.challenge,
+                    'notify_after': notify_after,
+                    'message': challenge_message_config.message
+                }
+                NotificationController.NotifyEntity(
+                    participation.participating_entity_id,
+                    participation.participating_entity_type,
+                    Notification.COMPLETE_CHALLENGE_NOTIFICATION,
+                    extras=extras)
 
     queue = taskqueue.Queue('challenges-sendemails')
     queue.purge()

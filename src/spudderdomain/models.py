@@ -250,8 +250,8 @@ class TeamVenueAssociation(models.Model):
 
 class Club(models.Model):
     name = models.CharField(max_length=255)
-    amazon_email = models.CharField(max_length=255)
-    amazon_id = models.CharField(max_length=255)
+    amazon_email = models.CharField(max_length=255, default='', blank=True)
+    amazon_id = models.CharField(max_length=255, default='', blank=True)
     address = models.CharField(max_length=255, default='', blank=True)
     description = models.TextField(blank=True)
     thumbnail = models.ForeignKey(UploadedFile, blank=True, null=True, related_name='club_thumbnail')
@@ -314,6 +314,11 @@ class TempClub(models.Model):
     state = models.CharField(max_length=2)
     email = models.CharField(max_length=255)
     affiliate = models.ForeignKey(Affiliate, blank=True, null=True)
+
+
+class TeamClubAssociation(models.Model):
+    team_page = models.ForeignKey(TeamPage, related_name='team_club_team_page')
+    club = models.ForeignKey(Club, related_name='team_club_club')
 
 
 class ClubRecipient(AmazonRecipient):

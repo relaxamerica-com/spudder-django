@@ -10,6 +10,9 @@ urlpatterns = patterns(
     url(r'register$',
         'create_register'),
 
+    url(r'register/team$',
+        'register_club'),
+
     url(r'create/(?P<template_id>\d+)/(?P<state>\w+)/o/(?P<club_id>\d+)$',
         'create_challenge_set_donation',
         {'club_class': Club}),

@@ -9,6 +9,7 @@ FEATURES = {
         'challenges_landing_page',
         'challenges_only_override'
         'challenge_challenge',
+        'challenge_register_club'
     ],
     'stage': [
         'spud_tagging',
@@ -20,6 +21,7 @@ FEATURES = {
         'challenges_landing_page',
         'challenges_only_override',
         'challenge_challenge',
+        'challenge_register_club'
     ],
     'live': [
         'google_analytics',
