@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
-from spudderdomain.controllers import SocialController, RoleController, EntityController
+from spudderdomain.controllers import SocialController
 from spudmart.CERN.models import STATES
 from spudderspuds.forms import FanSigninForm
 
@@ -49,12 +49,6 @@ class ChallengeConfigureForm(forms.Form):
 
 
 class ChallengesRegisterForm(forms.Form):
-    ACCOUNT_TYPE_CHOICES = (
-        (RoleController.ENTITY_FAN, 'I\'m a sports fan'),
-        (EntityController.ENTITY_CLUB, 'I\'m a team administrator'),
-    )
-
-    account_type = forms.ChoiceField(choices=ChallengesRegisterForm.ACCOUNT_TYPE_CHOICES)
     username = forms.CharField(
         max_length=255,
         label="Choose a username",
@@ -73,10 +67,6 @@ class ChallengesRegisterForm(forms.Form):
         label="Your email address",
         widget=forms.TextInput(attrs={'addon_before': '<i class="fa fa-fw fa-envelope"></i>'}))
     next = forms.CharField(max_length=256, required=False, widget=forms.HiddenInput)
-
-    def __init__(self):
-        # Use feature toggele to decide if the account_type choice is offered (hidden input?)
-        pass
 
     def clean_email_address(self):
         email_address = super(ChallengesRegisterForm, self).clean().get('email_address', '').lower()

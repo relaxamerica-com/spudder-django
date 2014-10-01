@@ -124,21 +124,11 @@ def create_register(request):
             fan_page.username = form.cleaned_data.get('username')
             fan_page.save()
             login(request, authenticate(username=username, password=password))
-            # now switch on the new account type choice if club then pass to register_club with next
             return redirect(form.cleaned_data.get('next', '/'))
     return render(
         request,
         'spudderspuds/challenges/pages/register.html',
         {'form': form})
-
-
-def register_club(request):
-    # render a new form int register_create_club.html
-    # if form is ok then create a club and a team and admins for both that at the current fan
-    # go to the next that was passed in.
-    pass
-
-
 
 
 def create_challenge(request):
@@ -433,6 +423,10 @@ def challenge_accept_beneficiary_set_donation(request, participation_id, state, 
 
 def challenge_challenge(request):
     return render(request, 'spudderspuds/challenges/pages/challenge_challenge.html')
+
+
+def challenge_challenge_accept_beneficiary(request):
+    pass
 
 
 def tick(request):
