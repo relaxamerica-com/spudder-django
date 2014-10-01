@@ -52,7 +52,7 @@ class ChallengesRegisterForm(forms.Form):
     username = forms.CharField(
         max_length=255,
         label="Choose a username",
-        help_text="Letter and numbers only please!",
+        help_text="Letters and numbers only please!",
         widget=forms.TextInput(attrs={'addon_before': '<i class="fa fa-fw fa-user"></i>'}))
     password = forms.CharField(
         max_length=255,
@@ -83,7 +83,7 @@ class ChallengesRegisterForm(forms.Form):
         if not SocialController.AtNameIsUniqueAcrossThePlatform(username):
             raise forms.ValidationError('There is a user already using this username.')
         if not SocialController.AtNameIsValid(username):
-            raise forms.ValidationError('Please use only letter and number in your username.')
+            raise forms.ValidationError('Please use only letters and numbers in your username.')
         return username
         
     def clean(self):
