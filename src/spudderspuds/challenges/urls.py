@@ -4,7 +4,11 @@ from spudderdomain.models import TempClub, Club
 urlpatterns = patterns(
     'spudderspuds.challenges.views',
 
-    url(r'clubs_splash$', 'clubs_splash'),
+    url(r'signin$',
+        'create_signin'),
+
+    url(r'register$',
+        'create_register'),
 
     url(r'create/(?P<template_id>\d+)/(?P<state>\w+)/o/(?P<club_id>\d+)$',
         'create_challenge_set_donation',
@@ -22,12 +26,6 @@ urlpatterns = patterns(
 
     url(r'create/(?P<template_id>\d+)$',
         'create_challenge_choose_club_choose_state'),
-
-    url(r'create/signin$',
-        'create_signin'),
-
-    url(r'create/register$',
-        'create_register'),
 
     url(r'create$',
         'create_challenge'),

@@ -91,10 +91,6 @@ def challenges_splash(request):
     return render(request, 'spudderspuds/challenges/pages/challenges.html', template_data)
 
 
-def clubs_splash(request):
-    return render(request, 'spudderspuds/challenges/pages/splash_clubs.html')
-
-
 def create_signin(request):
     form = ChallengesSigninForm(initial=request.GET)
     if request.method == "POST":
@@ -109,7 +105,7 @@ def create_signin(request):
             return redirect(form.cleaned_data.get('next', '/'))
     return render(
         request,
-        'spudderspuds/challenges/pages/create_signin.html',
+        'spudderspuds/challenges/pages/signin.html',
         {'form': form})
 
 
@@ -128,11 +124,21 @@ def create_register(request):
             fan_page.username = form.cleaned_data.get('username')
             fan_page.save()
             login(request, authenticate(username=username, password=password))
+            # now switch on the new account type choice if club then pass to register_club with next
             return redirect(form.cleaned_data.get('next', '/'))
     return render(
         request,
-        'spudderspuds/challenges/pages/create_register.html',
+        'spudderspuds/challenges/pages/register.html',
         {'form': form})
+
+
+def register_club(request):
+    # render a new form int register_create_club.html
+    # if form is ok then create a club and a team and admins for both that at the current fan
+    # go to the next that was passed in.
+    pass
+
+
 
 
 def create_challenge(request):
