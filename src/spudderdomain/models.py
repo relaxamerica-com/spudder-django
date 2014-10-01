@@ -474,7 +474,8 @@ class ChallengeChallengeParticipation(models.Model):
     recipient_entity_id = models.CharField(max_length=255, null=True, blank=True, default=None)
     recipient_entity_type = models.CharField(max_length=255, null=True, blank=True, default=None)
     youtube_video_id = models.CharField(max_length=255, default='', null=True, blank=True)
-    image = models.ForeignKey(UploadedFile, null=True, default=None, related_name='challenge_participation_image')
+    image = models.ForeignKey(
+        UploadedFile, null=True, default=None, related_name='challenge_challenge_participation_image')
     name = models.CharField(max_length=255, blank=True)
     description = models.CharField(max_length=2056, blank=True)
     created = models.DateTimeField(auto_now_add=True)
