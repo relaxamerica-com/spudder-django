@@ -122,7 +122,7 @@ to settings.py would cause a circular import and break EVERYTHING. (Learned the 
 """
 NOTIFICATIONS = {
     Notification.COMPLETE_CHALLENGE_NOTIFICATION: {
-        'subject': 'Spudder - You have challenge to complete!',
+        'subject': 'Spudder - You have a challenge to complete!',
         'message': ""
     }
 }
