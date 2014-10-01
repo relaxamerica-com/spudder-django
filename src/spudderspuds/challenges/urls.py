@@ -62,10 +62,19 @@ urlpatterns = patterns(
     url(r'(?P<challenge_id>\d+)$',
         'challenge_view'),
 
+    url(r'challenge_challenge/beneficiary/(?P<state>\w+)/clubs/create_club$',
+        'challenge_challenge_accept_beneficiary_create_club'),
+    
+    url(r'challenge_challenge/beneficiary/(?P<state>\w+)/clubs$',
+        'challenge_challenge_accept_beneficiary_load_clubs'),
+
+    url(r'challenge_challenge/beneficiary/(?P<state>\w*)$',
+        'challenge_challenge_accept_beneficiary'),
+
     url(r'challenge_challenge$',
         'challenge_challenge'),
-    
-    url(r'^tick', 
+
+    url(r'^tick',
         'tick'),
     
     url(r'^send_challenge_emails', 

@@ -122,6 +122,7 @@ def create_register(request):
             fan_entity = create_and_activate_fan_role(request, user)
             fan_page = fan_entity.entity
             fan_page.username = form.cleaned_data.get('username')
+            fan_page.state = form.cleaned_data.get('state')
             fan_page.save()
             login(request, authenticate(username=username, password=password))
             return redirect(form.cleaned_data.get('next', '/'))
@@ -425,8 +426,40 @@ def challenge_challenge(request):
     return render(request, 'spudderspuds/challenges/pages/challenge_challenge.html')
 
 
-def challenge_challenge_accept_beneficiary(request):
-    pass
+def challenge_challenge_accept_beneficiary(request, state=None):
+    if not request.current_role or request.current_role.entity_type != RoleController.ENTITY_FAN:
+        return redirect('/challenges/create/register?next=%s&message=challenge_challenge' % request.path)
+    if not state:
+        return redirect(request.path + request.current_role.state)
+    template_data = {
+        'state': state,
+        'clubs': _get_clubs_by_state(state),
+        'states': [{'id': '', 'name': 'Select a state ...'}] + sorted([
+            {'id': k, 'name': v} for k, v in STATES.items()], key=lambda x: x['id'])}
+    return render(request, 'spudderspuds/challenges/pages/challenge_challenge_accept_beneficiary.html', template_data)
+
+
+def challenge_challenge_accept_beneficiary_load_clubs(request, state):
+    template_data = {
+        'state': STATES[state],
+        'clubs': _get_clubs_by_state(state)}
+    return render(request, 'spudderspuds/challenges/components/create_challenge_choose_club.html', template_data)
+
+
+def challenge_challenge_accept_beneficiary_create_club(request, state):
+    form = CreateTempClubForm()
+    if request.method == 'POST':
+        form = CreateTempClubForm(request.POST)
+        if form.is_valid():
+            temp_club = _create_temp_club(form, state)
+            return redirect('/challenge/challenge_challenge/beneficiary/%s/clubs/t/%s' % (state, temp_club.id))
+    template_data = {
+        'form': form,
+        'state': STATES[state]}
+    return render(
+        request,
+        'spudderspuds/challenges/pages/challenge_challenge_accept_beneficiary_create_club.html',
+        template_data)
 
 
 def tick(request):

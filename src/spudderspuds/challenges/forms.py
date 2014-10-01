@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from spudderdomain.controllers import SocialController
-from spudmart.CERN.models import STATES
+from spudmart.CERN.models import STATES, SORTED_STATES
 from spudderspuds.forms import FanSigninForm
 
 
@@ -66,6 +66,9 @@ class ChallengesRegisterForm(forms.Form):
     email_address = forms.EmailField(
         label="Your email address",
         widget=forms.TextInput(attrs={'addon_before': '<i class="fa fa-fw fa-envelope"></i>'}))
+    state = forms.ChoiceField(
+        choices=[('', 'Select a state...')] + sorted([(k, v) for k, v in SORTED_STATES.items()], key=lambda x: x[1]),
+        label="Where do you live?")
     next = forms.CharField(max_length=256, required=False, widget=forms.HiddenInput)
 
     def clean_email_address(self):
