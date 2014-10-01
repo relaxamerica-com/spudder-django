@@ -493,7 +493,7 @@ def challenge_challenge_accept_beneficiary_create_club(request, state):
         form = CreateTempClubForm(request.POST)
         if form.is_valid():
             temp_club = _create_temp_club(form, state)
-            return redirect('/challenge/challenge_challenge/beneficiary/%s/clubs/t/%s' % (state, temp_club.id))
+            return redirect('/challenges/challenge_challenge/beneficiary/%s/clubs/t/%s' % (state, temp_club.id))
     template_data = {
         'form': form,
         'state': STATES[state]}
