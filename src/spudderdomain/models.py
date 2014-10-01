@@ -456,3 +456,21 @@ class ChallengeParticipation(models.Model):
     def as_json(self):
         return json.dumps(self.as_dict())
 
+
+class ChallengeChallengeParticipation(models.Model):
+    STATE_PRE_COMPLETE = '01'
+    STATE_COMPLETE = '02'
+
+    STATES = (STATE_PRE_COMPLETE, STATE_COMPLETE)
+
+    state = models.CharField(max_length=2, default=STATE_PRE_COMPLETE)
+    participating_entity_id = models.CharField(max_length=255)
+    participating_entity_type = models.CharField(max_length=255)
+    recipient_entity_id = models.CharField(max_length=255, null=True, blank=True, default=None)
+    recipient_entity_type = models.CharField(max_length=255, null=True, blank=True, default=None)
+    youtube_video_id = models.CharField(max_length=255, default='', null=True, blank=True)
+    image = models.ForeignKey(UploadedFile, null=True, default=None, related_name='challenge_participation_image')
+    name = models.CharField(max_length=255, blank=True)
+    description = models.CharField(max_length=2056, blank=True)
+    created = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)

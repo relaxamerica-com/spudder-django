@@ -1,0 +1,60 @@
+{% extends 'spudderspuds/challenges/pages/challenge_accept_upload.html' %}
+{% load spudderspudstags %}
+{% load bootstrap3 %}
+
+{% block masterhead_title %}
+    <h4 class="navbar-text navbar-right hidden-xs"><span class="text-primary">Accept Challenge:</span> The Challenge Challenge</h4>
+{% endblock %}
+
+{% block body_id %}challenge-accept-upload{% endblock %}
+
+{% block body_class %}challenges{% endblock %}
+
+{% block title %}Challenge Challenge - Accept - Upload{% endblock %}
+
+{% block on_upload_complete %}
+    function on_upload_complete(){
+        $('#youtube-video-id').val($('body').data('video_id'));
+        $('#upload-form').unbind();
+        $('#upload-form').addClass('ajax-form');
+        $('#upload-form').submit();
+    }
+{% endblock %}
+
+{% block well_content %}
+    <div class="page-header">
+        <h1>
+            {% include 'spudderspuds/challenges/components/wizard_steps.html' with step="1" of="2" title="Accept Challenge" %}
+            Create a challenge!
+        </h1>
+        <p><small>Tell us about the challenge you have invented!</small></p>
+    </div>
+
+    <form method="post" action="{{ upload_url }}" id="upload-form">
+
+        {% csrf_token %}
+        {% bootstrap_form form %}
+
+        <div class="form-group">
+            <label>Upload a video of you doing the challenge to YouTube <small>(optional)</small></label>
+            <div class="pre-sign-in">
+                <p class="help-block">Once you click the button bellow, you will be asked to sign into your YouTube (Google) account, then you will be able to upload your video.</p>
+                <a id="signinButton" class="btn btn-danger">
+                    <i class="fa fa-youtube"></i> Signin to YouTube
+                </a>
+            </div>
+            <div class="post-sign-in">
+                <input id="file" type="file" class="form-control" />
+            </div>
+            <p class="help-block">You will increase you chances of winning if you upload a video!</p>
+        </div>
+
+        {% buttons %}
+            <button class="btn btn-primary btn-cta" type="submit">
+                <i class="fa fa-check"></i> Submit my challenge!
+            </button>
+        {% endbuttons %}
+
+    </form>
+
+{% endblock %}

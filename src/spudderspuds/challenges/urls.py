@@ -1,4 +1,5 @@
 from django.conf.urls.defaults import *
+from spudderdomain.controllers import EntityController
 from spudderdomain.models import TempClub, Club
 
 urlpatterns = patterns(
@@ -30,7 +31,7 @@ urlpatterns = patterns(
     url(r'create$',
         'create_challenge'),
 
-    url(r'c(?P<participation_id>\d+)/beneficiary/(?P<state>\w+)/o/(?P<club_id>\d+)$',
+    url(r'(?P<participation_id>\d+)/beneficiary/(?P<state>\w+)/o/(?P<club_id>\d+)$',
         'challenge_accept_beneficiary_set_donation',
         {'club_class': Club}),
 
@@ -47,6 +48,29 @@ urlpatterns = patterns(
     url(r'(?P<participation_id>\d+)/state$',
         'challenge_accept_state'),
 
+    url(r'challenge_challenge/(?P<participation_id>\d+)/upload$',
+        'challenge_challenge_accept_notice'),
+
+    url(r'challenge_challenge/beneficiary/(?P<state>\w+)/clubs/o/(?P<club_id>\d+)$',
+        'challenge_challenge_accept_notice',
+        {'club_entity_type': EntityController.ENTITY_CLUB}),
+
+    url(r'challenge_challenge/beneficiary/(?P<state>\w+)/clubs/t/(?P<club_id>\d+)$',
+        'challenge_challenge_accept_notice',
+        {'club_entity_type': EntityController.ENTITY_TEMP_CLUB}),
+
+    url(r'challenge_challenge/beneficiary/(?P<state>\w+)/clubs/create_club$',
+        'challenge_challenge_accept_beneficiary_create_club'),
+    
+    url(r'challenge_challenge/beneficiary/(?P<state>\w+)/clubs$',
+        'challenge_challenge_accept_beneficiary_load_clubs'),
+
+    url(r'challenge_challenge/beneficiary/(?P<state>\w*)$',
+        'challenge_challenge_accept_beneficiary'),
+
+    url(r'challenge_challenge$',
+        'challenge_challenge'),
+
     url(r'(?P<challenge_id>\d+)/accept/notice$',
         'challenge_accept_notice'),
 
@@ -61,18 +85,6 @@ urlpatterns = patterns(
 
     url(r'(?P<challenge_id>\d+)$',
         'challenge_view'),
-
-    url(r'challenge_challenge/beneficiary/(?P<state>\w+)/clubs/create_club$',
-        'challenge_challenge_accept_beneficiary_create_club'),
-    
-    url(r'challenge_challenge/beneficiary/(?P<state>\w+)/clubs$',
-        'challenge_challenge_accept_beneficiary_load_clubs'),
-
-    url(r'challenge_challenge/beneficiary/(?P<state>\w*)$',
-        'challenge_challenge_accept_beneficiary'),
-
-    url(r'challenge_challenge$',
-        'challenge_challenge'),
 
     url(r'^tick',
         'tick'),

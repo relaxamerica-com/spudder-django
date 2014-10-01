@@ -36,11 +36,11 @@ class ChallengeConfigureForm(forms.Form):
     donation_with_challenge = forms.IntegerField(
         label="Suggested donation when accepting challenge",
         help_text="The suggested donation each person will be asked for when they accept this challenge.",
-        widget=forms.TextInput(attrs={'addon_before': '$', 'addon_after': '.00', 'placeholder': '$\'s'}))
+        widget=forms.TextInput(attrs={'addon_before': '$', 'addon_after': '.00'}))
     donation_without_challenge = forms.IntegerField(
         label="Suggested donation when declining challenge",
         help_text="The suggested donation each person will be asked for if they decline this challenge.",
-        widget=forms.TextInput(attrs={'addon_before': '$', 'addon_after': '.00', 'placeholder': '$\'s'}))
+        widget=forms.TextInput(attrs={'addon_before': '$', 'addon_after': '.00'}))
     file = forms.FileField(
         label="Upload an image",
         help_text="Here is your chance to upload an image associated with your team, something that your fans will "
@@ -118,3 +118,21 @@ class UploadImageForm(forms.Form):
         label="Upload photo",
         help_text="Here is your chance to upload a photo of you doing the challenge.",
         required=True)
+
+
+class ChallengeChallengeParticipationForm(forms.Form):
+    youtube_video_id = forms.CharField(
+        max_length=256,
+        required=False,
+        widget=forms.HiddenInput(attrs={'id': 'youtube-video-id'}))
+    challenge_name = forms.CharField(
+        max_length=255,
+        help_text="Give your challenge a name!",
+        widget=forms.TextInput(attrs={'addon_before': '<i class="fa fa-pencil"></i>'}))
+    challenge_description = forms.CharField(
+        max_length=2056,
+        widget=forms.Textarea)
+    file = forms.FileField(
+        label="Upload photo of your challenge <small>(optional)</small>",
+        help_text="You will increase you chances of winning if you upload a photo!",
+        required=False)

@@ -11,6 +11,7 @@ from spudderaccounts.models import Notification
 from spudderspuds.utils import create_and_activate_fan_role
 from spudmart.CERN.models import STATES
 from spudderdomain.models import Club, TempClub, FanPage, Challenge, ChallengeTemplate, ChallengeParticipation
+from spudderdomain.models import ChallengeChallengeParticipation
 from spudmart.upload.forms import UploadForm
 from spudderaccounts.utils import change_current_role
 from spudderaccounts.wrappers import RoleBase, RoleFan
@@ -18,6 +19,7 @@ from spudderdomain.wrappers import EntityBase
 from spudderdomain.controllers import RoleController, EntityController, CommunicationController
 from spudderspuds.challenges.forms import CreateTempClubForm, ChallengeConfigureForm, ChallengesRegisterForm
 from spudderspuds.challenges.forms import ChallengesSigninForm, AcceptChallengeForm, UploadImageForm
+from spudderspuds.challenges.forms import ChallengeChallengeParticipationForm
 from spudderspuds.challenges.models import TempClubOtherInformation, ChallengeTree, ChallengeServiceConfiguration
 from spudderspuds.challenges.models import ChallengeServiceMessageConfiguration
 
@@ -460,6 +462,34 @@ def challenge_challenge_accept_beneficiary_create_club(request, state):
         request,
         'spudderspuds/challenges/pages/challenge_challenge_accept_beneficiary_create_club.html',
         template_data)
+
+
+def challenge_challenge_accept_notice(request, state=None, club_entity_type=None, club_id=None, participation_id=None):
+    if state and club_entity_type and club_id:
+        ccp = ChallengeChallengeParticipation(
+            participating_entity_id=request.current_role.entity.id,
+            participating_entity_type=request.current_role.entity_type,
+            recipient_entity_id=club_id,
+            recipient_entity_type=club_entity_type)
+        ccp.save()
+        return redirect('/challenges/challenge_challenge/%s/upload' % ccp.id)
+    participation = get_object_or_404(ChallengeChallengeParticipation, id=participation_id)
+    form = ChallengeChallengeParticipationForm()
+    if request.method == 'POST':
+        form = ChallengeChallengeParticipationForm(request.POST)
+        if form.is_valid():
+            participation.youtube_video_id = form.cleaned_data.get('youtube_video_id')
+            participation.name = form.cleaned_data.get('challenge_name')
+            participation.description = form.cleaned_data.get('challenge_description')
+            if request.FILES:
+                file = UploadForm(request.POST, request.FILES).save()
+                participation.image = file
+            participation.save()
+            return redirect('/challenges/challenge_challenge/thanks')
+    template_data = {
+        'form': form,
+        'upload_url': blobstore.create_upload_url('/challenges/challenge_challenge/%s/upload' % participation_id)}
+    return render(request, 'spudderspuds/challenges/pages/challenge_challenge_accept_upload.html', template_data)
 
 
 def tick(request):
