@@ -1,7 +1,6 @@
 import json
 from datetime import datetime, timedelta
 from django.contrib.auth import authenticate, login
-from google.appengine.api import blobstore
 from django.http import HttpResponse, Http404
 from django.shortcuts import redirect, render, get_object_or_404
 from django.contrib.auth.models import User
@@ -11,7 +10,8 @@ from spudderaccounts.models import Notification
 from spudderkrowdio.models import FanFollowingEntityTag
 from spudderspuds.utils import create_and_activate_fan_role
 from spudmart.CERN.models import STATES
-from spudderdomain.models import Club, TempClub, FanPage, Challenge, ChallengeTemplate, ChallengeParticipation
+from spudderdomain.models import Club, TempClub, FanPage, Challenge, ChallengeTemplate, ChallengeParticipation, \
+    ClubAdministrator, TeamPage, TeamAdministrator, TeamClubAssociation
 from spudderdomain.models import ChallengeChallengeParticipation
 from spudmart.upload.forms import UploadForm
 from spudderaccounts.utils import change_current_role

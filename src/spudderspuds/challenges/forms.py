@@ -2,8 +2,8 @@ from django import forms
 from django.contrib.auth.models import User
 from spudderadmin.templatetags.featuretags import feature_is_enabled
 from spudderdomain.controllers import SocialController, RoleController, EntityController
-from spudderdomain.models import Club, TeamPage
-from spudmart.CERN.models import STATES, SORTED_STATES
+from spudderdomain.models import TeamPage
+from spudmart.CERN.models import SORTED_STATES
 from spudderspuds.forms import FanSigninForm
 
 
