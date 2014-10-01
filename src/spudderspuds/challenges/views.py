@@ -200,7 +200,7 @@ def create_challenge_choose_club(request, template_id, state):
         'clubs': _get_clubs_by_state(state)}
     return render(
         request,
-        'spudderspuds/challenges/pages/create_challenge_choose_club.html',
+        'spudderspuds/challenges/components/create_challenge_choose_club.html',
         template_data)
 
 
