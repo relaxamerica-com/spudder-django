@@ -7,6 +7,7 @@
     <meta property="og:description" content="{{ challenge.description }}" />
     {% if challenge.youtube_video_id %}
         <meta property="og:image" content="http://img.youtube.com/vi/{{ challenge.youtube_video_id }}/sddefault.jpg" />
+        <meta property="og:video" content="https://youtube.googleapis.com/v/qw3zIp5us2U" />
     {% else %}
         <meta property="og:image" content="http://{{ request.META.HTTP_HOST }}/static/img/spudderspuds/button-spuds-medium.png" />
     {% endif %}
