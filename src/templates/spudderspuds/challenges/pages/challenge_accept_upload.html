@@ -152,6 +152,9 @@
                     resumableUpload({url: jqXHR.getResponseHeader('Location'), file: file, start: 0 });
                 });
             }
+            else {
+                on_upload_complete();
+            }
         }
 
         function resumableUpload(options) {
@@ -218,11 +221,17 @@
                     }, waitForNextPoll);
                 }
                 else {
-                    var conector = ('{{ redirect_url }}'.indexOf('?') > -1 ? "&" : "?");
-                    window.location = '{{ redirect_url }}' + conector + 'video_id=' + $('body').data("video_id");
+                    on_upload_complete();
                 }
             });
         }
+
+        {% block on_upload_complete %}
+            function on_upload_complete(){
+                var conector = ('{{ redirect_url }}'.indexOf('?') > -1 ? "&" : "?");
+                window.location = '{{ redirect_url }}' + conector + 'video_id=' + $('body').data("video_id");
+            }
+        {% endblock %}
 
         $(function () {
             $('.nav-tabs a').click(function (e) {

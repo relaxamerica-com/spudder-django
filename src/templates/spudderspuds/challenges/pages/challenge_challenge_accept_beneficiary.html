@@ -1,0 +1,78 @@
+{% extends 'spudderspuds/base_single_well.html' %}
+
+{% block js %}
+    {{ block.super }}
+    <script type="text/javascript" language="javascript">
+
+        function load_clubs($select) {
+            var selected_state = $select.find('option:selected').val();
+            var $clubs_container = $('#clubs-container');
+            var original_html = $clubs_container.data('original_html');
+            if (original_html == null)
+                original_html = $clubs_container.html();
+            $clubs_container.data('original_html', original_html);
+            $clubs_container.css('position', 'relative');
+            $clubs_container.append(
+                    '<div class="overlay" style="background-color:rgba(255,255,255,.5)">' +
+                        '<div class="inner">' +
+                            '<p style="padding-top:10%; color:#000;">' +
+                                '<i class="fa fa-spin fa-spinner"></i>' +
+                            '</p>' +
+                        '</div>' +
+                    '</div>');
+            if (selected_state != '')
+                $clubs_container.load('/challenges/challenge_challenge/beneficiary/' + selected_state + '/clubs');
+            else
+                $clubs_container.html(original_html);
+        }
+
+        $(function(){
+            var $select = $('#select-state');
+            var state = '{{ request.current_role.state }}';
+
+            $select.val(state);
+            load_clubs($select);
+
+            $select.on('change', function(){
+                var $select = $(this);
+                load_clubs($select);
+            })
+        });
+    </script>
+{% endblock %}
+
+{% block masterhead_title %}
+    <h4 class="navbar-text navbar-right hidden-xs"><span class="text-primary">Accept Challenge:</span> The Challenge Challenge</h4>
+{% endblock %}
+
+{% block body_id %}challenges-choose-club{% endblock %}
+
+{% block body_class %}challenges{% endblock %}
+
+{% block title %}Challenges - Challenge - Choose Team{% endblock %}
+
+{% block well_content %}
+    <div class="page-header">
+        <h1>
+            {% include 'spudderspuds/challenges/components/wizard_steps.html' with step="1" of="2" title="Accept Challenge" %}
+            Who gets the money?
+        </h1>
+        <p><small>If your challenge is chosen, who gets the money?</small></p>
+    </div>
+
+    <div class="form-group">
+        <select class="form-control" id="select-state">
+            {% for s in states %}
+                <option value="{{ s.id }}">{{ s.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div id="clubs-container">
+        <h2 style="margin-top: 40px;">
+            <i class="fa fa-hand-o-up text-primary"></i> First choose a state<br/>
+            <small>Choose the state where the team you want to receive the money is based.</small>
+        </h2>
+
+    </div>
+{% endblock %}

@@ -12,6 +12,18 @@
 {% block body_class %}challenges {{ template.slug }}{% endblock %}
 
 {% block well_content %}
+
+    {% if request.GET.message == "challenge_challenge" %}
+        <div class="page-header">
+            <h1>
+                {% include 'spudderspuds/challenges/components/wizard_steps.html' with title="Accept Challenge" step="<i class='fa fa-trophy'></i>" %}
+                Register to accept this challenge
+            </h1>
+            <p><small>Create an account and except this challenge!</small></p>
+        </div>
+    {% endif %}
+
+    {% if not request.GET.message %}
     <div class="page-header">
         <h1>
             {% include 'spudderspuds/challenges/components/wizard_steps.html' with title="Start Fundraising" step="$" %}
@@ -19,8 +31,9 @@
         </h1>
         <p><small>Once you create an account, you'll be able to create challenges and raise money for your team!</small></p>
     </div>
+    {% endif %}
 
-    <p>Already have an account? <a href="/challenges/signin?next={{ request.GET.next|default:'/' }}">sign in <i class="fa fa-arrow-right"></i> </a></p>
+    <p>Already have an account? <a href="/challenges/signin?next={{ request.GET.next|default:'/' }}&message={{ request.GET.message|default:'' }}">sign in <i class="fa fa-arrow-right"></i> </a></p>
 
     <hr/>
 

@@ -11,8 +11,8 @@ from spudderaccounts.models import Notification
 from spudderkrowdio.models import FanFollowingEntityTag
 from spudderspuds.utils import create_and_activate_fan_role
 from spudmart.CERN.models import STATES
-from spudderdomain.models import Club, TempClub, FanPage, Challenge, ChallengeTemplate, ChallengeParticipation, \
-    ClubAdministrator, TeamPage, TeamAdministrator, TeamClubAssociation
+from spudderdomain.models import Club, TempClub, FanPage, Challenge, ChallengeTemplate, ChallengeParticipation
+from spudderdomain.models import ChallengeChallengeParticipation
 from spudmart.upload.forms import UploadForm
 from spudderaccounts.utils import change_current_role
 from spudderaccounts.wrappers import RoleBase, RoleFan
@@ -21,6 +21,7 @@ from spudderdomain.controllers import RoleController, EntityController, Communic
 from spudderspuds.challenges.forms import CreateTempClubForm, ChallengeConfigureForm, ChallengesRegisterForm, \
     RegisterCreateClubForm
 from spudderspuds.challenges.forms import ChallengesSigninForm, AcceptChallengeForm, UploadImageForm
+from spudderspuds.challenges.forms import ChallengeChallengeParticipationForm
 from spudderspuds.challenges.models import TempClubOtherInformation, ChallengeTree, ChallengeServiceConfiguration
 from spudderspuds.challenges.models import ChallengeServiceMessageConfiguration
 
@@ -125,6 +126,7 @@ def create_register(request):
             fan_entity = create_and_activate_fan_role(request, user)
             fan_page = fan_entity.entity
             fan_page.username = form.cleaned_data.get('username')
+            fan_page.state = form.cleaned_data.get('state')
             fan_page.save()
             login(request, authenticate(username=username, password=password))
             if form.cleaned_data.get('account_type') == EntityController.ENTITY_CLUB:
@@ -467,8 +469,68 @@ def challenge_challenge(request):
     return render(request, 'spudderspuds/challenges/pages/challenge_challenge.html')
 
 
-def challenge_challenge_accept_beneficiary(request):
-    pass
+def challenge_challenge_accept_beneficiary(request, state=None):
+    if not request.current_role or request.current_role.entity_type != RoleController.ENTITY_FAN:
+        return redirect('/challenges/create/register?next=%s&message=challenge_challenge' % request.path)
+    if not state:
+        return redirect(request.path + request.current_role.state)
+    template_data = {
+        'state': state,
+        'clubs': _get_clubs_by_state(state),
+        'states': [{'id': '', 'name': 'Select a state ...'}] + sorted([
+            {'id': k, 'name': v} for k, v in STATES.items()], key=lambda x: x['id'])}
+    return render(request, 'spudderspuds/challenges/pages/challenge_challenge_accept_beneficiary.html', template_data)
+
+
+def challenge_challenge_accept_beneficiary_load_clubs(request, state):
+    template_data = {
+        'state': STATES[state],
+        'clubs': _get_clubs_by_state(state)}
+    return render(request, 'spudderspuds/challenges/components/create_challenge_choose_club.html', template_data)
+
+
+def challenge_challenge_accept_beneficiary_create_club(request, state):
+    form = CreateTempClubForm()
+    if request.method == 'POST':
+        form = CreateTempClubForm(request.POST)
+        if form.is_valid():
+            temp_club = _create_temp_club(form, state)
+            return redirect('/challenge/challenge_challenge/beneficiary/%s/clubs/t/%s' % (state, temp_club.id))
+    template_data = {
+        'form': form,
+        'state': STATES[state]}
+    return render(
+        request,
+        'spudderspuds/challenges/pages/challenge_challenge_accept_beneficiary_create_club.html',
+        template_data)
+
+
+def challenge_challenge_accept_notice(request, state=None, club_entity_type=None, club_id=None, participation_id=None):
+    if state and club_entity_type and club_id:
+        ccp = ChallengeChallengeParticipation(
+            participating_entity_id=request.current_role.entity.id,
+            participating_entity_type=request.current_role.entity_type,
+            recipient_entity_id=club_id,
+            recipient_entity_type=club_entity_type)
+        ccp.save()
+        return redirect('/challenges/challenge_challenge/%s/upload' % ccp.id)
+    participation = get_object_or_404(ChallengeChallengeParticipation, id=participation_id)
+    form = ChallengeChallengeParticipationForm()
+    if request.method == 'POST':
+        form = ChallengeChallengeParticipationForm(request.POST)
+        if form.is_valid():
+            participation.youtube_video_id = form.cleaned_data.get('youtube_video_id')
+            participation.name = form.cleaned_data.get('challenge_name')
+            participation.description = form.cleaned_data.get('challenge_description')
+            if request.FILES:
+                file = UploadForm(request.POST, request.FILES).save()
+                participation.image = file
+            participation.save()
+            return redirect('/challenges/challenge_challenge/thanks')
+    template_data = {
+        'form': form,
+        'upload_url': blobstore.create_upload_url('/challenges/challenge_challenge/%s/upload' % participation_id)}
+    return render(request, 'spudderspuds/challenges/pages/challenge_challenge_accept_upload.html', template_data)
 
 
 def tick(request):

@@ -20,7 +20,7 @@
 
 {% block body_class %}challenges {{ template.slug }}{% endblock %}
 
-{% block title %}Challenges - View{% endblock %}
+{% block title %}Challenges - View - The Challenge Challenge{% endblock %}
 
 {% block body %}
 
@@ -52,7 +52,7 @@
                     <div class="action-buttons">
                         <div class="row">
                             <div class="col-md-4">
-                                <a href="JavaScript:alert('in development');" class="btn btn-primary btn-block btn-cta">
+                                <a href="/challenges/challenge_challenge/beneficiary/{{ request.current_role.state }}" class="btn btn-primary btn-block btn-cta">
                                     ACCEPT!
                                 </a>
                             </div>
