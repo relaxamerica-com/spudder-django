@@ -14,10 +14,6 @@ from spudderspuds.forms import FanSigninForm
 handler404 = 'django.views.defaults.page_not_found'
 handler500 = 'djangotoolbox.errorviews.server_error'
 
-if feature_is_enabled('logentries_logging'):
-    logentries.init('fe9682cd-b7db-4d3d-8c09-b435e3534aeb', 'SpudderLive/event.log')
-
-
 def temp_redirect_view(request):
     """
     Redirects the root to info.spudder.com and handles any funky sub-domains
