@@ -54,6 +54,8 @@ class EntityBase(object):
             return EntityTeam
         elif entity_key == EntityController.ENTITY_VENUE:
             return EntityVenue
+        elif entity_key == EntityController.ENTITY_CLUB:
+            return EntityClub
         elif entity_key == EntityController.ENTITY_TEMP_CLUB:
             return EntityTempClub
         elif entity_key == EntityController.ENTITY_AFFILIATE:

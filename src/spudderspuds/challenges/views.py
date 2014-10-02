@@ -9,6 +9,7 @@ from spudderaccounts.controllers import NotificationController
 from spudderaccounts.models import Notification
 from spudderadmin.templatetags.featuretags import feature_is_enabled
 from spudderkrowdio.models import FanFollowingEntityTag
+from spudderkrowdio.utils import start_following
 from spudderspuds.utils import create_and_activate_fan_role
 from spudmart.CERN.models import STATES
 from spudderdomain.models import Club, TempClub, FanPage, Challenge, ChallengeTemplate, ChallengeParticipation, \
@@ -166,10 +167,12 @@ def register_club(request):
             tca = TeamClubAssociation(team_page=team, club=club)
             tca.save()
             following_tag = FanFollowingEntityTag(
-                fan=request.current_role.entity, tag=at_name,
-                entity_id=request.current_role.entity.id,
-                entity_type=request.current_role.entity_type)
+                fan=request.current_role.entity,
+                tag=at_name,
+                entity_id=team.id,
+                entity_type=EntityController.ENTITY_TEAM)
             following_tag.save()
+            start_following(request.current_role, EntityController.ENTITY_TEAM, team.id)
             return redirect(form.cleaned_data.get('next', '/'))
     return render(
         request,

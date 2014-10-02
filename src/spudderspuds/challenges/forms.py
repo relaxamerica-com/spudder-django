@@ -56,7 +56,7 @@ class ChallengesRegisterForm(forms.Form):
         (EntityController.ENTITY_CLUB, 'I\'m a team administrator'),
     )
 
-    account_type = forms.ChoiceField(choices=ACCOUNT_TYPE_CHOICES, initial=RoleController.ENTITY_FAN)
+    account_type = forms.CharField(widget=forms.HiddenInput, initial=RoleController.ENTITY_FAN)
     username = forms.CharField(
         max_length=255,
         label="Choose a username",
@@ -81,9 +81,9 @@ class ChallengesRegisterForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super(ChallengesRegisterForm, self).__init__(*args, **kwargs)
-        if not feature_is_enabled('challenge_register_club'):
-            print self.fields['account_type'].widget
-            self.fields['account_type'].widget.is_hidden = True
+        if feature_is_enabled('challenge_register_club'):
+            self.fields['account_type'] = forms.ChoiceField(choices=self.ACCOUNT_TYPE_CHOICES,
+                                                            initial=RoleController.ENTITY_FAN)
 
     def clean_email_address(self):
         email_address = super(ChallengesRegisterForm, self).clean().get('email_address', '').lower()

@@ -8,7 +8,7 @@ from spudderaccounts.wrappers import RoleBase
 from spudderclubs.decorators import club_admin_required, club_not_fully_activated, club_fully_activated
 from spudderclubs.forms import ClubProfileCreateForm, ClubProfileEditForm
 from spudderdomain.controllers import RoleController
-from spudderdomain.models import ClubRecipient, Club, ClubAdministrator
+from spudderdomain.models import ClubRecipient, Club, ClubAdministrator, TeamClubAssociation, TeamPage
 from spudderspuds.forms import LinkedInSocialMediaForm
 from spudderspuds.utils import set_social_media
 from spudmart.amazon.models import AmazonActionStatus, RecipientVerificationStatus
@@ -200,9 +200,12 @@ def public_page(request, club_id):
     if not club or not club.is_fully_activated or club.is_hidden():
         return HttpResponseRedirect('/club/not_found')
 
+    team_ids = list(TeamClubAssociation.objects.filter(club=club).values_list('team_page', flat=True))
+    teams = TeamPage.objects.filter(id__in=team_ids)
     return render(request, 'spudderclubs/pages/public/view.html', {
         'base_url': 'spudderspuds/base.html',
-        'profile': club
+        'profile': club,
+        'teams': teams
     })
 
 
