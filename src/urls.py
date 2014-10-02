@@ -1,4 +1,4 @@
-import logentries
+from logentries import logentriespushqueue as logentries
 
 from django.conf.urls.defaults import *
 from django.http import HttpResponseRedirect

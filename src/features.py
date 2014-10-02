@@ -9,8 +9,7 @@ FEATURES = {
         'challenges_landing_page',
         'challenges_only_override'
         'challenge_challenge',
-        'challenge_register_club',
-        'logentries_logging',
+        'challenge_register_club'
         # 'challenge_tree',
     ],
     'stage': [
@@ -24,7 +23,7 @@ FEATURES = {
         'challenges_only_override',
         'challenge_challenge',
         'challenge_register_club',
-        'logentries_logging',
+        'logentries_inprocess_logging',
     ],
     'live': [
         'google_analytics',
