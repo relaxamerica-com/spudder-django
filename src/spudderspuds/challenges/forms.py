@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
+from settings import SPORTS
 from spudderadmin.templatetags.featuretags import feature_is_enabled
 from spudderdomain.controllers import SocialController, RoleController, EntityController
 from spudderdomain.models import TeamPage
@@ -135,13 +136,22 @@ class UploadImageForm(forms.Form):
 
 
 class RegisterCreateClubForm(forms.Form):
-    name = forms.CharField(max_length=255)
-    at_name = forms.CharField(max_length=255)
-    sport = forms.CharField(max_length=255)
+    name = forms.CharField(max_length=255, label="The name of your team")
+    at_name = forms.CharField(
+        max_length=255,
+        label="Create a hastag for you team",
+        help_text="""
+hashtags are used throughout Spudder so fans
+can easily find, follow and interact with your team. letters and numbers
+only please""")
+    sport = forms.ChoiceField(
+        choices=[(s, s) for s in SPORTS],
+        label="Choose a sport",
+        help_text="If you team plays more than one sport, just choose one")
     description = forms.CharField(
         max_length=2000, required=False,
-        help_text="Say something about your club!",
-        widget=forms.Textarea(attrs={'placeholder': 'Club description'})
+        help_text="Say something about your team!",
+        widget=forms.Textarea(attrs={'placeholder': 'Team description'})
     )
     state = forms.ChoiceField(
         choices=[('', 'Select a state...')] + sorted([(k, v) for k, v in SORTED_STATES.items()], key=lambda x: x[1]),
@@ -149,7 +159,7 @@ class RegisterCreateClubForm(forms.Form):
     address = forms.CharField(
         max_length=255, required=True,
         label="Address <span class='input-required'>*required<span>",
-        help_text="Club main location address",
+        help_text="Team main location address",
         widget=forms.TextInput(attrs={'placeholder': 'Address'})
     )
     next = forms.CharField(max_length=256, required=False, widget=forms.HiddenInput)
