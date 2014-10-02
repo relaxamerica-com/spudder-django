@@ -145,9 +145,9 @@ hashtags are used throughout Spudder so fans
 can easily find, follow and interact with your team. letters and numbers
 only please""")
     sport = forms.ChoiceField(
-        choices=[(s, s) for s in SPORTS],
+        choices=[('', 'Select a sport...')] + [('%s' % x, SPORTS[x]) for x in range(len(SPORTS))],
         label="Choose a sport",
-        help_text="If you team plays more than one sport, just choose one")
+        help_text="If your team plays more than one sport, just choose one")
     description = forms.CharField(
         max_length=2000, required=False,
         help_text="Say something about your team!",
