@@ -82,8 +82,7 @@ class ChallengesRegisterForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super(ChallengesRegisterForm, self).__init__(*args, **kwargs)
         if not feature_is_enabled('challenge_register_club'):
-            print self.fields['account_type'].widget
-            self.fields['account_type'].widget.is_hidden = True
+            self.fields['account_type'].widget = forms.HiddenInput()
 
     def clean_email_address(self):
         email_address = super(ChallengesRegisterForm, self).clean().get('email_address', '').lower()
