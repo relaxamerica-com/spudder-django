@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 from google.appengine.api import blobstore, taskqueue
 from spudderaccounts.controllers import NotificationController
 from spudderaccounts.models import Notification
+from spudderadmin.templatetags.featuretags import feature_is_enabled
 from spudderkrowdio.models import FanFollowingEntityTag
 from spudderspuds.utils import create_and_activate_fan_role
 from spudmart.CERN.models import STATES
@@ -83,10 +84,11 @@ def _create_challenge(club_class, club_id, form, request, template, parent=None,
         if youtube_video_id:
             challenge.youtube_video_id = youtube_video_id
         challenge.save()
-    if parent is None:
-        ChallengeTree.CreateNewTree(challenge)
-    else:
-        ChallengeTree.AddChallengeToTree(challenge)
+    if feature_is_enabled('challenge_tree'):
+        if parent is None:
+            ChallengeTree.CreateNewTree(challenge)
+        else:
+            ChallengeTree.AddChallengeToTree(challenge)
     return challenge
 
 
@@ -266,18 +268,19 @@ def challenge_share(request, challenge_id):
 def challenge_view(request, challenge_id):
     challenge = get_object_or_404(Challenge, id=challenge_id)
     template = challenge.template
-    challenge_tree = ChallengeTree.GetChallengeTree(challenge).get_tree()
-    challenge_tree_data = challenge_tree.to_dict()
-    beneficiaries_data = challenge_tree.update_beneficiaries_data()
     template_data = {
         'challenge': challenge,
         'template': template,
-        'challenge_tree': json.dumps(challenge_tree_data),
-        'beneficiaries': beneficiaries_data,
         'owner': RoleController.GetRoleForEntityTypeAndID(
             challenge.creator_entity_type,
             challenge.creator_entity_id,
             RoleFan)}
+    if feature_is_enabled('challenge_tree'):
+        challenge_tree = ChallengeTree.GetChallengeTree(challenge).get_tree()
+        challenge_tree_data = challenge_tree.to_dict()
+        beneficiaries_data = challenge_tree.update_beneficiaries_data()
+        template_data['challenge_tree'] = json.dumps(challenge_tree_data)
+        template_data['beneficiaries'] = beneficiaries_data
     return render(request, 'spudderspuds/challenges/pages/challenge_view.html', template_data)
 
 
@@ -324,7 +327,8 @@ def challenge_accept_pledge(request, challenge_id):
             participation.donation_amount = form.cleaned_data.get('donation', 0)
             participation.state = ChallengeParticipation.DONATE_ONLY_STATE
             participation.save()
-            ChallengeTree.AddParticipationToTree(challenge, participation)
+            if feature_is_enabled('challenge_tree'):
+                ChallengeTree.AddParticipationToTree(challenge, participation)
             redirect_url = '/challenges/%s/accept/notice?just_pledged=True' % challenge.id
             return redirect(redirect_url)
     template_data = {

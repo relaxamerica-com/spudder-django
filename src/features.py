@@ -10,6 +10,7 @@ FEATURES = {
         'challenges_only_override'
         'challenge_challenge',
         'challenge_register_club'
+        # 'challenge_tree',
     ],
     'stage': [
         'spud_tagging',
@@ -29,5 +30,6 @@ FEATURES = {
         'spud_tagging'
         'challenges_landing_page',
         'challenges_only_override',  # Prevent access to any other part of spudder
+        'challenge_challenge',
     ]
 }
