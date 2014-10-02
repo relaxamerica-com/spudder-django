@@ -1,17 +1,21 @@
-import urlparse
-from django.views.generic.simple import direct_to_template
+import logentries
+
 from django.conf.urls.defaults import *
 from django.http import HttpResponseRedirect
-from django.shortcuts import render_to_response, render
-from django.template import Template
+from django.shortcuts import render
 from django.views.generic import RedirectView
+
+from django.views.generic.simple import direct_to_template
 from spudderadmin.templatetags.featuretags import feature_is_enabled
-from spudderaffiliates.models import Affiliate
 from spudderdomain.controllers import RoleController, TeamsController, VenuesController, FansController
 from spudderspuds.forms import FanSigninForm
 
+
 handler404 = 'django.views.defaults.page_not_found'
 handler500 = 'djangotoolbox.errorviews.server_error'
+
+if feature_is_enabled('logentries_logging'):
+    logentries.init('fe9682cd-b7db-4d3d-8c09-b435e3534aeb', 'SpudderLive/event.log')
 
 
 def temp_redirect_view(request):
