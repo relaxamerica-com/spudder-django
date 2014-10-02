@@ -73,6 +73,7 @@ def temp_redirect_view(request):
 
 urlpatterns = patterns(
     '',
+    ('/logentriesworker', logentries.LogentriesWorker),
     ('^_ah/warmup$', 'djangoappengine.views.warmup'),
     ('^_ah/start$', 'spudmart.utils.backends.start'),
     # (r'^$', include('spudmart.home.urls')),  NOTE: Commented out by MG 20140617
