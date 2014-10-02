@@ -556,12 +556,22 @@ class CommunicationController(object):
             raise NotImplementedError("Invitation type '%s' not supported" % invitation_type)
 
     @classmethod
+    def _FormatNotificationMessage(cls, message, **kwargs):
+        for key, value in kwargs.iteritems():
+            replace_str = '[%s]' % str(key).upper()
+            replace_with = '\n%s' % value
+            message = message.replace(replace_str, replace_with)
+        return message
+
+    @classmethod
     def _GetNotificationSubjectAndMessage(cls, notification):
         notification_type = notification.notification_type
         if notification_type in Notification.NOTIFICATION_TYPES:
             if notification_type == Notification.COMPLETE_CHALLENGE_NOTIFICATION:
                 subject = NOTIFICATIONS[notification_type]['subject']
                 message = notification.extras.get('message')
+                challenge = notification.extras.get('challenge')
+                message = cls._FormatNotificationMessage(message, **{'link': challenge.accept_challenge_link})
             else:
                 NotImplementedError("Notification type '%s' not implemented" % notification_type)
             return subject, message
