@@ -1,5 +1,6 @@
 import datetime
 import json
+from django.conf import settings
 
 from django.contrib.auth.models import User
 from django.db import models
@@ -407,6 +408,14 @@ class Challenge(models.Model):
 
     def as_json(self):
         return json.dumps(self.as_dict())
+
+    @property
+    def link(self):
+        return "%s/challenges/%s" % (settings.SPUDMART_BASE_URL, self.id)
+
+    @property
+    def accept_challenge_link(self):
+        return "%s/challenges/%s/accept/notice" % (settings.SPUDMART_BASE_URL, self.id)
 
 
 class ChallengeParticipation(models.Model):
