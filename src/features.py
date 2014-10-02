@@ -23,7 +23,6 @@ FEATURES = {
         'challenges_only_override',
         'challenge_challenge',
         'challenge_register_club',
-        'logentries_inprocess_logging',
     ],
     'live': [
         'google_analytics',

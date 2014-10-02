@@ -36,9 +36,6 @@ handlers:
   script: $PYTHON_LIB/google/appengine/ext/admin
   login: admin
 
-- url: /logentriesworker
-  script: logentries.py
-
 - url: /.*
   script: djangoappengine/main/main.py
 
