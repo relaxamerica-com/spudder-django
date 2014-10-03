@@ -765,7 +765,7 @@ def challenges(request):
                 },
                 {
                     'name': "Pie Challenge",
-                    'description': "Challenge you friends family and fans to take a whipped cream pie to the face!!",
+                    'description': "Challenge your friends, family and fans to take a whipped cream pie to the face!!",
                     'slug': 'piechallenge'
                 }
             ]
