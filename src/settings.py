@@ -2,6 +2,7 @@ import os
 import mimetypes
 import socket
 from djangoappengine.settings_base import *
+from spudderadmin.templatetags.featuretags import feature_is_enabled
 from spudmart.utils.app_identity import get_spudmart_app_name
 
 # Activate django-dbindexer for the default database
@@ -155,6 +156,25 @@ shared_settings = {
         'krowdio_client_key': '53fc72a6f1f70e3fc79f0876',
         'google_client_id': '202980743025-44et20vv531h7o80l0onc2eld22ev1ar.apps.googleusercontent.com',
     },
+    'spudmartvadim': {
+        'server_email': 'help@spuder.com',
+        'spudder_application_id': 'RwjN7ubrqVZSXcwd2AWaQtov6Mgsi7hAXZ510xTR',
+        'spudder_rest_api_key': 'aY5jEVPGJadgWcd2gOecgnzMNKDS9Igx8d5DNU04',
+        'spudder_base_url': 'https://spudmartvadim.parseapp.com',
+        'spudmart_base_url': 'https://spudmartvadim.appspot.com',
+        'amazon_login_client_id': 'amzn1.application-oa2-client.4637978bf71a44fdb057225c55e78d12',
+        'linkedin_api_key': '77rm3ugcrdkqk7',
+        'linkedin_secret_key': '7BlAnjhz5FetO09O',
+        'instagram_client_id': '3888eac365f7468dabd5bf9ad06c8930',
+        'instagram_client_secret': 'b1bc01bf1a9944e2834288484f450ab2',
+        'twitter_client_secret': 'lVgYuiP2QBKl0vOOX3swt9ynQheP3zQMUBN6Jcm3I',
+        'twitter_client_id': 'OSwUJxPN7xkwEpVufgp0w',
+        'twitter_access_token': '481249312-aFVuYa0HUCTKV7bc3Xrnk2twNHXwLV6r3uteKwe0',
+        'twitter_access_token_secret': 'hHPebsFws3AcWyDrAvjnxapUJ95JI15NjZ7TwiXgF5f3v',
+        'support_email': 'support@spudder.com',
+        'krowdio_client_key': '53fc72a6f1f70e3fc79f0876',
+
+    },
     'sharp-avatar-587': {  # lukasz@spuder.com
         'server_email': 'lukasz@spuder.com',
         'spudder_application_id': 'QZjpmUJQEwBE6Wc0YfKEMRwv2C5Aeb4qQbopyIg9',
@@ -270,3 +290,33 @@ BOOTSTRAP3 = {
 }
 
 from features import *
+
+
+if feature_is_enabled('email_error_logs'):
+    ADMINS = (
+        ('vad', 'nordsoft4tests@gmail.com'),
+    )
+
+    LOGGING = {
+        'version': 1,
+        'disable_existing_loggers': False,
+        'filters': {
+            # 'require_debug_false': {
+            #     '()': 'django.utils.log.RequireDebugFalse'
+            # }
+        },
+        'handlers': {
+            'mail_admins': {
+                'level': 'ERROR',
+                # 'filters': ['require_debug_false'],
+                'class': 'django.utils.log.AdminEmailHandler'
+            }
+        },
+        'loggers': {
+            'django.request': {
+                'handlers': ['mail_admins'],
+                'level': 'ERROR',
+                'propagate': True,
+            },
+        }
+    }
