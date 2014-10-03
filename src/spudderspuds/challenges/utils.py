@@ -55,7 +55,9 @@ class Tree(object):
             return element.children[element_id]
         else:
             for child_id, child in element.children.items():
-                self._find_element(child, element_id)
+                found_element = self._find_element(child, element_id)
+                if found_element is not  None:
+                    return found_element
         return None
 
     def find_element(self, element_id):
@@ -82,19 +84,24 @@ class ChallengeTreeHelper(Tree):
                 'entity_type': recipient_entity_type,
                 'number_of_challenges': 0,
                 'total_amount_raised': 0,
-                'participants': []
+                'participants': [],
+                'object': None
             }
         self.beneficiaries[recipient_entity_id]['number_of_challenges'] += 1
         for participation in tree_element.participations:
             self.beneficiaries[recipient_entity_id]['total_amount_raised'] += participation['donation_amount']
+            participating_entity_id = str(participation['participating_entity_id'])
             participation_data = {
-                'entity_id': participation['participating_entity_id'],
+                'entity_id': participating_entity_id,
                 'entity_type': participation['participating_entity_type']
             }
-            self.beneficiaries[recipient_entity_id]['participants'].append(participation_data)
-            self._participiants[participation['participating_entity_id']] = participation_data
+            if participation_data not in self.beneficiaries[recipient_entity_id]['participants']:
+                self.beneficiaries[recipient_entity_id]['participants'].append(participation_data)
+            self._participiants[participating_entity_id] = participation_data
 
     def __init__(self, id, children={}, **kwargs):
+        self.beneficiaries = {}
+        self._participiants = {}
         super(ChallengeTreeHelper, self).__init__(id, children, **kwargs)
         self.add_beneficiary(self.root)
 
@@ -111,7 +118,8 @@ class ChallengeTreeHelper(Tree):
                    if data['entity_type'] == RoleController.ENTITY_FAN]
         fans = FanPage.objects.filter(id__in=fan_ids)
         for fan in fans:
-            self._participiants[fan.id]['object'] = fan
+            participating_entity_id = str(fan.id)
+            self._participiants[participating_entity_id]['object'] = fan
 
         # get beneficiaries objects
         # for now clubs and temp clubs only
@@ -120,18 +128,22 @@ class ChallengeTreeHelper(Tree):
         temp_club_ids = [int(entity_id) for entity_id, entity_type in self.beneficiaries.items()
                          if data['entity_type'] == EntityController.ENTITY_TEMP_CLUB]
 
-        clubs = Club.objects.filter(id__in=club_ids)
+        clubs = [c for c in Club.objects.filter(id__in=club_ids)]
+        len(clubs)
         for club in clubs:
             club_id = str(club.id)
-            self.beneficiaries[club_id]['object'] = club
+            self.beneficiaries[club_id]['object'] = club.__dict__
             for participiant_data in self.beneficiaries[club_id]['participants']:
-                participiant_data['object'] = self._participiants[participiant_data['entity_id']]['object']
+                participating_entity_id = str(participiant_data['entity_id'])
+                participiant_data['object'] = self._participiants[participating_entity_id]['object']
 
-        temp_clubs = TempClub.objects.filter(id__in=temp_club_ids)
+        temp_clubs = [tc for tc in TempClub.objects.filter(id__in=temp_club_ids)]
+        len(temp_clubs)
         for temp_club in temp_clubs:
             temp_club_id = str(temp_club.id)
-            self.beneficiaries[temp_club_id]['object'] = temp_club
+            self.beneficiaries[temp_club_id]['object'] = temp_club.__dict__
             for participiant_data in self.beneficiaries[temp_club_id]['participants']:
-                participiant_data['object'] = self._participiants[participiant_data['entity_id']]['object']
+                participating_entity_id = str(participiant_data['entity_id'])
+                participiant_data['object'] = self._participiants[participating_entity_id]['object']
 
         return self.beneficiaries

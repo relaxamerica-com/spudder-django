@@ -11,7 +11,7 @@ FEATURES = {
         'challenge_challenge',
         'challenge_register_club',
         'logentries_logging',
-        # 'challenge_tree',
+        'challenge_tree',
     ],
     'stage': [
         'spud_tagging',
@@ -24,6 +24,7 @@ FEATURES = {
         'challenges_only_override',
         'challenge_challenge',
         'challenge_register_club',
+        'challenge_tree',
         'logentries_logging',
     ],
     'live': [

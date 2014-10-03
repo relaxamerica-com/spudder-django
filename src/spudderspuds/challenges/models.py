@@ -36,7 +36,6 @@ class ChallengeTree(models.Model):
     def AddParticipationToTree(cls, challenge, challenge_participation):
         tree = cls.GetChallengeTree(challenge)  # get the right tree
         tree._add_participation_to_challenge(challenge, challenge_participation)
-        pass
 
     def _add_challenge(self, challenge):
         ctc = _ChallengeTreeChallenge.CreateForChallengeAndTree(challenge=challenge, tree=self)
