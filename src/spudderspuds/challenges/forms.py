@@ -1,3 +1,4 @@
+import re
 from django import forms
 from django.contrib.auth.models import User
 from settings import SPORTS
@@ -167,12 +168,16 @@ only please""")
     def clean_at_name(self):
         at_name = self.cleaned_data.get('at_name')
         if at_name:
+            if not re.match("^[a-zA-Z0-9]*$", at_name):
+                raise forms.ValidationError('Only letters and numbers are allowed.')
+
             try:
                 TeamPage.objects.get(at_name=at_name)
             except TeamPage.DoesNotExist:
                 pass
             else:
-                raise forms.ValidationError("This at_name is already taken by other team")
+                raise forms.ValidationError("This at_name is already taken by other team.")
+
         return at_name
 
 
