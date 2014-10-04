@@ -78,7 +78,7 @@ class ChallengesRegisterForm(forms.Form):
     state = forms.ChoiceField(
         choices=[('', 'Select a state...')] + sorted([(k, v) for k, v in SORTED_STATES.items()], key=lambda x: x[1]),
         label="Where do you live?")
-    next = forms.CharField(max_length=256, required=False, widget=forms.HiddenInput)
+    next = forms.CharField(max_length=256, required=False, widget=forms.HiddenInput, initial='/')
 
     def __init__(self, *args, **kwargs):
         super(ChallengesRegisterForm, self).__init__(*args, **kwargs)
