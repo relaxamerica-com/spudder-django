@@ -51,3 +51,19 @@ def user_has_fan_role(request):
             return True
     return False
 
+
+@register.filter
+def user_has_club_admin_role(request):
+    for role in request.all_roles:
+        if is_club_admin(role):
+            return True
+    return False
+
+
+@register.simple_tag
+def link_to_change_role_to_club_admin(request):
+    for role in request.all_roles:
+        if is_club_admin(role):
+            return '%s?next=%s' % (change_role_url(role), role.home_page_path)
+
+    return ''

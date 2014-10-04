@@ -37,7 +37,7 @@ class EntityBase(object):
 
     @abc.abstractproperty
     def link_to_public_page(self):
-        raise NotImplementedError
+        return '/'
 
     @abc.abstractproperty
     def name(self):
