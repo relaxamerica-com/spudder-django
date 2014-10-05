@@ -1,5 +1,7 @@
 {% extends 'spudderclubs/base.html' %}
 
+{%  load stripe %}
+
 {% block title %}Club Dashboard{% endblock %}
 
 {% block google_analytics_additions %}
@@ -34,6 +36,9 @@
                             <li><i class="fa fa-fw fa-asterisk"></i> Manage your club profile on the <a href="/club/profile">Edit Profile</a> page</li>
                         </ul>
                         <ul class="list-unstyled">
+                            <li><i class="fa fa-fw fa-asterisk"></i> View your club profile on the <a href="/club/{{ club.id }}">Public Profile</a> page</li>
+                        </ul>
+                        <ul class="list-unstyled">
                             <li><i class="fa fa-fw fa-asterisk"></i> Manage your club profile visibility</li>
                         </ul>
                     </div>
@@ -45,12 +50,11 @@
                         <p>Your Club account isn't fully activated. Only after successful activation, Club can use all the tools and options that Spudder® provide.</p>
 
                         {% if club.next_activation_step == 'recipient' %}
-                            <p>The next step in activation process is to register your Club as Amazon Recipient. This way you will be able to fundraise money and run marketplace for your Teams.</p>
-                            <p>After clicking "Register as recipient" button below, you will be redirected to Amazon in order to register. Please remember to use same account with which you logged in before.</p>
-                            <a href="{{ cbui_url }}" class="btn btn-primary" style="margin-top: 20px;">Register as recipient</a>
+                            <p>In order to run fundraising and challenges your Club needs to be registered as Recipient. Follow the link below in order to register.</p>
+                            <a href="/club/recipient" class="btn btn-primary" style="margin-top: 20px;">Register as recipient</a>
                         {% else %}
-                            <p>The last step of the activation process is to fill up Club basic profile information form (location, address etc). After this step your Club account will be fully functional!</p>
-                            <a href="/club/register/profile" class="btn btn-primary" style="margin-top: 20px;">Go to Club profile</a>
+                            <p>The last step of the activation process is to connect to your Stripe account. After this step your Club account will be fully functional!</p>
+                            <a href="{% authorize_url %}" class="stripe-connect"><span>Connect with Stripe</span></a>
                         {% endif %}
                     </div>
                 </div>

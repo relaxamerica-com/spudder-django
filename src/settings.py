@@ -65,6 +65,7 @@ INSTALLED_APPS = (
     'spudderkrowdio',
     'spuddersocialengine',
     'spudderspuds',
+    'spudmart.stripe',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -136,6 +137,19 @@ SPORTS = [
     'Swimming', 'Tennis', 'Track and Field', 'Volleyball',
     'Waterpolo', 'Wrestling']
 
+STRIPE_SETTINGS = {
+    "development": {
+        "client_id": "ca_4tibPtBrSAp4c1AuSyc7mZ8WxfMAqD2P",
+        "secret_key": "sk_test_dxg5xLGwvNSSMxjLJx09TWJY",
+        "publishable_key": "pk_test_FU6doCOK0osJq3ukkKxsphWQ"
+    },
+    "production": {
+        "client_id": "ca_4tibzofi6gsYBZIp4pS4xvRb5kQ6TVyl",
+        "secret_key": "sk_live_lg8BNzQAxMjyKV2yMXcv09PU",
+        "publishable_key": "pk_live_YdcJiNoRdJ52Oxso4z21TpA0"
+    }
+}
+
 shared_settings = {
     'spudmart1': {  # main testing environment
         'server_email': 'help@spuder.com',
@@ -155,6 +169,9 @@ shared_settings = {
         'support_email': 'support@spudder.com',
         'krowdio_client_key': '53fc72a6f1f70e3fc79f0876',
         'google_client_id': '202980743025-44et20vv531h7o80l0onc2eld22ev1ar.apps.googleusercontent.com',
+        'stripe_client_id': STRIPE_SETTINGS['development']['client_id'],
+        'stripe_secret_key': STRIPE_SETTINGS['development']['secret_key'],
+        'stripe_publishable_key': STRIPE_SETTINGS['development']['publishable_key']
     },
     'spudmartvadim': {
         'server_email': 'help@spuder.com',
@@ -173,6 +190,9 @@ shared_settings = {
         'twitter_access_token_secret': 'hHPebsFws3AcWyDrAvjnxapUJ95JI15NjZ7TwiXgF5f3v',
         'support_email': 'support@spudder.com',
         'krowdio_client_key': '53fc72a6f1f70e3fc79f0876',
+        'stripe_client_id': STRIPE_SETTINGS['development']['client_id'],
+        'stripe_secret_key': STRIPE_SETTINGS['development']['secret_key'],
+        'stripe_publishable_key': STRIPE_SETTINGS['development']['publishable_key']
 
     },
     'sharp-avatar-587': {  # lukasz@spuder.com
@@ -185,7 +205,10 @@ shared_settings = {
         'linkedin_api_key': '',
         'linkedin_secret_key': '',
         'support_email': 'lukasz@spuder.com',
-        'krowdio_client_key': '5401e324e9b6cc56dbe43f55'
+        'krowdio_client_key': '5401e324e9b6cc56dbe43f55',
+        'stripe_client_id': STRIPE_SETTINGS['development']['client_id'],
+        'stripe_secret_key': STRIPE_SETTINGS['development']['secret_key'],
+        'stripe_publishable_key': STRIPE_SETTINGS['development']['publishable_key']
 
     },
     'essential-hawk-597': {  # karol@spuder.com
@@ -198,6 +221,9 @@ shared_settings = {
         'linkedin_api_key': '',
         'linkedin_secret_key': '',
         'support_email': 'karol@spuder.com',
+        'stripe_client_id': STRIPE_SETTINGS['development']['client_id'],
+        'stripe_secret_key': STRIPE_SETTINGS['development']['secret_key'],
+        'stripe_publishable_key': STRIPE_SETTINGS['development']['publishable_key']
 
     },
     'genial-union-587': {  # lucy@spuder.com
@@ -217,6 +243,9 @@ shared_settings = {
         'twitter_access_token': '2573288766-Z27sWN4Hi812Nqt0yQ4foKTVr4njfXX2DeP4MTa',
         'twitter_access_token_secret': 'aIRQheX0medxdnXLG2MXfebNB78ftRFf97pe8hUvHtr75',
         'krowdio_client_key': '53ff5196f1f70e3fc79f136c',
+        'stripe_client_id': STRIPE_SETTINGS['development']['client_id'],
+        'stripe_secret_key': STRIPE_SETTINGS['development']['secret_key'],
+        'stripe_publishable_key': STRIPE_SETTINGS['development']['publishable_key']
     },
     'spudmartmatt': {  # mg@metalayer.com
         'server_email': 'mg@metalayer.com',
@@ -231,6 +260,9 @@ shared_settings = {
         'instagram_client_secret': 'b1bc01bf1a9944e2834288484f450ab2',
         'support_email': 'mg@metalayer.com',
         'krowdio_client_key': '53ff5196f1f70e3fc79f136c',
+        'stripe_client_id': STRIPE_SETTINGS['development']['client_id'],
+        'stripe_secret_key': STRIPE_SETTINGS['development']['secret_key'],
+        'stripe_publishable_key': STRIPE_SETTINGS['development']['publishable_key']
 
     },
     'livespudder': {  #mg@metalayer.com
@@ -251,6 +283,9 @@ shared_settings = {
         'support_email': 'support@spudder.com',
         'krowdio_client_key': '52769e9ff1f70e0552df58a4',
         'google_client_id': '102496195202-8l3ido6f9nn2iisedafjjfpa3l8nc4a5.apps.googleusercontent.com',
+        'stripe_client_id': STRIPE_SETTINGS['production']['client_id'],
+        'stripe_secret_key': STRIPE_SETTINGS['production']['secret_key'],
+        'stripe_publishable_key': STRIPE_SETTINGS['production']['publishable_key']
     },
 }
 
@@ -272,6 +307,9 @@ SUPPORT_EMAIL = shared_settings[app_name]['support_email']
 KROWDIO_CLIENT_KEY = shared_settings[app_name].get('krowdio_client_key')
 AT_POST_SPUD_BASE_TWEET_ID = 503359742325321728
 GOOGLE_CLIENT_ID = shared_settings[app_name].get('google_client_id')
+STRIPE_CLIENT_ID = shared_settings[app_name].get('stripe_client_id')
+STRIPE_SECRET_KEY = shared_settings[app_name].get('stripe_secret_key')
+STRIPE_PUBLISHABLE_KEY = shared_settings[app_name].get('stripe_publishable_key')
 
 
 # Configuration shared across all applications

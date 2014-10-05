@@ -1,6 +1,8 @@
+import httplib
+import json
+import urllib
 from google.appengine.api import mail
-import re
-from django.http import HttpResponseRedirect, Http404, HttpResponse, HttpResponseNotAllowed
+from django.http import HttpResponseRedirect, HttpResponse, HttpResponseNotAllowed
 from django.shortcuts import render, redirect, get_object_or_404
 import settings
 from spudderaccounts.models import Invitation
@@ -8,12 +10,14 @@ from spudderaccounts.wrappers import RoleBase
 from spudderclubs.decorators import club_admin_required, club_not_fully_activated, club_fully_activated
 from spudderclubs.forms import ClubProfileCreateForm, ClubProfileEditForm
 from spudderdomain.controllers import RoleController
-from spudderdomain.models import ClubRecipient, Club, ClubAdministrator, TeamClubAssociation, TeamPage
+from spudderdomain.models import ClubRecipient, Club, ClubAdministrator, TeamClubAssociation, TeamPage, StripeRecipient, \
+    StripeUser
 from spudderspuds.forms import LinkedInSocialMediaForm
 from spudderspuds.utils import set_social_media
 from spudmart.amazon.models import AmazonActionStatus, RecipientVerificationStatus
 from spudmart.amazon.utils import get_club_register_as_recipient_cbui_url, get_recipient_verification_status
 from spudmart.recipients.models import RecipientRegistrationState
+from spudmart.stripe.forms import StripeRegisterRecipientForm
 from spudmart.upload.models import UploadedFile
 from spudmart.utils.cover_image import save_cover_image_from_request, reset_cover_image
 from spudmart.utils.querysets import get_object_or_none
@@ -117,6 +121,46 @@ def register_profile_info(request):
     })
 
 
+@club_admin_required
+@club_not_fully_activated
+def stripe_recipient(request):
+    club = request.current_role.entity.club
+    form = StripeRegisterRecipientForm()
+    errors = None
+
+    if request.method == "POST":
+        form = StripeRegisterRecipientForm(request.POST)
+
+        if form.is_valid():
+            name = request.POST.get('name')
+            ein = request.POST.get('ein')
+
+            import stripe
+            stripe.api_key = settings.STRIPE_SECRET_KEY
+
+            recipient_creation_result = stripe.Recipient.create(
+                name=name,
+                type="corporation",
+                tax_id=ein
+            )
+
+            is_verified = recipient_creation_result['verified']
+            if is_verified:
+                StripeRecipient(
+                    registered_by=request.user,
+                    club=club,
+                    recipient_id=recipient_creation_result['id']
+                ).save()
+                return HttpResponseRedirect('/club/dashboard')
+
+            errors = 'Verification failed!'
+
+    return render(request, 'spudderclubs/pages/registration/recipient.html', {
+        'form': form,
+        'errors': errors
+    })
+
+
 def signin(request):
     return render(request, 'spudderclubs/pages/registration/signin.html')
 
@@ -205,8 +249,33 @@ def public_page(request, club_id):
     return render(request, 'spudderclubs/pages/public/view.html', {
         'base_url': 'spudderspuds/base.html',
         'profile': club,
-        'teams': teams
+        'teams': teams,
+        'stripe_publishable_key': settings.STRIPE_PUBLISHABLE_KEY
     })
+
+
+def donate(request, club_id):
+    club = get_object_or_none(Club, pk=club_id)
+
+    if not club or not club.is_fully_activated or club.is_hidden():
+        return HttpResponseRedirect('/club/not_found')
+
+    stripe_token = request.POST.get('stripeToken')
+    stripe_user = StripeUser.objects.get(club=club)
+
+    import stripe
+    stripe.api_key = settings.STRIPE_CLIENT_ID
+
+    stripe.Charge.create(
+        amount=2000,
+        currency="usd",
+        card=stripe_token,  # obtained with Stripe.js
+        description="Simple donation for %s club" % club.name,
+        application_fee=123, # amount incents
+        api_key=stripe_user.access_token # user's access token from the Stripe Connect flow
+    )
+
+    return HttpResponseRedirect('/club/%s' % club_id)
 
 
 def not_found(request):
@@ -293,3 +362,37 @@ def send_message(request, club_id):
         )
 
     return HttpResponse()
+
+
+@club_admin_required
+def stripe(request):
+    club = request.current_role.entity.club
+
+    params = urllib.urlencode({
+        'client_secret': settings.STRIPE_SECRET_KEY,
+        'code': request.GET.get('code', ''),
+        'grant_type': 'authorization_code'
+    })
+    url = '/oauth/token?%s' % params
+
+    connection = httplib.HTTPSConnection('connect.stripe.com')
+    connection.connect()
+    connection.request('POST', url)
+
+    resp = connection.getresponse()
+    resp_data = resp.read()
+
+    json_data = json.loads(resp_data)
+
+    StripeUser(
+        club=club,
+        access_token=json_data['access_token'],
+        refresh_token=json_data['refresh_token'],
+        publishable_key=json_data['stripe_publishable_key'],
+        user_id=json_data['stripe_user_id'],
+        scope=json_data['scope'],
+        token_type=json_data['token_type'],
+    ).save()
+
+
+    return HttpResponseRedirect('/club/dashboard')

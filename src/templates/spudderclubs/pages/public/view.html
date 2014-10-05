@@ -71,6 +71,17 @@
             {% include 'spudderclubs/pages/public/parts/view_tab_send_message.html' %}
         </div>
     </div>
+
+    <form action="/club/{{ profile.id }}/donate" method="POST" style="text-align: center; margin-top: 50px;">
+      <script
+        src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+        data-key="{{ stripe_publishable_key }}"
+        data-image="/static/img/spudderspuds/button-spuds-small.png"
+        data-name="{{ profile.name }}"
+        data-description="Simple donation for 20 bucks"
+        data-amount="2000">
+      </script>
+    </form>
 {% endblock %}
 
 {% block sidebar %}

@@ -10,6 +10,7 @@ urlpatterns = patterns('spudderclubs.views',
     (r'register/recipient/error$', 'register_as_recipient_error'),
     (r'register/recipient/verification_pending$', 'register_as_recipient_pending_verification'),
     (r'register/profile', 'register_profile_info'),
+    (r'recipient', 'stripe_recipient'),
 
     (r'^signin$', 'signin', {'SSL': determine_ssl()}),
 
@@ -19,6 +20,7 @@ urlpatterns = patterns('spudderclubs.views',
     (r'^hide$', 'hide_profile'),
 
     (r'^(?P<club_id>\d+)$', 'public_page'),
+    (r'^(?P<club_id>\d+)/donate$', 'donate'),
     (r'^not_found$', 'not_found'),
     (r'^send_message/(?P<club_id>\d+)$', 'send_message'),
 
@@ -26,5 +28,7 @@ urlpatterns = patterns('spudderclubs.views',
     (r'^save_cover$', 'save_cover'),
     (r'^reset_cover$', 'reset_cover'),
     (r'^save_thumbnail$', 'save_thumbnail'),
+
+    (r'^stripe$', 'stripe'),
 )
 

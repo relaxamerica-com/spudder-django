@@ -1,0 +1,51 @@
+{% extends 'spudderclubs/base_single_well.html' %}
+
+{% block css %}
+    {{ block.super }}
+
+    <link rel="stylesheet" href="/static/css/spudderspuds.css" />
+{% endblock %}
+
+{% load bootstrap3 %}
+
+{% block google_analytics_additions %}
+    ga('set', 'contentGroup1', 'CLUBS Registration Page');
+{% endblock %}
+
+{% block well_content %}
+    <h2>
+        <img src="/static/img/spudderclubs/button-clubs-small.png"/> Register as recipient
+    </h2>
+
+    <form method="post" enctype="multipart/form-data">
+        <fieldset>
+            {% if errors or form.errors %}
+                <legend>
+                    {% if form.errors %}
+                        <div class="alert alert-danger">
+                            {{ form.errors }}
+                        </div>
+                    {% endif %}
+                    {% if errors %}
+                        <div class="alert alert-danger">
+                            {{ errors }}
+                        </div>
+                    {% endif %}
+                </legend>
+            {% else %}
+                <legend>Please fill out the form below and hit 'Register'.</legend>
+            {% endif %}
+            {% csrf_token %}
+            {% bootstrap_form form %}
+
+            {% buttons %}
+                <button type="submit" class="btn btn-primary">
+                    <i class="fa fa-save"></i> Register
+                </button>
+                <a href="{{ request.META.HTTP_REFERER }}" class="btn btn-default">
+                    Cancel
+                </a>
+            {% endbuttons %}
+        </fieldset>
+    </form>
+{% endblock %}

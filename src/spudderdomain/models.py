@@ -289,19 +289,19 @@ class Club(models.Model):
             self.location.update_from_post_data(location_info)
 
     def is_fully_activated(self):
-        if ClubRecipient.objects.filter(club=self).count() < 1:
+        if StripeRecipient.objects.filter(club=self).count() < 1:
             return False
 
-        return self.location is not None
+        return StripeUser.objects.filter(club=self).count() > 0
 
     def next_activation_step(self):
         if self.is_fully_activated():
             return None
 
-        if ClubRecipient.objects.filter(club=self).count() < 1:
+        if StripeRecipient.objects.filter(club=self).count() < 1:
             return 'recipient'
 
-        return 'location'
+        return 'stripe'
 
     def is_hidden(self):
         return self.hidden
@@ -325,6 +325,22 @@ class TeamClubAssociation(models.Model):
 class ClubRecipient(AmazonRecipient):
     registered_by = models.ForeignKey(User)
     club = models.ForeignKey(Club)
+
+
+class StripeRecipient(models.Model):
+    registered_by = models.ForeignKey(User)
+    club = models.ForeignKey(Club)
+    recipient_id = models.CharField(max_length=255)
+
+
+class StripeUser(models.Model):
+    club = models.ForeignKey(Club)
+    access_token = models.CharField(max_length=255)
+    refresh_token = models.CharField(max_length=255)
+    publishable_key = models.CharField(max_length=255)
+    user_id = models.CharField(max_length=255)
+    scope = models.CharField(max_length=255)
+    token_type = models.CharField(max_length=255)
 
 
 class ClubAdministrator(models.Model):
