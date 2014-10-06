@@ -17,3 +17,10 @@ def signin(request):
 @qa_login_required
 def dashboard(request):
     return render(request, 'spudderqa/pages/dashboard.html')
+
+
+@qa_login_required
+def send_error_email_to_admins(request):
+    local_str = 'local str'
+    local_list = [local_str, 'test']
+    raise Exception("Test exception raised. It Should be sent to admin")

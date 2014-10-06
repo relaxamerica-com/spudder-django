@@ -1,4 +1,5 @@
 {% extends 'spudderadmin/base.html' %}
+{% load featuretags %}
 
 {% block body %}
     <div class="container">
@@ -18,6 +19,10 @@
                     <div class="page-header">
                         <h1><i class="fa fa-dashboard"></i> QA Dashboard</h1>
                     </div>
+
+                    {% if 'email_error_logs'|feature_is_enabled %}
+                        <a href="/qa/send_error_email_to_admins" class="btn btn-danger">Send error email to admins</a>
+                    {% endif %}
                 {% endblock %}
             </div>
         </div>
