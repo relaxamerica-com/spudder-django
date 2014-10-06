@@ -1,3 +1,4 @@
+import logging
 from django.shortcuts import redirect, render
 from spudderadmin.utils import encoded_admin_session_variable_name
 from spudderqa.decorators import qa_login_required
@@ -21,6 +22,5 @@ def dashboard(request):
 
 @qa_login_required
 def send_error_email_to_admins(request):
-    local_str = 'local str'
-    local_list = [local_str, 'test']
+    logging.error('This message was sent using logging.error method')
     raise Exception("Test exception raised. It Should be sent to admin")

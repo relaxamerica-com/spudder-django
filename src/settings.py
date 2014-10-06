@@ -1,3 +1,4 @@
+import logging
 import os
 import mimetypes
 import socket
@@ -331,30 +332,11 @@ from features import *
 
 
 if feature_is_enabled('email_error_logs'):
-    ADMINS = (
-        ('vad', 'nordsoft4tests@gmail.com'),
-    )
+    from spudmart.utils.log import register_logger
 
-    LOGGING = {
-        'version': 1,
-        'disable_existing_loggers': False,
-        'filters': {
-            # 'require_debug_false': {
-            #     '()': 'django.utils.log.RequireDebugFalse'
-            # }
-        },
-        'handlers': {
-            'mail_admins': {
-                'level': 'ERROR',
-                # 'filters': ['require_debug_false'],
-                'class': 'django.utils.log.AdminEmailHandler'
-            }
-        },
-        'loggers': {
-            'django.request': {
-                'handlers': ['mail_admins'],
-                'level': 'ERROR',
-                'propagate': True,
-            },
-        }
+    ADMINS = {
+        'mg@metalayer.com': logging.ERROR,
+        'vadim@spuder.com': logging.ERROR,
     }
+
+    register_logger(ADMINS)
