@@ -34,7 +34,53 @@ from spudderdomain.models import Challenge, ChallengeParticipation
 from spudderdomain.wrappers import EntityBase
 
 
-def _format_challenge(type, c):
+IS_OWNER_ICON = "<i class='fa fa-asterisk text-primary' " \
+                "title='You created this challenge' " \
+                "style='position:absolute;right:3%'></i>"
+CHALLENGE_STATE_BUTTON = "<button class='btn btn-%s btn-xs pull-right' style='margin-right:5%%' title='%s'>%s</button>"
+CHALLENGE_STATE_FORMATTING = {
+    ChallengeParticipation.ACCEPTED_STATE: ('success',
+                                             'You have accepted this challenge',
+                                             'Accepted'),
+    ChallengeParticipation.PRE_ACCEPTED_STATE: ('warning',
+                                                'You have been invited to this challenge but haven\'t accepted yet',
+                                                'Pre-Accepted'),
+    ChallengeParticipation.DECLINED_STATE: ('danger',
+                                            'You have declined this challenge',
+                                            'Declined'),
+    ChallengeParticipation.DONATE_ONLY_STATE: ('info',
+                                               'You only donated to the team for this challenge',
+                                               'Donated Only')
+
+}
+
+
+def _format_challenge_state_button(state):
+    """
+    Generates html for a button for the challenge state
+    Used on the fan dashboard
+    :param state: an value in ChallengeParticipation.STATES
+    :return: a string with html for button
+    """
+    return CHALLENGE_STATE_BUTTON % CHALLENGE_STATE_FORMATTING[state]
+
+
+def _get_owner_icon(challenge, entity_id, entity_type):
+    """
+    Generates html for an icon to denote owner of a challenge
+    :param challenge: a Challenge object
+    :param entity_id: the ID of an an entity
+    :param entity_type: a valid entity type
+    :return: html for a FontAwesome icon if owner,
+        empty string if not owner
+    """
+    if str(challenge.creator_entity_id) == str(entity_id) and challenge.creator_entity_type == entity_type:
+        return IS_OWNER_ICON
+    else:
+        return ""
+
+
+def _format_challenge(type, c, extras=None):
     if type == 'created':
         club = EntityController.GetWrappedEntityByTypeAndId(
             c.recipient_entity_type,
@@ -43,7 +89,7 @@ def _format_challenge(type, c):
         name = '%s for %s' % (c.name, club.name)
         return {
             'name': name,
-            'link': '/challenges/%s' % c.id
+            'link': '/challenges/%s' % c.id,
         }
     if type == 'waiting':
         club = EntityController.GetWrappedEntityByTypeAndId(
@@ -58,6 +104,28 @@ def _format_challenge(type, c):
         return {
             'name': 'Test'
         }
+    if type == 'dash participating':
+        club = EntityController.GetWrappedEntityByTypeAndId(
+            c.challenge.recipient_entity_type,
+            c.challenge.recipient_entity_id,
+            EntityBase.EntityWrapperByEntityType(c.challenge.recipient_entity_type))
+        return {
+            'name': "%s for %s" % (c.challenge.name, club.name),
+            'link': '/challenges/%s/accept/notice' % c.challenge.id,
+            'state': _format_challenge_state_button(c.state),
+            'created': _get_owner_icon(c.challenge, extras['id'], extras['type'])
+        }
+    if type == 'dash created' and c.id not in extras:
+        club = EntityController.GetWrappedEntityByTypeAndId(
+            c.recipient_entity_type,
+            c.recipient_entity_id,
+            EntityBase.EntityWrapperByEntityType(c.recipient_entity_type))
+        return {
+            'name': "%s for %s" % (c.name, club.name),
+            'link': '/challenges/%s/accept/notice' % c.id,
+            'state': '',
+            'created': IS_OWNER_ICON
+        }
 
 
 def landing_page(request):
@@ -69,19 +137,24 @@ def landing_page(request):
         spud_stream = SpudsController(request.current_role).get_spud_stream()
         fan_spuds = SpudsController.GetSpudsForFan(request.current_role.entity)
         stream = SpudsController.MergeSpudLists(spud_stream, fan_spuds)
-        # shuffle(stream)
         template_data['spuds'] = stream
-        krowdio_response = get_following(request.current_role)
-        template_data['teams'] = krowdio_users_to_links(
-            request.can_edit,
-            request.current_role,
-            krowdio_response['data'],
-            EntityController.ENTITY_TEAM)
-        template_data['fans'] = krowdio_users_to_links(
-            request.can_edit,
-            request.current_role,
-            krowdio_response['data'],
-            RoleController.ENTITY_FAN)
+
+        entity = {
+            'id': request.current_role.entity.id,
+            'type': request.current_role.entity_type
+        }
+
+        participating_challenges = ChallengeParticipation.objects.filter(
+            participating_entity_id=entity['id'],
+            participating_entity_type=entity['type'])
+        participating_ids = [c.challenge.id for c in participating_challenges]
+
+        template_data['challenges'] = [_format_challenge('dash participating', c, entity)
+                                       for c in participating_challenges] + \
+                                      [_format_challenge('dash created', c, participating_ids)
+                                       for c in Challenge.objects.filter(creator_entity_id=entity['id'],
+                                                                         creator_entity_type=entity['type'])]
+
         template_data['fan_nav_active'] = "explore"
     return render(request, 'spudderspuds/pages/landing_page.html', template_data)
 

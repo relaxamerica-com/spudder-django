@@ -1,0 +1,23 @@
+{% if challenges %}
+
+    <div class="list-group">
+        {% for challenge in challenges %}
+            {% if challenge %}
+                <a href="{{ challenge.link }}" class="list-group-item">
+                    <h4 class="list-group-item-heading">
+                        {{ challenge.name }}
+                        {{ challenge.state|safe }}
+                        {{ challenge.created|safe }}
+                    </h4>
+                </a>
+            {% endif %}
+        {% endfor %}
+    </div>
+
+{% else %}
+
+    <div class="well" style="width:90%; margin:20px auto;">
+        <h4>You haven't started any challenges.</h4>
+    </div>
+
+{% endif %}

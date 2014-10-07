@@ -345,3 +345,6 @@ if feature_is_enabled('email_error_logs'):
 
 if feature_is_enabled('tracking_pixels'):
     from events import *
+
+
+MAIN_SPUDDER_FAN_ACCOUNT_EMAIL = "dennis@spudder.com"

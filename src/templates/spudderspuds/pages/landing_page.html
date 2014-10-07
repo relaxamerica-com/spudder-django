@@ -24,8 +24,7 @@
             </div>
             <div class="col-md-6">
                 {% if request.current_role|is_fan %}
-                    {% include 'components/following_table.html' with title="<img src='/static/img/spudderspuds/button-teams-tiny.png' /> Teams You Follow" following=teams entity_type='team' show_find_button='true' %}
-                    {% include 'components/following_table.html' with title="<img src='/static/img/spudderspuds/button-fans-tiny.png' /> Fans You Follow" following=fans entity_type='fan' show_find_button='true' %}
+                    {% include 'spudderspuds/fans/components/fan_dash_challenges.html' %}
                 {% else %}
                     {% include 'spudderspuds/quote_messages/quote_landingpage_welcome.html' %}
                 {% endif %}
