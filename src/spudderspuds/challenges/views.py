@@ -1,6 +1,7 @@
 import json
 import logging
 from datetime import datetime, timedelta
+from django.conf import settings
 from django.contrib.auth import authenticate, login
 from django.http import HttpResponse, Http404
 from django.shortcuts import redirect, render, get_object_or_404
@@ -133,6 +134,8 @@ def create_register(request):
             fan_page.state = form.cleaned_data.get('state')
             fan_page.save()
             login(request, authenticate(username=username, password=password))
+            if feature_is_enabled('tracking_pixels'):
+                request.events.append(settings.TrackingPixelEvents.CHALLENGER_USER_REGISTERER)
             if form.cleaned_data.get('account_type') == EntityController.ENTITY_CLUB:
                 return redirect('/challenges/register/team?next=%s' % form.cleaned_data.get('next', '/'))
             return redirect(form.cleaned_data.get('next', '/'))
@@ -372,6 +375,8 @@ def challenge_accept_upload(request, challenge_id):
                 participation.image = file
                 participation.state = ChallengeParticipation.ACCEPTED_STATE
                 participation.save()
+                if feature_is_enabled('tracking_pixels'):
+                    request.events.append(settings.TrackingPixelEvents.CHALLENGE_ACCEPTED)
             if request.is_ajax():
                 return HttpResponse(redirect_url)
             return redirect(redirect_url)
@@ -538,6 +543,8 @@ def challenge_challenge_accept_notice(request, state=None, club_entity_type=None
                 participation.image = file
             participation.save()
             redirect_url = '/challenges/challenge_challenge/%s/thanks?just_submitted=True' % participation_id
+            if feature_is_enabled('tracking_pixels'):
+                request.events.append(settings.TrackingPixelEvents.CHALLENGE_ACCEPTED)
             if request.is_ajax():
                 return HttpResponse(redirect_url)
             return redirect(redirect_url)

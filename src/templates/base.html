@@ -53,6 +53,7 @@
         {% endif %}
         {# END - GOOGLE ANALYTICS #}
 
+        {{ tracking_pixel_code }}
         {% block extra_head %}{% endblock %}
     </head>
     <body class="{% block body_class %}{% endblock %}" id="{% block body_id %}{% endblock %}">

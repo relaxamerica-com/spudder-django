@@ -12,6 +12,7 @@ FEATURES = {
         'challenge_register_club'
         'challenge_tree',
         'email_error_logs',
+        'tracking_pixels',
     ],
     'stage': [
         'spud_tagging',
@@ -26,6 +27,7 @@ FEATURES = {
         'challenge_register_club',
         'challenge_tree',
         'email_error_logs',
+        'tracking_pixels',
     ],
     'live': [
         'google_analytics',

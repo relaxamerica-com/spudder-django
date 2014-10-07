@@ -84,6 +84,7 @@ MIDDLEWARE_CLASSES = (
     'spuddermiddleware.spudderaccountsmiddleware.AccountPasswordMiddleware',
     'spuddermiddleware.spudderaccountsmiddleware.EditPageMiddleware',
     'spuddermiddleware.spudderaccountsmiddleware.FollowMiddleware',
+    'spuddermiddleware.spuddereventsmiddleware.EventsMiddleware',
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
@@ -97,6 +98,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'spuddercontextprocessors.appenginhelpers.context_running_locally',
     'spuddercontextprocessors.staffcontext.staff_context',
     'spuddercontextprocessors.settingscontext.settings_context',
+    'spuddercontextprocessors.trackingpixelscontext.tracking_pixel_code'
 )
 
 
@@ -340,3 +342,22 @@ if feature_is_enabled('email_error_logs'):
     }
 
     register_logger(ADMINS)
+
+if feature_is_enabled('tracking_pixels'):
+
+    class TrackingPixelEvents(object):
+        USER_REGISTERED = 'user_registered'
+        CHALLENGER_USER_REGISTERER = 'challenger_user_registered'
+        CHALLENGE_ACCEPTED = 'challenge_accepted'
+
+    TRACKING_PIXEL_CONF = {
+        TrackingPixelEvents.USER_REGISTERED: [
+            'components/tracking_pixels/brainwave_media_tracking_pixel.html'
+        ],
+        TrackingPixelEvents.CHALLENGER_USER_REGISTERER: [
+            'components/tracking_pixels/challenger_user_registration.html'
+        ],
+        TrackingPixelEvents.CHALLENGE_ACCEPTED: [
+            'components/tracking_pixels/successful_challenge_submission.html'
+        ]
+    }
