@@ -20,7 +20,7 @@ def select_all_user_roles(role_controller):
     return roles
 
 
-def select_user_role_if_only_one_role_exists(role_controller):
+def select_most_appropriate_user_role(role_controller):
     """
     Check if the user has only one role, if it does then return it, if not then return None
 
@@ -28,8 +28,11 @@ def select_user_role_if_only_one_role_exists(role_controller):
     :return: Either the one and only role the user has or None
     """
     roles = select_all_user_roles(role_controller)
-    if len(roles):  # == 1: TODO: This needs to be implemented alongside a highlevel role chooing page
-        return roles[0]
+    # MG: For now the hierarchy is club_admin > team_admin > fan > student
+    for role_type in [RoleController.ENTITY_CLUB_ADMIN, RoleController.ENTITY_FAN]:
+        for role in roles:
+            if role.entity_type == role_type:
+                return role
     return None
 
 
@@ -79,5 +82,16 @@ def create_linked_authentication_service(role, service_type, unique_service_id, 
     return linked_service_wrapper
 
 
-def change_current_role(request, entity_type, entity_id):
+def change_current_role(request, entity_type=None, entity_id=None):
+    if not entity_type or not entity_id:
+        role_controller = RoleController(request.user)
+        role = select_most_appropriate_user_role(role_controller)
+        entity_type = role.entity_type
+        entity_id = role.entity.id
+    else:
+        role = RoleController.GetRoleForEntityTypeAndID(
+            entity_type,
+            entity_id,
+            RoleBase.EntityWrapperByEntityType(entity_type))
     request.session['current_role'] = {'entity_type': entity_type, 'entity_id': entity_id}
+    return role

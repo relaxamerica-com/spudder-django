@@ -22,48 +22,40 @@
         <div class="navbar-collapse collapse">
             {% if not request.current_role %}
                 <div class="navbar-collapse collapse navbar-right login-signup">
-                    <a href="/challenges/signin?next=/challenges" class="btn btn-default navbar-btn btn-lg">LOG IN <i class="fa fa-caret-down text-primary"></i></a>
+                    <a href="/challenges/signin" class="btn btn-default navbar-btn btn-lg">LOG IN <i class="fa fa-caret-down text-primary"></i></a>
                 </div>
             {% else %}
                 <ul class="nav navbar-nav navbar-right">
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Challenges <i class="fa fa-caret-down"></i> </a>
-                        <ul class="dropdown-menu">
-                            <li>
-                                <a href="/challenges"><i class="fa fa-trophy fa-fw"></i> Challenges Home</a>
-                            </li>
-                            <li>
-                                <a href="/challenges/create"><i class="fa fa-plus fa-fw"></i> Create Challenge</a>
-                            </li>
-                            <li>
-                                <a href="/challenges/challenge_challenge"><i class="fa fa-trophy fa-fw"></i> The Challenge Challenge</a>
-                            </li>
-                        </ul>
+                    <li>
+                        <a href="/challenges/challenge_challenge"><i class="fa fa-trophy fa-fw"></i> The Challenge Challenge</a>
                     </li>
+                    {% if request.current_role|is_fan %}
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">My account <i class="fa fa-caret-down"></i> </a>
                         <ul class="dropdown-menu">
                             <li>
-                                <a href="/fan"><i class="fa fa-bar-chart-o"></i> Dashboard</a>
+                                <a href="/fan"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
                             </li>
-                            <li>
-                                <a href="{{ request.current_role.link_to_public_page }}"><i class="fa fa-user fa-fw"></i> My profile page</a>
-                            </li>
-                            <li>
-                                <a href="{{ request.current_role.link_to_public_page }}/edit"><i class="fa fa-angle-right fa-fw"  style="margin-right: 10px;"></i><i class="fa fa-pencil fa-fw"></i> Edit profile</a>
-                            </li>
-                            {% if 'challenges_only_override'|feature_is_enabled %}
-                                {% if request|user_has_club_admin_role %}
-                                    <li>
-                                        <a href="{% link_to_change_role_to_club_admin request %}"><i class="fa fa-home fa-fw"></i> Club dashboard</a>
-                                    </li>
-                                {% endif %}
-                            {% endif %}
                             <li>
                                 <a href="/accounts/logout/"><i class="fa fa-sign-out fa-fw"></i> Sign out</a>
                             </li>
                         </ul>
                     </li>
+                    {% endif %}
+
+                    {% if request.current_role|is_club_admin %}
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">My account <i class="fa fa-caret-down"></i> </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="{{ request.current_role.home_page_path }}"><i class="fa fa-users fa-fw"></i> My Team</a>
+                            </li>
+                            <li>
+                                <a href="/accounts/logout/"><i class="fa fa-sign-out fa-fw"></i> Sign out</a>
+                            </li>
+                        </ul>
+                    </li>
+                    {% endif %}
                 </ul>
             {% endif %}
             {% block masterhead_title %}{% endblock %}

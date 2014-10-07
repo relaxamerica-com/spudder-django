@@ -1,6 +1,6 @@
 from django.conf.urls.defaults import *
 from django.http import HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views.generic import RedirectView
 
 from django.views.generic.simple import direct_to_template
@@ -11,6 +11,7 @@ from spudderspuds.forms import FanSigninForm
 
 handler404 = 'django.views.defaults.page_not_found'
 handler500 = 'djangotoolbox.errorviews.server_error'
+
 
 def temp_redirect_view(request):
     """
@@ -37,19 +38,15 @@ def temp_redirect_view(request):
         except KeyError:
             pass  # request META dict doesn't have HTTP_HOST key (f.i. in tests)
 
+    # Deal with current role if one exists
+    if request.current_role:
+        return redirect(request.current_role.home_page_path)
+
     # challenges_only_override - launch with only challenges Sep 2014
     if feature_is_enabled('challenges_only_override'):
         from spudderspuds.challenges.views import challenges_splash
         return challenges_splash(request)
 
-    # Deal with current role if one exists
-    if request.current_role:
-        if request.current_role.entity_type == RoleController.ENTITY_FAN:
-            return HttpResponseRedirect('/spuds')
-        if request.current_role.entity_type == RoleController.ENTITY_STUDENT:
-            return HttpResponseRedirect('/cern')
-        if request.current_role.entity_type == RoleController.ENTITY_SPONSOR:
-            return HttpResponseRedirect('/sponsor')
 
     top_teams = TeamsController.GetTopTeamEntities()
     top_team = ([t for t in top_teams if t.jumbotron] or [None])[0]

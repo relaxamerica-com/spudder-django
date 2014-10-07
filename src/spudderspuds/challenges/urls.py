@@ -6,10 +6,10 @@ urlpatterns = patterns(
     'spudderspuds.challenges.views',
 
     url(r'signin$',
-        'create_signin'),
+        'signin'),
 
     url(r'register$',
-        'create_register'),
+        'register'),
 
     url(r'register/team$',
         'register_club'),

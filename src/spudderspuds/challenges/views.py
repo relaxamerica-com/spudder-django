@@ -18,7 +18,7 @@ from spudderdomain.models import Club, TempClub, FanPage, Challenge, ChallengeTe
     ClubAdministrator, TeamPage, TeamAdministrator, TeamClubAssociation
 from spudderdomain.models import ChallengeChallengeParticipation
 from spudmart.upload.forms import UploadForm
-from spudderaccounts.utils import change_current_role
+from spudderaccounts.utils import change_current_role, select_most_appropriate_user_role
 from spudderaccounts.wrappers import RoleBase, RoleFan
 from spudderdomain.wrappers import EntityBase
 from spudderdomain.controllers import RoleController, EntityController, CommunicationController
@@ -100,7 +100,7 @@ def challenges_splash(request):
     return render(request, 'spudderspuds/challenges/pages/challenges.html', template_data)
 
 
-def create_signin(request):
+def signin(request):
     form = ChallengesSigninForm(initial=request.GET)
     if request.method == "POST":
         form = ChallengesSigninForm(request.POST)
@@ -109,16 +109,16 @@ def create_signin(request):
             password = form.cleaned_data.get('password')
             user = authenticate(username=username, password=password)
             login(request, user)
-            fan = FanPage.objects.filter(fan=user)[0]
-            change_current_role(request, RoleController.ENTITY_FAN, fan.id)
-            return redirect(form.cleaned_data.get('next', '/'))
+            role = change_current_role(request)
+            redirect_url = form.cleaned_data.get('next') or role.home_page_path
+            return redirect(redirect_url)
     return render(
         request,
         'spudderspuds/challenges/pages/signin.html',
         {'form': form})
 
 
-def create_register(request):
+def register(request):
     form = ChallengesRegisterForm(initial=request.GET)
     if request.method == "POST":
         form = ChallengesRegisterForm(request.POST)

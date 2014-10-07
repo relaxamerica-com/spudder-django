@@ -384,7 +384,7 @@ class RoleClubAdmin(RoleBase):
 
     @property
     def contact_emails(self):
-        raise NotImplementedError()
+        return self.entity.admin.email
 
 
 """

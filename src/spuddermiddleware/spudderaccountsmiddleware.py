@@ -1,7 +1,7 @@
 import re
 
 from django.shortcuts import redirect
-from spudderaccounts.utils import select_user_role_if_only_one_role_exists, select_all_user_roles, change_current_role
+from spudderaccounts.utils import select_most_appropriate_user_role, select_all_user_roles, change_current_role
 from spudderaccounts.wrappers import RoleBase
 from spudderdomain.controllers import RoleController
 from spudderdomain.models import TeamAdministrator, TeamPage, Club, ClubAdministrator
@@ -19,7 +19,7 @@ class RolesMiddleware:
             role_controller = RoleController(request.user)
             current_role = request.session.get('current_role', None)
             if not current_role:
-                one_ane_only_role = select_user_role_if_only_one_role_exists(role_controller)
+                one_ane_only_role = select_most_appropriate_user_role(role_controller)
                 if one_ane_only_role:
                     current_role = {
                         'entity_type': one_ane_only_role.entity_type,
