@@ -197,6 +197,7 @@ def fan_profile_view(request, page_id):
     krowdio_response = get_following(fan_role)
     template_data = {
         'page': page,
+        'role': fan_role,
         'fan_spuds': SpudsController.GetSpudsForFan(page),
         'base_url': 'spudderspuds/base.html',
         'following_teams': krowdio_users_to_links(request.can_edit,

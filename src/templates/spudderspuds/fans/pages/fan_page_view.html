@@ -4,7 +4,11 @@
 {% load CERN %}
 
 {% block title %}
-    {% fan_page_name page %}
+    {{ role.name }} - Spudder Sports Fundraising Made Simple
+{% endblock %}
+
+{% block favicon %}
+    {% if role.icon %}"{{ role.icon }}"{% else %}"/static/img/spudderspuds/button-spuds-tiny.png"{% endif %}
 {% endblock %}
 
 {% block body_id %}fan-page{% endblock %}
