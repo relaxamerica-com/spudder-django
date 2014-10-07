@@ -1,4 +1,4 @@
-{% extends 'spudderclubs/base_single_well.html' %}
+{% extends 'spudderspuds/base_single_well.html' %}
 
 {% block css %}
     {{ block.super }}
@@ -14,8 +14,15 @@
 
 {% block well_content %}
     <h2>
-        <img src="/static/img/spudderclubs/button-clubs-small.png"/> Update your club profile details
+        <img src="/static/img/spudderclubs/button-clubs-small.png" />
+        Register to become a Club in Spudder
     </h2>
+    <p>Becoming a Club means you have access to the entire network of Teams, fundraising and marketplace tools!</p>
+
+    <div class="alert alert-info">
+        <h4>Club profile</h4>
+        <p>The last step in activation process is filling up the profile information in form below. After this step your Club will be fully activated and functional.</p>
+    </div>
 
     <form method="post" enctype="multipart/form-data">
         <fieldset>
@@ -29,7 +36,7 @@
                     </div>
                 </legend>
             {% else %}
-                <legend>Please fill out the form below and hit 'Update'.</legend>
+                <legend>Please fill out the form below and hit 'Save'.</legend>
             {% endif %}
             {% csrf_token %}
             {% bootstrap_form form %}
@@ -38,18 +45,19 @@
                 <label>Location:</label>
                 <span class="input-required">*required</span>
                 <input id="location" name="location" class="controls" type="text" placeholder="Enter a location">
-                <input id="infoWindow" name="infoWindow" type="hidden" {% if profile.location %}value="{{ profile.locagtion.info_window }}"{% endif %}>
-                <input id="location_info" name="location_info" type="hidden" {% if profile.location %}value="{{ profile.location.post_data }}"{% endif %}/>
+                <input id="infoWindow" name="infoWindow" type="hidden" {% if info_window %}value="{{ info_window }}"{% endif %}>
+                <input id="location_info" name="location_info" type="hidden" {% if page.location %}value="{{ page.location.post_data }}"{% endif %}/>
                 <div id="map_canvas" class="google-map-canvas"></div>
             </div>
 
             <h3 style="margin-top: 30px;">Social Media</h3>
+            <legend style="padding-top: 0;">These fields aren't required, you can fill up them later.</legend>
 
             {% bootstrap_form social_media %}
 
             {% buttons %}
                 <button type="submit" class="btn btn-primary">
-                    <i class="fa fa-save"></i> Update
+                    <i class="fa fa-save"></i> Save
                 </button>
                 <a href="{{ request.META.HTTP_REFERER }}" class="btn btn-default">
                     Cancel
@@ -67,9 +75,7 @@
     <script src="/static/js/google_maps/init.js"></script>
 
     <script type="text/javascript">
-        {% autoescape off %}
-            initializeGoogleMaps('{{ profile.location.address }}', '{{ profile.location.info_window }}');
-        {% endautoescape %}
+        initialize();
 
         $(document).ready(function () {
             var $form = $('form');
