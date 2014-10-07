@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head profile="http://selenium-ide.openqa.org/profiles/test-case">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="selenium.base" href="http://spudmart1.appspot.com" />
+<title>register_create_challenge_and_participate</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">register_create_challenge_and_participate</td></tr>
+</thead><tbody>
+<tr>
+	<td>open</td>
+	<td>http://spudmart1.appspot.com/accounts/logout</td>
+	<td></td>
+</tr>
+<tr>
+	<td>open</td>
+	<td>/challenges/signin?next=/challenges</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=LOG IN</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=register</td>
+	<td></td>
+</tr>
+<tr>
+	<td>store</td>
+	<td>javascript{'test' + new Date().toISOString().replace(/-/g, '').replace(/:/g, '').replace(/\.\d*Z/, 'Z')}</td>
+	<td>username</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=id_username</td>
+	<td>${username}</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=id_password</td>
+	<td>spudmart1</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=id_password_again</td>
+	<td>spudmart1</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=id_email_address</td>
+	<td>${username}@spudder.com</td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>id=id_state</td>
+	<td>label=New Jersey</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//button[@type='submit']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Challenges</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Create Challenge</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=div.media-body &gt; p</td>
+	<td></td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>id=select-state</td>
+	<td>label=New Jersey</td>
+</tr>
+<tr>
+	<td>runScriptAndWait</td>
+	<td>window.$('#select-state').change()</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=h4.list-group-item-heading</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=id_donation_with_challenge</td>
+	<td>20</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=id_donation_without_challenge</td>
+	<td>10</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//button[@type='submit']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Go to the challenge page!</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=ACCEPT!</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//button[@type='submit']</td>
+	<td></td>
+</tr>
+</tbody></table>
+</body>
+</html>
