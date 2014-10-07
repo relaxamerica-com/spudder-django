@@ -1,0 +1,32 @@
+{% load bootstrap3 %}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-8 col-md-offset-1">
+            <div class="page-header">
+                <h1>
+                    {% include 'spudderspuds/challenges/components/wizard_steps.html' with title="Register your Stripe payment service" step="1" of="2" %}
+                    <small>Please provide your teams Full Legal Name and EIN below</small>
+                </h1>
+                <p>
+                    <small>
+                        These details are confirmed with the IRS to ensure that your team is a properly registered US entity.
+                    </small>
+                </p>
+            </div>
+
+            <form method="post" enctype="multipart/form-data" action="{{ submit_url }}">
+                {% csrf_token %}
+                {% bootstrap_form form %}
+                {% buttons %}
+                    <button type="submit" class="btn btn-primary btn-cta btn-ajax" data-target=".submenu-page">
+                        <i class="fa fa-save"></i> Register
+                    </button>
+                    <a href="/club/dashboard" class="btn btn-default btn-cta">
+                        Cancel
+                    </a>
+                {% endbuttons %}
+            </form>
+        </div>
+    </div>
+</div>

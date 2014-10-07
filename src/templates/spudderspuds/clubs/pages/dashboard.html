@@ -1,0 +1,182 @@
+{% extends 'spudderspuds/clubs/base.html' %}
+
+{% load stripe %}
+
+{% block title %}Club Dashboard{% endblock %}
+
+{% block google_analytics_additions %}
+    ga('set', 'contentGroup1', 'Club Dashboard');
+{% endblock %}
+
+{% block js %}
+    {{ block.super }}
+    <script type="text/javascript" language="javascript" src="/static/js/libs/jquery.form.min.js"></script>
+    <script type="text/javascript" language="JavaScript">
+        $(document).ready(function(){
+            $('.btn-ajax').livequery(function(){
+                var $btn = $(this);
+                var $target = $($btn.data('target'));
+                if ($btn.is('button[type=submit]')){
+                    $btn.parents('form:first').ajaxForm({
+                        beforeSerialize: function ($form, options) {
+                            var $btn = $form.find('.btn-ajax');
+                            $btn.attr('disabled', 'disabled');
+                            $btn.html('<i class="fa fa-spin fa-spinner"></i> ' + $btn.html());
+                        },
+                        error: function (event, type, message, $form) {
+                            alert('Sorry, there was an error processing your upload, please try again or contact support@spudder.com if the problem continues.')
+                        },
+                        success: function (response_text, status_text, xhr, $form) {
+                            var $btn = $form.find('.btn-ajax');
+                            var $target = $($btn.data('target'));
+                            $target.html(response_text);
+                        }
+                    })
+                }
+                else {
+                    $btn.unbind('click').on('click', function(e){
+                        e.preventDefault();
+                        e.stopPropagation();
+                        var $btn = $(this);
+                        var $target = $($btn.data('target'));
+                        $btn.attr('disabled', 'disabled');
+                        $btn.html('<i class="fa fa-spin fa-spinner"></i> ' + $btn.html());
+                        $target.load($btn.attr('href'), function(){
+                            fix_footer_position();
+                            $(window).scrollTop($target.offset().top - 60);
+                        });
+                    });
+
+                }
+            });
+        });
+    </script>
+{% endblock %}
+
+{% block body %}
+    <div class="dashboard-page">
+        <div class="submenu-header">
+            <div class="container-fluid text-left">
+                <h4>
+                    <button class="btn btn-primary navbar-toggle" style="margin-top: -6px" type="button" data-toggle="collapse" data-target=".dashboard-page .navbar-collapse"><i class="fa fa-angle-down"></i></button>
+                    <a href="/club/dashboard">{{ club_entity.name }}</a> {% block dashboard_breadcrumbs %}<i class="fa fa-angle-right"></i> Dashboard{% endblock %}
+                </h4>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-3 collapse navbar-collapse">
+                <div class="submenu-menu">
+                    {% block dashboard_menu %}
+                        {% include 'spudderspuds/clubs/components/dashboard_nav.html' with active="dashboard" %}
+                    {% endblock %}
+                </div>
+            </div>
+            <div class="col-sm-9 submenu-page">
+                <div class="container-fluid">
+                    {% block dashboard_page %}
+
+                        {% if club.is_fully_activated %}
+
+                        {% else %}
+
+                            <div class="alert alert-success">
+                                <div class="media">
+                                    <i class="media-object pull-left fa fa-check fa-3x"></i>
+                                    <div class="media-body">
+                                        {% if message == "just_registered" %}
+                                            <h2 class="media-heading">Congratulations! Your team has been created.</h2>
+                                            <h4>Welcome to you team dashboard.</h4>
+                                        {% else %}
+                                            <h2 class="media-heading">Welcome back to your team dashboard</h2>
+                                        {% endif %}
+                                        <p>
+                                            Before you can begin fundraising, you need to register a <b>Payment Service</b>
+                                            so your team can receive money donated by fans.
+                                        </p>
+                                        <p>
+                                            Registering a payment service is easy, we've teamed up with
+                                            <a href="http://stripe.com"><b>Stripe</b></a> who offer a very simple and
+                                            secure way to manage online donations.
+                                        </p>
+                                        <p>
+                                            To set up your <b>Stripe</b> payment service, all you need is:
+                                        </p>
+                                        <ol>
+                                            <li>The <b>Full Legal Name</b> of your team</li>
+                                            <li>The Tax ID (EIN) of your team</li>
+                                        </ol>
+                                        <p>
+                                            Setting up your <b>Stripe</b> payment service will only take a few moments,
+                                            <br/>when your ready, click this button <i class="fa fa-hand-o-down"></i>
+                                        </p>
+                                        <p>
+                                            <a class="btn-ajax btn btn-primary btn-cta" href="/club/recipient" data-target=".submenu-page">
+                                                I'm ready! <i class="fa fa-arrow-right"></i>
+                                            </a>
+                                        </p>
+                                        <p>
+                                            <small>
+                                                Don't have these details to hand? Don't worry, you can always
+                                                come back and finish setting up your <b>Stripe</b> payment service later.
+                                            </small>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                        {% endif %}
+
+{#                        <div class="page-header">#}
+{#                            <h1>#}
+{#                                <i class="fa fa-fw fa-bar-chart-o"></i> Dashboard <small>Manage your Club!</small>#}
+{#                            </h1>#}
+{#                        </div>#}
+{##}
+{#                        {% if club.is_fully_activated %}#}
+{#                            <div class="quote" data-id="dashboard">#}
+{#                                <div class="alert alert-info" style="display: inline-block">#}
+{#                                    <h4><i class="fa fa-fw fa-bullhorn"></i> What to do now?</h4>#}
+{#                                    <p><b>Welcome to your Club dashboard.</b> This is your control center for managing your Club profile and associated Teams!</p>#}
+{#                                    <br/>#}
+{#                                    <div class="hidden-xs hidden-sm">#}
+{#                                        <i class="fa fa-hand-o-up fa-2x pull-left" style="position:relative; top:-5px;"></i>#}
+{#                                        <p>You can use the navigation at the top to visit the various pages in your dashboard:</p>#}
+{#                                    </div>#}
+{#                                    <div class="hidden-md hidden-lg">#}
+{#                                        <i class="fa fa-hand-o-up fa-2x  pull-right"></i>#}
+{#                                        <p>You can use this button to bring down the menu and visit the various pages in your dashboard:</p>#}
+{#                                    </div>#}
+{#                                    <br/>#}
+{#                                    <ul class="list-unstyled">#}
+{#                                        <li><i class="fa fa-fw fa-asterisk"></i> Manage your club profile on the <a href="/club/profile">Edit Profile</a> page</li>#}
+{#                                    </ul>#}
+{#                                    <ul class="list-unstyled">#}
+{#                                        <li><i class="fa fa-fw fa-asterisk"></i> View your club profile on the <a href="/club/{{ club.id }}">Public Profile</a> page</li>#}
+{#                                    </ul>#}
+{#                                    <ul class="list-unstyled">#}
+{#                                        <li><i class="fa fa-fw fa-asterisk"></i> Manage your club profile visibility</li>#}
+{#                                    </ul>#}
+{#                                </div>#}
+{#                            </div>#}
+{#                        {% else %}#}
+{#                            <div class="quote" data-id="dashboard">#}
+{#                                <div class="alert alert-danger" style="display: inline-block">#}
+{#                                    <h4><i class="fa fa-fw fa-bolt"></i> Club account not fully activated!</h4>#}
+{#                                    <p>Your Club account isn't fully activated. Only after successful activation, Club can use all the tools and options that Spudder® provide.</p>#}
+{##}
+{#                                    {% if club.next_activation_step == 'recipient' %}#}
+{#                                        <p>In order to run fundraising and challenges your Club needs to be registered as Recipient. Follow the link below in order to register.</p>#}
+{#                                        <a href="/club/recipient" class="btn btn-primary" style="margin-top: 20px;">Register as recipient</a>#}
+{#                                    {% else %}#}
+{#                                        <p>The last step of the activation process is to connect to your Stripe account. After this step your Club account will be fully functional!</p>#}
+{#                                        <a href="{% authorize_url %}" class="stripe-connect"><span>Connect with Stripe</span></a>#}
+{#                                    {% endif %}#}
+{#                                </div>#}
+{#                            </div>#}
+{#                        {% endif %}#}
+                    {% endblock %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

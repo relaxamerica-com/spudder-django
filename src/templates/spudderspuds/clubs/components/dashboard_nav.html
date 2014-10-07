@@ -1,0 +1,10 @@
+<div class="list-group">
+    <a href="/club/dashboard" class="list-group-item {% if not active or active == 'dashboard' %}active{% endif %}">
+        <i class="fa fa-dashboard"></i> Club Dashboard
+    </a>
+    {% if club.is_fully_activated %}
+    <a href="#" class="list-group-item {% if active == 'payment_services' %}active{% endif %}">
+        <i class="fa fa-money"></i> Payment Services
+    </a>
+    {% endif %}
+</div>

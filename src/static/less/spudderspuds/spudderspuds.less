@@ -1,5 +1,8 @@
 // Core variables and mixins
+@import "../libs/bootstrap-material-design/_variables.less";
+@import "../libs/bootstrap-material-design/_mixins.less";
 @import "../libs/spudder-bootstrap/spudder-bootstrap.less";
+@import "clubs/spudderclubs.less";
 
 #main-splash {
 
@@ -620,26 +623,27 @@ body.challenges {
     > .page-header {
         h1 {
             margin-top: 0;
-            .wizard-steps {
-                display: block;
-                margin-bottom: 10px;
-                small {
-                    margin-left: -5px;
-                }
-                .title {
-                    display: inline-block;
-                    padding-top: 18px;
-                    @media(max-width: @screen-xs-max) {
-                        font-size:80%;
-                        width: 50%;
-                    }
-
-                }
-            }
         }
     }
     .well {
         background-color: #F1f1f1;
+    }
+}
+
+.wizard-steps {
+    display: block;
+    margin-bottom: 10px;
+    small {
+        margin-left: -5px;
+    }
+    .title {
+        display: inline-block;
+        padding-top: 18px;
+        @media(max-width: @screen-xs-max) {
+            font-size:80%;
+            width: 50%;
+        }
+
     }
 }
 
@@ -648,6 +652,8 @@ body.challenges {
     padding: 15px 14px;
     @media(max-width: @screen-xs-max) {
         display: block;
+        width: 100%;
+        margin-bottom: 5px;
     }
 }
 
@@ -723,4 +729,87 @@ body.challenges {
     color: @brand-primary;
     border-color: @brand-primary;
     border-top: none;
+}
+
+.alert {
+    border: 0px;
+    border-radius: 0 !important;
+    a, .alert-link {
+        color: #FFFFFF;
+    }
+    .variations(~"", background-color, #FFFFFF);
+    &-info, &-danger, &-warning, &-success {
+        color: #FFFFFF;
+    }
+    &-default {
+        a, .alert-link {
+            color: #000000;
+        }
+    }
+}
+
+.alert-success, .alert-info, .alert-warning, .alert-danger {
+    text-shadow: none;
+}
+
+/**********************************************************************************************************************/
+// Code to be moved to clubs/spudderspuds.less
+/**********************************************************************************************************************/
+body {
+    &.clubs {
+        .dashboard-page {
+            margin-top: -60px;
+            @media(max-width: @screen-xs-max){
+                margin-top: -20px;
+            }
+
+            > .row {
+                margin-right: 0;
+                @media(max-width: @screen-xs-max){
+                    margin-left: 0;
+                }
+                .navbar-collapse {
+                    @media(max-width: @screen-xs-max){
+                        padding-right: 0;
+                    }
+                }
+            }
+
+            .submenu-header {
+                background-color: @brand-primary;
+                color: #FFF;
+                padding: 10px 0;
+                h4 {
+                    .fa-angle-right {
+                        margin: 0 15px;
+                    }
+                    a {
+                        color: #FFF;
+                        font-weight: bold;
+                    }
+                }
+            }
+
+            .submenu-menu {
+                background-color: @brand-primary;
+                color: #FFF;
+                .list-group {
+                    .list-group-item {
+                        color: #FFF;
+                        background-color: inherit;
+                        border: none;
+                        border-left: 3px solid @brand-primary;
+                        &.active, &:hover {
+                            border-left: 3px solid #FFF;
+                            background-color: lighten(@brand-primary, 10%);
+                        }
+                    }
+                }
+            }
+
+            .submenu-page {
+                padding: 40px 0;
+            }
+        }
+    }
 }

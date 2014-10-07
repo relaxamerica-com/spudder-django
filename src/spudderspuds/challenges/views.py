@@ -161,9 +161,7 @@ def register_club(request):
             club.save()
             club_admin = ClubAdministrator(club=club, admin=request.user)
             club_admin.save()
-
             change_current_role(request, RoleController.ENTITY_CLUB_ADMIN, club_admin.id)
-
             team = TeamPage(name=name, at_name=at_name, free_text=description, state=state, sport=sport)
             team.save()
             team_admin = TeamAdministrator(
@@ -180,7 +178,7 @@ def register_club(request):
                 entity_type=EntityController.ENTITY_TEAM)
             following_tag.save()
             start_following(request.current_role, EntityController.ENTITY_TEAM, team.id)
-            return redirect('/club/dashboard')
+            return redirect('/club/dashboard?message=just_registered')
     return render(
         request,
         'spudderspuds/challenges/pages/register_create_club.html',
