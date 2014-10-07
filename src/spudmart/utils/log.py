@@ -113,15 +113,16 @@ class EmailLoggingHandler(logging.Handler):
                 See http://docs.python.org/library/logging.html#logging.LogRecord
         """
         from django.conf import settings
-        from google.appengine.api import memcache
+        # from google.appengine.api import memcache
+
         if settings.DEBUG and record.levelno < logging.WARNING:
             # NOTE: You don't want to try this on dev_appserver. Trust me.
             return
  
         signature = self.__GetRecordSignature(record)
  
-        if not memcache.add(signature, True, time=self.log_interval):
-            return
+        # if not memcache.add(signature, True, time=self.log_interval):
+        #     return
  
         formatted_record = self.format(record)
 
