@@ -34,9 +34,6 @@ import os
 import sys
 from django.core.mail.message import EmailMultiAlternatives
 from django.views.debug import ExceptionReporter
-from google.appengine.api import memcache, xmpp
-from google.appengine.api import mail
-import simplejson
 from spudmart.utils.app_identity import get_spudmart_app_name
 
 LOG_FORMAT = '%(levelname)-8s %(asctime)s %(filename)s:%(lineno)s] %(message)s'
@@ -116,6 +113,7 @@ class EmailLoggingHandler(logging.Handler):
                 See http://docs.python.org/library/logging.html#logging.LogRecord
         """
         from django.conf import settings
+        from google.appengine.api import memcache
         if settings.DEBUG and record.levelno < logging.WARNING:
             # NOTE: You don't want to try this on dev_appserver. Trust me.
             return
