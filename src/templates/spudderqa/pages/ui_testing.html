@@ -1,0 +1,22 @@
+{% extends 'spudderqa/pages/dashboard.html' %}
+
+{% block menu %}
+    {% include 'spudderqa/components/menu.html' with active='ui_testing' %}
+{% endblock %}
+
+{% block qa_page %}
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <h3>UI Test Setup and Teardown</h3>
+                    <p>
+                        <a href="{{ request.path }}?teardown=test_challenges" class="btn btn-default" id="teardown_test_challenges">
+                            Teardown test challenges
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

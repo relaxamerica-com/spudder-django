@@ -1,7 +1,7 @@
 from django.conf.urls.defaults import *
 from spudmart.utils.url import determine_ssl
 
-urlpatterns = patterns('spudderclubs.views',
+urlpatterns = patterns('spudderspuds.clubs.views',
     (r'^$', 'splash'),
 
     (r'register$', 'register', {'SSL': determine_ssl()}),

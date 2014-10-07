@@ -5,14 +5,9 @@
     <div class="container">
         <div class="row">
             <div class="col-sm-2">
-                <div class="list-group">
-                    <a href="/qa" class="list-group-item active">
-                        <i class="fa fa fw fa-dashboard"></i> Dashboard
-                    </a>
-                    <a href="/" class="list-group-item">
-                        <i class="fa fa fw fa-reply"></i> Exit
-                    </a>
-                </div>
+                {% block menu %}
+                    {% include 'spudderqa/components/menu.html' with active='dashboard' %}
+                {% endblock %}
             </div>
             <div class="col-sm-10">
                 {% block qa_page %}

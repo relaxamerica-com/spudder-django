@@ -92,11 +92,11 @@ urlpatterns = patterns(
     url(r'^fan/*', include('spudderspuds.urls_fans')),
     url(r'^team/*', include('spudderspuds.teams.urls')),
     url(r'^flag/*', include('spudmart.flags.urls')),
-    url(r'^club/*', include('spudderclubs.urls')),
+    url(r'^club/*', include('spudderspuds.clubs.urls')),
     url(r'^challenges/*', include('spudderspuds.challenges.urls')),
 
     # Spudder QA center
-    url(r'^qa', include('spudderqa.urls')),
+    url(r'^qa/*', include('spudderqa.urls')),
 
     # Spudder Admin site
     (r'^spudderadmin', include('spudderadmin.urls')),

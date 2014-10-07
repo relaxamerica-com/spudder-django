@@ -7,8 +7,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 import settings
 from spudderaccounts.models import Invitation
 from spudderaccounts.wrappers import RoleBase
-from spudderclubs.decorators import club_admin_required, club_not_fully_activated, club_fully_activated
-from spudderclubs.forms import ClubProfileCreateForm, ClubProfileEditForm
+from spudderspuds.clubs.decorators import club_admin_required, club_not_fully_activated, club_fully_activated
+from spudderspuds.clubs.forms import ClubProfileCreateForm, ClubProfileEditForm
 from spudderdomain.controllers import RoleController
 from spudderdomain.models import ClubRecipient, Club, ClubAdministrator, TeamClubAssociation, TeamPage, StripeRecipient, \
     StripeUser
