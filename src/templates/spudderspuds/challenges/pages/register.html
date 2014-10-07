@@ -16,7 +16,7 @@
     {% if request.GET.message == "challenge_challenge" %}
         <div class="page-header">
             <h1>
-                {% include 'spudderspuds/challenges/components/wizard_steps.html' with title="Accept Challenge" step="<i class='fa fa-trophy'></i>" %}
+                {% include 'spudderspuds/components/wizard_steps.html' with title="Accept Challenge" step="<i class='fa fa-trophy'></i>" %}
                 Register to accept this challenge
             </h1>
             <p><small>Create an account and except this challenge!</small></p>
@@ -26,7 +26,7 @@
     {% if not request.GET.message %}
     <div class="page-header">
         <h1>
-            {% include 'spudderspuds/challenges/components/wizard_steps.html' with title="Start Fundraising" step="$" %}
+            {% include 'spudderspuds/components/wizard_steps.html' with title="Start Fundraising" step="$" %}
             Register with Spudder and start fundraising
         </h1>
         <p><small>Once you create an account, you'll be able to create challenges and raise money for your team!</small></p>

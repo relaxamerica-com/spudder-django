@@ -33,7 +33,7 @@
                     {% if just_submitted %}
                         <div class="page-header">
                             <h1>
-                                {% include 'spudderspuds/challenges/components/wizard_steps.html' with step="<i class='fa fa-trophy'></i>" title="Thanks!" %}
+                                {% include 'spudderspuds/components/wizard_steps.html' with step="<i class='fa fa-trophy'></i>" title="Thanks!" %}
                             </h1>
                             <h2>Thanks for suggesting the {{ participation.name }}</h2>
                         </div>
@@ -44,7 +44,7 @@
                     {% else %}
                         <div class="page-header">
                             <h1>
-                                {% include 'spudderspuds/challenges/components/wizard_steps.html' with step="<i class='fa fa-trophy'></i>" title="Spudder Challenge Challenge" %}
+                                {% include 'spudderspuds/components/wizard_steps.html' with step="<i class='fa fa-trophy'></i>" title="Spudder Challenge Challenge" %}
                             </h1>
                             <h2>This challenge: {{ participation.name }} was entered into the <a href="/challenges/challenge_challenge">Spudder Challenge Challenge</a></h2>
                         </div>

@@ -60,7 +60,7 @@
 {% block well_content %}
     <div class="page-header">
         <h1>
-            {% include 'spudderspuds/challenges/components/wizard_steps.html' with step="<i class='fa fa-trophy'></i>" title="Spudder Challenge" %}
+            {% include 'spudderspuds/components/wizard_steps.html' with step="<i class='fa fa-trophy'></i>" title="Spudder Challenge" %}
             {% if request.GET.just_pledged %}
                 Challenge Accepted
             {% else %}
