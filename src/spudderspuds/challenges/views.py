@@ -585,11 +585,22 @@ def send_challenge_emails(request):
     challenges = list(Challenge.objects.filter(template__in=active_templates))
     now = datetime.now()
     unexpired_challenges_dt = now - timedelta(minutes=challenge_config.time_to_complete)
-    participations = list(ChallengeParticipation.objects.filter(
-        challenge__in=challenges,
-        state=ChallengeParticipation.PRE_ACCEPTED_STATE,
-        created__gte=unexpired_challenges_dt
-    ))
+
+    def chunks(l, n):
+        """
+        Yield successive n-sized chunks from l.
+        """
+        for i in xrange(0, len(l), n):
+            yield l[i:i+n]
+
+    participations = []
+    chunked_challenges = chunks(challenges, len(challenges) / 30 + 1)
+    for sub_challenges in chunked_challenges:
+        participations.extend(list(ChallengeParticipation.objects.filter(
+            challenge__in=sub_challenges,
+            state=ChallengeParticipation.PRE_ACCEPTED_STATE,
+            created__gte=unexpired_challenges_dt
+        )))
 
     if participations:
         exclude_ids = []
