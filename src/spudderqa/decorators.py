@@ -8,8 +8,8 @@ from spudderadmin.utils import encoded_admin_session_variable_name
 def qa_login_required(function):
     def wrap(request, *args, **kwargs):
 
-        if settings.ENVIRONMENT == Environments.LIVE:
-            raise Http404
+        # if settings.ENVIRONMENT == Environments.LIVE:
+        #     raise Http404
 
         if not request.session.get(encoded_admin_session_variable_name(), False):
             return redirect('/qa/signin')
