@@ -24,17 +24,17 @@ from spudmart.utils.querysets import get_object_or_none
 
 
 def splash(request):
-    return render(request, 'spudderclubs/pages/splash.html')
+    return render(request, 'spudderspuds/clubs/pages/splash.html')
 
 
 def register(request):
-    return render(request, 'spudderclubs/pages/registration/register.html')
+    return render(request, 'spudderspuds/clubs/registration/register.html')
 
 
 @club_admin_required
 @club_not_fully_activated
 def register_as_recipient(request):
-    return render(request, 'spudderclubs/pages/registration/register_as_recipient.html', {
+    return render(request, 'spudderspuds/clubs/registration/register_as_recipient.html', {
         'cbui_url': get_club_register_as_recipient_cbui_url()
     })
 
@@ -87,7 +87,7 @@ def register_as_recipient_error(request):
 
     status_message = AmazonActionStatus.get_status_message(recipient.status_code)
 
-    return render(request, 'spudderclubs/pages/registration/register_error.html', {
+    return render(request, 'spudderspuds/clubs/registration/register_error.html', {
         'failure_reason': status_message
     })
 
@@ -95,7 +95,7 @@ def register_as_recipient_error(request):
 @club_admin_required
 @club_not_fully_activated
 def register_as_recipient_pending_verification(request):
-    return render(request, 'spudderclubs/pages/registration/register_pending_verification.html')
+    return render(request, 'spudderspuds/clubs/registration/register_pending_verification.html')
 
 
 @club_admin_required
@@ -115,7 +115,7 @@ def register_profile_info(request):
             set_social_media(club, social_media_form)
             club.save()
             return redirect('/club/dashboard')
-    return render(request, 'spudderclubs/pages/registration/register_profile.html', {
+    return render(request, 'spudderspuds/clubs/registration/register_profile.html', {
         'form': form,
         'social_media': social_media_form
     })
@@ -155,21 +155,21 @@ def stripe_recipient(request):
 
             errors = 'Verification failed!'
 
-    return render(request, 'spudderclubs/pages/registration/recipient.html', {
+    return render(request, 'spudderspuds/clubs/registration/recipient.html', {
         'form': form,
         'errors': errors
     })
 
 
 def signin(request):
-    return render(request, 'spudderclubs/pages/registration/signin.html')
+    return render(request, 'spudderspuds/clubs/registration/signin.html')
 
 
 @club_admin_required
 def dashboard(request):
     club = request.current_role.entity.club
 
-    return render(request, 'spudderclubs/pages/dashboard/dashboard.html', {
+    return render(request, 'spudderspuds/clubs/dashboard/dashboard.html', {
         'club': club,
         'cbui_url': get_club_register_as_recipient_cbui_url()
     })
@@ -199,7 +199,7 @@ def profile(request):
 
             return redirect('/club/profile')
 
-    return render(request, 'spudderclubs/pages/dashboard/profile.html', {
+    return render(request, 'spudderspuds/clubs/dashboard/profile.html', {
         'profile': club,
         'form': form,
         'social_media': social_media_form
@@ -217,7 +217,7 @@ def hide_profile(request):
 
         return redirect('/club/dashboard')
 
-    return render(request, 'spudderclubs/pages/dashboard/hide_profile.html', {
+    return render(request, 'spudderspuds/clubs/dashboard/hide_profile.html', {
         'profile': club
     })
 
@@ -233,7 +233,7 @@ def show_profile(request):
 
         return redirect('/club/dashboard')
 
-    return render(request, 'spudderclubs/pages/dashboard/show_profile.html', {
+    return render(request, 'spudderspuds/clubs/dashboard/show_profile.html', {
         'profile': club
     })
 
@@ -246,7 +246,7 @@ def public_page(request, club_id):
 
     team_ids = list(TeamClubAssociation.objects.filter(club=club).values_list('team_page', flat=True))
     teams = TeamPage.objects.filter(id__in=team_ids)
-    return render(request, 'spudderclubs/pages/public/view.html', {
+    return render(request, 'spudderspuds/clubs/public/view.html', {
         'base_url': 'spudderspuds/base.html',
         'profile': club,
         'teams': teams,
@@ -281,7 +281,7 @@ def donate(request, club_id):
 def not_found(request):
     clubs = Club.objects.filter(hidden=False)[:5]
 
-    return render(request, 'spudderclubs/pages/public/not_found.html', {
+    return render(request, 'spudderspuds/clubs/public/not_found.html', {
         'clubs': clubs
     })
 
