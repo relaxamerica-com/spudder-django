@@ -288,8 +288,11 @@ class Club(models.Model):
         else:
             self.location.update_from_post_data(location_info)
 
+    def has_stripe_recipient(self):
+        return bool(StripeRecipient.objects.filter(club=self).count())
+
     def is_fully_activated(self):
-        if StripeRecipient.objects.filter(club=self).count() < 1:
+        if not self.has_stripe_recipient():
             return False
 
         return StripeUser.objects.filter(club=self).count() > 0

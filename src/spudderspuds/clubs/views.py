@@ -33,7 +33,6 @@ def dashboard(request):
         EntityBase.EntityWrapperByEntityType(EntityController.ENTITY_CLUB))
     template_data = {
         'club': club,
-        'message': request.GET.get('message'),
         'cbui_url': get_club_register_as_recipient_cbui_url(),
         'club_entity': club_entity}
     return render(request, 'spudderspuds/clubs/pages/dashboard.html', template_data)
@@ -43,18 +42,51 @@ def dashboard(request):
 @club_not_fully_activated
 def stripe_recipient(request):
     club = request.current_role.entity.club
-    form = StripeRegisterRecipientForm()
-    if request.method == "POST":
-        form = StripeRegisterRecipientForm(request.POST)
-        form.club = club
-        form.user = request.user
-        if form.is_valid():
-            return HttpResponseRedirect('/club/dashboard')
-    template_data = {'form': form, 'submit_url': request.path}
-    return render(request, 'spudderspuds/clubs/pages_ajax/register_with_stripe_1.html', template_data)
+    club_entity = EntityController.GetWrappedEntityByTypeAndId(
+        EntityController.ENTITY_CLUB,
+        club.id,
+        EntityBase.EntityWrapperByEntityType(EntityController.ENTITY_CLUB))
+    try:
+        StripeRecipient.objects.get(club=club)
+        template_data = {'club_entity': club_entity}
+        return render(request, 'spudderspuds/clubs/pages_ajax/register_with_stripe_2.html', template_data)
+    except StripeRecipient.DoesNotExist:
+        form = StripeRegisterRecipientForm(initial={'name': club.name})
+        if request.method == "POST":
+            form = StripeRegisterRecipientForm(request.POST)
+            form.club = club
+            form.user = request.user
+            if form.is_valid():
+                return redirect('%s?message=just_submitted' % request.path)
+        template_data = {'form': form, 'submit_url': request.path}
+        return render(request, 'spudderspuds/clubs/pages_ajax/register_with_stripe_1.html', template_data)
 
 
-
+@club_admin_required
+def stripe(request):
+    club = request.current_role.entity.club
+    params = urllib.urlencode({
+        'client_secret': settings.STRIPE_SECRET_KEY,
+        'code': request.GET.get('code', ''),
+        'grant_type': 'authorization_code'
+    })
+    url = '/oauth/token?%s' % params
+    connection = httplib.HTTPSConnection('connect.stripe.com')
+    connection.connect()
+    connection.request('POST', url)
+    resp = connection.getresponse()
+    resp_data = resp.read()
+    json_data = json.loads(resp_data)
+    StripeUser(
+        club=club,
+        access_token=json_data['access_token'],
+        refresh_token=json_data['refresh_token'],
+        publishable_key=json_data['stripe_publishable_key'],
+        user_id=json_data['stripe_user_id'],
+        scope=json_data['scope'],
+        token_type=json_data['token_type'],
+    ).save()
+    return HttpResponseRedirect('/club/dashboard?message=just_connected_with_stripe')
 
 # def splash(request):
 #     return render(request, 'spudderspuds/clubs/_old/pages/splash.html')

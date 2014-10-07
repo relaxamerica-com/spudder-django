@@ -1,12 +1,15 @@
 {% extends 'spudderspuds/clubs/base.html' %}
 
 {% load stripe %}
+{% load bootstrap3 %}
 
 {% block title %}Club Dashboard{% endblock %}
 
 {% block google_analytics_additions %}
     ga('set', 'contentGroup1', 'Club Dashboard');
 {% endblock %}
+
+{% block messages %}{# blank out the header messages #}{% endblock %}
 
 {% block js %}
     {{ block.super }}
@@ -30,6 +33,9 @@
                             var $btn = $form.find('.btn-ajax');
                             var $target = $($btn.data('target'));
                             $target.html(response_text);
+                            fix_footer_position();
+                            if ($(window).scrollTop() > 20)
+                                $(window).scrollTop($target.offset().top - 100);
                         }
                     })
                 }
@@ -43,7 +49,8 @@
                         $btn.html('<i class="fa fa-spin fa-spinner"></i> ' + $btn.html());
                         $target.load($btn.attr('href'), function(){
                             fix_footer_position();
-                            $(window).scrollTop($target.offset().top - 60);
+                            if ($(window).scrollTop() > 20)
+                                $(window).scrollTop($target.offset().top - 60);
                         });
                     });
 
@@ -73,9 +80,61 @@
             </div>
             <div class="col-sm-9 submenu-page">
                 <div class="container-fluid">
+                    {% bootstrap_messages %}
+
                     {% block dashboard_page %}
 
                         {% if club.is_fully_activated %}
+                            {% if request.GET.message == 'just_connected_with_stripe' %}
+
+                                <div class="alert alert-success">
+                                    <div class="media">
+                                        <i class="media-object pull-left fa fa-check fa-3x"></i>
+                                        <div class="media-body">
+                                            <h2 class="media-heading">It Worked!</h2>
+                                            <p>You team is now fully registered with Stripe!</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            {% endif %}
+
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading">
+                                            <h3 class="panel-title"><i class="fa fa-money"></i> Payment Services Status</h3>
+                                        </div>
+                                        <div class="panel-body">
+
+                                            {% if request.GET.message != 'just_connected_with_stripe' %}
+                                                <div class="alert">
+                                                    <div class="media">
+                                                        <i class="media-object pull-left fa fa-check fa-2x text-success"></i>
+                                                        <div class="media-body">
+                                                            <h4 class="media-heading">Payments are active</h4>
+                                                            <span>You team is fully registered and able to accept donations from fans.</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <hr/>
+                                            {% endif %}
+
+                                            <div class="media">
+                                                <img class="media-object pull-left" src="/static/img/spudderspuds/stripe-logo.png"  style="width:25%" />
+                                                <div class="media-body">
+                                                    <h4 class="media-heading">Stripe payment service</h4>
+                                                    <p>
+                                                        <span class="label label-success">
+                                                            <i class="fa fa-check"></i> Active and working
+                                                        </span>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
                         {% else %}
 
@@ -83,7 +142,7 @@
                                 <div class="media">
                                     <i class="media-object pull-left fa fa-check fa-3x"></i>
                                     <div class="media-body">
-                                        {% if message == "just_registered" %}
+                                        {% if request.GET.message == "just_registered" %}
                                             <h2 class="media-heading">Congratulations! Your team has been created.</h2>
                                             <h4>Welcome to you team dashboard.</h4>
                                         {% else %}
@@ -98,17 +157,36 @@
                                             <a href="http://stripe.com"><b>Stripe</b></a> who offer a very simple and
                                             secure way to manage online donations.
                                         </p>
-                                        <p>
-                                            To set up your <b>Stripe</b> payment service, all you need is:
-                                        </p>
-                                        <ol>
-                                            <li>The <b>Full Legal Name</b> of your team</li>
-                                            <li>The Tax ID (EIN) of your team</li>
-                                        </ol>
-                                        <p>
-                                            Setting up your <b>Stripe</b> payment service will only take a few moments,
-                                            <br/>when your ready, click this button <i class="fa fa-hand-o-down"></i>
-                                        </p>
+                                        {% if club.has_stripe_recipient %}
+
+                                            <p>Your almost registered with stripe.</p>
+
+                                            <p>
+                                                You successfully gave us your teams legal name and EIN, the only thing
+                                                you need to do now is create a Stripe account (or link one if you already
+                                                have one)
+                                            </p>
+
+                                            <p>
+                                                When your ready, click this button <i class="fa fa-hand-o-down"></i>
+                                            </p>
+
+                                        {% else %}
+
+                                            <p>
+                                                To set up your <b>Stripe</b> payment service, all you need is:
+                                            </p>
+                                            <ol>
+                                                <li>The <b>Full Legal Name</b> of your team</li>
+                                                <li>The Tax ID (EIN) of your team</li>
+                                            </ol>
+                                            <p>
+                                                Setting up your <b>Stripe</b> payment service will only take a few moments,
+                                                <br/>when your ready, click this button <i class="fa fa-hand-o-down"></i>
+                                            </p>
+
+                                        {% endif %}
+
                                         <p>
                                             <a class="btn-ajax btn btn-primary btn-cta" href="/club/recipient" data-target=".submenu-page">
                                                 I'm ready! <i class="fa fa-arrow-right"></i>

@@ -15316,6 +15316,7 @@ body.clubs .dashboard-page > .row {
 @media (max-width: 767px) {
   body.clubs .dashboard-page > .row .navbar-collapse {
     padding-right: 0;
+    padding-left: 0;
   }
 }
 body.clubs .dashboard-page .submenu-header {

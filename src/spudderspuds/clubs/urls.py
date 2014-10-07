@@ -14,7 +14,8 @@ urlpatterns = patterns('spudderspuds.clubs.views',
     # (r'^signin$', 'signin', {'SSL': determine_ssl()}),
     #
     (r'^dashboard$', 'dashboard'),
-    (r'recipient', 'stripe_recipient'),
+    (r'recipient$', 'stripe_recipient'),
+    (r'^stripe$', 'stripe'),
 
     # (r'^profile$', 'profile'),
     # (r'^show$', 'show_profile'),
@@ -30,6 +31,5 @@ urlpatterns = patterns('spudderspuds.clubs.views',
     # (r'^reset_cover$', 'reset_cover'),
     # (r'^save_thumbnail$', 'save_thumbnail'),
     #
-    # (r'^stripe$', 'stripe'),
 )
 

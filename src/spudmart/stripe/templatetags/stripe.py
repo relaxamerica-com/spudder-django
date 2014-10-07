@@ -14,7 +14,7 @@ def authorize_url(context):
     authorize_url += '&client_id=%s' % settings.STRIPE_CLIENT_ID
 
     if context['request'].META['SERVER_NAME'] in ['localhost', 'testserver']:
-        redirect_uri = 'http://localhost:9191'
+        redirect_uri = 'http://' + context['request'].get_host()
     else:
         redirect_uri = settings.SPUDMART_BASE_URL
     redirect_uri += '/club/stripe'

@@ -1,0 +1,39 @@
+{% load stripe %}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-8 col-md-offset-1">
+            <div class="page-header">
+                <h1>
+                    {% include 'spudderspuds/challenges/components/wizard_steps.html' with title="Register your Stripe payment service" step="2" of="2" %}
+                    {% if request.GET.message == 'just_submitted' %}
+                        <small>Thanks!</small>
+                    {% else %}
+                        <small>Welcome back!</small>
+                    {% endif %}
+                </h1>
+                {% if request.GET.message == 'just_submitted' %}
+                    <p>
+                        <small>
+                            We have recorded your teams legal name and EIN.
+                        </small>
+                    </p>
+                {% endif %}
+            </div>
+            <p>You're almost there, all you need to do before your team can begin fundraising is connect with Stripe.</p>
+            <p class="text-primary">
+                Connecting with Stripe is really easy!
+            </p>
+            <p>
+                Just click here <i class="fa fa-hand-o-down"></i>, and you will be taken to Stripe to register or sign in.
+            </p>
+            <p><a href="{% authorize_url %}" class="stripe-connect"><span>Connect with Stripe</span></a></p>
+            <p>
+                If you don't have a Stripe account, you will be able to create one on the next screen.
+            </p>
+            <p>
+                You'll have to have the following things ready:
+            </p>
+        </div>
+    </div>
+</div>

@@ -214,9 +214,11 @@
             </nav>
         {% endblock %}
 
-        <div class="container">
-            {% bootstrap_messages %}
-        </div>
+        {% block messages %}
+            <div class="container">
+                {% bootstrap_messages %}
+            </div>
+        {% endblock %}
 
         {% block body %}{% endblock %}
         {% block footer %}
