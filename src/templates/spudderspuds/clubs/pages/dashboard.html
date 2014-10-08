@@ -87,15 +87,15 @@
 
                             {% if request.GET.message == 'just_connected_with_stripe' %}
 
-                                <div class="alert {% if not stripe_bank_account %}alert-warning{% else %}alert-success{% endif %}">
+                                <div class="alert {% if not stripe_is_verified %}alert-warning{% else %}alert-success{% endif %}">
                                     <div class="media">
                                         <i class="media-object pull-left fa fa-3x {% if not stripe_cards.default_card_id %}fa-warning{% else %}fa-check{% endif %}"></i>
                                         <div class="media-body">
-                                            {% if stripe_bank_account %}
+                                            {% if stripe_is_verified %}
                                                 <h2 class="media-heading">It Worked!</h2>
                                                 <p>You team is now fully registered with Stripe!</p>
                                             {% else %}
-                                                {% include 'spudderspuds/clubs/components/dashboard_stripe_no_account_message.html' %}
+                                                {% include 'spudderspuds/clubs/components/dashboard_stripe_account_not_verified_message.html' %}
                                             {% endif %}
                                         </div>
                                     </div>
@@ -112,7 +112,7 @@
                                         <div class="panel-body">
 
                                             {% if request.GET.message != 'just_connected_with_stripe' %}
-                                                {% if stripe_bank_account %}
+                                                {% if stripe_is_verified %}
                                                     <div class="alert">
                                                         <div class="media">
                                                             <i class="media-object pull-left fa fa-check fa-2x text-success"></i>
@@ -127,7 +127,7 @@
                                                         <div class="media">
                                                             <i class="media-object pull-left fa fa-warning fa-2x"></i>
                                                             <div class="media-body">
-                                                                {% include 'spudderspuds/clubs/components/dashboard_stripe_no_account_message.html' with heading_tag="h4" %}
+                                                                {% include 'spudderspuds/clubs/components/dashboard_stripe_account_not_verified_message.html' with heading_tag="h4" %}
                                                             </div>
                                                         </div>
                                                     </div>
@@ -140,7 +140,7 @@
                                                 <div class="media-body">
                                                     <h4 class="media-heading">Stripe payment service</h4>
                                                     <p>
-                                                        {% if stripe_bank_account %}
+                                                        {% if stripe_is_verified %}
                                                             <span class="label label-success">
                                                                 <i class="fa fa-check"></i> Active and working
                                                             </span>

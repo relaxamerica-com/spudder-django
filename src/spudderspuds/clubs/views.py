@@ -34,10 +34,10 @@ def dashboard(request):
         club.id,
         EntityBase.EntityWrapperByEntityType(EntityController.ENTITY_CLUB))
     stripe_controller = get_stripe_recipient_controller_for_club(club)
-    stripe_bank_account = stripe_controller.get_recipient_active_bank_account() if stripe_controller else None
+    stripe_is_verified = stripe_controller.is_recipient_verified() if stripe_controller else False
     template_data = {
         'stripe': stripe_controller,
-        'stripe_bank_account': stripe_bank_account,
+        'stripe_is_verified': stripe_is_verified,
         'club': club,
         'club_entity': club_entity}
     return render(request, 'spudderspuds/clubs/pages/dashboard.html', template_data)

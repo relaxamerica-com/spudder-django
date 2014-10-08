@@ -7,6 +7,7 @@ from django.conf import settings
 from settings import Environments
 
 
+
 class StripeRecipientsController(object):
     def __init__(self, stripe_recipient, stripe_user):
         self.stripe_recipient = stripe_recipient
@@ -28,12 +29,22 @@ class StripeRecipientsController(object):
         self.stripe_user.access_token = json_data['access_token']
         self.stripe_user.save()
 
+    def is_recipient_verified(self):
+        if settings.ENVIRONMENT == Environments.DEV:
+            return True
+        else:
+            recipient = stripe.Recipient.retrieve(self.stripe_recipient.recipient_id, settings.STRIPE_SECRET_KEY)
+            return recipient.get('verified', False)
+
+
     def get_recipient_active_bank_account(self):
         if settings.ENVIRONMENT == Environments.DEV:
             account = {'id': 'fdjfhjdhfjhdjhfd', 'object': 'account'}
         else:
             recipient = stripe.Recipient.retrieve(self.stripe_recipient.recipient_id, settings.STRIPE_SECRET_KEY)
+            logging.debug('%s' % recipient)
             account = recipient.get('active_account')
+        logging.debug('%s' % account)
         return account
 
     def get_recipient_registered_cards(self):

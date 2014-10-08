@@ -28,6 +28,7 @@ FEATURES = {
         'challenge_tree',
         'email_error_logs',
         'tracking_pixels',
+        # 'stripe_ein_validation',
         # 'all_fans_auto_follow_main_spudder_fan',
     ],
     'live': [

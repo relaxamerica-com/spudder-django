@@ -1,8 +1,10 @@
+import logging
 import stripe
 from django import forms
 from django.conf import settings
 from spudderdomain.models import StripeRecipient
 from spudmart.CERN.models import SORTED_STATES
+from spudderadmin.templatetags.featuretags import feature_is_enabled
 
 
 class StripeRegisterRecipientForm(forms.Form):
@@ -51,7 +53,10 @@ class StripeRegisterRecipientForm(forms.Form):
                     tax_id=ein)
             except Exception as ex:
                 raise forms.ValidationError('Something went wrong: %s' % ex)
-            is_verified = recipient_creation_result['verified']
+            if not feature_is_enabled('stripe_ein_validation'):
+                is_verified = True
+            else:
+                is_verified = recipient_creation_result['verified']
             if is_verified:
                 try:
                     StripeRecipient(
@@ -62,6 +67,7 @@ class StripeRegisterRecipientForm(forms.Form):
                 except Exception as ex:
                     raise forms.ValidationError('Something went wrong: %s' % ex)
             else:
+                logging.debug('%s' % recipient_creation_result)
                 raise forms.ValidationError(
                     "There was an problem checking these details with the IRS. Please ensure that the Full Legal Name "
                     "and the EIN are accurate.<br/><br/>If you are unsure or are having problems completing this, "
