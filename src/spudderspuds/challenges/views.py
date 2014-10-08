@@ -1,12 +1,10 @@
 import json
-import logging
 from datetime import datetime, timedelta
 from django.contrib.auth import authenticate, login
-from django.http import HttpResponse, Http404
+from django.http import HttpResponse
 from django.shortcuts import redirect, render, get_object_or_404
 from django.contrib.auth.models import User
 from google.appengine.api import blobstore, taskqueue
-from events import TrackingPixelEvents
 from spudderaccounts.controllers import NotificationController
 from spudderaccounts.models import Notification
 from spudderadmin.templatetags.featuretags import feature_is_enabled
@@ -14,14 +12,14 @@ from spudderkrowdio.models import FanFollowingEntityTag
 from spudderkrowdio.utils import start_following
 from spudderspuds.utils import create_and_activate_fan_role
 from spudmart.CERN.models import STATES
-from spudderdomain.models import Club, TempClub, FanPage, Challenge, ChallengeTemplate, ChallengeParticipation, \
+from spudderdomain.models import Club, TempClub, Challenge, ChallengeTemplate, ChallengeParticipation, \
     ClubAdministrator, TeamPage, TeamAdministrator, TeamClubAssociation
 from spudderdomain.models import ChallengeChallengeParticipation
 from spudmart.upload.forms import UploadForm
-from spudderaccounts.utils import change_current_role, select_most_appropriate_user_role
+from spudderaccounts.utils import change_current_role
 from spudderaccounts.wrappers import RoleBase, RoleFan
 from spudderdomain.wrappers import EntityBase
-from spudderdomain.controllers import RoleController, EntityController, CommunicationController
+from spudderdomain.controllers import RoleController, EntityController, EventController
 from spudderspuds.challenges.forms import CreateTempClubForm, ChallengeConfigureForm, ChallengesRegisterForm, \
     RegisterCreateClubForm
 from spudderspuds.challenges.forms import ChallengesSigninForm, AcceptChallengeForm, UploadImageForm
@@ -135,7 +133,7 @@ def register(request):
             fan_page.save()
             login(request, authenticate(username=username, password=password))
             if feature_is_enabled('tracking_pixels'):
-                request.events.append(TrackingPixelEvents.CHALLENGER_USER_REGISTERER)
+                EventController.RegisterEvent(request, EventController.CHALLENGER_USER_REGISTERER)
             if form.cleaned_data.get('account_type') == EntityController.ENTITY_CLUB:
                 return redirect('/challenges/register/team?next=%s' % form.cleaned_data.get('next', '/'))
             return redirect(form.cleaned_data.get('next', '/'))
@@ -374,7 +372,7 @@ def challenge_accept_upload(request, challenge_id):
                 participation.state = ChallengeParticipation.ACCEPTED_STATE
                 participation.save()
                 if feature_is_enabled('tracking_pixels'):
-                    request.events.append(TrackingPixelEvents.CHALLENGE_ACCEPTED)
+                    EventController.RegisterEvent(request, EventController.CHALLENGE_ACCEPTED)
             if request.is_ajax():
                 return HttpResponse(redirect_url)
             return redirect(redirect_url)
@@ -542,7 +540,7 @@ def challenge_challenge_accept_notice(request, state=None, club_entity_type=None
             participation.save()
             redirect_url = '/challenges/challenge_challenge/%s/thanks?just_submitted=True' % participation_id
             if feature_is_enabled('tracking_pixels'):
-                request.events.append(TrackingPixelEvents.CHALLENGE_ACCEPTED)
+                EventController.RegisterEvent(request, EventController.CHALLENGE_ACCEPTED)
             if request.is_ajax():
                 return HttpResponse(redirect_url)
             return redirect(redirect_url)

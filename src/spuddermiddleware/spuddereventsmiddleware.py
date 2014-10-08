@@ -1,11 +1,12 @@
 
 
-class EventsMiddleware:
-    EVENTS_ATTR_NAME = 'events'
+class EventsMiddleware(object):
+    EVENTS_KEY_NAME = 'events'
 
-    def _add_events_to_request(self, request):
-        if not hasattr(request, self.EVENTS_ATTR_NAME):
-            setattr(request, self.EVENTS_ATTR_NAME, [])
+    @classmethod
+    def add_events_to_session(cls, request):
+        if cls.EVENTS_KEY_NAME not in request.session:
+            request.session[cls.EVENTS_KEY_NAME] = []
 
     def process_request(self, request):
-        self._add_events_to_request(request)
+        EventsMiddleware.add_events_to_session(request)

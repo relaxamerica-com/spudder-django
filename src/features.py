@@ -28,7 +28,7 @@ FEATURES = {
         'challenge_tree',
         'email_error_logs',
         'tracking_pixels',
-        'all_fans_auto_follow_main_spudder_fan',
+        # 'all_fans_auto_follow_main_spudder_fan',
     ],
     'live': [
         'google_analytics',

@@ -15,6 +15,7 @@ from spudderkrowdio.utils import post_spud, get_user_mentions_activity, get_spud
 from spudderkrowdio.models import KrowdIOStorage, FanFollowingEntityTag
 from spudmart.utils.emails import send_email
 from spudmart.venues.models import Venue
+from spuddermiddleware.spuddereventsmiddleware import EventsMiddleware
 from communications import MESSAGES, NOTIFICATIONS
 
 
@@ -614,3 +615,21 @@ class CommunicationController(object):
         if cls.ValidateComminicationTypeValid(communication_type):
             if communication_type == cls.TYPE_EMAIL:
                 cls.CommunicateWithEmail(entity.contact_emails, **kwargs)
+
+
+class EventController(object):
+    USER_REGISTERED = 'user_registered'
+    CHALLENGER_USER_REGISTERER = 'challenger_user_registered'
+    CHALLENGE_ACCEPTED = 'challenge_accepted'
+    EVENTS = (USER_REGISTERED, CHALLENGER_USER_REGISTERER, CHALLENGE_ACCEPTED)
+
+    @classmethod
+    def RegisterEvent(cls, request, event_name):
+        EventsMiddleware.add_events_to_session(request)
+        if event_name not in request.session[EventsMiddleware.EVENTS_KEY_NAME]:
+            request.session[EventsMiddleware.EVENTS_KEY_NAME].append(event_name)
+
+    @classmethod
+    def RegisterEvents(cls, request, event_names_list):
+        for event_name in event_names_list:
+            cls.register_event(request, event_name)

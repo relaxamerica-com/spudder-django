@@ -98,7 +98,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'spuddercontextprocessors.appenginhelpers.context_running_locally',
     'spuddercontextprocessors.staffcontext.staff_context',
     'spuddercontextprocessors.settingscontext.settings_context',
-    'spuddercontextprocessors.trackingpixelscontext.tracking_pixel_code'
+    'spuddercontextprocessors.trackingpixelscontext.tracking_pixel_code_context'
 )
 
 
