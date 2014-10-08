@@ -79,136 +79,136 @@
                         <ul class="nav navbar-nav navbar-right">
                             {% block nav %}{% endblock %}
                             {% block current_role_nav %}
-                                {% if not 'challenges_only_override'|feature_is_enabled %}
-                                    {% if current_role %}
-                                        {% if current_role|is_cern_student %}
-                                            <li class="dropdown">
-                                                <a class="dropdown-toggle" href="#" data-toggle="dropdown">
-                                                    CERN Menu <i class="fa fa-caret-down"></i>
-                                                </a>
-                                                <ul class="dropdown-menu">
-                                                    <li><a href="/cern/"><i class="fa fa-fw fa-bar-chart-o"></i> Scoreboard</a></li>
-                                                    <li><a href="{% current_student_page %}"><i class="fa fa-fw fa-user"></i> Student Page</a></li>
-                                                    <li><a href="/cern/venues/"><i class="fa fa-fw fa-map-marker"></i> Venues</a></li>
-                                                    <li><a href="/team/list"><i class="fa fa-fw fa-group"></i> My Teams</a></li>
-                                                    <li><a href="/cern/social_media/"><i class="fa fa-fw fa-rss"></i> Social Media</a></li>
-                                                    <li><a href="/cern/testing/"><i class="fa fa-fw fa-bug"></i> QA Testing</a></li>
-                                                </ul>
-                                            </li>
-                                        {% endif %}
-                                        {% if current_role|is_sponsor %}
-                                            {% include 'spuddersponsors/parts/sponsors_menu.html' %}
-                                        {% endif %}
-                                        {% if current_role|is_fan %}
-                                            {% include 'spudderspuds/components/main_nav.html' %}
-                                        {% endif %}
-                                        {% if current_role|is_club_admin %}
-                                            {% include 'spudderspuds/clubs/_old/components/main_nav.html' %}
-                                        {% endif %}
-                                    {% endif %}
-                                {% endif %}
+{#                                {% if not 'challenges_only_override'|feature_is_enabled %}#}
+{#                                    {% if current_role %}#}
+{#                                        {% if current_role|is_cern_student %}#}
+{#                                            <li class="dropdown">#}
+{#                                                <a class="dropdown-toggle" href="#" data-toggle="dropdown">#}
+{#                                                    CERN Menu <i class="fa fa-caret-down"></i>#}
+{#                                                </a>#}
+{#                                                <ul class="dropdown-menu">#}
+{#                                                    <li><a href="/cern/"><i class="fa fa-fw fa-bar-chart-o"></i> Scoreboard</a></li>#}
+{#                                                    <li><a href="{% current_student_page %}"><i class="fa fa-fw fa-user"></i> Student Page</a></li>#}
+{#                                                    <li><a href="/cern/venues/"><i class="fa fa-fw fa-map-marker"></i> Venues</a></li>#}
+{#                                                    <li><a href="/team/list"><i class="fa fa-fw fa-group"></i> My Teams</a></li>#}
+{#                                                    <li><a href="/cern/social_media/"><i class="fa fa-fw fa-rss"></i> Social Media</a></li>#}
+{#                                                    <li><a href="/cern/testing/"><i class="fa fa-fw fa-bug"></i> QA Testing</a></li>#}
+{#                                                </ul>#}
+{#                                            </li>#}
+{#                                        {% endif %}#}
+{#                                        {% if current_role|is_sponsor %}#}
+{#                                            {% include 'spuddersponsors/parts/sponsors_menu.html' %}#}
+{#                                        {% endif %}#}
+{#                                        {% if current_role|is_fan %}#}
+{#                                            {% include 'spudderspuds/components/main_nav.html' %}#}
+{#                                        {% endif %}#}
+{#                                        {% if current_role|is_club_admin %}#}
+{#                                            {% include 'spudderspuds/clubs/_old/components/main_nav.html' %}#}
+{#                                        {% endif %}#}
+{#                                    {% endif %}#}
+{#                                {% endif %}#}
                             {% endblock %}
                             {% block user_account_nav %}
-                                {% if not 'challenges_only_override'|feature_is_enabled %}
-                                    {% if current_role %}
-                                        <li class="dropdown">
-                                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                                My Spudder <i class="fa fa-caret-down"></i>
-                                            </a>
-                                            <ul class="dropdown-menu">
-                                                <li style=" padding: 5px 30px; min-width: 350px;">
-                                                    <div class="panel panel-default">
-                                                        <div class="panel-body">
-                                                            <div class="media">
-                                                                <a href="{{ current_role.home_page_path }}" class="media-object pull-left">
-                                                                    <img src="{{ current_role.image }}" style="height: 40px;" />
-                                                                </a>
-                                                                <div class="media-body">
-                                                                    <p class="media-heading">{{ current_role.title|safe }}</p>
-                                                                    <span class="label label-success"><a href="{{ current_role.home_page_path }}" style="color:white;">Current role</a></span>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    {% if other_roles %}
-                                                        <hr />
-                                                        <p>My {% if other_roles|length > 2 %}top{% else %}other{% endif %} role{% if other_roles|length > 1 %}s{% endif %}</p>
-                                                        <div style="margin-left:10px;">
-                                                            {% for role in other_roles %}
-                                                                {% if forloop.counter < 3 %}
-                                                                    <hr />
-                                                                    <div class="media">
-                                                                        <img class="media-object pull-left" src="{{ role.image }}" style="height: 40px;" />
-                                                                        <div class="media-body">
-                                                                            <p class="media-heading"><small>{{ role.title|safe }}</small></p>
-                                                                            <a href="{% link_to_change_role_and_return role %}" class="btn btn-default btn-xs" style="margin:0;">
-                                                                                Activate this role
-                                                                            </a>
-                                                                        </div>
-                                                                    </div>
-                                                                {% endif %}
-                                                            {% endfor %}
-                                                        </div>
-                                                    {% endif %}
-                                                </li>
-                                                {% if current_role and current_role.entity_type == "fan" %}
-                                                    <li>
-                                                        <a href="/fan/{{ current_role.entity.id }}">My Fan Profile</a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="/fan/{{ current_role.entity.id }}/teams">My Teams</a>
-                                                    </li>
-                                                {% endif %}
-                                                <li><a href="/accounts/logout"><i class="fa fa-fw fa-power-off"></i> Logout</a></li>
-                                            </ul>
-                                        </li>
-                                        {% block support_nav %}
-                                            {% if current_role %}
-                                                <li class="dropdown">
-                                                    <a class="dropdown-toggle" href="#" data-toggle="dropdown">
-                                                        Support <i class="fa fa-caret-down"></i>
-                                                    </a>
-                                                    <ul class="dropdown-menu">
-                                                        <li><a href="http://spudder.zendesk.com/account/dropboxes/20176994" onClick="Zenbox.show(); return false;">Contact Spudder Support</a></li>
-                                                        <li><a href="#" data-toggle="modal" data-target="#flag-modal" class="{% block flag-page-class %}hidden{% endblock %}">Flag Page</a></li>
-                                                    </ul>
-                                                </li>
-                                            {% endif %}
-                                        {% endblock %}
-                                        <li class="dropdown">
-                                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                                <i class="fa fa-share-alt"></i> <i class="fa fa-caret-down"></i>
-                                            </a>
-                                            <ul class="dropdown-menu" style="min-width: 1px">
-                                                <li>
-                                                    <a data-original-title="Share on Facebook" data-placement="bottom" href="JavaScript:facebookPopup()">
-                                                        <i class="fa fa-facebook-square fa-2x"></i>
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a data-original-title="Share on Twitter" data-placement="bottom" href="javascript:twitterPopup()">
-                                                        <i class="fa fa-twitter-square fa-2x"></i>
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a data-original-title="Share on LinkedIn" data-placement="bottom"href="Javascript:linkedinPopup()">
-                                                        <i class="fa fa-linkedin-square fa-2x"></i>
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a data-original-title="Share on Google+" data-placement="bottom" href="javascript:googlePopup()">
-                                                        <i class="fa fa-google-plus-square fa-2x"></i>
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a data-original-title="Share via Email" data-placement="bottom" id="mailto" href="mailto:?subject=Check out this Spudder page!&body=<Check out this cool page I saw on Spudder: http://{{ request.META.HTTP_HOST }}{{ request.get_full_path }}">
-                                                        <i class="fa fa-envelope-square fa-2x"></i>
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                    {% endif %}
-                                {% endif %}
+{#                                {% if not 'challenges_only_override'|feature_is_enabled %}#}
+{#                                    {% if current_role %}#}
+{#                                        <li class="dropdown">#}
+{#                                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">#}
+{#                                                My Spudder <i class="fa fa-caret-down"></i>#}
+{#                                            </a>#}
+{#                                            <ul class="dropdown-menu">#}
+{#                                                <li style=" padding: 5px 30px; min-width: 350px;">#}
+{#                                                    <div class="panel panel-default">#}
+{#                                                        <div class="panel-body">#}
+{#                                                            <div class="media">#}
+{#                                                                <a href="{{ current_role.home_page_path }}" class="media-object pull-left">#}
+{#                                                                    <img src="{{ current_role.image }}" style="height: 40px;" />#}
+{#                                                                </a>#}
+{#                                                                <div class="media-body">#}
+{#                                                                    <p class="media-heading">{{ current_role.title|safe }}</p>#}
+{#                                                                    <span class="label label-success"><a href="{{ current_role.home_page_path }}" style="color:white;">Current role</a></span>#}
+{#                                                                </div>#}
+{#                                                            </div>#}
+{#                                                        </div>#}
+{#                                                    </div>#}
+{#                                                    {% if other_roles %}#}
+{#                                                        <hr />#}
+{#                                                        <p>My {% if other_roles|length > 2 %}top{% else %}other{% endif %} role{% if other_roles|length > 1 %}s{% endif %}</p>#}
+{#                                                        <div style="margin-left:10px;">#}
+{#                                                            {% for role in other_roles %}#}
+{#                                                                {% if forloop.counter < 3 %}#}
+{#                                                                    <hr />#}
+{#                                                                    <div class="media">#}
+{#                                                                        <img class="media-object pull-left" src="{{ role.image }}" style="height: 40px;" />#}
+{#                                                                        <div class="media-body">#}
+{#                                                                            <p class="media-heading"><small>{{ role.title|safe }}</small></p>#}
+{#                                                                            <a href="{% link_to_change_role_and_return role %}" class="btn btn-default btn-xs" style="margin:0;">#}
+{#                                                                                Activate this role#}
+{#                                                                            </a>#}
+{#                                                                        </div>#}
+{#                                                                    </div>#}
+{#                                                                {% endif %}#}
+{#                                                            {% endfor %}#}
+{#                                                        </div>#}
+{#                                                    {% endif %}#}
+{#                                                </li>#}
+{#                                                {% if current_role and current_role.entity_type == "fan" %}#}
+{#                                                    <li>#}
+{#                                                        <a href="/fan/{{ current_role.entity.id }}">My Fan Profile</a>#}
+{#                                                    </li>#}
+{#                                                    <li>#}
+{#                                                        <a href="/fan/{{ current_role.entity.id }}/teams">My Teams</a>#}
+{#                                                    </li>#}
+{#                                                {% endif %}#}
+{#                                                <li><a href="/accounts/logout"><i class="fa fa-fw fa-power-off"></i> Logout</a></li>#}
+{#                                            </ul>#}
+{#                                        </li>#}
+{#                                        {% block support_nav %}#}
+{#                                            {% if current_role %}#}
+{#                                                <li class="dropdown">#}
+{#                                                    <a class="dropdown-toggle" href="#" data-toggle="dropdown">#}
+{#                                                        Support <i class="fa fa-caret-down"></i>#}
+{#                                                    </a>#}
+{#                                                    <ul class="dropdown-menu">#}
+{#                                                        <li><a href="http://spudder.zendesk.com/account/dropboxes/20176994" onClick="Zenbox.show(); return false;">Contact Spudder Support</a></li>#}
+{#                                                        <li><a href="#" data-toggle="modal" data-target="#flag-modal" class="{% block flag-page-class %}hidden{% endblock %}">Flag Page</a></li>#}
+{#                                                    </ul>#}
+{#                                                </li>#}
+{#                                            {% endif %}#}
+{#                                        {% endblock %}#}
+{#                                        <li class="dropdown">#}
+{#                                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">#}
+{#                                                <i class="fa fa-share-alt"></i> <i class="fa fa-caret-down"></i>#}
+{#                                            </a>#}
+{#                                            <ul class="dropdown-menu" style="min-width: 1px">#}
+{#                                                <li>#}
+{#                                                    <a data-original-title="Share on Facebook" data-placement="bottom" href="JavaScript:facebookPopup()">#}
+{#                                                        <i class="fa fa-facebook-square fa-2x"></i>#}
+{#                                                    </a>#}
+{#                                                </li>#}
+{#                                                <li>#}
+{#                                                    <a data-original-title="Share on Twitter" data-placement="bottom" href="javascript:twitterPopup()">#}
+{#                                                        <i class="fa fa-twitter-square fa-2x"></i>#}
+{#                                                    </a>#}
+{#                                                </li>#}
+{#                                                <li>#}
+{#                                                    <a data-original-title="Share on LinkedIn" data-placement="bottom"href="Javascript:linkedinPopup()">#}
+{#                                                        <i class="fa fa-linkedin-square fa-2x"></i>#}
+{#                                                    </a>#}
+{#                                                </li>#}
+{#                                                <li>#}
+{#                                                    <a data-original-title="Share on Google+" data-placement="bottom" href="javascript:googlePopup()">#}
+{#                                                        <i class="fa fa-google-plus-square fa-2x"></i>#}
+{#                                                    </a>#}
+{#                                                </li>#}
+{#                                                <li>#}
+{#                                                    <a data-original-title="Share via Email" data-placement="bottom" id="mailto" href="mailto:?subject=Check out this Spudder page!&body=<Check out this cool page I saw on Spudder: http://{{ request.META.HTTP_HOST }}{{ request.get_full_path }}">#}
+{#                                                        <i class="fa fa-envelope-square fa-2x"></i>#}
+{#                                                    </a>#}
+{#                                                </li>#}
+{#                                            </ul>#}
+{#                                        </li>#}
+{#                                    {% endif %}#}
+{#                                {% endif %}#}
                             {% endblock %}
                         </ul>
                     </div>

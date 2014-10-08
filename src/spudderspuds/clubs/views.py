@@ -1,5 +1,6 @@
 import httplib
 import json
+import logging
 import urllib
 from google.appengine.api import mail
 from django.http import HttpResponseRedirect, HttpResponse, HttpResponseNotAllowed
@@ -15,10 +16,11 @@ from spudderdomain.models import ClubRecipient, Club, ClubAdministrator, TeamClu
     StripeUser
 from spudderspuds.forms import LinkedInSocialMediaForm
 from spudderspuds.utils import set_social_media
+from spudderstripe.utils import get_stripe_recipient_controller_for_club
 from spudmart.amazon.models import AmazonActionStatus, RecipientVerificationStatus
 from spudmart.amazon.utils import get_club_register_as_recipient_cbui_url, get_recipient_verification_status
 from spudmart.recipients.models import RecipientRegistrationState
-from spudmart.stripe.forms import StripeRegisterRecipientForm
+from spudderspuds.clubs.forms import StripeRegisterRecipientForm
 from spudmart.upload.models import UploadedFile
 from spudmart.utils.cover_image import save_cover_image_from_request, reset_cover_image
 from spudmart.utils.querysets import get_object_or_none
@@ -31,9 +33,12 @@ def dashboard(request):
         EntityController.ENTITY_CLUB,
         club.id,
         EntityBase.EntityWrapperByEntityType(EntityController.ENTITY_CLUB))
+    stripe_controller = get_stripe_recipient_controller_for_club(club)
+    stripe_bank_account = stripe_controller.get_recipient_active_bank_account() if stripe_controller else None
     template_data = {
+        'stripe': stripe_controller,
+        'stripe_bank_account': stripe_bank_account,
         'club': club,
-        'cbui_url': get_club_register_as_recipient_cbui_url(),
         'club_entity': club_entity}
     return render(request, 'spudderspuds/clubs/pages/dashboard.html', template_data)
 

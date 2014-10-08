@@ -3,17 +3,15 @@
 {% block js %}
     {{ block.super }}
     <script type="text/javascript" language="javascript">
-        $(function(){
-            $('#select-state').on('change', function(){
-                var $select = $(this);
-                var selected_state = $select.find('option:selected').val();
-                var $clubs_container = $('#clubs-container');
-                var original_html = $clubs_container.data('original_html');
-                if (original_html == null)
-                    original_html = $clubs_container.html();
-                $clubs_container.data('original_html', original_html);
-                $clubs_container.css('position', 'relative');
-                $clubs_container.append(
+        function load_clubs($select) {
+            var selected_state = $select.find('option:selected').val();
+            var $clubs_container = $('#clubs-container');
+            var original_html = $clubs_container.data('original_html');
+            if (original_html == null)
+                original_html = $clubs_container.html();
+            $clubs_container.data('original_html', original_html);
+            $clubs_container.css('position', 'relative');
+            $clubs_container.append(
                     '<div class="overlay" style="background-color:rgba(255,255,255,.5)">' +
                         '<div class="inner">' +
                             '<p style="padding-top:10%; color:#000;">' +
@@ -21,10 +19,22 @@
                             '</p>' +
                         '</div>' +
                     '</div>');
-                if (selected_state != '')
-                    $clubs_container.load('/challenges/create/{{ template.id }}/' + selected_state);
-                else
-                    $clubs_container.html(original_html);
+            if (selected_state != '')
+                $clubs_container.load('/challenges/create/{{ template.id }}/' + selected_state);
+            else
+                $clubs_container.html(original_html);
+        }
+
+        $(function(){
+            var $select = $('#select-state');
+            var state = '{{ request.current_role.state }}';
+
+            $select.val(state);
+            load_clubs($select);
+
+            $select.on('change', function(){
+                var $select = $(this);
+                load_clubs($select);
             })
         });
     </script>

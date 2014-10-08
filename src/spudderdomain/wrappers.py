@@ -178,7 +178,7 @@ class EntityClub(EntityBase):
 
     @property
     def image(self):
-        return '/static/img/spudderclubs/button-clubs-tiny.pny'
+        return '/static/img/spudderclubs/button-clubs-medium.png'
 
     @property
     def jumbotron(self):

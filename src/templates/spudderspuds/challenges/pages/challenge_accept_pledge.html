@@ -22,21 +22,30 @@
     </div>
     {% include 'spudderspuds/challenges/components/challenge_container.html' %}
     <hr/>
-    <p>The first step in accepting this challenge is to make a pledge to {{ beneficiary.name }} ({{ beneficiary.state }})</p>
-    <p><small>Note that you will contacted to honor your pledge and offered several ways to pay.</small></p>
+    <p>The first step in accepting this challenge is to make a {% if beneficiary_can_receive_donations %}donation{% else %}pledge{% endif %} to {{ beneficiary.name }} ({{ beneficiary.state }})</p>
+    {% if not beneficiary_can_receive_donations %}
+        <p><small>Note that you will contacted to honor your pledge and offered several ways to pay.</small></p>
+    {% endif %}
     <hr/>
     <div class="well" style="width:90%; margin:20px auto;">
         <h4>{{ beneficiary.name }} ({{ beneficiary.state }})</h4>
-        <p>You are pledging money to {{ beneficiary.name }} of {{ beneficiary.state|format_state }}</p>
+        <p>You are {% if beneficiary_can_receive_donations %}donating{% else %}pledging{% endif %} money to {{ beneficiary.name }} of {{ beneficiary.state|format_state }}</p>
     </div>
+    <hr/>
     <form method="post">
         {% csrf_token %}
         {% bootstrap_form form %}
-        <p>Once you have pledged, you'll have the opportunity to upload evidence of you taking the challenge, challenge others and even change the beneficiary to a team of your choice!</p>
+        <p>Once you have {% if beneficiary_can_receive_donations %}donated{% else %}pledged{% endif %}, you'll have the opportunity to upload evidence of you taking the challenge, challenge others and even change the beneficiary to a team of your choice!</p>
         {% buttons %}
-            <button type="submit" class="btn btn-primary btn-cta">
-                <i class="fa fa-check"></i> Pledge
-            </button>
+            {% if not beneficiary_can_receive_donations %}
+                <button type="submit" class="btn btn-primary btn-cta">
+                    <i class="fa fa-check"></i> Pledge
+                </button>
+            {% else %}
+                <button type="submit" class="btn btn-primary btn-cta">
+                    To payment page <i class="fa fa-arrow-right"></i>
+                </button>
+            {% endif %}
         {% endbuttons %}
     </form>
 {% endblock %}

@@ -122,6 +122,7 @@ class ChallengesSigninForm(FanSigninForm):
 
 
 class AcceptChallengeForm(forms.Form):
+    is_donation = forms.BooleanField(required=True, widget=forms.HiddenInput)
     donation = forms.IntegerField(
         label="How much do you pledge?",
         help_text="The amount shown here is the suggested pledge amount, you are free to pledge more or less.",

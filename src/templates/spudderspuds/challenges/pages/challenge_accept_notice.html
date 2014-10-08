@@ -61,7 +61,7 @@
     <div class="page-header">
         <h1>
             {% include 'spudderspuds/components/wizard_steps.html' with step="<i class='fa fa-trophy'></i>" title="Spudder Challenge" %}
-            {% if request.GET.just_pledged %}
+            {% if request.GET.just_pledged or request.GET.just_donated %}
                 Challenge Accepted
             {% else %}
                 Accept Challenge
@@ -69,6 +69,9 @@
         </h1>
         {% if request.GET.just_pledged %}
             <h2 class="text-primary">Thank you for your pledge!</h2>
+        {% endif %}
+        {% if request.GET.just_donated %}
+            <h2 class="text-primary">Thank you for your doantion!</h2>
         {% endif %}
         <h2><small>You now have <span class="text-primary countdown">48 hours</span> to accept {{ challenge.name }}</small></h2>
     </div>

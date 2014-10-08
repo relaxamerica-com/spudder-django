@@ -25,6 +25,11 @@
                     <a href="{{ request.path }}/{{ club.type }}/{{ club.id }}" class="list-group-item">
                         <i class="fa fa-arrow-right text-primary pull-right"></i>
                         <h4 class="list-group-item-heading">{{ club.name }}</h4>
+                        {% if club.is_own_club %}
+                            <span class="label label-success">
+                                <i class="fa fa-check"></i> Your Team!
+                            </span>
+                        {% endif %}
                     </a>
                 </td>
             </tr>

@@ -441,15 +441,17 @@ class ChallengeParticipation(models.Model):
     PRE_ACCEPTED_STATE = '00'
     DECLINED_STATE = '01'
     DONATE_ONLY_STATE = '02'
+    AWAITING_PAYMENT = 'AP'
     ACCEPTED_STATE = '03'
 
-    STATES = (PRE_ACCEPTED_STATE, DECLINED_STATE, DONATE_ONLY_STATE, ACCEPTED_STATE)
+    STATES = (PRE_ACCEPTED_STATE, DECLINED_STATE, DONATE_ONLY_STATE, ACCEPTED_STATE, AWAITING_PAYMENT)
 
     STATES_CHOICES = (
         (PRE_ACCEPTED_STATE, 'Pre accepted state'),
         (DECLINED_STATE, 'Declined State'),
         (DONATE_ONLY_STATE, 'Donate Only State'),
         (ACCEPTED_STATE, 'Accepted State'),
+        (AWAITING_PAYMENT, 'Awaiting Payment'),
     )
 
     challenge = models.ForeignKey(Challenge)

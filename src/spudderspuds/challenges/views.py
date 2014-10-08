@@ -27,9 +27,9 @@ from spudderspuds.challenges.forms import ChallengesSigninForm, AcceptChallengeF
 from spudderspuds.challenges.forms import ChallengeChallengeParticipationForm
 from spudderspuds.challenges.models import TempClubOtherInformation, ChallengeTree, ChallengeServiceConfiguration
 from spudderspuds.challenges.models import ChallengeServiceMessageConfiguration
+from spudderstripe.utils import get_stripe_recipient_controller_for_club
 
-
-def _get_clubs_by_state(state):
+def _get_clubs_by_state(request, state):
     clubs = [c for c in Club.objects.filter(state=state)]
     for x in range(len(clubs)):
         clubs[x] = clubs[x].__dict__
@@ -40,6 +40,12 @@ def _get_clubs_by_state(state):
         temp_club[x]['type'] = 't'
     clubs = [c for c in clubs] + [c for c in temp_club]
     clubs.sort(key=lambda x: x['name'])
+
+    if request.current_role.entity_type == RoleController.ENTITY_CLUB_ADMIN:
+        club = request.current_role.entity.club
+        clubs = sorted(clubs, key=lambda x: x.get('id') == club.id, reverse=True)
+        for c in clubs:
+            c['is_own_club'] = bool(c['id'] == club.id)
     return clubs
 
 
@@ -144,7 +150,7 @@ def register(request):
         {'form': form})
 
 
-@role_required([RoleController.ENTITY_FAN], redirect_url='/challenges/create/register')
+@role_required([RoleController.ENTITY_FAN, RoleController.ENTITY_CLUB_ADMIN], redirect_url='/challenges/create/register')
 def register_club(request):
     form = RegisterCreateClubForm(initial=request.GET)
     if request.method == 'POST':
@@ -185,13 +191,15 @@ def register_club(request):
         {'form': form})
 
 
-@role_required([RoleController.ENTITY_FAN], redirect_url='/challenges/create/register')
+@role_required([RoleController.ENTITY_FAN, RoleController.ENTITY_CLUB_ADMIN], redirect_url='/challenges/create/register')
 def create_challenge(request):
+    if not request.current_role or request.current_role.entity_type != RoleController.ENTITY_FAN:
+        return redirect('/challenges/create/register?next=%s' % request.path)
     template_data = {'templates': ChallengeTemplate.objects.filter(active=True)}
     return render(request, 'spudderspuds/challenges/pages/create_challenge_choose_template.html', template_data)
 
 
-@role_required([RoleController.ENTITY_FAN], redirect_url='/challenges/create/register')
+@role_required([RoleController.ENTITY_FAN, RoleController.ENTITY_CLUB_ADMIN], redirect_url='/challenges/create/register')
 def create_challenge_choose_club_choose_state(request, template_id):
     template_data = {
         'template': get_object_or_404(ChallengeTemplate, id=template_id),
@@ -203,19 +211,20 @@ def create_challenge_choose_club_choose_state(request, template_id):
         template_data)
 
 
-@role_required([RoleController.ENTITY_FAN], redirect_url='/challenges/create/register')
+@role_required([RoleController.ENTITY_FAN, RoleController.ENTITY_CLUB_ADMIN], redirect_url='/challenges/create/register')
 def create_challenge_choose_club(request, template_id, state):
+    clubs = _get_clubs_by_state(request, state)
     template_data = {
         'state': STATES[state],
         'template': get_object_or_404(ChallengeTemplate, id=template_id),
-        'clubs': _get_clubs_by_state(state)}
+        'clubs': clubs}
     return render(
         request,
         'spudderspuds/challenges/components/create_challenge_choose_club.html',
         template_data)
 
 
-@role_required([RoleController.ENTITY_FAN], redirect_url='/challenges/create/register')
+@role_required([RoleController.ENTITY_FAN, RoleController.ENTITY_CLUB_ADMIN], redirect_url='/challenges/create/register')
 def create_challenge_choose_club_create_club(request, template_id, state):
     form = CreateTempClubForm()
     if request.method == 'POST':
@@ -233,7 +242,7 @@ def create_challenge_choose_club_create_club(request, template_id, state):
         template_data)
 
 
-@role_required([RoleController.ENTITY_FAN], redirect_url='/challenges/create/register')
+@role_required([RoleController.ENTITY_FAN, RoleController.ENTITY_CLUB_ADMIN], redirect_url='/challenges/create/register')
 def create_challenge_set_donation(request, template_id, state, club_id, club_class):
     club = get_object_or_404(club_class, id=club_id)
     template = get_object_or_404(ChallengeTemplate, id=template_id)
@@ -285,7 +294,7 @@ def challenge_view(request, challenge_id):
         'owner': RoleController.GetRoleForEntityTypeAndID(
             challenge.creator_entity_type,
             challenge.creator_entity_id,
-            RoleFan)}
+            RoleBase.EntityWrapperByEntityType(challenge.creator_entity_type))}
     if feature_is_enabled('challenge_tree'):
         challenge_tree = ChallengeTree.GetChallengeTree(challenge).get_tree()
         challenge_tree_data = challenge_tree.to_dict()
@@ -295,7 +304,7 @@ def challenge_view(request, challenge_id):
     return render(request, 'spudderspuds/challenges/pages/challenge_view.html', template_data)
 
 
-@role_required([RoleController.ENTITY_FAN], redirect_url='/challenges/create/register')
+@role_required([RoleController.ENTITY_FAN, RoleController.ENTITY_CLUB_ADMIN], redirect_url='/challenges/create/register')
 def challenge_accept_notice(request, challenge_id):
     challenge = get_object_or_404(Challenge, id=challenge_id)
     template = challenge.template
@@ -317,7 +326,7 @@ def challenge_accept_notice(request, challenge_id):
     return render(request, 'spudderspuds/challenges/pages/challenge_accept_notice.html', template_data)
 
 
-@role_required([RoleController.ENTITY_FAN], redirect_url='/challenges/create/register')
+@role_required([RoleController.ENTITY_FAN, RoleController.ENTITY_CLUB_ADMIN], redirect_url='/challenges/create/register')
 def challenge_accept_pledge(request, challenge_id):
     challenge = get_object_or_404(Challenge, id=challenge_id)
     template = challenge.template
@@ -325,7 +334,13 @@ def challenge_accept_pledge(request, challenge_id):
         challenge.recipient_entity_type,
         challenge.recipient_entity_id,
         EntityBase.EntityWrapperByEntityType(challenge.recipient_entity_type))
-    form = AcceptChallengeForm(initial={'donation': int(challenge.proposed_donation_amount)})
+    beneficiary_can_receive_donations = False
+    if beneficiary.entity_type == EntityController.ENTITY_CLUB:
+        if beneficiary.entity.is_fully_activated():
+            beneficiary_can_receive_donations = True
+    form = AcceptChallengeForm(initial={
+        'donation': int(challenge.proposed_donation_amount),
+        'is_donation': beneficiary_can_receive_donations})
     if request.method == 'POST':
         form = AcceptChallengeForm(request.POST)
         if form.is_valid():
@@ -335,20 +350,60 @@ def challenge_accept_pledge(request, challenge_id):
                 participating_entity_type=request.current_role.entity_type)
             participation.donation_amount = form.cleaned_data.get('donation', 0)
             participation.state = ChallengeParticipation.DONATE_ONLY_STATE
+            if beneficiary_can_receive_donations and participation.donation_amount > 0:
+                participation.state = ChallengeParticipation.AWAITING_PAYMENT
             participation.save()
             if feature_is_enabled('challenge_tree'):
                 ChallengeTree.AddParticipationToTree(challenge, participation)
             redirect_url = '/challenges/%s/accept/notice?just_pledged=True' % challenge.id
+            if participation.state == ChallengeParticipation.AWAITING_PAYMENT:
+                redirect_url = '/challenges/%s/accept/pay' % challenge.id
             return redirect(redirect_url)
     template_data = {
         'challenge': challenge,
         'template': template,
         'beneficiary': beneficiary,
+        'beneficiary_can_receive_donations': beneficiary_can_receive_donations,
         'form': form}
     return render(request, 'spudderspuds/challenges/pages/challenge_accept_pledge.html', template_data)
 
 
-@role_required([RoleController.ENTITY_FAN], redirect_url='/challenges/create/register')
+@role_required([RoleController.ENTITY_FAN, RoleController.ENTITY_CLUB_ADMIN], redirect_url='/challenges/create/register')
+def challenge_accept_pay(request, challenge_id):
+    if not request.current_role:
+        return redirect('/challenges/create/register?next=%s' % request.path)
+    challenge = get_object_or_404(Challenge, id=challenge_id)
+    template = challenge.template
+    beneficiary = EntityController.GetWrappedEntityByTypeAndId(
+        challenge.recipient_entity_type,
+        challenge.recipient_entity_id,
+        EntityBase.EntityWrapperByEntityType(challenge.recipient_entity_type))
+    challenge_participation = get_object_or_404(
+        ChallengeParticipation,
+        challenge=challenge,
+        participating_entity_id=request.current_role.entity.id,
+        participating_entity_type=request.current_role.entity_type)
+    if not beneficiary.entity_type == EntityController.ENTITY_CLUB or not beneficiary.entity.is_fully_activated():
+        return redirect('/challenges/%s/accept/notice?just_pledged=True' % challenge.id)
+    if request.method == "POST":
+        token = request.POST.get('stripeToken')
+        stripe_controller = get_stripe_recipient_controller_for_club(beneficiary.entity)
+        payment_made = stripe_controller.accept_payment(
+            "Donation by %s to %s for %s" % (request.user.email, beneficiary.name, challenge.name),
+            token,
+            int(challenge_participation.donation_amount) * 100)
+        if payment_made:
+            return redirect('/challenges/%s/accept/notice?just_donated=True' % challenge.id)
+    template_data = {
+        'challenge': challenge,
+        'challenge_participation': challenge_participation,
+        'template': template,
+        'beneficiary': beneficiary,
+        'errors': request.method == 'POST'}
+    return render(request, 'spudderspuds/challenges/pages/challenge_accept_pay.html', template_data)
+
+
+@role_required([RoleController.ENTITY_FAN, RoleController.ENTITY_CLUB_ADMIN], redirect_url='/challenges/create/register')
 def challenge_accept_upload(request, challenge_id):
     challenge = get_object_or_404(Challenge, id=challenge_id)
     template = challenge.template
@@ -374,7 +429,7 @@ def challenge_accept_upload(request, challenge_id):
                 participation.state = ChallengeParticipation.ACCEPTED_STATE
                 participation.save()
                 if feature_is_enabled('tracking_pixels'):
-                    EventController.RegisterEvent(request, EventController.CHALLENGE_ACCEPTED)
+                    request.events.append(TrackingPixelEvents.CHALLENGE_ACCEPTED)
             if request.is_ajax():
                 return HttpResponse(redirect_url)
             return redirect(redirect_url)
@@ -392,7 +447,6 @@ def challenge_accept_upload(request, challenge_id):
     return render(request, 'spudderspuds/challenges/pages/challenge_accept_upload.html', template_data)
 
 
-@role_required([RoleController.ENTITY_FAN], redirect_url='/challenges/create/register')
 def challenge_accept_state(request, participation_id):
     participation = get_object_or_404(ChallengeParticipation, id=participation_id)
     challenge = participation.challenge
@@ -408,7 +462,6 @@ def challenge_accept_state(request, participation_id):
         template_data)
 
 
-@role_required([RoleController.ENTITY_FAN], redirect_url='/challenges/create/register')
 def challenge_accept_beneficiary(request, participation_id, state):
     participation = get_object_or_404(ChallengeParticipation, id=participation_id)
     if 'video_id' in request.GET:
@@ -434,7 +487,6 @@ def challenge_accept_beneficiary(request, participation_id, state):
     return render(request, 'spudderspuds/challenges/pages/challenge_accept_beneficiary.html', template_data)
 
 
-@role_required([RoleController.ENTITY_FAN], redirect_url='/challenges/create/register')
 def challenge_accept_beneficiary_create_club(request, participation_id, state):
     participation = get_object_or_404(ChallengeParticipation, id=participation_id)
     challenge = participation.challenge
@@ -455,7 +507,6 @@ def challenge_accept_beneficiary_create_club(request, participation_id, state):
         template_data)
 
 
-@role_required([RoleController.ENTITY_FAN], redirect_url='/challenges/create/register')
 def challenge_accept_beneficiary_set_donation(request, participation_id, state, club_id, club_class):
     club = get_object_or_404(club_class, id=club_id)
     participation = get_object_or_404(ChallengeParticipation, id=participation_id)
@@ -487,8 +538,9 @@ def challenge_challenge(request):
     return render(request, 'spudderspuds/challenges/pages/challenge_challenge.html')
 
 
-@role_required([RoleController.ENTITY_FAN], redirect_url='/challenges/create/register?message=challenge_challenge')
 def challenge_challenge_accept_beneficiary(request, state=None):
+    if not request.current_role or request.current_role.entity_type != RoleController.ENTITY_FAN:
+        return redirect('/challenges/create/register?next=%s&message=challenge_challenge' % request.path)
     if not state:
         return redirect("%s%s" % (request.path, (request.current_role.state or 'no_state')))
     template_data = {
@@ -497,7 +549,6 @@ def challenge_challenge_accept_beneficiary(request, state=None):
     return render(request, 'spudderspuds/challenges/pages/challenge_challenge_accept_beneficiary.html', template_data)
 
 
-@role_required([RoleController.ENTITY_FAN], redirect_url='/challenges/create/register?message=challenge_challenge')
 def challenge_challenge_accept_beneficiary_load_clubs(request, state):
     template_data = {
         'state': STATES[state],
@@ -505,7 +556,6 @@ def challenge_challenge_accept_beneficiary_load_clubs(request, state):
     return render(request, 'spudderspuds/challenges/components/create_challenge_choose_club.html', template_data)
 
 
-@role_required([RoleController.ENTITY_FAN], redirect_url='/challenges/create/register?message=challenge_challenge')
 def challenge_challenge_accept_beneficiary_create_club(request, state):
     form = CreateTempClubForm()
     if request.method == 'POST':
@@ -522,7 +572,6 @@ def challenge_challenge_accept_beneficiary_create_club(request, state):
         template_data)
 
 
-@role_required([RoleController.ENTITY_FAN], redirect_url='/challenges/create/register?message=challenge_challenge')
 def challenge_challenge_accept_notice(request, state=None, club_entity_type=None, club_id=None, participation_id=None):
     if state and club_entity_type and club_id:
         ccp = ChallengeChallengeParticipation(
@@ -548,7 +597,7 @@ def challenge_challenge_accept_notice(request, state=None, club_entity_type=None
             participation.save()
             redirect_url = '/challenges/challenge_challenge/%s/thanks?just_submitted=True' % participation_id
             if feature_is_enabled('tracking_pixels'):
-                EventController.RegisterEvent(request, EventController.CHALLENGE_ACCEPTED)
+                request.events.append(TrackingPixelEvents.CHALLENGE_ACCEPTED)
             if request.is_ajax():
                 return HttpResponse(redirect_url)
             return redirect(redirect_url)
