@@ -3,6 +3,7 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from spudderaccounts.utils import change_current_role
 from spudderaccounts.wrappers import RoleBase, RoleFan
+from spudderadmin.templatetags.featuretags import feature_is_enabled
 from spudderdomain.controllers import RoleController, SpudsController
 from spudderdomain.models import FanPage
 from spudderkrowdio.utils import start_following
@@ -15,14 +16,13 @@ def create_and_activate_fan_role(request, user):
     fan.save()
 
     # set new users to follow dennis@spudder.com fan
-    if created:
+    if feature_is_enabled('all_fans_auto_follow_main_spudder_fan') and created:
         main_account = User.objects.get(email=settings.MAIN_SPUDDER_FAN_ACCOUNT_EMAIL)
         main_fan = FanPage.objects.get(fan=main_account)
         current_entity = RoleController.GetRoleForEntityTypeAndID(
             RoleController.ENTITY_FAN,
             fan.id,
-            RoleBase.RoleWrapperByEntityType(RoleController.ENTITY_FAN)
-        )
+            RoleBase.RoleWrapperByEntityType(RoleController.ENTITY_FAN))
         start_following(current_entity, RoleController.ENTITY_FAN, main_fan.id)
 
     # activate role
