@@ -193,8 +193,6 @@ def register_club(request):
 
 @role_required([RoleController.ENTITY_FAN, RoleController.ENTITY_CLUB_ADMIN], redirect_url='/challenges/create/register')
 def create_challenge(request):
-    if not request.current_role or request.current_role.entity_type != RoleController.ENTITY_FAN:
-        return redirect('/challenges/create/register?next=%s' % request.path)
     template_data = {'templates': ChallengeTemplate.objects.filter(active=True)}
     return render(request, 'spudderspuds/challenges/pages/create_challenge_choose_template.html', template_data)
 
@@ -539,8 +537,6 @@ def challenge_challenge(request):
 
 
 def challenge_challenge_accept_beneficiary(request, state=None):
-    if not request.current_role or request.current_role.entity_type != RoleController.ENTITY_FAN:
-        return redirect('/challenges/create/register?next=%s&message=challenge_challenge' % request.path)
     if not state:
         return redirect("%s%s" % (request.path, (request.current_role.state or 'no_state')))
     template_data = {
