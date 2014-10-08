@@ -25,7 +25,7 @@ DEBUG = True
 if app_name in ['livespudder']:
     ENVIRONMENT = Environments.LIVE
     DEBUG = False
-elif app_name in ['spudmart1'] and not os.environ['SERVER_SOFTWARE'].startswith('Development'):
+elif app_name in ['spudmart1'] and not os.environ.get('SERVER_SOFTWARE', '').startswith('Development'):
     ENVIRONMENT = Environments.STAGE
 
 APP_NAME = 'Spudmart'
