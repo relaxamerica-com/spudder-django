@@ -1,0 +1,49 @@
+{% extends 'spudderspuds/base_single_well.html' %}
+{% load spudderspudstags %}
+{% load bootstrap3 %}
+
+{% block masterhead_title %}
+    <h4 class="navbar-text navbar-right hidden-xs"><span class="text-primary">Accept Challenge:</span> {{ challenge.name }}</h4>
+{% endblock %}
+
+{% block body_id %}challenge-accept-pay{% endblock %}
+
+{% block body_class %}challenges {{ template.slug }}{% endblock %}
+
+{% block title %}Challenges - Accept - Pay{% endblock %}
+
+{% block well_content %}
+    <div class="page-header">
+        <h1>
+            {% include 'spudderspuds/components/wizard_steps.html' with step="<i class='fa fa-trophy'></i>" title="Spudder Challenge" %}
+            Make Donation
+        </h1>
+        <h2><small>You are donating to {{ beneficiary.name }} ({{ beneficiary.state }})</small></h2>
+    </div>
+    {% if errors %}
+        <div class="alert alert-danger media">
+            <i class="media-object pull-left fa fa-warning fa-3x"></i>
+            <div class="media-body">
+                <h4 class="media-heading">Something went wrong.</h4>
+                <p>Sorry but something went wrong with your payment.</p>
+                <p>Please refresh this page and try again.</p>
+                <p><small>If this happens again, please contact us at support@spudder.com</small></p>
+            </div>
+        </div>
+    {% endif %}
+    <p>At <span class="text-primary">Spudder</span>, we partner with <span class="text-info">Stripe</span> to make donating to you local sports teams super easy!</p>
+    <p>You are donating ${{ challenge_participation.donation_amount|floatformat }}.</p>
+    <form method="post">
+        {% csrf_token %}
+        <script
+            src="https://checkout.stripe.com/checkout.js"
+            class="stripe-button"
+            data-key="{{ settings.STRIPE_PUBLISHABLE_KEY }}"
+            data-email="{{ request.user.email }}"
+            data-amount="{{ challenge_participation.donation_amount|floatformat }}00"
+            data-name="{{ beneficiary.name }} ({{ beneficiary.state }})"
+            data-description="Accepting the {{ challenge.name }}"
+            data-image="{{ beneficiary.image }}">
+        </script>
+    </form>
+{% endblock %}

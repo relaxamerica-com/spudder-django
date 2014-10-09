@@ -383,6 +383,14 @@ class RoleClubAdmin(RoleBase):
             return '/static/img/spudderclubs/button-clubs-tiny.png'
 
     @property
+    def state(self):
+        return self.entity.club.state
+
+    @property
+    def name(self):
+        return self.entity.club.name
+
+    @property
     def contact_emails(self):
         return self.entity.admin.email
 

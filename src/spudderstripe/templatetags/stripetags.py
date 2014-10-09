@@ -16,7 +16,7 @@ def authorize_url(context):
     if context['request'].META['SERVER_NAME'] in ['localhost', 'testserver']:
         redirect_uri = 'http://' + context['request'].get_host()
     else:
-        redirect_uri = settings.SPUDMART_BASE_URL
+        redirect_uri = settings.SPUDMART_BASE_URL.replace('http://', 'https://')
     redirect_uri += '/club/stripe'
     authorize_url += '&redirect_uri=%s' % redirect_uri
     authorize_url += '&scope=read_write'

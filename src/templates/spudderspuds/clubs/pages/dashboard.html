@@ -1,6 +1,5 @@
 {% extends 'spudderspuds/clubs/base.html' %}
 
-{% load stripe %}
 {% load bootstrap3 %}
 
 {% block title %}Club Dashboard{% endblock %}
@@ -85,14 +84,19 @@
                     {% block dashboard_page %}
 
                         {% if club.is_fully_activated %}
+
                             {% if request.GET.message == 'just_connected_with_stripe' %}
 
-                                <div class="alert alert-success">
+                                <div class="alert {% if not stripe_is_verified %}alert-warning{% else %}alert-success{% endif %}">
                                     <div class="media">
-                                        <i class="media-object pull-left fa fa-check fa-3x"></i>
+                                        <i class="media-object pull-left fa fa-3x {% if not stripe_cards.default_card_id %}fa-warning{% else %}fa-check{% endif %}"></i>
                                         <div class="media-body">
-                                            <h2 class="media-heading">It Worked!</h2>
-                                            <p>You team is now fully registered with Stripe!</p>
+                                            {% if stripe_is_verified %}
+                                                <h2 class="media-heading">It Worked!</h2>
+                                                <p>You team is now fully registered with Stripe!</p>
+                                            {% else %}
+                                                {% include 'spudderspuds/clubs/components/dashboard_stripe_account_not_verified_message.html' %}
+                                            {% endif %}
                                         </div>
                                     </div>
                                 </div>
@@ -108,15 +112,26 @@
                                         <div class="panel-body">
 
                                             {% if request.GET.message != 'just_connected_with_stripe' %}
-                                                <div class="alert">
-                                                    <div class="media">
-                                                        <i class="media-object pull-left fa fa-check fa-2x text-success"></i>
-                                                        <div class="media-body">
-                                                            <h4 class="media-heading">Payments are active</h4>
-                                                            <span>You team is fully registered and able to accept donations from fans.</span>
+                                                {% if stripe_is_verified %}
+                                                    <div class="alert">
+                                                        <div class="media">
+                                                            <i class="media-object pull-left fa fa-check fa-2x text-success"></i>
+                                                            <div class="media-body">
+                                                                <h4 class="media-heading">Payments are active</h4>
+                                                                <span>You team is fully registered and able to accept donations from fans.</span>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
+                                                {% else %}
+                                                    <div class="alert alert-warning">
+                                                        <div class="media">
+                                                            <i class="media-object pull-left fa fa-warning fa-2x"></i>
+                                                            <div class="media-body">
+                                                                {% include 'spudderspuds/clubs/components/dashboard_stripe_account_not_verified_message.html' with heading_tag="h4" %}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                {% endif %}
                                                 <hr/>
                                             {% endif %}
 
@@ -125,9 +140,15 @@
                                                 <div class="media-body">
                                                     <h4 class="media-heading">Stripe payment service</h4>
                                                     <p>
-                                                        <span class="label label-success">
-                                                            <i class="fa fa-check"></i> Active and working
-                                                        </span>
+                                                        {% if stripe_is_verified %}
+                                                            <span class="label label-success">
+                                                                <i class="fa fa-check"></i> Active and working
+                                                            </span>
+                                                        {% else %}
+                                                            <span class="label label-warning">
+                                                                <i class="fa fa-warning"></i> No bank account
+                                                            </span>
+                                                        {% endif %}
                                                     </p>
                                                 </div>
                                             </div>
