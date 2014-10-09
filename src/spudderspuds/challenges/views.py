@@ -472,7 +472,7 @@ def challenge_accept_beneficiary(request, participation_id, state):
         challenge.recipient_entity_type,
         challenge.recipient_entity_id,
         EntityBase.EntityWrapperByEntityType(challenge.recipient_entity_type))
-    clubs = _get_clubs_by_state(state)
+    clubs = _get_clubs_by_state(request, state)
     for club in clubs:
         club['is_original_beneficiary'] = (club['id'] == original_beneficiary.entity.id)
     clubs = sorted(clubs, key=lambda x: x['is_original_beneficiary'], reverse=True)
@@ -548,7 +548,7 @@ def challenge_challenge_accept_beneficiary(request, state=None):
 def challenge_challenge_accept_beneficiary_load_clubs(request, state):
     template_data = {
         'state': STATES[state],
-        'clubs': _get_clubs_by_state(state)}
+        'clubs': _get_clubs_by_state(request, state)}
     return render(request, 'spudderspuds/challenges/components/create_challenge_choose_club.html', template_data)
 
 
