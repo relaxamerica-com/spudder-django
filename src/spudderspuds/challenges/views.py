@@ -427,7 +427,7 @@ def challenge_accept_upload(request, challenge_id):
                 participation.state = ChallengeParticipation.ACCEPTED_STATE
                 participation.save()
                 if feature_is_enabled('tracking_pixels'):
-                    request.events.append(TrackingPixelEvents.CHALLENGE_ACCEPTED)
+                    EventController.RegisterEvent(request, EventController.CHALLENGE_ACCEPTED)
             if request.is_ajax():
                 return HttpResponse(redirect_url)
             return redirect(redirect_url)
@@ -593,7 +593,7 @@ def challenge_challenge_accept_notice(request, state=None, club_entity_type=None
             participation.save()
             redirect_url = '/challenges/challenge_challenge/%s/thanks?just_submitted=True' % participation_id
             if feature_is_enabled('tracking_pixels'):
-                request.events.append(TrackingPixelEvents.CHALLENGE_ACCEPTED)
+                EventController.RegisterEvent(request, EventController.CHALLENGE_ACCEPTED)
             if request.is_ajax():
                 return HttpResponse(redirect_url)
             return redirect(redirect_url)
