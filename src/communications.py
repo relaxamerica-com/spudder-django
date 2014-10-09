@@ -124,5 +124,14 @@ NOTIFICATIONS = {
     Notification.COMPLETE_CHALLENGE_NOTIFICATION: {
         'subject': 'Spudder - You have a challenge to complete!',
         'message': ""
+    },
+    Notification.RESET_PASSWORD: {
+        'subject': 'Spudder - Reset password link',
+        'message': """
+Please follow the link to reset your password.
+[LINK]
+
+Kind regards, team Spudder.
+"""
     }
 }

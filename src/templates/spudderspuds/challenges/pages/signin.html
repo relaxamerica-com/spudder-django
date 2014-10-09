@@ -34,6 +34,7 @@
     {% endif %}
 
     <p>Don't have an account? <a href="/challenges/register?next={{ request.GET.next|default:'/' }}&message={{ request.GET.message|default:'' }}">register <i class="fa fa-arrow-right"></i> </a></p>
+    <p>Forgot password? <a href="/users/account/forgot">restore <i class="fa fa-arrow-right"></i> </a></p>
 
     <hr/>
 

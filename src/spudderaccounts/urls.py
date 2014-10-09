@@ -17,5 +17,7 @@ urlpatterns = patterns(
     url('account/create_password', 'accounts_create_password'),
     url('account/signin/(?P<user_id>\d+)', 'accounts_signin',),
     url('account/signin', 'accounts_signin_choose_account', {'SSL' : True }),
+    url('account/forgot', 'account_forgot_password'),
+    url('account/reset_password', 'account_reset_password'),
     url('$', 'accounts_dashboard',),
 )

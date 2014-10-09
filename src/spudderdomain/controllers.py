@@ -573,6 +573,10 @@ class CommunicationController(object):
                 message = notification.extras.get('message')
                 challenge = notification.extras.get('challenge')
                 message = cls._FormatNotificationMessage(message, **{'link': challenge.accept_challenge_link})
+            elif notification_type == Notification.RESET_PASSWORD:
+                subject = NOTIFICATIONS[notification_type]['subject']
+                message = NOTIFICATIONS[notification_type]['message']
+                message = cls._FormatNotificationMessage(message, **{'link': notification.extras.get('link')})
             else:
                 NotImplementedError("Notification type '%s' not implemented" % notification_type)
             return subject, message

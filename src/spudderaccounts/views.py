@@ -6,12 +6,13 @@ from django.shortcuts import render_to_response, redirect, render, get_object_or
 from django.template import RequestContext
 from django.http import HttpResponseNotFound, HttpResponseRedirect
 import settings
-from spudderaccounts.forms import ProfileDetailsForm, CreatePasswordForm, SigninForm
-from spudderaccounts.models import Invitation
-from spudderaccounts.utils import select_all_user_roles, change_current_role
-from spudderdomain.controllers import RoleController
+from uuid import uuid4
+from spudderaccounts.forms import ProfileDetailsForm, CreatePasswordForm, SigninForm, ForgotPasswordForm, \
+    ResetPasswordForm
+from spudderaccounts.models import Invitation, Notification
+from spudderaccounts.utils import select_all_user_roles, change_current_role, select_most_appropriate_user_role
+from spudderdomain.controllers import RoleController, CommunicationController
 from spudderaccounts.wrappers import RoleBase
-from spudderdomain.models import TeamPage
 
 
 def accounts_signin(request, user_id):
@@ -128,6 +129,67 @@ def accounts_signin_choose_account(request):
         'AMAZON_CLIENT_ID': settings.AMAZON_LOGIN_CLIENT_ID,
         'base_url': settings.SPUDMART_BASE_URL,
     })
+
+
+def account_forgot_password(request):
+    if request.user.is_authenticated():
+        logout(request)
+
+    form = ForgotPasswordForm()
+    if request.method == 'POST':
+        form = ForgotPasswordForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data.get('email')
+            user = User.objects.get(email=email)
+            role_controller = RoleController(user)
+            role = select_most_appropriate_user_role(role_controller)
+
+            notification, created = Notification.objects.get_or_create(
+                notification_type=Notification.RESET_PASSWORD,
+                target_entity_id=role.entity.id,
+                target_entity_type=role.entity_type
+            )
+            token = str(uuid4())
+            link = '%s/users/account/reset_password?token=%s' % (settings.SPUDMART_BASE_URL, token)
+            notification.extras = {'link': link, 'token': token}
+            notification.save()
+            CommunicationController.CommunicateWithEmail([email], **{'notification': notification})
+
+            return render_to_response('spudderaccounts/pages/reset_password_link_sent.html', {'email': email})
+    data = {'form': form}
+    return render_to_response('spudderaccounts/pages/forgot_password.html', data)
+
+
+def account_reset_password(request):
+    if request.method == 'GET':
+        password_form = ResetPasswordForm(initial=request.GET)
+        if not password_form.is_valid_token():
+            return HttpResponseNotFound()
+
+    if request.method == 'POST':
+        password_form = ResetPasswordForm(request.POST)
+        if not password_form.is_valid_token():
+            return HttpResponseNotFound()
+        if password_form.is_valid():
+            role = RoleController.GetRoleForEntityTypeAndID(
+                password_form.notification.target_entity_type, password_form.notification.target_entity_id,
+                RoleBase.RoleWrapperByEntityType(password_form.notification.target_entity_type)
+            )
+            user = role.user
+            user.set_password(password_form.cleaned_data.get('password_1'))
+            user.save()
+            user.spudder_user.mark_password_as_done()
+            messages.success(request, "Your new password was saved!")
+            # remove notification
+            password_form.notification.delete()
+            return redirect('/challenges/signin')
+    return render_to_response(
+        'spudderaccounts/pages/create_password.html',
+        {
+            'password_form': password_form,
+            'reset_password': True
+        },
+        context_instance=RequestContext(request))
 
 
 def accept_invitation(request, invitation_id):

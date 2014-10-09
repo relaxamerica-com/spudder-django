@@ -74,11 +74,13 @@ class Invitation(models.Model):
 
 class Notification(models.Model):
     COMPLETE_CHALLENGE_NOTIFICATION = 'complete_challenge'
+    RESET_PASSWORD = 'reset_password'
 
-    NOTIFICATION_TYPES = (COMPLETE_CHALLENGE_NOTIFICATION,)
+    NOTIFICATION_TYPES = (COMPLETE_CHALLENGE_NOTIFICATION, RESET_PASSWORD)
 
     NOTIFICATION_CHOICES = (
         (COMPLETE_CHALLENGE_NOTIFICATION, 'Complete Challenge'),
+        (RESET_PASSWORD, 'Reset Password'),
     )
 
     notification_type = models.CharField(max_length=255, choices=NOTIFICATION_CHOICES)
