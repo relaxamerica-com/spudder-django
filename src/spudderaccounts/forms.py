@@ -50,7 +50,7 @@ class ForgotPasswordForm(forms.Form):
     email = forms.EmailField()
 
     def clean_email(self):
-        email = self.data.get('email')
+        email = super(ForgotPasswordForm, self).clean().get('email', '')
         if email:
             try:
                 User.objects.get(email=email, is_active=True)
