@@ -491,6 +491,17 @@ class ChallengeParticipation(models.Model):
     def as_json(self):
         return json.dumps(self.as_dict())
 
+    def link(self):
+        """
+        Gets a link to resume the challenge, or review submission
+        :return: a rel link in the form of a string
+        """
+        if self.state == self.PRE_ACCEPTED_STATE:
+            return '/challenges/%s/accept/notice?just_pledged=True' % self.challenge.id
+        if self.state == self.ACCEPTED_STATE:
+            recipient_state = self.challenge.get_recipient().state
+            return '/challenges/%s/beneficiary/%s' % self.challenge.id, recipient_state
+
 
 class ChallengeChallengeParticipation(models.Model):
     STATE_PRE_COMPLETE = '01'

@@ -8,25 +8,29 @@
 {% endblock %}
 
 {% block masterhead_title %}
-    <h4 class="navbar-text navbar-right hidden-xs"><span class="text-primary">Create new challenge:</span> {{ template.name }}</h4>
+    <h4 class="navbar-text navbar-right hidden-xs"><span class="text-primary">Edit challenge:</span> {{ challenge_name }}</h4>
 {% endblock %}
 
 {% block body_id %}challenges-choose-doantion{% endblock %}
 
 {% block body_class %}challenges {{ template.slug }}{% endblock %}
 
-{% block title %}Challenges - Create - Configure Challenge{% endblock %}
+{% block title %}Challenges - Edit - Change Image{% endblock %}
 
 {% block well_content %}
     <div class="page-header">
-        <h1>
-            {% include 'spudderspuds/components/wizard_steps.html' with step="3" of="3" title="Create Challenge" %}
-            Configure the challenge
-        </h1>
-        <p><small>Choose the suggested donation amount and upload a video or image to go with this challenge.</small></p>
+        <h1>Change Image</h1>
+        <p><small>Change the image displayed with this challenge.</small></p>
     </div>
 
-    <p>You're creating a challenge for <b>{{ club.name }} ({{ club.state }})</b>, <a href="/challenges/create/{{ template.id }}">change</a>?</p>
+    <hr/>
+
+    {% if image_url %}
+        <p>The current image associated with this challenge is below:</p>
+        <p><img src="{{ image_url }}"></p>
+    {% else %}
+        <p>No image currently associated with this challenge!</p>
+    {% endif %}
 
     <hr/>
     <form method="post" enctype="multipart/form-data" action="{{ upload_url }}" class="ajax-form">
@@ -34,9 +38,20 @@
         {% bootstrap_form form %}
         {% buttons %}
             <button type="submit" class="btn btn-primary btn-cta">
-                Save and continue <i class="fa fa-arrow-right"></i>
+                Save
             </button>
         {% endbuttons %}
     </form>
+
+    <div class="hidden-xs">
+        <a href="/fan" class="btn btn-primary btn-cta">
+            Return to Dashboard
+        </a>
+    </div>
+    <div class="visible-xs">
+        <a href="/fan" class="btn btn-primary btn-cta btn-block">
+            Return to Dashboard
+        </a>
+    </div>
 
 {% endblock %}

@@ -35,7 +35,7 @@
                             {% include 'spudderspuds/components/wizard_steps.html' with step="<i class='fa fa-trophy'></i>" title="Spudder Challenge" %}
                             {{ challenge.name }}
                         </h1>
-                        <h2>{{ owner.name }} Has challenged you!</h2>
+                        <h2>{{ owner.name }} has challenged you!</h2>
                         <h2>
                             <small>
                                 You are challenged to do the {{ challenge.name }}
@@ -69,7 +69,7 @@
                         </div>
                     </div>
                     <hr/>
-                    <h2>You can <span class="text-primary">share</span> this challenge with other!</h2>
+                    <h2 id="share-challenge">You can <span class="text-primary">share</span> this challenge with others!</h2>
                     <p class="share-challenge">
                         <a data-original-title="Share on Facebook" data-placement="bottom" href="JavaScript:facebookPopup('http://{{ request.META.HTTP_HOST }}/challenges/{{ challenge.id }}')">
                             <span class="fa-stack fa-2x"><i class="fa fa-circle fa-stack-2x fa-inverse"></i><i class="fa fa-facebook fa-stack-1x"></i></span>

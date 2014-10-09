@@ -34,14 +34,11 @@ from spudderdomain.models import Challenge, ChallengeParticipation
 from spudderdomain.wrappers import EntityBase
 
 
-IS_OWNER_ICON = "<i class='fa fa-asterisk text-primary' " \
-                "title='You created this challenge' " \
-                "style='position:absolute;right:3%'></i>"
 CHALLENGE_STATE_BUTTON = "<button class='btn btn-%s btn-xs pull-right' style='margin-right:5%%' title='%s'>%s</button>"
 CHALLENGE_STATE_FORMATTING = {
     ChallengeParticipation.ACCEPTED_STATE: ('success',
-                                             'You have accepted this challenge',
-                                             'Accepted'),
+                                            'You have accepted this challenge',
+                                            'Accepted'),
     ChallengeParticipation.PRE_ACCEPTED_STATE: ('warning',
                                                 'You have been invited to this challenge but haven\'t accepted yet',
                                                 'Pre-Accepted'),
@@ -54,6 +51,24 @@ CHALLENGE_STATE_FORMATTING = {
 
 }
 
+IMAGE = "<a class='btn btn-primary btn-xs challenge-image' title='Upload custom image' href='/challenges/%s/edit_image'>" \
+        "<i class='fa fa-fw fa-camera'></i>" \
+        "</a>"
+DONATION = "<a class='btn btn-default btn-xs' title='Change suggested donations' href='/challenges/%s/edit_donation'>" \
+           "<i class='fa fa-fw fa-usd'></i>" \
+           "</a>"
+SHARE_BUTTON = "<a class='btn btn-primary btn-xs' title='Share this Challenge' href='/challenges/%s/share'>" \
+               "<i class='fa fa-fw fa-share-alt'></i>" \
+               "</a>"
+LINK = "<a class='btn btn-primary btn-xs' href='/challenges/%s'>" \
+       "<i class='fa fa-fw fa-link'></i>" \
+       "</a>"
+# This definition is commented out because we don't have anywhere to upload videos currently
+# VIDEO = "<a class='btn btn-default btn-xs' title='Add a custom video for this challenge'>" \
+#         "<i class='fa fa-fw fa-video-camera text-primary'></i>" \
+#         "</a>"
+VIDEO = None
+
 
 def _format_challenge_state_button(state):
     """
@@ -65,19 +80,23 @@ def _format_challenge_state_button(state):
     return CHALLENGE_STATE_BUTTON % CHALLENGE_STATE_FORMATTING[state]
 
 
-def _get_owner_icon(challenge, entity_id, entity_type):
+def _get_icons(challenge, created):
     """
-    Generates html for an icon to denote owner of a challenge
+    Gets allowed icons for managing challenge
     :param challenge: a Challenge object
-    :param entity_id: the ID of an an entity
-    :param entity_type: a valid entity type
-    :return: html for a FontAwesome icon if owner,
-        empty string if not owner
+    :param created: a boolean whether to allow more than share button
+    :return: a string of html objects:
+        IMAGE or NO_IMAGE
+        VIDEO or NO_VIDEO
+        both are link tags with FontAwesome icon declarations
     """
-    if str(challenge.creator_entity_id) == str(entity_id) and challenge.creator_entity_type == entity_type:
-        return IS_OWNER_ICON
-    else:
-        return ""
+    html = ""
+    if created:
+        html += IMAGE % challenge.id
+        html += DONATION % challenge.id
+    html += LINK % challenge.id
+    html += SHARE_BUTTON % challenge.id
+    return html
 
 
 def _format_challenge(type, c, extras=None):
@@ -109,11 +128,12 @@ def _format_challenge(type, c, extras=None):
             c.challenge.recipient_entity_type,
             c.challenge.recipient_entity_id,
             EntityBase.EntityWrapperByEntityType(c.challenge.recipient_entity_type))
+        created = c.challenge.creator_entity_id == extras['id'] and c.challenge.creator_entity_type == extras['type']
         return {
             'name': "%s for %s" % (c.challenge.name, club.name),
-            'link': '/challenges/%s/accept/notice' % c.challenge.id,
+            'link': c.link(),
             'state': _format_challenge_state_button(c.state),
-            'created': _get_owner_icon(c.challenge, extras['id'], extras['type'])
+            'manage': _get_icons(c.challenge, created)
         }
     if type == 'dash created' and c.id not in extras:
         club = EntityController.GetWrappedEntityByTypeAndId(
@@ -122,9 +142,9 @@ def _format_challenge(type, c, extras=None):
             EntityBase.EntityWrapperByEntityType(c.recipient_entity_type))
         return {
             'name': "%s for %s" % (c.name, club.name),
-            'link': '/challenges/%s/accept/notice' % c.id,
+            'link': '/challenges/%s' % c.id,
             'state': '',
-            'created': IS_OWNER_ICON
+            'manage': _get_icons(c, True)
         }
 
 

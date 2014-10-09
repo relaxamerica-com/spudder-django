@@ -1,0 +1,47 @@
+{% extends 'spudderspuds/base_single_well.html' %}
+{% load bootstrap3 %}
+
+{% block js %}
+    {{ block.super }}
+    <script type="text/javascript" language="javascript" src="/static/js/libs/jquery.form.min.js"></script>
+    <script type="text/javascript" language="javascript" src="/static/js/spudder-ajax-form.js"></script>
+{% endblock %}
+
+{% block masterhead_title %}
+    <h4 class="navbar-text navbar-right hidden-xs"><span class="text-primary">Edit challenge:</span> {{ challenge_name }}</h4>
+{% endblock %}
+
+{% block body_id %}challenges-choose-doantion{% endblock %}
+
+{% block body_class %}challenges {{ template.slug }}{% endblock %}
+
+{% block title %}Challenges - Edit - Configure Donation Amounts{% endblock %}
+
+{% block well_content %}
+    <div class="page-header">
+        <h1>Change Donation Amounts</h1>
+        <p><small>Change the suggested donation amount when accepting or rejecting the challenge.</small></p>
+    </div>
+
+    <hr/>
+    <form method="post" enctype="multipart/form-data" class="ajax-form">
+        {% csrf_token %}
+        {% bootstrap_form form %}
+        {% buttons %}
+            <button type="submit" class="btn btn-primary btn-cta">
+                Save
+            </button>
+        {% endbuttons %}
+    </form>
+
+    <div class="hidden-xs">
+        <a href="/fan" class="btn btn-primary btn-cta">
+            Return to Dashboard
+        </a>
+    </div>
+    <div class="visible-xs">
+        <a href="/fan" class="btn btn-primary btn-cta btn-block">
+            Return to Dashboard
+        </a>
+    </div>
+{% endblock %}

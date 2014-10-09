@@ -13,6 +13,7 @@ FEATURES = {
         'challenge_tree',
         'email_error_logs',
         'tracking_pixels',
+        'challenge_management'
     ],
     'stage': [
         'spud_tagging',

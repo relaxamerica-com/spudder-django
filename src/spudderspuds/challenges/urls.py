@@ -93,6 +93,12 @@ urlpatterns = patterns(
     url(r'(?P<challenge_id>\d+)/share$',
         'challenge_share', {'SSL': determine_ssl()}),
 
+    url(r'(?P<challenge_id>\d+)/edit_donation$',
+        'edit_donation', {'SSL': determine_ssl()}),
+
+    url(r'(?P<challenge_id>\d+)/edit_image$',
+        'edit_image', {'SSL': determine_ssl()}),
+
     url(r'(?P<challenge_id>\d+)$',
         'challenge_view', {'SSL': determine_ssl()}),
 

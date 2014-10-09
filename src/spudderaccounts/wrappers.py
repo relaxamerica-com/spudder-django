@@ -292,7 +292,12 @@ class RoleFan(RoleBase):
 
     @property
     def name(self):
-        return self.entity.username
+        name = None
+        if self.entity.name and self.entity.last_name:
+            name = "%s %s" % (self.entity.name, self.entity.last_name)
+        elif self.entity.name or self.entity.last_name:
+            name = "%s%s" % (self.entity.name, self.entity.last_name)
+        return self.entity.username or name or self.entity.fan.email
 
     @property
     def state(self):

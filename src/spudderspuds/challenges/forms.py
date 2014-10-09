@@ -198,3 +198,28 @@ class ChallengeChallengeParticipationForm(forms.Form):
         label="Upload photo of your challenge <small>(optional)</small>",
         help_text="You will increase you chances of winning if you upload a photo!",
         required=False)
+
+
+class ChallengeDonationEditForm(forms.Form):
+    """
+    A form to change just the donations on a challenge.
+    """
+    donation_with_challenge = forms.IntegerField(
+        label="Suggested donation when accepting challenge",
+        help_text="The suggested donation each person will be asked for when they accept this challenge.",
+        widget=forms.TextInput(attrs={'addon_before': '$', 'addon_after': '.00'}))
+    donation_without_challenge = forms.IntegerField(
+        label="Suggested donation when declining challenge",
+        help_text="The suggested donation each person will be asked for if they decline this challenge.",
+        widget=forms.TextInput(attrs={'addon_before': '$', 'addon_after': '.00'}))
+
+
+class ChallengeImageEditForm(forms.Form):
+    """
+    A form to change just the image on a challenge.
+    """
+    file = forms.FileField(
+        label="Upload an image",
+        help_text="Here is your chance to upload an image associated with your team, something that your fans will "
+                  "recognize. The best images are landscape!",
+        required=False)

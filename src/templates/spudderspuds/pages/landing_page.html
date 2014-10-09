@@ -1,6 +1,7 @@
 {% extends 'spudderspuds/base.html' %}
 {% load spudderaccountstags %}
 {% load spudderspudstags %}
+{% load featuretags %}
 
 {% block css %}
     {{ block.super }}
@@ -160,5 +161,9 @@
 
 {#        fix_footer_position();#}
     });
+
+    {% if "challenge_management"|feature_is_enabled %}
+        $('.challenge-image')
+    {% endif %}
     </script>
 {% endblock %}

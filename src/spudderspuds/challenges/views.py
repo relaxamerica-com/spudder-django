@@ -22,7 +22,7 @@ from spudderaccounts.wrappers import RoleBase, RoleFan
 from spudderdomain.wrappers import EntityBase
 from spudderdomain.controllers import RoleController, EntityController, EventController
 from spudderspuds.challenges.forms import CreateTempClubForm, ChallengeConfigureForm, ChallengesRegisterForm, \
-    RegisterCreateClubForm
+    RegisterCreateClubForm, ChallengeDonationEditForm, ChallengeImageEditForm
 from spudderspuds.challenges.forms import ChallengesSigninForm, AcceptChallengeForm, UploadImageForm
 from spudderspuds.challenges.forms import ChallengeChallengeParticipationForm
 from spudderspuds.challenges.models import TempClubOtherInformation, ChallengeTree, ChallengeServiceConfiguration
@@ -680,3 +680,75 @@ def send_challenge_emails(request):
     queue = taskqueue.Queue('challenges-sendemails')
     queue.purge()
     return HttpResponse(json.dumps({'status': 'ok'}), content_type='application/json')
+
+
+@role_required([RoleController.ENTITY_FAN, RoleController.ENTITY_CLUB_ADMIN], redirect_url='/challenges/create/register')
+def edit_donation(request, challenge_id):
+    """
+    Allows the owner of a challenge to change the associated donation amount
+    :param request: any request
+    :param challenge_id: a valid ID of a Challenge object
+    :return: a simple form page
+    """
+    challenge = Challenge.objects.get(id=challenge_id)
+    form = ChallengeDonationEditForm(initial={
+        'donation_with_challenge': challenge.proposed_donation_amount,
+        'donation_without_challenge': challenge.proposed_donation_amount_decline
+    })
+    if request.method == 'POST':
+        form = ChallengeDonationEditForm(request.POST)
+        if form.is_valid():
+            proposed_donation_amount = form.cleaned_data['donation_with_challenge']
+            proposed_donation_amount_decline = form.cleaned_data['donation_without_challenge']
+
+            challenge.proposed_donation_amount = proposed_donation_amount
+            challenge.proposed_donation_amount_decline = proposed_donation_amount_decline
+
+            challenge.save()
+
+            return redirect('/fan')
+
+    return render(
+        request,
+        'spudderspuds/challenges/pages/edit_donation.html',
+        {
+            'form': form,
+            'challenge_name': challenge.name
+         })
+
+
+@role_required([RoleController.ENTITY_FAN, RoleController.ENTITY_CLUB_ADMIN], redirect_url='/challenges/create/register')
+def edit_image(request, challenge_id):
+    """
+    Allows the owner of a challenge to change the related image
+    :param request: any request
+    :param challenge_id: a valid ID of a Challenge object
+    :return: a simple form page
+    """
+    challenge = Challenge.objects.get(id=challenge_id)
+    form = ChallengeImageEditForm()
+    upload_url = blobstore.create_upload_url('/challenges/edit_image/%s' % challenge_id)
+
+    if request.method == 'POST':
+        form = ChallengeConfigureForm(request.POST)
+        if form.is_valid():
+            uploaded_file = None
+            if request.FILES:
+                upload_form = UploadForm(request.POST, request.FILES)
+                uploaded_file = upload_form.save()
+            challenge.image = uploaded_file
+            redirect_url = '/fan'
+            if request.is_ajax():
+                return HttpResponse(redirect_url)
+            return redirect(redirect_url)
+        if request.is_ajax():
+            return HttpResponse("%s|%s" % (
+                blobstore.create_upload_url(upload_url),
+                '<br/>'.join(['<br/>'.join([_e for _e in e]) for e in form.errors.values()])))
+
+    return render(request, 'spudderspuds/challenges/pages/edit_image.html',{
+        'upload_url': upload_url,
+        'form': form,
+        'image_url': '/file/serve/%s' % challenge.image if challenge.image else None,
+        'challenge_name': challenge.name
+    })
