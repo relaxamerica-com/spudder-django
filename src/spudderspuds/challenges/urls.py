@@ -100,7 +100,7 @@ urlpatterns = patterns(
         'edit_image', {'SSL': determine_ssl()}),
 
     url(r'(?P<challenge_id>\d+)$',
-        'challenge_view', {'SSL': determine_ssl()}),
+        'the_challenge_page', {'SSL': determine_ssl()}),
 
     url(r'^tick',
         'tick'),

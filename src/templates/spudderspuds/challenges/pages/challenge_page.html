@@ -14,14 +14,9 @@
 <div class="jumbotron spudder-jumbotron" style="background-image:url(/static/img/spudderspuds/challenges/jumbotron.jpg)">
 
     <div class="jumbotron-bottom-banner">
-        <div class="container-fluid">
-            <div class="media">
-                <img src="{{ club_entity.image }}" class="media-object pull-left img-responsive logo"/>
-                <div class="media-body">
-                    <h1 class="media-heading">Heading</h1>
-                    <p>Subheading</p>
-                </div>
-            </div>
+        <div class="container">
+            <h1>{{ challenge.template.name }}</h1>
+            <h3>for <span class="text-primary">{{ challenge_recipient.name }}</span></h3>
         </div>
     </div>
 </div>

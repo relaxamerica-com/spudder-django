@@ -154,9 +154,15 @@ def register(request):
 
 def affiliate_challenge_page(request, affiliate_key):
     club_entity, challenge = get_affiliate_club_and_challenge(affiliate_key)
+    return redirect('/challenges/%s' % challenge.id)
+
+
+def the_challenge_page(request, challenge_id):
+    challenge = get_object_or_404(Challenge, id=challenge_id)
+    challenge_recipient = challenge.get_recipient()
     template_data = {
-        'club_entity': club_entity,
-        'challenge': challenge}
+        'challenge': challenge,
+        'challenge_recipient': challenge_recipient}
     return render(request, 'spudderspuds/challenges/pages/challenge_page.html', template_data)
 
 
