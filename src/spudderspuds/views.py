@@ -170,6 +170,9 @@ def landing_page(request):
             participating_entity_type=entity['type'])
         template_data['challenge_participations'] = participating_challenges
         template_data['accept_and_pledge_states'] = _AcceptAndPledgeEngineStates
+        template_data['my_challenges'] = Challenge.objects.filter(
+            creator_entity_id=request.current_role.entity.id,
+            creator_entity_type=request.current_role.entity_type)
 
         participating_ids = [c.challenge.id for c in participating_challenges]
 

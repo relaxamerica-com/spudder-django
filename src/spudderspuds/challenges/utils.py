@@ -22,6 +22,7 @@ class _AcceptAndPledgeEngineStates(object):
     CHOOSE_TEAM = '5'
     CREATE_TEAM = '6'
     SHARE = '7'
+    PLEDGE = '8'
 
 
 class TreeElement(object):
@@ -344,6 +345,8 @@ def challenge_state_engine(request, challenge, engine, state):
                 challenge.save()
                 template_data['challenge'] = challenge
                 template_data['just_uploaded'] = True
+                participation.state_engine_state = _AcceptAndPledgeEngineStates.PLEDGE
+                participation.save()
             template_data['template'] = template
             template_data['beneficiary'] = beneficiary
             template_data['participation'] = participation
@@ -357,13 +360,8 @@ def challenge_state_engine(request, challenge, engine, state):
                 challenge.recipient_entity_type,
                 challenge.recipient_entity_id,
                 EntityBase.EntityWrapperByEntityType(challenge.recipient_entity_type))
-            participation = ChallengeParticipation.objects.get(
-                challenge=challenge,
-                participating_entity_id=request.current_role.entity.id,
-                participating_entity_type=request.current_role.entity_type)
             template_data['template'] = template
             template_data['beneficiary'] = beneficiary
-            template_data['participation'] = participation
             return render(
                 request,
                 'spudderspuds/challenges/pages_ajax/challenge_accept_share.html',

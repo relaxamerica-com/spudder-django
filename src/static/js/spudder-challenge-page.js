@@ -78,6 +78,7 @@
                     else
                         $el.removeClass('btn-default').addClass('btn-primary');
                 });
+                state_engine = $action_container.attr('id');
             });
 
             $container.find('.btn-ajax').livequery(function(){

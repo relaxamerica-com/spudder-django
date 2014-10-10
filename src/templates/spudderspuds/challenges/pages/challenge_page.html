@@ -202,6 +202,8 @@
         var accessToken;
         var video_processing_start_date;
 
+        var state_engine = '{{ challenge_participation.state_engine }}';
+
         var po = document.createElement('script');
         po.type = 'text/javascript'; po.async = true;
         po.src = GOOGLE_PLUS_SCRIPT_URL;
@@ -322,7 +324,7 @@
         }
 
         function on_upload_complete(){
-            var next_url = '/challenges/{{ challenge.id }}/{{ challenge_participation.state_engine }}/4?video_id=' + $('body').data("video_id");
+            var next_url = '/challenges/{{ challenge.id }}/' + state_engine + '/4?video_id=' + $('body').data("video_id");
             $('.action-container:visible').load(next_url);
         }
 
