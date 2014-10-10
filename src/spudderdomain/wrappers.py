@@ -1,4 +1,5 @@
 import abc
+import json
 from spudderdomain.models import ClubAdministrator
 from spudderdomain.utils import get_entity_base_instanse_by_id_and_type
 from spudmart.utils.querysets import get_object_or_none
@@ -10,6 +11,12 @@ class EntityBase(object):
     """
     def __init__(self, entity):
         self._entity = entity
+
+    def as_json(self):
+        return json.dumps({
+            'entity_type': self.entity_type,
+            'entity_id': self.entity.id
+        })
 
     @property
     def entity(self):

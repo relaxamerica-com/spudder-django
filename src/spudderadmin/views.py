@@ -764,7 +764,7 @@ def challenges(request):
                     'slug': 'icebucket'
                 },
                 {
-                    'name': "Cream Pie Challenge",
+                    'name': "Pie Challenge",
                     'description': "Challenge your friends, family and fans to take a whipped cream pie to the face!!",
                     'slug': 'piechallenge'
                 }

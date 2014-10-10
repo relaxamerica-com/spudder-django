@@ -1,0 +1,18 @@
+{% load bootstrap3 %}
+
+<div class="page-header">
+    <h3>Sign in to continue</h3>
+</div>
+
+<form method="post" action="{{ request.path }}">
+    {% csrf_token %}
+    {% bootstrap_form form %}
+    {% buttons %}
+        <button type="submit" class="btn btn-primary btn-cta btn-ajax">
+            Sign in <i class="fa fa-arrow-right"></i>
+        </button>
+        <a href="/challenges/{{ challenge.id }}/{{ state_engine }}/1" class="btn btn-link btn-ajax btn-cta">
+            or register?
+        </a>
+    {% endbuttons %}
+</form>

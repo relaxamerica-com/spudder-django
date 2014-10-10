@@ -1,0 +1,26 @@
+{% load bootstrap3 %}
+
+<div class="page-header">
+    <h3>The clock is ticking!</h3>
+</div>
+
+<div class="media">
+    <span class="fa fa-stack text-primary media-object pull-left fa-2x">
+        <i class="fa fa-circle fa-stack-2x"></i>
+        <i class="fa fa-stack-1x fa-inverse fa-video-camera"></i>
+    </span>
+    <div class="media-body">
+        <h2 class="media-heading"><small>You now have <span class="text-primary countdown" data-countdown="{{ participation.created.isoformat }}"></span> to upload a video of you doing this challenge.</small></h2>
+    </div>
+</div>
+<hr/>
+<p>
+    Once you have recorded a video, you can return here just by comming back to <a href="www.spudder.com">Spudder</a>
+    and choosing <b>{{ challenge.name }} for {{ beneficiary.name }} ({{ beneficiary.state }})</b> from your list of
+    challenges on your <a href="/fan">dashboard</a>
+</p>
+<hr/>
+<h4>Are you ready to upload your video?</h4>
+<a class="btn btn-primary btn-cta btn-ajax" href="/challenges/{{ challenge.id }}/{{ state_engine }}/3">
+    I'm ready! <i class="fa fa-arrow-right"></i>
+</a>

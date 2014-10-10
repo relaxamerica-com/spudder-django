@@ -1,0 +1,36 @@
+{% load bootstrap3 %}
+
+<div class="page-header">
+    <h3>Challenge others and start fundraising!</h3>
+</div>
+
+<h2>Your now ready to start fundraising for <span class="text-primary">{{ beneficiary.name }} ({{ beneficiary.state }})</span></h2>
+<hr/>
+<h3>
+    <small>
+        All you need to do is hit the links below and share your challenge with as many friends as you can!
+    </small>
+</h3>
+<hr/>
+<p class="share-challenge">
+    <a data-original-title="Share on Facebook" data-placement="bottom" href="JavaScript:facebookPopup('http://{{ request.META.HTTP_HOST }}/challenges/{{ challenge.id }}')">
+        <span class="fa-stack fa-2x"><i class="fa fa-circle fa-stack-2x fa-inverse"></i><i class="fa fa-facebook fa-stack-1x"></i></span>
+    </a>
+    <a data-original-title="Share on Twitter" data-placement="bottom" href="javascript:twitterPopup('http://{{ request.META.HTTP_HOST }}/challenges/{{ challenge.id }}')">
+        <span class="fa-stack fa-2x"><i class="fa fa-circle fa-stack-2x fa-inverse"></i><i class="fa fa-twitter fa-stack-1x"></i></span>
+    </a>
+    <a data-original-title="Share on LinkedIn" data-placement="bottom"href="Javascript:linkedinPopup('http://{{ request.META.HTTP_HOST }}/challenges/{{ challenge.id }}')">
+        <span class="fa-stack fa-2x"><i class="fa fa-circle fa-stack-2x fa-inverse"></i><i class="fa fa-linkedin fa-stack-1x"></i></span>
+    </a>
+    <a data-original-title="Share on Google+" data-placement="bottom" href="javascript:googlePopup('http://{{ request.META.HTTP_HOST }}/challenges/{{ challenge.id }}')">
+        <span class="fa-stack fa-2x"><i class="fa fa-circle fa-stack-2x fa-inverse"></i><i class="fa fa-google-plus fa-stack-1x"></i></span>
+    </a>
+    <a data-original-title="Share via Email" data-placement="bottom" id="mailto" href="mailto:?subject=Check out this on Spudder.com!&body=Check out this amazing challenge on Spudder.com: http://{{ request.META.HTTP_HOST }}/challenges/{{ challenge.id }}">
+        <span class="fa-stack fa-2x"><i class="fa fa-circle fa-stack-2x fa-inverse"></i><i class="fa fa-envelope-o fa-stack-1x"></i></span>
+    </a>
+</p>
+<hr/>
+<h4>Don't forget to make your pledge to {{ challenge.parent.get_benficiary.name }}</h4>
+<a href="/challenges/{{ challenge.parent.id }}/{{ challenge.creating_participant.state_engine }}/8" class="btn btn-primary btn-cta btn-ajax">
+    Go and Pledge <i class="fa fa-arrow-right"></i>
+</a>

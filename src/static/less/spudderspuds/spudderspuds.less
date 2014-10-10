@@ -669,8 +669,7 @@ body.challenges {
         position: absolute;
         width: 100%;
         p {
-            width: 40%;
-            margin: 0 auto;
+            margin: 20% auto 0;
             color: #ffffff;
             font-size: 28px;
             text-align: center;
@@ -723,12 +722,12 @@ body.challenges {
 
 .nav-tabs > li.active > a, .nav-tabs > li.active > a:hover, .nav-tabs > li.active > a:focus {
     background-color: rgba(255,255,255, 0);
+    border-top-color: rgba(255,255,255, 0) !important;
 }
 
 .nav-tabs-google > li.active > a, .nav-tabs-google > li.active > a:hover, .nav-tabs-google > li.active > a:focus {
     color: @brand-primary;
     border-color: @brand-primary;
-    border-top: none;
 }
 
 .alert {
@@ -847,9 +846,42 @@ body {
 
 body {
     &#challenge-page {
+        #info-bar {
+            background-color: @brand-primary;
+            color: #FFF;
+            h2 {
+                small {
+                    color: #FFF;
+                }
+            }
+        }
+        #challenge-body {
+            padding-top: 30px;
 
+            .tab-content {
+                .tab-pane {
+                    padding-top: 30px;
+                }
+            }
+        }
+        #challenge-actions {
+            padding-top: 30px;
+            .action-col {
+
+                .action-container {
+                    margin-top: 0px;
+                    background-color: #FAFAFA;
+                    min-height: 200px;
+                    border: 1px solid #DDD;
+                    border-top: none;
+                    padding: 20px 10px;
+                    margin-bottom: 20px;
+                }
+            }
+        }
     }
 }
+
 
 
 

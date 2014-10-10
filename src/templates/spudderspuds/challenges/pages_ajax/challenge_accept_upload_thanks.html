@@ -1,0 +1,25 @@
+{% load bootstrap3 %}
+
+<div class="page-header">
+    {% if just_uploaded %}
+        <h3>Thanks, we got your video</h3>
+        <p>It's being processed by YouTube now and should be ready soon!</p>
+    {% else %}
+        <h3>Ready to challenge others?</h3>
+    {% endif %}
+</div>
+
+<h2>The current beneficiary of this challenge is <span class="text-primary">{{ beneficiary.name }} ({{ beneficiary.state }})</span></h2>
+<hr/>
+<h3>
+    <small>
+        Do you want to <span class="text-primary">Continue</span> raising money for {{ beneficiary.name }} ({{ beneficiary.state }}), or <span class="text-primary">Change</span> and start raising money for a team or organization of your choice?
+    </small>
+</h3>
+<hr/>
+<a href="/challenges/{{ challenge.id }}/{{ state_engine }}/7" class="btn btn-primary btn-cta btn-ajax">
+    Continue <i class="fa fa-arrow-right"></i>
+</a>
+<a href="javascript:alert('Still in development, sorry!');" class="btn btn-info btn-cta">
+    Change <i class="fa fa-arrow-right"></i>
+</a>

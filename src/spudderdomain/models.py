@@ -387,6 +387,11 @@ class Challenge(models.Model):
     modified = models.DateTimeField(auto_now=True)
     image = models.ForeignKey(UploadedFile, null=True, default=None, related_name='challenge_image')
     youtube_video_id = models.CharField(max_length=255, default='', null=True, blank=True)
+    creating_participant = models.ForeignKey(
+        'ChallengeParticipation',
+        null=True,
+        default=None,
+        related_name='creating_participant')
 
     def __unicode__(self):
         return unicode(self.name)
@@ -464,6 +469,8 @@ class ChallengeParticipation(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
     youtube_video_id = models.CharField(max_length=255, default='', null=True, blank=True)
+    state_engine = models.CharField(max_length=256, default=None, null=True)
+    state_engine_state = models.CharField(max_length=256, default=None, null=True)
 
     def is_accepted(self):
         return self.state == self.ACCEPTED_STATE
@@ -484,7 +491,9 @@ class ChallengeParticipation(models.Model):
             'message': self.message,
             'created': self.created.isoformat(),
             'modified': self.modified.isoformat(),
-            'youtube_video_id': self.youtube_video_id
+            'youtube_video_id': self.youtube_video_id,
+            'state_engine': self.state_engine,
+            'state_engine_state': self.state_engine_state
         }
         return data
 

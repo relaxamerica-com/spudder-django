@@ -1,4 +1,5 @@
 {% extends 'spudderspuds/base.html' %}
+{% load spudderspudstags %}
 
 {% block masterhead_title %}
     <h4 class="navbar-text navbar-right hidden-xs"><span class="text-primary">Spudder:</span> {{ challenge.template.name }}</h4>
@@ -11,14 +12,337 @@
 {% block title %}Spudder: {{ challenge.template.name }}{% endblock %}
 
 {% block body %}
-<div class="jumbotron spudder-jumbotron" style="background-image:url(/static/img/spudderspuds/challenges/jumbotron.jpg)">
+    <div class="jumbotron spudder-jumbotron" style="background-image:url(/static/img/spudderspuds/challenges/jumbotron.jpg)">
 
-    <div class="jumbotron-bottom-banner">
-        <div class="container">
-            <h1>{{ challenge.template.name }}</h1>
-            <h3>for <span class="text-primary">{{ challenge_recipient.name }}</span></h3>
+        <div class="jumbotron-bottom-banner">
+            <div class="container">
+                <h1>{{ challenge.template.name }}</h1>
+                <h3>for <span class="text-primary">{{ challenge_recipient.name }} ({{ challenge_recipient.state }})</span></h3>
+            </div>
         </div>
     </div>
-</div>
+    <div id="info-bar">
+        <div class="container">
+            <div class="row">
+                {% if challenge_participation %}
+                    {% if challenge_participation.state_engine == "accept-and-pledge" and challenge_participation.state_engine_state == '2' %}
+                        <div class="col-sm-6">
+                            <h2><small>Time left to accomplish this challenge</small></h2>
+                        </div>
+                        <div class="col-sm-6 text-right">
+                            <h2 class="countdown" data-countdown="{{ challenge_participation.created.isoformat }}"></h2>
+                        </div>
+                    {% endif %}
+                    {% if challenge_participation.state_engine == "accept-and-pledge" and challenge_participation.state_engine_state == '4' %}
+                        <h2>Are you ready to challenge others?</h2>
+                    {% endif %}
+                {% else %}
+                    <h2>Do you accept the {{ challenge.name }}</h2>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div id="challenge-body">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8">
+                    <ul class="nav nav-tabs nav-tabs-google" role="tablist">
+                        <li class="active">
+                            <a href="#tab-challenge" role="tab" data-toggle="tab">
+                                <i class="fa fa-trophy"></i> Challenge
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#tab-rules" role="tab" data-toggle="tab">
+                                <i class="fa fa-book"></i> How<span class="hidden-xs"> it works</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#tab-videos" role="tab" data-toggle="tab">
+                                <i class="fa fa-video-camera"></i> Videos
+                            </a>
+                        </li>
+                    </ul>
 
+                    <!-- Tab panes -->
+                    <div class="tab-content">
+                        <div class="tab-pane fade in active" id="tab-challenge">
+                            <div class="embed-responsive embed-responsive-16by9">
+                                <iframe class="embed-responsive-item" type="text/html" src="http://www.youtube.com/embed/{{ challenge.youtube_video_id }}?origin=http://www.spudder.com&rel=0&showinfo=0" frameborder="0" allowfullscreen></iframe>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="tab-rules">
+                            {% include 'spudderspuds/challenges/components/in_development.html' %}
+                        </div>
+                        <div class="tab-pane fade" id="tab-videos">
+                            {% include 'spudderspuds/challenges/components/in_development.html' %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="challenge-actions">
+        <div class="container">
+            <hr/>
+            <div class="row">
+                <div class="col-md-4 action-col">
+                    <button class="btn btn-primary btn-block btn-cta">
+                        Accept and Pledge
+                    </button>
+                    <div id="accept-and-pledge" class="collapse action-container">
+                        <div class="page-header">
+                            <h3>How to accept and pledge</h3>
+                        </div>
+                        <p>You are about to accept this challenge and agree to make a pledge to {{ challenge_recipient.name }}</p>
+                        <p>
+                            At <span class="text-primary">Spudder</span>, we've made it super easy for you to take part
+                            in viral challenges that raise money for youth sports teams and organizations like
+                            {{ challenge_recipient.name }}.
+                        </p>
+                        <p>
+                            To take part in this challenge all you need to do is:
+                        </p>
+                        <ol>
+                            <li>Upload a video of you doing the challenge <small>(don't worry if you haven't recorded one yet)</small>.</li>
+                            <li>Share your challenge with friends and family <small>(and even changing who your raising money for)</small>.</li>
+                            <li>Make a pledge to give money to {{ challenge_recipient.name }} <small>(you can choose how much or how little you want to pledge)</small>.</li>
+                        </ol>
+                        <p class="text-primary">
+                            It really is that easy!
+                        </p>
+                        <p>
+                            <a type="button" class="btn btn-primary btn-cta btn-ajax" href="/challenges/{{ challenge.id }}/accept-and-pledge/0">
+                                I'm ready! <i class="fa fa-arrow-right"></i>
+                            </a>
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-4 action-col">
+                    <button class="btn btn-primary btn-block btn-cta">
+                        Accept Only
+                    </button>
+                    <div id="accept-only" class="collapse action-container">
+                        {% include 'spudderspuds/challenges/components/in_development.html' %}
+                    </div>
+                </div>
+                <div class="col-md-4 action-col">
+                    <button class="btn btn-primary btn-block btn-cta">
+                        Pledge Only
+                    </button>
+                    <div id="pledge-only" class="collapse action-container">
+                        {% include 'spudderspuds/challenges/components/in_development.html' %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}
+
+{% block js %}
+    {{ block.super }}
+    <script type="text/javascript" language="JavaScript" src="/static/js/libs/jquery.firefoxCORSbugfix.js"></script>
+    <script type="text/javascript" language="JavaScript" src="/static/js/libs/jquery.form.min.js"></script>
+    <script type="text/javascript" language="JavaScript" src="/static/js/spudder-ajax-form.js"></script>
+    <script type="text/javascript" language="JavaScript" src="/static/js/spudder-challenge-page.js"></script>
+    <script type="text/javascript" language="JavaScript">
+        var overlay = {
+            _get: function(){
+                return $('.overlay');
+            },
+            show: function(){
+                var $container = $('.action-container:visible');
+                $container.css('position', 'relative');
+                $(overlay.html).appendTo($container);
+            },
+            update_progress: function(percent){
+                overlay._get().find('.progress-bar').css('width', '' + percent + '%');
+            },
+            show_processing: function(){
+                var $overlay = overlay._get();
+                $overlay.find('.fa-spinner:first').attr('class', 'fa fa-check');
+                $overlay.find('#uploading-message').html("Uploaded");
+                $overlay.find('#processing-div').show();
+            },
+            update_processing: function() {
+                var $overlay = overlay._get();
+                var minutes_raw = (((new Date() - video_processing_start_date) % 86400000) % 3600000) / 60000;
+                var minutes = Math.round(minutes_raw);
+                var seconds = Math.round(minutes_raw );
+                if (minutes > 0)
+                    $overlay.find('ul').append("<li>Processing for " + minutes + " minutes</li>");
+            },
+            html:
+                '<div class="overlay">' +
+                    '<div class="inner">' +
+                        '<p>' +
+                            '<i class="fa fa-spin fa-spinner"></i> <span id="uploading-message">Uploading</span>' +
+                        '<p>' +
+                        '<div class="progress"><div class="progress-bar" style="width:10%"></div></div>' +
+                        '<div id="processing-div" style="display:none; margin-top:20px;">' +
+                            '<p>' +
+                                '<i class="fa fa-spin fa-spinner"></i> Processing on YouTube' +
+                            '</p>' +
+                            '<p><small id="processing-message">Processing can take several minutes<br/>Please do not refresh your browser.</small></p>' +
+                            '<ul class="list-unstyled"></ul>' +
+                        '</div>' +
+                    '</div>' +
+                '</div>'
+        };
+
+        var GOOGLE_PLUS_SCRIPT_URL = 'https://apis.google.com/js/client:plusone.js';
+        var CHANNELS_SERVICE_URL = 'https://www.googleapis.com/youtube/v3/channels';
+        var VIDEOS_UPLOAD_SERVICE_URL = 'https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet';
+        var VIDEOS_SERVICE_URL = 'https://www.googleapis.com/youtube/v3/videos';
+        var INITIAL_STATUS_POLLING_INTERVAL_MS = 15 * 1000;
+
+        var accessToken;
+        var video_processing_start_date;
+
+        var po = document.createElement('script');
+        po.type = 'text/javascript'; po.async = true;
+        po.src = GOOGLE_PLUS_SCRIPT_URL;
+        var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(po, s);
+
+        window.render = function() {
+            gapi.signin.render('signinButton', {
+                'clientid': '{{ settings.GOOGLE_CLIENT_ID }}', //'653628115804-7vkcnmhte0f36fvr1dj9t5hrn1mt6i5t.apps.googleusercontent.com',
+                'callback': 'oauth2Callback',
+                'cookiepolicy': 'single_host_origin',
+                'scope': 'https://www.googleapis.com/auth/youtube.readonly https://www.googleapis.com/auth/youtube.upload'
+            });
+        };
+
+        window.oauth2Callback = function (authResult) {
+            if (authResult['access_token']) {
+                accessToken = authResult['access_token'];
+                $.ajax({
+                    url: CHANNELS_SERVICE_URL,
+                    method: 'GET',
+                    headers: {Authorization: 'Bearer ' + accessToken},
+                    data: {part: 'snippet', mine: true}
+                }).done(function (response) {
+                    $('.pre-sign-in').hide();
+                    $('.post-sign-in').show();
+                });
+            }
+        };
+
+        function initiateUpload(e) {
+            e.preventDefault();
+
+            var file = $('#file').get(0).files[0];
+            if (file) {
+                overlay.show();
+                var title = "Spudder.com - {{ challenge.name }}";
+                var metadata = {snippet: {title: title, description: title, categoryId: 22 }};
+                $.ajax({
+                    url: VIDEOS_UPLOAD_SERVICE_URL,
+                    method: 'POST',
+                    contentType: 'application/json',
+                    headers: {
+                        Authorization: 'Bearer ' + accessToken,
+                        'x-upload-content-length': file.size,
+                        'x-upload-content-type': file.type
+                    },
+                    data: JSON.stringify(metadata)
+                }).done(function (data, textStatus, jqXHR) {
+                    resumableUpload({url: jqXHR.getResponseHeader('Location'), file: file, start: 0 });
+                });
+            }
+            else {
+                on_upload_complete();
+            }
+        }
+
+        function resumableUpload(options) {
+            var ajax = $.ajax({
+                url: options.url,
+                method: 'PUT',
+                contentType: options.file.type,
+                headers: {
+                    'Content-Range': 'bytes ' + options.start + '-' + (options.file.size - 1) + '/' + options.file.size
+                },
+                xhr: function () {
+                    var xhr = $.ajaxSettings.xhr();
+                    if (xhr.upload) {
+                        xhr.upload.addEventListener(
+                                'progress',
+                                function (e) {
+                                    if (e.lengthComputable) {
+                                        var bytesTransferred = e.loaded;
+                                        var totalBytes = e.total;
+                                        var percentage = Math.round(100 * bytesTransferred / totalBytes);
+                                        overlay.update_progress(percentage)
+                                    }
+                                },
+                                false
+                        );
+                    }
+                    return xhr;
+                },
+                processData: false,
+                data: options.file
+            });
+
+            ajax.done(function (response) {
+                var videoId = response.id;
+                $('body').data("video_id", videoId);
+                video_processing_start_date = new Date();
+                overlay.show_processing();
+                //checkVideoStatus(videoId, INITIAL_STATUS_POLLING_INTERVAL_MS);
+                on_upload_complete();
+            });
+
+            ajax.fail(function () {
+                alert('Something went wrong, please refresh this page and try again.');
+            });
+        }
+
+        function checkVideoStatus(videoId, waitForNextPoll) {
+            $.ajax({
+                url: VIDEOS_SERVICE_URL,
+                method: 'GET',
+                headers: {
+                    Authorization: 'Bearer ' + accessToken
+                },
+                data: {
+                    part: 'status,processingDetails,player',
+                    id: videoId
+                }
+            }).done(function (response) {
+                var processingStatus = response.items[0].processingDetails.processingStatus;
+                var uploadStatus = response.items[0].status.uploadStatus;
+                on_upload_complete();
+            });
+        }
+
+        function on_upload_complete(){
+            var next_url = '/challenges/{{ challenge.id }}/{{ challenge_participation.state_engine }}/4?video_id=' + $('body').data("video_id");
+            $('.action-container:visible').load(next_url);
+        }
+
+        $(document).ready(function(){
+
+            $('#upload-form').livequery(function(){
+                $(this).submit(initiateUpload);
+            });
+
+            $('#signinButton').livequery(function(){
+                window.render();
+            });
+
+            //Setup the challenge page
+            $.spudder_challenge_page.init({
+                challenge_participation: JSON.parse('{{ challenge_participation|jsonify|safe }}'),
+                current_role: JSON.parse('{{ request.current_role|jsonify|safe }}'),
+                root_challenge_url: '/challenges/{{ challenge.id }}'
+            });
+
+        });
+    </script>
 {% endblock %}

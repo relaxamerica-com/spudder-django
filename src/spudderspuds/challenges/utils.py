@@ -1,6 +1,27 @@
-from spudderdomain.controllers import RoleController, EntityController
-from spudderdomain.models import FanPage, Club, TempClub, Challenge, ChallengeTemplate
+from django.contrib.auth import login, authenticate
+from django.contrib.auth.models import User
+from django.http import HttpResponse
+from django.shortcuts import render, redirect
+from google.appengine.api import blobstore
+from spudderaccounts.utils import change_current_role
+from spudderadmin.templatetags.featuretags import feature_is_enabled
+from spudderdomain.controllers import RoleController, EntityController, EventController
+from spudderdomain.models import FanPage, Club, TempClub, Challenge, ChallengeTemplate, ChallengeParticipation
 from spudderdomain.wrappers import EntityBase
+from spudderspuds.challenges.forms import ChallengesSigninForm, ChallengesRegisterForm, UploadImageForm
+from spudderspuds.utils import create_and_activate_fan_role
+from spudmart.upload.forms import UploadForm
+
+
+class _AcceptAndPledgeEngineStates(object):
+    LOGIN = '0'
+    REGISTER = '1'
+    NOTICE = '2'
+    UPLOAD = '3'
+    UPLOAD_THANKS = '4'
+    CHOOSE_TEAM = '5'
+    CREATE_TEAM = '6'
+    SHARE = '7'
 
 
 class TreeElement(object):
@@ -183,3 +204,170 @@ def get_affiliate_club_and_challenge(affiliate_key):
         challenge.save()
         return club_entity, challenge
     return None, None
+
+
+def challenge_state_engine(request, challenge, engine, state):
+    template_data = {
+        'challenge': challenge,
+        'state_engine': engine}
+    if engine == "accept-and-pledge":
+        if state == _AcceptAndPledgeEngineStates.LOGIN:
+            if request.current_role:
+                state = _AcceptAndPledgeEngineStates.NOTICE
+            else:
+                form = ChallengesSigninForm(initial=request.GET)
+                if request.method == "POST":
+                    form = ChallengesSigninForm(request.POST)
+                    if form.is_valid():
+                        username = form.cleaned_data.get('email_address')
+                        password = form.cleaned_data.get('password')
+                        user = authenticate(username=username, password=password)
+                        login(request, user)
+                        request.current_role = change_current_role(request)
+                        state = _AcceptAndPledgeEngineStates.NOTICE
+                template_data['form'] = form
+                if state == _AcceptAndPledgeEngineStates.LOGIN:
+                    return render(request, 'spudderspuds/challenges/pages_ajax/signin.html', template_data)
+        if state == _AcceptAndPledgeEngineStates.REGISTER:
+            if request.current_role:
+                state = _AcceptAndPledgeEngineStates.NOTICE
+            else:
+                form = ChallengesRegisterForm(
+                    initial=request.GET,
+                    enable_register_club=False,
+                    prevent_password_again=True)
+                if request.method == "POST":
+                    form = ChallengesRegisterForm(
+                        request.POST,
+                        enable_register_club=False,
+                        prevent_password_again=True)
+                    if form.is_valid():
+                        username = form.cleaned_data.get('email_address')
+                        password = form.cleaned_data.get('password')
+                        user = User.objects.create_user(username, username, password)
+                        user.save()
+                        user.spudder_user.mark_password_as_done()
+                        fan_entity = create_and_activate_fan_role(request, user)
+                        fan_page = fan_entity.entity
+                        fan_page.username = form.cleaned_data.get('username')
+                        fan_page.state = form.cleaned_data.get('state')
+                        fan_page.save()
+                        login(request, authenticate(username=username, password=password))
+                        if feature_is_enabled('tracking_pixels'):
+                            EventController.RegisterEvent(request, EventController.CHALLENGER_USER_REGISTERER)
+                        state = _AcceptAndPledgeEngineStates.NOTICE
+                template_data['form'] = form
+                if state == _AcceptAndPledgeEngineStates.REGISTER:
+                    return render(request, 'spudderspuds/challenges/pages_ajax/register.html', template_data)
+        if state == _AcceptAndPledgeEngineStates.NOTICE:
+            template = challenge.template
+            beneficiary = EntityController.GetWrappedEntityByTypeAndId(
+                challenge.recipient_entity_type,
+                challenge.recipient_entity_id,
+                EntityBase.EntityWrapperByEntityType(challenge.recipient_entity_type))
+            participation, created = ChallengeParticipation.objects.get_or_create(
+                challenge=challenge,
+                participating_entity_id=request.current_role.entity.id,
+                participating_entity_type=request.current_role.entity_type)
+            participation.state = ChallengeParticipation.PRE_ACCEPTED_STATE
+            participation.state_engine = engine
+            participation.state_engine_state = state
+            participation.save()
+            template_data['template'] = template
+            template_data['beneficiary'] = beneficiary
+            template_data['participation'] = participation
+            return render(request, 'spudderspuds/challenges/pages_ajax/challenge_accept_notice.html', template_data)
+        if state == _AcceptAndPledgeEngineStates.UPLOAD:
+            template = challenge.template
+            beneficiary = EntityController.GetWrappedEntityByTypeAndId(
+                challenge.recipient_entity_type,
+                challenge.recipient_entity_id,
+                EntityBase.EntityWrapperByEntityType(challenge.recipient_entity_type))
+            participation = ChallengeParticipation.objects.get(
+                challenge=challenge,
+                participating_entity_id=request.current_role.entity.id,
+                participating_entity_type=request.current_role.entity_type)
+            redirect_url = '/challenges/%s/%s/4?just_pledged=True' % (challenge.id, engine)
+            action_upload_image = 'upload_image'
+            image_form = UploadImageForm(initial={'action': action_upload_image})
+            upload_url = '/challenges/%s/accept' % challenge.id
+            if request.method == 'POST':
+                action = request.POST.get('action')
+                if action == action_upload_image:
+                    if request.FILES:
+                        upload_form = UploadForm(request.POST, request.FILES)
+                        file = upload_form.save()
+                        participation.image = file
+                        participation.state = ChallengeParticipation.ACCEPTED_STATE
+                        participation.save()
+                        if feature_is_enabled('tracking_pixels'):
+                            EventController.RegisterEvent(request, EventController.CHALLENGE_ACCEPTED)
+                    if request.is_ajax():
+                        return HttpResponse(redirect_url)
+                    return redirect(redirect_url)
+                if request.is_ajax():
+                    return HttpResponse("%s|%s" % (
+                        blobstore.create_upload_url(upload_url),
+                        '<br/>'.join(['<br/>'.join([_e for _e in e]) for e in image_form.errors.values()])))
+            template_data['template'] = template
+            template_data['beneficiary'] = beneficiary
+            template_data['participation'] = participation
+            template_data['redirect_url'] = redirect_url
+            template_data['upload_url'] = blobstore.create_upload_url(upload_url)
+            return render(request, 'spudderspuds/challenges/pages_ajax/challenge_accept_upload.html', template_data)
+        if state == _AcceptAndPledgeEngineStates.UPLOAD_THANKS:
+            template = challenge.template
+            beneficiary = EntityController.GetWrappedEntityByTypeAndId(
+                challenge.recipient_entity_type,
+                challenge.recipient_entity_id,
+                EntityBase.EntityWrapperByEntityType(challenge.recipient_entity_type))
+            participation = ChallengeParticipation.objects.get(
+                challenge=challenge,
+                participating_entity_id=request.current_role.entity.id,
+                participating_entity_type=request.current_role.entity_type)
+            if request.GET.get('video_id'):
+                participation.youtube_video_id = request.GET['video_id']
+                participation.state_engine_state = state
+                participation.save()
+                challenge = Challenge(
+                    template=template,
+                    name=template.name,
+                    parent=challenge,
+                    description=challenge.description,
+                    creator_entity_id=request.current_role.entity.id,
+                    creator_entity_type=request.current_role.entity_type,
+                    recipient_entity_id=challenge.recipient_entity_id,
+                    recipient_entity_type=challenge.recipient_entity_type,
+                    proposed_donation_amount=challenge.proposed_donation_amount,
+                    proposed_donation_amount_decline=challenge.proposed_donation_amount_decline,
+                    creating_participant=participation)
+                challenge.save()
+                template_data['challenge'] = challenge
+                template_data['just_uploaded'] = True
+            template_data['template'] = template
+            template_data['beneficiary'] = beneficiary
+            template_data['participation'] = participation
+            return render(
+                request,
+                'spudderspuds/challenges/pages_ajax/challenge_accept_upload_thanks.html',
+                template_data)
+        if state == _AcceptAndPledgeEngineStates.SHARE:
+            template = challenge.template
+            beneficiary = EntityController.GetWrappedEntityByTypeAndId(
+                challenge.recipient_entity_type,
+                challenge.recipient_entity_id,
+                EntityBase.EntityWrapperByEntityType(challenge.recipient_entity_type))
+            participation = ChallengeParticipation.objects.get(
+                challenge=challenge,
+                participating_entity_id=request.current_role.entity.id,
+                participating_entity_type=request.current_role.entity_type)
+            template_data['template'] = template
+            template_data['beneficiary'] = beneficiary
+            template_data['participation'] = participation
+            return render(
+                request,
+                'spudderspuds/challenges/pages_ajax/challenge_accept_share.html',
+                template_data)
+
+
+

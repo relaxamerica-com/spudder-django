@@ -1,4 +1,5 @@
 import json
+from django.http import Http404
 from datetime import datetime, timedelta
 from django.contrib.auth import authenticate, login
 from django.http import HttpResponse
@@ -27,7 +28,7 @@ from spudderspuds.challenges.forms import ChallengesSigninForm, AcceptChallengeF
 from spudderspuds.challenges.forms import ChallengeChallengeParticipationForm
 from spudderspuds.challenges.models import TempClubOtherInformation, ChallengeTree, ChallengeServiceConfiguration
 from spudderspuds.challenges.models import ChallengeServiceMessageConfiguration
-from spudderspuds.challenges.utils import get_affiliate_club_and_challenge
+from spudderspuds.challenges.utils import get_affiliate_club_and_challenge, challenge_state_engine
 from spudderstripe.utils import get_stripe_recipient_controller_for_club
 
 
@@ -126,9 +127,11 @@ def signin(request):
 
 
 def register(request):
-    form = ChallengesRegisterForm(initial=request.GET)
+    form = ChallengesRegisterForm(
+        initial=request.GET,
+        enable_register_club=feature_is_enabled('challenge_register_club'))
     if request.method == "POST":
-        form = ChallengesRegisterForm(request.POST)
+        form = ChallengesRegisterForm(request.POST, enable_register_club=feature_is_enabled('challenge_register_club'))
         if form.is_valid():
             username = form.cleaned_data.get('email_address')
             password = form.cleaned_data.get('password')
@@ -154,15 +157,25 @@ def register(request):
 
 def affiliate_challenge_page(request, affiliate_key):
     club_entity, challenge = get_affiliate_club_and_challenge(affiliate_key)
-    return redirect('/challenges/%s' % challenge.id)
+    return the_challenge_page(request, challenge.id)
 
 
-def the_challenge_page(request, challenge_id):
+def the_challenge_page(request, challenge_id, state_engine=None, state=None):
     challenge = get_object_or_404(Challenge, id=challenge_id)
     challenge_recipient = challenge.get_recipient()
     template_data = {
         'challenge': challenge,
         'challenge_recipient': challenge_recipient}
+    if state_engine:
+        if request.is_ajax():
+            return challenge_state_engine(request, challenge, state_engine, state)
+        if not request.current_role:
+            raise Http404
+        participation, created = ChallengeParticipation.objects.get_or_create(
+            challenge=challenge,
+            participating_entity_id=request.current_role.entity.id,
+            participating_entity_type=request.current_role.entity_type)
+        template_data['challenge_participation'] = participation
     return render(request, 'spudderspuds/challenges/pages/challenge_page.html', template_data)
 
 

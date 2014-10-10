@@ -1,7 +1,8 @@
-from django.core.exceptions import ObjectDoesNotExist
-from django.template.defaulttags import register
-from google.appengine.api import urlfetch
 import re
+import json
+from django.core.exceptions import ObjectDoesNotExist
+from google.appengine.api import urlfetch
+from django.template.defaulttags import register
 from spudderdomain.controllers import RoleController, EntityController
 from spudderdomain.models import FanPage
 from spudderkrowdio.models import KrowdIOStorage, FanFollowingEntityTag
@@ -191,3 +192,11 @@ def get_all_user_mentions(full_spud):
             user_mentions += comment['entities']['user_mentions']
 
     return user_mentions
+
+@register.filter('jsonify')
+def jsonify(obj):
+    if obj and hasattr(obj, 'as_json'):
+        return obj.as_json()
+    return json.dumps(obj or {})
+
+
