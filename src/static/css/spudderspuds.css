@@ -15376,19 +15376,34 @@ body.clubs .dashboard-page .submenu-header h4 a {
   font-weight: bold;
 }
 body.clubs .dashboard-page .submenu-menu {
-  background-color: #ff4800;
+  background-color: #F1F1F1;
   color: #FFF;
 }
 body.clubs .dashboard-page .submenu-menu .list-group .list-group-item {
-  color: #FFF;
   background-color: inherit;
   border: none;
-  border-left: 3px solid #ff4800;
+  border-left: 3px solid #F1F1F1;
 }
 body.clubs .dashboard-page .submenu-menu .list-group .list-group-item.active,
 body.clubs .dashboard-page .submenu-menu .list-group .list-group-item:hover {
-  border-left: 3px solid #FFF;
-  background-color: #ff6d33;
+  border-left: 3px solid #ff4800;
+  background-color: #FFF;
+  color: #000;
+}
+@media (max-width: 767px) {
+  body.clubs .dashboard-page .submenu-menu {
+    background-color: #ff4800;
+  }
+  body.clubs .dashboard-page .submenu-menu .list-group .list-group-item {
+    color: #FFF;
+    border-left: 3px solid #ff4800;
+  }
+  body.clubs .dashboard-page .submenu-menu .list-group .list-group-item.active,
+  body.clubs .dashboard-page .submenu-menu .list-group .list-group-item:hover {
+    color: #FFF;
+    border-left: 3px solid #FFF;
+    background-color: #ff6d33;
+  }
 }
 body.clubs .dashboard-page .submenu-page {
   padding: 40px 0;

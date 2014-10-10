@@ -27,7 +27,9 @@ from spudderspuds.challenges.forms import ChallengesSigninForm, AcceptChallengeF
 from spudderspuds.challenges.forms import ChallengeChallengeParticipationForm
 from spudderspuds.challenges.models import TempClubOtherInformation, ChallengeTree, ChallengeServiceConfiguration
 from spudderspuds.challenges.models import ChallengeServiceMessageConfiguration
+from spudderspuds.challenges.utils import get_affiliate_club_and_challenge
 from spudderstripe.utils import get_stripe_recipient_controller_for_club
+
 
 def _get_clubs_by_state(request, state):
     clubs = [c for c in Club.objects.filter(state=state)]
@@ -148,6 +150,14 @@ def register(request):
         request,
         'spudderspuds/challenges/pages/register.html',
         {'form': form})
+
+
+def affiliate_challenge_page(request, affiliate_key):
+    club_entity, challenge = get_affiliate_club_and_challenge(affiliate_key)
+    template_data = {
+        'club_entity': club_entity,
+        'challenge': challenge}
+    return render(request, 'spudderspuds/challenges/pages/challenge_page.html', template_data)
 
 
 @role_required([RoleController.ENTITY_FAN, RoleController.ENTITY_CLUB_ADMIN], redirect_url='/challenges/create/register')

@@ -90,7 +90,12 @@ urlpatterns = patterns(
     url(r'^team/*', include('spudderspuds.teams.urls')),
     url(r'^flag/*', include('spudmart.flags.urls')),
     url(r'^club/*', include('spudderspuds.clubs.urls')),
+
+    # Challenges and affiliate challenegs
     url(r'^challenges/*', include('spudderspuds.challenges.urls')),
+    url(r'^dreamsforkids$',
+        'spudderspuds.challenges.views.affiliate_challenge_page',
+        {'affiliate_key': 'dreamsforkids'}),
 
     # Spudder QA center
     url(r'^qa/*', include('spudderqa.urls')),

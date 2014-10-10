@@ -373,7 +373,7 @@ class ChallengeTemplate(models.Model):
 
 
 class Challenge(models.Model):
-    template = models.ForeignKey(ChallengeTemplate)
+    template = models.ForeignKey(ChallengeTemplate, null=True, default=None)
     parent = models.ForeignKey('Challenge', null=True, default=None)
     name = models.CharField(max_length=255)
     description = models.TextField()

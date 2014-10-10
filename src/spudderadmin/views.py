@@ -764,7 +764,7 @@ def challenges(request):
                     'slug': 'icebucket'
                 },
                 {
-                    'name': "Pie Challenge",
+                    'name': "Cream Pie Challenge",
                     'description': "Challenge your friends, family and fans to take a whipped cream pie to the face!!",
                     'slug': 'piechallenge'
                 }
@@ -774,6 +774,7 @@ def challenges(request):
                     c = ChallengeTemplate.objects.get(name=challenge['name'])
                     c.description = challenge['description']
                     c.slug = challenge['slug']
+                    c.save()
                 except ChallengeTemplate.DoesNotExist:
                     ChallengeTemplate(
                         name=challenge['name'],

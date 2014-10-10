@@ -1,5 +1,6 @@
 from spudderdomain.controllers import RoleController, EntityController
-from spudderdomain.models import FanPage, Club, TempClub
+from spudderdomain.models import FanPage, Club, TempClub, Challenge, ChallengeTemplate
+from spudderdomain.wrappers import EntityBase
 
 
 class TreeElement(object):
@@ -147,3 +148,38 @@ class ChallengeTreeHelper(Tree):
                 participiant_data['object'] = self._participiants[participating_entity_id]['object']
 
         return self.beneficiaries
+
+
+def get_affiliate_club_and_challenge(affiliate_key):
+    if affiliate_key == "dreamsforkids":
+        club_name = 'Dreams for Kids'
+        challenge_template_slug = "piechallenge"
+        challenge_name = "Cream Pie Challenge"
+        challenge_description = "Challenge your friends, family and fans to take a cream pie to the face!"
+        challenge_you_tube_video_id = "vqgpHZ09St8"
+        try:
+            club = Club.objects.get(name=club_name)
+        except Club.DoesNotExist:
+            raise NotImplementedError('A club with the name %s does not exists.' % club_name)
+        try:
+            template = ChallengeTemplate.objects.get(slug=challenge_template_slug)
+        except ChallengeTemplate.DoesNotExist:
+            raise NotImplementedError("A challenge template with the slug %s does not exists, do you need to esnure "
+                                      "challenge template in the admin console?" % challenge_template_slug)
+        club_entity = EntityController.GetWrappedEntityByTypeAndId(
+            EntityController.ENTITY_CLUB,
+            club.id,
+            EntityBase.EntityWrapperByEntityType(EntityController.ENTITY_CLUB))
+        challenge, created = Challenge.objects.get_or_create(
+            parent=None,
+            template=template,
+            name=challenge_name,
+            creator_entity_id=club.id,
+            creator_entity_type=EntityController.ENTITY_CLUB,
+            recipient_entity_id=club.id,
+            recipient_entity_type=EntityController.ENTITY_CLUB)
+        challenge.description = challenge_description
+        challenge.youtube_video_id = challenge_you_tube_video_id
+        challenge.save()
+        return club_entity, challenge
+    return None, None
