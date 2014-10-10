@@ -762,7 +762,7 @@ def edit_image(request, challenge_id):
                 blobstore.create_upload_url(upload_url),
                 '<br/>'.join(['<br/>'.join([_e for _e in e]) for e in form.errors.values()])))
 
-    return render(request, 'spudderspuds/challenges/pages/edit_image.html',{
+    return render(request, 'spudderspuds/challenges/pages/edit_image.html', {
         'upload_url': upload_url,
         'form': form,
         'image_url': '/file/serve/%s' % challenge.image if challenge.image else None,

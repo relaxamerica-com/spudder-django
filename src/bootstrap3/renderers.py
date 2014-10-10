@@ -339,5 +339,5 @@ class SpudderFieldRenderer(FieldRenderer):
                 before=before, after=after, html=html)
         return html
 
-
-
+    def fix_clearable_file_input(self, html):
+        return '<input type="text" readonly="" class="form-control floating-label" placeholder="Browse">' + html

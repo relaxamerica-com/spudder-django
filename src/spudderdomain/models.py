@@ -500,7 +500,7 @@ class ChallengeParticipation(models.Model):
             return '/challenges/%s/accept/notice?just_pledged=True' % self.challenge.id
         if self.state == self.ACCEPTED_STATE:
             recipient_state = self.challenge.get_recipient().state
-            return '/challenges/%s/beneficiary/%s' % self.challenge.id, recipient_state
+            return '/challenges/%s/beneficiary/%s' % (self.challenge.id, recipient_state)
 
 
 class ChallengeChallengeParticipation(models.Model):
