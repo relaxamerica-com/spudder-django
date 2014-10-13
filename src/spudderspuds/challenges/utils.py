@@ -412,8 +412,9 @@ def challenge_state_engine(request, challenge, engine, state):
                         engine,
                         _AcceptAndPledgeEngineStates.PLEDGE_THANKS)
                     if participation.state == ChallengeParticipation.AWAITING_PAYMENT:
-                        redirect_url = redirect_url.replace(
-                            _AcceptAndPledgeEngineStates.PLEDGE_THANKS,
+                        redirect_url = '/challenges/%s/%s/%s' % (
+                            challenge.id,
+                            engine,
                             _AcceptAndPledgeEngineStates.PAY)
                         participation.state_engine_state = _AcceptAndPledgeEngineStates.PAY
                         participation.save()
