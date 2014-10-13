@@ -1,0 +1,26 @@
+{% load bootstrap3 %}
+
+<div class="page-header">
+    <h3>Tell us about the team or club you want to raise money for</h3>
+</div>
+
+<p>
+    <small>
+        The more information you give us, the quicker we will be able to find your team/club and get them signed up for online
+        donations. Until we do, you can still raise money for your team/club and we'll ask anyone who accepts your challenge
+        to pledge!
+    </small>
+</p>
+
+<form method="post" action="{{ request.path }}">
+    {% csrf_token %}
+    {% bootstrap_form form %}
+    {% buttons %}
+        <button type="submit" class="btn btn-primary btn-cta btn-ajax">
+            Go <i class="fa fa-arrow-right"></i>
+        </button>
+        <a href="/challenges/{{ challenge.id }}/{{ state_engne }}/7" class="btn btn-default btn-cta btn-ajax">
+            Cancel
+        </a>
+    {% endbuttons %}
+</form>

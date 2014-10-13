@@ -1,4 +1,5 @@
 import json
+from django.contrib.auth.models import User
 from django.db import models
 from spudderdomain.models import TempClub, Challenge, ChallengeTemplate
 from spudderspuds.challenges.utils import ChallengeTreeHelper, TreeElement
@@ -9,6 +10,7 @@ class TempClubOtherInformation(models.Model):
     other_information = models.TextField()
     website = models.URLField(blank=True)
     contact_number = models.CharField(blank=True)
+    created_by = models.ForeignKey(User, blank=True, null=True)
 
 
 class ChallengeTree(models.Model):

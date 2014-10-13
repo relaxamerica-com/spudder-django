@@ -1,11 +1,13 @@
 import json
-from django.http import Http404
 from datetime import datetime, timedelta
+
+from django.http import Http404
 from django.contrib.auth import authenticate, login
 from django.http import HttpResponse
 from django.shortcuts import redirect, render, get_object_or_404
 from django.contrib.auth.models import User
 from google.appengine.api import blobstore, taskqueue
+
 from spudderaccounts.controllers import NotificationController
 from spudderaccounts.decorators import role_required
 from spudderaccounts.models import Notification
@@ -19,16 +21,16 @@ from spudderdomain.models import Club, TempClub, Challenge, ChallengeTemplate, C
 from spudderdomain.models import ChallengeChallengeParticipation
 from spudmart.upload.forms import UploadForm
 from spudderaccounts.utils import change_current_role
-from spudderaccounts.wrappers import RoleBase, RoleFan
+from spudderaccounts.wrappers import RoleBase
 from spudderdomain.wrappers import EntityBase
 from spudderdomain.controllers import RoleController, EntityController, EventController
 from spudderspuds.challenges.forms import CreateTempClubForm, ChallengeConfigureForm, ChallengesRegisterForm, \
     RegisterCreateClubForm, ChallengeDonationEditForm, ChallengeImageEditForm
 from spudderspuds.challenges.forms import ChallengesSigninForm, AcceptChallengeForm, UploadImageForm
 from spudderspuds.challenges.forms import ChallengeChallengeParticipationForm
-from spudderspuds.challenges.models import TempClubOtherInformation, ChallengeTree, ChallengeServiceConfiguration
+from spudderspuds.challenges.models import ChallengeTree, ChallengeServiceConfiguration
 from spudderspuds.challenges.models import ChallengeServiceMessageConfiguration
-from spudderspuds.challenges.utils import get_affiliate_club_and_challenge, challenge_state_engine
+from spudderspuds.challenges.utils import get_affiliate_club_and_challenge, challenge_state_engine, _create_temp_club
 from spudderspuds.challenges.utils import _AcceptAndPledgeEngineStates
 from spudderstripe.utils import get_stripe_recipient_controller_for_club
 
@@ -51,24 +53,6 @@ def _get_clubs_by_state(request, state):
         for c in clubs:
             c['is_own_club'] = bool(c['id'] == club.id)
     return clubs
-
-
-def _create_temp_club(form, state):
-    name = form.cleaned_data['name'].upper()
-    email = form.cleaned_data['email']
-    other_info = form.cleaned_data['other_information']
-    website = form.cleaned_data['website']
-    contact_number = form.cleaned_data['contact_number']
-    temp_club, created = TempClub.objects.get_or_create(name=name, state=state)
-    temp_club.email = email or temp_club.email
-    temp_club.save()
-    if other_info or website or contact_number:
-        temp_club_other_info, created = TempClubOtherInformation.objects.get_or_create(temp_club=temp_club)
-        temp_club_other_info.other_information = other_info
-        temp_club_other_info.website = website
-        temp_club_other_info.contact_number = contact_number
-        temp_club_other_info.save()
-    return temp_club
 
 
 def _create_challenge(club_class, club_id, form, request, template, parent=None, image=None, youtube_video_id=None):
