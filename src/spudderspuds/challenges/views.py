@@ -157,7 +157,7 @@ def register(request):
 
 def affiliate_challenge_page(request, affiliate_key):
     club_entity, challenge = get_affiliate_club_and_challenge(affiliate_key)
-    return the_challenge_page(request, challenge.id)
+    return redirect('/challenges/%s' % challenge.id)
 
 
 def the_challenge_page(request, challenge_id, state_engine=None, state=None):

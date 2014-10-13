@@ -176,7 +176,7 @@ def get_affiliate_club_and_challenge(affiliate_key):
     if affiliate_key == "dreamsforkids":
         club_name = 'Dreams for Kids'
         challenge_template_slug = "piechallenge"
-        challenge_name = "Cream Pie Challenge"
+        challenge_name = "Pie Challenge"
         challenge_description = "Challenge your friends, family and fans to take a cream pie to the face!"
         challenge_you_tube_video_id = "vqgpHZ09St8"
         try:
@@ -249,6 +249,7 @@ def challenge_state_engine(request, challenge, engine, state):
                         user.save()
                         user.spudder_user.mark_password_as_done()
                         fan_entity = create_and_activate_fan_role(request, user)
+                        request.current_role = fan_entity
                         fan_page = fan_entity.entity
                         fan_page.username = form.cleaned_data.get('username')
                         fan_page.state = form.cleaned_data.get('state')
@@ -341,7 +342,8 @@ def challenge_state_engine(request, challenge, engine, state):
                     recipient_entity_type=challenge.recipient_entity_type,
                     proposed_donation_amount=challenge.proposed_donation_amount,
                     proposed_donation_amount_decline=challenge.proposed_donation_amount_decline,
-                    creating_participant=participation)
+                    creating_participant=participation,
+                    youtube_video_id=participation.youtube_video_id)
                 challenge.save()
                 template_data['challenge'] = challenge
                 template_data['just_uploaded'] = True
