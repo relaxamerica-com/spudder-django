@@ -3,6 +3,44 @@
     /* STATIC METHODS *************************************************************************************************/
     $.spudder_challenge_page = {};
 
+    // Ajax form options
+    $.spudder_challenge_page.ajax_form_options = {
+        beforeSerialize: function ($form, options) {
+            var $btn = $form.find('.btn-ajax');
+            $btn.attr('disabled', 'disabled');
+            $btn.html('<i class="fa fa-spin fa-spinner"></i> ' + $btn.html());
+        },
+        error: function (event, type, message, $form) {
+            alert('Sorry, there was an error processing your upload, please try again or contact support@spudder.com if the problem continues.')
+        },
+        success: function (response_text, status_text, xhr, $form) {
+            var $btn = $form.find('.btn-ajax');
+            var $target = $btn.parents('.action-container:first');
+            if (response_text.indexOf('|') > -1) {
+                $form.attr('action', response_text.split('|')[0]);
+                $btn.find('.fa-spin').remove();
+                $btn.attr('disabled', false);
+                $form.find('.alert-danger').remove();
+                $form.find('.form-group:first').parent().prepend(
+                    '<div class="alert alert-danger media">' +
+                        '<span class="fa-stack fa-2x media-object pull-left">' +
+                            '<i class="fa fa-circle fa-stack-2x"></i>' +
+                            '<i class="fa fa-warning fa-inverse fa-stack-1x"></i>' +
+                        '</span>' +
+                        '<div class="media-body">' +
+                            '<h3 class="media-heading">The was a problem</h3>' +
+                            '<p>' + response_text.split('|')[1] + '</p>' +
+                        '</div>' +
+                    '</div>');
+            }
+            else {
+                $target.html(response_text);
+                if ($(window).scrollTop() > 20)
+                    $(window).scrollTop($target.offset().top - 100);
+            }
+        }
+    };
+
     // Init the challenge_page around the page body
     $.spudder_challenge_page.init = function(options) {
         $('body').spudder_challenge_page(options);
@@ -84,23 +122,7 @@
             $container.find('.btn-ajax').livequery(function(){
                 var $btn = $(this);
                 if ($btn.is('button[type=submit]')){
-                    $btn.parents('form:first').ajaxForm({
-                        beforeSerialize: function ($form, options) {
-                            var $btn = $form.find('.btn-ajax');
-                            $btn.attr('disabled', 'disabled');
-                            $btn.html('<i class="fa fa-spin fa-spinner"></i> ' + $btn.html());
-                        },
-                        error: function (event, type, message, $form) {
-                            alert('Sorry, there was an error processing your upload, please try again or contact support@spudder.com if the problem continues.')
-                        },
-                        success: function (response_text, status_text, xhr, $form) {
-                            var $btn = $form.find('.btn-ajax');
-                            var $target = $btn.parents('.action-container:first');
-                            $target.html(response_text);
-                            if ($(window).scrollTop() > 20)
-                                $(window).scrollTop($target.offset().top - 100);
-                        }
-                    })
+                    $btn.parents('form:first').ajaxForm($.spudder_challenge_page.ajax_form_options);
                 }
                 else {
                     $btn.unbind('click').on('click', function(e){

@@ -1,0 +1,18 @@
+{% load spudderspudstags %}
+{% load bootstrap3 %}
+
+<div class="page-header">
+    <h3>
+        Pledge to {{ beneficiary.name }} ({{ beneficiary.state }})
+    </h3>
+</div>
+
+<form method="post" action="{{ request.path }}">
+    {% csrf_token %}
+    {% bootstrap_form form %}
+    {% buttons %}
+        <button type="submit" class="btn btn-primary btn-cta btn-ajax">
+            <i class="fa fa-check"></i> Pledge
+        </button>
+    {% endbuttons %}
+</form>

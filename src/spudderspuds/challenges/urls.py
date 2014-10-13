@@ -101,15 +101,15 @@ urlpatterns = patterns(
 
     url(r'(?P<challenge_id>\d+)/(?P<state_engine>[\w-]+)/(?P<state>\d+)$',
         'the_challenge_page',
-        {'SSL': False}),
+        {'SSL': determine_ssl()}),
 
     url(r'(?P<challenge_id>\d+)/(?P<state_engine>[\w-]+)$',
         'the_challenge_page',
-        {'SSL': False}),
+        {'SSL': determine_ssl()}),
 
     url(r'(?P<challenge_id>\d+)$',
         'the_challenge_page',
-        {'SSL': False}),
+        {'SSL': determine_ssl()}),
 
     url(r'^tick',
         'tick'),

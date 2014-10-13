@@ -1,15 +1,16 @@
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.models import User
 from django.http import HttpResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from google.appengine.api import blobstore
 from spudderaccounts.utils import change_current_role
 from spudderadmin.templatetags.featuretags import feature_is_enabled
 from spudderdomain.controllers import RoleController, EntityController, EventController
 from spudderdomain.models import FanPage, Club, TempClub, Challenge, ChallengeTemplate, ChallengeParticipation
 from spudderdomain.wrappers import EntityBase
-from spudderspuds.challenges.forms import ChallengesSigninForm, ChallengesRegisterForm, UploadImageForm
+from spudderspuds.challenges.forms import ChallengesSigninForm, ChallengesRegisterForm, UploadImageForm, AcceptChallengeForm
 from spudderspuds.utils import create_and_activate_fan_role
+from spudderstripe.utils import get_stripe_recipient_controller_for_club
 from spudmart.upload.forms import UploadForm
 
 
@@ -23,6 +24,9 @@ class _AcceptAndPledgeEngineStates(object):
     CREATE_TEAM = '6'
     SHARE = '7'
     PLEDGE = '8'
+    PLEDGE_THANKS = '9'
+    PAY = '10'
+    PAY_THANKS = '11'
 
 
 class TreeElement(object):
@@ -199,7 +203,9 @@ def get_affiliate_club_and_challenge(affiliate_key):
             creator_entity_id=club.id,
             creator_entity_type=EntityController.ENTITY_CLUB,
             recipient_entity_id=club.id,
-            recipient_entity_type=EntityController.ENTITY_CLUB)
+            recipient_entity_type=EntityController.ENTITY_CLUB,
+            proposed_donation_amount=10,
+            proposed_donation_amount_decline=20)
         challenge.description = challenge_description
         challenge.youtube_video_id = challenge_you_tube_video_id
         challenge.save()
@@ -368,6 +374,131 @@ def challenge_state_engine(request, challenge, engine, state):
                 request,
                 'spudderspuds/challenges/pages_ajax/challenge_accept_share.html',
                 template_data)
+        if state == _AcceptAndPledgeEngineStates.PLEDGE:
+            template = challenge.template
+            beneficiary = EntityController.GetWrappedEntityByTypeAndId(
+                challenge.recipient_entity_type,
+                challenge.recipient_entity_id,
+                EntityBase.EntityWrapperByEntityType(challenge.recipient_entity_type))
+            form = AcceptChallengeForm(initial={'donation': int(challenge.proposed_donation_amount)})
+            if request.method == 'POST':
+                form = AcceptChallengeForm(request.POST)
+                if form.is_valid():
+                    participation, created = ChallengeParticipation.objects.get_or_create(
+                        challenge=challenge,
+                        participating_entity_id=request.current_role.entity.id,
+                        participating_entity_type=request.current_role.entity_type)
+                    participation.donation_amount = form.cleaned_data.get('donation', 0)
+                    participation.state = ChallengeParticipation.DONATE_ONLY_STATE
+                    participation.state_engine_state = _AcceptAndPledgeEngineStates.PLEDGE_THANKS
+                    beneficiary_can_receive_donations = False
+                    if beneficiary.entity_type == EntityController.ENTITY_CLUB:
+                        if beneficiary.entity.is_fully_activated():
+                            beneficiary_can_receive_donations = True
+                    if beneficiary_can_receive_donations and participation.donation_amount > 0:
+                        participation.state = ChallengeParticipation.AWAITING_PAYMENT
+                    participation.save()
+                    if feature_is_enabled('challenge_tree'):
+                        from spudderspuds.challenges.models import ChallengeTree
+                        ChallengeTree.AddParticipationToTree(challenge, participation)
+                    redirect_url = '/challenges/%s/%s/%s' % (
+                        challenge.id,
+                        engine,
+                        _AcceptAndPledgeEngineStates.PLEDGE_THANKS)
+                    if participation.state == ChallengeParticipation.AWAITING_PAYMENT:
+                        redirect_url.replace(
+                            _AcceptAndPledgeEngineStates.PLEDGE_THANKS,
+                            _AcceptAndPledgeEngineStates.PAY)
+                        participation.state_engine_state = _AcceptAndPledgeEngineStates.PAY
+                        participation.save()
+                    if request.is_ajax():
+                        return HttpResponse(redirect_url)
+                    return redirect(redirect_url)
+                if request.is_ajax():
+                    return HttpResponse("%s|%s" % (
+                        request.path,
+                        '<br/>'.join(['<br/>'.join([_e for _e in e]) for e in form.errors.values()])))
+            template_data = {
+                'challenge': challenge,
+                'template': template,
+                'beneficiary': beneficiary,
+                'form': form}
+            return render(request, 'spudderspuds/challenges/pages_ajax/challenge_accept_pledge.html', template_data)
+        if state == _AcceptAndPledgeEngineStates.PLEDGE_THANKS:
+            template = challenge.template
+            beneficiary = EntityController.GetWrappedEntityByTypeAndId(
+                challenge.recipient_entity_type,
+                challenge.recipient_entity_id,
+                EntityBase.EntityWrapperByEntityType(challenge.recipient_entity_type))
+            template_data = {
+                'challenge': challenge,
+                'template': template,
+                'beneficiary': beneficiary}
+            return render(
+                request,
+                'spudderspuds/challenges/pages_ajax/challenge_accept_pledge_thanks.html',
+                template_data)
+        if state == _AcceptAndPledgeEngineStates.PAY:
+            template = challenge.template
+            beneficiary = EntityController.GetWrappedEntityByTypeAndId(
+                challenge.recipient_entity_type,
+                challenge.recipient_entity_id,
+                EntityBase.EntityWrapperByEntityType(challenge.recipient_entity_type))
+            participation = get_object_or_404(
+                ChallengeParticipation,
+                challenge=challenge,
+                participating_entity_id=request.current_role.entity.id,
+                participating_entity_type=request.current_role.entity_type)
+            if beneficiary.entity_type != EntityController.ENTITY_CLUB or not beneficiary.entity.is_fully_activated():
+                participation.state_engine_state = _AcceptAndPledgeEngineStates.PLEDGE_THANKS
+                participation.save()
+                return redirect('/challenges/%s/%s/%s' % (
+                    challenge.id,
+                    engine,
+                    _AcceptAndPledgeEngineStates.PLEDGE_THANKS))
+            if request.method == "POST":
+                token = request.POST.get('stripeToken')
+                stripe_controller = get_stripe_recipient_controller_for_club(beneficiary.entity)
+                donation = int(participation.donation_amount) * 100
+                payment_made = stripe_controller.accept_payment(
+                    "Donation of $%s by %s to %s for %s" % (
+                        donation,
+                        request.user.email,
+                        beneficiary.name,
+                        challenge.name),
+                    token,
+                    donation)
+                if payment_made:
+                    participation.state_engine_state = _AcceptAndPledgeEngineStates.PAY_THANKS
+                    participation.donation_amount = donation
+                    participation.save()
+                return redirect('/challenges/%s/%s' % (challenge.id, engine))
+            template_data = {
+                'challenge': challenge,
+                'participation': participation,
+                'template': template,
+                'beneficiary': beneficiary,
+                'errors': request.method == 'POST'}
+            return render(request, 'spudderspuds/challenges/pages_ajax/challenge_accept_pay.html', template_data)
+        if state == _AcceptAndPledgeEngineStates.PAY_THANKS:
+            beneficiary = EntityController.GetWrappedEntityByTypeAndId(
+                challenge.recipient_entity_type,
+                challenge.recipient_entity_id,
+                EntityBase.EntityWrapperByEntityType(challenge.recipient_entity_type))
+            template = challenge.template
+            participation = get_object_or_404(
+                ChallengeParticipation,
+                challenge=challenge,
+                participating_entity_id=request.current_role.entity.id,
+                participating_entity_type=request.current_role.entity_type)
+            template_data = {
+                'challenge': challenge,
+                'participation': participation,
+                'template': template,
+                'beneficiary': beneficiary}
+            return render(request, 'spudderspuds/challenges/pages_ajax/challenge_accept_pay_thanks.html', template_data)
+
+
 
 
 

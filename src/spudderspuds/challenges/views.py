@@ -29,6 +29,7 @@ from spudderspuds.challenges.forms import ChallengeChallengeParticipationForm
 from spudderspuds.challenges.models import TempClubOtherInformation, ChallengeTree, ChallengeServiceConfiguration
 from spudderspuds.challenges.models import ChallengeServiceMessageConfiguration
 from spudderspuds.challenges.utils import get_affiliate_club_and_challenge, challenge_state_engine
+from spudderspuds.challenges.utils import _AcceptAndPledgeEngineStates
 from spudderstripe.utils import get_stripe_recipient_controller_for_club
 
 
@@ -167,7 +168,7 @@ def the_challenge_page(request, challenge_id, state_engine=None, state=None):
         'challenge': challenge,
         'challenge_recipient': challenge_recipient}
     if state_engine:
-        if request.is_ajax():
+        if request.is_ajax() or (state in [_AcceptAndPledgeEngineStates.PAY] and request.POST):
             return challenge_state_engine(request, challenge, state_engine, state)
         if not request.current_role:
             raise Http404

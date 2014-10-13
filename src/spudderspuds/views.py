@@ -174,14 +174,14 @@ def landing_page(request):
             creator_entity_id=request.current_role.entity.id,
             creator_entity_type=request.current_role.entity_type)
 
-        participating_ids = [c.challenge.id for c in participating_challenges]
-
-        template_data['challenges'] = [_format_challenge('dash participating', c, entity)
-                                       for c in participating_challenges] + \
-                                      [_format_challenge('dash created', c, participating_ids)
-                                       for c in Challenge.objects.filter(creator_entity_id=entity['id'],
-                                                                         creator_entity_type=entity['type'])]
-
+        # participating_ids = [c.challenge.id for c in participating_challenges]
+        #
+        # template_data['challenges'] = [_format_challenge('dash participating', c, entity)
+        #                                for c in participating_challenges] + \
+        #                               [_format_challenge('dash created', c, participating_ids)
+        #                                for c in Challenge.objects.filter(creator_entity_id=entity['id'],
+        #                                                                  creator_entity_type=entity['type'])]
+        #
         template_data['fan_nav_active'] = "explore"
     return render(request, 'spudderspuds/pages/landing_page.html', template_data)
 

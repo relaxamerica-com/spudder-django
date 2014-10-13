@@ -1,0 +1,37 @@
+{% load spudderspudstags %}
+{% load bootstrap3 %}
+
+<div class="page-header">
+    <h3>Honor your pledge and donate now.</h3>
+</div>
+<h2>
+    <small>
+        You can honor your pledge and make your donation to {{ beneficiary.name }} ({{ beneficiary.state }}).
+    </small>
+</h2>
+{% if errors %}
+    <div class="alert alert-danger media">
+        <i class="media-object pull-left fa fa-warning fa-3x"></i>
+        <div class="media-body">
+            <h4 class="media-heading">Something went wrong.</h4>
+            <p>Sorry but something went wrong with your payment.</p>
+            <p>Please refresh this page and try again.</p>
+            <p><small>If this happens again, please contact us at support@spudder.com</small></p>
+        </div>
+    </div>
+{% endif %}
+<p>At <span class="text-primary">Spudder</span>, we partner with <span class="text-info">Stripe</span> to make donating to you local sports teams super easy!</p>
+<p>You are donating ${{ participation.donation_amount|floatformat }}.</p>
+<form method="post" action="{{ request.path }}" class="form-ajax">
+    {% csrf_token %}
+    <script
+        src="https://checkout.stripe.com/checkout.js"
+        class="stripe-button"
+        data-key="{{ settings.STRIPE_PUBLISHABLE_KEY }}"
+        data-email="{{ request.user.email }}"
+        data-amount="{{ participation.donation_amount|floatformat }}00"
+        data-name="{{ beneficiary.name }} ({{ beneficiary.state }})"
+        data-description="Accepting the {{ challenge.name }}"
+        data-image="{{ beneficiary.image }}">
+    </script>
+</form>

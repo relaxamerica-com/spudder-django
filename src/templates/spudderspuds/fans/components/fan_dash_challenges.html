@@ -2,8 +2,8 @@
 
 <!-- Nav tabs -->
 <ul class="nav nav-tabs nav-tabs-google" role="tablist">
-  <li class="active"><a href="#tab-participating" role="tab" data-toggle="tab">Challenges you're participating in</a></li>
-  <li><a href="#tab-created" role="tab" data-toggle="tab">Challenges created by you</a></li>
+  <li class="active"><a href="#tab-participating" role="tab" data-toggle="tab">Accepted<span class="hidden-xs"> by you</span></a></li>
+  <li><a href="#tab-created" role="tab" data-toggle="tab">Created<span class="hidden-xs"> by you</span></a></li>
 </ul>
 
 <!-- Tab panes -->
@@ -38,39 +38,68 @@
         {#    </div>#}
 
             <div class="list-group">
-                {% for challenge in challenge_participations %}
+                {% for participation in challenge_participations %}
                     <div class="list-group-item">
                         <div class="media">
-                            <span class="fa fa-stack text-primary media-object pull-left fa-2x">
-                                <i class="fa fa-circle fa-stack-2x"></i>
-                                <i class="fa fa-stack-1x fa-inverse fa-trophy"></i>
-                            </span>
+                            {% if participation.challenge.youtube_video_id %}
+                                <img src="http://img.youtube.com/vi/{{ participation.challenge.youtube_video_id }}/sddefault.jpg" class="media-object pull-left" style="width: 25%"/>
+                            {% else %}
+                                <span class="fa fa-stack text-primary media-object pull-left fa-2x">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-stack-1x fa-inverse fa-trophy"></i>
+                                </span>
+                            {% endif %}
                             <div class="media-body">
-                                <h4 class="media-heading">{{ challenge.challenge.name }} for {{ challenge.challenge.get_recipient.name }}</h4>
-                                {% if challenge.state_engine == "accept-and-pledge" %}
-                                    {% if challenge.state_engine_state == accept_and_pledge_states.NOTICE %}
+                                <h4 class="media-heading">{{ participation.challenge.name }} for {{ participation.challenge.get_recipient.name }}</h4>
+                                {% if participation.state_engine == "accept-and-pledge" %}
+                                    {% if participation.state_engine_state == accept_and_pledge_states.NOTICE %}
                                         <p>
                                             <span class="label label-warning">Awaiting video</span>
                                         </p>
                                         <p>
-                                            Do you have your video ready? <a href="/challenges/{{ challenge.challenge.id }}/{{ challenge.state_engine }}">go to the challenge</a>
+                                            Do you have your video ready? <a href="/challenges/{{ participation.challenge.id }}/{{ participation.state_engine }}">go to the challenge</a>
                                         </p>
                                     {% endif %}
-                                    {% if challenge.state_engine_state == accept_and_pledge_states.UPLOAD_THANKS %}
+                                    {% if participation.state_engine_state == accept_and_pledge_states.UPLOAD_THANKS %}
                                         <p>
                                             <span class="label label-success">Video posted</span>
                                         </p>
                                         <p>
-                                            Are you ready to <a href="/challenges/{{ challenge.challenge.id }}/{{ challenge.state_engine }}">challenge others</a>?
+                                            Are you ready to <a href="/challenges/{{ participation.challenge.id }}/{{ participation.state_engine }}">challenge others</a>?
                                         </p>
                                     {% endif %}
-                                    {% if challenge.state_engine_state == accept_and_pledge_states.PLEDGE %}
+                                    {% if participation.state_engine_state == accept_and_pledge_states.PLEDGE %}
                                         <p>
                                             <span class="label label-danger">Need to pledge</span>
                                         </p>
                                         <p>
-                                            Are you ready to <a href="/challenges/{{ challenge.challenge.id }}/{{ challenge.state_engine }}">pledge</a>?
+                                            Are you ready to <a href="/challenges/{{ participation.challenge.id }}/{{ participation.state_engine }}">pledge</a>?
                                         </p>
+                                    {% endif %}
+                                    {% if participation.state_engine_state == accept_and_pledge_states.PLEDGE_THANKS %}
+                                        <p>
+                                            <span class="label label-success">Thanks for your pledge</span>
+                                        </p>
+                                        <p>
+                                            You will be contacted shortly to honor your pledge!
+                                        </p>
+                                    {% endif %}
+                                    {% if participation.state_engine_state == accept_and_pledge_states.PAY %}
+                                        <p>
+                                            <span class="label label-danger">Awaiting payment</span>
+                                        </p>
+                                        <p>
+                                            You can honor your pledge by clicking <a href="/challenges/{{ participation.challenge.id }}/{{ participation.state_engine }}">here</a>.
+                                        </p>
+                                    {% endif %}
+                                    {% if participation.state_engine_state == accept_and_pledge_states.PAY_THANKS %}
+                                        <p>
+                                            <span class="label label-success"><i class="fa fa-check"></i> All done</span>
+                                        </p>
+                                        <p>
+                                            You have made you donation - thanks!
+                                        </p>
+                                        <small>You can still <a href="/challenges/{{ participation.challenge.id }}">view the challenge</a> </small>
                                     {% endif %}
                                 {% endif %}
                             </div>
@@ -82,7 +111,7 @@
         {% else %}
 
             <div class="well" style="width:90%; margin:20px auto;">
-                <h4>You haven't started any challenges.</h4>
+                <h4>You haven't accepted any challenges yet!</h4>
             </div>
 
         {% endif %}
@@ -93,10 +122,14 @@
                 {% for challenge in my_challenges %}
                     <div class="list-group-item">
                         <div class="media">
-                            <span class="fa fa-stack text-primary media-object pull-left fa-2x">
-                                <i class="fa fa-circle fa-stack-2x"></i>
-                                <i class="fa fa-stack-1x fa-inverse fa-trophy"></i>
-                            </span>
+                            {% if challenge.youtube_video_id %}
+                                <img src="http://img.youtube.com/vi/{{ challenge.youtube_video_id }}/sddefault.jpg" class="media-object pull-left" style="max-width: 25%"/>
+                            {% else %}
+                                <span class="fa fa-stack text-primary media-object pull-left fa-2x">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-stack-1x fa-inverse fa-trophy"></i>
+                                </span>
+                            {% endif %}
                             <div class="media-body">
                                 <h4 class="media-heading">{{ challenge.name }} for {{ challenge.get_recipient.name }}</h4>
                                 <p>Share this challenge</p>
@@ -124,6 +157,10 @@
                 {% endfor %}
             </div>
         {% else %}
+
+            <div class="well" style="width:90%; margin:20px auto;">
+                <h4>You haven't accepted any challenges yet!</h4>
+            </div>
 
         {% endif %}
     </div>
