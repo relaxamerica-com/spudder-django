@@ -12,6 +12,10 @@
     </style>
 {% endblock %}
 
+{% block masterhead_title %}
+    <h4 class="navbar-text navbar-right hidden-xs"><span class="text-primary">Spudder:</span> {{ request.current_role.name }}</h4>
+{% endblock %}
+
 {% block body %}
     <div class="container">
 

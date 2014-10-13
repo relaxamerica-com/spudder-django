@@ -209,6 +209,9 @@ def get_affiliate_club_and_challenge(affiliate_key):
         challenge.description = challenge_description
         challenge.youtube_video_id = challenge_you_tube_video_id
         challenge.save()
+        if feature_is_enabled('challenge_tree'):
+            from spudderspuds.challenges.models import ChallengeTree
+            ChallengeTree.CreateNewTree(challenge)
         return club_entity, challenge
     return None, None
 
@@ -281,6 +284,9 @@ def challenge_state_engine(request, challenge, engine, state):
             participation.state_engine = engine
             participation.state_engine_state = state
             participation.save()
+            if feature_is_enabled('challenge_tree'):
+                from spudderspuds.challenges.models import ChallengeTree
+                ChallengeTree.AddParticipationToTree(challenge, participation)
             template_data['template'] = template
             template_data['beneficiary'] = beneficiary
             template_data['participation'] = participation
@@ -351,6 +357,9 @@ def challenge_state_engine(request, challenge, engine, state):
                     creating_participant=participation,
                     youtube_video_id=participation.youtube_video_id)
                 challenge.save()
+                if feature_is_enabled('challenge_tree'):
+                    from spudderspuds.challenges.models import ChallengeTree
+                    ChallengeTree.AddChallengeToTree(challenge)
                 template_data['challenge'] = challenge
                 template_data['just_uploaded'] = True
                 participation.state_engine_state = _AcceptAndPledgeEngineStates.PLEDGE
@@ -398,9 +407,6 @@ def challenge_state_engine(request, challenge, engine, state):
                     if beneficiary_can_receive_donations and participation.donation_amount > 0:
                         participation.state = ChallengeParticipation.AWAITING_PAYMENT
                     participation.save()
-                    if feature_is_enabled('challenge_tree'):
-                        from spudderspuds.challenges.models import ChallengeTree
-                        ChallengeTree.AddParticipationToTree(challenge, participation)
                     redirect_url = '/challenges/%s/%s/%s' % (
                         challenge.id,
                         engine,
