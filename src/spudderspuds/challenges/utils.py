@@ -417,8 +417,6 @@ def challenge_state_engine(request, challenge, engine, state):
                             _AcceptAndPledgeEngineStates.PAY)
                         participation.state_engine_state = _AcceptAndPledgeEngineStates.PAY
                         participation.save()
-                    if request.is_ajax():
-                        return HttpResponse(redirect_url)
                     return redirect(redirect_url)
                 if request.is_ajax():
                     return HttpResponse("%s|%s" % (
