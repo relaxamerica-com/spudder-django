@@ -10,7 +10,7 @@ FEATURES = {
         'challenges_only_override',
         'challenge_challenge',
         'challenge_register_club',
-        # 'challenge_tree',
+        'challenge_tree',
         'email_error_logs',
         'tracking_pixels',
         'challenge_management'
@@ -26,11 +26,11 @@ FEATURES = {
         'challenges_only_override',
         'challenge_challenge',
         'challenge_register_club',
-        # 'challenge_tree',
+        'challenge_tree',
         'email_error_logs',
         'tracking_pixels',
         # 'stripe_ein_validation',
-        # 'all_fans_auto_follow_main_spudder_fan',
+        'all_fans_auto_follow_main_spudder_fan',
     ],
     'live': [
         'google_analytics',
