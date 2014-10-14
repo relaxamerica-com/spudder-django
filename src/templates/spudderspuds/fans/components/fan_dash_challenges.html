@@ -51,24 +51,24 @@
                             {% endif %}
                             <div class="media-body">
                                 <h4 class="media-heading">{{ participation.challenge.name }} for {{ participation.challenge.get_recipient.name }}</h4>
-                                {% if participation.state_engine == "accept-and-pledge" %}
-                                    {% if participation.state_engine_state == accept_and_pledge_states.NOTICE %}
-                                        <p>
-                                            <span class="label label-warning">Awaiting video</span>
-                                        </p>
-                                        <p>
-                                            Do you have your video ready? <a href="/challenges/{{ participation.challenge.id }}/{{ participation.state_engine }}">go to the challenge</a>
-                                        </p>
-                                    {% endif %}
-                                    {% if participation.state_engine_state == accept_and_pledge_states.UPLOAD_THANKS %}
-                                        <p>
-                                            <span class="label label-success">Video posted</span>
-                                        </p>
-                                        <p>
-                                            Are you ready to <a href="/challenges/{{ participation.challenge.id }}/{{ participation.state_engine }}">challenge others</a>?
-                                        </p>
-                                    {% endif %}
-                                    {% if participation.state_engine_state == accept_and_pledge_states.PLEDGE %}
+                                {% if participation.state_engine_state == state_engine_states.NOTICE %}
+                                    <p>
+                                        <span class="label label-warning">Awaiting video</span>
+                                    </p>
+                                    <p>
+                                        Do you have your video ready? <a href="/challenges/{{ participation.challenge.id }}/{{ participation.state_engine }}">go to the challenge</a>
+                                    </p>
+                                {% endif %}
+                                {% if participation.state_engine_state == state_engine_states.UPLOAD_THANKS %}
+                                    <p>
+                                        <span class="label label-success">Video posted</span>
+                                    </p>
+                                    <p>
+                                        Are you ready to <a href="/challenges/{{ participation.challenge.id }}/{{ participation.state_engine }}">challenge others</a>?
+                                    </p>
+                                {% endif %}
+                                {% if participation.state_engine_state == state_engine_states.PLEDGE %}
+                                    {% if participation.state_engine == 'accept-and-pledge' %}
                                         <p>
                                             <span class="label label-danger">Need to pledge</span>
                                         </p>
@@ -76,31 +76,40 @@
                                             Are you ready to <a href="/challenges/{{ participation.challenge.id }}/{{ participation.state_engine }}">pledge</a>?
                                         </p>
                                     {% endif %}
-                                    {% if participation.state_engine_state == accept_and_pledge_states.PLEDGE_THANKS %}
+                                    {% if participation.state_engine == 'accept-only' %}
                                         <p>
-                                            <span class="label label-success">Thanks for your pledge</span>
+                                            <span class="label label-success">All done</span>
                                         </p>
                                         <p>
-                                            You will be contacted shortly to honor your pledge!
+                                            You accepted this challenge but chose not to pledge. You can still change your mind and <a href="/challenges/{{ participation.challenge.id }}/accept-and-pledge">pledge here</a> if you want to?
                                         </p>
+                                        <small>You can also still <a href="/challenges/{{ participation.challenge.id }}">view the challenge</a> </small>
                                     {% endif %}
-                                    {% if participation.state_engine_state == accept_and_pledge_states.PAY %}
-                                        <p>
-                                            <span class="label label-danger">Awaiting payment</span>
-                                        </p>
-                                        <p>
-                                            You can honor your pledge by clicking <a href="/challenges/{{ participation.challenge.id }}/{{ participation.state_engine }}">here</a>.
-                                        </p>
-                                    {% endif %}
-                                    {% if participation.state_engine_state == accept_and_pledge_states.PAY_THANKS %}
-                                        <p>
-                                            <span class="label label-success"><i class="fa fa-check"></i> All done</span>
-                                        </p>
-                                        <p>
-                                            You have made you donation - thanks!
-                                        </p>
-                                        <small>You can still <a href="/challenges/{{ participation.challenge.id }}">view the challenge</a> </small>
-                                    {% endif %}
+                                {% endif %}
+                                {% if participation.state_engine_state == state_engine_states.PLEDGE_THANKS %}
+                                    <p>
+                                        <span class="label label-success">Thanks for your pledge</span>
+                                    </p>
+                                    <p>
+                                        You will be contacted shortly to honor your pledge!
+                                    </p>
+                                {% endif %}
+                                {% if participation.state_engine_state == state_engine_states.PAY %}
+                                    <p>
+                                        <span class="label label-danger">Awaiting payment</span>
+                                    </p>
+                                    <p>
+                                        You can honor your pledge by clicking <a href="/challenges/{{ participation.challenge.id }}/{{ participation.state_engine }}">here</a>.
+                                    </p>
+                                {% endif %}
+                                {% if participation.state_engine_state == state_engine_states.PAY_THANKS %}
+                                    <p>
+                                        <span class="label label-success"><i class="fa fa-check"></i> All done</span>
+                                    </p>
+                                    <p>
+                                        You have made you donation - thanks!
+                                    </p>
+                                    <small>You can still <a href="/challenges/{{ participation.challenge.id }}">view the challenge</a> </small>
                                 {% endif %}
                             </div>
                         </div>

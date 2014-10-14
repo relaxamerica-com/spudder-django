@@ -18,7 +18,7 @@ from spudderdomain.controllers import TeamsController, RoleController, SpudsCont
 from spudderdomain.models import FanPage, TeamPage, TeamAdministrator
 from spudderkrowdio.models import FanFollowingEntityTag, KrowdIOStorage
 from spuddersocialengine.models import SpudFromSocialMedia
-from spudderspuds.challenges.utils import _AcceptAndPledgeEngineStates
+from spudderspuds.challenges.utils import _StateEngineStates
 from spudderspuds.forms import FanSigninForm, FanRegisterForm, FanPageForm, BasicSocialMediaForm
 from spudderspuds.utils import create_and_activate_fan_role, is_signin_claiming_spud, set_social_media
 from spudderspuds.decorators import can_edit
@@ -169,7 +169,7 @@ def landing_page(request):
             participating_entity_id=entity['id'],
             participating_entity_type=entity['type'])
         template_data['challenge_participations'] = participating_challenges
-        template_data['accept_and_pledge_states'] = _AcceptAndPledgeEngineStates
+        template_data['state_engine_states'] = _StateEngineStates
         template_data['my_challenges'] = Challenge.objects.filter(
             creator_entity_id=request.current_role.entity.id,
             creator_entity_type=request.current_role.entity_type)

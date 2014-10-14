@@ -34,11 +34,17 @@
         <span class="fa-stack fa-2x"><i class="fa fa-circle fa-stack-2x fa-inverse"></i><i class="fa fa-envelope-o fa-stack-1x"></i></span>
     </a>
 </p>
+{% if state_engine == 'accept-and-pledge' %}
+    <hr/>
+    <h4>Don't forget to make your pledge to {{ challenge.parent.get_recipient.name }}</h4>
+    <a href="/challenges/{{ challenge.parent.id }}/{{ challenge.creating_participant.state_engine }}/8" class="btn btn-primary btn-cta btn-ajax">
+        Go and Pledge <i class="fa fa-arrow-right"></i>
+    </a>
+{% endif %}
 <hr/>
-<h4>Don't forget to make your pledge to {{ challenge.parent.get_recipient.name }}</h4>
-{#<a href="/challenges/{{ challenge.parent.id }}/{{ challenge.creating_participant.state_engine }}/8" class="btn btn-primary btn-cta btn-ajax">#}
-{#    Go and Pledge <i class="fa fa-arrow-right"></i>#}
-{#</a>#}
-<a href="/challenges/{{ challenge.parent.id }}/{{ challenge.creating_participant.state_engine }}/8" class="btn btn-primary btn-cta btn-ajax">
-    Go and Pledge <i class="fa fa-arrow-right"></i>
-</a>
+<h4><small>All challenges you have accepted or created can be seen on your dashboard.</small></h4>
+<p>
+    <a href="/fan" class="btn btn-info btn-cta">
+        My dashboard <i class="fa fa-arrow-right"></i>
+    </a>
+</p>

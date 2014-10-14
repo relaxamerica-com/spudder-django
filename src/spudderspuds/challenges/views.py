@@ -31,7 +31,7 @@ from spudderspuds.challenges.forms import ChallengeChallengeParticipationForm
 from spudderspuds.challenges.models import ChallengeTree, ChallengeServiceConfiguration
 from spudderspuds.challenges.models import ChallengeServiceMessageConfiguration
 from spudderspuds.challenges.utils import get_affiliate_club_and_challenge, challenge_state_engine, _create_temp_club
-from spudderspuds.challenges.utils import _AcceptAndPledgeEngineStates
+from spudderspuds.challenges.utils import _StateEngineStates
 from spudderstripe.utils import get_stripe_recipient_controller_for_club
 
 
@@ -152,7 +152,7 @@ def the_challenge_page(request, challenge_id, state_engine=None, state=None):
         'challenge': challenge,
         'challenge_recipient': challenge_recipient}
     if state_engine:
-        if request.is_ajax() or (state in [_AcceptAndPledgeEngineStates.PAY] and request.POST):
+        if request.is_ajax() or (state in [_StateEngineStates.PAY] and request.POST):
             return challenge_state_engine(request, challenge, state_engine, state)
         if not request.current_role:
             raise Http404
@@ -160,6 +160,9 @@ def the_challenge_page(request, challenge_id, state_engine=None, state=None):
             challenge=challenge,
             participating_entity_id=request.current_role.entity.id,
             participating_entity_type=request.current_role.entity_type)
+        if participation.state_engine != state_engine:
+            participation.state_engine = state_engine
+            participation.save()
         template_data['challenge_participation'] = participation
     return render(request, 'spudderspuds/challenges/pages/challenge_page.html', template_data)
 

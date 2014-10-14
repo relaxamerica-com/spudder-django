@@ -128,7 +128,7 @@
                             It really is that easy!
                         </p>
                         <p>
-                            <a type="button" class="btn btn-primary btn-cta btn-ajax" href="/challenges/{{ challenge.id }}/accept-and-pledge/0">
+                            <a type="button" class="btn btn-primary btn-cta btn-ajax" href="/challenges/{{ challenge.id }}/accept-and-pledge/1">
                                 I'm ready! <i class="fa fa-arrow-right"></i>
                             </a>
                         </p>
@@ -139,7 +139,30 @@
                         Accept Only
                     </button>
                     <div id="accept-only" class="collapse action-container">
-                        {% include 'spudderspuds/challenges/components/in_development.html' %}
+                        <div class="page-header">
+                            <h3>How to accept only</h3>
+                        </div>
+                        <p>You are about to accept this challenge but don't want to make a pledge to {{ challenge_recipient.name }}</p>
+                        <p>
+                            At <span class="text-primary">Spudder</span>, we've made it super easy for you to take part
+                            in viral challenges that raise money for youth sports teams and organizations like
+                            {{ challenge_recipient.name }}.
+                        </p>
+                        <p>
+                            To take part in this challenge all you need to do is:
+                        </p>
+                        <ol>
+                            <li>Upload a video of you doing the challenge <small>(don't worry if you haven't recorded one yet)</small>.</li>
+                            <li>Share your challenge with friends and family <small>(and even changing who your raising money for)</small>.</li>
+                        </ol>
+                        <p class="text-primary">
+                            It really is that easy!
+                        </p>
+                        <p>
+                            <a type="button" class="btn btn-primary btn-cta btn-ajax" href="/challenges/{{ challenge.id }}/accept-only/1">
+                                I'm ready! <i class="fa fa-arrow-right"></i>
+                            </a>
+                        </p>
                     </div>
                 </div>
                 <div class="col-md-4 action-col">
