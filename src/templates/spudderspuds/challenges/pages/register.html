@@ -7,7 +7,7 @@
 
 {% block body_id %}challenges-regsiter{% endblock %}
 
-{% block title %}Challenges - Register{% endblock %}
+{% block title %}Challenge Accepted{% endblock %}
 
 {% block body_class %}challenges {{ template.slug }}{% endblock %}
 
@@ -26,10 +26,10 @@
     {% if not request.GET.message %}
     <div class="page-header">
         <h1>
-            {% include 'spudderspuds/components/wizard_steps.html' with title="Start Fundraising" step="$" %}
-            Register with Spudder and start fundraising
+            {% include 'spudderspuds/components/wizard_steps.html' with title="Accept Challenge" step="$" %}
+            Accept Challenge
         </h1>
-        <p><small>Once you create an account, you'll be able to create challenges and raise money for your team!</small></p>
+        <p><small>Create your Spudder account in 2 simple steps</small></p>
     </div>
     {% endif %}
 

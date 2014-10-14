@@ -74,10 +74,6 @@ class ChallengesRegisterForm(forms.Form):
         widget=forms.PasswordInput(attrs={'addon_before': '<i class="fa fa-fw fa-lock"></i>'}),
         label="Please choose a password",
         help_text="Six or more characters please!")
-    password_again = forms.CharField(
-        max_length=255,
-        widget=forms.PasswordInput(attrs={'addon_before': '<i class="fa fa-fw fa-lock"></i>'}),
-        help_text="Confirm password")
     email_address = forms.EmailField(
         label="Your email address",
         widget=forms.TextInput(attrs={'addon_before': '<i class="fa fa-fw fa-envelope"></i>'}))
@@ -93,8 +89,6 @@ class ChallengesRegisterForm(forms.Form):
         if enable_register_club:
             self.fields['account_type'] = forms.ChoiceField(choices=self.ACCOUNT_TYPE_CHOICES,
                                                             initial=RoleController.ENTITY_FAN)
-        if self.prevent_password_again:
-            self.fields['password_again'] = forms.CharField(required=False, widget=forms.HiddenInput)
 
     def clean_email_address(self):
         email_address = super(ChallengesRegisterForm, self).clean().get('email_address', '').lower()
@@ -111,20 +105,16 @@ class ChallengesRegisterForm(forms.Form):
             raise forms.ValidationError()
         return username
         
-    def clean(self):
-        data = super(ChallengesRegisterForm, self).clean()
-        password = data.get('password', '').strip()
-        if not self.prevent_password_again:
-            password_again = data.get('password_again', '').strip()
-            if not password or password != password_again or len(password) < 6:
-                self._errors['password'] = self.error_class([
-                    'You must enter two passwords that match and are longer than 6 characters.'])
-                self._errors['password_again'] = self.error_class([
-                    'You must enter two passwords that match and are longer than 6 characters.'])
-                del data['password']
-                del data['password_again']
-                raise forms.ValidationError('Something went wrong with your registration.')
-        return data
+    # def clean(self):
+    #     data = super(ChallengesRegisterForm, self).clean()
+    #     password = data.get('password', '').strip()
+    #
+    #     return data
+
+    def clean_password(self):
+        password = super(ChallengesRegisterForm, self).clean().get('password', '')
+        if len(password) < 6:
+            raise forms.ValidationError()
 
 
 class ChallengesSigninForm(FanSigninForm):
@@ -150,7 +140,7 @@ class RegisterCreateClubForm(forms.Form):
     name = forms.CharField(max_length=255, label="The name of your team")
     at_name = forms.CharField(
         max_length=255,
-        label="Create a hashtag for you team",
+        label="Create a hashtag for your team",
         help_text="""
 hashtags are used throughout Spudder so fans
 can easily find, follow and interact with your team. letters and numbers

@@ -33,7 +33,6 @@ class FanSigninForm(forms.Form):
 class FanRegisterForm(forms.Form):
     email_address = forms.EmailField(required=True)
     password = forms.CharField(widget=forms.PasswordInput)
-    password_again = forms.CharField(widget=forms.PasswordInput)
     spud_id = forms.CharField(max_length=256, required=False, widget=forms.HiddenInput)
     twitter = forms.CharField(max_length=256, required=False, widget=forms.HiddenInput)
 
@@ -41,7 +40,6 @@ class FanRegisterForm(forms.Form):
         data = super(FanRegisterForm, self).clean()
         email_address = (data.get('email_address') or "").strip().lower()
         password = (data.get('password') or "").strip()
-        password_again = (data.get('password_again') or "").strip()
         raise_error = False
         if not email_address:
             self._errors['email_address'] = self.error_class(['You must supply an email address'])
@@ -51,11 +49,6 @@ class FanRegisterForm(forms.Form):
             raise_error = True
         if not password or len(password) < 6:
             self._errors['password'] = self.error_class(['You must supply a password longer than 6 characters'])
-            raise_error = True
-        if password != password_again:
-            message = 'Passwords must match.'
-            self._errors['password'] = self.error_class([message])
-            self._errors['password_again'] = self.error_class([message])
             raise_error = True
         if raise_error:
             raise forms.ValidationError('There was a problem creating your account.')
@@ -67,7 +60,8 @@ class FanPageForm(forms.Form):
 
     name = forms.CharField(label='User Name', help_text='This can be your real name or something made up!')
     date_of_birth = forms.DateField(widget=SelectDateWidget(years=YEARS))
-    state = forms.ChoiceField(choices=[(k, v) for k, v in SORTED_STATES.items()], label="Where do you live?")
+    state = forms.ChoiceField(choices=[(k, v) for k, v in SORTED_STATES.items()],
+                              label="Where is your favorite team located?")
     file = forms.FileField(
         required=False, label="Add logo to your profile",
         help_text="Great logos are square and about 200px x 200px")
