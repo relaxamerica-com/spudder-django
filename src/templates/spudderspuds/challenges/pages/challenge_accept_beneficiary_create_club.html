@@ -1,4 +1,5 @@
 {% extends 'spudderspuds/base_single_well.html' %}
+{% extends 'spudderspuds/base_single_well.html' %}
 {% load bootstrap3 %}
 
 {% block masterhead_title %}
@@ -15,7 +16,7 @@
     {% block page_header %}
         <div class="page-header">
             <h1>
-                {% include 'spudderspuds/components/wizard_steps.html' with step="<i class='fa fa-trophy'></i>" title="Challenge others" %}
+                {% include 'spudderspuds/components/wizard_steps.html' with step="<i class='fa fa-trophy'></i>" title="Challenge Accepted" %}
                 Who are you fundraising for?
             </h1>
             <p><small>Tell us about the club you want to raise money for.</small></p>
@@ -27,7 +28,7 @@
         {% bootstrap_form form %}
         {% buttons %}
             <button type="submit" class="btn btn-primary btn-cta">
-                <i class="fa fa-save"></i> Save an continue
+                <i class="fa fa-save"></i> Save and continue
             </button>
             <a href="{{ request.META.HTTP_REFERER }}" class="btn btn-default btn-cta">
                 Back

@@ -137,7 +137,8 @@ class UploadImageForm(forms.Form):
 
 
 class RegisterCreateClubForm(forms.Form):
-    name = forms.CharField(max_length=255, label="The name of your team")
+    name = forms.CharField(max_length=255,
+                           label="The name of your team" + REQUIRED)
     at_name = forms.CharField(
         max_length=255,
         label="Create a hashtag for your team",
@@ -156,7 +157,7 @@ only please""")
     )
     state = forms.ChoiceField(
         choices=[('', 'Select a state...')] + sorted([(k, v) for k, v in SORTED_STATES.items()], key=lambda x: x[1]),
-        label="State " + REQUIRED)
+        label="Where is this team? " + REQUIRED)
     address = forms.CharField(
         max_length=255, required=True,
         label="Address " + REQUIRED,

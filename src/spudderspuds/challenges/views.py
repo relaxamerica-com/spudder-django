@@ -169,7 +169,10 @@ def the_challenge_page(request, challenge_id, state_engine=None, state=None):
 
 @role_required([RoleController.ENTITY_FAN, RoleController.ENTITY_CLUB_ADMIN], redirect_url='/challenges/create/register')
 def register_club(request):
-    form = RegisterCreateClubForm(initial=request.GET)
+    initial_data = dict(request.GET.iteritems())
+    if request.current_role.entity_type == RoleController.ENTITY_FAN:
+        initial_data['state'] = request.current_role.entity.state
+    form = RegisterCreateClubForm(initial=initial_data)
     if request.method == 'POST':
         form = RegisterCreateClubForm(data=request.POST)
         if form.is_valid():

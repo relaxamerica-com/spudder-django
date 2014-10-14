@@ -60,11 +60,11 @@
     {% else %}
 
         <div class="well">
-            <h4>Your the first to raise money for a team in {{ state|format_state }}!</h4>
-            <p>Great news, you have started the fundraising revolution in {{ state|format_state }}.</p>
+            <h4>You're the first to raise money for a team in {{ state|format_state }}!</h4>
+            <p>Great news, you are the first to raise money for a team in  {{ state|format_state }}, and start the fundraising revoltion!</p>
             <p>No teams in {{ state|format_state }} are registered yet but <b>don't worry</b></p>
             <br/>
-            <a class="btn btn-default" href="{{ request.path }}/create_club">
+            <a class="btn btn-primary" href="{{ request.path }}/create_club">
                 <i class="fa fa-plus"></i> Add your team!
             </a>
             <br/>
