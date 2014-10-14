@@ -68,14 +68,6 @@
                                     </p>
                                 {% endif %}
                                 {% if participation.state_engine_state == state_engine_states.PLEDGE %}
-                                    {% if participation.state_engine == 'accept-and-pledge' %}
-                                        <p>
-                                            <span class="label label-danger">Need to pledge</span>
-                                        </p>
-                                        <p>
-                                            Are you ready to <a href="/challenges/{{ participation.challenge.id }}/{{ participation.state_engine }}">pledge</a>?
-                                        </p>
-                                    {% endif %}
                                     {% if participation.state_engine == 'accept-only' %}
                                         <p>
                                             <span class="label label-success">All done</span>
@@ -84,6 +76,13 @@
                                             You accepted this challenge but chose not to pledge. You can still change your mind and <a href="/challenges/{{ participation.challenge.id }}/accept-and-pledge">pledge here</a> if you want to?
                                         </p>
                                         <small>You can also still <a href="/challenges/{{ participation.challenge.id }}">view the challenge</a> </small>
+                                    {% else %}
+                                        <p>
+                                            <span class="label label-danger">Need to pledge</span>
+                                        </p>
+                                        <p>
+                                            Are you ready to <a href="/challenges/{{ participation.challenge.id }}/{{ participation.state_engine }}">pledge</a>?
+                                        </p>
                                     {% endif %}
                                 {% endif %}
                                 {% if participation.state_engine_state == state_engine_states.PLEDGE_THANKS %}

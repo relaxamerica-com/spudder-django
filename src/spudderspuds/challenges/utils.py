@@ -268,8 +268,11 @@ def challenge_state_engine(request, challenge, engine, state):
 
 def _state_engine_process_login(request, challenge, engine, state, template_data):
     response = None
+    next_state = _StateEngineStates.NOTICE
+    if engine == "pledge-only":
+        next_state = _StateEngineStates.PLEDGE
     if request.current_role:
-        state = _StateEngineStates.NOTICE
+        state = next_state
     else:
         form = ChallengesSigninForm(initial=request.GET)
         if request.method == "POST":
@@ -280,7 +283,7 @@ def _state_engine_process_login(request, challenge, engine, state, template_data
                 user = authenticate(username=username, password=password)
                 login(request, user)
                 request.current_role = change_current_role(request)
-                state = _StateEngineStates.NOTICE
+                state = next_state
         template_data['form'] = form
         if state == _StateEngineStates.LOGIN:
             response = render(request, 'spudderspuds/challenges/pages_ajax/signin.html', template_data)
@@ -289,8 +292,11 @@ def _state_engine_process_login(request, challenge, engine, state, template_data
 
 def _state_engine_process_register(request, challenge, engine, state, template_data):
     response = None
+    next_state = _StateEngineStates.NOTICE
+    if engine == "pledge-only":
+        next_state = _StateEngineStates.PLEDGE
     if request.current_role:
-        state = _StateEngineStates.NOTICE
+        state = next_state
     else:
         form = ChallengesRegisterForm(
             initial=request.GET,
@@ -316,7 +322,7 @@ def _state_engine_process_register(request, challenge, engine, state, template_d
                 login(request, authenticate(username=username, password=password))
                 if feature_is_enabled('tracking_pixels'):
                     EventController.RegisterEvent(request, EventController.CHALLENGER_USER_REGISTERER)
-                state = _StateEngineStates.NOTICE
+                state = next_state
         template_data['form'] = form
         if state == _StateEngineStates.REGISTER:
             response = render(request, 'spudderspuds/challenges/pages_ajax/register.html', template_data)
@@ -480,6 +486,12 @@ def _state_engine_process_pledge(request, challenge, engine, state, template_dat
         challenge.recipient_entity_type,
         challenge.recipient_entity_id,
         EntityBase.EntityWrapperByEntityType(challenge.recipient_entity_type))
+    participation, created = ChallengeParticipation.objects.get_or_create(
+        challenge=challenge,
+        participating_entity_id=request.current_role.entity.id,
+        participating_entity_type=request.current_role.entity_type)
+    participation.state_engine_state = _StateEngineStates.PLEDGE
+    participation.save()
     form = AcceptChallengeForm(initial={'donation': int(challenge.proposed_donation_amount)})
     if request.method == 'POST':
         form = AcceptChallengeForm(request.POST)
