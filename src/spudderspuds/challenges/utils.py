@@ -317,6 +317,7 @@ def _state_engine_process_register(request, challenge, engine, state, template_d
                 request.current_role = fan_entity
                 fan_page = fan_entity.entity
                 fan_page.username = form.cleaned_data.get('username')
+                # state =
                 fan_page.state = form.cleaned_data.get('state')
                 fan_page.save()
                 login(request, authenticate(username=username, password=password))
@@ -643,16 +644,14 @@ def _state_engine_process_pay_thanks(request, challenge, engine, state, template
 def _create_temp_club(form, state):
     name = form.cleaned_data['name'].upper()
     email = form.cleaned_data['email']
-    other_info = form.cleaned_data['other_information']
     website = form.cleaned_data['website']
     contact_number = form.cleaned_data['contact_number']
     temp_club, created = TempClub.objects.get_or_create(name=name, state=state)
     temp_club.email = email or temp_club.email
     temp_club.save()
-    if other_info or website or contact_number:
+    if website or contact_number:
         from spudderspuds.challenges.models import TempClubOtherInformation
         temp_club_other_info, created = TempClubOtherInformation.objects.get_or_create(temp_club=temp_club)
-        temp_club_other_info.other_information = other_info
         temp_club_other_info.website = website
         temp_club_other_info.contact_number = contact_number
         temp_club_other_info.save()

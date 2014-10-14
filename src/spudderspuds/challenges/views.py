@@ -126,7 +126,7 @@ def register(request):
             fan_entity = create_and_activate_fan_role(request, user)
             fan_page = fan_entity.entity
             fan_page.username = form.cleaned_data.get('username')
-            fan_page.state = form.cleaned_data.get('state')
+            fan_page.state = str(request.META.get('HTTP_X_APPENGINE_REGION')).upper()
             fan_page.save()
             login(request, authenticate(username=username, password=password))
             if feature_is_enabled('tracking_pixels'):

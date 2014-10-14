@@ -8,32 +8,37 @@ from spudderdomain.models import TeamPage
 from spudmart.CERN.models import SORTED_STATES
 from spudderspuds.forms import FanSigninForm
 
+REQUIRED = "<span class=\"input-required\">*required</span>"
+HELP_TEXT = '<i class="fa fa-question-circle text-primary" title="%s"></i>'
+
 
 class CreateTempClubForm(forms.Form):
     name = forms.CharField(
         max_length=255,
-        help_text="Please be a descriptive as possible, a good, accurate name will help us identify your club and "
-                  "get them their money sooner!",
+        label="Enter team's name: " + REQUIRED
+              + HELP_TEXT % "This is a name used to recognize this team.",
         widget=forms.TextInput(attrs={'addon_before': '<i class="fa fa-fw fa-pencil"></i>'}))
     email = forms.EmailField(
-        help_text="If you know an email address of someone at the club, we'll contact them to ensure they get "
-                  "their money",
+        label="Enter an email to reach the team: "
+              + HELP_TEXT % "We will use this email address to try to contact the team.",
         required=False,
         widget=forms.TextInput(attrs={'addon_before': '<i class="fa fa-fw fa-envelope"></i>'}))
     website = forms.URLField(
-        help_text="If your team has a website, enter it here.",
+        label="Enter a website that represents the team: "
+              + HELP_TEXT % "This website will be used to help identify the team.",
         required=False,
         widget=forms.TextInput(attrs={'addon_before': '<i class="fa fa-fw fa-home"></i>'}))
     contact_number = forms.CharField(
-        help_text="If you know a contact number for your team, enter it here.",
+        label="Enter a contact number that represents the team: "
+              + HELP_TEXT % "This phone number will be used to help identify the team.",
         required=False,
         widget=forms.TextInput(attrs={'addon_before': '<i class="fa fa-fw fa-phone"></i>'}))
-    other_information = forms.CharField(
-        max_length=1024,
-        required=False,
-        help_text="Do you have any other information that we can use to quickly find your club and ensure they "
-                  "get their money, their address for example?",
-        widget=forms.Textarea)
+    # other_information = forms.CharField(
+    #     max_length=1024,
+    #     required=False,
+    #     help_text="Do you have any other information that we can use to quickly find your club and ensure they "
+    #               "get their money, their address for example?",
+    #     widget=forms.Textarea)
 
 
 class ChallengeConfigureForm(forms.Form):
@@ -62,7 +67,7 @@ class ChallengesRegisterForm(forms.Form):
     username = forms.CharField(
         max_length=255,
         label="Choose a username",
-        help_text="Letters and numbers only please!",
+        help_text="A username can only consist of letters and numbers. Letters are not case sensitive.",
         widget=forms.TextInput(attrs={'addon_before': '<i class="fa fa-fw fa-user"></i>'}))
     password = forms.CharField(
         max_length=255,
@@ -76,9 +81,9 @@ class ChallengesRegisterForm(forms.Form):
     email_address = forms.EmailField(
         label="Your email address",
         widget=forms.TextInput(attrs={'addon_before': '<i class="fa fa-fw fa-envelope"></i>'}))
-    state = forms.ChoiceField(
-        choices=[('', 'Select a state...')] + sorted([(k, v) for k, v in SORTED_STATES.items()], key=lambda x: x[1]),
-        label="Where do you live?")
+    # state = forms.ChoiceField(
+    #     choices=[('', 'Select a state...')] + sorted([(k, v) for k, v in SORTED_STATES.items()], key=lambda x: x[1]),
+    #     label="Where do you live?")
     next = forms.CharField(max_length=256, required=False, widget=forms.HiddenInput, initial='/')
 
     def __init__(self, *args, **kwargs):
@@ -103,7 +108,7 @@ class ChallengesRegisterForm(forms.Form):
         if not SocialController.AtNameIsUniqueAcrossThePlatform(username):
             raise forms.ValidationError('There is a user already using this username.')
         if not SocialController.AtNameIsValid(username):
-            raise forms.ValidationError('Please use only letters and numbers in your username.')
+            raise forms.ValidationError()
         return username
         
     def clean(self):
@@ -145,7 +150,7 @@ class RegisterCreateClubForm(forms.Form):
     name = forms.CharField(max_length=255, label="The name of your team")
     at_name = forms.CharField(
         max_length=255,
-        label="Create a hastag for you team",
+        label="Create a hashtag for you team",
         help_text="""
 hashtags are used throughout Spudder so fans
 can easily find, follow and interact with your team. letters and numbers
@@ -161,10 +166,10 @@ only please""")
     )
     state = forms.ChoiceField(
         choices=[('', 'Select a state...')] + sorted([(k, v) for k, v in SORTED_STATES.items()], key=lambda x: x[1]),
-        label="State <span class=\"input-required\">*required</span>")
+        label="State " + REQUIRED)
     address = forms.CharField(
         max_length=255, required=True,
-        label="Address <span class='input-required'>*required<span>",
+        label="Address " + REQUIRED,
         help_text="Team main location address",
         widget=forms.TextInput(attrs={'placeholder': 'Address'})
     )
