@@ -292,6 +292,7 @@ def user_add_fan_role(request):
 
 
 def fan_profile_view(request, page_id):
+    return redirect('/fan')
     page = get_object_or_404(FanPage, pk=page_id)
     fan_role = RoleFan(page)
     krowdio_response = get_following(fan_role)
