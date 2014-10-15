@@ -10,6 +10,8 @@ from spudderspuds.forms import FanSigninForm
 
 REQUIRED = "<span class=\"input-required\">*required</span>"
 HELP_TEXT = '<i class="fa fa-question-circle text-primary" title="%s"></i>'
+# HELP_TEXT = '<i class="fa fa-question-circle text-primary popover" data-content="%s" data-toggle="popover" ' \
+#             'data-trigger="focus"></i>'
 
 
 class CreateTempClubForm(forms.Form):
@@ -17,28 +19,38 @@ class CreateTempClubForm(forms.Form):
         max_length=255,
         label="Enter team's name: " + REQUIRED
               + HELP_TEXT % "This is a name used to recognize this team.",
-        widget=forms.TextInput(attrs={'addon_before': '<i class="fa fa-fw fa-pencil"></i>'}))
+        widget=forms.TextInput(attrs={
+            'addon_before': '<i class="fa fa-fw fa-pencil"></i>',
+            'placeholder': 'Team name'}))
     email = forms.EmailField(
         label="Enter an email to reach the team: "
               + HELP_TEXT % "We will use this email address to try to contact the team.",
         required=False,
-        widget=forms.TextInput(attrs={'addon_before': '<i class="fa fa-fw fa-envelope"></i>'}))
+        widget=forms.TextInput(attrs={
+            'addon_before': '<i class="fa fa-fw fa-envelope"></i>',
+            'placeholder': 'Contact email (optional)'}))
     website = forms.URLField(
-        label="Enter a website that represents the team: "
+        label="Enter a website for the team: "
               + HELP_TEXT % "This website will be used to help identify the team.",
         required=False,
-        widget=forms.TextInput(attrs={'addon_before': '<i class="fa fa-fw fa-home"></i>'}))
+        widget=forms.TextInput(attrs={
+            'addon_before': '<i class="fa fa-fw fa-home"></i>',
+            'placeholder': 'Teams website (optional)'}))
     contact_number = forms.CharField(
-        label="Enter a contact number that represents the team: "
+        label="Enter a contact number for the team: "
               + HELP_TEXT % "This phone number will be used to help identify the team.",
         required=False,
-        widget=forms.TextInput(attrs={'addon_before': '<i class="fa fa-fw fa-phone"></i>'}))
-    # other_information = forms.CharField(
-    #     max_length=1024,
-    #     required=False,
-    #     help_text="Do you have any other information that we can use to quickly find your club and ensure they "
-    #               "get their money, their address for example?",
-    #     widget=forms.Textarea)
+        widget=forms.TextInput(attrs={
+            'addon_before': '<i class="fa fa-fw fa-phone"></i>',
+            'placeholder': 'Contact number (optional)'}))
+    other_information = forms.CharField(
+        label='Any other information: '
+              + HELP_TEXT % 'Do you have any other information that we can use to quickly find your club and ensure '
+              'they get their money, their address for example?',
+        max_length=1024,
+        required=False,
+        help_text="",
+        widget=forms.Textarea(attrs={'rows': '3', 'placeholder': ''}))
 
 
 class ChallengeConfigureForm(forms.Form):

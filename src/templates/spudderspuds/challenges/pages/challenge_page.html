@@ -51,7 +51,7 @@
                     {% endif %}
                 {% else %}
                     <div class="col-xs-12">
-                        <h2>Do you accept the {{ challenge.name }}</h2>
+                        <h2>Choose a button below to get started.</h2>
                     </div>
                 {% endif %}
             </div>
@@ -302,7 +302,7 @@
                 var metadata = {
                     snippet: {
                         title: "Spudder.com - {{ challenge.name }}",
-                        description: "This video is a response to the '{{ challenge.name }}' on www.spudder.com. This is proof that the " +
+                        description: "This video is a response to the '{{ challenge.name }}' on http://www.spudder.com. This is proof that the " +
                                      "challenge to benefit '{{ challenge.get_recipient.name }}' was accepted and completed. Now I am challenging others " +
                                      "- see the details at http://www.spudder.com/challenges/{{ challenge.id }}",
                     categoryId: 22 }};
