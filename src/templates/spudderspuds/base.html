@@ -21,7 +21,9 @@
                 <img src="{{ request.current_role.image }}" class="media-object pull-right img-circle dropdown-toggle" data-toggle="dropdown" />
                 <ul class="dropdown-menu dropdown-menu-right">
                     <li><a href="{{ request.current_role.home_page_path }}"><i class="fa fa-fw fa-home"></i> Home</a></li>
-                    <li><a href="{{ request.current_role.link_to_public_page }}/edit"><i class="fa fa-fw fa-pencil"></i> My account</a></li>
+                    {% if request.current_role|is_fan %}
+                        <li><a href="{{ request.current_role.link_to_public_page }}/edit"><i class="fa fa-fw fa-pencil"></i> My account</a></li>
+                    {% endif %}
                     <li><a href="/accounts/logout"><i class="fa fa-fw fa-sign-out"></i> Sign out</a></li>
                 </ul>
                 <div class="media-body">

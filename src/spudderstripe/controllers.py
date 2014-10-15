@@ -7,7 +7,6 @@ from django.conf import settings
 from settings import Environments
 
 
-
 class StripeRecipientsController(object):
     def __init__(self, stripe_recipient, stripe_user):
         self.stripe_recipient = stripe_recipient
@@ -35,7 +34,6 @@ class StripeRecipientsController(object):
         else:
             recipient = stripe.Recipient.retrieve(self.stripe_recipient.recipient_id, settings.STRIPE_SECRET_KEY)
             return recipient.get('verified', False)
-
 
     def get_recipient_active_bank_account(self):
         if settings.ENVIRONMENT == Environments.DEV:

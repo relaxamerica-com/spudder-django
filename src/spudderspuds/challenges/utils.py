@@ -27,6 +27,7 @@ class _StateEngineStates(object):
     PLEDGE_THANKS = '9'
     PAY = '10'
     PAY_THANKS = '11'
+    PAY_FAILED = '12'
 
 
 class TreeElement(object):
