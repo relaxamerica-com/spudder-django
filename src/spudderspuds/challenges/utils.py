@@ -181,40 +181,44 @@ def get_affiliate_club_and_challenge(affiliate_key):
     if affiliate_key == "dreamsforkids":
         club_name = 'Dreams for Kids'
         challenge_template_slug = "piechallenge"
-        challenge_name = "Pie Challenge"
-        challenge_description = "Challenge your friends, family and fans to take a cream pie to the face!"
         challenge_you_tube_video_id = "vqgpHZ09St8"
-        try:
-            club = Club.objects.get(name=club_name)
-        except Club.DoesNotExist:
-            raise NotImplementedError('A club with the name %s does not exists.' % club_name)
-        try:
-            template = ChallengeTemplate.objects.get(slug=challenge_template_slug)
-        except ChallengeTemplate.DoesNotExist:
-            raise NotImplementedError("A challenge template with the slug %s does not exists, do you need to esnure "
-                                      "challenge template in the admin console?" % challenge_template_slug)
-        club_entity = EntityController.GetWrappedEntityByTypeAndId(
-            EntityController.ENTITY_CLUB,
-            club.id,
-            EntityBase.EntityWrapperByEntityType(EntityController.ENTITY_CLUB))
-        challenge, created = Challenge.objects.get_or_create(
-            parent=None,
-            template=template,
-            name=challenge_name,
-            creator_entity_id=club.id,
-            creator_entity_type=EntityController.ENTITY_CLUB,
-            recipient_entity_id=club.id,
-            recipient_entity_type=EntityController.ENTITY_CLUB,
-            proposed_donation_amount=10,
-            proposed_donation_amount_decline=20)
-        challenge.description = challenge_description
-        challenge.youtube_video_id = challenge_you_tube_video_id
-        challenge.save()
-        if feature_is_enabled('challenge_tree'):
-            from spudderspuds.challenges.models import ChallengeTree
-            ChallengeTree.CreateNewTree(challenge)
-        return club_entity, challenge
-    return None, None
+    elif affiliate_key == "livetest":  # this was set up for live Stripe testing on Spudmart1
+        club_name = "This is a test team2"
+        challenge_template_slug = "piechallenge"
+        challenge_you_tube_video_id = "1rDsRiU_fno"
+    else:
+        return None, None
+
+    try:
+        club = Club.objects.get(name=club_name)
+    except Club.DoesNotExist:
+        raise NotImplementedError('A club with the name %s does not exists.' % club_name)
+    try:
+        template = ChallengeTemplate.objects.get(slug=challenge_template_slug)
+    except ChallengeTemplate.DoesNotExist:
+        raise NotImplementedError("A challenge template with the slug %s does not exists, do you need to esnure "
+                                  "challenge template in the admin console?" % challenge_template_slug)
+    club_entity = EntityController.GetWrappedEntityByTypeAndId(
+        EntityController.ENTITY_CLUB,
+        club.id,
+        EntityBase.EntityWrapperByEntityType(EntityController.ENTITY_CLUB))
+    challenge, created = Challenge.objects.get_or_create(
+        parent=None,
+        template=template,
+        name=template.name,
+        creator_entity_id=club.id,
+        creator_entity_type=EntityController.ENTITY_CLUB,
+        recipient_entity_id=club.id,
+        recipient_entity_type=EntityController.ENTITY_CLUB,
+        proposed_donation_amount=10,
+        proposed_donation_amount_decline=20)
+    challenge.description = template.description
+    challenge.youtube_video_id = challenge_you_tube_video_id
+    challenge.save()
+    if feature_is_enabled('challenge_tree'):
+        from spudderspuds.challenges.models import ChallengeTree
+        ChallengeTree.CreateNewTree(challenge)
+    return club_entity, challenge
 
 
 def challenge_state_engine(request, challenge, engine, state):
