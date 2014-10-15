@@ -77,9 +77,9 @@ class ChallengesRegisterForm(forms.Form):
     email_address = forms.EmailField(
         label="Your email address",
         widget=forms.TextInput(attrs={'addon_before': '<i class="fa fa-fw fa-envelope"></i>'}))
-    # state = forms.ChoiceField(
-    #     choices=[('', 'Select a state...')] + sorted([(k, v) for k, v in SORTED_STATES.items()], key=lambda x: x[1]),
-    #     label="Where do you live?")
+    state = forms.ChoiceField(
+        choices=[('', 'Select a state...')] + sorted([(k, v) for k, v in SORTED_STATES.items()], key=lambda x: x[1]),
+        label="Where do you live?")
     next = forms.CharField(max_length=256, required=False, widget=forms.HiddenInput, initial='/')
 
     def __init__(self, *args, **kwargs):
@@ -105,16 +105,11 @@ class ChallengesRegisterForm(forms.Form):
             raise forms.ValidationError()
         return username
         
-    # def clean(self):
-    #     data = super(ChallengesRegisterForm, self).clean()
-    #     password = data.get('password', '').strip()
-    #
-    #     return data
-
     def clean_password(self):
         password = super(ChallengesRegisterForm, self).clean().get('password', '')
         if len(password) < 6:
             raise forms.ValidationError()
+        return password
 
 
 class ChallengesSigninForm(FanSigninForm):

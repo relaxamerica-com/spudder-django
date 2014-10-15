@@ -284,6 +284,7 @@ def _state_engine_process_login(request, challenge, engine, state, template_data
                 login(request, user)
                 request.current_role = change_current_role(request)
                 state = next_state
+                response = redirect('/challenges/%s/%s/%s' % (challenge.id, engine, state))
         template_data['form'] = form
         if state == _StateEngineStates.LOGIN:
             response = render(request, 'spudderspuds/challenges/pages_ajax/signin.html', template_data)
@@ -317,15 +318,16 @@ def _state_engine_process_register(request, challenge, engine, state, template_d
                 request.current_role = fan_entity
                 fan_page = fan_entity.entity
                 fan_page.username = form.cleaned_data.get('username')
-                # state =
                 fan_page.state = form.cleaned_data.get('state')
                 fan_page.save()
-                login(request, authenticate(username=username, password=password))
+                user = authenticate(username=username, password=password)
+                login(request, user)
                 if feature_is_enabled('tracking_pixels'):
                     EventController.RegisterEvent(request, EventController.CHALLENGER_USER_REGISTERER)
                 state = next_state
-        template_data['form'] = form
+                response = redirect('/challenges/%s/%s/%s' % (challenge.id, engine, state))
         if state == _StateEngineStates.REGISTER:
+            template_data['form'] = form
             response = render(request, 'spudderspuds/challenges/pages_ajax/register.html', template_data)
     return response, state
 

@@ -6,7 +6,7 @@
     // Ajax form options
     $.spudder_challenge_page.ajax_form_options = {
         beforeSerialize: function ($form, options) {
-            var $btn = $form.find('.btn-ajax');
+            var $btn = $form.find('button.btn-ajax');
             $btn.attr('disabled', 'disabled');
             $btn.html('<i class="fa fa-spin fa-spinner"></i> ' + $btn.html());
         },
