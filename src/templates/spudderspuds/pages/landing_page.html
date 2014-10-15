@@ -12,12 +12,27 @@
     </style>
 {% endblock %}
 
-{% block masterhead_title %}
-    <h4 class="navbar-text navbar-right hidden-xs"><span class="text-primary">Spudder:</span> {{ request.current_role.name }}</h4>
-{% endblock %}
+{% block body_id %}fan-dashbaord{% endblock %}
+
+{% block messages %}{# blank out message here #}{% endblock %}
 
 {% block body %}
-    <div class="container">
+    <div class="submenu-header">
+        <div class="container-fluid navbar">
+            <div class="navbar-header">
+{#                <a class="navbar-toggle collapsed" data-toggle="collapse" data-target="#fan-dashboard-nav">#}
+{#                    <i class="fa fa-ellipsis-v"></i>#}
+{#                </a>#}
+                <h2 class="navbar-brand">My dashboard</h2>
+            </div>
+{#            <div class="collapse navbar-collapse navbar-right" id="fan-dashboard-nav">#}
+{#                <ul class="nav navbar-nav ">#}
+{#                    <li><a href="#">Challenges</a></li>#}
+{#                </ul>#}
+{#            </div>#}
+        </div>
+    </div>
+    <div class="container-fluid">
 
         <div class="row">
             <div class="col-md-6">
@@ -25,7 +40,6 @@
             </div>
             <div class="col-md-6">
                 <hr class="visible-xs"/>
-                <h2 style="margin-top:0">Challenges</h2>
                 {% if request.current_role|is_fan %}
                     {% include 'spudderspuds/fans/components/fan_dash_challenges.html' %}
                 {% else %}

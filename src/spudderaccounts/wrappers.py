@@ -63,6 +63,10 @@ class RoleBase(EntityBase):
         raise NotImplementedError
 
     @abc.abstractproperty
+    def role_name(self):
+        raise NotImplementedError
+
+    @abc.abstractproperty
     def is_following_other_entities(self):
         return False
 
@@ -260,7 +264,7 @@ class RoleFan(RoleBase):
 
     @property
     def home_page_path(self):
-        return '/spuds'
+        return '/fan'
 
     @property
     def home_domain(self):
@@ -302,6 +306,10 @@ class RoleFan(RoleBase):
     @property
     def state(self):
         return self.entity.state
+
+    @property
+    def role_name(self):
+        return 'Sports Fan'
 
     def user_is_owner(self, user):
         return self.entity.fan == user
@@ -398,6 +406,10 @@ class RoleClubAdmin(RoleBase):
     @property
     def contact_emails(self):
         return self.entity.admin.email
+
+    @property
+    def role_name(self):
+        return "Team Admin"
 
 
 """

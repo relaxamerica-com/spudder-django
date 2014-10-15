@@ -15531,6 +15531,9 @@ body {
     position: relative;
   }
 }
+.navbar-masthead.spudder-masthead .navbar-header {
+  display: inline-block;
+}
 .navbar-masthead.spudder-masthead .navbar-header > a > img {
   height: 50px;
 }
@@ -15549,6 +15552,112 @@ body {
 }
 .navbar-masthead.spudder-masthead .navbar-text {
   margin-right: 30px;
+}
+.navbar-masthead.spudder-masthead #current-user {
+  height: 50px;
+  width: 50%;
+  margin: 0;
+  float: right !important;
+}
+@media (max-width: 480px) {
+  .navbar-masthead.spudder-masthead #current-user {
+    padding-top: 3px;
+  }
+}
+.navbar-masthead.spudder-masthead #current-user img {
+  height: 50px;
+  cursor: pointer;
+}
+@media (max-width: 480px) {
+  .navbar-masthead.spudder-masthead #current-user img {
+    height: 35px;
+  }
+}
+.navbar-masthead.spudder-masthead #current-user .dropdown-menu {
+  top: 85%;
+  padding: 6px 6px 6px 6px;
+  background-color: #1a1a1a;
+}
+@media (max-width: 480px) {
+  .navbar-masthead.spudder-masthead #current-user .dropdown-menu {
+    top: 105%;
+  }
+}
+.navbar-masthead.spudder-masthead #current-user .dropdown-menu li a {
+  color: #FFF;
+}
+.navbar-masthead.spudder-masthead #current-user .dropdown-menu li a:hover {
+  color: #000;
+}
+@media (max-width: 767px) {
+  .navbar-masthead.spudder-masthead #current-user .dropdown-menu:before {
+    position: absolute;
+    top: -7px;
+    right: 25px;
+    display: inline-block;
+    border-right: 7px solid transparent;
+    border-bottom: 7px solid #1a1a1a;
+    border-left: 7px solid transparent;
+    border-bottom-color: #1a1a1a;
+    content: '';
+  }
+  .navbar-masthead.spudder-masthead #current-user .dropdown-menu:after {
+    position: absolute;
+    top: -6px;
+    right: 26px;
+    display: inline-block;
+    border-right: 6px solid transparent;
+    border-bottom: 6px solid #1a1a1a;
+    border-left: 6px solid transparent;
+    content: '';
+  }
+}
+@media (min-width: 768px) {
+  .navbar-masthead.spudder-masthead #current-user .dropdown-menu:before {
+    position: absolute;
+    top: -7px;
+    right: 32px;
+    display: inline-block;
+    border-right: 7px solid transparent;
+    border-bottom: 7px solid #1a1a1a;
+    border-left: 7px solid transparent;
+    border-bottom-color: #1a1a1a;
+    content: '';
+  }
+  .navbar-masthead.spudder-masthead #current-user .dropdown-menu:after {
+    position: absolute;
+    top: -6px;
+    right: 33px;
+    display: inline-block;
+    border-right: 6px solid transparent;
+    border-bottom: 6px solid #1a1a1a;
+    border-left: 6px solid transparent;
+    content: '';
+  }
+}
+.navbar-masthead.spudder-masthead #current-user .media-body {
+  white-space: nowrap;
+  text-align: right;
+}
+.navbar-masthead.spudder-masthead #current-user .media-body .media-heading {
+  padding-top: 2px;
+  font-size: 20px;
+  margin-bottom: 0;
+  color: #FFF;
+}
+@media (max-width: 480px) {
+  .navbar-masthead.spudder-masthead #current-user .media-body .media-heading {
+    font-size: 12px;
+  }
+}
+.navbar-masthead.spudder-masthead #current-user .media-body p {
+  color: #ff4800;
+  text-transform: uppercase;
+}
+@media (max-width: 480px) {
+  .navbar-masthead.spudder-masthead #current-user .media-body p {
+    font-size: 10px;
+  }
 }
 /**********************************************************************************************************************/
 /**********************************************************************************************************************/
@@ -16009,4 +16118,39 @@ body#challenge-page #challenge-actions .action-col .action-container {
   border-top: none;
   padding: 20px 10px;
   margin-bottom: 20px;
+}
+/**********************************************************************************************************************/
+/**********************************************************************************************************************/
+body#fan-dashbaord .submenu-header {
+  background-color: #ff4800;
+  color: #FFF;
+  padding: 10px 0;
+  margin-top: -60px;
+  margin-bottom: 30px;
+}
+@media (max-width: 767px) {
+  body#fan-dashbaord .submenu-header {
+    margin-top: -20px;
+  }
+}
+body#fan-dashbaord .submenu-header .navbar {
+  margin-bottom: 0;
+}
+body#fan-dashbaord .submenu-header .navbar .navbar-brand {
+  margin: 0;
+  font-weight: bold;
+}
+body#fan-dashbaord .submenu-header .navbar .navbar-toggle {
+  color: #FFF;
+  cursor: pointer;
+}
+body#fan-dashbaord .submenu-header .navbar .nav a {
+  color: #FFF;
+}
+body#fan-dashbaord .submenu-header .navbar .nav a:hover,
+body#fan-dashbaord .submenu-header .navbar .nav a:focus {
+  background-color: #cc3a00;
+}
+body#fan-dashbaord .panel .panel-heading .panel-title {
+  font-size: 30px;
 }

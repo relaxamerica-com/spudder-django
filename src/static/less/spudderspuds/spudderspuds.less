@@ -455,6 +455,7 @@ body {
         }
 
         .navbar-header {
+            display: inline-block;
             > a {
                 > img {
                     height: 50px;
@@ -482,6 +483,107 @@ body {
 
         .navbar-text {
             margin-right: 30px;
+        }
+
+        #current-user {
+            height: 50px;
+            width: 50%;
+            margin: 0;
+            float: right !important;
+            @media(max-width: @screen-xs){
+                padding-top: 3px;
+            }
+            img {
+                height: 50px;
+                cursor: pointer;
+                @media(max-width: @screen-xs){
+                    height: 35px;
+                }
+            }
+            .dropdown-menu {
+                top: 85%;
+                padding: 6px 6px 6px 6px;
+                background-color: #1a1a1a;
+                @media(max-width: @screen-xs){
+                    top: 105%;
+//                    padding-top: 6px;
+                }
+                li {
+                    a {
+                        color: #FFF;
+                        &:hover {
+                            color: #000;
+                        }
+                    }
+
+                }
+                @media(max-width: @screen-xs-max){
+                    &:before {
+                        position: absolute;
+                        top: -7px;
+                        right: 25px;
+                        display: inline-block;
+                        border-right: 7px solid transparent;
+                        border-bottom: 7px solid #1a1a1a; //#ccc;
+                        border-left: 7px solid transparent;
+                        border-bottom-color: #1a1a1a;//rgba(0, 0, 0, 0.2);
+                        content: '';
+                    }
+                    &:after {
+                        position: absolute;
+                        top: -6px;
+                        right: 26px;
+                        display: inline-block;
+                        border-right: 6px solid transparent;
+                        border-bottom: 6px solid #1a1a1a; //#ffffff;
+                        border-left: 6px solid transparent;
+                        content: '';
+                    }
+                }
+                @media(min-width: @screen-sm-min){
+                    &:before {
+                        position: absolute;
+                        top: -7px;
+                        right: 32px;
+                        display: inline-block;
+                        border-right: 7px solid transparent;
+                        border-bottom: 7px solid #1a1a1a; //#ccc;
+                        border-left: 7px solid transparent;
+                        border-bottom-color: #1a1a1a;//rgba(0, 0, 0, 0.2);
+                        content: '';
+                    }
+                    &:after {
+                        position: absolute;
+                        top: -6px;
+                        right: 33px;
+                        display: inline-block;
+                        border-right: 6px solid transparent;
+                        border-bottom: 6px solid #1a1a1a; //#ffffff;
+                        border-left: 6px solid transparent;
+                        content: '';
+                    }
+                }
+            }
+            .media-body {
+                white-space: nowrap;
+                text-align: right;
+                .media-heading {
+                    padding-top: 2px;
+                    font-size: 20px;
+                    margin-bottom: 0;
+                    color: #FFF;
+                    @media(max-width: @screen-xs){
+                        font-size: 12px;
+                    }
+                }
+                p {
+                    color: @brand-primary;
+                    text-transform: uppercase;
+                    @media(max-width: @screen-xs){
+                        font-size: 10px;
+                    }
+                }
+            }
         }
     }
 }
@@ -766,7 +868,7 @@ body.challenges {
 }
 
 /**********************************************************************************************************************/
-// Code to be moved to clubs/spudderspuds.less
+// Code to be moved to clubs/spudderclubs.less
 /**********************************************************************************************************************/
 body {
     &.clubs {
@@ -885,3 +987,46 @@ body {
 
 
 
+/**********************************************************************************************************************/
+// Reworking the fan dashboard
+/**********************************************************************************************************************/
+body {
+    &#fan-dashbaord {
+        .submenu-header {
+            background-color: @brand-primary;
+            color: #FFF;
+            padding: 10px 0;
+            margin-top: -60px;
+            margin-bottom: 30px;
+            @media (max-width: @screen-xs-max){
+                margin-top: -20px;
+            }
+            .navbar {
+                margin-bottom: 0;
+                .navbar-brand {
+                    margin: 0;
+                    font-weight: bold;
+                }
+                .navbar-toggle {
+                    color: #FFF;
+                    cursor: pointer;
+                }
+                .nav {
+                    a {
+                        color: #FFF;
+                        &:hover, &:focus {
+                            background-color: darken(@brand-primary, 10%);
+                        }
+                    }
+                }
+            }
+        }
+        .panel {
+            .panel-heading {
+                .panel-title {
+                    font-size: 30px;
+                }
+            }
+        }
+    }
+}
