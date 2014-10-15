@@ -79,7 +79,8 @@ class ChallengesRegisterForm(forms.Form):
         widget=forms.TextInput(attrs={'addon_before': '<i class="fa fa-fw fa-envelope"></i>'}))
     state = forms.ChoiceField(
         choices=[('', 'Select a state...')] + sorted([(k, v) for k, v in SORTED_STATES.items()], key=lambda x: x[1]),
-        label="Where do you live?")
+        label="Most important state for sports",
+        help_text="Why are we asking this: So that we can localize experience to the sports that matter most to you.")
     next = forms.CharField(max_length=256, required=False, widget=forms.HiddenInput, initial='/')
 
     def __init__(self, *args, **kwargs):
