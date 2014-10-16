@@ -1,6 +1,31 @@
 {% for message in messages %}
-    <div class="alert{% if message.tags %} alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %}{% endif %} alert-dismissable alert-autohide">
-        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&#215;</button>
-        {{ message|safe }}
+    <div class="alert{% if message.tags %} alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %}{% endif %} alert-dismissable alert-autohide media">
+        <span class="fa-stack fa-2x media-object pull-left">
+            <i class="fa fa-circle fa-stack-2x"></i>
+            {% if message.tags == 'error' %}
+                <i class="fa fa-exclamation fa-inverse fa-stack-1x"></i>
+            {% endif %}
+            {% if message.tags == 'warning' %}
+                <i class="fa fa-warning fa-inverse fa-stack-1x"></i>
+            {% endif %}
+            {% if message.tags == 'success' %}
+                <i class="fa fa-check fa-inverse fa-stack-1x"></i>
+            {% endif %}
+        </span>
+        <div class="media-body">
+            <h3 class="media-heading">
+                {% if message.tags == 'error' %}
+                    Error
+                {% endif %}
+                {% if message.tags == 'warning' %}
+                    Warning
+                {% endif %}
+                {% if message.tags == 'success' %}
+                    Success
+                {% endif %}
+            </h3>
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&#215;</button>
+            {{ message|safe }}
+        </div>
     </div>
 {% endfor %}

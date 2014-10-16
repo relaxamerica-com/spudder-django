@@ -353,7 +353,7 @@ class RoleClubAdmin(RoleBase):
     @property
     def image(self):
         if self.entity.club.thumbnail:
-            return '/file/serve/%s' % self.entity.club.thumbnail
+            return '/file/serve/%s' % self.entity.club.thumbnail.id
 
         return '/static/img/spudderclubs/button-clubs-medium.png'
 

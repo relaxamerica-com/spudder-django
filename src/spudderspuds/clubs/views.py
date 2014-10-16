@@ -2,7 +2,8 @@ import httplib
 import json
 import logging
 import urllib
-from google.appengine.api import mail
+from django.contrib import messages
+from google.appengine.api import mail, blobstore
 from django.http import HttpResponseRedirect, HttpResponse, HttpResponseNotAllowed
 from django.shortcuts import render, redirect, get_object_or_404
 import settings
@@ -21,6 +22,7 @@ from spudmart.amazon.models import AmazonActionStatus, RecipientVerificationStat
 from spudmart.amazon.utils import get_club_register_as_recipient_cbui_url, get_recipient_verification_status
 from spudmart.recipients.models import RecipientRegistrationState
 from spudderspuds.clubs.forms import StripeRegisterRecipientForm
+from spudmart.upload.forms import UploadForm
 from spudmart.upload.models import UploadedFile
 from spudmart.utils.cover_image import save_cover_image_from_request, reset_cover_image
 from spudmart.utils.querysets import get_object_or_none
@@ -41,6 +43,27 @@ def dashboard(request):
         'club': club,
         'club_entity': club_entity}
     return render(request, 'spudderspuds/clubs/pages/dashboard.html', template_data)
+
+
+@club_admin_required
+def dashboard_edit(request):
+    club = request.current_role.entity.club
+    club_entity = EntityController.GetWrappedEntityByTypeAndId(
+        EntityController.ENTITY_CLUB,
+        club.id,
+        EntityBase.EntityWrapperByEntityType(EntityController.ENTITY_CLUB))
+    if request.method == 'POST':
+        if request.FILES:
+            icon = UploadForm(request.POST, request.FILES).save()
+            club.thumbnail = icon
+            club.save()
+        messages.success(request, 'Team details updated.')
+        return redirect(request.current_role.home_page_path)
+    template_data = {
+        'upload_url': blobstore.create_upload_url('/club/dashboard/edit'),
+        'club_entity': club_entity}
+    return render(request, 'spudderspuds/clubs/pages/dashboard_edit.html', template_data)
+
 
 
 @club_admin_required

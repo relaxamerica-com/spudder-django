@@ -181,10 +181,14 @@ class EntityClub(EntityBase):
 
     @property
     def icon(self):
-        return '/static/img/spudderclubs/button-clubs-tiny.pny'
+        if self.entity.thumbnail:
+            return '/file/serve/%s' % self.entity.thumbnail.id
+        return '/static/img/spudderclubs/button-clubs-small.png'
 
     @property
     def image(self):
+        if self.entity.thumbnail:
+            return '/file/serve/%s' % self.entity.thumbnail.id
         return '/static/img/spudderclubs/button-clubs-medium.png'
 
     @property

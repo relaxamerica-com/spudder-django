@@ -13,6 +13,7 @@ urlpatterns = patterns('spudderspuds.clubs.views',
     #
     # (r'^signin$', 'signin', {'SSL': determine_ssl()}),
     #
+    (r'^dashboard/edit$', 'dashboard_edit'),
     (r'^dashboard$', 'dashboard'),
     (r'recipient$', 'stripe_recipient'),
     (r'^stripe$', 'stripe', {'SSL': determine_ssl()}),

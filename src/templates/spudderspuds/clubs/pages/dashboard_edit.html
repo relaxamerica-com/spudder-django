@@ -1,0 +1,49 @@
+{% extends 'spudderspuds/clubs/pages/dashboard.html' %}
+{% load bootstrap3 %}
+
+{% block dashboard_menu %}
+    {% include 'spudderspuds/clubs/components/dashboard_nav.html' with active="edit" %}
+{% endblock %}
+
+{% block dashboard_breadcrumbs %}<i class="fa fa-angle-right"></i> Edit team profile{% endblock %}
+
+{% block dashboard_page %}
+    <form method="post" enctype="multipart/form-data" action="{{ upload_url }}">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-row">
+                    <div class="well">
+                        <label class="control-label">Team Icon</label>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <p>Teams current icon</p>
+                            </div>
+                            <div class="col-sm-9">
+                                <img src="{{ club_entity.image }}" class="img-responsive img-circle" style="margin: 0 auto;" />
+                            </div>
+                        </div>
+                        <hr />
+                        <input type="file" name="file" />
+                        <p class="help-block">
+                            Click the button above if you want to replace your teams icon.
+                            Great icons are square and about 200 x 200px.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12">
+                <hr/>
+                {% buttons %}
+                    <button type="submit" class="btn btn-cta btn-primary">
+                        <i class="fa fa-save"></i> Save
+                    </button>
+                    <a href="{{ request.current_role.home_page_path }}" class="btn btn-cta btn-default">
+                        Cancel
+                    </a>
+                {% endbuttons %}
+            </div>
+        </div>
+    </form>
+{% endblock %}
