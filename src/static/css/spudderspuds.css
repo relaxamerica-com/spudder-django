@@ -16233,7 +16233,7 @@ body#fan-dashbaord .panel .panel-heading .dropdown.open .dropdown-toggle {
   font-weight: bold;
   text-decoration: underline;
 }
-.spud-add-tags {
+.spud-container .spud-add-tags {
   opacity: 0.7;
   position: absolute;
   right: 8px;

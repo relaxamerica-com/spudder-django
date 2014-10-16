@@ -13,10 +13,10 @@ FEATURES = {
         # 'challenge_tree',
         'email_error_logs',
         'tracking_pixels',
-        'challenge_management'
+        'challenge_management',
     ],
     'stage': [
-        'spud_tagging',
+        # 'spud_tagging',
         # 'manage_team_admins',
         # 'clubs',
         # 'nays_survey',

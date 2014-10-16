@@ -21,10 +21,10 @@
                             {{ spud.user.username }} <i class="fa fa-twitter"></i>
                         </a>
                     {% endif %}
-                    <a href="{% krowdio_user_profile krowdio_user %}" title="Fan's Spudder Profile"><img src="/static/img/spudderspuds/button-fans-tiny.png"></a>
+{#                    <a href="{% krowdio_user_profile krowdio_user %}" title="Fan's Spudder Profile"><img src="/static/img/spudderspuds/button-fans-tiny.png"></a>#}
                 </p>
                 <p class="text">{{ spud.text|join:"<br/>" }}</p>
-                <p>{{ user_mentions|parse_text_for_entities:krowdio_user|safe }}</p>
+{#                <p>{{ user_mentions|parse_text_for_entities:krowdio_user|safe }}</p>#}
             </div>
         </div>
     </div>
