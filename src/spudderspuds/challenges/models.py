@@ -74,10 +74,11 @@ class _ChallengeTreeChallenge(models.Model):
 
     @classmethod
     def CreateForChallengeAndTree(cls, challenge, tree):
-        ctc = _ChallengeTreeChallenge(
+        ctc, created = _ChallengeTreeChallenge.objects.get_or_create(
             challenge_id=challenge.id,
-            challenge_json=challenge.as_json(),
             challenge_tree=tree)
+        ctc.challenge_json = challenge.as_json(),
+        ctc.save()
         return ctc
 
     def add_participation(self, participation):
