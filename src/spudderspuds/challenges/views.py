@@ -148,12 +148,13 @@ def affiliate_challenge_page(request, affiliate_key):
 def the_challenge_page(request, challenge_id, state_engine=None, state=None):
     challenge = get_object_or_404(Challenge, id=challenge_id)
     challenge_recipient = challenge.get_recipient()
-    challenge_tree = ChallengeTree.GetChallengeTree(challenge)
-    challenge_tree_stats = extract_statistics_from_challenge_tree(challenge_tree)
     template_data = {
         'challenge': challenge,
-        'challenge_recipient': challenge_recipient,
-        'challenge_tree_stats': challenge_tree_stats}
+        'challenge_recipient': challenge_recipient}
+    if feature_is_enabled('challenge_tree'):
+        challenge_tree = ChallengeTree.GetChallengeTree(challenge)
+        challenge_tree_stats = extract_statistics_from_challenge_tree(challenge_tree)
+    template_data['challenge_tree_stats'] = challenge_tree_stats
     if state_engine:
         if request.is_ajax() or (state in [_StateEngineStates.PAY] and request.POST):
             return challenge_state_engine(request, challenge, state_engine, state)

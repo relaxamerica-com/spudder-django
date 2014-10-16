@@ -87,9 +87,11 @@
                             </div>
                         </div>
                         <div class="tab-pane fade" id="tab-rules">
-                            {% with template_name=challenge_tree_stats.root_challenge.recipient.name|slugify|add:"/challenges/original_beneficiary_full_description.html" %}
-                                {% include 'spudderaffiliates/'|add:template_name %}
-                            {% endwith %}
+                            {% if challenge_tree_stats %}
+                                {% with template_name=challenge_tree_stats.root_challenge.recipient.name|slugify|add:"/challenges/original_beneficiary_full_description.html" %}
+                                    {% include 'spudderaffiliates/'|add:template_name %}
+                                {% endwith %}
+                            {% endif %}
                         </div>
                         <div class="tab-pane fade" id="tab-videos">
                             {% include 'spudderspuds/challenges/components/in_development.html' %}
@@ -100,9 +102,11 @@
                 {% if challenge.template.name == "Pie Challenge" %}
                 <div class="col-md-3 hidden-xs hidden-sm">
                     <div class="well" style="margin-top: 45px; background-color: #fafafa;">
-                        {% with template_name=challenge_tree_stats.root_challenge.recipient.name|slugify|add:"/challenges/original_beneficiary_short_description.html" %}
-                            {% include 'spudderaffiliates/'|add:template_name %}
-                        {% endwith %}
+                        {% if challenge_tree_stats %}
+                            {% with template_name=challenge_tree_stats.root_challenge.recipient.name|slugify|add:"/challenges/original_beneficiary_short_description.html" %}
+                                {% include 'spudderaffiliates/'|add:template_name %}
+                            {% endwith %}
+                        {% endif %}
                     </div>
                 </div>
                 {% endif %}
