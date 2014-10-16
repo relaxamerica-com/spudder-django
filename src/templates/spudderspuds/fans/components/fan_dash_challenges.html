@@ -3,7 +3,7 @@
 <div class="panel panel-default">
     <div class="panel-heading">
         <div class="pull-right dropdown">
-            <a class="dropdown-toggle" data-toggle="dropdown" data-target="dropdown-menu">
+            <a class="dropdown-toggle btn btn-link" data-toggle="dropdown" data-target="dropdown-menu">
                 <i class="fa fa-ellipsis-v"></i>
             </a>
             <ul class="dropdown-menu dropdown-menu-right">
@@ -14,45 +14,13 @@
         <h3 class="panel-title">Challenges</h3>
     </div>
     <div class="panel-body">
-
-
-        <!-- Nav tabs -->
         <ul class="nav nav-tabs nav-tabs-google" role="tablist">
           <li class="active"><a href="#tab-participating" role="tab" data-toggle="tab">Accepted<span class="hidden-xs"> by you</span></a></li>
           <li><a href="#tab-created" role="tab" data-toggle="tab">Created<span class="hidden-xs"> by you</span></a></li>
         </ul>
-
-        <!-- Tab panes -->
         <div class="tab-content">
             <div class="tab-pane active" id="tab-participating">
                 {% if challenge_participations %}
-
-                {#    <div class="list-group">#}
-                {#        {% for challenge in challenges %}#}
-                {#            {% if challenge %}#}
-                {#                {% if "challenge_management"|feature_is_enabled %}#}
-                {#                    <div class="list-group-item">#}
-                {#                        <h4 class="list-group-item-heading">#}
-                {#                            <a href="{{ challenge.link }}">{{ challenge.name }}</a>#}
-                {#                            {{ challenge.state|safe }}#}
-                {#                        </h4>#}
-                {#                        <div class="btn-group" id="{{ challenge.id }}">#}
-                {#                            {{ challenge.manage|safe }}#}
-                {#                        </div>#}
-                {#                    </div>#}
-                {#                {% else %}#}
-                {#                    <a href="{{ challenge.link }}" class="list-group-item">#}
-                {#                        <h4 class="list-group-item-heading">#}
-                {#                            {{ challenge.name }}#}
-                {#                            {{ challenge.state|safe }}#}
-                {#                            {{ challenge.created|safe }}#}
-                {#                        </h4>#}
-                {#                    </a>#}
-                {#                {% endif %}#}
-                {#            {% endif %}#}
-                {#        {% endfor %}#}
-                {#    </div>#}
-
                     <div class="list-group">
                         {% for participation in challenge_participations %}
                             <div class="list-group-item">
@@ -131,13 +99,10 @@
                             </div>
                         {% endfor %}
                     </div>
-
                 {% else %}
-
                     <div class="well" style="width:90%; margin:20px auto;">
                         <h4>You haven't accepted any challenges yet!</h4>
                     </div>
-
                 {% endif %}
             </div>
             <div class="tab-pane" id="tab-created">
@@ -181,11 +146,9 @@
                         {% endfor %}
                     </div>
                 {% else %}
-
                     <div class="well" style="width:90%; margin:20px auto;">
                         <h4>You haven't accepted any challenges yet!</h4>
                     </div>
-
                 {% endif %}
             </div>
         </div>
