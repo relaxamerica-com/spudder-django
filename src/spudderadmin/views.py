@@ -18,7 +18,7 @@ from spudderadmin.utils import encoded_admin_session_variable_name
 from spudderaffiliates.forms import AffiliateForm
 from spudderaffiliates.models import Affiliate
 from spudderdomain.controllers import RoleController, EntityController
-from spudderdomain.models import FanPage, LinkedService, TeamAdministrator, TeamPage, TeamVenueAssociation, Location, ChallengeTemplate, ChallengeParticipation, Challenge
+from spudderdomain.models import FanPage, LinkedService, TeamAdministrator, TeamPage, TeamVenueAssociation, Location, ChallengeTemplate, ChallengeParticipation, Challenge, ChallengeTree, _ChallengeTreeChallenge
 from spudderkrowdio.models import KrowdIOStorage, FanFollowingEntityTag
 from spudderkrowdio.utils import get_user_mentions_activity, start_following
 from spuddersocialengine.atpostspud.models import AtPostSpudTwitterAuthentication, AtPostSpudTwitterCounter, AtPostSpudServiceConfiguration
@@ -34,7 +34,7 @@ from spudmart.sponsors.models import SponsorPage
 from spudmart.upload.models import UploadedFile
 from spudmart.venues.models import PendingVenueRental, Venue, SPORTS
 from spudmart.CERN.models import STATUS_ACCEPTED, STATUS_REJECTED, STATUS_WAITLIST
-from spudderspuds.challenges.models import _ChallengeTreeChallenge, ChallengeTree, ChallengeServiceConfiguration, \
+from spudderspuds.challenges.models import ChallengeServiceConfiguration, \
     ChallengeServiceMessageConfiguration
 
 

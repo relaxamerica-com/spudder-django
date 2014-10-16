@@ -17,7 +17,7 @@ from spudderkrowdio.utils import start_following
 from spudderspuds.utils import create_and_activate_fan_role
 from spudmart.CERN.models import STATES
 from spudderdomain.models import Club, TempClub, Challenge, ChallengeTemplate, ChallengeParticipation, \
-    ClubAdministrator, TeamPage, TeamAdministrator, TeamClubAssociation
+    ClubAdministrator, TeamPage, TeamAdministrator, TeamClubAssociation, ChallengeTree
 from spudderdomain.models import ChallengeChallengeParticipation
 from spudmart.upload.forms import UploadForm
 from spudderaccounts.utils import change_current_role
@@ -28,7 +28,7 @@ from spudderspuds.challenges.forms import CreateTempClubForm, ChallengeConfigure
     RegisterCreateClubForm, ChallengeDonationEditForm, ChallengeImageEditForm
 from spudderspuds.challenges.forms import ChallengesSigninForm, AcceptChallengeForm, UploadImageForm
 from spudderspuds.challenges.forms import ChallengeChallengeParticipationForm
-from spudderspuds.challenges.models import ChallengeTree, ChallengeServiceConfiguration
+from spudderspuds.challenges.models import ChallengeServiceConfiguration
 from spudderspuds.challenges.models import ChallengeServiceMessageConfiguration
 from spudderspuds.challenges.utils import get_affiliate_club_and_challenge, challenge_state_engine, _create_temp_club
 from spudderspuds.challenges.utils import _StateEngineStates, extract_statistics_from_challenge_tree
@@ -376,7 +376,7 @@ def challenge_accept_pledge(request, challenge_id):
                 participation.state = ChallengeParticipation.AWAITING_PAYMENT
             participation.save()
             if feature_is_enabled('challenge_tree'):
-                ChallengeTree.AddParticipationToTree(challenge, participation)
+                ChallengeTree.AddOrUpdateParticipationToTree(challenge, participation)
             redirect_url = '/challenges/%s/accept/notice?just_pledged=True' % challenge.id
             if participation.state == ChallengeParticipation.AWAITING_PAYMENT:
                 redirect_url = '/challenges/%s/accept/pay' % challenge.id

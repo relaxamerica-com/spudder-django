@@ -7,10 +7,9 @@ from google.appengine.api import blobstore
 from spudderaccounts.utils import change_current_role
 from spudderadmin.templatetags.featuretags import feature_is_enabled
 from spudderdomain.controllers import RoleController, EntityController, EventController
-from spudderdomain.models import FanPage, Club, TempClub, Challenge, ChallengeTemplate, ChallengeParticipation
+from spudderdomain.models import FanPage, Club, TempClub, Challenge, ChallengeTemplate, ChallengeParticipation, ChallengeTree, _ChallengeTreeChallenge
 from spudderdomain.wrappers import EntityBase
 from spudderspuds.challenges.forms import ChallengesSigninForm, ChallengesRegisterForm, UploadImageForm, AcceptChallengeForm, CreateTempClubForm
-from spudderspuds.challenges.models import _ChallengeTreeChallenge
 from spudderspuds.utils import create_and_activate_fan_role
 from spudderstripe.utils import get_stripe_recipient_controller_for_club
 from spudmart.upload.forms import UploadForm
@@ -90,7 +89,6 @@ def get_affiliate_club_and_challenge(affiliate_key):
     challenge.youtube_video_id = challenge_you_tube_video_id
     challenge.save()
     if feature_is_enabled('challenge_tree'):
-        from spudderspuds.challenges.models import ChallengeTree
         ChallengeTree.CreateNewTree(challenge)
     return club_entity, challenge
 
@@ -226,9 +224,6 @@ def _state_engine_process_notice(request, challenge, engine, state, template_dat
     participation.state_engine = engine
     participation.state_engine_state = state
     participation.save()
-    if feature_is_enabled('challenge_tree'):
-        from spudderspuds.challenges.models import ChallengeTree
-        ChallengeTree.AddParticipationToTree(challenge, participation)
     template_data['template'] = template
     template_data['beneficiary'] = beneficiary
     template_data['participation'] = participation
@@ -314,7 +309,7 @@ def _state_engine_process_upload_thanks(request, challenge, engine, state, templ
             youtube_video_id=participation.youtube_video_id)
         challenge.save()
         if feature_is_enabled('challenge_tree'):
-            from spudderspuds.challenges.models import ChallengeTree
+            from spudderdomain.models import ChallengeTree
             ChallengeTree.AddChallengeToTree(challenge)
         template_data['challenge'] = challenge
         template_data['just_uploaded'] = True

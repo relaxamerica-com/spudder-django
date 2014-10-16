@@ -121,7 +121,7 @@ class ChallengesRegisterForm(forms.Form):
     def clean_password(self):
         password = super(ChallengesRegisterForm, self).clean().get('password', '')
         if len(password) < 6:
-            raise forms.ValidationError()
+            raise forms.ValidationError("Passwords must be at least 6 characters long.")
         return password
 
 
