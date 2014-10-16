@@ -13,38 +13,25 @@
 
 {% block well_content %}
 
-    {% if request.GET.message == "challenge_challenge" %}
-        <div class="page-header">
-            <h1>
-                {% include 'spudderspuds/components/wizard_steps.html' with title="Accept Challenge" step="<i class='fa fa-trophy'></i>" %}
-                Signin and accept
-            </h1>
-            <p><small>Sign into your account to continue accepting this challenge!</small></p>
-        </div>
-    {% endif %}
-
-    {% if not request.GET.message %}
-        <div class="page-header">
-            <h1>
-                {% include 'spudderspuds/components/wizard_steps.html' with title="Start Fundraising" step="$" %}
-                Sign in and start fundraising
-            </h1>
-        </div>
-    {% endif %}
-
-    <p>Don't have an account? <a href="/challenges/register?next={{ request.GET.next|default:'/' }}&message={{ request.GET.message|default:'' }}">Register <i class="fa fa-arrow-right"></i> </a></p>
-    <p>Forgot password? <a href="/users/account/forgot">Restore <i class="fa fa-arrow-right"></i> </a></p>
-
-    <hr/>
+    <div class="page-header">
+        <h1>
+            {% include 'spudderspuds/components/wizard_steps.html' with title="Sign in" step="<i class='fa fa-sign-in'></i>" %}
+        </h1>
+    </div>
 
     <form method="post">
         {% csrf_token %}
         {% bootstrap_form form %}
         {% buttons %}
             <button type="submit" class="btn btn-primary btn-cta">
-                Start fundraising <i class="fa fa-arrow-right"></i>
+                <i class="fa fa-sign-in"></i> Sign in
             </button>
         {% endbuttons %}
     </form>
+    <hr/>
+    <p>Don't have an account? <a href="/challenges/register?next={{ request.GET.next|default:'/' }}&message={{ request.GET.message|default:'' }}">Register <i class="fa fa-arrow-right"></i> </a></p>
+    <p>Forgotten password? <a href="/users/account/forgot">Restore <i class="fa fa-arrow-right"></i> </a></p>
+
+
 
 {% endblock %}

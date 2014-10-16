@@ -13,38 +13,24 @@
 
 {% block well_content %}
 
-    {% if request.GET.message == "challenge_challenge" %}
-        <div class="page-header">
-            <h1>
-                {% include 'spudderspuds/components/wizard_steps.html' with title="Accept Challenge" step="<i class='fa fa-trophy'></i>" %}
-                Register to accept this challenge
-            </h1>
-            <p><small>Create an account and except this challenge!</small></p>
-        </div>
-    {% endif %}
-
-    {% if not request.GET.message %}
     <div class="page-header">
         <h1>
-            {% include 'spudderspuds/components/wizard_steps.html' with title="Accept Challenge" step="$" %}
-            Accept Challenge
+            {% include 'spudderspuds/components/wizard_steps.html' with title="Register" step="<i class='fa fa-sign-in'></i>" %}
         </h1>
-        <p><small>Create your Spudder account in 2 simple steps</small></p>
     </div>
-    {% endif %}
-
-    <p>Already have an account? <a href="/challenges/signin?next={{ request.GET.next|default:'/' }}&message={{ request.GET.message|default:'' }}">sign in <i class="fa fa-arrow-right"></i> </a></p>
-
-    <hr/>
 
     <form method="post">
         {% csrf_token %}
         {% bootstrap_form form %}
         {% buttons %}
             <button type="submit" class="btn btn-primary btn-cta">
-                Start fundraising <i class="fa fa-arrow-right"></i>
+                <i class="fa fa-sign-in"></i> Register
             </button>
         {% endbuttons %}
     </form>
+
+    <hr/>
+
+    <p>Already have an account? <a href="/challenges/signin?next={{ request.GET.next|default:'/' }}&message={{ request.GET.message|default:'' }}">sign in <i class="fa fa-arrow-right"></i> </a></p>
 
 {% endblock %}
