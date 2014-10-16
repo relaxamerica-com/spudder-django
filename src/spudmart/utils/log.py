@@ -32,6 +32,7 @@ import hashlib
 import logging
 import os
 import sys
+from google.appengine.runtime.apiproxy_errors import OverQuotaError
 from django.core.mail.message import EmailMultiAlternatives
 from django.views.debug import ExceptionReporter
 from spudmart.utils.app_identity import get_spudmart_app_name
@@ -160,7 +161,8 @@ class EmailLoggingHandler(logging.Handler):
                 if html_message:
                     mail.attach_alternative(html_message, 'text/html')
                 mail.send()
- 
+        except OverQuotaError:
+            pass
         except Exception:
             self.handleError(record)
  

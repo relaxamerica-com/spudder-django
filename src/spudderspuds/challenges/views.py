@@ -410,11 +410,14 @@ def challenge_accept_pay(request, challenge_id):
     if request.method == "POST":
         token = request.POST.get('stripeToken')
         stripe_controller = get_stripe_recipient_controller_for_club(beneficiary.entity)
-        payment_made = stripe_controller.accept_payment(
+        payment_status = stripe_controller.accept_payment(
             "Donation by %s to %s for %s" % (request.user.email, beneficiary.name, challenge.name),
             token,
             int(challenge_participation.donation_amount) * 100)
-        if payment_made:
+        if payment_status['success']:
+            challenge_participation.charge_id = payment_status['charge_id']
+            challenge_participation.save()
+
             return redirect('/challenges/%s/accept/notice?just_donated=True' % challenge.id)
     template_data = {
         'challenge': challenge,

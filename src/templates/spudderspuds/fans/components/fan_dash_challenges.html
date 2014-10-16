@@ -94,6 +94,15 @@
                                             </p>
                                             <small>You can still <a href="/challenges/{{ participation.challenge.id }}">view the challenge</a> </small>
                                         {% endif %}
+                                        {% if participation.state_engine_state == state_engine_states.PAY_FAILED %}
+                                            <p>
+                                                <span class="label label-danger"><i class="fa fa-bolt"></i> Payment failed</span>
+                                            </p>
+                                            <p>
+                                                You're payment has failed. We will contact you shortly in this matter.
+                                            </p>
+                                            <small>You can always try again at <a href="/challenges/{{ participation.challenge.id }}">the challenge page</a> </small>
+                                        {% endif %}
                                     </div>
                                 </div>
                             </div>

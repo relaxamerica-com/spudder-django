@@ -141,6 +141,10 @@ def challenge_state_engine(request, challenge, engine, state):
         response, state = _state_engine_process_pay_thanks(request, challenge, engine, state, template_data)
         if response:
             return response
+    if state == _StateEngineStates.PAY_FAILED:
+        response, state = _state_engine_process_pay_failed(request, challenge, engine, state, template_data)
+        if response:
+            return response
 
 
 def _state_engine_process_login(request, challenge, engine, state, template_data):
@@ -470,7 +474,7 @@ def _state_engine_process_pay(request, challenge, engine, state, template_data):
         token = request.POST.get('stripeToken')
         stripe_controller = get_stripe_recipient_controller_for_club(beneficiary.entity)
         donation = int(participation.donation_amount) * 100
-        payment_made = stripe_controller.accept_payment(
+        payment_status = stripe_controller.accept_payment(
             "Donation of $%s by %s to %s for %s" % (
                 donation,
                 request.user.email,
@@ -478,11 +482,12 @@ def _state_engine_process_pay(request, challenge, engine, state, template_data):
                 challenge.name),
             token,
             donation)
-        if payment_made:
-            participation.state_engine_state = _StateEngineStates.PAY_THANKS
-            participation.donation_amount = donation
-            participation.state_engine = engine
-            participation.save()
+        if not payment_status['success']:
+            return None, _StateEngineStates.PAY_FAILED
+
+        participation.state_engine_state = _StateEngineStates.PAY_THANKS
+        participation.charge_id = payment_status['charge_id']
+        participation.save()
         response = redirect('/challenges/%s/%s' % (challenge.id, engine))
         return response, state
     template_data = {
@@ -512,6 +517,34 @@ def _state_engine_process_pay_thanks(request, challenge, engine, state, template
         'template': template,
         'beneficiary': beneficiary}
     response = render(request, 'spudderspuds/challenges/pages_ajax/challenge_accept_pay_thanks.html', template_data)
+    return response, state
+
+
+def _state_engine_process_pay_failed(request, challenge, engine, state, template_data):
+    beneficiary = EntityController.GetWrappedEntityByTypeAndId(
+        challenge.recipient_entity_type,
+        challenge.recipient_entity_id,
+        EntityBase.EntityWrapperByEntityType(challenge.recipient_entity_type))
+    template = challenge.template
+    participation = get_object_or_404(
+        ChallengeParticipation,
+        challenge=challenge,
+        participating_entity_id=request.current_role.entity.id,
+        participating_entity_type=request.current_role.entity_type)
+
+    participation.state_engine_state = _StateEngineStates.PAY_FAILED
+    participation.save()
+
+    if request.method == "POST":
+        response = redirect('/challenges/%s/%s' % (challenge.id, engine))
+    else:
+        template_data = {
+            'challenge': challenge,
+            'participation': participation,
+            'template': template,
+            'beneficiary': beneficiary}
+        response = render(request, 'spudderspuds/challenges/pages_ajax/challenge_accept_pay_failed.html', template_data)
+
     return response, state
 
 

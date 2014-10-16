@@ -106,6 +106,9 @@ urlpatterns = patterns(
     # Spudder Admin site
     (r'^spudderadmin', include('spudderadmin.urls')),
 
+    # Stripe handling
+    url(r'^stripe/*', include('spudderstripe.urls')),
+
     (r'^spudderaffiliates', include('spudderaffiliates.urls')),
 
     # Spudder Social Engine Urls

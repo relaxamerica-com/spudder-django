@@ -57,10 +57,12 @@ class StripeRecipientsController(object):
             description=payment_description,
             api_key=settings.STRIPE_SECRET_KEY)
         customer_id = customer['id']
+
         token = stripe.Token.create(
             customer=customer_id,
             api_key=self.stripe_user.access_token)
         token_id = token['id']
+
         try:
             charge = stripe.Charge.create(
                 amount=amount,
@@ -68,7 +70,9 @@ class StripeRecipientsController(object):
                 card=token_id,
                 description=payment_description,
                 api_key=self.stripe_user.access_token)
-            return True
-        except Exception as ex:
-            logging.error("%s" % ex)
-        return False
+
+            return {'success': True, 'charge_id': charge['id']}
+        except Exception, e:
+            logging.error('Exception catch while making charge')
+            logging.error(e)
+            return {'success': False}

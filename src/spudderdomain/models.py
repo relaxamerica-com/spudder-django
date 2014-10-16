@@ -471,6 +471,8 @@ class ChallengeParticipation(models.Model):
     youtube_video_id = models.CharField(max_length=255, default='', null=True, blank=True)
     state_engine = models.CharField(max_length=256, default=None, null=True)
     state_engine_state = models.CharField(max_length=256, default=None, null=True)
+    # charge id is stored to link specific charge (and all its events) to single challenge participation
+    charge_id = models.CharField(max_length=255, default=None, blank=True, null=True)
 
     def is_accepted(self):
         return self.state == self.ACCEPTED_STATE
