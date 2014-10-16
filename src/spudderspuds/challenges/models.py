@@ -77,7 +77,7 @@ class _ChallengeTreeChallenge(models.Model):
         ctc, created = _ChallengeTreeChallenge.objects.get_or_create(
             challenge_id=challenge.id,
             challenge_tree=tree)
-        ctc.challenge_json = challenge.as_json(),
+        ctc.challenge_json = challenge.as_json()
         ctc.save()
         return ctc
 
