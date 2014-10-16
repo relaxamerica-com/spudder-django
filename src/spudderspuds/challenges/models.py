@@ -22,8 +22,7 @@ class ChallengeTree(models.Model):
 
     @classmethod
     def CreateNewTree(cls, challenge_with_no_parent):
-        tree = ChallengeTree(base_challenge=challenge_with_no_parent)
-        tree.save()
+        tree, created = ChallengeTree.objects.get_or_create(base_challenge=challenge_with_no_parent)
         tree._add_challenge(challenge_with_no_parent)
         return tree
 
