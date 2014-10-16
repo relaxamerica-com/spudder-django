@@ -17,15 +17,15 @@ FEATURES = {
     ],
     'stage': [
         'spud_tagging',
-        'manage_team_admins',
-        'clubs',
-        'nays_survey',
-        'affiliate_login',
-        'invite_clubs',
+        # 'manage_team_admins',
+        # 'clubs',
+        # 'nays_survey',
+        # 'affiliate_login',
+        # 'invite_clubs',
         'challenges_landing_page',
         'challenges_only_override',
         # 'challenge_challenge',
-        'challenge_register_club',
+        # 'challenge_register_club',
         # 'challenge_tree',
         'email_error_logs',
         'tracking_pixels',
@@ -40,6 +40,7 @@ FEATURES = {
         'challenges_only_override',  # Prevent access to any other part of spudder
         'email_error_logs',
         'tracking_pixels',
+        'all_fans_auto_follow_main_spudder_fan',
         # 'challenge_challenge',
     ]
 }
