@@ -1,8 +1,7 @@
 import json
 from django.contrib.auth.models import User
 from django.db import models
-from spudderdomain.models import TempClub, Challenge, ChallengeTemplate
-from spudderspuds.challenges.utils import ChallengeTreeHelper, TreeElement
+from spudderdomain.models import TempClub, Challenge
 
 
 class TempClubOtherInformation(models.Model):
@@ -48,23 +47,24 @@ class ChallengeTree(models.Model):
         ctc.add_participation(participation)
 
     def get_tree(self):
-        ctcs = _ChallengeTreeChallenge.objects.filter(challenge_tree=self)
-        ctcs_list = list(ctcs)
-        parent = None
-        for ctc in ctcs_list:
-            ctc.json_data = json.loads(ctc.challenge_json)
-            if ctc.json_data['parent'] is None:
-                parent = ctc
-        ctcs_list.remove(parent)
-        tree = ChallengeTreeHelper(id=parent.challenge_id, children={}, **parent.json_data)
-        while ctcs_list:
-            ctcs_list_copy = ctcs_list[:]
-            for ctc in ctcs_list_copy:
-                element = TreeElement(ctc.challenge_id, children={}, **ctc.json_data)
-                if tree.add_element(element, ctc.json_data['parent']):
-                    ctcs_list.remove(ctc)
-
-        return tree
+        raise DeprecationWarning("this is no longer a valid way to use the tree")
+        # ctcs = _ChallengeTreeChallenge.objects.filter(challenge_tree=self)
+        # ctcs_list = list(ctcs)
+        # parent = None
+        # for ctc in ctcs_list:
+        #     ctc.json_data = json.loads(ctc.challenge_json)
+        #     if ctc.json_data['parent'] is None:
+        #         parent = ctc
+        # ctcs_list.remove(parent)
+        # tree = ChallengeTreeHelper(id=parent.challenge_id, children={}, **parent.json_data)
+        # while ctcs_list:
+        #     ctcs_list_copy = ctcs_list[:]
+        #     for ctc in ctcs_list_copy:
+        #         element = TreeElement(ctc.challenge_id, children={}, **ctc.json_data)
+        #         if tree.add_element(element, ctc.json_data['parent']):
+        #             ctcs_list.remove(ctc)
+        #
+        # return tree
 
 
 class _ChallengeTreeChallenge(models.Model):
