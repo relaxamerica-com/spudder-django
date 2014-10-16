@@ -15373,6 +15373,57 @@ input#accepted-terms-and-conditions {
   background-image: radial-gradient(circle, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.5));
   background-repeat: no-repeat;
 }
+#challenges-splash .challenge-cta {
+  width: 100%;
+  background: #F1f1f1;
+  overflow: hidden;
+  position: relative;
+  padding: 40px 0 80px;
+}
+@media (max-width: 991px) {
+  #challenges-splash .challenge-cta {
+    padding-bottom: 40px;
+  }
+}
+#challenges-splash .challenge-cta h1 {
+  color: #ffffff;
+  font-size: 48px;
+}
+@media (max-width: 991px) {
+  #challenges-splash .challenge-cta h1 {
+    font-size: 30px;
+  }
+}
+#challenges-splash .challenge-cta p {
+  color: #fafafa;
+  font-size: 18px;
+  margin: 20px 0;
+}
+#challenges-splash .challenge-cta h2 {
+  padding-top: 40px;
+  margin: 20px 0;
+}
+@media (max-width: 991px) {
+  #challenges-splash .challenge-cta h2 {
+    padding-top: 0;
+    margin-top: 0;
+  }
+}
+#challenges-splash .challenge-cta .btn {
+  font-size: 18px;
+  padding: 15px 14px;
+}
+#challenges-splash .challenge-cta:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-image: -webkit-radial-gradient(circle, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.5));
+  background-image: radial-gradient(circle, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.5));
+  background-repeat: no-repeat;
+}
 #challenges-splash #challenges-explained {
   background-color: #FFF;
   position: relative;
