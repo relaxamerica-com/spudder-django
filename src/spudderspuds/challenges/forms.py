@@ -72,8 +72,7 @@ class ChallengeConfigureForm(forms.Form):
 class ChallengesRegisterForm(forms.Form):
     ACCOUNT_TYPE_CHOICES = (
         (RoleController.ENTITY_FAN, 'I\'m a sports fan'),
-        (EntityController.ENTITY_CLUB, 'I\'m a team administrator'),
-    )
+        (EntityController.ENTITY_CLUB, 'I\'m a team administrator'),)
 
     account_type = forms.CharField(widget=forms.HiddenInput, initial=RoleController.ENTITY_FAN)
     username = forms.CharField(
@@ -83,16 +82,22 @@ class ChallengesRegisterForm(forms.Form):
         widget=forms.TextInput(attrs={'addon_before': '<i class="fa fa-fw fa-user"></i>'}))
     password = forms.CharField(
         max_length=255,
-        widget=forms.PasswordInput(attrs={'addon_before': '<i class="fa fa-fw fa-lock"></i>'}),
+        widget=forms.PasswordInput(attrs={
+            'addon_before': '<i class="fa fa-fw fa-lock"></i>',
+            'placeholder': 'Choose a Password'}),
         label="Please choose a password",
         help_text="Six or more characters please!")
     email_address = forms.EmailField(
         label="Your email address",
         widget=forms.TextInput(attrs={'addon_before': '<i class="fa fa-fw fa-envelope"></i>'}))
     state = forms.ChoiceField(
-        choices=[('', 'Select a state...')] + sorted([(k, v) for k, v in SORTED_STATES.items()], key=lambda x: x[1]),
+        choices=[('', 'Most important state for sports')] + sorted(
+            [(k, v) for k, v in SORTED_STATES.items()], key=lambda x: x[1]),
         label="Most important state for sports",
         help_text="Why are we asking this: So that we can localize experience to the sports that matter most to you.")
+    over_13 = forms.BooleanField(
+        label="I am over 13 years of age",
+        help_text="You must confirm that you are over 13 years of age to open an account on Spudder.")
     next = forms.CharField(max_length=256, required=False, widget=forms.HiddenInput, initial='/')
 
     def __init__(self, *args, **kwargs):

@@ -35,10 +35,9 @@
         <script src="/static/js/libs/modernizr-2.6.2-respond-1.1.0.min.js"></script>
         <script type="text/javascript" language="javascript" src="/static/js/libs/jquery-1.11.0.min.js"></script>
         <script type="text/javascript" language="javascript" src="/static/js/libs/bootstrap.min.js"></script>
-        <script type="text/javascript" language="javascript" src="/static/js/libs/ripples.min.js"></script>
-{#        <script type="text/javascript" language="javascript" src="/static/js/libs/material.min.js"></script>#}
         <script type="text/javascript" language="javascript" src="/static/js/libs/jquery.livequery.js"></script>
-        <script type="text/javascript" src="/static/js/alerts.js"></script>
+        <script type="text/javascript" language="javascript" src="/static/js/libs/ripples.min.js"></script>
+        <script type="text/javascript" language="javascript" src="/static/js/libs/material.js"></script>
         <meta name="google-site-verification" content="LwTjfOkDzf-7D6U-ROwvrvO_2g8S6lktzpPrpYXfHC8" />
 
         {# START - GOOGLE ANALYTICS #}
@@ -369,7 +368,6 @@
                 });
             }
 
-
             function balance_element_width(selector) {
                 var max_width = 0;
                 $(selector).each(function(i, el){
@@ -383,7 +381,6 @@
                     $(el).width(max_width + 10);
                 });
             }
-
 
             $(document).ready(function(){
 
@@ -423,6 +420,11 @@
 
                         $.post(dismissURL, {message_id: $container.data('id')});
                     });
+                });
+
+                /* Ensure bootstrap material design is applied to ajax content */
+                $('input, textarea, select').livequery(function(){
+                    initInputs();
                 });
             });
 
