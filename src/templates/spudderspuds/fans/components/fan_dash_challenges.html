@@ -8,7 +8,9 @@
             </a>
             <ul class="dropdown-menu dropdown-menu-right">
                 <li class="dropdown-header">Take part in challenges ...</li>
-                <li><a href="/dreamsforkids">The Pie Challenge for <span class="text-primary">DREAMS FOR KIDS (NJ)</span></a></li>
+                {% if 'challenge_dreamsforkids_piechallenge'|feature_is_enabled %}
+                    <li><a href="/dreamsforkids">The Pie Challenge for <span class="text-primary">DREAMS FOR KIDS (NJ)</span></a></li>
+                {% endif %}
             </ul>
         </div>
         <h3 class="panel-title">Challenges</h3>

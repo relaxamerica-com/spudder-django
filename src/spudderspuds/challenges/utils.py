@@ -1,7 +1,7 @@
 import json
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.models import User
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 from django.shortcuts import render, redirect, get_object_or_404
 from google.appengine.api import blobstore
 from spudderaccounts.utils import change_current_role
@@ -54,10 +54,14 @@ def extract_statistics_from_challenge_tree(challenge_tree):
 
 def get_affiliate_club_and_challenge(affiliate_key):
     if affiliate_key == "dreamsforkids":
+        if not feature_is_enabled('challenge_dreamsforkids_piechallenge'):
+            raise Http404
         club_name = 'Dreams for Kids'
         challenge_template_slug = "piechallenge"
         challenge_you_tube_video_id = "vqgpHZ09St8"
     elif affiliate_key == "livetest":  # this was set up for live Stripe testing on Spudmart1
+        if not feature_is_enabled('challenge_livetest'):
+            raise Http404
         club_name = "This is a test team2"
         challenge_template_slug = "piechallenge"
         challenge_you_tube_video_id = "1rDsRiU_fno"
