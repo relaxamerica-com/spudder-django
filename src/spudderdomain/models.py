@@ -514,11 +514,11 @@ class ChallengeParticipation(models.Model):
             recipient_state = self.challenge.get_recipient().state
             return '/challenges/%s/beneficiary/%s' % (self.challenge.id, recipient_state)
 
-    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
-        self.save(force_insert, force_update, using, update_fields)
+    def save(self, *args, **kwargs):
+        super(ChallengeParticipation, self).save(*args, **kwargs)
         from spudderadmin.templatetags.featuretags import feature_is_enabled
         if feature_is_enabled('challenge_tree'):
-            ChallengeTree.AddOrUpdateParticipationToTree(self.challenge, self.as_json())
+            ChallengeTree.AddOrUpdateParticipationToTree(self.challenge, self.as_dict())
 
 
 class ChallengeChallengeParticipation(models.Model):
