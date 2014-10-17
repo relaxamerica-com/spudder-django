@@ -16115,6 +16115,9 @@ body.clubs .dashboard-page .submenu-menu .list-group .list-group-item:hover {
 body.clubs .dashboard-page .submenu-page {
   padding: 40px 0;
 }
+body#challenge-page .spudder-jumbotron {
+  background-position: center center;
+}
 body#challenge-page #info-bar {
   background-color: #ff4800;
   color: #FFF;
