@@ -1,16 +1,8 @@
-import logging
-from django.conf import settings
 from django.template.defaulttags import register
+from spudderdomain.utils import is_feature_enabled
 
 
 @register.filter()
 def feature_is_enabled(feature):
-    enabled = bool(feature in settings.FEATURES[settings.ENVIRONMENT])
-    # logging.error("%s - %s - %s" % (feature, settings.ENVIRONMENT, enabled))
+    enabled = is_feature_enabled(feature)
     return enabled
-
-@register.simple_tag()
-def environ_features(feature):
-    return settings.FEATURES[settings.ENVIRONMENT]
-
-

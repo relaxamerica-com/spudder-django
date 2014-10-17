@@ -4,7 +4,7 @@
 
 {% block meta %}
     {{ block.super }}
-    <meta property="og:title" content="Take the '{{ challenge.name }}'. On Spudder for '{{ challenge.get_recipient.name }} ({{ challenge.get_recipient.state }})'!" />
+    <meta property="og:title" content="Take the '{{ challenge.name }}'. On Spudder for '{{ challenge.recipient.name }} ({{ challenge.recipient.state }})'!" />
     <meta property="og:description" content="{{ challenge.description }}" />
     {% if challenge.youtube_video_id %}
         <meta property="og:image" content="http://img.youtube.com/vi/{{ challenge.youtube_video_id }}/sddefault.jpg" />
@@ -39,16 +39,14 @@
                         <h2>
                             <small>
                                 You are challenged to do the {{ challenge.name }}
-                                {% with recipient=challenge.get_recipient %}
-                                    for
-                                    {% if recipient.link_to_public_page %}
-                                        <a href="{{ recipient.link_to_public_page }}">
-                                            {{ recipient.name }}
-                                        </a>
-                                    {% else %}
-                                        {{ recipient.name }}
-                                    {% endif %}
-                                {% endwith %}
+                                for
+                                {% if challenge.recipient.link_to_public_page %}
+                                    <a href="{{ challenge.recipient.link_to_public_page }}">
+                                        {{ challenge.recipient.name }}
+                                    </a>
+                                {% else %}
+                                    {{ challenge.recipient.name }}
+                                {% endif %}
                             </small>
                         </h2>
                     </div>
@@ -87,7 +85,7 @@
                             <span class="fa-stack fa-2x"><i class="fa fa-circle fa-stack-2x fa-inverse"></i><i class="fa fa-envelope-o fa-stack-1x"></i></span>
                         </a>
                     </p>
-                    <p>The people who you share this challenge with will be able to come back to <span class="text-primary">Spudder</span> to accept your challenge and pledge money to {{ challenge.get_recipient.name }}.</p>
+                    <p>The people who you share this challenge with will be able to come back to <span class="text-primary">Spudder</span> to accept your challenge and pledge money to {{ challenge.recipient.name }}.</p>
                 </div>
             </div>
             {% if 'challenge_tree'|feature_is_enabled %}

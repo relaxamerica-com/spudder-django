@@ -1,11 +1,13 @@
 import datetime
 import json
+import logging
 from django.conf import settings
 
 from django.contrib.auth.models import User
 from django.db import models
 from djangotoolbox.fields import ListField
 from spudderaffiliates.models import Affiliate
+from spudderdomain.utils import is_feature_enabled
 from spudmart.recipients.models import AmazonRecipient
 from spudmart.upload.models import UploadedFile
 from spudmart.venues.models import Venue
@@ -399,16 +401,41 @@ class Challenge(models.Model):
     def __str__(self):
         return unicode(self).encode('utf-8')
 
-    def get_recipient(self):
-        from spudderdomain.controllers import EntityController
-        from spudderdomain.wrappers import EntityBase
-        for entity_type in [EntityController.ENTITY_TEMP_CLUB, EntityController.ENTITY_CLUB]:
-            if self.recipient_entity_type == entity_type:
-                return EntityController.GetWrappedEntityByTypeAndId(
-                    entity_type,
-                    self.recipient_entity_id,
-                    EntityBase.EntityWrapperByEntityType(entity_type))
-        return None
+    @property
+    def challenge_tree(self):
+        attribute_key = '_challenge_tree'
+        try:
+            tree = getattr(self, attribute_key)
+        except AttributeError:
+            tree = _ChallengeTree.GetChallengeTree(self)
+            setattr(self, attribute_key, tree)
+        return tree
+
+    @property
+    def link(self):
+        return "%s/challenges/%s" % (settings.SPUDMART_BASE_URL, self.id)
+
+    @property
+    def accept_challenge_link(self):
+        return "%s/challenges/%s/accept/notice" % (settings.SPUDMART_BASE_URL, self.id)
+
+    @property
+    def recipient(self):
+        attribute_key = '_recipient'
+        try:
+            recipient = getattr(self, attribute_key)
+        except AttributeError:
+            from spudderdomain.controllers import EntityController
+            from spudderdomain.wrappers import EntityBase
+            recipient = None
+            for entity_type in [EntityController.ENTITY_TEMP_CLUB, EntityController.ENTITY_CLUB]:
+                if self.recipient_entity_type == entity_type:
+                    recipient = EntityController.GetWrappedEntityByTypeAndId(
+                        entity_type,
+                        self.recipient_entity_id,
+                        EntityBase.EntityWrapperByEntityType(entity_type))
+            setattr(self, attribute_key, recipient)
+        return recipient
 
     def as_dict(self):
         data = {
@@ -433,13 +460,9 @@ class Challenge(models.Model):
     def as_json(self):
         return json.dumps(self.as_dict())
 
-    @property
-    def link(self):
-        return "%s/challenges/%s" % (settings.SPUDMART_BASE_URL, self.id)
-
-    @property
-    def accept_challenge_link(self):
-        return "%s/challenges/%s/accept/notice" % (settings.SPUDMART_BASE_URL, self.id)
+    def save(self, *args, **kwargs):
+        super(Challenge, self).save(*args, **kwargs)
+        _ChallengeTree.AddOrUpdateChallengeToTree(self)
 
 
 class ChallengeParticipation(models.Model):
@@ -511,14 +534,12 @@ class ChallengeParticipation(models.Model):
         if self.state == self.PRE_ACCEPTED_STATE:
             return '/challenges/%s/accept/notice?just_pledged=True' % self.challenge.id
         if self.state == self.ACCEPTED_STATE:
-            recipient_state = self.challenge.get_recipient().state
+            recipient_state = self.challenge.recipient.state
             return '/challenges/%s/beneficiary/%s' % (self.challenge.id, recipient_state)
 
     def save(self, *args, **kwargs):
         super(ChallengeParticipation, self).save(*args, **kwargs)
-        from spudderadmin.templatetags.featuretags import feature_is_enabled
-        if feature_is_enabled('challenge_tree'):
-            ChallengeTree.AddOrUpdateParticipationToTree(self.challenge, self.as_dict())
+        _ChallengeTree.AddOrUpdateParticipationToTree(self.challenge, self.as_dict())
 
 
 class ChallengeChallengeParticipation(models.Model):
@@ -541,25 +562,21 @@ class ChallengeChallengeParticipation(models.Model):
     modified = models.DateTimeField(auto_now=True)
 
 
-class ChallengeTree(models.Model):
+class _ChallengeTree(models.Model):
     base_challenge = models.ForeignKey(Challenge)
 
     @classmethod
     def GetChallengeTree(cls, challenge):
-        challenge_tree_challenge = _ChallengeTreeChallenge.objects.get(challenge_id=challenge.id)
+        challenge_tree_challenge = _ChallengeTreeChallenge.GetForChallenge(challenge)
         return challenge_tree_challenge.challenge_tree
 
     @classmethod
-    def CreateNewTree(cls, challenge_with_no_parent):
-        tree, created = ChallengeTree.objects.get_or_create(base_challenge=challenge_with_no_parent)
-        tree._add_challenge(challenge_with_no_parent)
-        return tree
-
-    @classmethod
-    def AddChallengeToTree(cls, challenge):
-        parent = challenge.parent
-        challenge_tree = cls.GetChallengeTree(parent)
-        challenge_tree._add_challenge(challenge)
+    def AddOrUpdateChallengeToTree(cls, challenge):
+        if challenge.parent:
+            tree = cls.GetChallengeTree(challenge.parent)
+        else:
+            tree, created = _ChallengeTree.objects.get_or_create(base_challenge=challenge)
+        tree._add_challenge(challenge)
 
     @classmethod
     def AddOrUpdateParticipationToTree(cls, challenge, challenge_participation):
@@ -567,41 +584,25 @@ class ChallengeTree(models.Model):
         tree._add_participation_to_challenge(challenge, challenge_participation)
 
     def _add_challenge(self, challenge):
-        ctc = _ChallengeTreeChallenge.CreateForChallengeAndTree(challenge=challenge, tree=self)
-        ctc.save()
+        _ChallengeTreeChallenge.CreateOrUpdateForChallengeAndTree(challenge=challenge, tree=self)
 
     def _add_participation_to_challenge(self, challenge, participation):
-        ctc = _ChallengeTreeChallenge.objects.get(challenge_tree=self, challenge_id=challenge.id)
+        ctc = _ChallengeTreeChallenge.CreateOrUpdateForChallengeAndTree(challenge=challenge, tree=self)
         ctc.update_participation(participation)
-
-    def get_tree(self):
-        raise DeprecationWarning("this is no longer a valid way to use the tree")
-        # ctcs = _ChallengeTreeChallenge.objects.filter(challenge_tree=self)
-        # ctcs_list = list(ctcs)
-        # parent = None
-        # for ctc in ctcs_list:
-        #     ctc.json_data = json.loads(ctc.challenge_json)
-        #     if ctc.json_data['parent'] is None:
-        #         parent = ctc
-        # ctcs_list.remove(parent)
-        # tree = ChallengeTreeHelper(id=parent.challenge_id, children={}, **parent.json_data)
-        # while ctcs_list:
-        #     ctcs_list_copy = ctcs_list[:]
-        #     for ctc in ctcs_list_copy:
-        #         element = TreeElement(ctc.challenge_id, children={}, **ctc.json_data)
-        #         if tree.add_element(element, ctc.json_data['parent']):
-        #             ctcs_list.remove(ctc)
-        #
-        # return tree
 
 
 class _ChallengeTreeChallenge(models.Model):
     challenge_id = models.CharField(max_length=255)
     challenge_json = models.TextField()
-    challenge_tree = models.ForeignKey(ChallengeTree)
+    challenge_tree = models.ForeignKey(_ChallengeTree)
 
     @classmethod
-    def CreateForChallengeAndTree(cls, challenge, tree):
+    def GetForChallenge(cls, challenge):
+        ctc, created = _ChallengeTreeChallenge.objects.get_or_create(challenge_id=challenge.id)
+        return ctc
+
+    @classmethod
+    def CreateOrUpdateForChallengeAndTree(cls, challenge, tree):
         ctc, created = _ChallengeTreeChallenge.objects.get_or_create(
             challenge_id=challenge.id,
             challenge_tree=tree)

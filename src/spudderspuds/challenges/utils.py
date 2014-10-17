@@ -7,7 +7,7 @@ from google.appengine.api import blobstore
 from spudderaccounts.utils import change_current_role
 from spudderadmin.templatetags.featuretags import feature_is_enabled
 from spudderdomain.controllers import RoleController, EntityController, EventController
-from spudderdomain.models import FanPage, Club, TempClub, Challenge, ChallengeTemplate, ChallengeParticipation, ChallengeTree, _ChallengeTreeChallenge
+from spudderdomain.models import FanPage, Club, TempClub, Challenge, ChallengeTemplate, ChallengeParticipation, _ChallengeTree, _ChallengeTreeChallenge
 from spudderdomain.wrappers import EntityBase
 from spudderspuds.challenges.forms import ChallengesSigninForm, ChallengesRegisterForm, UploadImageForm, AcceptChallengeForm, CreateTempClubForm
 from spudderspuds.utils import create_and_activate_fan_role
@@ -32,10 +32,7 @@ class _StateEngineStates(object):
 
 
 def extract_statistics_from_challenge_tree(challenge_tree):
-    stats = {
-        'root_challenge': {
-            'recipient': None,
-            'challenge': None}}
+    stats = {'root_challenge': None}
 
     # Loop through the ctc's
     for ctc in _ChallengeTreeChallenge.objects.filter(challenge_tree=challenge_tree):
@@ -43,11 +40,9 @@ def extract_statistics_from_challenge_tree(challenge_tree):
 
         # If this one has no parent then its the root
         if not participation_dict.get('parent'):
-            stats['root_challenge']['challenge'] = Challenge.objects.get(id=ctc.challenge_id)
-            stats['root_challenge']['recipient'] = stats['root_challenge']['challenge'].get_recipient()
+            stats['root_challenge'] = Challenge.objects.get(id=ctc.challenge_id)
 
     return stats
-
 
 
 def get_affiliate_club_and_challenge(affiliate_key):
@@ -69,7 +64,7 @@ def get_affiliate_club_and_challenge(affiliate_key):
     try:
         template = ChallengeTemplate.objects.get(slug=challenge_template_slug)
     except ChallengeTemplate.DoesNotExist:
-        raise NotImplementedError("A challenge template with the slug %s does not exists, do you need to esnure "
+        raise NotImplementedError("A challenge template with the slug %s does not exists, do you need to ensure "
                                   "challenge template in the admin console?" % challenge_template_slug)
     club_entity = EntityController.GetWrappedEntityByTypeAndId(
         EntityController.ENTITY_CLUB,
@@ -88,8 +83,6 @@ def get_affiliate_club_and_challenge(affiliate_key):
     challenge.description = template.description
     challenge.youtube_video_id = challenge_you_tube_video_id
     challenge.save()
-    if feature_is_enabled('challenge_tree'):
-        ChallengeTree.CreateNewTree(challenge)
     return club_entity, challenge
 
 
@@ -312,9 +305,6 @@ def _state_engine_process_upload_thanks(request, challenge, engine, state, templ
             creating_participant=participation,
             youtube_video_id=participation.youtube_video_id)
         challenge.save()
-        if feature_is_enabled('challenge_tree'):
-            from spudderdomain.models import ChallengeTree
-            ChallengeTree.AddChallengeToTree(challenge)
         template_data['challenge'] = challenge
         template_data['just_uploaded'] = True
         participation.state_engine_state = _StateEngineStates.PLEDGE

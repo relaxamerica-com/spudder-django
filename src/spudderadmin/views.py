@@ -12,13 +12,18 @@ import settings
 from spudderaccounts.models import SpudderUser
 from spudderaccounts.wrappers import RoleStudent, RoleFan, RoleSponsor
 from spudderadmin.decorators import admin_login_required
-from spudderadmin.forms import AtPostSpudTwitterAPIForm, PasswordAndActionForm, SystemDeleteVenuesForm, \
-    ChallengesResetSystemForm, ChallengeServiceConfigurationForm, ChallengeMessageConfigurationForm
+from spudderadmin.forms import AtPostSpudTwitterAPIForm, PasswordAndActionForm, SystemDeleteVenuesForm
+from spudderadmin.forms import ChallengesResetSystemForm, ChallengeServiceConfigurationForm
+from spudderadmin.forms import ChallengeMessageConfigurationForm
 from spudderadmin.utils import encoded_admin_session_variable_name
 from spudderaffiliates.forms import AffiliateForm
 from spudderaffiliates.models import Affiliate
 from spudderdomain.controllers import RoleController, EntityController
-from spudderdomain.models import FanPage, LinkedService, TeamAdministrator, TeamPage, TeamVenueAssociation, Location, ChallengeTemplate, ChallengeParticipation, Challenge, ChallengeTree, _ChallengeTreeChallenge
+
+from spudderdomain.models import FanPage, LinkedService, TeamAdministrator, TeamPage, TeamVenueAssociation, Location
+from spudderdomain.models import ChallengeTemplate, ChallengeParticipation, Challenge, _ChallengeTree
+from spudderdomain.models import _ChallengeTreeChallenge
+
 from spudderkrowdio.models import KrowdIOStorage, FanFollowingEntityTag
 from spudderkrowdio.utils import get_user_mentions_activity, start_following
 from spuddersocialengine.atpostspud.models import AtPostSpudTwitterAuthentication, AtPostSpudTwitterCounter, AtPostSpudServiceConfiguration
@@ -749,7 +754,7 @@ def challenges(request):
             reset_challenges_system_form = ChallengesResetSystemForm(request.POST)
             if reset_challenges_system_form.is_valid():
                 _ChallengeTreeChallenge.objects.all().delete()
-                ChallengeTree.objects.all().delete()
+                _ChallengeTree.objects.all().delete()
                 ChallengeParticipation.objects.all().delete()
                 Challenge.objects.all().delete()
                 ChallengeTemplate.objects.all().delete()

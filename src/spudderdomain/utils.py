@@ -1,3 +1,4 @@
+from django.conf import settings
 
 
 def get_entity_base_instanse_by_id_and_type(entity_id, entity_type):
@@ -15,3 +16,8 @@ def get_entity_base_instanse_by_id_and_type(entity_id, entity_type):
     else:
         raise NotImplementedError("Entity type %s is not supported" % entity_type)
     return entity
+
+
+def is_feature_enabled(feature):
+    enabled = bool(feature in settings.FEATURES[settings.ENVIRONMENT])
+    return enabled
