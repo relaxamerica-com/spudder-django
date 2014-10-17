@@ -1,0 +1,18 @@
+<p>Challenge others to take part in the {{ challenge.name }} for <span class="text-primary">{{ challenge.recipient.name|upper }} ({{ challenge.recipient.state }})</span>.</p>
+<p class="share-challenge">
+    <a data-original-title="Share on Facebook" data-placement="bottom" href="JavaScript:facebookPopup('http://{{ request.META.HTTP_HOST }}/challenges/{{ challenge.id }}')">
+        <span class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x fa-inverse"></i><i class="fa fa-facebook fa-stack-1x"></i></span>
+    </a>
+    <a data-original-title="Share on Twitter" data-placement="bottom" href="javascript:twitterPopup('http://{{ request.META.HTTP_HOST }}/challenges/{{ challenge.id }}')">
+        <span class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x fa-inverse"></i><i class="fa fa-twitter fa-stack-1x"></i></span>
+    </a>
+    <a data-original-title="Share on LinkedIn" data-placement="bottom"href="Javascript:linkedinPopup('http://{{ request.META.HTTP_HOST }}/challenges/{{ challenge.id }}')">
+        <span class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x fa-inverse"></i><i class="fa fa-linkedin fa-stack-1x"></i></span>
+    </a>
+    <a data-original-title="Share on Google+" data-placement="bottom" href="javascript:googlePopup('http://{{ request.META.HTTP_HOST }}/challenges/{{ challenge.id }}')">
+        <span class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x fa-inverse"></i><i class="fa fa-google-plus fa-stack-1x"></i></span>
+    </a>
+    <a data-original-title="Share via Email" data-placement="bottom" id="mailto" href="mailto:?subject=Check out this on Spudder.com!&body=Check out this amazing challenge on Spudder.com: http://{{ request.META.HTTP_HOST }}/challenges/{{ challenge.id }}">
+        <span class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x fa-inverse"></i><i class="fa fa-envelope-o fa-stack-1x"></i></span>
+    </a>
+</p>

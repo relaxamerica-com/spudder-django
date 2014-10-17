@@ -22,7 +22,7 @@
 {% endif %}
 <p>At <span class="text-primary">Spudder</span>, we partner with <span class="text-info">Stripe</span> to make donating to you local sports teams super easy!</p>
 <p>You are donating ${{ participation.donation_amount|floatformat }}.</p>
-<form method="post" action="{{ request.path }}" class="form-ajax">
+<form method="post" action="{{ request.path }}#challenge-actions" class="form-ajax">
     {% csrf_token %}
     <script
         src="https://checkout.stripe.com/checkout.js"
