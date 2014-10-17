@@ -9,7 +9,7 @@ from django.conf import settings
 from django.http import HttpResponsePermanentRedirect, get_host
 
 SSL = 'SSL'
-SKIPPED_URLS = re.compile('(^/file.*|^/venues/rent_venue/\d+/notification/\d+|^/venues/rent_venue/sign_in_complete)')
+SKIPPED_URLS = re.compile('(^/file.*|^/venues/rent_venue/\d+/notification/\d+|^/venues/rent_venue/sign_in_complete|^/stripe.*|)')
 
 
 class SSLRedirect:
