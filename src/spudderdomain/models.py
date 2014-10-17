@@ -616,7 +616,7 @@ class _ChallengeTreeChallenge(models.Model):
             challenge['participations'] = []
         new_participations = []
         for p in challenge['participations']:
-            if p['id'] != participation:
+            if p['id'] != participation.get('id'):
                 new_participations.append(p)
         new_participations.append(participation)
         challenge['participations'] = new_participations

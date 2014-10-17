@@ -15571,6 +15571,11 @@ body {
   width: 120px;
   font-weight: bold;
 }
+@media (max-width: 480px) {
+  .navbar-masthead.spudder-masthead .login-signup .btn {
+    width: 80px;
+  }
+}
 .navbar-masthead.spudder-masthead .navbar-text {
   margin-right: 30px;
 }

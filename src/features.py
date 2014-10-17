@@ -40,6 +40,7 @@ FEATURES = {
         'google_analytics',
         'alexa_analytics',
         # 'spud_tagging',
+        # 'challenge_register_club',
         'challenges_landing_page',
         'challenges_only_override',  # Prevent access to any other part of spudder
         'email_error_logs',
