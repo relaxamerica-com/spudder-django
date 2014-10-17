@@ -1,10 +1,11 @@
 import logging
-import stripe
+from spudderstripe.api_utils import create_customer, create_token, make_charge
 import httplib
 import json
 import urllib
 from django.conf import settings
 from settings import Environments
+import stripe
 
 
 class StripeRecipientsController(object):
@@ -52,27 +53,23 @@ class StripeRecipientsController(object):
             'default_card_id': recipient['cards'].get('default_card')}
 
     def accept_payment(self, payment_description, card_token, amount):
-        customer = stripe.Customer.create(
-            card=card_token,
-            description=payment_description,
-            api_key=settings.STRIPE_SECRET_KEY)
-        customer_id = customer['id']
+        customer, error = create_customer(card_token, payment_description)
 
-        token = stripe.Token.create(
-            customer=customer_id,
-            api_key=self.stripe_user.access_token)
-        token_id = token['id']
-
-        try:
-            charge = stripe.Charge.create(
-                amount=amount,
-                currency="usd",
-                card=token_id,
-                description=payment_description,
-                api_key=self.stripe_user.access_token)
-
-            return {'success': True, 'charge_id': charge['id']}
-        except Exception, e:
-            logging.error('Exception catch while making charge')
-            logging.error(e)
+        if error:
+            logging.error('Error during customer creation')
+            logging.error(error)
             return {'success': False}
+
+        token, error = create_token(customer, self.stripe_user.access_token)
+        if error:
+            logging.error('Error during token creation')
+            logging.error(error)
+            return {'success': False}
+
+        charge, error = make_charge(amount, token, payment_description, self.stripe_user.access_token)
+        if error:
+            logging.error('Error during making charge')
+            logging.error(error)
+            return {'success': False}
+
+        return {'success': True, 'charge_id': charge['id']}
