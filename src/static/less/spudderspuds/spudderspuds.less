@@ -1010,6 +1010,15 @@ body {
             .tab-content {
                 .tab-pane {
                     padding-top: 30px;
+
+                    &#tab-videos {
+                        .embed-responsive {
+                            height: 150px;
+                            @media (max-width: @screen-xs-max) {
+                                height: 100px;
+                            }
+                        }
+                    }
                 }
             }
         }

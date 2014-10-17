@@ -16128,6 +16128,14 @@ body#challenge-page #challenge-body {
 body#challenge-page #challenge-body .tab-content .tab-pane {
   padding-top: 30px;
 }
+body#challenge-page #challenge-body .tab-content .tab-pane#tab-videos .embed-responsive {
+  height: 150px;
+}
+@media (max-width: 767px) {
+  body#challenge-page #challenge-body .tab-content .tab-pane#tab-videos .embed-responsive {
+    height: 100px;
+  }
+}
 body#challenge-page #challenge-actions {
   padding-top: 30px;
 }

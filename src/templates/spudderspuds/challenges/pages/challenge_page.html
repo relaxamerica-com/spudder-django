@@ -73,6 +73,11 @@
                             </a>
                         </li>
                         <li>
+                            <a href="#tab-history" role="tab" data-toggle="tab">
+                                <i class="fa fa-asterisk"></i> <span class="hidden-xs">Challenge </span>History
+                            </a>
+                        </li>
+                        <li>
                             <a href="#tab-videos" role="tab" data-toggle="tab">
                                 <i class="fa fa-video-camera"></i> Videos
                             </a>
@@ -87,12 +92,27 @@
                             </div>
                         </div>
                         <div class="tab-pane fade" id="tab-rules">
+                            {% with template_name=challenge.template.slug|add:".html" %}
+                                {% include 'spudderspuds/challenges/components/challenge_rules_'|add:template_name %}
+                            {% endwith %}
+                        </div>
+                        <div class="tab-pane fade" id="tab-history">
                             {% with template_name=challenge_tree_stats.root_challenge.recipient.name|slugify|add:"/challenges/original_beneficiary_full_description.html" %}
                                 {% include 'spudderaffiliates/'|add:template_name %}
                             {% endwith %}
                         </div>
                         <div class="tab-pane fade" id="tab-videos">
-                            {% include 'spudderspuds/challenges/components/in_development.html' %}
+                            <div class="row">
+                                {% for participation in challenge_tree_stats.all_participations %}
+                                    {% if forloop.counter0 < 20 %}
+                                        <div class="col-xs-6 col-md-3 {% if forloop.counter0 > 6 %}hidden-xs{% endif %}">
+                                            <div class="embed-responsive embed-responsive-16by9">
+                                                <iframe class="embed-responsive-item" type="text/html" src="http{% if request.is_secure %}s{% endif %}://www.youtube.com/embed/{{ participation.youtube_video_id }}?origin=http://www.spudder.com&rel=0&showinfo=0" frameborder="0" allowfullscreen></iframe>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
                         </div>
                     </div>
                 </div>

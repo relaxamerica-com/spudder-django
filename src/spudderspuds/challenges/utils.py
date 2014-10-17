@@ -32,15 +32,22 @@ class _StateEngineStates(object):
 
 
 def extract_statistics_from_challenge_tree(challenge_tree):
-    stats = {'root_challenge': None}
+    stats = {
+        'root_challenge': None,
+        'all_participations': []}
 
     # Loop through the ctc's
     for ctc in _ChallengeTreeChallenge.objects.filter(challenge_tree=challenge_tree):
-        participation_dict = json.loads(ctc.challenge_json)
+        challenge_dict = json.loads(ctc.challenge_json)
 
         # If this one has no parent then its the root
-        if not participation_dict.get('parent'):
+        if not challenge_dict.get('parent'):
             stats['root_challenge'] = Challenge.objects.get(id=ctc.challenge_id)
+
+        for participation in challenge_dict.get('participations'):
+            stats['all_participations'].append(participation)
+
+    stats['all_participations'] = sorted(stats['all_participations'], key=lambda p: p.get('created'), reverse=True)
 
     return stats
 
