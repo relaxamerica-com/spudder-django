@@ -1,3 +1,5 @@
+import logging
+
 from django.views.decorators.http import require_POST
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -25,7 +27,13 @@ class CardChargeEvents():
 @require_POST
 @csrf_exempt
 def webhook(request):
+    logging.warn('Webhook received')
+    logging.warn(request.raw_post_data)
+
     event_json = parse_webhook_request(request)
+    if event_json is None:
+        return HttpResponse()  # Invalid request data, disregard it
+
     event_type = get_event_attribute(event_json, 'type')
 
     if event_type is None or not CardChargeEvents.if_valid_event(event_type):

@@ -3,12 +3,10 @@ import json
 import logging
 import traceback
 import urllib
-from simplejson import JSONDecodeError
 from django.contrib import messages
 from google.appengine.api import mail, blobstore
 from django.http import HttpResponseRedirect, HttpResponse, HttpResponseNotAllowed
 from django.shortcuts import render, redirect, get_object_or_404
-from requests.packages.urllib3.exceptions import DecodeError
 import settings
 from spudderaccounts.models import Invitation
 from spudderaccounts.wrappers import RoleBase
@@ -97,6 +95,7 @@ def stripe_recipient(request):
 def stripe(request):
     exception_occurred = False
 
+    # noinspection PyBroadException
     try:
         club = request.current_role.entity.club
         code = request.GET.get('code', '')
@@ -125,12 +124,6 @@ def stripe(request):
     except httplib.HTTPException:
         exception_occurred = True
         logging.error('Http connection exception while trying to contact Stripe API server')
-    except DecodeError:
-        exception_occurred = True
-        logging.error('Error occurred while trying to decode Stripe token response')
-    except JSONDecodeError:
-        exception_occurred = True
-        logging.error('Could not convert token data into JSON object')
     except KeyError:
         exception_occurred = True
         logging.error('Access token missing in JSON object. Probably Stripe keys are configured improperly')
