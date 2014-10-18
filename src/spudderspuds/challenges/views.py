@@ -394,17 +394,23 @@ def challenge_accept_pay(request, challenge_id):
     if not beneficiary.entity_type == EntityController.ENTITY_CLUB or not beneficiary.entity.is_fully_activated():
         return redirect('/challenges/%s/accept/notice?just_pledged=True' % challenge.id)
     if request.method == "POST":
-        token = request.POST.get('stripeToken')
-        stripe_controller = get_stripe_recipient_controller_for_club(beneficiary.entity)
-        payment_status = stripe_controller.accept_payment(
-            "Donation by %s to %s for %s" % (request.user.email, beneficiary.name, challenge.name),
-            token,
-            int(challenge_participation.donation_amount) * 100)
-        if payment_status['success']:
-            challenge_participation.charge_id = payment_status['charge_id']
-            challenge_participation.save()
+        token = request.POST.get('stripeToken', None)
+        if token is not None:
 
-            return redirect('/challenges/%s/accept/notice?just_donated=True' % challenge.id)
+            stripe_controller = get_stripe_recipient_controller_for_club(beneficiary.entity)
+            if stripe_controller is not None:
+
+                payment_status = stripe_controller.accept_payment(
+                    "Donation by %s to %s for %s" % (request.user.email, beneficiary.name, challenge.name),
+                    token,
+                    int(challenge_participation.donation_amount) * 100)
+
+                if payment_status['success']:
+                    challenge_participation.charge_id = payment_status['charge_id']
+                    challenge_participation.save()
+
+                    return redirect('/challenges/%s/accept/notice?just_donated=True' % challenge.id)
+
     template_data = {
         'challenge': challenge,
         'challenge_participation': challenge_participation,

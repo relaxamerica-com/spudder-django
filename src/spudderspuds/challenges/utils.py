@@ -1,4 +1,5 @@
 import json
+import logging
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.models import User
 from django.http import HttpResponse, Http404
@@ -471,9 +472,17 @@ def _state_engine_process_pay(request, challenge, engine, state, template_data):
             engine,
             _StateEngineStates.PLEDGE_THANKS))
         return response, state
+
     if request.method == "POST":
-        token = request.POST.get('stripeToken')
+        token = request.POST.get('stripeToken', None)
+        if token is None:
+            logging.error('Missing stripeToken in payment processing')
+            return None, _StateEngineStates.PAY_FAILED
+
         stripe_controller = get_stripe_recipient_controller_for_club(beneficiary.entity)
+        if stripe_controller is None:
+            return None, _StateEngineStates.PAY_FAILED
+
         donation = int(participation.donation_amount) * 100
         payment_status = stripe_controller.accept_payment(
             "Donation of $%s by %s to %s for %s" % (
@@ -489,8 +498,11 @@ def _state_engine_process_pay(request, challenge, engine, state, template_data):
         participation.state_engine_state = _StateEngineStates.PAY_THANKS
         participation.charge_id = payment_status['charge_id']
         participation.save()
+
         response = redirect('/challenges/%s/%s' % (challenge.id, engine))
+
         return response, state
+
     template_data = {
         'challenge': challenge,
         'participation': participation,

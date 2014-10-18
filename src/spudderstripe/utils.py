@@ -1,7 +1,7 @@
 import json
 
 from spudderdomain.models import StripeUser, StripeRecipient
-from spudderstripe.controllers import StripeRecipientsController
+from spudderstripe.controllers import StripeRecipientsController, StripeRecipientsControllerException
 
 
 def get_stripe_recipient_controller_for_club(club):
@@ -13,7 +13,11 @@ def get_stripe_recipient_controller_for_club(club):
         stripe_user = StripeUser.objects.get(club=club)
     except StripeUser.DoesNotExist:
         return None
-    return StripeRecipientsController(stripe_recipient, stripe_user)
+
+    try:
+        return StripeRecipientsController(stripe_recipient, stripe_user)
+    except StripeRecipientsControllerException:
+        return None
 
 
 def parse_webhook_request(request):
