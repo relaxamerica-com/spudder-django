@@ -17,11 +17,13 @@ class StripeRecipientsController(object):
         self.stripe_user = stripe_user
 
     def is_recipient_verified(self):
-        if settings.ENVIRONMENT == Environments.DEV:
-            return True
-        else:
-            recipient = stripe.Recipient.retrieve(self.stripe_recipient.recipient_id, settings.STRIPE_SECRET_KEY)
-            return recipient.get('verified', False)
+        return True
+        # For time being we don't care if the account is verified - we are creating proper Clubs our self
+        # if settings.ENVIRONMENT == Environments.DEV:
+        #     return True
+        # else:
+        #     recipient = stripe.Recipient.retrieve(self.stripe_recipient.recipient_id, settings.STRIPE_SECRET_KEY)
+        #     return recipient.get('verified', False)
 
     def get_recipient_active_bank_account(self):
         if settings.ENVIRONMENT == Environments.DEV:
