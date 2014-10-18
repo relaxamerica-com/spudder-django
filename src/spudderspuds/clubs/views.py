@@ -1,11 +1,14 @@
 import httplib
 import json
 import logging
+import traceback
 import urllib
+from simplejson import JSONDecodeError
 from django.contrib import messages
 from google.appengine.api import mail, blobstore
 from django.http import HttpResponseRedirect, HttpResponse, HttpResponseNotAllowed
 from django.shortcuts import render, redirect, get_object_or_404
+from requests.packages.urllib3.exceptions import DecodeError
 import settings
 from spudderaccounts.models import Invitation
 from spudderaccounts.wrappers import RoleBase
@@ -92,30 +95,54 @@ def stripe_recipient(request):
 
 @club_admin_required
 def stripe(request):
-    club = request.current_role.entity.club
-    code = request.GET.get('code', '')
-    params = urllib.urlencode({
-        'client_secret': settings.STRIPE_SECRET_KEY,
-        'code': code,
-        'grant_type': 'authorization_code'
-    })
-    url = '/oauth/token?%s' % params
-    connection = httplib.HTTPSConnection('connect.stripe.com')
-    connection.connect()
-    connection.request('POST', url)
-    resp = connection.getresponse()
-    resp_data = resp.read()
-    json_data = json.loads(resp_data)
-    StripeUser(
-        club=club,
-        code=code,
-        access_token=json_data['access_token'],
-        refresh_token=json_data['refresh_token'],
-        publishable_key=json_data['stripe_publishable_key'],
-        user_id=json_data['stripe_user_id'],
-        scope=json_data['scope'],
-        token_type=json_data['token_type'],
-    ).save()
+    exception_occurred = False
+
+    try:
+        club = request.current_role.entity.club
+        code = request.GET.get('code', '')
+        params = urllib.urlencode({
+            'client_secret': settings.STRIPE_SECRET_KEY,
+            'code': code,
+            'grant_type': 'authorization_code'
+        })
+        url = '/oauth/token?%s' % params
+        connection = httplib.HTTPSConnection('connect.stripe.com')
+        connection.connect()
+        connection.request('POST', url)
+        resp = connection.getresponse()
+        resp_data = resp.read()
+        json_data = json.loads(resp_data)
+        StripeUser(
+            club=club,
+            code=code,
+            access_token=json_data['access_token'],
+            refresh_token=json_data['refresh_token'],
+            publishable_key=json_data['stripe_publishable_key'],
+            user_id=json_data['stripe_user_id'],
+            scope=json_data['scope'],
+            token_type=json_data['token_type'],
+        ).save()
+    except httplib.HTTPException:
+        exception_occurred = True
+        logging.error('Http connection exception while trying to contact Stripe API server')
+    except DecodeError:
+        exception_occurred = True
+        logging.error('Error occurred while trying to decode Stripe token response')
+    except JSONDecodeError:
+        exception_occurred = True
+        logging.error('Could not convert token data into JSON object')
+    except KeyError:
+        exception_occurred = True
+        logging.error('Access token missing in JSON object. Probably Stripe keys are configured improperly')
+        # noinspection PyUnboundLocalVariable
+        logging.error(json_data)
+    except Exception:
+        exception_occurred = True
+
+    if exception_occurred:
+        logging.error(traceback.format_exc())
+        HttpResponseRedirect('/club/dashboard')
+
     return HttpResponseRedirect('/club/dashboard?message=just_connected_with_stripe')
 
 # def splash(request):

@@ -11,67 +11,10 @@ from settings import Environments
 import stripe
 
 
-class StripeRecipientsControllerException(Exception):
-    def __init__(self):
-        pass
-
-
 class StripeRecipientsController(object):
-    """
-    :raises StripeRecipientsControllerException when anything goes wrong with access token update action
-    """
-
     def __init__(self, stripe_recipient, stripe_user):
         self.stripe_recipient = stripe_recipient
         self.stripe_user = stripe_user
-        self._update_access_token()
-
-    def _update_access_token(self):
-        exception_occurred = False
-
-        try:
-            if settings.STRIPE_API_MODE == 'live':
-                params = urllib.urlencode({
-                    'client_secret': settings.STRIPE_SECRET_KEY,
-                    'code': self.stripe_user.code,
-                    'grant_type': 'authorization_code'})
-            else:
-                params = urllib.urlencode({
-                    'client_secret': settings.STRIPE_SECRET_KEY,
-                    'refresh_token': self.stripe_user.refresh_token,
-                    'grant_type': 'refresh_token'})
-
-            url = '/oauth/token?%s' % params
-
-            connection = httplib.HTTPSConnection('connect.stripe.com')
-            connection.connect()
-            connection.request('POST', url)
-            stripe_response = connection.getresponse()
-
-            response_data = stripe_response.read()
-
-            json_data = json.loads(response_data)
-
-            self.stripe_user.access_token = json_data['access_token']
-            self.stripe_user.save()
-        except httplib.HTTPException:
-            exception_occurred = True
-            logging.error('Http connection exception while trying to contact Stripe API server')
-        except DecodeError:
-            exception_occurred = True
-            logging.error('Error occurred while trying to decode Stripe token response')
-        except JSONDecodeError:
-            exception_occurred = True
-            logging.error('Could not convert token data into JSON object')
-        except KeyError:
-            exception_occurred = True
-            logging.error('Access token missing in JSON object. Probably Stripe keys are configured improperly')
-        except Exception:
-            exception_occurred = True
-
-        if exception_occurred:
-            logging.error(traceback.format_exc())
-            raise StripeRecipientsControllerException()
 
     def is_recipient_verified(self):
         if settings.ENVIRONMENT == Environments.DEV:
