@@ -486,7 +486,7 @@ def _state_engine_process_pay(request, challenge, engine, state, template_data):
         donation = int(participation.donation_amount) * 100
         payment_status = stripe_controller.accept_payment(
             "Donation of $%s by %s to %s for %s" % (
-                donation,
+                int(participation.donation_amount),
                 request.user.email,
                 beneficiary.name,
                 challenge.name),
