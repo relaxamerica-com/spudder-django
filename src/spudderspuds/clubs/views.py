@@ -93,9 +93,10 @@ def stripe_recipient(request):
 @club_admin_required
 def stripe(request):
     club = request.current_role.entity.club
+    code = request.GET.get('code', '')
     params = urllib.urlencode({
         'client_secret': settings.STRIPE_SECRET_KEY,
-        'code': request.GET.get('code', ''),
+        'code': code,
         'grant_type': 'authorization_code'
     })
     url = '/oauth/token?%s' % params
@@ -107,6 +108,7 @@ def stripe(request):
     json_data = json.loads(resp_data)
     StripeUser(
         club=club,
+        code=code,
         access_token=json_data['access_token'],
         refresh_token=json_data['refresh_token'],
         publishable_key=json_data['stripe_publishable_key'],

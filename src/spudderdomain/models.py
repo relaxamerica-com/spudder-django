@@ -340,6 +340,7 @@ class StripeRecipient(models.Model):
 
 class StripeUser(models.Model):
     club = models.ForeignKey(Club)
+    code = models.CharField(max_length=255)
     access_token = models.CharField(max_length=255)
     refresh_token = models.CharField(max_length=255)
     publishable_key = models.CharField(max_length=255)

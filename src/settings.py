@@ -174,7 +174,8 @@ shared_settings = {
         'google_client_id': '202980743025-44et20vv531h7o80l0onc2eld22ev1ar.apps.googleusercontent.com',
         'stripe_client_id': STRIPE_SETTINGS['development']['client_id'],
         'stripe_secret_key': STRIPE_SETTINGS['development']['secret_key'],
-        'stripe_publishable_key': STRIPE_SETTINGS['development']['publishable_key']
+        'stripe_publishable_key': STRIPE_SETTINGS['development']['publishable_key'],
+        'stripe_api_mode': 'test'
     },
     'spudmartvadim': {
         'server_email': 'help@spuder.com',
@@ -195,7 +196,8 @@ shared_settings = {
         'krowdio_client_key': '53fc72a6f1f70e3fc79f0876',
         'stripe_client_id': STRIPE_SETTINGS['development']['client_id'],
         'stripe_secret_key': STRIPE_SETTINGS['development']['secret_key'],
-        'stripe_publishable_key': STRIPE_SETTINGS['development']['publishable_key']
+        'stripe_publishable_key': STRIPE_SETTINGS['development']['publishable_key'],
+        'stripe_api_mode': 'test'
 
     },
     'sharp-avatar-587': {  # lukasz@spuder.com
@@ -211,7 +213,8 @@ shared_settings = {
         'krowdio_client_key': '5401e324e9b6cc56dbe43f55',
         'stripe_client_id': STRIPE_SETTINGS['development']['client_id'],
         'stripe_secret_key': STRIPE_SETTINGS['development']['secret_key'],
-        'stripe_publishable_key': STRIPE_SETTINGS['development']['publishable_key']
+        'stripe_publishable_key': STRIPE_SETTINGS['development']['publishable_key'],
+        'stripe_api_mode': 'test'
 
     },
     'essential-hawk-597': {  # karol@spuder.com
@@ -226,7 +229,8 @@ shared_settings = {
         'support_email': 'karol@spuder.com',
         'stripe_client_id': STRIPE_SETTINGS['development']['client_id'],
         'stripe_secret_key': STRIPE_SETTINGS['development']['secret_key'],
-        'stripe_publishable_key': STRIPE_SETTINGS['development']['publishable_key']
+        'stripe_publishable_key': STRIPE_SETTINGS['development']['publishable_key'],
+        'stripe_api_mode': 'test'
 
     },
     'genial-union-587': {  # lucy@spuder.com
@@ -248,7 +252,8 @@ shared_settings = {
         'krowdio_client_key': '53ff5196f1f70e3fc79f136c',
         'stripe_client_id': STRIPE_SETTINGS['development']['client_id'],
         'stripe_secret_key': STRIPE_SETTINGS['development']['secret_key'],
-        'stripe_publishable_key': STRIPE_SETTINGS['development']['publishable_key']
+        'stripe_publishable_key': STRIPE_SETTINGS['development']['publishable_key'],
+        'stripe_api_mode': 'test'
     },
     'spudmartmatt': {  # mg@metalayer.com
         'server_email': 'mg@metalayer.com',
@@ -265,7 +270,8 @@ shared_settings = {
         'krowdio_client_key': '53ff5196f1f70e3fc79f136c',
         'stripe_client_id': STRIPE_SETTINGS['development']['client_id'],
         'stripe_secret_key': STRIPE_SETTINGS['development']['secret_key'],
-        'stripe_publishable_key': STRIPE_SETTINGS['development']['publishable_key']
+        'stripe_publishable_key': STRIPE_SETTINGS['development']['publishable_key'],
+        'stripe_api_mode': 'test'
 
     },
     'livespudder': {  #mg@metalayer.com
@@ -288,7 +294,8 @@ shared_settings = {
         'google_client_id': '102496195202-8l3ido6f9nn2iisedafjjfpa3l8nc4a5.apps.googleusercontent.com',
         'stripe_client_id': STRIPE_SETTINGS['production']['client_id'],
         'stripe_secret_key': STRIPE_SETTINGS['production']['secret_key'],
-        'stripe_publishable_key': STRIPE_SETTINGS['production']['publishable_key']
+        'stripe_publishable_key': STRIPE_SETTINGS['production']['publishable_key'],
+        'stripe_api_mode': 'live'
     },
 }
 
@@ -313,6 +320,7 @@ GOOGLE_CLIENT_ID = shared_settings[app_name].get('google_client_id')
 STRIPE_CLIENT_ID = shared_settings[app_name].get('stripe_client_id')
 STRIPE_SECRET_KEY = shared_settings[app_name].get('stripe_secret_key')
 STRIPE_PUBLISHABLE_KEY = shared_settings[app_name].get('stripe_publishable_key')
+STRIPE_API_MODE = shared_settings[app_name].get('stripe_api_mode')
 
 
 # Configuration shared across all applications

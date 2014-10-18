@@ -30,10 +30,17 @@ class StripeRecipientsController(object):
         exception_occurred = False
 
         try:
-            params = urllib.urlencode({
-                'client_secret': settings.STRIPE_SECRET_KEY,
-                'refresh_token': self.stripe_user.refresh_token,
-                'grant_type': 'refresh_token'})
+            if settings.STRIPE_API_MODE == 'live':
+                params = urllib.urlencode({
+                    'client_secret': settings.STRIPE_SECRET_KEY,
+                    'code': self.stripe_user.code,
+                    'grant_type': 'authorization_code'})
+            else:
+                params = urllib.urlencode({
+                    'client_secret': settings.STRIPE_SECRET_KEY,
+                    'refresh_token': self.stripe_user.refresh_token,
+                    'grant_type': 'refresh_token'})
+
             url = '/oauth/token?%s' % params
 
             connection = httplib.HTTPSConnection('connect.stripe.com')
