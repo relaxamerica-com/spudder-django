@@ -27,7 +27,7 @@ FEATURES = {
         'challenges_landing_page',
         'challenges_only_override',
         # 'challenge_challenge',
-        # 'challenge_register_club',
+        'challenge_register_club',
         'challenge_tree',
         'email_error_logs',
         'tracking_pixels',
