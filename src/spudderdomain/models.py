@@ -362,6 +362,7 @@ class ClubAdministrator(models.Model):
 
 class ChallengeTemplate(models.Model):
     name = models.CharField(max_length=255)
+    sub_name = models.CharField(max_length=255, null=True, default=None)
     description = models.TextField()
     image = models.ForeignKey(UploadedFile, null=True, default=None)
     created = models.DateTimeField(auto_now_add=True, null=True, blank=True)
@@ -577,6 +578,8 @@ class _ChallengeTree(models.Model):
             tree = cls.GetChallengeTree(challenge.parent)
         else:
             tree, created = _ChallengeTree.objects.get_or_create(base_challenge=challenge)
+            if created:
+                tree.save()
         tree._add_challenge(challenge)
 
     @classmethod

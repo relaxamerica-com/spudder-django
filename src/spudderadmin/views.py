@@ -772,6 +772,12 @@ def challenges(request):
                     'name': "Pie Challenge",
                     'description': "Challenge your friends, family and fans to take a whipped cream pie to the face!!",
                     'slug': 'piechallenge'
+                },
+                {
+                    'name': "Brendan Patrick Tevlin RAK",
+                    'sub_name': '(Random Act of Kindness)',
+                    'description': "Challenge your friends and family to perform a Random Act of Kindness!",
+                    'slug': 'bptrak'
                 }
             ]
             for challenge in challenges:
@@ -779,12 +785,14 @@ def challenges(request):
                     c = ChallengeTemplate.objects.get(name=challenge['name'])
                     c.description = challenge['description']
                     c.slug = challenge['slug']
+                    c.sub_name = challenge.get('sub_name')
                     c.save()
                 except ChallengeTemplate.DoesNotExist:
                     ChallengeTemplate(
                         name=challenge['name'],
                         description=challenge['description'],
-                        slug=challenge['slug']).save()
+                        slug=challenge['slug'],
+                        sub_name=challenge.get('sub_name')).save()
 
             messages.success(request, "<i class='fa fa-check'></i> Base challenge templates ensured.")
 

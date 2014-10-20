@@ -15,7 +15,7 @@ FEATURES = {
         'tracking_pixels',
         'challenge_management',
         'challenge_dreamsforkids_piechallenge',
-        'challenge_livetest',  # this is only for testing stripe
+        'challenge_bpt_memorial_field_fund_rak',  # this is only for testing stripe
     ],
     'stage': [
         # 'spud_tagging',
@@ -34,7 +34,7 @@ FEATURES = {
         # 'stripe_ein_validation',
         'all_fans_auto_follow_main_spudder_fan',
         'challenge_dreamsforkids_piechallenge',
-        'challenge_livetest',  # this is only for testing stripe
+        'challenge_bpt_memorial_field_fund_rak',  # this is only for testing stripe
     ],
     'live': [
         'google_analytics',

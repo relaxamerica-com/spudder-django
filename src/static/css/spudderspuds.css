@@ -16130,6 +16130,11 @@ body#challenge-page #info-bar {
 body#challenge-page #info-bar h2 small {
   color: #FFF;
 }
+@media (max-width: 767px) {
+  body#challenge-page #info-bar h2 {
+    font-size: 18px;
+  }
+}
 body#challenge-page #challenge-body {
   padding-top: 30px;
 }
@@ -16155,6 +16160,33 @@ body#challenge-page #challenge-actions .action-col .action-container {
   border-top: none;
   padding: 20px 10px;
   margin-bottom: 20px;
+}
+body#challenge-page.bptrak-bpt-memorial-field-fund .spudder-jumbotron {
+  background-image: url('/static/img/spudderspuds/challenges/jumbotron-brendantevlin.png') !important;
+}
+body#challenge-page.bptrak-bpt-memorial-field-fund .spudder-jumbotron .jumbotron-bottom-banner h1 {
+  margin-bottom: 0;
+}
+@media (max-width: 767px) {
+  body#challenge-page.bptrak-bpt-memorial-field-fund .spudder-jumbotron .jumbotron-bottom-banner h1 {
+    font-size: 28px;
+  }
+}
+body#challenge-page.bptrak-bpt-memorial-field-fund .spudder-jumbotron .jumbotron-bottom-banner h2 {
+  margin: 0;
+}
+@media (max-width: 767px) {
+  body#challenge-page.bptrak-bpt-memorial-field-fund .spudder-jumbotron .jumbotron-bottom-banner h2 {
+    font-size: 22px;
+  }
+}
+body#challenge-page.bptrak-bpt-memorial-field-fund .spudder-jumbotron .jumbotron-bottom-banner h3 {
+  margin-top: 3px;
+}
+@media (max-width: 767px) {
+  body#challenge-page.bptrak-bpt-memorial-field-fund .spudder-jumbotron .jumbotron-bottom-banner h3 {
+    font-size: 24px;
+  }
 }
 /**********************************************************************************************************************/
 /**********************************************************************************************************************/

@@ -96,9 +96,9 @@ urlpatterns = patterns(
     url(r'^dreamsforkids$',
         'spudderspuds.challenges.views.affiliate_challenge_page',
         {'affiliate_key': 'dreamsforkids'}),
-    url(r'^livetest$',
+    url(r'^brendan$',
         'spudderspuds.challenges.views.affiliate_challenge_page',
-        {'affiliate_key': 'livetest'}),
+        {'affiliate_key': 'bpt_memorial_field_fund_rak'}),
 
     # Spudder QA center
     url(r'^qa/*', include('spudderqa.urls')),

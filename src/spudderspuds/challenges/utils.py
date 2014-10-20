@@ -60,12 +60,12 @@ def get_affiliate_club_and_challenge(affiliate_key):
         club_name = 'Dreams for Kids'
         challenge_template_slug = "piechallenge"
         challenge_you_tube_video_id = "vqgpHZ09St8"
-    elif affiliate_key == "livetest":  # this was set up for live Stripe testing on Spudmart1
-        if not feature_is_enabled('challenge_livetest'):
+    elif affiliate_key == "bpt_memorial_field_fund_rak":
+        if not feature_is_enabled('challenge_bpt_memorial_field_fund_rak'):
             raise Http404
-        club_name = "This is a test team2"
-        challenge_template_slug = "piechallenge"
-        challenge_you_tube_video_id = "1rDsRiU_fno"
+        club_name = "BPT Memorial Field Fund"
+        challenge_template_slug = "bptrak"
+        challenge_you_tube_video_id = "R2yX64Gh2iI"
     else:
         return None, None
 

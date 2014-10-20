@@ -1008,6 +1008,9 @@ body {
                 small {
                     color: #FFF;
                 }
+                @media (max-width: @screen-xs-max) {
+                    font-size: 18px;
+                }
             }
         }
         #challenge-body {
@@ -1040,6 +1043,32 @@ body {
                     border-top: none;
                     padding: 20px 10px;
                     margin-bottom: 20px;
+                }
+            }
+        }
+
+        &.bptrak-bpt-memorial-field-fund {
+            .spudder-jumbotron {
+                background-image: url('/static/img/spudderspuds/challenges/jumbotron-brendantevlin.png') !important;
+                .jumbotron-bottom-banner {
+                    h1 {
+                        margin-bottom: 0;
+                        @media (max-width: @screen-xs-max) {
+                            font-size: 28px;
+                        }
+                    }
+                    h2 {
+                        margin: 0;
+                        @media (max-width: @screen-xs-max) {
+                            font-size: 22px;
+                        }
+                    }
+                    h3 {
+                        margin-top: 3px;
+                        @media (max-width: @screen-xs-max) {
+                            font-size: 24px;
+                        }
+                    }
                 }
             }
         }

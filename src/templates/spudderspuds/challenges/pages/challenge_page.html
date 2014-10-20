@@ -16,7 +16,7 @@
     {% endif %}
 {% endblock %}
 
-{% block body_class %}{{ challenge_tree_stats.root_challenge.recipient.name }}{% endblock %}
+{% block body_class %}{{ challenge.template.slug }}-{{ challenge_tree_stats.root_challenge.recipient.name|slugify }}{% endblock %}
 
 {% block body_id %}challenge-page{% endblock %}
 
@@ -29,6 +29,9 @@
         <div class="jumbotron-bottom-banner">
             <div class="container">
                 <h1>{{ challenge.template.name }}</h1>
+                {% if challenge.template.sub_name %}
+                    <h2><small>{{ challenge.template.sub_name }}</small></h2>
+                {% endif %}
                 <h3>for <span class="text-primary">{{ challenge_recipient.name }} ({{ challenge_recipient.state }})</span></h3>
             </div>
         </div>
@@ -123,7 +126,6 @@
                     </div>
                 </div>
 
-                {% if challenge.template.name == "Pie Challenge" %}
                 <div class="col-md-3 hidden-xs hidden-sm">
                     <div class="well" style="margin-top: 45px; background-color: #fafafa;">
                         {% with template_name=challenge_tree_stats.root_challenge.recipient.name|slugify|add:"/challenges/original_beneficiary_short_description.html" %}
@@ -135,7 +137,6 @@
                         {% include 'spudderspuds/challenges/components/challenge_others_links.html' %}
                     </div>
                 </div>
-                {% endif %}
             </div>
         </div>
     </div>
