@@ -16164,6 +16164,11 @@ body#challenge-page #challenge-actions .action-col .action-container {
 body#challenge-page.bptrak-bpt-memorial-field-fund .spudder-jumbotron {
   background-image: url('/static/img/spudderspuds/challenges/jumbotron-brendantevlin.png') !important;
 }
+@media (max-width: 767px) {
+  body#challenge-page.bptrak-bpt-memorial-field-fund .spudder-jumbotron {
+    background-image: url('/static/img/spudderspuds/challenges/jumbotron-brendantevlin-small.png') !important;
+  }
+}
 body#challenge-page.bptrak-bpt-memorial-field-fund .spudder-jumbotron .jumbotron-bottom-banner h1 {
   margin-bottom: 0;
 }
