@@ -1,6 +1,9 @@
 {% extends 'spudderspuds/base.html' %}
 {% load spudderaccountstags %}
 {% load spudderspudstags %}
+{% load bootstrap3 %}
+
+{% block messages %}{# blank out top message #}{% endblock %}
 
 {% block css %}
     {{ block.super }}
@@ -3699,6 +3702,8 @@ input[type='text'], input:not([type]), textarea {
 
     <div class="container">
 
+        {% bootstrap_messages %}
+
         <div class="page-header">
             <h1>Take the NAYS youth sports funding survey!</h1>
         </div>
@@ -3723,6 +3728,17 @@ input[type='text'], input:not([type]), textarea {
                 <p style="margin-left: 10px;">
                     <i class="fa fa-plus"></i> Entry into a free draw with the chance to win: <b>2 Free Tickets</b> to the <a href="http://www.nays.org/congress/" target="_blank">NAYS Youth Sports Congress</a>
                 </p>
+                <div class="well">
+                    <form method="post">
+                        {% csrf_token %}
+                        {% bootstrap_form email_form %}
+                        {% buttons %}
+                            <button type="submit" class="btn btn-primary">
+                                Enter draw
+                            </button>
+                        {% endbuttons %}
+                    </form>
+                </div>
                 <hr class="visible-xs" />
             </div>
             <div class="col-sm-9 col-sm-pull-3">

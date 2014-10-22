@@ -21,7 +21,7 @@ FEATURES = {
         # 'spud_tagging',
         # 'manage_team_admins',
         # 'clubs',
-        # 'nays_survey',
+        'nays_survey',
         # 'affiliate_login',
         # 'invite_clubs',
         'challenges_landing_page',
