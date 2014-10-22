@@ -1,4 +1,6 @@
+from django.conf import settings
 from django.contrib import messages
+from django.core import mail
 from django.http import Http404, HttpResponseRedirect, HttpResponse
 from django.shortcuts import render_to_response, render, redirect
 from django.template import RequestContext
@@ -7,7 +9,7 @@ from spudderaccounts.models import Invitation
 from spudderaccounts.templatetags.spudderaccountstags import is_fan
 from spudderadmin.templatetags.featuretags import feature_is_enabled
 from spudderaffiliates.decorators import affiliate_login_required
-from spudderaffiliates.forms import ClubAdministratorForm
+from spudderaffiliates.forms import ClubAdministratorForm, NaysSurveyEmailForm
 from spudderaffiliates.models import Affiliate
 from spudderdomain.controllers import SpudsController, RoleController, EntityController
 from spudderdomain.models import TeamPage, FanPage, Club, TempClub
@@ -16,7 +18,19 @@ from spudderspuds.views import krowdio_users_to_links
 
 
 def _nays_survey(request):
-    return render(request, 'spudderaffiliates/pages/_nays_survey.html')
+    email_form = NaysSurveyEmailForm()
+    if request.method == 'POST':
+        email_form = NaysSurveyEmailForm(request.POST)
+        if email_form.is_valid():
+            email = email_form.cleaned_data.get('email')
+            if email:
+                mail.send_mail(
+                    'NAYS Survey Email Submission',
+                    email,
+                    'nays_survey@spudder.com',
+                    [settings.SUPPORT_EMAIL])
+                messages.success(request, 'Your email has been successfully entered into the free prize draw!')
+    return render(request, 'spudderaffiliates/pages/_nays_survey.html', {'email_form': email_form})
 
 
 def affiliate_login(request):

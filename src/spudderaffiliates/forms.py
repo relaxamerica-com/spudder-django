@@ -67,7 +67,28 @@ class ClubAdministratorForm(forms.Form):
     email = forms.EmailField(max_length=255, help_text="Email address for the person managing this club/team<br>")
     club_name = forms.CharField(max_length=255, help_text="The name of the club/team<br>")
     state = forms.ChoiceField(
-        choices=[('', 'Select a state...')] +
-                sorted([(k, v) for k, v in SORTED_STATES.items()],
-                       key=lambda x: x[1]),
+        choices=[('', 'Select a state...')] + sorted([(k, v) for k, v in SORTED_STATES.items()], key=lambda x: x[1]),
         help_text="The state where the club/team plays<br>")
+
+
+class NaysSurveyEmailForm(forms.Form):
+    # Name field is used to fool bots. its hidden and if text is entered then the form submission fails
+    name = forms.CharField(
+        label='',
+        max_length=255,
+        required=False,
+        widget=forms.TextInput(attrs={'style': 'display:none;'}))
+    email = forms.EmailField(
+        max_length=255,
+        label='Your email address',
+        help_text='Submit your email address to enter the free prize draw.',
+        widget=forms.TextInput(attrs={
+            'addon_before': '<i class="fa fa-envelope"></i>',
+            'placeholder': 'Email'}))
+
+    def clean_name(self):
+        data = super(NaysSurveyEmailForm, self).clean()
+        name = data.get('name')
+        if name:
+            raise forms.ValidationError('You are a bot')
+        return name
