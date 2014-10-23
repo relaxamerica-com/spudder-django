@@ -12,7 +12,10 @@
                     <li><a href="/brendan">The <span class="text-primary">BRENDAN PATRICK TEVLIN</span> Random Ack of Kindness</a></li>
                 {% endif %}
                 {% if 'challenge_dreamsforkids_piechallenge'|feature_is_enabled %}
-                    <li><a href="/dreamsforkids">The Pie Challenge for <span class="text-primary">DREAMS FOR KIDS (NJ)</span></a></li>
+                    <li><a href="/dreamsforkids/piechallenge">The Pie Challenge for <span class="text-primary">DREAMS FOR KIDS (NJ)</span></a></li>
+                {% endif %}
+                {% if 'challenge_dreamsforkids_payitforward'|feature_is_enabled %}
+                    <li><a href="/dreamsforkids/payitforward">Pay it Forward for <span class="text-primary">DREAMS FOR KIDS (NJ)</span></a></li>
                 {% endif %}
             </ul>
         </div>
