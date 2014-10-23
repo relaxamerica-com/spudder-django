@@ -2,7 +2,7 @@ import logging
 import stripe
 from django import forms
 from django.conf import settings
-from spudderdomain.models import StripeRecipient
+from spudderdomain.models import StripeRecipient, Club
 from spudmart.CERN.models import SORTED_STATES
 from spudderadmin.templatetags.featuretags import feature_is_enabled
 
@@ -93,3 +93,19 @@ class ClubProfileEditForm(ClubProfileCreateForm):
         help_text="Say something about your club!",
         widget=forms.Textarea(attrs={'placeholder': 'Club description'})
     )
+
+
+class ClubProfileBasicDetailsForm(forms.Form):
+    id = forms.CharField(max_length=255, widget=forms.HiddenInput)
+    name = forms.CharField(max_length=255, label='Organization Name')
+
+    def clean_name(self):
+        data = super(ClubProfileBasicDetailsForm, self).clean()
+        name = data.get('name', '').strip()
+        if not name:
+            raise forms.ValidationError('Organization name is required.')
+        if len(name) < 3:
+            raise forms.ValidationError('Organization name should be longer than 3 characters.')
+        if Club.objects.filter(name=name).exclude(id=data.get('id')).count():
+            raise forms.ValidationError('An organization with that name already exists.')
+        return name

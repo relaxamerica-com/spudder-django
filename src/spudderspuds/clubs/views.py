@@ -12,7 +12,7 @@ from spudderaccounts.models import Invitation
 from spudderaccounts.wrappers import RoleBase
 from spudderdomain.wrappers import EntityBase
 from spudderspuds.clubs.decorators import club_admin_required, club_not_fully_activated, club_fully_activated
-from spudderspuds.clubs.forms import ClubProfileCreateForm, ClubProfileEditForm
+from spudderspuds.clubs.forms import ClubProfileCreateForm, ClubProfileEditForm, ClubProfileBasicDetailsForm
 from spudderdomain.controllers import RoleController, EntityController
 from spudderdomain.models import ClubRecipient, Club, ClubAdministrator, TeamClubAssociation, TeamPage, StripeRecipient, \
     StripeUser
@@ -53,16 +53,22 @@ def dashboard_edit(request):
         EntityController.ENTITY_CLUB,
         club.id,
         EntityBase.EntityWrapperByEntityType(EntityController.ENTITY_CLUB))
+    basic_details_form = ClubProfileBasicDetailsForm(initial=club.__dict__)
     if request.method == 'POST':
         if request.FILES:
             icon = UploadForm(request.POST, request.FILES).save()
             club.thumbnail = icon
             club.save()
-        messages.success(request, 'Team details updated.')
-        return redirect(request.current_role.home_page_path)
+        basic_details_form = ClubProfileBasicDetailsForm(request.POST)
+        if basic_details_form.is_valid():
+            for attr in ('name', ):
+                setattr(club, attr, basic_details_form.cleaned_data.get(attr))
+            club.save()
+            messages.success(request, 'Team details updated.')
     template_data = {
         'upload_url': blobstore.create_upload_url('/club/dashboard/edit'),
-        'club_entity': club_entity}
+        'club_entity': club_entity,
+        'basic_details_form': basic_details_form}
     return render(request, 'spudderspuds/clubs/pages/dashboard_edit.html', template_data)
 
 
