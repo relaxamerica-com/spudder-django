@@ -93,9 +93,15 @@ urlpatterns = patterns(
 
     # Challenges and affiliate challenegs
     url(r'^challenges/*', include('spudderspuds.challenges.urls')),
+    url(r'^dreamsforkids/payitforward$',
+        'spudderspuds.challenges.views.affiliate_challenge_page',
+        {'affiliate_key': 'dreamsforkids-payitforward'}),
+    url(r'^dreamsforkids/piechallenge$',
+        'spudderspuds.challenges.views.affiliate_challenge_page',
+        {'affiliate_key': 'dreamsforkids-piechallenge'}),
     url(r'^dreamsforkids$',
         'spudderspuds.challenges.views.affiliate_challenge_page',
-        {'affiliate_key': 'dreamsforkids'}),
+        {'affiliate_key': 'dreamsforkids-piechallenge'}),
     url(r'^brendan$',
         'spudderspuds.challenges.views.affiliate_challenge_page',
         {'affiliate_key': 'bpt_memorial_field_fund_rak'}),
