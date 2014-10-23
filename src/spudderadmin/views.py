@@ -775,7 +775,7 @@ def challenges(request):
                     'slug': 'piechallenge'
                 },
                 {
-                    'name': "Brendan Patrick Tevlin RAK",
+                    'name': "Brendan P. Tevlin RAK",
                     'sub_name': '(Random Act of Kindness)',
                     'description': "Challenge your friends and family to perform a Random Act of Kindness!",
                     'slug': 'bptrak'
