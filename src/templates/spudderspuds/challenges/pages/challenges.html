@@ -111,18 +111,30 @@
 {#        </div>#}
 {#    </div>#}
 
-    {% if 'challenge_dreamsforkids_piechallenge'|feature_is_enabled %}
+    {% if 'challenge_dreamsforkids_piechallenge'|feature_is_enabled or 'challenge_dreamsforkids_payitforward'|feature_is_enabled %}
     <div class="challenge-cta" id="dreamsforkids">
         <div class="row">
             <div class="col-xs-10 col-xs-offset-1 col-xs-push-0 col-sm-4 col-sm-offset-1 col-sm-push-6">
-                <h2>Take the Pie Challenge for <span class="text-primary">DREAMS FOR KIDS (NJ)</span></h2>
-                <div class="row">
-                    <div class="col-sm-9">
-                        <a class="btn btn-lg btn-block btn-primary btn-cta" href="/dreamsforkids">
-                            The Pie Challenge <i class="fa fa-arrow-right"></i>
-                        </a>
+                {% if 'challenge_dreamsforkids_piechallenge'|feature_is_enabled %}
+                    <h2>Take the Pie Challenge for <span class="text-primary">DREAMS FOR KIDS (NJ)</span></h2>
+                    <div class="row">
+                        <div class="col-sm-9">
+                            <a class="btn btn-lg btn-block btn-primary btn-cta" href="/dreamsforkids/piechallenge">
+                                The Pie Challenge <i class="fa fa-arrow-right"></i>
+                            </a>
+                        </div>
                     </div>
-                </div>
+                {% endif %}
+                {% if 'challenge_dreamsforkids_payitforward'|feature_is_enabled %}
+                    <h2>Pay it Forward for <span class="text-primary">DREAMS FOR KIDS (NJ)</span></h2>
+                    <div class="row">
+                        <div class="col-sm-9">
+                            <a class="btn btn-lg btn-block btn-info btn-cta" href="/dreamsforkidspayitforward">
+                                Pay it Forward <i class="fa fa-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                {% endif %}
             </div>
             <div class="col-xs-10 col-xs-offset-1 col-xs-pull-0 col-sm-4 col-sm-offset-1 col-sm-pull-5">
                 <h1><a href="http://www.ladfk.org/" target="_blank"><span class="text-primary">DREAMS FOR KIDS (NJ)</span></a> is raising money with <span class="text-primary">Spudder</span></h1>
