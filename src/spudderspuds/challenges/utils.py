@@ -54,12 +54,18 @@ def extract_statistics_from_challenge_tree(challenge_tree):
 
 
 def get_affiliate_club_and_challenge(affiliate_key):
-    if affiliate_key == "dreamsforkids":
+    if affiliate_key == "dreamsforkids-piechallenge":
         if not feature_is_enabled('challenge_dreamsforkids_piechallenge'):
             raise Http404
         club_name = 'Dreams for Kids'
         challenge_template_slug = "piechallenge"
         challenge_you_tube_video_id = "vqgpHZ09St8"
+    elif affiliate_key == "dreamsforkids-payitforward":
+        if not feature_is_enabled('challenge_dreamsforkids_payitforward'):
+            raise Http404
+        club_name = "Dreams for Kids"
+        challenge_template_slug = "payitforward"
+        challenge_you_tube_video_id = "xxrpO9vPeY0"
     elif affiliate_key == "bpt_memorial_field_fund_rak":
         if not feature_is_enabled('challenge_bpt_memorial_field_fund_rak'):
             raise Http404

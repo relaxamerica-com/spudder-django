@@ -747,6 +747,7 @@ def delete_affiliate(request, affiliate_id):
 def challenges(request):
     ACTION_RESET_CHALLENGES_SYSTEM = 'reset_challenges_system'
     ACTION_ENSURE_CHALLENGE_TEMPLATE = 'ensure_challenge_templates'
+
     reset_challenges_system_form = ChallengesResetSystemForm(initial={'action': ACTION_RESET_CHALLENGES_SYSTEM})
     if request.method == 'POST':
         action = request.POST.get('action')
@@ -778,6 +779,11 @@ def challenges(request):
                     'sub_name': '(Random Act of Kindness)',
                     'description': "Challenge your friends and family to perform a Random Act of Kindness!",
                     'slug': 'bptrak'
+                },
+                {
+                    'name': "Pay it Forward",
+                    'description': "Challenge your friends and family to Pay it Forward!",
+                    'slug': 'payitforward'
                 }
             ]
             for challenge in challenges:
