@@ -69,7 +69,7 @@ def get_affiliate_club_and_challenge(affiliate_key):
     elif affiliate_key == "bpt_memorial_field_fund_rak":
         if not feature_is_enabled('challenge_bpt_memorial_field_fund_rak'):
             raise Http404
-        club_name = "BPT Memorial Field Fund"
+        club_name = "Brendan P. Tevlin FUND"
         challenge_template_slug = "bptrak"
         challenge_you_tube_video_id = "R2yX64Gh2iI"
     else:

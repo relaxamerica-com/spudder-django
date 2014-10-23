@@ -84,33 +84,31 @@ def _create_challenge(club_class, club_id, form, request, template, parent=None,
 
 
 def challenges_splash(request):
-    bpt_entity = EntityClub(Club.objects.get(name='BPT Memorial Field Fund'))
-    drf_entity = EntityClub(Club.objects.get(name='Dreams for Kids'))
     template_data = {
         'challenges': [
             {
                 'title': 'Random Act of Kindness',
-                'beneficiary_image': bpt_entity.image,
                 'youtube_video_id': 'R2yX64Gh2iI',
                 'link': '/brendan',
                 'h4': 'Take part in the RANDOM ACT OF KINDNESS challenge now!',
-                'p': 'Raising money for the BRENDAN PATRICK TEVLIN MEMORIAL FIELD FUND'
+                'p': 'Challenge originated by the BRENDAN P TEVLIN FUND, yet you will be raising for the sports '
+                     'organization of your choice!'
             },
             {
                 'title': 'Pay it Forward',
-                'beneficiary_image': drf_entity.image,
                 'youtube_video_id': 'xxrpO9vPeY0',
                 'link': '/dreamsforkids/payitforward',
                 'h4': 'Take part in the PAY IT FORWARD challenge now!',
-                'p': 'Raising money for DREAMS FOR KIDS (NJ)'
+                'p': 'Challenge originated by DREAMS FOR KIDS (NJ) yet you will be raising for the sports '
+                     'organization of your choice!'
             },
             {
                 'title': 'Pie Challenge',
-                'beneficiary_image': drf_entity.image,
                 'youtube_video_id': 'vqgpHZ09St8',
                 'link': '/dreamsforkids/piechallenge',
                 'h4': 'Take part in the PIE CHALLENGE now!',
-                'p': 'Raising money for DREAMS FOR KIDS (NJ)'
+                'p': 'Challenge originated by DREAMS FOR KIDS (NJ) yet you will be raising for the sports '
+                     'organization of your choice!'
             },
 
         ]
