@@ -22,7 +22,7 @@ from spudderdomain.models import ChallengeChallengeParticipation
 from spudmart.upload.forms import UploadForm
 from spudderaccounts.utils import change_current_role
 from spudderaccounts.wrappers import RoleBase
-from spudderdomain.wrappers import EntityBase
+from spudderdomain.wrappers import EntityBase, EntityClub
 from spudderdomain.controllers import RoleController, EntityController, EventController
 from spudderspuds.challenges.forms import CreateTempClubForm, ChallengeConfigureForm, ChallengesRegisterForm, \
     RegisterCreateClubForm, ChallengeDonationEditForm, ChallengeImageEditForm
@@ -84,7 +84,37 @@ def _create_challenge(club_class, club_id, form, request, template, parent=None,
 
 
 def challenges_splash(request):
-    template_data = {}
+    bpt_entity = EntityClub(Club.objects.get(name='BPT Memorial Field Fund'))
+    drf_entity = EntityClub(Club.objects.get(name='Dreams for Kids'))
+    template_data = {
+        'challenges': [
+            {
+                'title': 'Random Act of Kindness',
+                'beneficiary_image': bpt_entity.image,
+                'youtube_video_id': 'R2yX64Gh2iI',
+                'link': '/brendan',
+                'h4': 'Take part in the RANDOM ACT OF KINDNESS challenge now!',
+                'p': 'Raising money for the BRENDAN PATRICK TEVLIN MEMORIAL FIELD FUND'
+            },
+            {
+                'title': 'Pay it Forward',
+                'beneficiary_image': drf_entity.image,
+                'youtube_video_id': 'xxrpO9vPeY0',
+                'link': '/dreamsforkids/payitforward',
+                'h4': 'Take part in the PAY IT FORWARD challenge now!',
+                'p': 'Raising money for DREAMS FOR KIDS (NJ)'
+            },
+            {
+                'title': 'Pie Challenge',
+                'beneficiary_image': drf_entity.image,
+                'youtube_video_id': 'vqgpHZ09St8',
+                'link': '/dreamsforkids/piechallenge',
+                'h4': 'Take part in the PIE CHALLENGE now!',
+                'p': 'Raising money for DREAMS FOR KIDS (NJ)'
+            },
+
+        ]
+    }
     return render(request, 'spudderspuds/challenges/pages/challenges.html', template_data)
 
 

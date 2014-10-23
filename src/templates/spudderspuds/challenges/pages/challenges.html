@@ -18,6 +18,7 @@
         $(function(){
 
             balance_element_height("#challenges-explained .panel-body");
+            balance_element_height("#entities-section .caption");
 
             // update the tag with id "countdown" every 1 second
             setInterval(function () {
@@ -61,6 +62,37 @@
         <div class="container">
             <div class="col-xs-offset-0 col-sm-5 col-sm-offset-1">
                 <h1><span class="text-primary">Spudder</span><br/> simple fundraising for youth sports </h1>
+            </div>
+        </div>
+    </div>
+
+    <div id="entities-section">
+        <div class="container">
+            <h1 class="text-center">
+                Check out these challenges on <span class="text-primary">Spudder</span>
+            </h1>
+            <div class="row">
+                {% for challenge in challenges %}
+                    <div class="col-sm-4">
+                        <h2 class="entity-section-header">
+                            {{ challenge.title }} <img src="{{ challenge.beneficiary_image }}" class="img-circle pull-right"/>
+                        </h2>
+                        <div class="top-entity">
+                            <div class="image embed-responsive embed-responsive-16by9">
+                                <iframe class="embed-responsive-item" type="text/html" src="http{% if request.is_secure %}s{% endif %}://www.youtube.com/embed/{{ challenge.youtube_video_id }}?origin=http://www.spudder.com&rel=0&showinfo=0" frameborder="0" allowfullscreen></iframe>
+                            </div>
+                            <div class="caption">
+                                <h4><a href="{{ challenge.link }}">{{ challenge.h4 }}</a></h4>
+                                <p>{{ challenge.p|safe }}</p>
+                            </div>
+                            <p>
+                                <a href="{{ challenge.link }}" class="btn btn-block btn-cta btn-default">
+                                    Go to challenge <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </p>
+                        </div>
+                    </div>
+                {% endfor %}
             </div>
         </div>
     </div>
@@ -111,38 +143,6 @@
 {#        </div>#}
 {#    </div>#}
 
-    {% if 'challenge_dreamsforkids_piechallenge'|feature_is_enabled or 'challenge_dreamsforkids_payitforward'|feature_is_enabled %}
-    <div class="challenge-cta" id="dreamsforkids">
-        <div class="row">
-            <div class="col-xs-10 col-xs-offset-1 col-xs-push-0 col-sm-4 col-sm-offset-1 col-sm-push-6">
-                {% if 'challenge_dreamsforkids_piechallenge'|feature_is_enabled %}
-                    <h2>Take the Pie Challenge for <span class="text-primary">DREAMS FOR KIDS (NJ)</span></h2>
-                    <div class="row">
-                        <div class="col-sm-9">
-                            <a class="btn btn-lg btn-block btn-primary btn-cta" href="/dreamsforkids/piechallenge">
-                                The Pie Challenge <i class="fa fa-arrow-right"></i>
-                            </a>
-                        </div>
-                    </div>
-                {% endif %}
-                {% if 'challenge_dreamsforkids_payitforward'|feature_is_enabled %}
-                    <h2>Pay it Forward for <span class="text-primary">DREAMS FOR KIDS (NJ)</span></h2>
-                    <div class="row">
-                        <div class="col-sm-9">
-                            <a class="btn btn-lg btn-block btn-info btn-cta" href="/dreamsforkidspayitforward">
-                                Pay it Forward <i class="fa fa-arrow-right"></i>
-                            </a>
-                        </div>
-                    </div>
-                {% endif %}
-            </div>
-            <div class="col-xs-10 col-xs-offset-1 col-xs-pull-0 col-sm-4 col-sm-offset-1 col-sm-pull-5">
-                <h1><a href="http://www.ladfk.org/" target="_blank"><span class="text-primary">DREAMS FOR KIDS (NJ)</span></a> is raising money with <span class="text-primary">Spudder</span></h1>
-                <p>Help DREAMS FOR KIDS (NJ) raise money and help kids reach their dreams in life.</p>
-            </div>
-        </div>
-    </div>
-    {% endif %}
 
     <div id="challenges-explained">
         <div class="container">
