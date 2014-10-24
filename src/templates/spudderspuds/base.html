@@ -13,12 +13,12 @@
 {% block masterhead %}
         {% if not request.current_role %}
             <div class="navbar-right login-signup visible-xs" style="float: right;">
-                <a href="/challenges/signin" class="btn btn-sm btn-default navbar-btn">LOG IN <i class="fa fa-caret-down text-primary"></i></a>
-                <a href="/challenges/register" class="btn btn-sm btn-primary navbar-btn">SIGN UP</a>
+                <a href="/spuds/signin" class="btn btn-sm btn-default navbar-btn">LOG IN <i class="fa fa-caret-down text-primary"></i></a>
+                <a href="/spuds/register" class="btn btn-sm btn-primary navbar-btn">SIGN UP</a>
             </div>
             <div class="navbar-right login-signup hidden-xs" style="float: right;">
-                <a href="/challenges/signin" class="btn btn-default navbar-btn btn-lg">LOG IN <i class="fa fa-caret-down text-primary"></i></a>
-                <a href="/challenges/register" class="btn btn-primary navbar-btn btn-lg">SIGN UP</a>
+                <a href="/spuds/signin" class="btn btn-default navbar-btn btn-lg">LOG IN <i class="fa fa-caret-down text-primary"></i></a>
+                <a href="/spuds/register" class="btn btn-primary navbar-btn btn-lg">SIGN UP</a>
             </div>
         {% else %}
             <div id="current-user" class="media navbar-right">
