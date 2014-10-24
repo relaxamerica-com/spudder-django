@@ -66,7 +66,7 @@ def get_affiliate_club_and_challenge(affiliate_key):
             raise Http404
         club_name = "Dreams for Kids"
         challenge_template_slug = "payitforward"
-        challenge_you_tube_video_id = "xxrpO9vPeY0"
+        challenge_you_tube_video_id = "R_EkUOThl7w"
     elif affiliate_key == "bpt_memorial_field_fund_rak":
         if not feature_is_enabled('challenge_bpt_memorial_field_fund_rak'):
             raise Http404
