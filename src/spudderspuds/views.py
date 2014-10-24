@@ -1,5 +1,8 @@
 import re
-from random import shuffle
+
+from google.appengine.api import blobstore
+import simplejson
+
 from django.template.defaultfilters import slugify
 from django.contrib import messages
 from django.contrib.auth import login, authenticate
@@ -7,11 +10,8 @@ from django.contrib.auth.models import User
 from django.http import HttpResponse, HttpResponseNotAllowed, HttpResponseRedirect, HttpResponseBadRequest
 from django.shortcuts import render, render_to_response, redirect, get_object_or_404
 from django.template import RequestContext
-from django.template.loader import render_to_string
-from google.appengine.api import blobstore
-import simplejson
 from spudderaccounts.models import Invitation
-from spudderaccounts.templatetags.spudderaccountstags import is_fan, user_has_fan_role
+from spudderaccounts.templatetags.spudderaccountstags import is_fan
 from spudderaccounts.utils import change_current_role
 from spudderaccounts.wrappers import RoleFan
 from spudderaffiliates.models import Affiliate
@@ -22,7 +22,8 @@ from spuddersocialengine.models import SpudFromSocialMedia
 from spudderspuds.challenges.utils import _StateEngineStates
 from spudderspuds.clubs.forms import RegisterClubWithFanForm
 from spudderspuds.forms import FanSigninForm, FanRegisterForm, FanPageForm, BasicSocialMediaForm
-from spudderspuds.utils import create_and_activate_fan_role, is_signin_claiming_spud, set_social_media
+from spudderspuds.utils import create_and_activate_fan_role, is_signin_claiming_spud, set_social_media, \
+    should_current_role_be_here, extract_invitation_from_request
 from spudderspuds.decorators import can_edit
 from spudmart.CERN.models import Student
 from spudmart.CERN.rep import team_gained_follower, team_tagged_in_spud
@@ -201,9 +202,10 @@ def entity_search(request, entity_type):
 
 
 def fan_signin(request):
-    if request.current_role and request.current_role.entity_type == RoleController.ENTITY_FAN:
-        return redirect('/spuds')
+    if request.current_role:
+        return redirect(request.current_role.home_page_path)
     template_data = {}
+    form = FanSigninForm(initial=request.GET)
     if request.method == "POST":
         form = FanSigninForm(request.POST)
         if form.is_valid():
@@ -212,44 +214,19 @@ def fan_signin(request):
             user = authenticate(username=username, password=password)
             login(request, user)
             fan = FanPage.objects.filter(fan=user)[0]
-            change_current_role(request, RoleController.ENTITY_FAN, fan.id)
+            role = change_current_role(request)
             is_signin_claiming_spud(
                 request,
                 fan,
                 form.cleaned_data.get('twitter', None),
                 form.cleaned_data.get('spud_id', None))
-            redirect_to = request.session.pop('redirect_after_auth', '/spuds')
+            redirect_to = request.session.pop('redirect_after_auth', role.home_page_path)
             return redirect(redirect_to)
-    else:
-        form = FanSigninForm(initial=request.GET)
     template_data["form"] = form
     return render_to_response(
         'spudderspuds/pages/user_signin.html',
         template_data,
         context_instance=RequestContext(request))
-
-
-def should_current_role_be_here(request):
-    if request.current_role and request.current_role.entity_type == RoleController.ENTITY_FAN:
-        return False, redirect('/spuds')
-    if request.current_role and not is_fan(request.current_role) and not user_has_fan_role(request):
-        if request.GET.get('twitter', None) and request.GET.get('spud_id', None):
-            return False, redirect(
-                '/spuds/register_add_fan_role?twitter=%s&spud_id=%s' %
-                (request.GET['twitter'], request.GET['spud_id']))
-        else:
-            return False, redirect('/spuds/register_add_fan_role')
-    return True, None
-
-def extract_invitation_from_request(request):
-    invitation_id = request.session.get('invitation_id')
-    invitation = None
-    if invitation_id:
-        try:
-            invitation = Invitation.objects.get(id=invitation_id, status=Invitation.PENDING_STATUS)
-        except Invitation.DoesNotExist:
-            pass
-    return invitation
 
 
 def fan_register(request):
