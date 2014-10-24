@@ -96,7 +96,7 @@ def challenges_splash(request):
             },
             {
                 'title': 'Pay it Forward',
-                'youtube_video_id': 'xxrpO9vPeY0',
+                'youtube_video_id': 'R_EkUOThl7w',
                 'link': '/dreamsforkids/payitforward',
                 'h4': 'Take part in the PAY IT FORWARD challenge now!',
                 'p': 'Challenge originated by DREAMS FOR KIDS (NJ) yet you will be raising for the sports '
