@@ -16218,35 +16218,35 @@ body#challenge-page #challenge-actions .action-col .action-container {
   padding: 20px 10px;
   margin-bottom: 20px;
 }
-body#challenge-page.bptrak-bpt-memorial-field-fund .spudder-jumbotron {
+body#challenge-page.bptrak-brendan-p-tevlin-fund .spudder-jumbotron {
   background-image: url('/static/img/spudderspuds/challenges/jumbotron-brendantevlin.png') !important;
 }
 @media (max-width: 767px) {
-  body#challenge-page.bptrak-bpt-memorial-field-fund .spudder-jumbotron {
+  body#challenge-page.bptrak-brendan-p-tevlin-fund .spudder-jumbotron {
     background-image: url('/static/img/spudderspuds/challenges/jumbotron-brendantevlin-small.png') !important;
   }
 }
-body#challenge-page.bptrak-bpt-memorial-field-fund .spudder-jumbotron .jumbotron-bottom-banner h1 {
+body#challenge-page.bptrak-brendan-p-tevlin-fund .spudder-jumbotron .jumbotron-bottom-banner h1 {
   margin-bottom: 0;
 }
 @media (max-width: 767px) {
-  body#challenge-page.bptrak-bpt-memorial-field-fund .spudder-jumbotron .jumbotron-bottom-banner h1 {
+  body#challenge-page.bptrak-brendan-p-tevlin-fund .spudder-jumbotron .jumbotron-bottom-banner h1 {
     font-size: 22px;
   }
 }
-body#challenge-page.bptrak-bpt-memorial-field-fund .spudder-jumbotron .jumbotron-bottom-banner h2 {
+body#challenge-page.bptrak-brendan-p-tevlin-fund .spudder-jumbotron .jumbotron-bottom-banner h2 {
   margin: 0;
 }
 @media (max-width: 767px) {
-  body#challenge-page.bptrak-bpt-memorial-field-fund .spudder-jumbotron .jumbotron-bottom-banner h2 {
+  body#challenge-page.bptrak-brendan-p-tevlin-fund .spudder-jumbotron .jumbotron-bottom-banner h2 {
     font-size: 18px;
   }
 }
-body#challenge-page.bptrak-bpt-memorial-field-fund .spudder-jumbotron .jumbotron-bottom-banner h3 {
+body#challenge-page.bptrak-brendan-p-tevlin-fund .spudder-jumbotron .jumbotron-bottom-banner h3 {
   margin-top: 3px;
 }
 @media (max-width: 767px) {
-  body#challenge-page.bptrak-bpt-memorial-field-fund .spudder-jumbotron .jumbotron-bottom-banner h3 {
+  body#challenge-page.bptrak-brendan-p-tevlin-fund .spudder-jumbotron .jumbotron-bottom-banner h3 {
     font-size: 18px;
   }
 }
