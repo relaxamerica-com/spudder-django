@@ -8,10 +8,15 @@ from spudmart.CERN.models import SORTED_STATES
 
 class FanSigninForm(forms.Form):
     email_address = forms.EmailField(
-        required=True,
-        widget=forms.TextInput(attrs={'addon_before': '<i class="fa fa-fw fa-envelope"></i>'}))
+        label='',
+        widget=forms.TextInput(attrs={
+            'addon_before': '<i class="fa fa-fw fa-envelope"></i>',
+            'placeholder': 'Your email address'}))
     password = forms.CharField(
-        widget=forms.PasswordInput(attrs={'addon_before': '<i class="fa fa-fw fa-lock"></i>'}))
+        label='',
+        widget=forms.PasswordInput(attrs={
+            'placeholder': 'Your password',
+            'addon_before': '<i class="fa fa-fw fa-lock"></i>'}))
     spud_id = forms.CharField(max_length=256, required=False, widget=forms.HiddenInput)
     twitter = forms.CharField(max_length=256, required=False, widget=forms.HiddenInput)
 
@@ -31,28 +36,42 @@ class FanSigninForm(forms.Form):
 
 
 class FanRegisterForm(forms.Form):
-    email_address = forms.EmailField(required=True)
-    password = forms.CharField(widget=forms.PasswordInput)
+    email_address = forms.EmailField(
+        required=True,
+        label='',
+        widget=forms.TextInput(attrs={'placeholder': 'Your email address'}))
+    password = forms.CharField(
+        label='',
+        widget=forms.PasswordInput(attrs={'placeholder': 'Choose a password'}),
+        help_text='Passwords should be at least 6 characters long.')
+    state = forms.ChoiceField(
+        choices=[('', 'Most important state for sports')] + sorted(
+            [(k, v) for k, v in SORTED_STATES.items()], key=lambda x: x[1]),
+        label="",
+        help_text="Why are we asking this: So that we can localize experience to the sports that matter most to you.")
+    over_13 = forms.BooleanField(
+        label="I am over 13 years of age",
+        help_text="You must confirm that you are over 13 years of age to open an account on Spudder.")
+
+    next = forms.CharField(max_length=256, required=False, widget=forms.HiddenInput, initial='/')
     spud_id = forms.CharField(max_length=256, required=False, widget=forms.HiddenInput)
     twitter = forms.CharField(max_length=256, required=False, widget=forms.HiddenInput)
 
-    def clean(self):
+    def clean_email(self):
         data = super(FanRegisterForm, self).clean()
-        email_address = (data.get('email_address') or "").strip().lower()
-        password = (data.get('password') or "").strip()
-        raise_error = False
-        if not email_address:
-            self._errors['email_address'] = self.error_class(['You must supply an email address'])
-            raise_error = True
-        if User.objects.filter(username__iexact=email_address).count():
-            self._errors['email_address'] = self.error_class(['An account already exists for this email address.'])
-            raise_error = True
-        if not password or len(password) < 6:
-            self._errors['password'] = self.error_class(['You must supply a password longer than 6 characters'])
-            raise_error = True
-        if raise_error:
-            raise forms.ValidationError('There was a problem creating your account.')
-        return data
+        email = data.get('email', '').strip()
+        if not email:
+            raise forms.ValidationError('Email is required.')
+        if User.objects.filter(email=email).count():
+            raise forms.ValidationError('This email address is already associated with an account.')
+        return email
+
+    def clean_password(self):
+        data = super(FanRegisterForm, self).clean()
+        password = data.get('password', '').strip()
+        if len(password) < 6:
+            raise forms.ValidationError("Passwords must be at least 6 characters long.")
+        return password
 
 
 class FanPageForm(forms.Form):

@@ -1,5 +1,6 @@
 import re
 from random import shuffle
+from django.template.defaultfilters import slugify
 from django.contrib import messages
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.models import User
@@ -15,10 +16,11 @@ from spudderaccounts.utils import change_current_role
 from spudderaccounts.wrappers import RoleFan
 from spudderaffiliates.models import Affiliate
 from spudderdomain.controllers import TeamsController, RoleController, SpudsController, EntityController
-from spudderdomain.models import FanPage, TeamPage, TeamAdministrator
+from spudderdomain.models import FanPage, TeamPage, TeamAdministrator, Club, ClubAdministrator
 from spudderkrowdio.models import FanFollowingEntityTag, KrowdIOStorage
 from spuddersocialengine.models import SpudFromSocialMedia
 from spudderspuds.challenges.utils import _StateEngineStates
+from spudderspuds.clubs.forms import RegisterClubWithFanForm
 from spudderspuds.forms import FanSigninForm, FanRegisterForm, FanPageForm, BasicSocialMediaForm
 from spudderspuds.utils import create_and_activate_fan_role, is_signin_claiming_spud, set_social_media
 from spudderspuds.decorators import can_edit
@@ -227,17 +229,19 @@ def fan_signin(request):
         context_instance=RequestContext(request))
 
 
-def fan_register(request):
+def should_current_role_be_here(request):
     if request.current_role and request.current_role.entity_type == RoleController.ENTITY_FAN:
-        return redirect('/spuds')
+        return False, redirect('/spuds')
     if request.current_role and not is_fan(request.current_role) and not user_has_fan_role(request):
         if request.GET.get('twitter', None) and request.GET.get('spud_id', None):
-            return redirect(
+            return False, redirect(
                 '/spuds/register_add_fan_role?twitter=%s&spud_id=%s' %
                 (request.GET['twitter'], request.GET['spud_id']))
         else:
-            return redirect('/spuds/register_add_fan_role')
+            return False, redirect('/spuds/register_add_fan_role')
+    return True, None
 
+def extract_invitation_from_request(request):
     invitation_id = request.session.get('invitation_id')
     invitation = None
     if invitation_id:
@@ -245,18 +249,55 @@ def fan_register(request):
             invitation = Invitation.objects.get(id=invitation_id, status=Invitation.PENDING_STATUS)
         except Invitation.DoesNotExist:
             pass
+    return invitation
 
 
-    template_data = {}
+def fan_register(request):
+    # Should the current_role be here?
+    should_be_here, response = should_current_role_be_here(request)
+    if not should_be_here:
+        return response
+
+    # Extract an invitation if there is one
+    invitation = extract_invitation_from_request(request)
+
+    template_data = {'tab': request.GET.get('tab', 'fan')}
+    form = FanRegisterForm(initial=request.GET)
+    club_form = RegisterClubWithFanForm()
+
+
     if request.method == "POST":
+        is_valid = True
+        tab = request.POST.get('tab')
+        template_data['tab'] = tab
+
+        if tab == 'org':
+            club_form = RegisterClubWithFanForm(request.POST)
+            is_valid = club_form.is_valid()
+
         form = FanRegisterForm(request.POST)
-        if form.is_valid():
+        if is_valid and form.is_valid():
+            # Get the form data
             username = form.cleaned_data.get('email_address')
             password = form.cleaned_data.get('password')
+            state = form.cleaned_data.get('state')
+            # Create the auth.User
             user = User.objects.create_user(username, username, password)
             user.save()
             user.spudder_user.mark_password_as_done()
+            # Create the Fan
             fan_role = create_and_activate_fan_role(request, user)
+            request.current_role = fan_role
+            fan_page = fan_role.entity
+            fan_page.state = state
+            at_name = slugify(re.sub(r"@.*$", "", username)).replace('-', '')
+            x = 1
+            while FanPage.objects.filter(username=username).count():
+                username += '%s' % x
+                x += 1
+            fan_page.username = at_name
+            fan_page.save()
+            # Login the user
             login(request, authenticate(username=username, password=password))
             is_signin_claiming_spud(
                 request,
@@ -274,14 +315,22 @@ def fan_register(request):
                     fan_role.entity.affiliate = Affiliate.objects.get(name=invitation.extras['affiliate_name'])
                     return HttpResponseRedirect('/spudderaffiliates/invitation/%s/create_club' % invitation.id)
                 return redirect('/fan/follow?origin=invitation')
-            return redirect('/fan/%s/edit?new_registration=true' % fan_role.entity.id)
-    else:
-        form = FanRegisterForm(initial=request.GET)
+            if tab == 'org':
+                # Get the form data
+                club_name = club_form.cleaned_data.get('name')
+                # Create the club
+                club = Club(name=club_name, state=state)
+                club.save()
+                # Create the club admin
+                club_admin = ClubAdministrator(club=club, admin=user)
+                club_admin.save()
+                club_admin_role = change_current_role(request, RoleController.ENTITY_CLUB_ADMIN, club_admin.id)
+                request.current_role = club_admin_role
+            return redirect(request.current_role.home_page_path)
+
     template_data["form"] = form
-    return render_to_response(
-        'spudderspuds/pages/user_register.html',
-        template_data,
-        context_instance=RequestContext(request))
+    template_data['club_form'] = club_form
+    return render(request, 'spudderspuds/pages/user_register.html', template_data)
 
 
 def user_add_fan_role(request):

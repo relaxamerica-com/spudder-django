@@ -426,6 +426,15 @@
                 $('input, textarea, select').livequery(function(){
                     initInputs();
                 });
+
+                /* Ensure bootstrap popovers */
+                $('.popover-trigger').livequery(function(){
+                    $(this).click(function(e) {
+                        e.preventDefault()
+                    })
+                    $(this).popover();
+
+                });
             });
 
         </script>

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+import logging
 
 from django.forms import (TextInput, DateInput, FileInput, CheckboxInput,
                           ClearableFileInput, Select, RadioSelect, CheckboxSelectMultiple, PasswordInput)
@@ -326,17 +327,24 @@ class SpudderFieldRenderer(FieldRenderer):
             self.addon_before = self.initial_attrs.get('addon_before')
         if not self.addon_after:
             self.addon_after = self.initial_attrs.get('addon_after')
+        if self.field_help:
+            self.addon_after = "<a href='#' class='popover-trigger' data-container='body' data-toggle='popover' " \
+                               "data-placement='left' data-content='%s' data-trigger='focus'>" \
+                               "<i class='fa fa-question text-primary'></i>" \
+                               "</a>" % self.field_help
+            self.field_help = ''
 
     def make_input_group(self, html):
-        if ((self.addon_before or self.addon_after) and
-                isinstance(self.widget, (TextInput, DateInput, Select, PasswordInput))
-        ):
-            before = '<span class="input-group-addon">{addon}</span>'.format(
-                addon=self.addon_before) if self.addon_before else ''
-            after = '<span class="input-group-addon">{addon}</span>'.format(
-                addon=self.addon_after) if self.addon_after else ''
-            html = '<div class="input-group">{before}{html}{after}</div>'.format(
-                before=before, after=after, html=html)
+        if self.addon_before or self.addon_after:
+            if isinstance(self.widget, (TextInput, DateInput, Select, PasswordInput)):
+                before = '<span class="input-group-addon">{addon}</span>'.format(
+                    addon=self.addon_before) if self.addon_before else ''
+                after = '<span class="input-group-addon">{addon}</span>'.format(
+                    addon=self.addon_after) if self.addon_after else ''
+                html = '<div class="input-group">{before}{html}{after}</div>'.format(
+                    before=before, after=after, html=html)
+            elif isinstance(self.widget, CheckboxInput):
+                html = html.replace('</label>', '%s</label>' % self.addon_after)
         return html
 
     def fix_clearable_file_input(self, html):
