@@ -16182,6 +16182,9 @@ body#challenge-page.bptrak-brendan-p-tevlin-fund .spudder-jumbotron .jumbotron-b
     font-size: 18px;
   }
 }
+body#challenge-page.payitforward-dreams-for-kids .spudder-jumbotron {
+  background-image: url('/static/img/spudderspuds/challenges/jumbotron-pif.png') !important;
+}
 /**********************************************************************************************************************/
 /**********************************************************************************************************************/
 body#fan-dashbaord .submenu-header {
