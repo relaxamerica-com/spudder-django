@@ -109,3 +109,21 @@ class ClubProfileBasicDetailsForm(forms.Form):
         if Club.objects.filter(name=name).exclude(id=data.get('id')).count():
             raise forms.ValidationError('An organization with that name already exists.')
         return name
+
+
+class RegisterClubWithFanForm(forms.Form):
+    name = forms.CharField(
+        label='',
+        required=False,
+        max_length=255,
+        widget=forms.TextInput(attrs={'placeholder': 'Organization name'}),
+        help_text="This should be your organization full legal name")
+
+    def clean_name(self):
+        data = super(RegisterClubWithFanForm, self).clean()
+        name = data.get('name', '').strip()
+        if not name:
+            raise forms.ValidationError('An organization name is required.')
+        if Club.objects.filter(name=name).count():
+            raise forms.ValidationError('An organization with that name already exists.')
+        return name

@@ -1,28 +1,70 @@
 {% extends 'spudderspuds/base_single_well.html' %}
 {% load bootstrap3 %}
+{% load featuretags %}
 
+{% block js %}
+    {{ block.super }}
+    <script type="text/javascript" language="JavaScript">
+        $(document).ready(function(){
+            $('a[role=tab]').on('click', function(){
+                $('#input-tab').val($(this).attr('href').replace('.tab-', ''))
+            });
+
+            var tab = '{{ tab }}';
+            $('a[href$="' + tab + '"]').click();
+
+
+        });
+    </script>
+{% endblock %}
 
 {% block well_content %}
     <h2>
-        <img src="/static/img/spudderspuds/button-fans-small.png" />
-        Register to become a fan in Spudder
+        <img src="/static/img/spudderspuds/button-spuds-small.png" />
+        Register for an account with <span class="text-primary">Spudder</span>
     </h2>
-    <p>Becoming a fan means you have access to the entire network of Teams, Coaches, Playes and Sports Updates!</p>
+    <p class="visible-xs" style="margin: 20px 0 0;">Register as ...</p>
+    <ul class="nav nav-tabs nav-tabs-google" role="tablist" style="margin-bottom: 20px;">
+        <li class="active">
+            <a href=".tab-fan" role="tab" data-toggle="tab">
+                <span class="hidden-xs">Register as </span>a Fan
+            </a>
+        </li>
+        <li>
+            <a href=".tab-org" role="tab" data-toggle="tab">
+                <span class="hidden-xs">Register as </span>an Organization
+            </a>
+        </li>
+    </ul>
+
+
     <form method="post" role="form">
-        <fieldset>
-            {% csrf_token %}
-            {% bootstrap_form form %}
-            {% buttons %}
-                <button type="submit" class="btn btn-primary">
-                    Register
-                </button>
-                <a class="btn btn-default" href="/spuds">
-                    Cancel
-                </a>
-                <span class="pull-right" style="line-height: 30px;">
-                    Already have an account? Signin <a href="/spuds/signin">here</a>.
-                </span>
-            {% endbuttons %}
-        </fieldset>
+        <input type="hidden" name="tab" value="" id="input-tab" />
+        {% csrf_token %}
+        <div class="tab-content">
+            <div class="tab-pane active tab-fan">
+                <p>Becoming a fan means you have access to the entire network of Teams, Coaches, Playes and Sports Updates!</p>
+            </div>
+            <div class="tab-pane tab-org">
+                <p>
+                    Registering as an organization will allow you to start fundraising through Spudder.
+                </p>
+            </div>
+        </div>
+        {% bootstrap_form form %}
+        <div class="tab-content">
+            <div class="tab-pane active tab-fan"></div>
+            <div class="tab-pane tab-org">
+                {% bootstrap_form club_form %}
+            </div>
+        </div>
+        {% buttons %}
+            <button type="submit" class="btn btn-primary">
+                Register
+            </button>
+            <span class="pull-right" style="line-height: 30px;">
+                Already have an account? Signin <a href="/spuds/signin">here</a>.
+            </span>
+        {% endbuttons %}
     </form>
 {% endblock %}
