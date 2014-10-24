@@ -5,12 +5,13 @@ from django.contrib.auth.models import User
 from django.http import HttpResponse, Http404
 from django.shortcuts import render, redirect, get_object_or_404
 from google.appengine.api import blobstore
-from spudderaccounts.utils import change_current_role
+from spudderaccounts.utils import change_current_role, create_at_name_from_email_address
 from spudderadmin.templatetags.featuretags import feature_is_enabled
 from spudderdomain.controllers import RoleController, EntityController, EventController
 from spudderdomain.models import FanPage, Club, TempClub, Challenge, ChallengeTemplate, ChallengeParticipation, _ChallengeTree, _ChallengeTreeChallenge
 from spudderdomain.wrappers import EntityBase
 from spudderspuds.challenges.forms import ChallengesSigninForm, ChallengesRegisterForm, UploadImageForm, AcceptChallengeForm, CreateTempClubForm
+from spudderspuds.forms import FanRegisterForm
 from spudderspuds.utils import create_and_activate_fan_role
 from spudderstripe.utils import get_stripe_recipient_controller_for_club
 from spudmart.upload.forms import UploadForm
@@ -191,15 +192,9 @@ def _state_engine_process_register(request, challenge, engine, state, template_d
     if request.current_role:
         state = next_state
     else:
-        form = ChallengesRegisterForm(
-            initial=request.GET,
-            enable_register_club=False,
-            prevent_password_again=True)
+        form = FanRegisterForm()
         if request.method == "POST":
-            form = ChallengesRegisterForm(
-                request.POST,
-                enable_register_club=False,
-                prevent_password_again=True)
+            form = FanRegisterForm(request.POST)
             if form.is_valid():
                 username = form.cleaned_data.get('email_address')
                 password = form.cleaned_data.get('password')
@@ -209,7 +204,7 @@ def _state_engine_process_register(request, challenge, engine, state, template_d
                 fan_entity = create_and_activate_fan_role(request, user)
                 request.current_role = fan_entity
                 fan_page = fan_entity.entity
-                fan_page.username = form.cleaned_data.get('username')
+                fan_page.username = create_at_name_from_email_address(username)
                 fan_page.state = form.cleaned_data.get('state')
                 fan_page.save()
                 user = authenticate(username=username, password=password)

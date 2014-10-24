@@ -116,7 +116,7 @@ class RegisterClubWithFanForm(forms.Form):
         label='',
         required=False,
         max_length=255,
-        widget=forms.TextInput(attrs={'placeholder': 'Organization name'}),
+        widget=forms.TextInput(attrs={'placeholder': 'Organization name (required)'}),
         help_text="This should be your organization full legal name")
 
     def clean_name(self):
