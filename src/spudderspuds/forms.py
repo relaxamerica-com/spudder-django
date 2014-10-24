@@ -9,14 +9,10 @@ from spudmart.CERN.models import SORTED_STATES
 class FanSigninForm(forms.Form):
     email_address = forms.EmailField(
         label='',
-        widget=forms.TextInput(attrs={
-            'addon_before': '<i class="fa fa-fw fa-envelope"></i>',
-            'placeholder': 'Your email address'}))
+        widget=forms.TextInput(attrs={'placeholder': 'Your email address'}))
     password = forms.CharField(
         label='',
-        widget=forms.PasswordInput(attrs={
-            'placeholder': 'Your password',
-            'addon_before': '<i class="fa fa-fw fa-lock"></i>'}))
+        widget=forms.PasswordInput(attrs={'placeholder': 'Your password'}))
     spud_id = forms.CharField(max_length=256, required=False, widget=forms.HiddenInput)
     twitter = forms.CharField(max_length=256, required=False, widget=forms.HiddenInput)
 

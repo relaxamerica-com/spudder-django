@@ -12,17 +12,17 @@
 
             var tab = '{{ tab }}';
             $('a[href$="' + tab + '"]').click();
-
-
         });
     </script>
 {% endblock %}
 
 {% block well_content %}
-    <h2>
-        <img src="/static/img/spudderspuds/button-spuds-small.png" />
-        Register for an account with <span class="text-primary">Spudder</span>
-    </h2>
+    <div class="page-header">
+        <h2>
+            <img src="/static/img/spudderspuds/button-spuds-small.png" />
+            Register for an account with <span class="text-primary">Spudder</span>
+        </h2>
+    </div>
     <p class="visible-xs" style="margin: 20px 0 0;">Register as ...</p>
     <ul class="nav nav-tabs nav-tabs-google" role="tablist" style="margin-bottom: 20px;">
         <li class="active">
@@ -30,11 +30,13 @@
                 <span class="hidden-xs">Register as </span>a Fan
             </a>
         </li>
-        <li>
-            <a href=".tab-org" role="tab" data-toggle="tab">
-                <span class="hidden-xs">Register as </span>an Organization
-            </a>
-        </li>
+        {% if 'club_register'|feature_is_enabled %}
+            <li>
+                <a href=".tab-org" role="tab" data-toggle="tab">
+                    <span class="hidden-xs">Register as </span>an Organization
+                </a>
+            </li>
+        {% endif %}
     </ul>
 
 
@@ -58,6 +60,7 @@
                 {% bootstrap_form club_form %}
             </div>
         </div>
+        <hr/>
         {% buttons %}
             <button type="submit" class="btn btn-primary">
                 Register

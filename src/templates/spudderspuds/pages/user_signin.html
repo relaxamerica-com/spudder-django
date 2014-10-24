@@ -3,10 +3,12 @@
 
 
 {% block well_content %}
-    <h2>
-        <img src="/static/img/spudderspuds/button-fans-small.png" />
-        Login to you Fan account
-    </h2>
+    <div class="page-header">
+        <h2>
+            <img src="/static/img/spudderspuds/button-spuds-small.png" />
+            Sign in to your account
+        </h2>
+    </div>
     <form method="post" role="form">
         <fieldset>
             {% csrf_token %}
@@ -15,13 +17,12 @@
                 <button type="submit" class="btn btn-primary">
                     Signin
                 </button>
-                <a class="btn btn-default" href="/spuds">
-                    Cancel
-                </a>
                 <span class="pull-right" style="line-height: 30px;">
                     Don't have an account? Register <a href="/spuds/register">here</a>.
                 </span>
             {% endbuttons %}
         </fieldset>
     </form>
+    <hr/>
+    <p>Forgotten password? <a href="/users/account/forgot">Restore <i class="fa fa-arrow-right"></i> </a></p>
 {% endblock %}
