@@ -1,6 +1,9 @@
+import re
 from django.contrib.auth import authenticate
+from django.template.defaultfilters import slugify
 from spudderaccounts.wrappers import RoleBase, AuthenticationServiceBase
 from spudderdomain.controllers import LinkedServiceController, RoleController
+from spudderdomain.models import FanPage
 
 
 def change_role_url(role):
@@ -95,3 +98,12 @@ def change_current_role(request, entity_type=None, entity_id=None):
             RoleBase.EntityWrapperByEntityType(entity_type))
     request.session['current_role'] = {'entity_type': entity_type, 'entity_id': entity_id}
     return role
+
+
+def create_at_name_from_email_address(username):
+    at_name = slugify(re.sub(r"@.*$", "", username)).replace('-', '')
+    x = 1
+    while FanPage.objects.filter(username=username).count():
+        at_name += '%s' % x
+        x += 1
+    return at_name

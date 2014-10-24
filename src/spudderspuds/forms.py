@@ -35,19 +35,19 @@ class FanRegisterForm(forms.Form):
     email_address = forms.EmailField(
         required=True,
         label='',
-        widget=forms.TextInput(attrs={'placeholder': 'Your email address'}))
+        widget=forms.TextInput(attrs={'placeholder': 'Your email address (required)'}))
     password = forms.CharField(
         label='',
-        widget=forms.PasswordInput(attrs={'placeholder': 'Choose a password'}),
+        widget=forms.PasswordInput(attrs={'placeholder': 'Choose a password (required)'}),
         help_text='Passwords should be at least 6 characters long.')
     state = forms.ChoiceField(
-        choices=[('', 'Most important state for sports')] + sorted(
+        choices=[('', 'Most important state for sports (required)')] + sorted(
             [(k, v) for k, v in SORTED_STATES.items()], key=lambda x: x[1]),
         label="",
         help_text="Why are we asking this: So that we can localize experience to the sports that matter most to you.")
     over_13 = forms.BooleanField(
-        label="I am over 13 years of age",
-        help_text="You must confirm that you are over 13 years of age to open an account on Spudder.")
+        label="I am over <span class='age' style='display:inline; position: relative;'>13</span> years of age",
+        help_text="You must confirm that you are old enough to open this type of account on Spudder.")
 
     next = forms.CharField(max_length=256, required=False, widget=forms.HiddenInput, initial='/')
     spud_id = forms.CharField(max_length=256, required=False, widget=forms.HiddenInput)

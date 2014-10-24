@@ -7,7 +7,12 @@
     <script type="text/javascript" language="JavaScript">
         $(document).ready(function(){
             $('a[role=tab]').on('click', function(){
-                $('#input-tab').val($(this).attr('href').replace('.tab-', ''))
+                var tab = $(this).attr('href').replace('.tab-', '');
+                $('#input-tab').val(tab);
+                if (tab == 'fan')
+                    $('.age'.html('13'));
+                if (tab == 'org')
+                    $('.age').html('18');
             });
 
             var tab = '{{ tab }}';
@@ -60,7 +65,6 @@
                 {% bootstrap_form club_form %}
             </div>
         </div>
-        <hr/>
         {% buttons %}
             <button type="submit" class="btn btn-primary">
                 Register

@@ -3,7 +3,6 @@ import re
 from google.appengine.api import blobstore
 import simplejson
 
-from django.template.defaultfilters import slugify
 from django.contrib import messages
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.models import User
@@ -12,7 +11,7 @@ from django.shortcuts import render, render_to_response, redirect, get_object_or
 from django.template import RequestContext
 from spudderaccounts.models import Invitation
 from spudderaccounts.templatetags.spudderaccountstags import is_fan
-from spudderaccounts.utils import change_current_role
+from spudderaccounts.utils import change_current_role, create_at_name_from_email_address
 from spudderaccounts.wrappers import RoleFan
 from spudderaffiliates.models import Affiliate
 from spudderdomain.controllers import TeamsController, RoleController, SpudsController, EntityController
@@ -267,11 +266,7 @@ def fan_register(request):
             request.current_role = fan_role
             fan_page = fan_role.entity
             fan_page.state = state
-            at_name = slugify(re.sub(r"@.*$", "", username)).replace('-', '')
-            x = 1
-            while FanPage.objects.filter(username=username).count():
-                username += '%s' % x
-                x += 1
+            at_name = create_at_name_from_email_address(username)
             fan_page.username = at_name
             fan_page.save()
             # Login the user
