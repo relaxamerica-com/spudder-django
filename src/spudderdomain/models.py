@@ -261,6 +261,7 @@ class Club(models.Model):
     cover_image = models.ForeignKey(UploadedFile, blank=True, null=True, related_name='club_cover_image')
     location = models.ForeignKey(Location, null=True, blank=True, related_name='club_location')
     state = models.CharField(max_length=2)
+    name_is_fixed = models.BooleanField(default=False, blank=True, null=True)
 
     # Flags
     hidden = models.BooleanField(default=False)

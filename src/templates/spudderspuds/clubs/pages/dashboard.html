@@ -79,200 +79,42 @@
             </div>
             <div class="col-sm-9 submenu-page">
                 <div class="container-fluid">
-                    {% bootstrap_messages %}
-                    {{ stripe.stripe_user.access_token }}
+                    {% block dashboard_messages %}{% bootstrap_messages %}{% endblock %}
                     {% block dashboard_page %}
 
-                        {% if club.is_fully_activated %}
-
-                            {% if request.GET.message == 'just_connected_with_stripe' %}
-
-                                <div class="alert {% if not stripe_is_verified %}alert-warning{% else %}alert-success{% endif %}">
-                                    <div class="media">
-                                        <i class="media-object pull-left fa fa-3x {% if not stripe_cards.default_card_id %}fa-warning{% else %}fa-check{% endif %}"></i>
-                                        <div class="media-body">
-                                            {% if stripe_is_verified %}
-                                                <h2 class="media-heading">It Worked!</h2>
-                                                <p>You team is now fully registered with Stripe!</p>
-                                            {% else %}
-                                                {% include 'spudderspuds/clubs/components/dashboard_stripe_account_not_verified_message.html' %}
-                                            {% endif %}
-                                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <h3 class="panel-title"><i class="fa fa-money"></i> Payment Services Status</h3>
                                     </div>
-                                </div>
+                                    <div class="panel-body">
 
-                            {% endif %}
-
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <div class="panel panel-default">
-                                        <div class="panel-heading">
-                                            <h3 class="panel-title"><i class="fa fa-money"></i> Payment Services Status</h3>
-                                        </div>
-                                        <div class="panel-body">
-
-                                            {% if request.GET.message != 'just_connected_with_stripe' %}
-                                                {% if stripe_is_verified %}
-                                                    <div class="alert">
-                                                        <div class="media">
-                                                            <i class="media-object pull-left fa fa-check fa-2x text-success"></i>
-                                                            <div class="media-body">
-                                                                <h4 class="media-heading">Payments are active</h4>
-                                                                <span>You team is fully registered and able to accept donations from fans.</span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                {% else %}
-                                                    <div class="alert alert-warning">
-                                                        <div class="media">
-                                                            <i class="media-object pull-left fa fa-warning fa-2x"></i>
-                                                            <div class="media-body">
-                                                                {% include 'spudderspuds/clubs/components/dashboard_stripe_account_not_verified_message.html' with heading_tag="h4" %}
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                {% endif %}
-                                                <hr/>
-                                            {% endif %}
-
+                                        <div class="alert">
                                             <div class="media">
-                                                <img class="media-object pull-left" src="/static/img/spudderspuds/stripe-logo.png"  style="width:25%" />
+                                                <i class="media-object pull-left fa fa-check fa-2x text-success"></i>
                                                 <div class="media-body">
-                                                    <h4 class="media-heading">Stripe payment service</h4>
-                                                    <p>
-                                                        {% if stripe_is_verified %}
-                                                            <span class="label label-success">
-                                                                <i class="fa fa-check"></i> Active and working
-                                                            </span>
-                                                        {% else %}
-                                                            <span class="label label-warning">
-                                                                <i class="fa fa-warning"></i> No bank account
-                                                            </span>
-                                                        {% endif %}
-                                                    </p>
+                                                    <h4 class="media-heading">Payments are active</h4>
+                                                    <span>You team is fully registered and able to accept donations from fans.</span>
                                                 </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="media">
+                                            <img class="media-object pull-left" src="/static/img/spudderspuds/stripe-logo.png"  style="width:25%" />
+                                            <div class="media-body">
+                                                <h4 class="media-heading">Stripe payment service</h4>
+                                                <p>
+                                                    <span class="label label-success">
+                                                        <i class="fa fa-check"></i> Active and working
+                                                    </span>
+                                                </p>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-
-                        {% else %}
-
-                            <div class="alert alert-success">
-                                <div class="media">
-                                    <i class="media-object pull-left fa fa-check fa-3x"></i>
-                                    <div class="media-body">
-                                        {% if request.GET.message == "just_registered" %}
-                                            <h2 class="media-heading">Congratulations! Your team has been created.</h2>
-                                            <h4>Welcome to you team dashboard.</h4>
-                                        {% else %}
-                                            <h2 class="media-heading">Welcome back to your team dashboard</h2>
-                                        {% endif %}
-                                        <p>
-                                            Before you can begin fundraising, you need to register a <b>Payment Service</b>
-                                            so your team can receive money donated by fans.
-                                        </p>
-                                        <p>
-                                            Registering a payment service is easy, we've teamed up with
-                                            <a href="http://stripe.com"><b>Stripe</b></a> who offer a very simple and
-                                            secure way to manage online donations.
-                                        </p>
-                                        {% if club.has_stripe_recipient %}
-
-                                            <p>Your almost registered with stripe.</p>
-
-                                            <p>
-                                                You successfully gave us your teams legal name and EIN, the only thing
-                                                you need to do now is create a Stripe account (or link one if you already
-                                                have one)
-                                            </p>
-
-                                            <p>
-                                                When your ready, click this button <i class="fa fa-hand-o-down"></i>
-                                            </p>
-
-                                        {% else %}
-
-                                            <p>
-                                                To set up your <b>Stripe</b> payment service, all you need is:
-                                            </p>
-                                            <ol>
-                                                <li>The <b>Full Legal Name</b> of your team</li>
-                                                <li>The Tax ID (EIN) of your team</li>
-                                            </ol>
-                                            <p>
-                                                Setting up your <b>Stripe</b> payment service will only take a few moments,
-                                                <br/>when your ready, click this button <i class="fa fa-hand-o-down"></i>
-                                            </p>
-
-                                        {% endif %}
-
-                                        <p>
-                                            <a class="btn-ajax btn btn-primary btn-cta" href="/club/recipient" data-target=".submenu-page">
-                                                I'm ready! <i class="fa fa-arrow-right"></i>
-                                            </a>
-                                        </p>
-                                        <p>
-                                            <small>
-                                                Don't have these details to hand? Don't worry, you can always
-                                                come back and finish setting up your <b>Stripe</b> payment service later.
-                                            </small>
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-
-                        {% endif %}
-
-{#                        <div class="page-header">#}
-{#                            <h1>#}
-{#                                <i class="fa fa-fw fa-bar-chart-o"></i> Dashboard <small>Manage your Club!</small>#}
-{#                            </h1>#}
-{#                        </div>#}
-{##}
-{#                        {% if club.is_fully_activated %}#}
-{#                            <div class="quote" data-id="dashboard">#}
-{#                                <div class="alert alert-info" style="display: inline-block">#}
-{#                                    <h4><i class="fa fa-fw fa-bullhorn"></i> What to do now?</h4>#}
-{#                                    <p><b>Welcome to your Club dashboard.</b> This is your control center for managing your Club profile and associated Teams!</p>#}
-{#                                    <br/>#}
-{#                                    <div class="hidden-xs hidden-sm">#}
-{#                                        <i class="fa fa-hand-o-up fa-2x pull-left" style="position:relative; top:-5px;"></i>#}
-{#                                        <p>You can use the navigation at the top to visit the various pages in your dashboard:</p>#}
-{#                                    </div>#}
-{#                                    <div class="hidden-md hidden-lg">#}
-{#                                        <i class="fa fa-hand-o-up fa-2x  pull-right"></i>#}
-{#                                        <p>You can use this button to bring down the menu and visit the various pages in your dashboard:</p>#}
-{#                                    </div>#}
-{#                                    <br/>#}
-{#                                    <ul class="list-unstyled">#}
-{#                                        <li><i class="fa fa-fw fa-asterisk"></i> Manage your club profile on the <a href="/club/profile">Edit Profile</a> page</li>#}
-{#                                    </ul>#}
-{#                                    <ul class="list-unstyled">#}
-{#                                        <li><i class="fa fa-fw fa-asterisk"></i> View your club profile on the <a href="/club/{{ club.id }}">Public Profile</a> page</li>#}
-{#                                    </ul>#}
-{#                                    <ul class="list-unstyled">#}
-{#                                        <li><i class="fa fa-fw fa-asterisk"></i> Manage your club profile visibility</li>#}
-{#                                    </ul>#}
-{#                                </div>#}
-{#                            </div>#}
-{#                        {% else %}#}
-{#                            <div class="quote" data-id="dashboard">#}
-{#                                <div class="alert alert-danger" style="display: inline-block">#}
-{#                                    <h4><i class="fa fa-fw fa-bolt"></i> Club account not fully activated!</h4>#}
-{#                                    <p>Your Club account isn't fully activated. Only after successful activation, Club can use all the tools and options that Spudder® provide.</p>#}
-{##}
-{#                                    {% if club.next_activation_step == 'recipient' %}#}
-{#                                        <p>In order to run fundraising and challenges your Club needs to be registered as Recipient. Follow the link below in order to register.</p>#}
-{#                                        <a href="/club/recipient" class="btn btn-primary" style="margin-top: 20px;">Register as recipient</a>#}
-{#                                    {% else %}#}
-{#                                        <p>The last step of the activation process is to connect to your Stripe account. After this step your Club account will be fully functional!</p>#}
-{#                                        <a href="{% authorize_url %}" class="stripe-connect"><span>Connect with Stripe</span></a>#}
-{#                                    {% endif %}#}
-{#                                </div>#}
-{#                            </div>#}
-{#                        {% endif %}#}
+                        </div>
                     {% endblock %}
                 </div>
             </div>

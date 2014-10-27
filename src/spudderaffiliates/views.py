@@ -27,7 +27,7 @@ def _nays_survey(request):
                 mail.send_mail(
                     'NAYS Survey Email Submission',
                     email,
-                    'nays_survey@spudder.com',
+                    settings.SUPPORT_EMAIL,
                     [settings.SUPPORT_EMAIL])
                 messages.success(request, 'Your email has been successfully entered into the free prize draw!')
     return render(request, 'spudderaffiliates/pages/_nays_survey.html', {'email_form': email_form})

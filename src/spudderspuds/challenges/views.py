@@ -84,35 +84,37 @@ def _create_challenge(club_class, club_id, form, request, template, parent=None,
 
 
 def challenges_splash(request):
-    template_data = {
-        'challenges': [
-            {
-                'title': 'Random Act of Kindness',
-                'youtube_video_id': 'R2yX64Gh2iI',
-                'link': '/brendan',
-                'h4': 'Take part in the RANDOM ACT OF KINDNESS challenge now!',
-                'p': 'Challenge originated by the BRENDAN P TEVLIN FUND, yet you will be raising for the sports '
-                     'organization of your choice!'
-            },
-            {
-                'title': 'Pay it Forward',
-                'youtube_video_id': 'R_EkUOThl7w',
-                'link': '/dreamsforkids/payitforward',
-                'h4': 'Take part in the PAY IT FORWARD challenge now!',
-                'p': 'Challenge originated by DREAMS FOR KIDS (NJ) yet you will be raising for the sports '
-                     'organization of your choice!'
-            },
-            {
-                'title': 'Pie Challenge',
-                'youtube_video_id': 'vqgpHZ09St8',
-                'link': '/dreamsforkids/piechallenge',
-                'h4': 'Take part in the PIE CHALLENGE now!',
-                'p': 'Challenge originated by DREAMS FOR KIDS (NJ) yet you will be raising for the sports '
-                     'organization of your choice!'
-            },
-
-        ]
+    rak = {
+        'title': 'Random Act of Kindness',
+        'youtube_video_id': 'R2yX64Gh2iI',
+        'link': '/brendan',
+        'h4': 'Take part in the RANDOM ACT OF KINDNESS challenge now!',
+        'p': 'Challenge originated by the BRENDAN P TEVLIN FUND, yet you will be raising for the sports '
+             'organization of your choice!'
     }
+    pif = {
+        'title': 'Pay it Forward',
+        'youtube_video_id': 'R_EkUOThl7w',
+        'link': '/dreamsforkids/payitforward',
+        'h4': 'Take part in the PAY IT FORWARD challenge now!',
+        'p': 'Challenge originated by DREAMS FOR KIDS (NJ) yet you will be raising for the sports '
+             'organization of your choice!'
+    }
+    pie = {
+        'title': 'Pie Challenge',
+        'youtube_video_id': 'vqgpHZ09St8',
+        'link': '/dreamsforkids/piechallenge',
+        'h4': 'Take part in the PIE CHALLENGE now!',
+        'p': 'Challenge originated by DREAMS FOR KIDS (NJ) yet you will be raising for the sports '
+             'organization of your choice!'
+    }
+    template_data = {'challenges': []}
+    if feature_is_enabled('challenge_dreamsforkids_piechallenge'):
+        template_data['challenges'].append(pie)
+    if feature_is_enabled('challenge_bpt_memorial_field_fund_rak'):
+        template_data['challenges'].append(rak)
+    if feature_is_enabled('challenge_dreamsforkids_payitforward'):
+        template_data['challenges'].append(pif)
     return render(request, 'spudderspuds/challenges/pages/challenges.html', template_data)
 
 

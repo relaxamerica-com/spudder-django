@@ -54,7 +54,7 @@ def make_api_call(api_method, args):
     except Exception, e:
         # Something else happened, completely unrelated to Stripe
 
-        error_object = {'error_type': Exception}
+        error_object = {'error_type': Exception, 'error': '%s' % e}
 
     return stripe_object, error_object
 
@@ -94,3 +94,14 @@ def make_charge(charge_amount, charge_token, charge_payment_description, charge_
         return created_charge
 
     return make_api_call(logic, (charge_amount, charge_token, charge_payment_description, charge_api_key))
+
+
+def get_account_details(account_access_token):
+    if settings.ENVIRONMENT in [settings.Environments.DEV, settings.Environments.STAGE]:
+        return {'display_name': 'Business in Development'}, None
+
+    def logic(api_key):
+        account_details = stripe.Account.retrieve(api_key)
+        return account_details
+
+    return make_api_call(logic, (account_access_token, ))

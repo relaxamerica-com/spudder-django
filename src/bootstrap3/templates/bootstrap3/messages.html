@@ -1,5 +1,5 @@
 {% for message in messages %}
-    <div class="alert{% if message.tags %} alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %}{% endif %} alert-dismissable alert-autohide media">
+    <div class="alert{% if message.tags %} alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %}{% endif %} alert-dismissable {% if message.tags != 'error' and message.tags != 'warning' %}alert-autohide{% endif %} media">
         <span class="fa-stack fa-2x media-object pull-left">
             <i class="fa fa-circle fa-stack-2x"></i>
             {% if message.tags == 'error' %}
@@ -14,6 +14,7 @@
         </span>
         <div class="media-body">
             <h3 class="media-heading">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button>
                 {% if message.tags == 'error' %}
                     Error
                 {% endif %}
@@ -24,7 +25,6 @@
                     Success
                 {% endif %}
             </h3>
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&#215;</button>
             {{ message|safe }}
         </div>
     </div>
