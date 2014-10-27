@@ -53,9 +53,9 @@ class FanRegisterForm(forms.Form):
     spud_id = forms.CharField(max_length=256, required=False, widget=forms.HiddenInput)
     twitter = forms.CharField(max_length=256, required=False, widget=forms.HiddenInput)
 
-    def clean_email(self):
+    def clean_email_address(self):
         data = super(FanRegisterForm, self).clean()
-        email = data.get('email', '').strip()
+        email = data.get('email_address', '').strip()
         if not email:
             raise forms.ValidationError('Email is required.')
         if User.objects.filter(email=email).count():
