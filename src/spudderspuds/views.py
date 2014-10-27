@@ -14,7 +14,8 @@ from spudderaccounts.templatetags.spudderaccountstags import is_fan
 from spudderaccounts.utils import change_current_role, create_at_name_from_email_address
 from spudderaccounts.wrappers import RoleFan
 from spudderaffiliates.models import Affiliate
-from spudderdomain.controllers import TeamsController, RoleController, SpudsController, EntityController
+from spudderdomain.controllers import TeamsController, RoleController, SpudsController, EntityController, \
+    EventController
 from spudderdomain.models import FanPage, TeamPage, TeamAdministrator, Club, ClubAdministrator
 from spudderkrowdio.models import FanFollowingEntityTag, KrowdIOStorage
 from spuddersocialengine.models import SpudFromSocialMedia
@@ -298,6 +299,7 @@ def fan_register(request):
                 club_admin.save()
                 club_admin_role = change_current_role(request, RoleController.ENTITY_CLUB_ADMIN, club_admin.id)
                 request.current_role = club_admin_role
+                EventController.RegisterEvent(request, EventController.CLUB_REGISTERED)
             return redirect(request.current_role.home_page_path)
 
     template_data["form"] = form

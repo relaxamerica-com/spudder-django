@@ -41,14 +41,14 @@ FEATURES = {
     'live': [
         'google_analytics',
         'alexa_analytics',
-        # 'spud_tagging',
+        'nays_survey',
         'challenges_landing_page',
-        'challenges_only_override',  # Prevent access to any other part of spudder
+        'challenges_only_override',
         'email_error_logs',
         'tracking_pixels',
         'all_fans_auto_follow_main_spudder_fan',
-        # 'challenge_challenge',
         'challenge_dreamsforkids_piechallenge',
+        'challenge_dreamsforkids_payitforward',
     ]
 }
 

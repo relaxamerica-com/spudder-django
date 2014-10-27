@@ -625,11 +625,11 @@ class EventController(object):
     USER_REGISTERED = 'user_registered'
     CHALLENGER_USER_REGISTERER = 'challenger_user_registered'
     CHALLENGE_ACCEPTED = 'challenge_accepted'
-    EVENTS = (USER_REGISTERED, CHALLENGER_USER_REGISTERER, CHALLENGE_ACCEPTED)
+    CLUB_REGISTERED = 'club_registered'
+    EVENTS = (USER_REGISTERED, CHALLENGER_USER_REGISTERER, CHALLENGE_ACCEPTED, CLUB_REGISTERED)
 
     @classmethod
     def RegisterEvent(cls, request, event_name):
-        EventsMiddleware.add_events_to_session(request)
         if event_name not in request.session[EventsMiddleware.EVENTS_KEY_NAME]:
             request.session[EventsMiddleware.EVENTS_KEY_NAME].append(event_name)
 
@@ -637,3 +637,16 @@ class EventController(object):
     def RegisterEvents(cls, request, event_names_list):
         for event_name in event_names_list:
             cls.register_event(request, event_name)
+
+    @classmethod
+    def PopEvent(cls, request, event_name):
+        events = request.session.pop(EventsMiddleware.EVENTS_KEY_NAME, [])
+        new_events = []
+        target_event = None
+        for e in events:
+            if e == event_name:
+                target_event = True
+            else:
+                new_events.append(e)
+        request.session[EventsMiddleware.EVENTS_KEY_NAME] = new_events
+        return target_event

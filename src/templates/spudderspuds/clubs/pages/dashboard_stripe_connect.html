@@ -1,0 +1,87 @@
+{% extends 'spudderspuds/clubs/pages/dashboard.html' %}
+{% load bootstrap3 %}
+{% load stripetags %}
+
+{% block css %}
+    {{ block.super }}
+    <style type="text/css">
+        .dl-horizontal hr {
+            width: 90%;
+            margin: 10px auto;
+        }
+    </style>
+{% endblock %}
+
+{% block dashboard_menu %}{# no menu here #}{% endblock %}
+
+{% block dashboard_breadcrumbs %}<i class="fa fa-angle-right"></i> Connect with <span class="text-info">Stripe</span> {% endblock %}
+
+{% block dashboard_messages %}{# move the messages #}{% endblock %}
+
+{% block dashboard_page %}
+
+    <div class="row">
+        <div class="col-xs-12 col-xs-offset-0 col-md-8 col-md-offset-3">
+            {% bootstrap_messages %}
+            <div class="page-header">
+                <h2>
+                    <span class="fa fa-stack text-primary">
+                        <i class="fa fa-circle fa-stack-2x"></i>
+                        <i class="fa fa-money fa-inverse fa-stack-1x"></i>
+                    </span>
+                    Connect with <span class="text-info">Stripe</span> to being fundraising
+                </h2>
+            </div>
+            <p>
+                <span class="text-info">Stripe</span> is a super easy payment system that allows your organization to
+                begin raising money, hassle free!
+            </p>
+            <p>
+                <small>
+                    If you would like to find out more about <span class="text-info">Stripe</span> and the payment services
+                    they offer, please click <a target="_blank" href="https://stripe.com/connect">here</a>.
+                </small>
+            </p>
+            <hr/>
+            <p>
+                <span class="text-primary">Start fundraising NOW <i class="fa fa-hand-o-right" style="margin-right: 10px;"></i></span>
+                <a href="{% authorize_url %}" class="stripe-connect"><span>Connect with Stripe</span></a>
+            </p>
+            <hr/>
+            <p>Want to know more about <span class="text-info">Stripe</span>?</p>
+            <dl class="dl-horizontal">
+                <dt>What is <span class="text-info">Stripe</span>?</dt>
+                <dd>
+                    <span class="text-info">Stripe</span> is an online payment service that make is super easy for
+                    organizations like {{ club_entity.name }} to collect donations and payments online.
+                </dd>
+                <hr />
+                <dt>What do I need to connect <br/>with <span class="text-info">Stripe</span></dt>
+                <dd>
+                    When you click the blue button above, you'll be taken to a <span class="text-info">Stripe</span>
+                    registration page where you'll be asked to enter the details of {{ club_entity.name }}. Most
+                    importantly, you'll need to have the following to hand:
+                    <ul>
+                        <li>
+                            The full legal name of {{ club_entity.name }} <small>(As registered with the IRS)</small>
+                        </li>
+                        <li>
+                            Your organizations EIN (Tax ID) <small>(As given to you by the IRS)</small>
+                        </li>
+                        <li>
+                            The routing number and account number of your organizations bank account <small>
+                            (So you can start fundraising!)</small>
+                        </li>
+                    </ul>
+                </dd>
+                <hr/>
+                <dt>What if I don't have<br/>these right now?</dt>
+                <dd>
+                    It's not a problem. You can always get back to this screen by visiting www.spudder.com and logging
+                    in with the email address and password you used when registering.
+                </dd>
+            </dl>
+        </div>
+    </div>
+
+{% endblock %}
