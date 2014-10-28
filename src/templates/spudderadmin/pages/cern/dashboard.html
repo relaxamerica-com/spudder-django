@@ -7,6 +7,8 @@
                 <h4>CERN Overview</h4>
             </div>
             <div class="panel-body">
+                <button class="btn btn-primary btn-large" id="logout-button">Logout All Students</button>
+                <div class="alert" id="logout-alert"></div>
                 <h4>Quick Metrics</h4>
                 <ul>
                     <li>Total Active Schools: {{ schools }}</li>
@@ -16,4 +18,18 @@
             </div>
         </div>
     </div>
+{% endblock %}
+
+{% block js %}
+{{ block.super }}
+<script type="text/javascript" src="/static/js/alerts.js"></script>
+<script type="text/javascript">
+    $('#logout-button').click(function(){
+        var response = $.post('/cern/remove_student_sessions');
+
+        response.done(function(){
+            showAlert($('#logout-alert'),'All students have been logged out.', 'success', true);
+        })
+    });
+</script>
 {% endblock %}
