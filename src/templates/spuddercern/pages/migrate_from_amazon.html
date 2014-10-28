@@ -1,0 +1,37 @@
+{% extends "spuddercern/base.html" %}
+
+{% block body %}
+<div id="registration" class="text-center">
+    <div class="accounts-form-header">
+        <h4 id="mySignupModalLabel">Migrate your <strong>account</strong></h4>
+    </div>
+    <div class="row-fluid">
+        <div class="col-sm-4 col-sm-offset-2">
+            <p>Enter the email address used when you used Login With Amazon. If you do not use the same email address, we will not be able to find your account.</p>
+        </div>
+
+        <div class="accounts-form-body col-sm-4">
+            <form method="post" role="form">
+                <fieldset>
+                    {% csrf_token %}
+                    {% bootstrap_form form %}
+                    {% buttons %}
+                        <button type="submit" class="btn btn-primary">
+                            Migrate Account
+                        </button>
+                        <a class="btn btn-default" href="/cern">
+                            Cancel
+                        </a>
+                    {% endbuttons %}
+                </fieldset>
+            </form>
+        </div>
+        <div class="span2"></div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block js %}
+    {{ block.super }}
+{% endblock %}
