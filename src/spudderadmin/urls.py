@@ -4,7 +4,7 @@ urlpatterns = patterns(
     'spudderadmin.views',
 
     url('^/dashboard', 'admin_dashboard'),
-    
+
     url('^/cern/qa_job_board$', 'qa_job_board'),
     url('^/cern/students$', 'students'),
     url('^/cern/student/(?P<student_id>\d+)/resume$', 'student_resume'),
@@ -48,11 +48,13 @@ urlpatterns = patterns(
 
     url(r'^/send_email$', 'send_email'),
 
-    url(r'^/challenges$', 'challenges'),
-    url(r'^/challenges/edit_config$', 'edit_config'),
+    url(r'^/challenges/list/(?P<challenge_id>\d+)/delete$', 'challenges_delete'),
+    url(r'^/challenges/list$', 'challenges_list'),
     url(r'^/challenges/add_message$', 'add_challenge_config_message'),
     url(r'^/challenges/(?P<message_id>\d+)/edit_message$', 'edit_challenge_config_message'),
     url(r'^/challenges/(?P<message_id>\d+)/remove_message$', 'remove_challenge_config_message'),
+    url(r'^/challenges/edit_config$', 'edit_config'),
+    url(r'^/challenges$', 'challenges'),
 
     url(r'^', 'admin_login'),
 )

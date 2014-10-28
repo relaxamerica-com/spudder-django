@@ -1,0 +1,55 @@
+{% extends 'spudderadmin/base.html' %}
+
+{% block body %}
+
+    <div class="container-fluid">
+
+        <div class="page-header">
+            <h2>All challenges</h2>
+        </div>
+
+        {% if challenges %}
+
+            <table class="table table-striped datatable">
+                <thead>
+                    <tr>
+                        <td>Type</td>
+                        <td>Creator</td>
+                        <td>Beneficiary</td>
+                        <td class="no-sort"></td>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for challenge in challenges %}
+                        <tr>
+                            <td>{{ challenge.template.name }}</td>
+                            <td>{{ challenge.creator.name|default:'System' }}</td>
+                            <td>{{ challenge.recipient.name }}</td>
+                            <td>
+                                <a href="https://www.youtube.com/watch?v={{ challenge.youtube_video_id }}" target="_blank" class="btn btn-xs btn-default">
+                                    <i class="fa fa-youtube-square"></i>
+                                </a>
+                                <a href="{{ request.path }}/{{ challenge.id }}/delete" class="btn btn-xs btn-danger">
+                                    delete
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+        {% else %}
+
+            <div class="alert alert-info media" style="width: 60%; margin: 20px auto;">
+                <i class="fa fa-info-circle fa-2x media-object pull-left"></i>
+                <div class="media-body">
+                    <h4 class="media-heading">No Challenges</h4>
+                    <p>There are no challenges yet in the system.</p>
+                </div>
+            </div>
+
+        {% endif %}
+
+    </div>
+
+{% endblock %}
