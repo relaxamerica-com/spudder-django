@@ -340,7 +340,11 @@
             e.preventDefault();
 
             var file = $('#file').get(0).files[0];
-            if (file) {
+
+            if (file == undefined) {
+                alert('You have not selected a video to upload.')
+            }
+            else {
                 overlay.show();
                 var metadata = {
                     snippet: {
@@ -363,9 +367,9 @@
                     resumableUpload({url: jqXHR.getResponseHeader('Location'), file: file, start: 0 });
                 });
             }
-            else {
-                on_upload_complete();
-            }
+{#            else {#}
+{#                on_upload_complete();#}
+{#            }#}
         }
 
         function resumableUpload(options) {

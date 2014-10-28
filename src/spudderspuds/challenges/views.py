@@ -109,10 +109,10 @@ def challenges_splash(request):
              'organization of your choice!'
     }
     template_data = {'challenges': []}
-    if feature_is_enabled('challenge_dreamsforkids_piechallenge'):
-        template_data['challenges'].append(pie)
     if feature_is_enabled('challenge_bpt_memorial_field_fund_rak'):
         template_data['challenges'].append(rak)
+    if feature_is_enabled('challenge_dreamsforkids_piechallenge'):
+        template_data['challenges'].append(pie)
     if feature_is_enabled('challenge_dreamsforkids_payitforward'):
         template_data['challenges'].append(pif)
     return render(request, 'spudderspuds/challenges/pages/challenges.html', template_data)
