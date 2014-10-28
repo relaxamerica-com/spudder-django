@@ -2,21 +2,24 @@ import os
 from urllib2 import urlopen
 from datetime import timedelta, datetime
 from json import loads
+from django.contrib.sessions.models import Session
 
 from django.template import RequestContext
 from google.appengine.api import mail
 from django.shortcuts import render, redirect, render_to_response
 from django.http import HttpResponseRedirect, HttpResponse, \
     HttpResponseNotAllowed, HttpResponseForbidden
-from spudderdomain.controllers import RoleController
-from spudderdomain.models import TeamAdministrator
-from spudmart.upload.models import UploadedFile
-from spudmart.CERN.models import School, Student, STATES, MailingList
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils.datastructures import MultiValueDictKeyError
-from spudmart.CERN.utils import import_schools, strip_invalid_chars, add_school_address, convert_referrals
 from django.contrib.auth.decorators import user_passes_test
-from spudmart.CERN.rep import recruited_new_student, created_venue
+
+from spudderdomain.controllers import RoleController
+from spudderdomain.models import TeamAdministrator
+from spudmart.CERN.forms import StudentMigrateForm, StudentLoginForm
+from spudmart.upload.models import UploadedFile
+from spudmart.CERN.models import School, Student, STATES, MailingList
+from spudmart.CERN.utils import import_schools, strip_invalid_chars, add_school_address, convert_referrals
+from spudmart.CERN.rep import recruited_new_student
 from spudmart.utils.cover_image import save_cover_image_from_request, reset_cover_image
 from spudmart.utils.queues import trigger_backend_task
 from spudmart.utils.url import get_return_url, get_request_param
@@ -83,7 +86,7 @@ def register_with_state(request, state, referral_id=None):
 
     :param request: request to render page
     :param state: the standard state abbreviation, capitalized
-    :param code: optional param which indicates a referral
+    :param referral_id: optional param which indicates a referral
     :return: page which allows user to select school from dropwdown
         OR redirect to a school page
     """
@@ -114,10 +117,10 @@ def school(request, state, school_id, name, referral_id=None):
 
     :param request: request to render page
     :param state: standard state abbreviation of where school is
-    :param id: the
+    :param school_id: the ID of the school
     :param name: name of school
         spaces may be replaced by _ in this param
-    :param code: optional param which indicates a referral
+    :param referral_id: optional param which indicates a referral
     :return: rendering of school page or error page if no School with
         name and state combination can be found
     """
@@ -193,7 +196,7 @@ def save_school_logo(request, school_id):
     Associates a recently-uploaded logo with a school
 
     :param request: POST request with uploaded image data
-    :param school_id: the id of the school
+    :param school_id: valid ID of a School object
     :return: a blank HttpResponse object if success on POST request
         OR an HttpResponseNotAllowed object (code 405)
     """
@@ -217,8 +220,7 @@ def save_school(request, school_id):
     Updates school mascot and description
 
     :param request: POST request with mascot and description
-    :param state: standard state abbreviation for location of school
-    :param school_name: name of school
+    :param school_id: valid ID of a School object
     :return: a blank HttpResponse if success on POST request
         OR an HttpResponseNotAllowed object (code 405)
     """
@@ -562,7 +564,7 @@ def add_email_alert(request):
     :param request: HttpRequest that should include 'project' and
         'email' in POST data
     :return: Blank HttpResponse on success
-        OR HttpReponseNotAllowed (code 405) if not POfST request
+        OR HttpResponseNotAllowed (code 405) if not POfST request
     """
     if request.method == 'POST':
         project = request.POST['project']
@@ -632,7 +634,7 @@ def register_school(request, school_id, referral_id=None):
     :param request: request to render page
     :param school_id: the ID of the school which the student will
         register with
-    :param code: an optional param which indicates a referral by
+    :param referral_id: an optional param which indicates a referral by
         another student
     :return: a simple login page with the Amazon Login button
     """
@@ -917,7 +919,7 @@ def save_student_cover(request, student_id):
 
     :param request: POST request containing image path (as
         /file/serve/<id>?max_dim=600 )
-    :param school_id: ID of the student
+    :param student_id: ID of the student
     :return: a blank HttpResponse on success
     """
     student = Student.objects.get(id=student_id)
@@ -1239,3 +1241,34 @@ def publish_venue(request, venue_id):
     new_venue = TempVenue.objects.get(id=venue_id).translate_to_real_venue()
     next = request.GET.get('next', '/venues/view/%s' % new_venue.id)
     return HttpResponseRedirect(next)
+
+
+def remove_student_sessions(request):
+    """
+    View to hit for logging out all students
+    :param request: a POST request
+    :return: an HttpResponse saying students are being logged out
+    """
+    if request.method == 'POST':
+        trigger_backend_task('/cern/remove_student_sessions_async')
+
+        return HttpResponse('All students are being logged out.')
+    else:
+        return HttpResponseNotAllowed(['POST'])
+
+
+def remove_student_sessions_async(request):
+    """
+    Logs out all students by deleting the sessions for their users
+
+    Only looks at non-expired sessions to reduce db calls
+    :param request: any request
+    :return: a blank HttpResponse on success
+    """
+    users = [s.user.id for s in Student.objects.all().select_related('user')]
+
+    for s in Session.objects.filter(expire_date__gte=datetime.utcnow()):
+        if s.get_decoded().get('_auth_user_id') in users:
+            s.delete()
+
+    return HttpResponse()

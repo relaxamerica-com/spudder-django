@@ -104,12 +104,13 @@ def get_max_triangle_num_less_than(num, n=1):
 
 
 class School(models.Model):
-    ''' A model for School objects that stores a string literal of the school name and 
+    """
+        A model for School objects that stores a string literal of the school name and
         the number of students at the school.
         Due to errors with saving/updating rep points, rep is now calculated via method 
         which sums the rep points of all students associated with school. 
-        Includes method which evaluates level based on reputation. 
-    ''' 
+        Includes method which evaluates level based on reputation.
+    """
     name = models.CharField(max_length=124)
     state = models.CharField(max_length=2)
     mascot = models.CharField(max_length=32, null=True)
@@ -138,10 +139,7 @@ class School(models.Model):
         A list of all students associated w/school
         :return: a standard List object of all students
         """
-        students = []
-        for stud in Student.objects.filter(school=self):
-            students.append(stud) 
-        return students
+        return Student.objects.filter(school=self)
     
     def get_head_student(self):
         try:
@@ -207,7 +205,7 @@ class School(models.Model):
         return 'No one has started a project yet! (0 team pts)'
 
     def num_students(self):
-        return len(self.get_students())
+        return self.get_students().count()
 
     # def full_address(self):
     #     if self._full_address:
@@ -218,12 +216,13 @@ class School(models.Model):
 
 
 class Student(models.Model):
-    ''' A model for Student objects (Groundskeepers), which stores the standard Django 
-        User object associated with the student, the school, whether the student is the
-        Head Student, referral information, and the student's reputation.
+    """
+    A model for Student objects (Groundskeepers), which stores the standard Django
+    User object associated with the student, the school, whether the student is the
+    Head Student, referral information, and the student's reputation.
         
-        The database is indexed on User since that's how the students are most often looked up.
-    '''    
+    The database is indexed on User since that's how the students are most often looked up.
+    """
     user = models.ForeignKey(User, unique=True, db_index=True,
                              related_name="student_user")
     school = models.ForeignKey(School)

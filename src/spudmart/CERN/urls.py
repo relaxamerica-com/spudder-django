@@ -65,13 +65,15 @@ urlpatterns = patterns(
     url(r'^join_school/(?P<school_id>\d+)/$', 'join_school'),
     url(r'^join_cern$', 'cern_splash'),
 
-    # Link for queue url(it's protected)
+    # Links for queueing
     url(r'^import_schools$', 'import_school_data'),
     url(r'^import_schools_async$', 'import_school_data_async'),
     url(r'^import_school_addrs$', 'import_school_addrs'),
-    url(r'^import_school_addrs_async', 'import_school_addrs_async'),
-    url(r'^translate_referrals', 'translate_referrals'),
-    url(r'^translate_referrals_async', 'translate_referrals_async'),
+    url(r'^import_school_addrs_async$', 'import_school_addrs_async'),
+    url(r'^translate_referrals$', 'translate_referrals'),
+    url(r'^translate_referrals_async$', 'translate_referrals_async'),
+    url(r'^remove_student_sessions$', 'remove_student_sessions'),
+    url(r'^remove_student_sessions_async$', 'remove_student_sessions_async'),
 
     # Link for decorator error page
     url(r'^non-student$', 'user_not_student_error_page'),
