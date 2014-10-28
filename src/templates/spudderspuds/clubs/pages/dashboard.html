@@ -2,62 +2,13 @@
 
 {% load bootstrap3 %}
 
-{% block title %}Club Dashboard{% endblock %}
+{% block title %}Organization Dashboard{% endblock %}
 
 {% block google_analytics_additions %}
-    ga('set', 'contentGroup1', 'Club Dashboard');
+    ga('set', 'contentGroup1', 'Organization Dashboard');
 {% endblock %}
 
 {% block messages %}{# blank out the header messages #}{% endblock %}
-
-{% block js %}
-    {{ block.super }}
-    <script type="text/javascript" language="javascript" src="/static/js/libs/jquery.form.min.js"></script>
-    <script type="text/javascript" language="JavaScript">
-        $(document).ready(function(){
-            $('.btn-ajax').livequery(function(){
-                var $btn = $(this);
-                var $target = $($btn.data('target'));
-                if ($btn.is('button[type=submit]')){
-                    $btn.parents('form:first').ajaxForm({
-                        beforeSerialize: function ($form, options) {
-                            var $btn = $form.find('.btn-ajax');
-                            $btn.attr('disabled', 'disabled');
-                            $btn.html('<i class="fa fa-spin fa-spinner"></i> ' + $btn.html());
-                        },
-                        error: function (event, type, message, $form) {
-                            alert('Sorry, there was an error processing your upload, please try again or contact support@spudder.com if the problem continues.')
-                        },
-                        success: function (response_text, status_text, xhr, $form) {
-                            var $btn = $form.find('.btn-ajax');
-                            var $target = $($btn.data('target'));
-                            $target.html(response_text);
-                            fix_footer_position();
-                            if ($(window).scrollTop() > 20)
-                                $(window).scrollTop($target.offset().top - 100);
-                        }
-                    })
-                }
-                else {
-                    $btn.unbind('click').on('click', function(e){
-                        e.preventDefault();
-                        e.stopPropagation();
-                        var $btn = $(this);
-                        var $target = $($btn.data('target'));
-                        $btn.attr('disabled', 'disabled');
-                        $btn.html('<i class="fa fa-spin fa-spinner"></i> ' + $btn.html());
-                        $target.load($btn.attr('href'), function(){
-                            fix_footer_position();
-                            if ($(window).scrollTop() > 20)
-                                $(window).scrollTop($target.offset().top - 60);
-                        });
-                    });
-
-                }
-            });
-        });
-    </script>
-{% endblock %}
 
 {% block body %}
     <div class="dashboard-page">

@@ -359,7 +359,7 @@ class RoleClubAdmin(RoleBase):
 
     @property
     def title(self):
-        role_title = '<abbr>Club Administrator</abbr> on '
+        role_title = '<abbr>Organization Admin</abbr> on '
         role_title += 'Spudder with Amazon ID %s' % self._amazon_id
 
         return role_title
@@ -409,7 +409,7 @@ class RoleClubAdmin(RoleBase):
 
     @property
     def role_name(self):
-        return "Team Admin"
+        return "Organization Admin"
 
 
 """
