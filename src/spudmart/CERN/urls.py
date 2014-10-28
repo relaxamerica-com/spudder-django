@@ -81,5 +81,8 @@ urlpatterns = patterns(
     url(r'^compensation$', 'compensation'),
     url(r'^redeem_points$', 'redeem_points'),
     url(r'^after_college$', 'after_college'),
-    url(r'^signin$', 'user_signin', {'SSL': True}),
+    url(r'^signin$', 'student_login'),
+    url(r'^login$', 'student_login'),
+    url(r'^login/migrate$', 'migrate_from_amazon'),
+
 )

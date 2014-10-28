@@ -2,6 +2,9 @@ import os
 from urllib2 import urlopen
 from datetime import timedelta, datetime
 from json import loads
+from django.contrib import messages
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.models import User
 from django.contrib.sessions.models import Session
 
 from django.template import RequestContext
@@ -694,12 +697,26 @@ def join_school(request, school_id, referral_id=None):
     return HttpResponseRedirect('/cern/')
 
 
-def login(request):
-    return render(request, 'spuddercern/pages/login.html', {
-                           'client_id': settings.AMAZON_LOGIN_CLIENT_ID,
-                           'base_url': settings.SPUDMART_BASE_URL,
-                           'returnURL': get_return_url(request)
-    })
+def student_login(request):
+    """
+    Allows user to login
+    :param request: any request
+    :return: a page to login
+        OR redirect to dashboard if valid login credentials
+    """
+    form = StudentLoginForm()
+
+    if request.method == 'POST':
+        form = StudentLoginForm(request.POST)
+
+        if form.is_valid():
+            email = form.cleaned_data.get('email_address')
+            password = form.cleaned_data.get('password')
+            user = authenticate(username=email, password=password)
+            login(request, user)
+            return HttpResponseRedirect('/cern')
+
+    return render(request, 'spuddercern/pages/login.html', {'form': form})
 
 
 def save_linkedin(request):
@@ -1272,3 +1289,33 @@ def remove_student_sessions_async(request):
             s.delete()
 
     return HttpResponse()
+
+
+def migrate_from_amazon(request):
+    """
+    Helps student migrate from account using Amazon Login
+    :param request: any request
+    :return: a form to migrate account (similar to registration)
+        or a redirect to CERN dashboard
+    """
+    form = StudentMigrateForm()
+
+    if request.method == 'POST':
+        form = StudentMigrateForm(request.POST)
+
+        if form.is_valid():
+            email = form.cleaned_data.get('email_address')
+            password = form.cleaned_data.get('password')
+
+            u = User.objects.get(email=email)
+            u.password = password
+            u.save()
+            messages.success(request, "<h4><i class='fa fa-check'></i> Your password has been updated.</h4>")
+
+            login(request, u)
+
+            return HttpResponseRedirect('/cern')
+
+    return render(request, 'spuddercern/pages/migrate_from_amazon.html', {'form': form})
+
+

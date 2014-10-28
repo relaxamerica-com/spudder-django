@@ -1,7 +1,7 @@
 {% extends "spuddercern/base.html" %}
 
 {% block google_analytics_additions %}
-    ga('set', 'contentGroup1', 'CERN Login - Login With Amazon');
+    ga('set', 'contentGroup1', 'CERN Login');
 {% endblock %}
 
 {% block body %}
@@ -13,27 +13,26 @@
         <div class="col-sm-4 col-sm-offset-2">
             <p>If you have not already signed up for Spudder, use the button below to get started:</p>
             <p><a href="/cern/register/" class="btn btn-primary">Register as a Student</a></p>
+            <hr/>
+            <div class="alert alert-info">
+                <h4><i class="fa fa-question-circle"></i> No Login with Amazon? </h4>
+                <p>We have changed the way you log in to your CERN account to make things better for you.</p>
+                <p>If you have already created an account with Amazon, but haven't migrated your account, click <a href="/cern/login/migrate">here</a> to do that.</p>
+                <p>Don't worry - you won't lose anything when you migrate your account.</p>
+            </div>
         </div>
 
         <div class="accounts-form-body col-sm-4">
-            <form class="form-horizontal" action="/accounts/login" id="registration-form" method="POST">
-                {% if error %}
-                <div class="alert alert-error"><%= error %></div>
-                {% endif %}
-
-                <div class="control-group">
-                    <p class="aligncenter">
-                        Use this button to login if you have already signed up with Spudder:
-                    </p>
-
-                    <p class="aligncenter">
-                        <a href="#" id="LoginWithAmazon">
-                            <img border="0" alt="Login with Amazon"
-                                 src="https://images-na.ssl-images-amazon.com/images/G/01/lwa/btnLWA_gold_156x32.png"
-                                 width="156" height="32" />
-                        </a>
-                    </p>
-                </div>
+            <form method="post" role="form">
+                <fieldset>
+                    {% csrf_token %}
+                    {% bootstrap_form form %}
+                    {% buttons %}
+                        <button type="submit" class="btn btn-primary">
+                            Login
+                        </button>
+                    {% endbuttons %}
+                </fieldset>
             </form>
         </div>
         <div class="span2"></div>
