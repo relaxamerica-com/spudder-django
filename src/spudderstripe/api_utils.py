@@ -97,7 +97,7 @@ def make_charge(charge_amount, charge_token, charge_payment_description, charge_
 
 
 def get_account_details(account_access_token):
-    if settings.ENVIRONMENT in [settings.Environments.DEV, settings.Environments.STAGE]:
+    if settings.ENVIRONMENT in [settings.Environments.DEV]:
         return {'display_name': 'Business in Development'}, None
 
     def logic(api_key):
