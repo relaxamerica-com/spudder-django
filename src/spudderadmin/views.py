@@ -814,6 +814,23 @@ def challenges(request):
 
 
 @admin_login_required
+def challenges_list(request):
+    template_data = {'challenges': Challenge.objects.all()}
+    return render(request, 'spudderadmin/pages/challenges/challenges_list.html', template_data)
+
+
+@admin_login_required
+def challenges_delete(request, challenge_id):
+    challenge = get_object_or_404(Challenge, id=challenge_id)
+    template_data = {'challenge': challenge}
+    if request.method == 'POST':
+        challenge.delete()
+        messages.success(request, "The challenge was deleted.")
+        return redirect('/spudderadmin/challenges/list')
+    return render(request, 'spudderadmin/pages/challenges/challenge_delete.html', template_data)
+
+
+@admin_login_required
 def edit_config(request):
     challenge_config = ChallengeServiceConfiguration.GetForSite()
     form = ChallengeServiceConfigurationForm(initial=challenge_config.__dict__)

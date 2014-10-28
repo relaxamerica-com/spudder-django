@@ -427,6 +427,8 @@ class Challenge(models.Model):
         attribute_key = '_recipient'
         try:
             recipient = getattr(self, attribute_key)
+            if not recipient:
+                raise AttributeError
         except AttributeError:
             from spudderdomain.controllers import EntityController
             from spudderdomain.wrappers import EntityBase
@@ -439,6 +441,27 @@ class Challenge(models.Model):
                         EntityBase.EntityWrapperByEntityType(entity_type))
             setattr(self, attribute_key, recipient)
         return recipient
+
+    @property
+    def creator(self):
+        attribute_key = '_creator'
+        try:
+            creator = getattr(self, attribute_key)
+            if not creator:
+                raise AttributeError
+        except AttributeError:
+            from spudderaccounts.controllers import RoleController
+            from spudderaccounts.wrappers import RoleBase
+            creator = None
+            for entity_type in RoleController.ENTITY_TYPES:
+                if self.creator_entity_type == entity_type:
+                    creator = RoleController.GetRoleForEntityTypeAndID(
+                        entity_type,
+                        self.creator_entity_id,
+                        RoleBase.EntityWrapperByEntityType(entity_type))
+            setattr(self, attribute_key, creator)
+        return creator
+
 
     def as_dict(self):
         data = {

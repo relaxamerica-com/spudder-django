@@ -135,4 +135,4 @@ $(document).ready(function(){
         }, 200);
     });
 
-})
+});
