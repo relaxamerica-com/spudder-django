@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
+from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from spudmart.CERN.models import Student
 
 
@@ -58,5 +59,32 @@ class StudentLoginForm(forms.Form):
         if not user or not user.is_active:
             del cleaned_data['password']
             raise forms.ValidationError('Email and password do not match.')
+        cleaned_data['email_address'] = email_address
+        return cleaned_data
+
+
+class StudentRegistrationForm(forms.Form):
+    email_address = forms.EmailField(
+        label='',
+        widget=forms.TextInput(attrs={'placeholder': 'Your email address'}))
+    password = forms.CharField(
+        label='',
+        widget=forms.PasswordInput(attrs={'placeholder': 'Your password'}))
+
+    def clean(self):
+        cleaned_data = super(StudentRegistrationForm, self).clean()
+        email_address = cleaned_data.get('email_address', '').strip().lower()
+        try:
+            u = User.objects.get(username=email_address)
+            Student.objects.get(user=u)
+        except ObjectDoesNotExist:
+            pass
+        except MultipleObjectsReturned:
+            raise forms.ValidationError("You already have an account. "
+                                        "Were you trying to <a href='/cern/login'>login?</a>")
+        else:
+            raise forms.ValidationError("You already have an account. "
+                                        "Were you trying to <a href='/cern/login'>login?</a>")
+
         cleaned_data['email_address'] = email_address
         return cleaned_data
