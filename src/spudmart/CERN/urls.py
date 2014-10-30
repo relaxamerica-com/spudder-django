@@ -44,23 +44,31 @@ urlpatterns = patterns(
     # This is a handler for the LinkedIn Response, and is limited to GETs
     url(r'^save_linkedin$', 'save_linkedin'),
 
-    # Registration & school pages
+    # School pages
     url(r'^(?P<school_id>\d+)/save_logo$', 'save_school_logo'),
     url(r'^(?P<school_id>\d+)/save$', 'save_school'),
     url(r'^(?P<school_id>\d+)/save_school_cover$', 'save_school_cover'),
     url(r'^(?P<school_id>\d+)/edit_cover_image$', 'edit_school_cover'),
     url(r'^(?P<school_id>\d+)/reset_school_cover$', 'reset_school_cover'),
-    url(r'^(?P<school_id>\d+)/register/(?P<referral_id>.+)$', 'register_school',
-        {'SSL': False if os.environ['SERVER_SOFTWARE'].startswith('Development') else True}),
-    url(r'^(?P<school_id>\d+)/register/$', 'register_school',
-        {'SSL': False if os.environ['SERVER_SOFTWARE'].startswith('Development') else True}),
     url(r'^(?P<state>\w{2})/(?P<school_id>\d+)/(?P<name>[^/]+)/(?P<referral_id>.+)$',
         'school'),
     url(r'^(?P<state>\w{2})/(?P<school_id>\d+)/(?P<name>[^/]+)/$',
         'school'),
+
+    # Registration pages
+    url(r'^(?P<school_id>\d+)/register/(?P<referral_id>.+)$', 'register_school'),
+    url(r'^(?P<school_id>\d+)/register/$', 'register_school'),
     url(r'^register/(?P<referral_id>[\w\d\-]+)$', 'register'),
     url(r'^register/$', 'register'),
-    # url(r'^amazon_login/$', 'amazon_login'),
+    url(r'^register/tcs_required', 'tcs_required'),
+    url(r'^register/choose_school/(?P<referral_id>.+)$', 'choose_school'),
+    url(r'^register/choose_school/$', 'choose_school'),
+    url(r'^register/choose_state/(?P<referral_id>.+)$', 'choose_state'),
+    url(r'^register/choose_state/$', 'choose_state'),
+    url(r'^register/(?P<state>\w{2})/choose_school/(?P<referral_id>.+)',
+        'choose_school_from_state'),
+    url(r'^register/(?P<state>\w{2}/choose_school/$', 'choose_school_from_state'),
+
     url(r'^join_school/(?P<school_id>\d+)/(?P<referral_id>\d+)$', 'join_school'),
     url(r'^join_school/(?P<school_id>\d+)/$', 'join_school'),
     url(r'^join_cern$', 'cern_splash'),

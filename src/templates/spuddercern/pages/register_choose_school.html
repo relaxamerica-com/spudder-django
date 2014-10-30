@@ -11,7 +11,7 @@
     <p>Now, you have to select your school.</p>
     <div class="alert alert-success">
         <p>Showing schools in: <b>{{ state }}</b></p>
-        <p><a href="/cern/register">Click here to change</a></p>
+        <p><a href="/cern/register/choose_state">Click here to change</a></p>
     </div>
     <form action="/cern/register/{{ referral_id|default_if_none:"" }}" method="post" role="form">
         <div class="form-group">

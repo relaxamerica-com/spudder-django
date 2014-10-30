@@ -18,7 +18,7 @@ from django.contrib.auth.decorators import user_passes_test
 
 from spudderdomain.controllers import RoleController
 from spudderdomain.models import TeamAdministrator
-from spudmart.CERN.forms import StudentMigrateForm, StudentLoginForm
+from spudmart.CERN.forms import StudentMigrateForm, StudentLoginForm, StudentRegistrationForm
 from spudmart.upload.models import UploadedFile
 from spudmart.CERN.models import School, Student, STATES, MailingList
 from spudmart.CERN.utils import import_schools, strip_invalid_chars, add_school_address, convert_referrals
@@ -639,7 +639,7 @@ def register_school(request, school_id, referral_id=None):
         register with
     :param referral_id: an optional param which indicates a referral by
         another student
-    :return: a simple login page with the Amazon Login button
+    :return: a simple register form (email + password)
     """
     try:
         school = School.objects.get(id=school_id)
@@ -651,11 +651,29 @@ def register_school(request, school_id, referral_id=None):
             try:
                 referrer = Student.objects.get(id=referral_id)
             except ObjectDoesNotExist:
-                pass
+                referral_id = None
 
-        return render(request, 'spuddercern/pages/register_login_with_amazon.html', {
+        form = StudentRegistrationForm()
+        if request.method == 'POST':
+            form = StudentRegistrationForm(request)
+            if form.is_valid():
+                # Create and login user
+                email = form.cleaned_data.get('email_address')
+                password = form.cleaned_data.get('password')
+                u = User(username=email, email=email, password=password)
+                u.save()
+                login(request, u)
+
+                # Create student
+                stu = Student(school=school, referral_id=referral_id, user=u)
+                if school.num_students() == 0:
+                    stu.isHead = True
+                stu.save()
+
+        return render(request, 'spuddercern/pages/register_login.html', {
             'school': school,
             'referrer': referrer,
+            'form': form,
             'base_url': settings.SPUDMART_BASE_URL
         })
 
@@ -1319,3 +1337,73 @@ def migrate_from_amazon(request):
     return render(request, 'spuddercern/pages/migrate_from_amazon.html', {'form': form})
 
 
+def tcs_required(request):
+    """
+    Page displayed if user rejects terms and conditions.
+    :param request: any request
+    :return: a simple well page
+    """
+    return render(request, 'spuddercern/pages/tcs_required.html')
+
+
+def choose_school(request, referral_id=None):
+    """
+    Displays list of schools in user's location (state).
+    :param request: any request
+    :param referral_id: option param indicating referral
+    :return: dropdown form for selecting school
+        OR redirect to registration page for POST requests
+    """
+    if request.method == 'POST':
+        return HttpResponseRedirect('/cern/%s/register/%s' % (request.POST.get('school')), referral_id)
+    else:
+        state = str(request.getHeader('X-AppEngine-Country')).upper()
+        schools = School.objects.filter(state=state)
+        return render(request, 'spuddercern/pages/register_choose_school',
+            {
+                'state': state,
+                'abbr': STATES[state],
+                'schools': schools,
+                'referral_id': referral_id
+            })
+
+
+def choose_state(request, referral_id=None):
+    """
+    Allows users to select state where they go to school
+    :param request: any request
+    :param referral_id: optional param indicating referral
+    :return: a simple dropdown with states
+        OR redirect to page with schools on POST request
+    """
+    if request.method == 'POST':
+        return HttpResponseRedirect('/cern/register/%s/choose_school_from_state/%s' %
+                                    (request.POST.get('state', referral_id)))
+    else:
+        return render(request, 'spuddercern/pages/register_choose_state',
+            {
+                'referral_id': referral_id,
+                'states': sorted(STATES, lambda x: x[1])
+            })
+
+
+def choose_school_from_state(request, state, referral_id=None):
+    """
+    Allows users to select school from state that is not
+    their current location.
+    :param request: any request
+    :param state: a 2-letter state abbreviation
+    :param referral_id: optional param indicating referral
+    :return: a simple dropdown with schools
+        OR redirect to registration page
+    """
+    if request.method == 'POST':
+        return HttpResponseRedirect('/cern/%s/register/%s' % (request.POST.get('school'), referral_id))
+    else:
+        schools = School.objects.filter(state=state)
+        return render(request, 'spuddercern/pages/register_choose_school',
+            {
+                'state': state,
+                'schools': schools,
+                'referral_id': referral_id
+            })
