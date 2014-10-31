@@ -55,6 +55,7 @@ def extract_statistics_from_challenge_tree(challenge_tree):
 
 
 def get_affiliate_club_and_challenge(affiliate_key):
+    challenge_id = None
     if affiliate_key == "dreamsforkids-piechallenge":
         if not feature_is_enabled('challenge_dreamsforkids_piechallenge'):
             raise Http404
@@ -73,6 +74,7 @@ def get_affiliate_club_and_challenge(affiliate_key):
         club_name = "Brendan P. Tevlin FUND"
         challenge_template_slug = "bptrak"
         challenge_you_tube_video_id = "R2yX64Gh2iI"
+        challenge_id = '5184724934852608'
     else:
         return None, None
 
@@ -89,19 +91,26 @@ def get_affiliate_club_and_challenge(affiliate_key):
         EntityController.ENTITY_CLUB,
         club.id,
         EntityBase.EntityWrapperByEntityType(EntityController.ENTITY_CLUB))
-    challenge, created = Challenge.objects.get_or_create(
-        parent=None,
-        template=template,
-        name=template.name,
-        creator_entity_id=club.id,
-        creator_entity_type=EntityController.ENTITY_CLUB,
-        recipient_entity_id=club.id,
-        recipient_entity_type=EntityController.ENTITY_CLUB,
-        proposed_donation_amount=10,
-        proposed_donation_amount_decline=20)
-    challenge.description = template.description
-    challenge.youtube_video_id = challenge_you_tube_video_id
-    challenge.save()
+    if challenge_id:
+        try:
+            challenge = Challenge.objects.get(id=challenge_id)
+        except Challenge.DoesNotExist:
+            raise NotImplementedError("A challenge with the id %s does not exist for the club %s" % (
+                challenge_id, club_name))
+    else:
+        challenge, created = Challenge.objects.get_or_create(
+            parent=None,
+            template=template,
+            name=template.name,
+            creator_entity_id=club.id,
+            creator_entity_type=EntityController.ENTITY_CLUB,
+            recipient_entity_id=club.id,
+            recipient_entity_type=EntityController.ENTITY_CLUB,
+            proposed_donation_amount=10,
+            proposed_donation_amount_decline=20)
+        challenge.description = template.description
+        challenge.youtube_video_id = challenge_you_tube_video_id
+        challenge.save()
     return club_entity, challenge
 
 

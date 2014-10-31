@@ -39,6 +39,7 @@ FEATURES = {
         'challenge_dreamsforkids_payitforward',
     ],
     'live': [
+        'club_register',
         'google_analytics',
         'alexa_analytics',
         'nays_survey',
@@ -49,6 +50,7 @@ FEATURES = {
         'all_fans_auto_follow_main_spudder_fan',
         'challenge_dreamsforkids_piechallenge',
         'challenge_dreamsforkids_payitforward',
+        'challenge_bpt_memorial_field_fund_rak',
     ]
 }
 
