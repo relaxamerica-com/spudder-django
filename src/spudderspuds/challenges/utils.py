@@ -2,6 +2,7 @@ import json
 import logging
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.models import User
+from django.conf import settings
 from django.http import HttpResponse, Http404
 from django.shortcuts import render, redirect, get_object_or_404
 from google.appengine.api import blobstore
@@ -74,7 +75,8 @@ def get_affiliate_club_and_challenge(affiliate_key):
         club_name = "Brendan P. Tevlin FUND"
         challenge_template_slug = "bptrak"
         challenge_you_tube_video_id = "R2yX64Gh2iI"
-        challenge_id = '5184724934852608'
+        if settings.ENVIRONMENT == settings.Environments.LIVE:
+            challenge_id = '5184724934852608'
     else:
         return None, None
 
