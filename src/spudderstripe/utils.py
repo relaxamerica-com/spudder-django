@@ -31,3 +31,22 @@ def get_event_attribute(event_json, attribute):
         return event_json[attribute]
     except KeyError:
         return None
+
+
+class StripeOAuthError():
+    def __init__(self):
+        pass
+
+    ACCESS_DENIED = 'access_denied'
+
+
+def get_oauth_request_error(request):
+    if not 'error' in request.GET:
+        return None
+
+    # We only care about access_denied error as for now it's the only error that result in web browser redirect
+    # Reference: https://stripe.com/docs/connect/reference ("Error Response" section)
+    if request.GET.get('error', '') == StripeOAuthError.ACCESS_DENIED:
+        return StripeOAuthError.ACCESS_DENIED
+
+    return None
