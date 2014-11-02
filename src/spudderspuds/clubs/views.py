@@ -16,7 +16,7 @@ from spudderdomain.controllers import EntityController, EventController
 from spudderdomain.models import StripeUser
 from spudderspuds.clubs.utils import get_club_and_club_entity
 from spudderstripe.controllers import StripeController
-from spudderstripe.utils import get_stripe_recipient_controller_for_club
+from spudderstripe.utils import get_stripe_recipient_controller_for_club, get_oauth_request_error, StripeOAuthError
 from spudmart.upload.forms import UploadForm
 
 
@@ -71,6 +71,10 @@ def dashboard_edit(request):
 
 @club_admin_required
 def stripe(request):
+    error = get_oauth_request_error(request)
+    if error and error == StripeOAuthError.ACCESS_DENIED:
+        return redirect('/club/dashboard')
+
     exception_occurred = False
     club, club_entity = get_club_and_club_entity(request)
     message = None
