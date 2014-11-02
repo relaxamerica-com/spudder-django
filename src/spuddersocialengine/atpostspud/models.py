@@ -1,6 +1,6 @@
 import tweepy
 import logging
-from django.conf import settings
+import settings
 from django.db import models
 
 

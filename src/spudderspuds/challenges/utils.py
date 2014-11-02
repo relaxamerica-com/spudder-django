@@ -1,8 +1,8 @@
 import json
 import logging
+import settings
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.models import User
-from django.conf import settings
 from django.http import HttpResponse, Http404
 from django.shortcuts import render, redirect, get_object_or_404
 from google.appengine.api import blobstore

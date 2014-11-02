@@ -1,7 +1,7 @@
 import logging
 import stripe
+import settings
 from django import forms
-from django.conf import settings
 from spudderdomain.models import StripeRecipient, Club
 from spudmart.CERN.models import SORTED_STATES
 from spudderadmin.templatetags.featuretags import feature_is_enabled

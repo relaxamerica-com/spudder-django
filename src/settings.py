@@ -1,7 +1,6 @@
 import logging
 import os
 import mimetypes
-import socket
 from djangoappengine.settings_base import *
 from spudderadmin.templatetags.featuretags import feature_is_enabled
 from spudmart.utils.app_identity import get_spudmart_app_name

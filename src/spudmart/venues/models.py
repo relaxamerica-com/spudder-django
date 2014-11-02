@@ -1,4 +1,4 @@
-from django.conf import settings
+import settings
 from django.contrib.auth.models import User
 from django.db import models
 from spudderaffiliates.models import Affiliate
