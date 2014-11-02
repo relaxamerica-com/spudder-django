@@ -1,6 +1,6 @@
 import logging
+import settings
 from django.core import mail
-from django.conf import settings
 from spudderdomain.models import FanPage
 from spudderaccounts.wrappers import RoleFan
 from spudderdomain.controllers import SpudsController
