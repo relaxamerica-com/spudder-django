@@ -51,6 +51,7 @@ def dashboard_edit(request):
         club.id,
         EntityBase.EntityWrapperByEntityType(EntityController.ENTITY_CLUB))
     basic_details_form = ClubProfileBasicDetailsForm(club=club, initial=club.__dict__)
+
     if request.method == 'POST':
         if request.FILES:
             icon = UploadForm(request.POST, request.FILES).save()
@@ -62,6 +63,8 @@ def dashboard_edit(request):
                 setattr(club, attr, basic_details_form.cleaned_data.get(attr))
             club.save()
             messages.success(request, 'Team details updated.')
+        return redirect('/club/dashboard/edit')
+
     template_data = {
         'upload_url': blobstore.create_upload_url('/club/dashboard/edit'),
         'club_entity': club_entity,
