@@ -1,5 +1,7 @@
 import json
+import logging
 from datetime import datetime, timedelta
+
 
 from django.http import Http404
 from django.contrib.auth import authenticate, login
@@ -179,19 +181,26 @@ def the_challenge_page(request, challenge_id, state_engine=None, state=None):
     challenge_tree = challenge.challenge_tree
     challenge_tree_stats = extract_statistics_from_challenge_tree(challenge_tree)
     template_data['challenge_tree_stats'] = challenge_tree_stats
-    if state_engine:
-        if request.is_ajax() or (state in [_StateEngineStates.PAY] and request.POST):
-            return challenge_state_engine(request, challenge, state_engine, state)
-        if not request.current_role:
-            raise Http404
-        participation, created = ChallengeParticipation.objects.get_or_create(
-            challenge=challenge,
-            participating_entity_id=request.current_role.entity.id,
-            participating_entity_type=request.current_role.entity_type)
-        if participation.state_engine != state_engine:
-            participation.state_engine = state_engine
-            participation.save()
-        template_data['challenge_participation'] = participation
+    try:
+        if state_engine:
+            if request.is_ajax() or (state in [_StateEngineStates.PAY] and request.POST):
+                return challenge_state_engine(request, challenge, state_engine, state)
+            if not request.current_role:
+                raise Http404
+            participation = ChallengeParticipation.objects.get(
+                challenge=challenge,
+                participating_entity_id=request.current_role.entity.id,
+                participating_entity_type=request.current_role.entity_type)
+            if participation.state_engine != state_engine:
+                participation.state_engine = state_engine
+                participation.save()
+            template_data['challenge_participation'] = participation
+    except Http404:
+        logging.error("Tried to access a state engine page with out logging in")
+        return redirect('/challenges/%s' % challenge_id)
+    except ChallengeParticipation.DoesNotExist:
+        logging.error("Tried to access a state engine but no participation found")
+        return redirect('/challenges/%s' % challenge_id)
     return render(request, 'spudderspuds/challenges/pages/challenge_page.html', template_data)
 
 
