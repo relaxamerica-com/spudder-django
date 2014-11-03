@@ -1,5 +1,6 @@
 import json
 import logging
+from settings import Environments
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.models import User
 from django.conf import settings
@@ -75,7 +76,7 @@ def get_affiliate_club_and_challenge(affiliate_key):
         club_name = "Brendan P. Tevlin FUND"
         challenge_template_slug = "bptrak"
         challenge_you_tube_video_id = "R2yX64Gh2iI"
-        if settings.ENVIRONMENT == settings.Environments.LIVE:
+        if settings.ENVIRONMENT == Environments.LIVE:
             challenge_id = '5184724934852608'
     else:
         return None, None
