@@ -24,7 +24,7 @@ from spudmart.CERN.forms import StudentMigrateForm, StudentLoginForm, StudentReg
 from spudmart.upload.models import UploadedFile
 from spudmart.CERN.models import School, Student, STATES, MailingList
 from spudmart.CERN.utils import import_schools, strip_invalid_chars, add_school_address, convert_referrals
-from spudmart.CERN.rep import recruited_new_student
+from spudmart.CERN.rep import recruited_new_student, signed_up
 from spudmart.utils.cover_image import save_cover_image_from_request, reset_cover_image
 from spudmart.utils.queues import trigger_backend_task
 from spudmart.utils.url import get_return_url, get_request_param
@@ -670,6 +670,11 @@ def register_school(request, school_id, referral_id=None):
                 if school.num_students() == 0:
                     stu.isHead = True
                 stu.save()
+
+                signed_up(stu)
+                if referral_id:
+                    referrer = Student.objects.get(id=referral_id)
+                    recruited_new_student(referrer, school)
 
                 user.backend = "django.contrib.auth.backends.ModelBackend"
                 login(request, user)
