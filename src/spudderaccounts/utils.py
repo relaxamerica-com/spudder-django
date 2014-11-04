@@ -32,7 +32,7 @@ def select_most_appropriate_user_role(role_controller):
     """
     roles = select_all_user_roles(role_controller)
     # MG: For now the hierarchy is club_admin > team_admin > fan > student
-    for role_type in [RoleController.ENTITY_CLUB_ADMIN, RoleController.ENTITY_FAN]:
+    for role_type in [RoleController.ENTITY_CLUB_ADMIN, RoleController.ENTITY_FAN, RoleController.ENTITY_STUDENT]:
         for role in roles:
             if role.entity_type == role_type:
                 return role

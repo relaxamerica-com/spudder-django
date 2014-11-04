@@ -16,7 +16,6 @@ from spudderaccounts.wrappers import RoleBase
 
 
 def accounts_signin(request, user_id):
-    # TODO /cern should be dynamic
     signin_form = SigninForm(initial={'user_id': user_id, 'next_url': request.GET.get('next', '/cern')})
     if request.method == 'POST':
         signin_form = SigninForm(request.POST)

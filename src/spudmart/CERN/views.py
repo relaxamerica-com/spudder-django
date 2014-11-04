@@ -15,6 +15,8 @@ from django.http import HttpResponseRedirect, HttpResponse, \
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils.datastructures import MultiValueDictKeyError
 from django.contrib.auth.decorators import user_passes_test
+from spudderaccounts.utils import select_most_appropriate_user_role, change_current_role, select_all_user_roles
+from spudderaccounts.wrappers import RoleBase
 
 from spudderdomain.controllers import RoleController
 from spudderdomain.models import TeamAdministrator
@@ -655,27 +657,44 @@ def register_school(request, school_id, referral_id=None):
 
         form = StudentRegistrationForm()
         if request.method == 'POST':
-            form = StudentRegistrationForm(request)
+            form = StudentRegistrationForm(request.POST)
             if form.is_valid():
                 # Create and login user
                 email = form.cleaned_data.get('email_address')
                 password = form.cleaned_data.get('password')
-                u = User(username=email, email=email, password=password)
-                u.save()
-                login(request, u)
+                user = User(username=email, email=email, password=password)
+                user.save()
 
                 # Create student
-                stu = Student(school=school, referral_id=referral_id, user=u)
+                stu = Student(school=school, referred_id=referral_id, user=user)
                 if school.num_students() == 0:
                     stu.isHead = True
                 stu.save()
 
+                user.backend = "django.contrib.auth.backends.ModelBackend"
+                login(request, user)
+
+                role_controller = RoleController(user)
+                user_role = role_controller.role_by_entity_type_and_entity_id(
+                    RoleController.ENTITY_STUDENT,
+                    stu.id,
+                    RoleBase.RoleWrapperByEntityType(RoleController.ENTITY_STUDENT)
+                )
+                change_current_role(request)
+
+                return HttpResponseRedirect('/cern')
         return render(request, 'spuddercern/pages/register_login.html', {
             'school': school,
             'referrer': referrer,
             'form': form,
             'base_url': settings.SPUDMART_BASE_URL
         })
+
+
+def dummy_login(request, username, password):
+    u = authenticate(email=username, password=password)
+    login(request, u)
+    return HttpResponseRedirect('/cern')
 
 
 def user_not_student_error_page(request):
@@ -1325,7 +1344,7 @@ def migrate_from_amazon(request):
             email = form.cleaned_data.get('email_address')
             password = form.cleaned_data.get('password')
 
-            u = User.objects.get(email=email)
+            u = User.objects.get(username=email)
             u.password = password
             u.save()
             messages.success(request, "<h4><i class='fa fa-check'></i> Your password has been updated.</h4>")
