@@ -67,7 +67,7 @@ urlpatterns = patterns(
     url(r'^register/choose_state/$', 'choose_state'),
     url(r'^register/(?P<state>\w{2})/choose_school/(?P<referral_id>.+)',
         'choose_school_from_state'),
-    url(r'^register/(?P<state>\w{2}/choose_school/$', 'choose_school_from_state'),
+    url(r'^register/(?P<state>\w{2})/choose_school/$', 'choose_school_from_state'),
 
     url(r'^join_school/(?P<school_id>\d+)/(?P<referral_id>\d+)$', 'join_school'),
     url(r'^join_school/(?P<school_id>\d+)/$', 'join_school'),
