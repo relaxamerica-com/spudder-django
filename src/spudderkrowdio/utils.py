@@ -17,12 +17,23 @@ def _update_entity(entity, krowdio_data):
     entity.save()
 
 
-def _get(url, data, headers={}):
-    result = urlfetch.fetch(url=url, headers=headers)
-    if result.status_code == 200:
-        return result
-    else:
-        raise Exception('GET result status code different than 200: %s' % result.content)
+class DummyKrowdIOResponse():
+    def __init__(self):
+        self.content = '{"data": [], "totalItems": 0, "items": []}'
+
+
+def _get(url, data, headers=None):
+    if not headers:
+        headers = {}
+
+    try:
+        result = urlfetch.fetch(url=url, headers=headers)
+        if result.status_code == 200:
+            return result
+        else:
+            raise Exception('GET result status code different than 200: %s' % result.content)
+    except urlfetch.DeadlineExceededError:
+        return DummyKrowdIOResponse()
 
 
 def _post(url, data, headers={}):
