@@ -815,7 +815,18 @@ def challenges(request):
 
 @admin_login_required
 def challenges_list(request):
-    template_data = {'challenges': Challenge.objects.all()}
+    challenge_templates = ChallengeTemplate.objects.all()
+    challenge_participations_by_template = {}
+    challenge_participations = ChallengeParticipation.objects.all()
+    for template in challenge_templates:
+        challenge_participations_by_template[template.name] = []
+        for participation in challenge_participations:
+            if participation.challenge.template == template:
+                challenge_participations_by_template[template.name].append(participation)
+
+    template_data = {
+        'challenges': Challenge.objects.all(),
+        'participations': challenge_participations_by_template}
     return render(request, 'spudderadmin/pages/challenges/challenges_list.html', template_data)
 
 

@@ -50,6 +50,18 @@
 
         {% endif %}
 
+        <div class="page-header">
+            <h2>Participation by template</h2>
+        </div>
+
+        {% for template_name, participations in participations.items %}
+
+            <h3>{{ template_name }}</h3>
+            {% for p in participations %}
+                <p>{{ p.id }} ({{ p.youtube_video_id }})</p>
+            {% endfor %}
+
+        {% endfor %}
     </div>
 
 {% endblock %}

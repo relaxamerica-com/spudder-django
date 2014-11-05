@@ -106,21 +106,47 @@
                             {% endwith %}
                         </div>
                         <div class="tab-pane fade" id="tab-videos">
-                            <div class="col-xs-6 col-md-3 {% if forloop.counter0 > 6 %}hidden-xs{% endif %}">
-                                <div class="embed-responsive embed-responsive-16by9">
-                                    <iframe class="embed-responsive-item" type="text/html" src="http{% if request.is_secure %}s{% endif %}://www.youtube.com/embed/{{ challenge_tree_stats.root_challenge.youtube_video_id }}?origin=http://www.spudder.com&rel=0&showinfo=0" frameborder="0" allowfullscreen></iframe>
-                                </div>
+{#                            <div class="col-xs-6 col-md-3 {% if forloop.counter0 > 6 %}hidden-xs{% endif %}">#}
+{#                                <div class="embed-responsive embed-responsive-16by9">#}
+{#                                    <iframe class="embed-responsive-item" type="text/html" src="http{% if request.is_secure %}s{% endif %}://www.youtube.com/embed/{{ challenge_tree_stats.root_challenge.youtube_video_id }}?origin=http://www.spudder.com&rel=0&showinfo=0" frameborder="0" allowfullscreen></iframe>#}
+{#                                </div>#}
+{#                            </div>#}
+                        <div class="thumbnail hidden-xs" style="float:left; margin: 20px; width: 28%;">
+                            <div class="embed-responsive embed-responsive-16by9">
+                                <iframe class="embed-responsive-item" type="text/html" src="http{% if request.is_secure %}s{% endif %}://www.youtube.com/embed/{{ challenge_tree_stats.root_challenge.youtube_video_id }}?origin=http://www.spudder.com&rel=0&showinfo=0" frameborder="0" allowfullscreen></iframe>
                             </div>
-                            <div class="row">
-                                {% for participation in challenge_tree_stats.all_participations %}
-                                    {% if participation.youtube_video_id and forloop.counter0 < 20 %}
-                                        <div class="col-xs-6 col-md-3 {% if forloop.counter0 > 6 %}hidden-xs{% endif %}">
+                        </div>
+                        <div class="thumbnail visible-xs" style="float:left; margin: 20px; width: 80%;">
+                            <div class="embed-responsive embed-responsive-16by9">
+                                <iframe class="embed-responsive-item" type="text/html" src="http{% if request.is_secure %}s{% endif %}://www.youtube.com/embed/{{ challenge_tree_stats.root_challenge.youtube_video_id }}?origin=http://www.spudder.com&rel=0&showinfo=0" frameborder="0" allowfullscreen></iframe>
+                            </div>
+                        </div>
+                            <div class="row clearfix">
+                                {% for p in challenge_participations %}
+                                    {% if p.youtube_video_id %}
+                                        <div class="thumbnail hidden-xs" style="float:left; margin: 20px; width: 28%;">
                                             <div class="embed-responsive embed-responsive-16by9">
-                                                <iframe class="embed-responsive-item" type="text/html" src="http{% if request.is_secure %}s{% endif %}://www.youtube.com/embed/{{ participation.youtube_video_id }}?origin=http://www.spudder.com&rel=0&showinfo=0" frameborder="0" allowfullscreen></iframe>
+                                                <iframe class="embed-responsive-item" type="text/html" src="http{% if request.is_secure %}s{% endif %}://www.youtube.com/embed/{{ p.youtube_video_id }}?origin=http://www.spudder.com&rel=0&showinfo=0" frameborder="0" allowfullscreen></iframe>
                                             </div>
                                         </div>
+                                        {% if forloop.counter0 < 6 %}
+                                            <div class="thumbnail visible-xs" style="float:left; margin: 20px; width: 80%;">
+                                                <div class="embed-responsive embed-responsive-16by9">
+                                                    <iframe class="embed-responsive-item" type="text/html" src="http{% if request.is_secure %}s{% endif %}://www.youtube.com/embed/{{ p.youtube_video_id }}?origin=http://www.spudder.com&rel=0&showinfo=0" frameborder="0" allowfullscreen></iframe>
+                                                </div>
+                                            </div>
+                                        {% endif %}
                                     {% endif %}
                                 {% endfor %}
+{#                                {% for participation in challenge_tree_stats.all_participations %}#}
+{#                                    {% if participation.youtube_video_id and forloop.counter0 < 20 %}#}
+{#                                        <div class="col-xs-6 col-md-3 {% if forloop.counter0 > 6 %}hidden-xs{% endif %}">#}
+{#                                            <div class="embed-responsive embed-responsive-16by9">#}
+{#                                                <iframe class="embed-responsive-item" type="text/html" src="http{% if request.is_secure %}s{% endif %}://www.youtube.com/embed/{{ participation.youtube_video_id }}?origin=http://www.spudder.com&rel=0&showinfo=0" frameborder="0" allowfullscreen></iframe>#}
+{#                                            </div>#}
+{#                                        </div>#}
+{#                                    {% endif %}#}
+{#                                {% endfor %}#}
                             </div>
                         </div>
                     </div>
@@ -143,6 +169,18 @@
 
     <div id="challenge-actions">
         <div class="container">
+            <hr/>
+            <div class="media">
+                <div class="media-object pull-left">
+                    <div class="embed-responsive embed-responsive-16by9" style="width: 120px;">
+                        <iframe class="embed-responsive-item" type="text/html" src="http{% if request.is_secure %}s{% endif %}://www.youtube.com/embed/aOBbUCumqpM?origin=http://www.spudder.com&rel=0&showinfo=0" frameborder="0" allowfullscreen></iframe>
+                    </div>
+                </div>
+                <div class="media-body">
+                    <h3 class="media-heading"><a href="https://www.facebook.com/groups/713200362058899/" target="_blank">Experience good vibes and easy living</a>, accept now!</h3>
+                    <h4><small>(its super easy and won't take a moment, just click one of the buttons below)</small></h4>
+                </div>
+            </div>
             <hr/>
             <div class="row">
                 <div class="col-md-4 action-col">
@@ -241,6 +279,14 @@
         </div>
     </div>
 
+    <div class="visible-xs visible-sm">
+        <div class="container">
+            <div class="well" style="margin-top: 30px;">
+                <h4><span class="text-primary">Share</span> this challenge</h4>
+                {% include 'spudderspuds/challenges/components/challenge_others_links.html' %}
+            </div>
+        </div>
+    </div>
 
 {% endblock %}
 

@@ -1,7 +1,7 @@
 import json
 import logging
 from datetime import datetime, timedelta
-
+from django.core.cache import cache
 
 from django.http import Http404
 from django.contrib.auth import authenticate, login
@@ -172,6 +172,16 @@ def affiliate_challenge_page(request, affiliate_key):
     return redirect('/challenges/%s' % challenge.id)
 
 
+def _get_challenge_participations_for_template(challenge):
+    template_id = challenge.template_id
+    cache_key = 'challenge_participations_%s' % template_id
+    challenge_participations = cache.get(cache_key)
+    if not challenge_participations:
+        challenge_participations = [cp for cp in ChallengeParticipation.objects.all() if cp.challenge.template_id == template_id and cp.youtube_video_id]
+        cache.set(cache_key, challenge_participations)
+    return sorted(challenge_participations, key=lambda x: x.created, reverse=True)
+
+
 def the_challenge_page(request, challenge_id, state_engine=None, state=None):
     challenge = get_object_or_404(Challenge, id=challenge_id)
     challenge_recipient = challenge.recipient
@@ -196,11 +206,12 @@ def the_challenge_page(request, challenge_id, state_engine=None, state=None):
                 participation.save()
             template_data['challenge_participation'] = participation
     except Http404:
-        logging.error("Tried to access a state engine page with out logging in")
+        logging.debug("Tried to access a state engine page with out logging in")
         return redirect('/challenges/%s' % challenge_id)
     except ChallengeParticipation.DoesNotExist:
-        logging.error("Tried to access a state engine but no participation found")
+        logging.debug("Tried to access a state engine but no participation found")
         return redirect('/challenges/%s' % challenge_id)
+    template_data['challenge_participations'] = _get_challenge_participations_for_template(challenge)
     return render(request, 'spudderspuds/challenges/pages/challenge_page.html', template_data)
 
 
@@ -595,6 +606,8 @@ def challenge_challenge(request):
 
 
 def challenge_challenge_accept_beneficiary(request, state=None):
+    logging.warning('Atempt to access challenge_challenge view')
+    return redirect('/')
     if not state:
         return redirect("%s%s" % (request.path, (request.current_role.state or 'no_state')))
     template_data = {

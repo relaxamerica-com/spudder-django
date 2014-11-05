@@ -32,6 +32,12 @@ APP_NAME = 'Spudmart'
 
 AUTH_PROFILE_MODULE = 'accounts.UserProfile'
 
+# CACHES = {
+#     'default': {
+#         'BACKEND': 'django.core.cache.backends.db.DatabaseCache'
+#     }
+# }
+
 INSTALLED_APPS = (
     'django.contrib.admin',
     'django.contrib.contenttypes',
