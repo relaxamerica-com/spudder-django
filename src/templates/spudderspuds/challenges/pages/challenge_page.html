@@ -323,6 +323,40 @@
                 if (minutes > 0)
                     $overlay.find('ul').append("<li>Processing for " + minutes + " minutes</li>");
             },
+            show_youtube_signup_required: function(){
+                var $overlay = overlay._get();
+
+                $overlay.css('background-color', 'rgba(0, 0, 0, 0.9)');
+
+                $overlay.find('#uploading-message').text('Upload error');
+
+                $overlay.find('.fa-spinner').hide();
+                $overlay.find('#processing-div').hide();
+
+                $overlay.find('.progress').hide();
+                $($overlay.find('p')[1])
+                        .text("It seems that you don't have a YouTube account linked to your Google account.")
+                        .css('font-size', '22px');
+
+                $overlay.find('.inner').append("<p><a href='https://youtube.com/create_channel' target='_blank'>Create a channel</a> on YouTube and try again.</p>");
+                $($overlay.find('p')[2])
+                        .css('font-size', '26px');
+
+                $overlay.find('p').css('margin-top', '10px');
+            },
+            show_unknown_error: function(){
+                var $overlay = overlay._get();
+
+                $overlay.css('background-color', 'rgba(0, 0, 0, 0.9)');
+
+                $overlay.find('#uploading-message').html("Unknown error");
+
+                $overlay.find('.fa-spinner').hide();
+                $overlay.find('#processing-div').hide();
+                $overlay.find('.progress').hide();
+
+                $($overlay.find('p')[1]).text("It seems that unknown error occurred. Please again later.");
+            },
             html:
                 '<div class="overlay">' +
                     '<div class="inner">' +
@@ -409,6 +443,16 @@
                         'x-upload-content-type': file.type
                     },
                     data: JSON.stringify(metadata)
+                }).fail(function (data) {
+                    var responseData = JSON.parse(data.responseText);
+
+                    if (responseData.error.code == 401 && responseData.error.errors[0].reason == "youtubeSignupRequired") {
+                        // User didn't linked his Google account with YouTube account
+                        overlay.show_youtube_signup_required();
+                    } else {
+                        // Unknown/unhandled error
+                        overlay.show_unknown_error();
+                    }
                 }).done(function (data, textStatus, jqXHR) {
                     resumableUpload({url: jqXHR.getResponseHeader('Location'), file: file, start: 0 });
                 });

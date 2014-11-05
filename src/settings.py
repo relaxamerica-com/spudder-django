@@ -215,6 +215,7 @@ shared_settings = {
         'linkedin_secret_key': '',
         'support_email': 'lukasz@spuder.com',
         'krowdio_client_key': '5401e324e9b6cc56dbe43f55',
+        'google_client_id': '1040511057911-hvvmg3974cm2kdmjj8irretrqihi33rf.apps.googleusercontent.com',
         'stripe_client_id': STRIPE_SETTINGS['development']['client_id'],
         'stripe_secret_key': STRIPE_SETTINGS['development']['secret_key'],
         'stripe_publishable_key': STRIPE_SETTINGS['development']['publishable_key']
