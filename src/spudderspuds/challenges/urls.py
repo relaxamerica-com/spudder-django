@@ -111,6 +111,9 @@ urlpatterns = patterns(
         'the_challenge_page',
         {'SSL': determine_ssl()}),
 
+    url(r'students$',
+        'student_challenges'),
+
     url(r'^tick',
         'tick'),
     

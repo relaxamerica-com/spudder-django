@@ -15,12 +15,13 @@ from django.http import HttpResponseRedirect, HttpResponse, \
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils.datastructures import MultiValueDictKeyError
 from django.contrib.auth.decorators import user_passes_test
-from spudderaccounts.utils import select_most_appropriate_user_role, change_current_role, select_all_user_roles
+from spudderaccounts.utils import change_current_role
 from spudderaccounts.wrappers import RoleBase
 
 from spudderdomain.controllers import RoleController
-from spudderdomain.models import TeamAdministrator
+from spudderdomain.models import TeamAdministrator, FanPage
 from spudmart.CERN.forms import StudentMigrateForm, StudentLoginForm, StudentRegistrationForm
+from spudmart.accounts.templatetags.accounts import user_name
 from spudmart.upload.models import UploadedFile
 from spudmart.CERN.models import School, Student, STATES, MailingList
 from spudmart.CERN.utils import import_schools, strip_invalid_chars, add_school_address, convert_referrals
@@ -676,30 +677,37 @@ def register_school(request, school_id, referral_id=None):
                     referrer = Student.objects.get(id=referral_id)
                     recruited_new_student(referrer, school)
 
+                # Create fan for user
+                username = "%s (%sStudent at %s)" % (user_name(user), "Head " if stu.isHead else "", stu.school.name)
+                fan = FanPage(fan=user, username=username)
+
                 user.backend = "django.contrib.auth.backends.ModelBackend"
                 login(request, user)
 
                 role_controller = RoleController(user)
-                user_role = role_controller.role_by_entity_type_and_entity_id(
+                # create the student role
+                student_role = role_controller.role_by_entity_type_and_entity_id(
                     RoleController.ENTITY_STUDENT,
                     stu.id,
                     RoleBase.RoleWrapperByEntityType(RoleController.ENTITY_STUDENT)
                 )
+                # create fan role
+                fan_role = role_controller.role_by_entity_type_and_entity_id(
+                    RoleController.ENTITY_FAN,
+                    fan.id,
+                    RoleBase.RoleWrapperByEntityType(RoleController.ENTITY_FAN)
+                )
+
+                # activate highest priority role (fan)
                 change_current_role(request)
 
-                return HttpResponseRedirect('/cern')
+                return HttpResponseRedirect('/challenges/students')
         return render(request, 'spuddercern/pages/register_login.html', {
             'school': school,
             'referrer': referrer,
             'form': form,
             'base_url': settings.SPUDMART_BASE_URL
         })
-
-
-def dummy_login(request, username, password):
-    u = authenticate(email=username, password=password)
-    login(request, u)
-    return HttpResponseRedirect('/cern')
 
 
 def user_not_student_error_page(request):
@@ -736,7 +744,7 @@ def join_school(request, school_id, referral_id=None):
         stu.save()
         recruited_new_student(referrer, sch)
 
-    return HttpResponseRedirect('/cern/')
+    return HttpResponseRedirect('/cern')
 
 
 def student_login(request):
@@ -756,7 +764,9 @@ def student_login(request):
             password = form.cleaned_data.get('password')
             user = authenticate(username=email, password=password)
             login(request, user)
-            return HttpResponseRedirect('/cern')
+            fan = FanPage.objects.get(user=user)
+            change_current_role(request, RoleController.ENTITY_FAN, fan.id)
+            return HttpResponseRedirect('/challenges/students')
 
     return render(request, 'spuddercern/pages/login.html', {'form': form})
 
@@ -1349,14 +1359,34 @@ def migrate_from_amazon(request):
             email = form.cleaned_data.get('email_address')
             password = form.cleaned_data.get('password')
 
-            u = User.objects.get(username=email)
-            u.password = password
-            u.save()
+            user = User.objects.get(username=email)
+            user.password = password
+            user.save()
             messages.success(request, "<h4><i class='fa fa-check'></i> Your password has been updated.</h4>")
 
-            login(request, u)
+            # Can't use a get_or_create bc don't know required field "username"
+            try:
+                fan = FanPage.objects.get(fan=user)
+            except FanPage.DoesNotExist:
+                stu = Student.objects.get(user=user)
+                username = "%s (%sStudent at %s)" % (user_name(user), "Head " if stu.isHead else "", stu.school.name)
+                fan = FanPage(fan=user, username=username)
+                fan.save()
 
-            return HttpResponseRedirect('/cern')
+                # create fan role
+                role_controller = RoleController(user)
+                fan_role = role_controller.role_by_entity_type_and_entity_id(
+                    RoleController.ENTITY_FAN,
+                    fan.id,
+                    RoleBase.RoleWrapperByEntityType(RoleController.ENTITY_FAN)
+                )
+
+            change_current_role(request, RoleController.ENTITY_FAN, fan.id)
+
+            user.backend = "django.contrib.auth.backends.ModelBackend"
+            login(request, user)
+
+            return HttpResponseRedirect('/challenges/students')
 
     return render(request, 'spuddercern/pages/migrate_from_amazon.html', {'form': form})
 

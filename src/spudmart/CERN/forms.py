@@ -37,7 +37,7 @@ class StudentMigrateForm(forms.Form):
             self._errors['password'] = self.error_class(['You must supply a password longer than 6 characters'])
             raise_error = True
         if raise_error:
-            raise forms.ValidationError('There was a problem creating your account.')
+            raise forms.ValidationError('There was a problem migrating your account.')
         return data
 
 
