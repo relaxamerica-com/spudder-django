@@ -68,9 +68,11 @@
 
     <div id="entities-section">
         <div class="container">
+            {% block challenges_introduction %}
             <h1 class="text-center">
                 Check out these challenges on <span class="text-primary">Spudder</span>
             </h1>
+            {% endblock %}
             <div class="row">
                 {% for challenge in challenges %}
                     <div class="col-sm-4">
@@ -144,6 +146,7 @@
 {#    </div>#}
 
 
+    {% block challenges_explained %}
     <div id="challenges-explained">
         <div class="container">
             <div class="row header-text">
@@ -220,4 +223,5 @@
             </div>
         </div>
     </div>
+    {% endblock %}
 {% endblock %}

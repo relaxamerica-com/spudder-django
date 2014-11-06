@@ -84,39 +84,43 @@ def _create_challenge(club_class, club_id, form, request, template, parent=None,
         challenge.save()
     return challenge
 
+# Pulled challenges out of splash view so they can be used in others
+# LM 11/6/14
+
+rak_challenge = {
+    'title': 'Random Act of Kindness',
+    'youtube_video_id': 'R2yX64Gh2iI',
+    'link': '/brendan',
+    'h4': 'Take part in the RANDOM ACT OF KINDNESS challenge now!',
+    'p': 'Challenge originated by the BRENDAN P TEVLIN FUND, yet you will be raising for the sports '
+         'organization of your choice!'
+}
+pif_challenge = {
+    'title': 'Pay it Forward',
+    'youtube_video_id': 'R_EkUOThl7w',
+    'link': '/dreamsforkids/payitforward',
+    'h4': 'Take part in the PAY IT FORWARD challenge now!',
+    'p': 'Challenge originated by DREAMS FOR KIDS (NJ) yet you will be raising for the sports '
+         'organization of your choice!'
+}
+pie_challenge = {
+    'title': 'Pie Challenge',
+    'youtube_video_id': 'vqgpHZ09St8',
+    'link': '/dreamsforkids/piechallenge',
+    'h4': 'Take part in the PIE CHALLENGE now!',
+    'p': 'Challenge originated by DREAMS FOR KIDS (NJ) yet you will be raising for the sports '
+         'organization of your choice!'
+}
+
 
 def challenges_splash(request):
-    rak = {
-        'title': 'Random Act of Kindness',
-        'youtube_video_id': 'R2yX64Gh2iI',
-        'link': '/brendan',
-        'h4': 'Take part in the RANDOM ACT OF KINDNESS challenge now!',
-        'p': 'Challenge originated by the BRENDAN P TEVLIN FUND, yet you will be raising for the sports '
-             'organization of your choice!'
-    }
-    pif = {
-        'title': 'Pay it Forward',
-        'youtube_video_id': 'R_EkUOThl7w',
-        'link': '/dreamsforkids/payitforward',
-        'h4': 'Take part in the PAY IT FORWARD challenge now!',
-        'p': 'Challenge originated by DREAMS FOR KIDS (NJ) yet you will be raising for the sports '
-             'organization of your choice!'
-    }
-    pie = {
-        'title': 'Pie Challenge',
-        'youtube_video_id': 'vqgpHZ09St8',
-        'link': '/dreamsforkids/piechallenge',
-        'h4': 'Take part in the PIE CHALLENGE now!',
-        'p': 'Challenge originated by DREAMS FOR KIDS (NJ) yet you will be raising for the sports '
-             'organization of your choice!'
-    }
     template_data = {'challenges': []}
     if feature_is_enabled('challenge_bpt_memorial_field_fund_rak'):
-        template_data['challenges'].append(rak)
+        template_data['challenges'].append(rak_challenge)
     if feature_is_enabled('challenge_dreamsforkids_piechallenge'):
-        template_data['challenges'].append(pie)
+        template_data['challenges'].append(pie_challenge)
     if feature_is_enabled('challenge_dreamsforkids_payitforward'):
-        template_data['challenges'].append(pif)
+        template_data['challenges'].append(pif_challenge)
     return render(request, 'spudderspuds/challenges/pages/challenges.html', template_data)
 
 
@@ -810,3 +814,18 @@ def edit_image(request, challenge_id):
         'image_url': '/file/serve/%s' % challenge.image if challenge.image else None,
         'challenge_name': challenge.name
     })
+
+
+def student_challenges(request):
+    """
+    Displays a list of challenges for students to get engaged with
+    :param request: any request
+    :return: a page like the challenges splash, but with limited challenges
+    """
+    template_data = {'challenges': []}
+    if feature_is_enabled('challenge_bpt_memorial_field_fund_rak'):
+        template_data['challenges'].append(rak_challenge)
+
+    return render(request,
+                  'spudderspuds/challenges/pages/student_challenges.html',
+                  template_data)
