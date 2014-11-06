@@ -12,7 +12,7 @@ class StudentMigrateForm(forms.Form):
     def clean(self):
         data = super(StudentMigrateForm, self).clean()
         email_address = (data.get('email_address') or "").strip().lower()
-        password = (data.get('password') or "").strip()
+        password = data.get('password', "")
         raise_error = False
         if not email_address:
             self._errors['email_address'] = self.error_class(['You must supply an email address'])
@@ -55,9 +55,9 @@ class StudentLoginForm(forms.Form):
         if not User.objects.filter(username=email_address).count():
             raise forms.ValidationError('Email address not recognized. Have you registered?')
         password = cleaned_data.get('password')
-        user = authenticate(username=email_address, password=password)
-        if not user or not user.is_active:
-            del cleaned_data['password']
+        try:
+            User.objects.get(username=email_address, password=password)
+        except ObjectDoesNotExist:
             raise forms.ValidationError('Email and password do not match.')
         cleaned_data['email_address'] = email_address
         return cleaned_data

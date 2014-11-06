@@ -680,6 +680,7 @@ def register_school(request, school_id, referral_id=None):
                 # Create fan for user
                 username = "%s (%sStudent at %s)" % (user_name(user), "Head " if stu.isHead else "", stu.school.name)
                 fan = FanPage(fan=user, username=username)
+                fan.save()
 
                 user.backend = "django.contrib.auth.backends.ModelBackend"
                 login(request, user)
@@ -760,11 +761,14 @@ def student_login(request):
         form = StudentLoginForm(request.POST)
 
         if form.is_valid():
-            email = form.cleaned_data.get('email_address')
+            # 'authenticate' not used because it fails, but since this succeeds I don't understand why it fails.
+            # LM 11/6/14
+            username = form.cleaned_data.get('email_address')
             password = form.cleaned_data.get('password')
-            user = authenticate(username=email, password=password)
+            user = User.objects.get(username=username, password=password)
+            user.backend = "django.contrib.auth.backends.ModelBackend"
             login(request, user)
-            fan = FanPage.objects.get(user=user)
+            fan = FanPage.objects.get(fan=user)
             change_current_role(request, RoleController.ENTITY_FAN, fan.id)
             return HttpResponseRedirect('/challenges/students')
 
