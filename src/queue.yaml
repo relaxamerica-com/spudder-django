@@ -1,16 +1,16 @@
 queue:
 - name: locationtask
-  rate: 1/h
+  rate: 1/m
   max_concurrent_requests: 1
 
 - name: instagramcallback
-  rate: 1/h
+  rate: 1/m
   max_concurrent_requests: 1
 
 - name: atpostspud-getspuds
-  rate: 1/h
+  rate: 1/m
   max_concurrent_requests: 1
 
 - name: challenges-sendemails
-  rate: 1/h
+  rate: 1/m
   max_concurrent_requests: 1
