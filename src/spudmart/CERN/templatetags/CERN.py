@@ -108,8 +108,7 @@ def student_email(student):
     :return: an email address as string
     """
     r = RoleStudent(student)
-    email = r._amazon_id
-    return email
+    return r.contact_emails[0]
 
 
 @register.simple_tag()

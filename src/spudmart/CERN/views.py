@@ -1360,19 +1360,29 @@ def migrate_from_amazon(request):
         form = StudentMigrateForm(request.POST)
 
         if form.is_valid():
-            email = form.cleaned_data.get('email_address')
+            email = (form.cleaned_data.get('email_address') or "").strip().lower()
             password = form.cleaned_data.get('password')
 
-            user = User.objects.get(username=email)
+            try:
+                stu = form.student
+            except AttributeError:
+                user = User.objects.get(username=email)
+            else:
+                user = stu.user
+                user.username = email
+
             user.password = password
             user.save()
             messages.success(request, "<h4><i class='fa fa-check'></i> Your password has been updated.</h4>")
+
+            for s in Student.objects.filter(user=user):
+                s.migrated = True
 
             # Can't use a get_or_create bc don't know required field "username"
             try:
                 fan = FanPage.objects.get(fan=user)
             except FanPage.DoesNotExist:
-                stu = Student.objects.get(user=user)
+                stu = Student.objects.filter(user=user)[0]
                 username = "%s (%sStudent at %s)" % (user_name(user), "Head " if stu.isHead else "", stu.school.name)
                 fan = FanPage(fan=user, username=username)
                 fan.save()

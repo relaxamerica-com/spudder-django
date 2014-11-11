@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
+from spudderaccounts.wrappers import RoleStudent
 from spudmart.CERN.models import Student
 
 
@@ -18,21 +19,16 @@ class StudentMigrateForm(forms.Form):
             self._errors['email_address'] = self.error_class(['You must supply an email address'])
             raise_error = True
 
-        users = User.objects.filter(username__iexact=email_address)
-        if users.count:
-            for u in users:
-                try:
-                    Student.objects.get(user=u)
-                except Student.DoesNotExist:
-                    self._errors['email_address'] = self.error_class(['No student recognized with this email.'])
-                    raise_error = True
-                except Student.MultipleObjectsReturned:
-                    pass
-        else:
-            self._errors['email_address'] = self.error_class(
-                ['No account exists with this email address. Were you trying to <a href="/cern/register">register</a>?']
-            )
-            raise_error = True
+        try:
+            user = User.objects.get(username=email_address)
+        except ObjectDoesNotExist:
+            student = check_students_for_email(email_address)
+            if student:
+                self.student = student
+            else:
+                self._errors['email_address'] = self.error_class(["No student recognized with this email address."])
+                raise_error = True
+
         if not password or len(password) < 6:
             self._errors['password'] = self.error_class(['You must supply a password longer than 6 characters'])
             raise_error = True
@@ -53,7 +49,19 @@ class StudentLoginForm(forms.Form):
         cleaned_data = super(StudentLoginForm, self).clean()
         email_address = cleaned_data.get('email_address', '').strip().lower()
         if not User.objects.filter(username=email_address).count():
-            raise forms.ValidationError('Email address not recognized. Have you registered?')
+            if User.objects.filter(email=email_address).count():
+                for u in User.objects.filter(email=email_address):
+                    u.username = email_address
+                    u.save()
+            else:
+                student = check_students_for_email(email_address)
+                if student:
+                    raise forms.ValidationError('Your account has not been migrated. <br/>'
+                                                'Click <a href="/cern/login/migrate">here</a> to migrate your account.')
+                else:
+                    raise forms.ValidationError("Your email address was not recognized. <br/>"
+                                                "Were you trying to <a href='/cern/register'>register</a>?")
+
         password = cleaned_data.get('password')
         try:
             User.objects.get(username=email_address, password=password)
@@ -88,3 +96,21 @@ class StudentRegistrationForm(forms.Form):
 
         cleaned_data['email_address'] = email_address
         return cleaned_data
+
+
+def check_students_for_email(email):
+    """
+    Used to check the student objects for email addresses that are not the
+     primary email address on the account, making search for user by email
+     address not return any results
+    :param email: a string of email address
+    :return: the student with the corresponding email, or none
+    """
+    student_emails = {}
+    for s in Student.objects.all():
+        role = RoleStudent(s)
+        student_emails[role.contact_emails[0]] = role.entity
+    try:
+        return student_emails[email]
+    except KeyError:
+        return None

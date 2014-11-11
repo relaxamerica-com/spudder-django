@@ -146,7 +146,11 @@ class RoleStudent(RoleBase):
 
     @property
     def contact_emails(self):
-        raise NotImplementedError()
+        try:
+            email = self._amazon_id
+        except LinkedService.DoesNotExist:
+            email = self.user.email
+        return [email]
 
     def user_is_owner(self, user):
         return self.entity.user == user

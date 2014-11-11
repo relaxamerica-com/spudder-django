@@ -39,10 +39,18 @@ class RolesMiddleware:
             all_roles = select_all_user_roles(role_controller)
         request.all_roles = all_roles
 
+    def _more_than_student_and_fan(self, request):
+        disallowed_entities = [RoleController.ENTITY_FAN, RoleController.ENTITY_STUDENT]
+        roles = [e for e in RoleController.ENTITY_TYPES if e not in disallowed_entities]
+        for role in roles:
+            if role:
+                return False
+        return True
+
     def process_request(self, request):
         self._add_current_role(request)
         self._add_all_roles(request)
-        if request.all_roles and len(request.all_roles) > 1:
+        if request.all_roles and len(request.all_roles) > 1 and self._more_than_student_and_fan(request):
             if not request.user.spudder_user.has_set_password:
                 request.user.spudder_user.mark_as_password_required()
 
