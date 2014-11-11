@@ -73,17 +73,7 @@ def register(request, referral_id=None):
     :param request: the request to render page
     :return: page where users can select state from a dropwdown list
     """
-    if request.method == 'POST':
-        return register_with_state(
-            request, state=request.POST['state'], referral_id=referral_id)
-    sorted_states = sorted(STATES.items(), key=lambda x: x[1])
-    template_data = {'states': sorted_states, 'referral_id': referral_id}
-
-    # If we are in dev then print a list of states that have schools in the db. MG: 20140623
-    if bool(os.environ['SERVER_SOFTWARE'].startswith('Development')):
-        template_data['in_dev_states_with_schools'] = [s.state for s in School.objects.all()]
-    return render(
-        request, 'spuddercern/pages/register_choose_state.html', template_data)
+    return render(request, 'spuddercern/pages/register_accept_tcs.html')
 
 
 def register_with_state(request, state, referral_id=None):
@@ -99,15 +89,12 @@ def register_with_state(request, state, referral_id=None):
     try:
         school_id = request.POST['school']
     except MultiValueDictKeyError:
-        schools = []
-        for s in School.objects.filter(state=state):
-            schools.append(s)
-        schools = sorted(schools, key=lambda sch: sch.name)
+        schools = School.objects.filter(state=state)
         return render(request, 'spuddercern/pages/register_choose_school.html',
                       {
                       'state': STATES[state],
                       'abbr': state,
-                      'schools': schools,
+                      'schools': sorted(schools, key=lambda s: s.name),
                       'referral_id': referral_id,
                       })
     else:
@@ -1423,17 +1410,20 @@ def choose_school(request, referral_id=None):
         OR redirect to registration page for POST requests
     """
     if request.method == 'POST':
-        return HttpResponseRedirect('/cern/%s/register/%s' % (request.POST.get('school')), referral_id)
+        return HttpResponseRedirect('/cern/%s/register/%s' % (request.POST.get('school'), (referral_id or "")))
     else:
-        state = str(request.getHeader('X-AppEngine-Country')).upper()
-        schools = School.objects.filter(state=state)
-        return render(request, 'spuddercern/pages/register_choose_school',
-            {
-                'state': state,
-                'abbr': STATES[state],
-                'schools': schools,
-                'referral_id': referral_id
-            })
+        state = str(request.META.get('HTTP_X_APPENGINE_REGION')).upper()
+        if state not in STATES:
+            return HttpResponseRedirect('/cern/register/choose_state/%s' % referral_id or "")
+        else:
+            schools = School.objects.filter(state=state)
+            return render(request, 'spuddercern/pages/register_choose_school.html',
+                {
+                    'state': STATES[state],
+                    'abbr': state,
+                    'schools': sorted(schools, key=lambda s: s.name),
+                    'referral_id': referral_id
+                })
 
 
 def choose_state(request, referral_id=None):
@@ -1446,7 +1436,7 @@ def choose_state(request, referral_id=None):
     """
     if request.method == 'POST':
         return HttpResponseRedirect('/cern/register/%s/choose_school_from_state/%s' %
-                                    (request.POST.get('state', referral_id)))
+                                    (request.POST.get('state', referral_id or "")))
     else:
         return render(request, 'spuddercern/pages/register_choose_state',
             {
@@ -1466,12 +1456,13 @@ def choose_school_from_state(request, state, referral_id=None):
         OR redirect to registration page
     """
     if request.method == 'POST':
-        return HttpResponseRedirect('/cern/%s/register/%s' % (request.POST.get('school'), referral_id))
+        return HttpResponseRedirect('/cern/%s/register/%s' % (request.POST.get('school'), referral_id or ""))
     else:
         schools = School.objects.filter(state=state)
-        return render(request, 'spuddercern/pages/register_choose_school',
+        return render(request, 'spuddercern/pages/register_choose_school.html',
             {
-                'state': state,
-                'schools': schools,
+                'state': STATES[state],
+                'abbr': state,
+                'schools': sorted(schools, key=lambda s:s.name),
                 'referral_id': referral_id
             })

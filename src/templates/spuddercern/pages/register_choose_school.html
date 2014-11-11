@@ -13,7 +13,7 @@
         <p>Showing schools in: <b>{{ state }}</b></p>
         <p><a href="/cern/register/choose_state">Click here to change</a></p>
     </div>
-    <form action="/cern/register/{{ referral_id|default_if_none:"" }}" method="post" role="form">
+    <form method="post" role="form">
         <div class="form-group">
             <input type="hidden" name="state" value="{{ abbr }}">
         </div>

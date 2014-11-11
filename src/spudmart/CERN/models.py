@@ -111,7 +111,7 @@ class School(models.Model):
         which sums the rep points of all students associated with school. 
         Includes method which evaluates level based on reputation.
     """
-    name = models.CharField(max_length=124)
+    name = models.CharField(max_length=124, db_index=True)
     state = models.CharField(max_length=2)
     mascot = models.CharField(max_length=32, null=True)
     logo = models.ForeignKey(UploadedFile, null=True)
