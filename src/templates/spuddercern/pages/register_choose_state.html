@@ -18,7 +18,7 @@
             <p><b>States:</b>{{ in_dev_states_with_schools|default:"Empty" }}</p>
         </div>
     {% endif %}
-    <form action="/cern/register/{{ referral_id|default_if_none:"" }}" method="post" role="form">
+    <form method="post" role="form">
         <div class="form-group">
             <label for="state">State:</label>
             <select name="state" id="state" class="form-control">

@@ -23,7 +23,7 @@ from spudderdomain.models import TeamAdministrator, FanPage
 from spudmart.CERN.forms import StudentMigrateForm, StudentLoginForm, StudentRegistrationForm
 from spudmart.accounts.templatetags.accounts import user_name
 from spudmart.upload.models import UploadedFile
-from spudmart.CERN.models import School, Student, STATES, MailingList
+from spudmart.CERN.models import School, Student, STATES, MailingList, SORTED_STATES
 from spudmart.CERN.utils import import_schools, strip_invalid_chars, add_school_address, convert_referrals
 from spudmart.CERN.rep import recruited_new_student, signed_up
 from spudmart.utils.cover_image import save_cover_image_from_request, reset_cover_image
@@ -1435,13 +1435,13 @@ def choose_state(request, referral_id=None):
         OR redirect to page with schools on POST request
     """
     if request.method == 'POST':
-        return HttpResponseRedirect('/cern/register/%s/choose_school_from_state/%s' %
-                                    (request.POST.get('state', referral_id or "")))
+        return HttpResponseRedirect('/cern/register/%s/choose_school/%s' %
+                                    (request.POST.get('state'), referral_id or ""))
     else:
-        return render(request, 'spuddercern/pages/register_choose_state',
+        return render(request, 'spuddercern/pages/register_choose_state.html',
             {
                 'referral_id': referral_id,
-                'states': sorted(STATES, lambda x: x[1])
+                'states': sorted(STATES.items(), key=lambda x: x[1])
             })
 
 
@@ -1463,6 +1463,6 @@ def choose_school_from_state(request, state, referral_id=None):
             {
                 'state': STATES[state],
                 'abbr': state,
-                'schools': sorted(schools, key=lambda s:s.name),
+                'schools': sorted(schools, key=lambda s: s.name),
                 'referral_id': referral_id
             })
