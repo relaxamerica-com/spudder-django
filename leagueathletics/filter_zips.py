@@ -20,6 +20,10 @@ for row in reader:
 
 	zip_code = row[0]
 
+	if not zip_code:
+		print 'Empty zip code at line %s' % count
+		continue
+
 	if len(zip_code) == 4:
 		zip_code = '0' + zip_code
 	
