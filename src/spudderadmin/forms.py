@@ -20,11 +20,12 @@ class AtPostSpudTwitterAPIForm(forms.Form):
 class PasswordAndActionForm(forms.Form):
     password = forms.CharField(max_length=256, widget=forms.PasswordInput)
     action = forms.CharField(max_length=256, widget=forms.HiddenInput)
+    default_password = 'spudmart2'
 
     def clean_password(self):
         data = super(PasswordAndActionForm, self).clean()
         password = data.get('password', None)
-        if password != "spudmart2":
+        if password != self.default_password:
             raise forms.ValidationError("You don't know the password, should you be doing this?")
         return password
 

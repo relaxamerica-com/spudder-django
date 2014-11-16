@@ -9,3 +9,5 @@ spudmart/src/test-reports
 spudmart/.idea
 .idea
 xunit.xml
+leagueathletics/filtered_zips.csv
+leagueathletics/reduced_data_zips.csv

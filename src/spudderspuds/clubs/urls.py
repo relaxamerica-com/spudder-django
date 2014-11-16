@@ -22,7 +22,7 @@ urlpatterns = patterns('spudderspuds.clubs.views',
     # (r'^show$', 'show_profile'),
     # (r'^hide$', 'hide_profile'),
     #
-    # (r'^(?P<club_id>\d+)$', 'public_page'),
+    (r'^(?P<club_id>\d+)$', 'public_page'),
     # (r'^(?P<club_id>\d+)/donate$', 'donate'),
     # (r'^not_found$', 'not_found'),
     # (r'^send_message/(?P<club_id>\d+)$', 'send_message'),

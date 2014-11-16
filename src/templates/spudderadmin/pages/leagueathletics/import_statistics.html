@@ -1,0 +1,42 @@
+{% extends 'spudderadmin/base.html' %}
+
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <h2 style="text-align: center; font-weight: bold;">
+                            {% if la_import.in_progress %}
+                                Current import statistics
+                            {% else %}
+                                Last import statistics
+                            {% endif %}
+                        </h2>
+
+                        {% if la_import.get_statistics %}
+                            <table class="table table-striped">
+                                <tr>
+                                    <th>Zip code</th>
+                                    <th>Projects count</th>
+                                    <th>Imported</th>
+                                    <th>Omitted</th>
+                                </tr>
+                                {% for zip, stats in la_import.get_statistics.items %}
+                                    <tr>
+                                        <td>{{ zip }}</td>
+                                        <td>{{ stats.total }}</td>
+                                        <td>{{ stats.imported }}</td>
+                                        <td>{{ stats.omitted }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </table>
+                        {% else %}
+                            <p style="text-align: center">No import statistics available</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock body %}
