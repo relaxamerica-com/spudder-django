@@ -10,7 +10,6 @@ input_file = open('original.csv', 'rb')
 reader = csv.reader(input_file, delimiter=',')
 
 zip_codes = []
-reduced_codes = []
 count = 0
 
 for row in reader:
@@ -26,16 +25,13 @@ for row in reader:
 
 	if len(zip_code) == 4:
 		zip_code = '0' + zip_code
-	
-	code = zip_code[:4]
-	if code not in reduced_codes:
-		reduced_codes.append(code)
-		zip_codes.append(zip_code)
+
+	zip_codes.append(zip_code)
 
 input_file.close()
 
 # Writing reduced set of data
-output_file = open('filtered_zips.csv', 'wb')
+output_file = open('reduced_data_zips.csv', 'wb')
 count = 0
 for zip_code in zip_codes:
 	count += 1

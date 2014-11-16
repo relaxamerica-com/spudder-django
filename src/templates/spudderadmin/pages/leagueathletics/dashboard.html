@@ -1,0 +1,101 @@
+{% extends 'spudderadmin/base.html' %}
+{% load bootstrap3 %}
+{% load leagueathletics %}
+
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <h2>Quick Stats:</h2>
+                        <ul>
+                            <li>{{ imported_clubs_count }} imported Clubs</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-6">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <h2>Import Clubs</h2>
+
+                        {% if la_import.in_progress %}
+                            <div class="alert alert-info">
+                                <p>Clubs import in progress ({{ la_import|progress_bar_value }}%)</p>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar progress-bar-info progress-bar-striped" role="progressbar" style="width: {{ la_import|progress_bar_value }}%">
+                                    <span class="sr-only">{{ la_import|progress_bar_value }}% Complete</span>
+                                </div>
+                            </div>
+                        {% else %}
+                            <div class="alert alert-info">
+                                <p>Import Clubs (organisations) from LeagueAthletics.com API within zip codes provided in uploaded file.</p>
+                            </div>
+                            {% if error_message %}
+                                <div class="alert alert-danger">
+                                    <p>{{ error_message }}</p>
+                                </div>
+                            {% endif %}
+                            <form method="post" action="{{ upload_url }}" enctype="multipart/form-data">
+                                {% csrf_token %}
+
+                                {% bootstrap_form import_form %}
+
+                                <div class="form-group">
+                                    <label class="control-label" for="id_file">CSV file</label>
+
+                                    <div class="form-control-wrapper">
+                                        <input id="id_file" name="file"
+                                             required="required" type="file" class="form-control bs-material empty">
+                                    </div>
+                                </div>
+
+                                {% buttons %}
+                                    <button type="submit" class="btn btn-danger">
+                                        <i class="fa fa-upload"></i> Upload and import
+                                    </button>
+                                {% endbuttons %}
+                            </form>
+                        {% endif %}
+                    </div>
+                </div>
+
+                {% if not la_import.in_progress %}
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <h2>Delete Imported Clubs</h2>
+                            <div class="alert alert-danger">
+                                <p>This can not be undone and will delete all imported clubs from the system.</p>
+                            </div>
+                            <form method="post">
+                                {% csrf_token %}
+                                {% bootstrap_form reset_form %}
+                                {% buttons %}
+                                    <button type="submit" class="btn btn-danger">
+                                        <i class="fa fa-refresh"></i> Delete clubs
+                                    </button>
+                                {% endbuttons %}
+                            </form>
+                        </div>
+                    </div>
+                {% endif     %}
+            </div>
+        </div>
+    </div>
+{% endblock body %}
+
+{% block js %}
+    {{ block.super }}
+    {% if la_import.in_progress %}
+        <script type="text/javascript">
+            function refresh() {
+                window.location.reload(true);
+            }
+
+            setTimeout(refresh, 10000);
+        </script>
+    {% endif %}
+{% endblock js %}

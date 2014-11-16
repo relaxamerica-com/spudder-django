@@ -1,16 +1,16 @@
 import urllib2
 
 from google.appengine.api import mail
+
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.http import Http404, HttpResponseRedirect
 from django.http import HttpResponse, HttpResponseNotAllowed
 from django.shortcuts import render_to_response, redirect, render, get_object_or_404
 from django.template import RequestContext
-
 import settings
 from spudderaccounts.models import SpudderUser
-from spudderaccounts.wrappers import RoleStudent, RoleFan, RoleSponsor
+from spudderaccounts.wrappers import RoleFan, RoleSponsor
 from spudderadmin.decorators import admin_login_required
 from spudderadmin.forms import AtPostSpudTwitterAPIForm, PasswordAndActionForm, SystemDeleteVenuesForm
 from spudderadmin.forms import ChallengesResetSystemForm, ChallengeServiceConfigurationForm
@@ -19,11 +19,9 @@ from spudderadmin.utils import encoded_admin_session_variable_name
 from spudderaffiliates.forms import AffiliateForm
 from spudderaffiliates.models import Affiliate
 from spudderdomain.controllers import RoleController, EntityController
-
 from spudderdomain.models import FanPage, LinkedService, TeamAdministrator, TeamPage, TeamVenueAssociation, Location
 from spudderdomain.models import ChallengeTemplate, ChallengeParticipation, Challenge, _ChallengeTree
 from spudderdomain.models import _ChallengeTreeChallenge
-
 from spudderkrowdio.models import KrowdIOStorage, FanFollowingEntityTag
 from spudderkrowdio.utils import get_user_mentions_activity, start_following
 from spuddersocialengine.atpostspud.models import AtPostSpudTwitterAuthentication, AtPostSpudTwitterCounter, AtPostSpudServiceConfiguration

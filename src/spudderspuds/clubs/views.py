@@ -3,6 +3,7 @@ import json
 import logging
 import traceback
 import urllib
+from django.http import HttpResponseRedirect
 
 from google.appengine.api import blobstore
 
@@ -13,11 +14,12 @@ from spudderdomain.wrappers import EntityBase
 from spudderspuds.clubs.decorators import club_admin_required
 from spudderspuds.clubs.forms import ClubProfileBasicDetailsForm
 from spudderdomain.controllers import EntityController, EventController
-from spudderdomain.models import StripeUser
+from spudderdomain.models import StripeUser, Club, TeamClubAssociation, TeamPage
 from spudderspuds.clubs.utils import get_club_and_club_entity
 from spudderstripe.controllers import StripeController
 from spudderstripe.utils import get_stripe_recipient_controller_for_club, get_oauth_request_error, StripeOAuthError
 from spudmart.upload.forms import UploadForm
+from spudmart.utils.querysets import get_object_or_none
 
 
 @club_admin_required
@@ -311,20 +313,20 @@ def stripe(request):
     #     })
     #
     #
-    # def public_page(request, club_id):
-    #     club = get_object_or_none(Club, pk=club_id)
-    #
-    #     if not club or not club.is_fully_activated or club.is_hidden():
-    #         return HttpResponseRedirect('/club/not_found')
-    #
-    #     team_ids = list(TeamClubAssociation.objects.filter(club=club).values_list('team_page', flat=True))
-    #     teams = TeamPage.objects.filter(id__in=team_ids)
-    #     return render(request, 'spudderspuds/clubs/_old/public/view.html', {
-    #         'base_url': 'spudderspuds/base.html',
-    #         'profile': club,
-    #         'teams': teams,
-    #         'stripe_publishable_key': settings.STRIPE_PUBLISHABLE_KEY
-    #     })
+def public_page(request, club_id):
+    club = get_object_or_none(Club, pk=club_id)
+
+    if not club or not club.is_fully_activated or club.is_hidden():
+        return HttpResponseRedirect('/club/not_found')
+
+    team_ids = list(TeamClubAssociation.objects.filter(club=club).values_list('team_page', flat=True))
+    teams = TeamPage.objects.filter(id__in=team_ids)
+    return render(request, 'spudderspuds/clubs/_old/public/view.html', {
+        'base_url': 'spudderspuds/base.html',
+        'profile': club,
+        'teams': teams,
+        # 'stripe_publishable_key': settings.STRIPE_PUBLISHABLE_KEY
+    })
     #
     #
     # def donate(request, club_id):

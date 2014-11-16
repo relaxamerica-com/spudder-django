@@ -56,5 +56,12 @@ urlpatterns = patterns(
     url(r'^/challenges/edit_config$', 'edit_config'),
     url(r'^/challenges$', 'challenges'),
 
-    url(r'^', 'admin_login'),
+    url(r'^$', 'admin_login'),
+)
+
+urlpatterns += patterns('spudderadmin.leagueathletics.views',
+    url(r'^/leagueathletics$', 'dashboard'),
+    url(r'^/leagueathletics/import_clubs$', 'import_clubs'),
+    url(r'^/leagueathletics/import_statistics$', 'import_statistics'),
+    url(r'^/leagueathletics/list_imported', 'list_imported_clubs'),
 )

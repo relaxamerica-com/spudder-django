@@ -1,0 +1,86 @@
+{% extends 'spudderadmin/base.html' %}
+{% load bootstrap3 %}
+
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <h2 style="text-align: center">Search</h2>
+                    </div>
+
+                    <form method="post" action="{{ upload_url }}" enctype="multipart/form-data"
+                            style="width: 40%; margin-left: auto; margin-right: auto">
+                        {% csrf_token %}
+
+                        {% bootstrap_form search_form %}
+
+                        {% buttons %}
+                            <button type="submit" class="btn btn-danger"
+                                    style="margin-right: auto; margin-left: auto; display: block;">
+                                <i class="fa fa-search"></i> Search
+                            </button>
+                        {% endbuttons %}
+                    </form>
+                </div>
+
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <h2 style="text-align: center; font-weight: bold;">
+                            Imported Clubs
+                        </h2>
+
+                        {% if clubs %}
+                            <table class="table table-striped">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Name</th>
+                                    <th>Original ID</th>
+                                    <th>Address</th>
+                                    <th>Website</th>
+                                    <th>Spudder page</th>
+                                </tr>
+                                {% for club in clubs %}
+                                    <tr>
+                                        <td>{{forloop.counter0|add:start}}</td>
+                                        <td>{{ club.name }}</td>
+                                        <td>{{ club.original_domain_id }}</td>
+                                        <td>{{ club.address }}</td>
+                                        <td>
+                                            <a href="{{ club.website }}" target="_blank">{{ club.website }}</a>
+                                        </td>
+                                        <td>
+                                            <a href="/club/{{ club.id }}" target="_blank">view</a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </table>
+                        {% else %}
+                            <div class="alert alert-info" style="text-align: center">
+                                <p>No Clubs found</p>
+                            </div>
+                        {% endif %}
+
+                        {% if total_pages > 1 %}
+                            <div id="paginator-wrapper">
+                                <div id="paginator"></div>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock body %}
+
+{% block js %}
+    {{ block.super }}
+    <script src="/static/js/libs/bootstrap-paginator.js"></script>
+    <script src="/static/js/paginator-helpers.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            initializePaginator({{ total_pages|floatformat:0 }}, {{ paginator_page|floatformat:0 }});
+        });
+    </script>
+{% endblock js %}

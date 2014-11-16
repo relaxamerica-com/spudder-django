@@ -262,6 +262,7 @@ class Club(models.Model):
     location = models.ForeignKey(Location, null=True, blank=True, related_name='club_location')
     state = models.CharField(max_length=2)
     name_is_fixed = models.BooleanField(default=False, blank=True)
+    website = models.CharField(max_length=255, blank=True)
 
     # Flags
     hidden = models.BooleanField(default=False)
@@ -274,6 +275,10 @@ class Club(models.Model):
     linkedin = models.CharField(max_length=255, blank=True)
 
     affiliate = models.ForeignKey(Affiliate, blank=True, null=True)
+
+    # Original domain information (from where it was imported)
+    original_domain_name = models.CharField(max_length=255, blank=True)
+    original_domain_id = models.CharField(max_length=255, blank=True)
 
     def __unicode__(self):
         return unicode(self.name)
@@ -641,3 +646,42 @@ class _ChallengeTreeChallenge(models.Model):
         challenge['participations'] = new_participations
         self.challenge_json = json.dumps(challenge)
         self.save()
+
+
+class SingletonModel(models.Model):
+    """Singleton Django Model
+
+    Ensures there's always only one entry in the database, and can fix the
+    table (by deleting extra entries) even if added via another mechanism.
+
+    Also has a static load() method which always returns the object - from
+    the database if possible, or a new empty (default) instance if the
+    database is still empty. If your instance has sane defaults (recommended),
+    you can use it immediately without worrying if it was saved to the
+    database or not.
+
+    Useful for things like system-wide user-editable settings.
+    """
+
+    class Meta:
+        abstract = True
+
+    def save(self, *args, **kwargs):
+        """
+        Save object to the database. Removes all other entries if there
+        are any.
+        """
+        super(SingletonModel, self).save(*args, **kwargs)
+
+    @classmethod
+    def load(cls):
+        """
+        Load object from the database. Failing that, create a new empty
+        (default) instance of the object and return it (without saving it
+        to the database).
+        """
+
+        try:
+            return cls.objects.get()
+        except cls.DoesNotExist:
+            return cls()

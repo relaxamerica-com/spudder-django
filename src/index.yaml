@@ -56,3 +56,8 @@ indexes:
   - name: configuration_id
   - name: notify_after
     direction: desc
+
+- kind: spudderdomain_club
+  properties:
+  - name: original_domain_name
+  - name: name

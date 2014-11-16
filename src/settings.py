@@ -66,6 +66,7 @@ INSTALLED_APPS = (
     'spuddersocialengine',
     'spudderspuds',
     'spudderstripe',
+    'spudderadmin.leagueathletics',
 )
 
 MIDDLEWARE_CLASSES = (

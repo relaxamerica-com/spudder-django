@@ -20,7 +20,7 @@
 
 {% block cover_image_container_id %}{% if not profile.cover_image %}jumbo-map-container{% endif %}{% endblock %}
 
-{% block cover_image_css_background %}{% if profile.cover_image %}/file/serve/{{ profile.cover_image.id }}{% endif %}{% endblock %}
+{% block cover_image_css_background %}{% if profile.cover_image %}/file/serve/{{ profile.cover_image.id }}{% else %}/static/img/spudderspuds/challenges/jumbotron.jpg{% endif %}{% endblock %}
 
 {% block cover_image_edit_url %}/club/edit_cover{% endblock %}
 
@@ -67,21 +67,21 @@
             {% include 'spudderspuds/clubs/_old/public/parts/view_tab_about.html' %}
         </div>
 
-        <div class="tab-pane text-center" id="message">
-            {% include 'spudderspuds/clubs/_old/public/parts/view_tab_send_message.html' %}
-        </div>
+{#        <div class="tab-pane text-center" id="message">#}
+{#            {% include 'spudderspuds/clubs/_old/public/parts/view_tab_send_message.html' %}#}
+{#        </div>#}
     </div>
 
-    <form action="/club/{{ profile.id }}/donate" method="POST" style="text-align: center; margin-top: 50px;">
-      <script
-        src="https://checkout.stripe.com/checkout.js" class="stripe-button"
-        data-key="{{ stripe_publishable_key }}"
-        data-image="/static/img/spudderspuds/button-spuds-small.png"
-        data-name="{{ profile.name }}"
-        data-description="Simple donation for 20 bucks"
-        data-amount="2000">
-      </script>
-    </form>
+{#    <form action="/club/{{ profile.id }}/donate" method="POST" style="text-align: center; margin-top: 50px;">#}
+{#      <script#}
+{#        src="https://checkout.stripe.com/checkout.js" class="stripe-button"#}
+{#        data-key="{{ stripe_publishable_key }}"#}
+{#        data-image="/static/img/spudderspuds/button-spuds-small.png"#}
+{#        data-name="{{ profile.name }}"#}
+{#        data-description="Simple donation for 20 bucks"#}
+{#        data-amount="2000">#}
+{#      </script>#}
+{#    </form>#}
 {% endblock %}
 
 {% block sidebar %}
@@ -93,6 +93,16 @@
         {% social_media_list profile %}
 
         <ul class="list-unstyled">
+            {% if profile.address %}
+                <li>
+                    <label>Address: </label> {{ profile.address }}
+                </li>
+            {% endif %}
+            {% if profile.website %}
+                <li>
+                    <label>Website: </label> <a href="{{ profile.website }}" target="_blank">{{ profile.website }}</a>
+                </li>
+            {% endif %}
             {% if profile.location %}
                 <li>
                     <label>Location: </label> <a href="{{ profile.location.external_link }}">{{ profile.location }}</a>
